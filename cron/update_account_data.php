@@ -16,6 +16,8 @@ require_once 'utils/natural_language.php';
 
 
 $account->load_acc_data();
+$account->update_parts_data();
+
 $account->update_orders();
 
 $account->update_suppliers_data();
@@ -25,7 +27,6 @@ $account->update_active_parts_stock_data();
 
 $account->update_stores_data();
 $account->update_warehouses_data();
-$account->update_parts_data();
 
 $account->update_customers_data();
 $account->update_employees_data();
@@ -83,7 +84,3 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-
-
-
-?>

@@ -46,8 +46,15 @@
 
     </li>
 
-    <li class="flex-item invisible">
+    <li class="flex-item ">
+        <span>{t}Soulless parts{/t}</span>
+        <div class="title">
 
+
+
+            <span class=" button" title="{t}Parts with no products associated{/t}"  onclick=" change_view('inventory/dashboard'  )"><i style="font-size: 50%" class=" far fa-ghost " ></i> <span class="Containers_in_Transit">{$object->get('Parts No Products')}</span></span> |
+            <span class=" button" title="{t}Parts forced offline/out of stock on website{/t}"   onclick=" change_view('inventory/dashboard'  )"><span class="Small_Deliveries_in_Transit">{$object->get('Parts Forced not for Sale')}</span> <i style="font-size: 50%" class="fal fa-globe red" ></i></span>
+        </div>
 
     </li>
 

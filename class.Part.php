@@ -625,9 +625,6 @@ class Part extends Asset {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $products;
@@ -696,10 +693,10 @@ class Part extends Asset {
 
         //print $this->get('Reference').' '.$products_web_status."\n";
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Part Products Web Status' => $products_web_status
-            ), 'no_history'
+            )
         );
 
 
@@ -729,7 +726,6 @@ class Part extends Asset {
                     case 'star':
                         return '&#9733;';
                         break;
-
                     case 'skull':
                         return '&#9760;';
                         break;
@@ -4656,11 +4652,10 @@ class Part extends Asset {
     function update_products_data() {
 
 
-        //'InProcess','Active','Suspended',,'Discontinued'
 
         $active_products    = 0;
         $no_active_products = 0;
-
+        $online_products=0;
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('InProcess','Active','Discontinuing') ", $this->id
@@ -4670,10 +4665,6 @@ class Part extends Asset {
             if ($row = $result->fetch()) {
                 $active_products = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $sql = sprintf(
@@ -4695,7 +4686,7 @@ class Part extends Asset {
             array(
                 'Part Number Active Products'    => $active_products,
                 'Part Number No Active Products' => $no_active_products,
-
+                'Part Number Products Online'    => $online_products,
             )
 
         );

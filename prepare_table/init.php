@@ -46,10 +46,6 @@ if (!isset($dont_save_table_state)) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['od'] = ($order_direction == '' ? -1 : 1);
     $_SESSION['table_state'][$_data['parameters']['tab']]['nr'] = $number_results;
     $_SESSION['table_state'][$_data['parameters']['tab']]['f_value'] = $f_value;
-
-
-
-
 }
 
 if (isset($_data['parameters']['invoices_vat']) ) {
