@@ -47,7 +47,7 @@
     </li>
 
     <li class="flex-item ">
-        <span>{t}Soulless parts{/t}</span>
+        <span>{t}Rotting parts{/t}</span>
         <div class="title">
 
 
