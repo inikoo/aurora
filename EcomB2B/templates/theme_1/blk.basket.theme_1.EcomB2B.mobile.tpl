@@ -416,7 +416,7 @@
 </div>
 <div style="z-index: 3001" class="address_form" >
     <form id="order_invoice_address_form" class="sky-form sky-form-modal">
-        <header id="_title">{if !empty($labels._invoice_address_label)}{$labels._invoice_address_label}{else}{t}invoice Address{/t}{/if}</header>
+        <header id="_title">{if !empty($labels._invoice_address_label)}{$labels._invoice_address_label}{else}{t}Invoice address{/t}{/if}</header>
 
 
 
@@ -432,7 +432,7 @@
                 <label for="file" class="input">
                     <label class="label">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
 
-                    <input value="{$order->get('Order invoice Address Line 1')}" type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
+                    <input value="{$order->get('Order Invoice Address Line 1')}" type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
                     <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                 </label>
             </section>
@@ -441,7 +441,7 @@
                 <label for="file" class="input">
                     <label class="label">{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
 
-                    <input  value="{$order->get('Order invoice Address Line 2')}"  type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
+                    <input  value="{$order->get('Order Invoice Address Line 2')}"  type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
                     <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine2)} {$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                 </label>
             </section>
@@ -453,7 +453,7 @@
                     <label class="input">
                         <label class="label">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
 
-                        <input value="{$order->get('Order invoice Address Sorting Code')}"  type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_sorting_code)}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
+                        <input value="{$order->get('Order Invoice Address Sorting Code')}"  type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_sorting_code)}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
                         <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
                     </label>
                 </section>
@@ -466,7 +466,7 @@
                     <label class="input">
                         <label class="label">{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}</label>
 
-                        <input value="{$order->get('Order invoice Address Postal Code')}"  type="text" name="postalCode" class="{if 'postalCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}">
+                        <input value="{$order->get('Order Invoice Address Postal Code')}"  type="text" name="postalCode" class="{if 'postalCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}">
                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}</b>
                     </label>
                 </section>
@@ -479,7 +479,7 @@
                     <label class="input">
                         <label class="label">{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}</label>
 
-                        <input value="{$order->get('Order invoice Address Dependent Locality')}"  type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}">
+                        <input value="{$order->get('Order Invoice Address Dependent Locality')}"  type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}">
                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}</b>
                     </label>
                 </section>
@@ -491,7 +491,7 @@
                     <label class="input">
                         <label class="label">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</label>
 
-                        <input value="{$order->get('Order invoice Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}">
+                        <input value="{$order->get('Order Invoice Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}">
                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</b>
                     </label>
                 </section>
@@ -504,7 +504,7 @@
                     <label class="input">
                         <label class="label">{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}</label>
 
-                        <input value="{$order->get('Order invoice Address Administrative Area')}"  type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}">
+                        <input value="{$order->get('Order Invoice Address Administrative Area')}"  type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}">
                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}</b>
                     </label>
                 </section>
@@ -519,7 +519,7 @@
                             <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                             {foreach from=$countries item=country}
-                                <option value="{$country.2alpha}" {if $country.2alpha==$order->get('Order invoice Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                <option value="{$country.2alpha}" {if $country.2alpha==$order->get('Order Invoice Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
                             {/foreach}
 
 
