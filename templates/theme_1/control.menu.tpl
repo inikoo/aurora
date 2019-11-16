@@ -10,7 +10,7 @@
 *}
 
 <div id="aux">
-<div id="three_columns_options" class="hide options_dialog" style="">
+<div id="three_columns_options" class="hide options_dialog" >
 
     <i class="fa fa-window-close button" onclick="$(this).closest('div').addClass('hide')" aria-hidden="true" style="margin-bottom: 5px"></i>
 
@@ -28,7 +28,7 @@
 
 </div>
 
-<div id="cataloge_page_options" class="hide options_dialog" style="">
+<div id="cataloge_page_options" class="hide options_dialog" >
 
     <i class="fa fa-window-close button" onclick="$(this).closest('div').addClass('hide')" aria-hidden="true" style="margin-bottom: 5px"></i>
 
@@ -50,7 +50,7 @@
 
 </div>
 
-<div id="column_type_options" class="hide options_dialog" style="">
+<div id="column_type_options" class="hide options_dialog" >
 
     <i class="fa fa-window-close button" onclick="$(this).closest('div').addClass('hide')" aria-hidden="true" style="margin-bottom: 5px"></i>
 
@@ -68,7 +68,7 @@
 <div id="control_panel_desktop" style="padding:0px;min-height: 30px" class="control_panel ">
 
 
-    <table border="0" style="width: 100%">
+    <table style="width: 100%">
         <tr>
             <td style="width: 50px;padding-left: 10px">
 
@@ -85,7 +85,7 @@
                     {foreach from=$header_data.menu.columns item=column key=key}
 
 
-                        <li id="_column_{$key}" class="column" style="" class="button unselectable {if !$column.show}very_discreet hidden_menu{/if}" key="{$key}">
+                        <li id="_column_{$key}" class="column" class="button unselectable {if !$column.show}very_discreet hidden_menu{/if}" key="{$key}">
                     <span class="button open_edit">
                     <i class="fa-fw  {if $column.icon==''}} fa fa-ban error very_discreet {else}{$column.icon}{/if}"  aria-hidden="true" title="{$column.label}"></i>
                     <span class="label ">{$column.label}</span>
@@ -168,7 +168,7 @@
             </td>
             <td style="width: 80px">
 
-                <span id="save_button" class="" onClick="$('#preview')[0].contentWindow.save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+                <span id="save_button" onClick="$('#preview')[0].contentWindow.save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
 
 
@@ -189,7 +189,7 @@
 <div id="control_panel_mobile" style="padding:0px;min-height: 35px;padding-top:10px;border-bottom: 1px solid #ccc" class="control_panel hide">
 
 
-    <table border="0" style="width: 100%">
+    <table style="width: 100%">
         <tr>
             <td style="width: 50px;padding-left: 10px">
 
@@ -204,7 +204,7 @@
 
             </td>
             <td style="text-align: right;padding-right: 20px">
-                <span id="save_button_mobile" class=""  onClick="$('#preview_mobile')[0].contentWindow.save_mobile_menu()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+                <span id="save_button_mobile" onClick="$('#preview_mobile')[0].contentWindow.save_mobile_menu()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
             </td>
         </tr>
     </table>
@@ -217,7 +217,7 @@
 
 </div>
 
-<div id="preview_container" style="position: relative;" class="">
+<div id="preview_container" style="position: relative;" >
 
 <iframe id="preview"  style="width:100%;height: 750px" frameBorder="0" src="/website.menu.php?&website_key={$website->id}&theme={$theme}"></iframe>
 
@@ -239,14 +239,14 @@
 
 
 <div id="mobile_preview_container" style="position: relative;" class="hide">
-    <iframe id="preview_mobile" class="" style="width:400px;height: 700px;margin: 20px 50px !important" frameBorder="0" src="/website.header.mobile.php?&website_key={$website->id}&theme={$theme}"></iframe>
+    <iframe id="preview_mobile" style="width:400px;height: 700px;margin: 20px 50px !important" frameBorder="0" src="/website.header.mobile.php?&website_key={$website->id}&theme={$theme}"></iframe>
 
 
     <table id="main_settings" data-website_key="{$website->id}" style="position: absolute;left:540px;top:40px">
 
 
 
-        <tr class="">
+        <tr >
 
 
             <td colspan="2" class="label strong" style="border-bottom: 1px solid #ccc">
@@ -835,7 +835,7 @@
 
       var label='{t}Column{/t} '+key
 
-        $('<li  id="_column_'+key+'" class="column" style="" class="button unselectable " key="'+key+'">\n' + '<span class="button open_edit">\n' + '<i class="fa fa-fw fa-ban error very_discreet "  aria-hidden="true" title="'+label+'"></i>\n' + '<span class="label ">'+label+'</span>\n' + '            </span>\n' + '            <i class="fa fa-eye column_show" style="margin-left:10px;" aria-hidden="true"></i>\n' + '            <i class="fa fa-arrows handle2"  aria-hidden="true"></i>\n' + '            </li>').insertBefore( "#add_column" );
+        $('<li  id="_column_'+key+'" class="column" class="button unselectable " key="'+key+'">\n' + '<span class="button open_edit">\n' + '<i class="fa fa-fw fa-ban error very_discreet "  aria-hidden="true" title="'+label+'"></i>\n' + '<span class="label ">'+label+'</span>\n' + '            </span>\n' + '            <i class="fa fa-eye column_show" style="margin-left:10px;" aria-hidden="true"></i>\n' + '            <i class="fa fa-arrows handle2"  aria-hidden="true"></i>\n' + '            </li>').insertBefore( "#add_column" );
         $('<div id="edit_mode_'+key+'" class=" edit_mode hide"  type="single_column" key="'+key+'"> <div style="float:left;margin-right:20px;min-width: 200px;"> <span class="column_type button single_column" data-column_type="single_column"  style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">1</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span> </div> <span class="column_controls"> </span> </div>').insertBefore( "#add_column_control_anchor" );
 
         $('#preview')[0].contentWindow.add_column(key,label);

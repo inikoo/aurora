@@ -15,14 +15,14 @@
 
         <span>{t}Staging area{/t}</span>
         <div class="title">
-            <span class="" >
+            <span >
                 <span class="formatted_ready_to_pick_number button discreet" title="{t}New delivery notes{/t}" onclick="get_delivery_notes_table('ready_to_pick',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
                     <i style="font-size: 50%" class="fa fa-seedling fa-fw " aria-hidden="true"></i> {$warehouse->get('formatted_ready_to_pick_number')}
                 </span> | </span>
             <span class="formatted_assigned_number button " title="{t}Delivery note assigned{/t}"
                   onclick="get_delivery_notes_table('assigned',{ parent: 'warehouse','parent_key':{$warehouse->id}})"> {$warehouse->get('formatted_assigned_number')} <i style="font-size: 50%" class="fa fa-chalkboard-teacher fa-fw" aria-hidden="true"></i> </span>  </div>
         <div >
-            <span class=""><span onclick="get_delivery_notes_table('ready_to_pick',{ parent: 'warehouse','parent_key':{$warehouse->id}})" class="button discreet formatted_ready_to_pick_weight" title=""> {$warehouse->get('formatted_ready_to_pick_weight')} </span> | </span>
+            <span ><span onclick="get_delivery_notes_table('ready_to_pick',{ parent: 'warehouse','parent_key':{$warehouse->id}})" class="button discreet formatted_ready_to_pick_weight" title=""> {$warehouse->get('formatted_ready_to_pick_weight')} </span> | </span>
             <span  onclick="get_delivery_notes_table('assigned',{ parent: 'warehouse','parent_key':{$warehouse->id}})" class="formatted_assigned_weight  button " title=""> {$warehouse->get('formatted_assigned_weight')} </span>
         </div>
 
@@ -31,7 +31,7 @@
     <li id="delivery_note_flow_waiting" class="flex-item delivery_note_flow {if $delivery_note_flow=='waiting_not_paid' or  $delivery_note_flow=='waiting' }selected{/if}" >
         <span>{t}Waiting{/t}</span>
         <div class="title">
-            <span class="" >
+            <span >
                 <span class="formatted_waiting_for_customer_number button {if  $delivery_note_flow=='waiting_not_paid'}blue{/if}" title="{t}Waiting for customer{/t}" onclick="get_delivery_notes_table('waiting_for_customer',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
                     <i style="font-size: 50%" class="far fa-user discreet" aria-hidden="true"></i> {$warehouse->get('formatted_waiting_for_customer_number')}
                 </span> | </span>
@@ -50,7 +50,7 @@
     <li id="delivery_note_flow_in_warehouse" class="flex-item delivery_note_flow {if $delivery_note_flow=='picking'  }selected{/if}">
         <span>{t}Picking{/t}</span>
         <div class="title">
-            <span class="" >
+            <span >
             <span class="formatted_picking_number button {if  $delivery_note_flow=='in_warehouse'}blue{/if} " title="{t}Orders been picked{/t}" onclick="get_delivery_notes_table('picking',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
               {$warehouse->get('formatted_picking_number')}
             </span>
@@ -82,7 +82,7 @@
 
     <li id="delivery_note_flow_dispatched" class="flex-item delivery_note_flow {if $delivery_note_flow=='dispatched_today'}selected{/if}">
         <span>{t}Delivery area{/t}</span>
-        <div class="title"><span class="" >
+        <div class="title"><span >
 
             <span class=" button" title="{t}Order ready to be dispatched{/t}"  onclick="get_delivery_notes_table('approved',{ parent: 'warehouse','parent_key':{$warehouse->id}})">{$warehouse->get('formatted_approved_number')} <i style="font-size: 50%" class=" far fa-truck-loading" aria-hidden="true"></i> </span> </div>
         <div >

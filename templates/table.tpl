@@ -30,7 +30,7 @@
     <div id="edit_table_dialog" class="hide edit_table_dialog"  data-metadata="{ }" >
         <div class="small button discreet" onclick="$('#edit_table_dialog').addClass('hide')" style="float:right;margin-left: 30px"><i class="fa fa-times"></i> {t}Close{/t}</div>
 
-        <table border="0"   >
+        <table >
 
             {if isset($edit_table_dialog.inline_edit) or isset($edit_table_dialog.spreadsheet_edit)}
 

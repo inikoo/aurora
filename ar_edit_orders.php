@@ -2077,7 +2077,7 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
             if ($row['Supplier Part Currency Code'] != $account->get('Account Currency')) {
 
 
-                $amount .= ' <span class="">('.money($net_amount * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
+                $amount .= ' <span >('.money($net_amount * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
 
             }
 

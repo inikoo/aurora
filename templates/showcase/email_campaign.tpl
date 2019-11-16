@@ -149,7 +149,7 @@
 
 
                             <i class="far fa-trash-alt discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
-                            <table id="delete_dialog" border="0" class="order_operation_dialog hide">
+                            <table id="delete_dialog" class="order_operation_dialog hide">
                                 <tr class="top">
                                     <td colspan="2">{if  $email_campaign->get('Email Campaign Type')=='Newsletter'}{t}Delete newsletter{/t}{else}{t}Delete mailshot{/t}{/if}</td>
                                 </tr>
@@ -233,7 +233,7 @@
 
 
                             <i class="fa fa-paper-plane " aria-hidden="true" onclick="toggle_order_operation_dialog('send_mailshot')"></i>
-                            <table id="send_mailshot_dialog" border="0" class="order_operation_dialog hide">
+                            <table id="send_mailshot_dialog" class="order_operation_dialog hide">
                                 <tr class="top">
                                     <td colspan="2">{t}Send mailshot now{/t}</td>
                                 </tr>
@@ -294,14 +294,14 @@
                                                         <td style="text-align: left;line-height:20px" class="small">{t}Date{/t}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td><input id="select_date_formatted" style="width: 7em" class="" value=""/></td>
+                                                        <td><input id="select_date_formatted" style="width: 7em" value=""/></td>
                                                         <td></td>
                                                     </tr>
                                                     <tr style="height: 20px">
                                                         <td style="text-align: left;line-height:20px" class="small">{t}time{/t}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="text-align: left"><input id="select_time_formatted" style="width: 5em" class="" value=""/></td>
+                                                        <td style="text-align: left"><input id="select_time_formatted" style="width: 5em" value=""/></td>
                                                         <td><i onclick="submit_date()" id="select_date_save" class="fa button fa-play save padding_left_20"></i></td>
                                                     </tr>
                                                 </table>
@@ -335,12 +335,12 @@
                 </div>
             </div>
 
-            <table border="0" class="hide info_block acenter">
+            <table class="hide info_block acenter">
 
                 <tr>
 
                     <td>
-                        <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$email_campaign->get('Number Items')}</span></span>
+                        <span ><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$email_campaign->get('Number Items')}</span></span>
                         <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " aria-hidden="true"></i> <span class="Order_Number_Items_with_Deals">{$email_campaign->get('Number Items with Deals')}</span></span>
                         <span class="error {if $email_campaign->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
                                     class="Order_Number_Items_with_Out_of_Stock">{$email_campaign->get('Number Items Out of Stock')}</span></span>
@@ -363,11 +363,11 @@
                     <label>{t}Bounces{/t}</label>
                     <div  class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
                 </div>
-                <div class="">
+                <div >
                     <label>{t}Hard bounces{/t}</label>
                     <div title="{$email_campaign->get('Hard Bounces')}" class="Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</div>
                 </div>
-                <div class="">
+                <div >
                     <label>{t}Soft bounces{/t}</label>
                     <div title="{$email_campaign->get('Soft Bounces')}" class="Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</div>
                 </div>

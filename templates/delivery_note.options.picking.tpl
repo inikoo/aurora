@@ -1,5 +1,5 @@
 
-        <table style="width:50%;float:right;width:100%;min-height: 100px;" border="0">
+        <table style="width:50%;float:right;width:100%;min-height: 100px;" >
             <tbody class="{if $dn->get('State Index')>=30}hide{/if}">
                 <tr>
             <td style="width: 50%;padding:10px;border-right:1px solid whitesmoke" >
@@ -19,7 +19,7 @@
                    onclick="save_this_field(this)"></i>
                 <div id="set_picker_results_container" class="search_results_container hide">
 
-                    <table id="set_picker_results" border="0"  >
+                    <table id="set_picker_results" >
 
                         <tr class="hide" id="set_picker_search_result_template" field="" value=""
                             formatted_value="" onClick="select_dropdown_handler('picker',this)">
@@ -68,7 +68,7 @@
                 <i  class="fa fa-barcode" aria-hidden="true" style="position:absolute;top:10px;right:10px"></i>
 
 
-                <div class="">
+                <div >
 
                 <div style="display:flex;"  >
                     <div style="align-items: stretch;flex: 0">

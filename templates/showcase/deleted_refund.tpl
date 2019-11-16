@@ -36,7 +36,7 @@
 
         </div>
 
-        <div id="billing_address_container" class="data_container" style="">
+        <div id="billing_address_container" class="data_container" >
             <div style="min-height:80px;float:left;width:16px">
                 <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
             </div>
@@ -91,7 +91,7 @@
         </div>
 
 
-        <table border="0" class="totals" style="width: 100%">
+        <table class="totals" style="width: 100%">
 
 
 
@@ -102,7 +102,7 @@
     <div class="block italic discreet" style="align-items: stretch;flex: 1;">
 
 
-        <table border="0">
+        <table >
 
             <tr>
                 <td class="aright">{t}Refund items net{/t}</td>

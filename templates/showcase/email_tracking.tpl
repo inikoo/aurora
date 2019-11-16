@@ -19,11 +19,11 @@
 
             <div class="data_field">
                 <i  class="fa fa-male fa-fw"></i> <span
-                        class="">{$receiver->get('Name')}</span>
+                        >{$receiver->get('Name')}</span>
             </div>
             <div class="data_field">
                 <i  class="fa fa-at fa-fw"></i> <span
-                        class="">{$receiver->get('Main Plain Email')}</span>
+                        >{$receiver->get('Main Plain Email')}</span>
             </div>
 
         </div>
@@ -38,7 +38,7 @@
 
             <h1 style="margin-bottom: 10px">{$email_tracking->get('State Label')}</h1>
 
-            <table border="0" class="overview">
+            <table class="overview">
 
 
 

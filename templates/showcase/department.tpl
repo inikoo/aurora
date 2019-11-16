@@ -161,7 +161,7 @@
 
     <div class="block info">
         <div id="overviews">
-            <table id="stock_table" border="0" class="overview">
+            <table id="stock_table" class="overview">
                 <tbody class="info">
 
 
@@ -190,7 +190,7 @@
         </div>
 
 
-        <table border="0" class="overview" style="">
+        <table class="overview" >
             <tr class="main">
                 <td>{t}Webpage{/t}</td>
                 <td class="aright ">

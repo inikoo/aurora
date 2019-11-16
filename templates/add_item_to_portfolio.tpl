@@ -6,8 +6,8 @@
            placeholder="{t}code{/t}">
     <div id="add_item_to_portfolio_results_container" class="search_results_container hide" style="width:500px;">
 
-        <table id="add_item_to_portfolio_results" border="0" style="background:white;font-size:90%;width: 100%">
-            <tr class="hide" style="" id="add_item_to_portfolio_search_result_template" data-field="" data-item_key=""
+        <table id="add_item_to_portfolio_results" style="background:white;font-size:90%;width: 100%">
+            <tr class="hide" id="add_item_to_portfolio_search_result_template" data-field="" data-item_key=""
                 data-formatted_value="" onClick="select_add_item_to_portfolio_option(this)">
                 <td class="code" style="padding-left:5px;"></td>
                 <td class="label" style="padding-left:5px;"></td>

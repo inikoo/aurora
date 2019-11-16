@@ -43,7 +43,7 @@
     {$order->get('State')}<br>
     {$order->get('Date')}<br>
 
-    <div class="" style="display: flex;    line-height: 1.5;">
+    <div style="display: flex;    line-height: 1.5;">
 
     <div style="font-size: x-small;padding:0px 4px;flex-grow:1;margin-bottom: 20px">
 

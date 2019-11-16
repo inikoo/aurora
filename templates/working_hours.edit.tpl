@@ -6,7 +6,7 @@
 {*}
 <input id="{$field.id}" type="hidden" class="input_field " value="{$field.value}" has_been_valid="0"/>
 <div id="working_hours" class="hide">
-    <table border="0" style="">
+    <table >
         <tr class="bold">
             <td colspan=2></td>
 

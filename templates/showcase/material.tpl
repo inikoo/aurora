@@ -2,7 +2,7 @@
     <div i style="float:right;width:250px">
 
 
-        <table border="0" class="overview " style="">
+        <table class="overview " >
             <tr>
                 <td class="label">{t}Type{/t}</td>
                 <td class="Material_Type aright">{$material->get('Type')}</td>

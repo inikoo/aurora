@@ -22,5 +22,5 @@
 {/if}
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " style="Width:100%;" h="{$data.height}" h_mobile="{$height_mobile}"  src_mobile="{$src_mobile}"  w="1240"  >
-<iframe src="https://{$data.src}" width="100%" height="100%" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe>
+<iframe src="https://{$data.src}" width="100%" height="100%" scrolling="no" frameallowtransparency="true" allowfullscreen="true"></iframe>
 </div>

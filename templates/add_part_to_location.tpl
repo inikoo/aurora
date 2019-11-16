@@ -19,8 +19,8 @@
 
     <div id="add_part_to_location_results_container" class="search_results_container hide" style="width:400px;">
 
-        <table id="add_part_to_location_results" border="0" style="background:white;font-size:90%">
-            <tr class="hide" style="" id="add_part_to_location_search_result_template" field="" item_key="" item_historic_key=""
+        <table id="add_part_to_location_results" style="background:white;font-size:90%">
+            <tr class="hide" id="add_part_to_location_search_result_template" field="" item_key="" item_historic_key=""
                 formatted_value="" onClick="select_add_part_to_location_option(this)">
                 <td class="code" style="padding-left:5px;"></td>
                 <td class="label" style="padding-left:5px;"></td>

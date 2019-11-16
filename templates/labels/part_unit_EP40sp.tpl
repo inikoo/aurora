@@ -2,15 +2,15 @@
 
 </script>
 
-<table border="0" style="margin: 0mm">
+<table style="margin: 0mm">
     {for $row=1 to 8}
     <tr>
         {for $col=1 to 5}
             <td style="width: 59.4mm;height: 26.25mm">
-                <table border="0" style='font-size:2.0mm; float:left;  font-family: Arial, " Helvetica Neue , Helvetica, sans-serif";' >
+                <table style='font-size:2.0mm; float:left;  font-family: Arial, " Helvetica Neue , Helvetica, sans-serif";' >
                     <tr>
                         <td style="height:100%;" valign="top">
-                            <table border="0" style="height: 100%;">
+                            <table style="height: 100%;">
                                 <tr>
                                     <td>
                                         <b>{$part->get('Reference')}</b></td>

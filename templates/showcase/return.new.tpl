@@ -28,7 +28,7 @@
             </div>
 
             <div class="data_field small {if $order->get('Telephone')==''}hide{/if}  " style="margin-top:5px">
-                <div class=""><i class="fa fa-phone fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Telephone">{$order->get('Telephone')}</span></div>
+                <div ><i class="fa fa-phone fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Telephone">{$order->get('Telephone')}</span></div>
 
 
             </div>
@@ -36,7 +36,7 @@
             <div class="data_field small {if $order->get('Email')==''}hide{/if}" style="margin-top:5px">
 
 
-                <div class=""><i class="fa fa-envelope fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Email">{$order->get('Email')}</span></div>
+                <div ><i class="fa fa-envelope fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Email">{$order->get('Email')}</span></div>
 
             </div>
 
@@ -81,7 +81,7 @@
         <div style="clear:both"></div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-    <table border="0" class="totals" style="position:relative;top:-5px">
+    <table class="totals" style="position:relative;top:-5px">
 
         <tr class="total ">
 
@@ -147,12 +147,12 @@
             </div>
         </div>
 
-        <table border="0" class="info_block acenter">
+        <table class="info_block acenter">
 
             <tr>
 
                 <td class="hide">
-                    <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="affected_items">0</span> / <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
+                    <span ><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="affected_items">0</span> / <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
 
 
                 </td>

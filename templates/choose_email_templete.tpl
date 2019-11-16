@@ -19,7 +19,7 @@
 </span>
 
 
-    <span id="save_button" class="" style="float:right" onClick="$('#preview')[0].contentWindow.save()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+    <span id="save_button" style="float:right" onClick="$('#preview')[0].contentWindow.save()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
     <div style="clear:both"></div>
 

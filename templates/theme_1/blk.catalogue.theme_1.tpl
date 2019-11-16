@@ -173,7 +173,7 @@
                 <span id="add_item_msg" class="msg"></span>
                 <div id="add_item_results_container" class="search_results_container hide">
 
-                    <table id="add_item_results" border="0">
+                    <table id="add_item_results" >
 
                         <tr class="hide" id="add_item_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_item(this)">
                             <td class="code"></td>
@@ -206,7 +206,7 @@
 
 
     <div class="container" style="padding-bottom 5px;text-align: right;padding-right: 20px">
-        <span id="disassociate_category" class="like_button hide" style="margin-right:20px">{t}Remove category{/t} <i class="fa fa-trash  " style="" aria-hidden="true"></i></span>
+        <span id="disassociate_category" class="like_button hide" style="margin-right:20px">{t}Remove category{/t} <i class="fa fa-trash  " aria-hidden="true"></i></span>
         <span id="insert_category" class="like_button">{t}Insert category{/t} <i class="fa fa-flip-horizontal" style="position:relative;top:3px"><i class="fa fa-reply fa-rotate-270   " style="margin-left:20px" aria-hidden="true"></i></i></span>
         <i id="prev_item" class="fa fa-arrow-left like_button" style="margin-left:20px"  aria-hidden="true"></i>
         <i id="next_item" class="fa fa-arrow-right like_button" style="margin-left:10px" aria-hidden="true"></i>
@@ -242,7 +242,7 @@
             <span id="catalogue_name"></span>
 
 
-            <div id="catalogue_images" style="">
+            <div id="catalogue_images" >
 
                 <h6 style="clear:both;margin-bottom:5px">{t}Usable images{/t}</h6>
                 <div id="catalogue_usable_images"></div>
@@ -263,7 +263,7 @@
             {foreach from=$content.catalogue.items  item=item key=key }
                 <li class="cbp_thumbnail_item like_button" id="cbp_thumbnail_item_{$item.category_key}" category_key="{$item.category_key}">
                     <img src="{if $item.image_375x250==''}/art/image_375x250.png{else}{$item.image_375x250}{/if}" width="125" height="83">
-                    <div class="" style="font-size:10px;margin-top:-5px">{$item.code|truncate:30}</div>
+                    <div style="font-size:10px;margin-top:-5px">{$item.code|truncate:30}</div>
                 </li>
             {/foreach}
         </ul>

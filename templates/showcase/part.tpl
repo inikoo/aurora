@@ -173,7 +173,7 @@
 
         <div id="overviews">
 
-            <table id="stock_table"  class="showcase_component overview" border="0" ">
+            <table id="stock_table"  class="showcase_component overview" ">
                 <tbody class="info">
 
 
@@ -295,7 +295,7 @@
             </table>
 
             <div id="set_part_location_note_bis" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:15px 10px 5px 10px;z-index: 100">
-                <table border="0">
+                <table >
                     <tr style="height: 15px">
                         <td class="aright" style="padding-bottom: 0px"> <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_part_location_notes_bis()" aria-hidden="true"></i></td>
                     </tr>
@@ -312,7 +312,7 @@
             </div>
 
 
-            <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
+            <table id="locations_table" class="overview" part_sku="{$part->id}">
 
                 <tr id="move_stock_tr" class="discreet button hide "  data-movements="{ }" style="border-bottom:1px solid #ccc" max="">
                     <td colspan=3><span id="move_from"></span> <i class="fa fa-fw fa-forklift padding_left_5 padding_right_5 " aria-hidden="true"></i> <span id="move_to"></span></td>
@@ -400,11 +400,11 @@
                     <td></td>
                     <td colspan=3 style="padding-top: 10px" >
 
-                        <input class="" style="width: 200px;" id="add_location" placeholder="{t}New linked location code{/t}">
+                        <input style="width: 200px;" id="add_location" placeholder="{t}New linked location code{/t}">
 
                         <div id="add_location_results_container" class="search_results_container" style="width:220px;">
 
-                            <table id="add_location_results" border="0" style="background:white;">
+                            <table id="add_location_results" style="background:white;">
                                 <tr class="hide" style=";" id="add_location_search_result_template" field="" value="" formatted_value=""
                                     onClick="select_add_location_option(this)">
                                     <td class="label" style="padding-left:5px;"></td>
@@ -464,7 +464,7 @@
                 </style>
 
 
-            <table id="unknown_location_table" border="0" class="overview showcase_component" >
+            <table id="unknown_location_table" class="overview showcase_component" >
 
               <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
                   <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Lost & found{/t}</td>
@@ -482,8 +482,8 @@
 
 
                 <tr id="part_leakages_info">
-                    <td class=""><div class="label">{t}Found{/t}</div><div class="Stock_Found_SKOs">{$part->get('Stock Found SKOs')}</div></td>
-                    <td class="" ><div class="label">{t}Errors{/t}</div><div class="error Stock_Errors_SKOs" >{$part->get('Stock Errors SKOs')}</div></td>
+                    <td ><div class="label">{t}Found{/t}</div><div class="Stock_Found_SKOs">{$part->get('Stock Found SKOs')}</div></td>
+                    <td ><div class="label">{t}Errors{/t}</div><div class="error Stock_Errors_SKOs" >{$part->get('Stock Errors SKOs')}</div></td>
                     <td ><div class="label">{t}Damaged{/t}</div><div class="error Stock_Damaged_SKOs">{$part->get('Stock Damaged SKOs')}</div></td>
                     <td ><div class="label">{t}Lost{/t}</div><div class="error Stock_Lost_SKOs">{$part->get('Stock Lost SKOs')}</div></td>
 
@@ -493,7 +493,7 @@
 
             <div class="hide" id="edit_stock_dialog_consolidate_unknown_location" style="position:absolute;padding:10px;border:1px solid #ccc;background-color:#fff;z-index:2000">
 
-                <table  border="0" class=""  style="width: 300px">
+                <table  style="width: 300px">
 
                     <tr>
                         <td colspan="2">{t}Quantity{/t} <input  id="part_leakage_qty_input" style="width:60px;"  class="qty" val=""></td>
@@ -507,7 +507,7 @@
 
                     <tr  id="unknown_location_save_buttons">
                         <td class=" super_discreet" type="Other Out" onclick="save_leakage(this)" style="width: 30%"><span class="label _error"><span class="lost_error">{t}Error{/t}</span><span class="found_error">{t}Found{/t}</span></span><i class="fa fa-spinner fa-spin hide"></i></td>
-                        <td class=" super_discreet" type="Broken" onclick="save_leakage(this)" style=""><span class="label damaged">{t}Damaged{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
+                        <td class=" super_discreet" type="Broken" onclick="save_leakage(this)" ><span class="label damaged">{t}Damaged{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
                         <td class=" super_discreet" type="Lost" onclick="save_leakage(this)" style="width: 30%"><span class="label lost">{t}Lost{/t}</span><i class="fa fa-spinner fa-spin hide"></i></td>
 
                     </tr>
@@ -519,7 +519,7 @@
 
             <div class="hide" id="edit_stock_dialog_to_production" style="position:absolute;padding:10px;border:1px solid #ccc;background-color:#fff;z-index:2000">
 
-                <table  border="0" class=""  style="width: 300px">
+                <table  style="width: 300px">
 
                     <tr>
                         <td colspan="2">{t}Quantity{/t} <input  id="part_to_production_qty_input" style="width:60px;"  max="" class="qty" val=""> <span class="discreet italic">{t}max{/t} <span class="max"></span></span> </td>
@@ -545,7 +545,7 @@
 
 
 
-            <table border="0" class="overview with_title next_deliveries {if $next_deliveries|@count==0}hide{/if}  ">
+            <table class="overview with_title next_deliveries {if $next_deliveries|@count==0}hide{/if}  ">
                 <tr class="top">
                     <td colspan="3">{t}Next deliveries{/t}</td>
                 </tr>
@@ -564,7 +564,7 @@
 
 
     <div style="width: 770px">
-        <table border="0" class="overview  ">
+        <table class="overview  ">
             <tr class=" units_data">
 
                 <td>
@@ -587,7 +587,7 @@
 
                     <div class="a4_label_chooser hide" style="width:200px;position: absolute;padding:10px 10px 20px 20px ;background-color:#fff;border:1px solid #ccc;z-index:2000">
 
-                        <i onclick="close_a4_label_chooser()" style="" class="fa fa-window-close button"></i>
+                        <i onclick="close_a4_label_chooser()" class="fa fa-window-close button"></i>
 
                         <input class="a4_label_selected_type" type="hidden"  value="EL30" >
 

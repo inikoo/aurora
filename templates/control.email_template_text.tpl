@@ -15,7 +15,7 @@
 
     {t}Email subject{/t}:
 
-    <input class="" style="margin-left:10px;width:500px" maxlength="70" id="email_template_subject" value="{$email_template->get('Email Template Subject')}" placeholder="{t}Email subject{/t}">
+    <input style="margin-left:10px;width:500px" maxlength="70" id="email_template_subject" value="{$email_template->get('Email Template Subject')}" placeholder="{t}Email subject{/t}">
 
 
     <div  style="float:right;margin-right: 40px"><span id="email_template_text_save"  class="save " onclick="save_email_template_text()">{t}Save{/t} <i class="fa fa-cloud"></i></span></div>

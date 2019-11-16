@@ -60,14 +60,14 @@
 
 
 
-                                <div id="select_interval_control_panel" class="">
+                                <div id="select_interval_control_panel" >
                                     <div id="select_interval_datepicker_edit_object" class="datepicker" style="float:left">
                                     </div>
                                     <div class="date_chooser_form">
                                         <div class="label from">{t}From{/t}</div>
-                                        <input id="select_interval_from_formatted" style="width:100px" class="" value="{$field.from_locale}" readonly/>
+                                        <input id="select_interval_from_formatted" style="width:100px" value="{$field.from_locale}" readonly/>
                                         <div class="label until">{t}Until{/t}</div>
-                                        <input id="select_interval_to_formatted" style="width:100px"  class="" value="{$field.to_locale}" readonly/>
+                                        <input id="select_interval_to_formatted" style="width:100px"  value="{$field.to_locale}" readonly/>
                                         <i onclick="submit_interval()" id="select_interval_save" class="fa button fa-play save"></i>
                                     </div>
                                     <div style="clear:both"></div>
@@ -389,7 +389,7 @@
                                        onclick="save_this_field(this)"></i>
                                     <div id="{$field.id}_results_container" class="search_results_container">
 
-                                        <table id="{$field.id}_results" border="0">
+                                        <table id="{$field.id}_results" >
                                             <tr class="hide" id="{$field.id}_search_result_template" field="" value=""
                                                 formatted_value="" onClick="select_dropdown_option(this)">
                                                 <td class="code"></td>

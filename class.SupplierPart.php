@@ -1713,7 +1713,7 @@ class SupplierPart extends DB_Table {
                 }
 
 
-                $extra_cost = ' <span class="">'.percentage($this->data['Supplier Part Unit Extra Cost Percentage'], 1).'</span>';
+                $extra_cost = ' <span >'.percentage($this->data['Supplier Part Unit Extra Cost Percentage'], 1).'</span>';
 
 
                 $extra_cost .= ' <span class="discreet">'.money($this->data['Supplier Part Unit Extra Cost'], $this->data['Supplier Part Currency Code']).'</span>';

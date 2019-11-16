@@ -133,7 +133,7 @@
 
     <div class="block info">
         <div id="overviews">
-            <table id="stock_table" border="0" class="overview">
+            <table id="stock_table" class="overview">
                 <tbody class="info">
                 <tr class="main ">
                     <td class="  " style="text-align: center"> {t}Stock value{/t} {$warehouse->get('Stock Amount')}</td>

@@ -167,7 +167,7 @@
 
         <div class="block info" style="width: 435px" >
             <div id="overviews">
-                <table id="stock_table" border="0" class="overview">
+                <table id="stock_table" class="overview">
                     <tbody class="info">
 
 
@@ -194,7 +194,7 @@
 
                 </table>
 
-                <table border="0" class="overview" style="">
+                <table class="overview" >
                     <tr class="main">
                         <td>{t}Webpage{/t}</td>
                         <td class="aright ">
@@ -211,7 +211,7 @@
 
                 </table>
                 {assign deal_components $category->get_deal_components('objects')}
-                <table border="0" class="overview" style="">
+                <table class="overview" >
                     {foreach from=$deal_components item=deal_component name=deal_component}
                         <tr class="main">
                             <td>

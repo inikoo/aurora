@@ -31,7 +31,7 @@
             </div>
             <div class="container" style="clear: both;margin-top: 30px">
 
-                <div id="search_results" class="">
+                <div id="search_results" >
 
 
 

@@ -17,7 +17,7 @@
             <td class="padding_right_10" >
                 <i class="far radio_icon fa-fw {if $order->get('Order For Collection')=='No'}fa-circle{else}fa-scrubber{/if} "   title="{t}Set order for collection{/t}"></i>
             </td>
-            <td class="" >
+            <td >
                 <i class="fal fa-hand-holding-box fw " title="{t}Order for collection{/t}"></i>
             </td>
 
@@ -31,7 +31,7 @@
             <td class="padding_right_10" >
                 <i class="far radio_icon fa-fw {if $order->get('Order Delivery Address Checksum')!=$checksum}fa-circle{else}fa-scrubber{/if}  "   title="{t}Delivery to this address{/t}"  ></i>
             </td>
-            <td class="" >
+            <td >
                 {if $delivery_address.type=='invoice'}
                     <i class="fal  fa-dollar-sign fw"  title="{t}Invoice address{/t}"></i>
                 {elseif $delivery_address.type=='delivery'}

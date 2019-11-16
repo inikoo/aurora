@@ -15,7 +15,7 @@
 
     {t}Email subject{/t}:
 
-    <input class="" style="margin-left:10px;width:500px" maxlength="70" id="email_template_subject" value="{$email_template->get('Email Template Subject')}" placeholder="{t}Email subject{/t}">
+    <input style="margin-left:10px;width:500px" maxlength="70" id="email_template_subject" value="{$email_template->get('Email Template Subject')}" placeholder="{t}Email subject{/t}">
 
 
     <span id="change_template" onclick="set_email_template_as_selecting_blueprints({$email_template_key})" class="button  " style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"

@@ -39,7 +39,7 @@
 
         <div style="clear:both">
         </div>
-        <div id="billing_address_container" class="data_container" style="">
+        <div id="billing_address_container" class="data_container" >
             <div style="min-height:80px;float:left;width:16px">
                 <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
             </div>
@@ -57,7 +57,7 @@
     <div id="totals" class="block totals  italic discreet"  style="width: 300px">
 
 
-        <table border="0">
+        <table >
             {if $invoice->get('Invoice Items Discount Amount')!=0 }
                 <tr>
                     <td class="aright">{t}Items Gross{/t}</td>
@@ -162,7 +162,7 @@
     <div  class="block totals italic discreet"  style="width: 250px">
 
 
-        <table border="0" >
+        <table >
 
 
             <tr class="bottom-border">
@@ -191,7 +191,7 @@
     </div>
 
     <div id="dates" class="block dates" >
-        <table border="0" class="date_and_state">
+        <table class="date_and_state">
             <tr class="date">
                 <td class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</td>
             </tr>

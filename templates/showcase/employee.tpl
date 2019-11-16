@@ -22,7 +22,7 @@
     </div>
     <div class="block info">
         <div id="overviews">
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 <tr class="main {if $employee->get('Staff Currently Working')=='Yes'}hide{/if} ">
                     <td class="aright title">{t}Ex-employee{/t}</td>
                 </tr>

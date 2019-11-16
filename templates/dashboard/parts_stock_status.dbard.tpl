@@ -15,7 +15,7 @@
     <input id="inventory_parent" type="hidden" value="{$parent}">
 
 
-    <table border="0" style="width:100%">
+    <table style="width:100%">
         <tr class="main_title small_row">
             <td colspan="9">
                 <div class="widget_types">

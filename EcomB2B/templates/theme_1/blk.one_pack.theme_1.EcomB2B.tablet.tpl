@@ -12,7 +12,7 @@
 <div id="block_{$key}" class="{$data.type} _block  " style="padding-left:20px;padding-right: 20px;padding-top: 10px;padding-bottom: 30px"   >
 
 
-    <div class=" boxed  " style="">
+    <div class=" boxed  " >
         <h1>{$data._title}</h1>
         {if !empty($data._subtitle)}<h3 class="_subtitle single_line_height">{$data._subtitle}</h3>{/if}
 

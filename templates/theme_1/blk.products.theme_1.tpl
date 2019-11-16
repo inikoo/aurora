@@ -83,8 +83,8 @@
                     {elseif  $item.web_state=='For Sale'}
 
                         <div class="order_row empty">
-                            <input maxlength=6 style="" class='order_input ' type="text"' size='2' value='' data-ovalue=''>
-                            <div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
+                            <input maxlength=6 class='order_input ' type="text"' size='2' value='' data-ovalue=''>
+                            <div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span >{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
 
                         </div>
                     {/if}

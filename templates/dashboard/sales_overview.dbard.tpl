@@ -3,7 +3,7 @@
     <input type="hidden" id="order_overview_period" value="{$period}">
     <input type="hidden" id="order_overview_currency" value="{$currency}">
     <input type="hidden" id="order_overview_orders_view_type" value="{$orders_view_type}">
-    <table border="0" style="width:100%">
+    <table style="width:100%">
         <tr class="main_title small_row">
             <td colspan="7">
                 <div class="widget_types">

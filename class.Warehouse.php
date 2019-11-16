@@ -1322,7 +1322,7 @@ class Warehouse extends DB_Table {
             $stock_leakage = '<span class="success"><i class="fa fa-thumbs-up" aria-hidden="true"></i> '.money(0, $account->get('Currency Code')).'</span>';
 
         } else {
-            $stock_leakage = '<span class="">'.money($_stock_leakage, $account->get('Currency Code')).'</span>';
+            $stock_leakage = '<span >'.money($_stock_leakage, $account->get('Currency Code')).'</span>';
         }
 
 
@@ -1354,7 +1354,7 @@ class Warehouse extends DB_Table {
             $stock_found = '<span class="success"><i class="fa fa-thumbs-up" aria-hidden="true"></i> '.money(0, $account->get('Currency Code')).'</span>';
 
         } else {
-            $stock_found = '<span class="">'.money($_stock_found, $account->get('Currency Code')).'</span>';
+            $stock_found = '<span >'.money($_stock_found, $account->get('Currency Code')).'</span>';
         }
 
 

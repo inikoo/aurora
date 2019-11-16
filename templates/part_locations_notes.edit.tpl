@@ -12,7 +12,7 @@
 
 <div id="set_part_location_note" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:15px 10px 5px 10px;z-index: 100">
 
-   <table border="0">
+   <table >
        <tr style="height: 15px">
            <td class="aright" style="padding-bottom: 0px"> <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_part_location_notes()" aria-hidden="true"></i></td>
        </tr>

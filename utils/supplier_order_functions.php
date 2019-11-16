@@ -58,7 +58,7 @@ function get_purchase_order_subtotals($data) {
         $subtotals .= '<br>'.money($amount,  $data['currency_code']  );
 
         if ($data['currency_code'] != $data['account_currency_code']) {
-            $subtotals .= ' <span class="">('.money($amount *$data['exchange'], $data['account_currency_code']).')</span>';
+            $subtotals .= ' <span >('.money($amount *$data['exchange'], $data['account_currency_code']).')</span>';
 
         }
 
@@ -192,10 +192,10 @@ function get_agent_purchase_order_transaction_data($data) {
 
             break;
         case 'Confirmed':
-            $state .= sprintf('<span class="" title="%s">%s</span>', _('Confirmed by supplier'), _('Confirmed'));
+            $state .= sprintf('<span title="%s">%s</span>', _('Confirmed by supplier'), _('Confirmed'));
             break;
         case 'ReceivedAgent':
-            $state .= sprintf('<span class="" title="%s">%s</span>', _('Goods received from supplier'), _('In warehouse'));
+            $state .= sprintf('<span title="%s">%s</span>', _('Goods received from supplier'), _('In warehouse'));
 
             break;
         case 'InDelivery':
@@ -311,10 +311,10 @@ function get_purchase_order_transaction_data($data) {
 
             break;
         case 'Confirmed':
-            $state .= sprintf('<span class="" title="%s">%s</span>', _('Confirmed by supplier'), _('Confirmed'));
+            $state .= sprintf('<span title="%s">%s</span>', _('Confirmed by supplier'), _('Confirmed'));
             break;
         case 'ReceivedAgent':
-            $state .= sprintf('<span class="" title="%s">%s</span>', _('Goods received from supplier'), _('In agent warehouse'));
+            $state .= sprintf('<span title="%s">%s</span>', _('Goods received from supplier'), _('In agent warehouse'));
 
             break;
         case 'InDelivery':

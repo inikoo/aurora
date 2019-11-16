@@ -40,7 +40,7 @@
 
 
         </div>
-        <div class="information product_information" style="">
+        <div class="information product_information" >
             <h1 style="padding-top:5px;margin:2px 0;font-size:150%" itemprop="name">
                 {$product->get('Name')}
 

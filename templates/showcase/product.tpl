@@ -166,7 +166,7 @@
     <div class="block info">
         <div id="overviews">
 
-            <table border="0" class="overview">
+            <table class="overview">
                 <tr>
                     <td class=" Product_Status" title="{t}Status{/t}">{$product->get('Status')}</td>
                     <td class="aright Product_Web_State" title="{t}Web state{/t}">{$product->get('Web State')}</td>
@@ -175,7 +175,7 @@
 
             </table>
 
-            <table border="0"
+            <table
                    class="overview {if $product->get('Product Status')=='Discontinued'}super_discreet{/if} {if $product->get('Product Status')=='Discontinued' and $product->get('Product Availability')==0}hide{/if}">
 
                 <tr id="stock_available" class="{if $product->get('Product Number of Parts')==0}hide{/if}">
@@ -186,7 +186,7 @@
                 {assign "next_deliveries" $product->get_next_deliveries_data()}
 
                 {if $next_deliveries|@count >0}
-                <table border="0" class="overview with_title next_deliveries">
+                <table class="overview with_title next_deliveries">
                     <tr class="top">
                         <td colspan="3">{t}Next deliveries{/t}</td>
                     </tr>
@@ -203,7 +203,7 @@
 
             </table>
 
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 <tr class="main">
                     <td>{t}Price{/t}</td>
                     <td class="aright  Product_Price">{$product->get('Price')} </td>
@@ -216,7 +216,7 @@
             </table>
 
 
-            <table border="0" class="overview">
+            <table class="overview">
 
 
                 <tr id="valid_to" class="{if $product->get('Product Status')!='Discontinued'}hide{/if}">
@@ -233,7 +233,7 @@
 
 
 
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 <tr class="main">
                     <td>{t}Webpage{/t}</td>
                     <td class="aright ">
@@ -249,7 +249,7 @@
             </table>
 
             {assign deal_components $product->get_deal_components('objects')}
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 {foreach from=$deal_components item=deal_component name=deal_component}
                     <tr class="main">
                         <td>
@@ -274,7 +274,7 @@
 
 
 
-        <table id="barcode_data" border="0" class="overview  ">
+        <table id="barcode_data" class="overview  ">
 
 
 

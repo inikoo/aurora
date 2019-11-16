@@ -62,7 +62,7 @@
                 <span id="add_category_msg" class="msg"></span>
                 <div id="add_category_results_container" class="search_results_container hide" style="position: relative;left:-430px" >
 
-                    <table id="add_category_results" border="0">
+                    <table id="add_category_results" >
 
                         <tr class="hide" id="add_category_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_add_category(this)">
                             <td class="code"></td>
@@ -114,7 +114,7 @@
         <span style="margin-left:50px">{t}Margin{/t}:</span>
         <input data-margin="top" class=" edit_margin top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}" placeholder="0"><input data-margin="bottom" class=" edit_margin bottom"
                                                                                                                                                       value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}"
-                                                                                                                                                      style="" placeholder="0">
+                                                                                                                                                      placeholder="0">
 
 
         <span id='open_add_category_to_anchor_dialog' onclick="$('#category_categories_add_category_dialog').data('section_index',0);open_add_category_to_department_dialog('open_add_category_to_anchor_dialog')" class="padding_left_20 unselectable button"><i class="fa fa-plus"></i> {t}Category{/t}</span>

@@ -1,6 +1,6 @@
 <div class="name_and_categories">
 
-    <span class="strong"><span class="">{$position->get('Name')}</span> </span>
+    <span class="strong"><span >{$position->get('Name')}</span> </span>
 
 
 </div>

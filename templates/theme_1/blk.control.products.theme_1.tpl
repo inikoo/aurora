@@ -31,7 +31,7 @@
                 <span id="add_product_msg" class="msg"></span>
                 <div id="add_product_results_container" class="search_results_container hide" style="position: relative;left:-430px" >
 
-                    <table id="add_product_results" border="0">
+                    <table id="add_product_results" >
 
                         <tr class="hide" id="add_product_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_add_product_to_products_webpage_block(this)">
                             <td class="code"></td>
@@ -73,7 +73,7 @@
         <span style="margin-left:50px">{t}Margin{/t}:</span>
         <input data-margin="top" class=" edit_margin top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}" placeholder="0"><input data-margin="bottom" class=" edit_margin bottom"
                                                                                                                                                       value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}"
-                                                                                                                                                      style="" placeholder="0">
+                                                                                                                                                      placeholder="0">
 
 
         <span id='toggle_products_title' onclick="toggle_block_title(this)" class="padding_left_20 unselectable button"><i class="fa {if $block.show_title}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Title{/t}</span>

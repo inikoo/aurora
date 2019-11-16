@@ -37,7 +37,7 @@
     <div class="block carton_sko_units " style="width: 540px">
 
 
-        <table border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
+        <table class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
             <tr class=" units_data">
 
                 <td>
@@ -54,7 +54,7 @@
                     {/if}
                 </td>
 
-                <td style="">
+                <td >
                     <span class="Unit_Dimension">{$supplier_part->get('Unit Dimensions')}</span>
                 </td>
 
@@ -77,7 +77,7 @@
 
                 </td>
 
-                <td style="">
+                <td >
                     <span class="SKO_Dimensions">{$supplier_part->get('SKO Dimensions')}</span>
                 </td>
                 <td style="text-align: right">
@@ -94,7 +94,7 @@
                 </td>
 
 
-                <td style="padding-left: 4px;padding-right: 4px" class="">
+                <td style="padding-left: 4px;padding-right: 4px" >
                     <span class="discreet  title="{t}Units per carton{/t}">
                         <i class="fal  fa-stop-circle " style="font-size: 80%;margin-right: 1px" ></i><i class="fal  fa-times" style="position: relative;top:1px;margin-right: 3px"></i><span class="Supplier_Part_Units_Per_Carton">{$supplier_part->get('Supplier Part Units Per Carton')}</span>
 
@@ -106,7 +106,7 @@
 
 
                 </td>
-                <td style="">
+                <td >
                     <span class="Carton_CBM">{$supplier_part->get('Carton CBM')}</span>
                 </td>
                 <td style="text-align: right">
@@ -116,23 +116,23 @@
 
         </table>
 
-        <table border="0" class="overview" style="">
-            <tr class="">
+        <table class="overview" >
+            <tr >
                 <td>{t}Cost{/t}</td>
                 <td class="aright">{$supplier_part->get('Unit Cost')}</td>
             </tr>
 
-            <tr class="">
+            <tr >
                 <td>{t}Current landed cost{/t}</td>
                 <td class="aright">{$supplier_part->get('Unit Delivered Cost')}</td>
             </tr>
-            <tr class="">
+            <tr >
                 <td>{t}Minimum order (cartons){/t}</td>
                 <td class="aright Supplier_Part_Minimum_Carton_Order">{$supplier_part->get('Minimum Carton Order')}</td>
             </tr>
         </table>
 
-        <table border="0" class="hide">
+        <table class="hide">
             <tr class="carton">
                 <td class=" canvas">
                     <a target="_blank" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton">
@@ -224,7 +224,7 @@
                 <span class="discreet Supplier_Part_Units_Per_Carton padding_left_10"
                       title="{t}Units per carton{/t}">{$supplier_part->get('Units Per Carton')}</span>
             </div>
-            <table border="0" class="overview" style="">
+            <table class="overview" >
 
                 <tr class="main">
                     <td><span class="Average_Delivery">{$supplier_part->get('Average Delivery')}</span></td>
@@ -233,7 +233,7 @@
 
             </table>
             <div id="part_data" style="padding-top:10px;clear:both">
-                <table border="0" class="overview with_title">
+                <table class="overview with_title">
                     <tr class="top">
                         <td>{t}Part{/t} <span class="Part_Reference  padding_left_10"
                                              >{$part->get('Reference')}</span>
@@ -251,7 +251,7 @@
 
 
             <div  class="{if $next_deliveries|@count==0}hide{/if} " style="padding-top:10px;clear:both">
-                <table border="0" class="overview with_title">
+                <table class="overview with_title">
                     <tr class="top">
                         <td colspan="3">{t}Next deliveries{/t}</td>
                     </tr>

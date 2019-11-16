@@ -4,7 +4,7 @@
             <div class="data_field" style="padding-bottom:20px">
                 <span class="Public_Info">{$attachment->get('Public Info')}</span>
             </div>
-            <table class="">
+            <table >
                 <tr>
                     <td class="label">{$attachment->get_field_label('Attachment Subject Type')|capitalize}</td>
                     <td class="Attachment_Subject_Type">{$attachment->get('Subject Type')}</td>

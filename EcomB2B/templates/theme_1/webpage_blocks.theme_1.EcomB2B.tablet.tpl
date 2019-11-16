@@ -38,10 +38,10 @@
             </div>
             {/if}
             {if isset($discounts) and count($discounts.deals)>0 }
-                <div class="discounts" style="">
+                <div class="discounts" >
                     {foreach from=$discounts.deals item=deal_data }
                     <div class="discount_card" key="{$deal_data.key}" >
-                        <div class="discount_icon" style="">{$deal_data.icon}</div>
+                        <div class="discount_icon" >{$deal_data.icon}</div>
                         <span  class="discount_name">{$deal_data.name}</span>
                         {if  $deal_data.until!=''}<small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label" >{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}{/if}</small>
 

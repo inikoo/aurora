@@ -35,7 +35,7 @@
     </div>
 
     <div style="float:right" class="nav ">
-        {if $navigation.next}<div style="width: 150px;float: right;text-align: right" ><span title="{$navigation.next.title}" class="button unselectable padding_left_20" onclick="change_view('website/{$website->id}/webpage/{$navigation.next.key}')"> {$navigation.next.label_short|truncate:16}  <i style="" class="padding_left_5 fas fa-arrow-right next"></i></span></div>{/if}
+        {if $navigation.next}<div style="width: 150px;float: right;text-align: right" ><span title="{$navigation.next.title}" class="button unselectable padding_left_20" onclick="change_view('website/{$website->id}/webpage/{$navigation.next.key}')"> {$navigation.next.label_short|truncate:16}  <i class="padding_left_5 fas fa-arrow-right next"></i></span></div>{/if}
 
         {if $navigation.prev}<div style="border-right:1px solid #ccc;width: 150px;float: right;" ><span class="button unselectable" onclick="change_view('website/{$website->id}/webpage/{$navigation.prev.key}')" title="{$navigation.prev.title}"><i class="fas padding_right_5 fa-arrow-left"></i>  {$navigation.prev.label_short|truncate:16}</span></div>{/if}
         <div style="clear:both"></div>

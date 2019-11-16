@@ -93,9 +93,9 @@
         <div class="sidebar-header sidebar-header-classic">
             <div class="sidebar-socials">
                 <a class="close-sidebar" href=""><i class="fa fa-times"></i></a>
-                <a class="" href=""></a>
-                <a class="" href=""></a>  <a class="" href=""></a>
-                <a class="" href=""></a>
+                <a href=""></a>
+                <a href=""></a>  <a href=""></a>
+                <a href=""></a>
                 <div class="clear"></div>
             </div>
             <a href="/" class="sidebar-logo">

@@ -97,10 +97,10 @@
                     {elseif  $item.web_state=='For Sale'}
 
                         <div class="order_row empty">
-                            <input maxlength=6 style="" class='order_input ' type="text"' size='2' value='' data-ovalue=''>
+                            <input maxlength=6 class='order_input ' type="text"' size='2' value='' data-ovalue=''>
 
                                 <div class="label sim_button" style="margin-left:57px">
-                                    <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
+                                    <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span >{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
 
 
                         </div>
@@ -138,7 +138,7 @@
             {elseif $item.type=='video'}
 
                 <div class="panel  {$item.type} {$item.size_class}" size_class="{$item.size_class}" video_id="{$item.video_id}">
-                    <iframe width="470" height="{if $data.item_headers}330{else}290{/if}" frameborder="0" allowfullscreen="" src="https://www.youtube.com/embed/{$item.video_id}?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
+                    <iframe width="470" height="{if $data.item_headers}330{else}290{/if}" frameallowfullscreen="" src="https://www.youtube.com/embed/{$item.video_id}?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
                     <div class="block_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
                 </div>
 

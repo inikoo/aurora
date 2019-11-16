@@ -121,7 +121,7 @@
     </div>
     <div class="block info" style="width:500px">
         <div id="overviews">
-            <table id="stock_table" border="0" class="overview" >
+            <table id="stock_table" class="overview" >
                 <tbody class="info">
 
 

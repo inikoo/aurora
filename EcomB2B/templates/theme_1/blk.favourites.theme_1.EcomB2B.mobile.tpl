@@ -29,7 +29,7 @@
 
 
         <div class="store-item-list">
-                    <span class="sub_wrap" style="">
+                    <span class="sub_wrap" >
 
 
                         <a href="{$product_data.link}"

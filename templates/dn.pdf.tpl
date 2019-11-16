@@ -67,11 +67,11 @@ div.inline { float:left; }
 </head>
 <body>
 <htmlpageheader name="myheader"> 
-<table width="100%" style="font-size: 9pt;" border="0">
+<table width="100%" style="font-size: 9pt;" >
 	<tr>
 		<tr>
 			{if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}
-			<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" border="0" title="" alt=""></td>
+			<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" title="" alt=""></td>
 			{/if} 
 			<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
 			<div style="font-size:7pt">

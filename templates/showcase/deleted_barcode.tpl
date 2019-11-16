@@ -23,7 +23,7 @@
     </div>
     <div id="info" style="position:relative;top:0px">
         <div id="overviews">
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 <tr id="status_tr" class="main">
                     <td class=" highlight"> {t}Deleted{/t} </td>
                 </tr>

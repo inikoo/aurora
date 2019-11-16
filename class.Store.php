@@ -588,7 +588,7 @@ class Store extends DB_Table {
             case('Google Map URL'):
 
 
-                return '<iframe src="'.$this->data['Store Google Map URL'].'" width="1000" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>';
+                return '<iframe src="'.$this->data['Store Google Map URL'].'" width="1000" height="300" framestyle="border:0" allowfullscreen></iframe>';
 
 
             case 'State':

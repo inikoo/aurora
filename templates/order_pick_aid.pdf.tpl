@@ -228,7 +228,7 @@
 	{foreach from=$transactions item=transaction name=products}
 		<tr class="{if $smarty.foreach.products.last}last{/if} {if $smarty.foreach.products.iteration is even} even{/if} ">
 			<td style="padding: 0px">
-				<table border="0" style="width:100%; border-spacing:0; border-collapse:collapse;">
+				<table style="width:100%; border-spacing:0; border-collapse:collapse;">
 						<tr>
 
 							<td style="padding-left:10px;border:none;padding-top:8px"><b>{$transaction.location}</b></td>
@@ -239,7 +239,7 @@
 			<td align="center">{$transaction.reference}</td>
 
 			<td align="left" style="padding: 0px">
-				<table border="0" style="width:100%; border-spacing:0; border-collapse:collapse;">
+				<table style="width:100%; border-spacing:0; border-collapse:collapse;">
 					{foreach from=$transaction.locations item=locations name=locations}
 						<tr>
 

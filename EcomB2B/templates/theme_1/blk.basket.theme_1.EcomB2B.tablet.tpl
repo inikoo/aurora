@@ -189,7 +189,7 @@
 
                     <section >
 
-                        <div class="row"  id="voucher"  style="">
+                        <div class="row"  id="voucher"  >
                             <section class="col col-6">
                                 <label class="input">
 

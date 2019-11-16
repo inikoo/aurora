@@ -51,7 +51,7 @@
 <body>
 
 <div>
-    <table border="0">
+    <table >
 
 
         <tr>

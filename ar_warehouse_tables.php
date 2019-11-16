@@ -314,7 +314,7 @@ function replenishments($_data, $db, $user) {
         }
 
 
-        $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+        $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
         $reference = sprintf(
@@ -691,7 +691,7 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
         }
 
 
-        $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+        $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
         $reference = sprintf(
@@ -1053,7 +1053,7 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
             if (isset($last_year_data[$_date_last_year])) {
-                $record_data[$_date]['delta_up_amount_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_up_amount'], $currency).'">'.delta($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).' '.delta_icon(
+                $record_data[$_date]['delta_up_amount_1yb'] = '<span title="'.money($last_year_data[$_date_last_year]['_up_amount'], $currency).'">'.delta($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).' '.delta_icon(
                         $data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']
                     ).'</span>';
             }
@@ -1474,8 +1474,8 @@ function return_checking_items($_data, $db, $user, $account) {
 
             $description = '<div style="font-size:90%" >';
 
-            $description = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Part Recommended Product Unit Name'].'<br/> 
-             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Part Units Per Package'].'</b></span>';
+            $description = $description.'<span >'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Part Recommended Product Unit Name'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Part Units Per Package'].'</b></span>';
 
 
             $number_locations = 0;

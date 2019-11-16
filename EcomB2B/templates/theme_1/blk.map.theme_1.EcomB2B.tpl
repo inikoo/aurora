@@ -27,7 +27,7 @@
 {else}
 
 <div id="block_{$key}"class="{$data.type} _block  " style="Width:100%;" >
-        <iframe     class="google-map"  _src="{$data.src}" src="{if $data.src=='#map'}{$store->get('Store Google Map URL')}{else}{$data.src}{/if}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
+        <iframe     class="google-map"  _src="{$data.src}" src="{if $data.src=='#map'}{$store->get('Store Google Map URL')}{else}{$data.src}{/if}" framescrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
 
 
 

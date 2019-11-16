@@ -36,7 +36,7 @@
 
         </div>
 
-        <div id="billing_address_container" class="data_container" style="">
+        <div id="billing_address_container" class="data_container" >
             <div style="min-height:80px;float:left;width:16px">
                 <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
             </div>
@@ -51,7 +51,7 @@
     <div class="block " style="align-items: stretch;flex: 1 ">
 
 
-        <table border="0" class="date_and_state">
+        <table class="date_and_state">
             <tr class="date" style="text-align: center">
                 <td title="{$invoice->get('Date')}">{$invoice->get_date('Invoice Date')}</td>
             </tr>
@@ -118,7 +118,7 @@
         </div>
 
 
-        <table border="0" class="totals" style="width: 100%">
+        <table class="totals" style="width: 100%">
 
 
             <tbody id="total_payments" >
@@ -153,7 +153,7 @@
     <div class="block " style="align-items: stretch;flex: 1;">
 
 
-        <table border="0">
+        <table >
 
             <tr>
                 <td class="aright">{t}Refund items net{/t}</td>
@@ -239,7 +239,7 @@
 
         <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
 
-        <table border="0" style="width:50%;float:right;width:100%;">
+        <table style="width:50%;float:right;width:100%;">
             <tr>
                 <td style="width: 500px">
                 <td>

@@ -179,11 +179,11 @@
         <div id="aux">
 
 
-            <div id="input_container_link" class="input_container link_url hide  " style="">
+            <div id="input_container_link" class="input_container link_url hide  " >
                 <input value="" placeholder="{t}https://... or webpage code{/t}">
             </div>
 
-            <div id="copyright_bundle_control_center" class="input_container link_url  hide " style="">
+            <div id="copyright_bundle_control_center" class="input_container link_url  hide " >
 
                 <div style="margin-bottom:5px"><span onClick="update_copyright_bundle_from_dialog()" class="button"  style="position:relative;top:-5px"><i  class="button fa fa-fw fa-check" aria-hidden="true"></i> {t}Apply changes{/t}</span></div>
 
@@ -204,7 +204,7 @@
                 </div>
             </div>
 
-            <div id="social_links_control_center" class="input_container link_url hide  " style="">
+            <div id="social_links_control_center" class="input_container link_url hide  " >
 
                 <div style="margin-bottom:5px"><span onClick="update_social_links_from_dialog()" class="button"  style="position:relative;top:-5px"><i  class="button fa fa-fw fa-check" aria-hidden="true"></i> {t}Apply changes{/t}</span></div>
 
@@ -222,7 +222,7 @@
 
             </div>
 
-            <div id="block_type_1" class="input_container block_type  hide" style="">
+            <div id="block_type_1" class="input_container block_type  hide" >
 
 
                 <div onClick="change_block_type(this)" data-type="address" class="type_address"><span>{t}Items{/t} <span class="italic">({t}Contact info{/t})</span></span></div>
@@ -232,7 +232,7 @@
 
             </div>
 
-            <div id="block_type_2" class="input_container block_type  hide" style="">
+            <div id="block_type_2" class="input_container block_type  hide" >
                 <div onClick="change_block_type(this)" data-type="copyright_bundle" class="type_copyright_bundle"><span>{t}Copyright{/t}</span></div>
                 <div onClick="change_block_type(this)" data-type="social_links" class="type_social_links"><span>{t}Social icons{/t}</span></div>
                 <div onClick="change_block_type(this)" data-type="text" class="type_low_text"><span>{t}Text{/t}</span></div>
@@ -240,7 +240,7 @@
 
             </div>
 
-            <div id="item_types" class="input_container  hide  " style="">
+            <div id="item_types" class="input_container  hide  " >
                 <div icon="fa fa-map" onClick="add_item_type(this)"><i class="button fa fa-fw fa-map" aria-hidden="true" label="{t}My address{/t}"></i></div>
                 <div icon="fa fa-map-marker" onClick="add_item_type(this)"><i class="button fa fa-fw fa-map-marker" aria-hidden="true" label="{t}My address{/t}"></i></div>
 
@@ -462,7 +462,7 @@
 
 
 
-                                    <ul class="address " style="">
+                                    <ul class="address " >
                                         {foreach from=$column.items item=item }
                                             {if $item.type=='logo'}
                                                 <li class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" alt="" title="{$item.title}"/></li>

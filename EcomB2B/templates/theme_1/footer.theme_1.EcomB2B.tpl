@@ -23,7 +23,7 @@
                         <div class="footer_block">
 
 
-                            <ul class="address " style="">
+                            <ul class="address " >
                                 {foreach from=$column.items item=item }
                                     {if $item.type=='logo'}
                                         <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>

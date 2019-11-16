@@ -44,7 +44,7 @@
         </div>
         <div class="date_chooser_form">
             <div class="label">{t}Date{/t}</div>
-            <input id="select_date_formatted" class="" value="{$from_locale}"/>
+            <input id="select_date_formatted" value="{$from_locale}"/>
             <i onclick="submit_date()" id="select_date_save" class="fa button fa-play save"></i>
         </div>
         <div style="clear:both"></div>
@@ -56,9 +56,9 @@
         </div>
         <div class="date_chooser_form">
             <div class="label from">{t}From{/t}</div>
-            <input id="select_interval_from_formatted" class="" value="{$from_locale}" readonly/>
+            <input id="select_interval_from_formatted" value="{$from_locale}" readonly/>
             <div class="label until">{t}Until{/t}</div>
-            <input id="select_interval_to_formatted" class="" value="{$to_locale}" readonly/>
+            <input id="select_interval_to_formatted" value="{$to_locale}" readonly/>
             <i onclick="submit_interval()" id="select_interval_save" class="fa button fa-play save"></i>
         </div>
         <div style="clear:both"></div>

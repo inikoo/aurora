@@ -92,7 +92,7 @@
         <tr>
         <tr>
             {*} {if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}
-            <td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" border="0" title="" alt=""></td>
+            <td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" title="" alt=""></td>
             {/if} {*}
             <td style="width:250px;padding-left:10px;">{$store->get('Store Name')}
                 <div style="font-size:7pt">
@@ -281,7 +281,7 @@
     </tr>
 
 
-    <tr class="">
+    <tr >
         <td style="border:none" colspan="2"></td>
         <td colspan="2"><b>{t}Paid{/t}</b></td>
         <td>{$order->get('Payments Amount')}</td>
@@ -289,7 +289,7 @@
 
 
     {if $order->get('Order Available Credit Amount')!=0}
-        <tr class="">
+        <tr >
             <td style="border:none" colspan="2"></td>
             <td colspan="2">{t}Credits{/t}</td>
             <td>{$order->get('Available Credit Amount')}</td>

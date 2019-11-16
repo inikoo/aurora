@@ -30,7 +30,7 @@
 
             <div class="one_third" style="border: 1px solid red">
                 <h5 class="thin">{$feature_row.title}</h5>
-                <p class="">{$feature_row.text}</p>
+                <p >{$feature_row.text}</p>
             </div>
         {/foreach}
     {/foreach}

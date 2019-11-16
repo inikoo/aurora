@@ -20,7 +20,7 @@
 
         <div style="float:left">
             {foreach from=$block.sliders key=slider_key  item=slider name=sliders}
-                <div key="{$slider_key}" style="" class="button slider_preview   "></div>
+                <div key="{$slider_key}" class="button slider_preview   "></div>
             {/foreach}
         </div>
 

@@ -46,7 +46,7 @@
                     <span class="state ">{t}Cancelled{/t}</span>
                 </div>
                 <div class="timestamp">
-                    <span class="">&nbsp;{$delivery->get('Cancelled Date')}</span>
+                    <span >&nbsp;{$delivery->get('Cancelled Date')}</span>
                 </div>
                 <div class="dot">
                 </div>
@@ -103,7 +103,7 @@
                          title="{t}delete{/t}">
                         <i class="far fa-trash-alt very_discreet " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('delete')"></i>
-                        <table id="delete_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="delete_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Delete delivery{/t}</td>
                             </tr>
@@ -125,7 +125,7 @@
                          title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('cancel')"></i>
-                        <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="cancel_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Cancel delivery{/t}</td>
                             </tr>
@@ -151,7 +151,7 @@
 						<i class="fa fa-arrow-circle-right discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
 						</span>
-                        <table id="undo_dispatched_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_dispatched_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Unmark as dispatched{/t}</td>
                             </tr>
@@ -175,7 +175,7 @@
 						<i class="fa fa-arrow-circle-down discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
 						</span>
-                        <table id="undo_received_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_received_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Unmark as received{/t}</td>
                             </tr>
@@ -201,7 +201,7 @@
                     <div class="square_button right" title="{t}Mark delivery as consolidated{/t}">
                         <i class="fa fa-lock-alt fa-fw" aria-hidden="true"
                            onclick="toggle_order_operation_dialog('consolidated')"></i>
-                        <table id="consolidated_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="consolidated_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Mark delivery as consolidated{/t}</td>
                             </tr>
@@ -227,7 +227,7 @@
                            onclick="toggle_order_operation_dialog('dispatched')"></i>
 
 
-                        <table id="dispatched_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="dispatched_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label"
                                     colspan="2">Delivery dispatched by agent</td>
@@ -273,7 +273,7 @@
 
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-        <table border="0" class="info_block acenter">
+        <table class="info_block acenter">
 
             <tr>
 
@@ -301,7 +301,7 @@
         </div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-        <table border="0" class="info_block">
+        <table class="info_block">
             <tr>
                 <td class="label">{t}Cost{/t} ({$delivery->get('Supplier Delivery Currency Code')})</td>
                 <td class="aright Supplier_Delivery_Total_Amount">{$delivery->get('Total Amount')}</td>
@@ -325,7 +325,7 @@
         <i key="" class="far fa-square fa-fw button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
     </div>
     <div style="align-items: stretch;flex: 1;padding:10px 20px;">
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
             <tr>
                 <td class="label ">{t}Delivery Number{/t}</td>
                 <td>
@@ -342,7 +342,7 @@
 </div>
 
 <div id="location_results_container" class="search_results_container" style="width:220px;">
-    <table id="location_results" border="0" style="background:white;">
+    <table id="location_results" style="background:white;">
         <tr class="hide" style=";" id="location_search_result_template" field="" value="" formatted_value=""
             onclick="select_location_option(this)">
             <td class="label" style="padding-left:5px;"></td>

@@ -273,7 +273,7 @@ function parts($_data, $db, $user, $type, $account) {
             }
 
 
-            $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+            $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
             if ($data['Part On Demand'] == 'Yes') {
@@ -1112,7 +1112,7 @@ function supplier_parts($_data, $db, $user, $account) {
             }
 
 
-            $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+            $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
             $reference = sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
 
@@ -1775,7 +1775,7 @@ function category_all_parts($_data, $db, $user) {
 
             switch ($data['Part Status']) {
                 case 'In Use':
-                    $status = sprintf('<span class="" >%s</span>', _('Active'));
+                    $status = sprintf('<span >%s</span>', _('Active'));
                     break;
                 case 'Not in Use':
                     $status = sprintf(
@@ -2120,7 +2120,7 @@ function sales_history($_data, $db, $user, $account) {
                 );
 
                 if (isset($last_year_data[$_date_last_year])) {
-                    $record_data[$_date]['delta_sales_1yb'] = '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon(
+                    $record_data[$_date]['delta_sales_1yb'] = '<span title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon(
                             $data['sales'], $last_year_data[$_date_last_year]['_sales']
                         ).'</span>';
                 }
@@ -2702,7 +2702,7 @@ function parts_discontinuing($_data, $db, $user, $account) {
             }
 
 
-            $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+            $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
             $stock_status = sprintf('<span class="part_status_%d"><i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" title="%s"></i></span>', $data['Part SKU'], $data['Part SKU'], _('Discontinuing, click to set as an active part'));
@@ -3586,7 +3586,7 @@ function parts_no_products($_data, $db, $user, $account) {
             }
 
 
-            $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+            $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
             $stock_status = sprintf('<span class="part_status_%d"><i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" title="%s"></i></span>', $data['Part SKU'], $data['Part SKU'], _('Discontinuing, click to set as an active part'));
@@ -3785,7 +3785,7 @@ function parts_forced_not_for_sale_on_website($_data, $db, $user, $account) {
             }
 
 
-            $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+            $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
             $stock_status = sprintf('<span class="part_status_%d"><i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" title="%s"></i></span>', $data['Part SKU'], $data['Part SKU'], _('Discontinuing, click to set as an active part'));

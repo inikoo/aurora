@@ -50,10 +50,10 @@
 
 
             </div>
-            <table border="0" class="overview" style="">
+            <table class="overview" >
 
 
-                <tr class="">
+                <tr >
                     <td>{t}Cost{/t}</td>
                     <td class="aright">{$production_part->get('Unit Delivered Cost')}</td>
                 </tr>
@@ -70,7 +70,7 @@
         <div id="overviews">
 
             <div class="part_data" style="padding-top:10px;clear:both">
-                <table border="0" class="overview with_title">
+                <table class="overview with_title">
                     <tr class="top">
                         <td><i class="fa fa-box" title="{t}Part{/t}"></i> <span class="Part_Reference button padding_left_10"
                                               onclick="change_view('part/{$part->id}')">{$part->get('Reference')}</span>
@@ -84,7 +84,7 @@
                 </table>
             </div>
 
-            <table border="0" class="overview" style="">
+            <table class="overview" >
 
                 <tr class="main">
                     <td><span class="Status_Icon">{$production_part->get('Status Icon')}</span> <span title="{t}Production time{/t}" class="Average_Delivery">{$production_part->get('Average Delivery')}</span></td>
@@ -95,7 +95,7 @@
 
 
             <div id="purchase_orders_data" style="padding-top:10px;clear:both">
-                <table border="0" class="overview with_title">
+                <table class="overview with_title">
                     <tr class="top">
                         <td colspan="3">{t}Production queue{/t}</td>
                     </tr>

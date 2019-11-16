@@ -97,7 +97,7 @@
                 <span id="add_category_msg" class="msg"></span>
                 <div id="add_category_results_container" class="search_results_container hide" style="position: relative;left:-430px" >
 
-                    <table id="add_category_results" border="0">
+                    <table id="add_category_results" >
 
                         <tr class="hide" id="add_category_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_add_item_to_see_also(this)">
                             <td class="code"></td>
@@ -371,7 +371,7 @@
             (data.rrp?'<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: '+data.rrp+'</div>':'')+
             '</div>'+
             (data.web_state=='Out of Stock'?'<div class="ordering log_in can_not_order  out_of_stock_row  '+data.out_of_stock_class+' "><span class="product_footer label ">'+data.out_of_stock_label+'</span><span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span></div>':'')+
-            (data.web_state=='For Sale'?'<div class="order_row empty"><input maxlength=6 style="" class=\'order_input \' type="text"\' size=\'2\' value=\'\' data-ovalue=\'\'><div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>':'')+
+            (data.web_state=='For Sale'?'<div class="order_row empty"><input maxlength=6 class=\'order_input \' type="text"\' size=\'2\' value=\'\' data-ovalue=\'\'><div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span >{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>':'')+
             '</div>'+
             '</div>'
 

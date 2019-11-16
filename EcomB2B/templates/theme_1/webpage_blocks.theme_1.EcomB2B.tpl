@@ -42,8 +42,8 @@
                             {/if}</span>
                     {/foreach}
                     </div>
-                    <div style="" class="nav">{if $navigation.prev}<a href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a
-                            href="{$navigation.next.link}" title="{$navigation.next.title}"><i style="" class="fas fa-arrow-right next"></i></a>{/if}</div>
+                    <div class="nav">{if $navigation.prev}<a href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a
+                            href="{$navigation.next.link}" title="{$navigation.next.title}"><i class="fas fa-arrow-right next"></i></a>{/if}</div>
                     <div style="clear:both"></div>
                 </div>
 
@@ -54,7 +54,7 @@
                 <div class="discounts top_body"  >
                     {foreach from=$discounts.deals item=deal_data }
                     <div class="discount_card" key="{$deal_data.key}">
-                        <div class="discount_icon" style="">{$deal_data.icon}</div>
+                        <div class="discount_icon" >{$deal_data.icon}</div>
                         <span  class="discount_name">{$deal_data.name}</span>
                         {if  $deal_data.until!=''}<small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label" >{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}{/if}</small>
 

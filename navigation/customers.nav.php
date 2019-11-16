@@ -3502,7 +3502,7 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span class="Customer_Level_Type_Icon">'.$customer->get('Level Type Icon').'</span>';
-    $title .= '<span class=""><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
+    $title .= '<span ><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
     $title .= '<span class="id Product_Code margin_left_10">'.$product->get('Code').'</span>';
 
 

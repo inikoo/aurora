@@ -211,7 +211,7 @@
                     <span id="{$field.id}_msg" class="msg"></span>
                     <div id="{$field.id}_results_container" class="search_results_container">
 
-                    <table id="{$field.id}_results" border="0"  >
+                    <table id="{$field.id}_results" >
                         <tr class="hide" id="{$field.id}_search_result_template" field="" value="" formatted_value="" data-metadata="" onClick="select_dropdown_option(this)">
                             <td class="code" ></td>
                             <td style="width:85%" class="label" ></td>

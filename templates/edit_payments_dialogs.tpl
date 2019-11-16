@@ -41,7 +41,7 @@
 
     <i class="fa fa-window-close button" onclick="close_refund_dialog()" aria-hidden="true" style="margin-bottom:5px"></i>
 
-    <table style="width: 100%;border-bottom: 1px solid #ccc;margin-bottom: 5px" border="0">
+    <table style="width: 100%;border-bottom: 1px solid #ccc;margin-bottom: 5px" >
         <tr>
             <td>{t}Payment{/t}</td><td class="payment_reference"></td>
         </tr>
@@ -51,7 +51,7 @@
 
     </table>
 
-    <table style="width: 100%" border="0">
+    <table style="width: 100%" >
 
         <tr style=" height: 35px;">
             <td colspan="2" style="text-align: center">

@@ -19,8 +19,8 @@
 
     <div id="inline_new_object_results_container" class="search_results_container hide" style="width:400px;">
 		
-		<table id="inline_new_object_results" border="0" style="background:white;font-size:90%">
-			<tr class="hide" style="" id="inline_new_object_search_result_template" field="" value=""
+		<table id="inline_new_object_results" style="background:white;font-size:90%">
+			<tr class="hide" id="inline_new_object_search_result_template" field="" value=""
                 item_historic_key="" formatted_value="" onClick="select_inline_new_object_option(this)">
 				<td class="code" style="padding-left:5px;"></td>
 				<td class="label" style="padding-left:5px;"></td>

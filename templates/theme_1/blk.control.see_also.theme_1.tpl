@@ -24,7 +24,7 @@
         <span style="margin-left:50px">{t}Margin{/t}:</span>
         <input data-margin="top" class=" edit_margin top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}" placeholder="0"><input data-margin="bottom" class=" edit_margin bottom"
                                                                                                                                                       value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}"
-                                                                                                                                                      style="" placeholder="0">
+                                                                                                                                                      placeholder="0">
 
         <span onclick="toggle_block_title(this)" class="toggle_items_title padding_left_20 unselectable button"><i class="fa {if $block.show_title}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Title{/t}</span>
         <span onclick="toggle_see_also_auto(this)" class="toggle_items_auto padding_left_20 unselectable button"><i class="fa {if $block.auto}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Automatic{/t}</span>

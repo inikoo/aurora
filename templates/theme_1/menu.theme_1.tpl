@@ -411,7 +411,7 @@
 
 
 
-        <div id="bottom_header" class="">
+        <div id="bottom_header" >
 
             <div id="_columns">
             {foreach from=$header_data.menu.columns item=column key=key}
@@ -442,7 +442,7 @@
         </div>
 
 
-        <div id="_menu_blocks" class="" style="position:absolute">
+        <div id="_menu_blocks" style="position:absolute">
             {foreach from=$header_data.menu.columns item=column key=key}
                 {if $column.type=='three_columns'}
                     <div id="menu_block_menu_{$key}" class="_menu_block menu_block hide  " data-column_type="{$column.type}" data-key="{$key}">
