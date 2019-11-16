@@ -47,10 +47,10 @@ $table_buttons = array();
 $table_buttons[] = array(
     'icon'     => 'plus',
     'title'    => _('New item'),
-    'id'       => 'new_item',
+    'id'       => 'new_item_carton',
     'class'    => 'items_operation'.($supplier->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
     'add_item' => array(
-
+        'field'      => 'Purchase Order Cartons',
         'field_label' => _("Supplier's product").':',
         'placeholder_qty' => _("Cartons"),
         'metadata'    => base64_encode(
@@ -59,7 +59,7 @@ $table_buttons[] = array(
                     'scope'      => 'supplier_part',
                     'parent'     => $supplier->get('Purchase Order Parent'),
                     'parent_key' => $supplier->get('Purchase Order Parent Key'),
-                    'options'    => array('for_purchase_order','carton')
+                    'options'    => array('for_purchase_order')
                 )
             )
         )
@@ -67,15 +67,15 @@ $table_buttons[] = array(
     )
 
 );
-/*
+
 
 $table_buttons[] = array(
     'icon'     => 'plus',
     'title'    => _('New item'),
-    'id'       => 'new_item',
+    'id'       => 'new_item_sko',
     'class'    => 'items_operation'.($supplier->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
     'add_item' => array(
-
+        'field'      => 'Purchase Order SKOs',
         'field_label' => _("Supplier's product").':',
         'placeholder_qty' => _("SKOs"),
         'metadata'    => base64_encode(
@@ -84,7 +84,7 @@ $table_buttons[] = array(
                     'scope'      => 'supplier_part',
                     'parent'     => $supplier->get('Purchase Order Parent'),
                     'parent_key' => $supplier->get('Purchase Order Parent Key'),
-                    'options'    => array('for_purchase_order','sko')
+                    'options'    => array('for_purchase_order')
                 )
             )
         )
@@ -96,10 +96,10 @@ $table_buttons[] = array(
 $table_buttons[] = array(
     'icon'     => 'plus',
     'title'    => _('New item'),
-    'id'       => 'new_item',
+    'id'       => 'new_item_unit',
     'class'    => 'items_operation'.($supplier->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
     'add_item' => array(
-
+        'field'      => 'Purchase Order Units',
         'field_label' => _("Supplier's product").':',
         'placeholder_qty' => _("Units"),
         'metadata'    => base64_encode(
@@ -108,7 +108,7 @@ $table_buttons[] = array(
                     'scope'      => 'supplier_part',
                     'parent'     => $supplier->get('Purchase Order Parent'),
                     'parent_key' => $supplier->get('Purchase Order Parent Key'),
-                    'options'    => array('for_purchase_order','unit')
+                    'options'    => array('for_purchase_order')
                 )
             )
         )
@@ -116,7 +116,7 @@ $table_buttons[] = array(
     )
 
 );
-*/
+
 
 $smarty->assign('table_buttons', $table_buttons);
 
@@ -126,7 +126,7 @@ $smarty->assign(
                             array(
                                 'parent'     => $state['object'],
                                 'parent_key' => $state['key'],
-                                'field'      => 'Purchase Order Cartons'
+
                             )
                         )
 

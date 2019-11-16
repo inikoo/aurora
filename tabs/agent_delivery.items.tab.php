@@ -25,8 +25,8 @@ if ($state['_object']->get('State Index') >= 40) {
 
     $smarty->assign(
         'js_code', array(
-            'js/injections/supplier.delivery.checking.'.(_DEVEL ? '' : 'min.').'js',
-        )
+                     'js/injections/supplier.delivery.checking.'.(_DEVEL ? '' : 'min.').'js',
+                 )
     );
 
 
@@ -60,17 +60,15 @@ $parameters = array(
 );
 
 
-$table_buttons   = array();
-
+$table_buttons = array();
 
 
 $table_buttons[] = array(
-    'icon'       => 'barcode',
-    'id'         => 'book_in_with_barcode',
-    'class'      => 'items_operation '.($state['_object']->get('Supplier Delivery State') != 'Received' ? ' hide' : ''),
-    'title'      => _("Book in using barcode scanner"),
+    'icon'  => 'barcode',
+    'id'    => 'book_in_with_barcode',
+    'class' => 'items_operation '.($state['_object']->get('Supplier Delivery State') != 'Received' ? ' hide' : ''),
+    'title' => _("Book in using barcode scanner"),
 );
-
 
 
 $table_buttons[] = array(
@@ -88,18 +86,14 @@ $table_buttons[] = array(
     'id'       => 'new_item',
     'class'    => 'items_operation'.($state['_object']->get('Supplier Delivery State') != 'In Process' ? ' hide' : ''),
     'add_item' => array(
-
+        'field'       => 'Supplier Delivery Units',
         'field_label' => _("Supplier's product").':',
         'metadata'    => base64_encode(
             json_encode(
                 array(
                     'scope'      => 'supplier_part',
-                    'parent'     => $state['_object']->get(
-                        'Supplier Delivery Parent'
-                    ),
-                    'parent_key' => $state['_object']->get(
-                        'Supplier Delivery Parent Key'
-                    ),
+                    'parent'     => $state['_object']->get('Supplier Delivery Parent'),
+                    'parent_key' => $state['_object']->get('Supplier Delivery Parent Key'),
                     'options'    => array()
                 )
             )
@@ -111,14 +105,14 @@ $table_buttons[] = array(
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(
-    'table_metadata',
-        json_encode(
-            array('parent'     => $state['object'],
-                  'parent_key' => $state['key'],
-                  'type'  => 'agent_delivery'
+    'table_metadata', json_encode(
+                        array(
+                            'parent'     => $state['object'],
+                            'parent_key' => $state['key'],
+                            'type'       => 'agent_delivery'
 
-        )
-    )
+                        )
+                    )
 );
 
 $smarty->assign('dn', $state['_object']);
@@ -129,5 +123,3 @@ $smarty->assign('table_top_template', 'supplier.delivery.options.tpl');
 
 include 'utils/get_table_html.php';
 
-
-?>

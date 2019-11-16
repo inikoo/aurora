@@ -53,33 +53,8 @@ $parameters = array(
 $table_buttons   = array();
 
 
-
-$table_buttons[] = array(
-    'icon'     => 'plus',
-    'title'    => _('New item'),
-    'id'       => 'new_item',
-    'class'    => 'items_operation'.($state['_object']->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
-    'add_item' => array(
-
-        'field_label' => _("Supplier's product").':',
-        'metadata'    => base64_encode(
-            json_encode(
-                array(
-                    'scope'      => 'supplier_part',
-                    'parent'     => $state['_object']->get('Purchase Order Parent'),
-                    'parent_key' => $state['_object']->get('Purchase Order Parent Key'),
-                    'options'    => array('for_purchase_order')
-                )
-            )
-        )
-
-    )
-
-);
 $smarty->assign('table_buttons', $table_buttons);
 
 
 include 'utils/get_table_html.php';
 
-
-?>

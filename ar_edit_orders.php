@@ -302,7 +302,7 @@ switch ($tipo) {
 
                      )
         );
-        edit_item_in_order($account, $db, $user, $editor, $data, $smarty);
+        edit_item_in_order($db,  $editor, $data);
         break;
 
 
@@ -869,7 +869,12 @@ function update_po_item_note($data, $editor, $smarty, $db, $account, $user) {
 
 }
 
-function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
+/**
+ * @param $db \PDO
+ * @param $editor
+ * @param $data
+ */
+function edit_item_in_order($db,  $editor, $data) {
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
@@ -877,6 +882,9 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
     if ($data['parent'] == 'order') {
 
+        /**
+         * @var $parent \Order
+         */
         $parent->skip_update_after_individual_transaction = false;
 
         if (in_array(

@@ -9,6 +9,11 @@
 
 */
 
+/**
+ * @var $order \Order
+ */
+$order=$state['_object'];
+
 $tab     = 'order.items';
 $ar_file = 'ar_orders_tables.php';
 $tipo    = 'order.items';
@@ -50,22 +55,22 @@ $parameters = array(
 $table_buttons   = array();
 
 
-if($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<=40){
+if($order->get('State Index')>0 and  $order->get('State Index')<=40){
 
     $table_buttons[] = array(
         'icon'     => 'plus',
         'title'    => _('New item'),
         'id'       => 'new_item',
-        'class'    => 'items_operation '.(($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<40)?'':'hide'),
+        'class'    => 'items_operation '.(($order->get('State Index')>0 and  $order->get('State Index')<40)?'':'hide'),
         'add_item' => array(
-
+            'field'      => 'Order Quantity',
             'field_label' => _("Product").':',
             'metadata'    => base64_encode(
                 json_encode(
                     array(
                         'scope'      => 'product',
                         'parent'     => 'Store',
-                        'parent_key' => $state['_object']->get('Store Key'),
+                        'parent_key' => $order->get('Store Key'),
                         'options'    => array('for_order')
                     )
                 )
@@ -76,7 +81,7 @@ if($state['_object']->get('State Index')>0 and  $state['_object']->get('State In
     );
 }
 
-if($state['_object']->get('State Index')==40){
+if($order->get('State Index')==40){
 
     $table_buttons[] = array(
         'icon'     => 'pencil-alt',
@@ -87,7 +92,7 @@ if($state['_object']->get('State Index')==40){
 }
 
 
-$smarty->assign('object', $state['_object']);
+$smarty->assign('object', $order);
 
 
 $smarty->assign('table_buttons', $table_buttons);
@@ -100,7 +105,7 @@ $smarty->assign(
                             array(
                                 'parent'     => $state['object'],
                                 'parent_key' => $state['key'],
-                                'field'      => 'Order Quantity'
+
                             )
                         )
 
