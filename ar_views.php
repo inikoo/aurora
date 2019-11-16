@@ -6596,7 +6596,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'supplier/'.$state['_parent']->id
                 );
                 $branch[] = array(
-                    'label'     => _("New supplier's part"),
+                    'label'     => _("New supplier's product"),
                     'icon'      => 'stop',
                     'reference' => ''
                 );
@@ -8210,7 +8210,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'part/'.$state['_object']->id
                     );
                     $branch[] = array(
-                        'label'     => _('New supplier part'),
+                        'label'     => _("New supplier's product"),
                         'icon'      => '',
                         'reference' => ''
                     );
@@ -11260,7 +11260,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'supplier/'.$state['_parent']->id
                 );
                 $branch[] = array(
-                    'label'     => _("New supplier's part"),
+                    'label'     => _("New supplier's product"),
                     'icon'      => 'stop',
                     'reference' => ''
                 );

@@ -367,7 +367,7 @@ $object_fields = array(
 if ($object->get('Supplier Type') != 'Archived') {
 
     $object_fields[] = array(
-        'label'      => _("Supplier's parts settings"),
+        'label'      => _("Supplier's products settings"),
         'show_title' => false,
         'fields'     => array(
             array(
@@ -903,7 +903,7 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'class'     => 'operation',
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts")
+                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products")
                     .' <i class="fa fa-trash new_button "></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
@@ -946,7 +946,7 @@ if ($object->get('Supplier Type') != 'Archived') {
             'class'     => 'operation',
             'value'     => '',
             'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name()
-                .'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's parts")
+                .'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products")
                 .' <i class="fa fa-trash new_button "></i></span>',
             'reference' => '',
             'type'      => 'operation'

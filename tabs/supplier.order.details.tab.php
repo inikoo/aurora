@@ -16,7 +16,6 @@ include_once 'conf/object_fields.php';
 
 if (!$user->can_view('suppliers')) {
 
-
     $html = '';
 } else {
 
@@ -34,6 +33,3 @@ if (!$user->can_view('suppliers')) {
 
     $html = $smarty->fetch('edit_object.tpl');
 }
-
-
-?>

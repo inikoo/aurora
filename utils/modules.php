@@ -4565,13 +4565,13 @@ $modules = array(
 
 
                 ),
-                'label'          => _("Supplier's parts"),
-                'title'          => _("Supplier's parts"),
+                'label'          => _("Supplier's products"),
+                'title'          => _("Supplier's products"),
                 'icon'           => 'hand-receiving',
                 'reference'      => 'suppliers/supplier_parts',
                 'tabs'           => array(
                     'suppliers.supplier_parts' => array(
-                        'label'   => _("Supplier's parts"),
+                        'label'   => _("Supplier's products"),
                         'icon'    => 'hand-receiving',
                         'subtabs' => array(
                             'suppliers.supplier_parts.surplus' => array(
@@ -4952,7 +4952,7 @@ $modules = array(
                     ),
 
                     'supplier.supplier_parts' => array(
-                        'label'         => _("Supplier's parts"),
+                        'label'         => _("Supplier's products"),
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number Parts'
@@ -5838,7 +5838,7 @@ $modules = array(
 
                     'part.supplier_parts' => array(
                         'label'         => _(
-                            "Supplier's parts"
+                            "Supplier's products"
                         ),
                         'quantity_data' => array(
                             'object' => '_object',
@@ -5992,9 +5992,7 @@ $modules = array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'part.supplier_part.new' => array(
-                        'label' => _(
-                            'New supplier part'
-                        )
+                        'label' => _("New supplier's product")
                     ),
 
                 )
@@ -8221,7 +8219,7 @@ $modules = array(
                         'title' => _('Details')
                     ),
                     'supplier.supplier_parts' => array(
-                        'label' => _("Supplier's Parts"),
+                        'label' => _("Supplier's products"),
                         'icon'  => 'hand-receiving'
                     ),
 

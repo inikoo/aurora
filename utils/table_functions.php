@@ -168,7 +168,7 @@ function get_rtext($record_label, $total_records) {
     } elseif ($record_label == 'supplier part') {
         return sprintf(
             ngettext(
-                "%s supplier's part", "%s supplier's parts", $total_records
+                "%s supplier's product", "%s supplier's products", $total_records
             ), number($total_records)
         );
     } elseif ($record_label == 'website') {
@@ -633,7 +633,7 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
     } elseif ($record_label == 'supplier part') {
         return sprintf(
             ngettext(
-                "%s supplier's part of %s", "%s supplier's parts of %s", $total_with_filter
+                "%s supplier's product of %s", "%s supplier's products of %s", $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'webpage') {

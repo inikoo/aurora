@@ -373,12 +373,12 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     if($supplier_part->id) {
         if ($object->get('Part Production') == 'Yes') {
 
-            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-industry button" title="'._('Supplier part').'" onCLick="change_view(\'/production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'
+            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-industry button" title="'._("Supplier's product").'" onCLick="change_view(\'/production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'
                 .$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
         } else {
 
 
-            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'.$supplier_part->get('Supplier Part Supplier Key')
+            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._("Supplier's product").'" onCLick="change_view(\'/supplier/'.$supplier_part->get('Supplier Part Supplier Key')
                 .'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
 
         }
@@ -1820,7 +1820,7 @@ function get_new_supplier_part_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span>'.sprintf(
-            _('New supplier part for %s'), '<span onClick="change_view(\'part/'.$part->id.'\')" class="button id">'.$part->get('Reference').'</span>'
+            _("New supplier's product for %s"), '<span onClick="change_view(\'part/'.$part->id.'\')" class="button id">'.$part->get('Reference').'</span>'
         ).'</span>';
 
 

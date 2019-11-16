@@ -31,7 +31,7 @@ $supplier_part_fields = array();
 
 $supplier_part_fields[] = array(
     'label' => ($show_full_label
-        ? _("Supplier's part description")
+        ? _("Supplier's product description")
         : _(
             'Description'
         )),
@@ -101,7 +101,7 @@ $supplier_part_fields[] = array(
 
 $supplier_part_fields[] = array(
     'label' => ($show_full_label
-        ? _("Supplier's part ordering")
+        ? _("Supplier's product ordering")
         : _(
             'Ordering'
         )),
@@ -192,7 +192,7 @@ $supplier_part_fields[] = array(
 
 $supplier_part_fields[] = array(
     'label' => ($show_full_label
-        ? _("Supplier's part cost/price")
+        ? _("Supplier's product cost/price")
         : _(
             'Cost/price'
         )),

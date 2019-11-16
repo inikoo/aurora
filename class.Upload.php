@@ -179,7 +179,7 @@ class Upload extends DB_Table {
             case 'Object':
                 switch ($this->data['Upload Object']) {
                     case 'supplier_part':
-                        $object = _("supplier's parts");
+                        $object = _("supplier's products");
                         break;
                     case 'supplier':
                         $object = _("suppliers");

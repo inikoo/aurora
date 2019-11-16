@@ -560,7 +560,7 @@ class SupplierDelivery extends DB_Table {
                         return '<i class="fa fa-exclamation-circle error"></i> <span class="italic very_discreet error">'._('Unknown CBM').'</span>';
                     }
                 } else {
-                    return ($this->get('Supplier Delivery Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without CBM").'" ></i> ' : '').number($this->data['Supplier Delivery CBM']).' m³';
+                    return ($this->get('Supplier Delivery Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's products without CBM").'" ></i> ' : '').number($this->data['Supplier Delivery CBM']).' m³';
                 }
                 break;
 

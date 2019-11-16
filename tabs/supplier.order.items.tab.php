@@ -61,7 +61,7 @@ $table_buttons[] = array(
     'class'    => 'items_operation'.($state['_object']->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
     'add_item' => array(
 
-        'field_label' => _("Supplier's part").':',
+        'field_label' => _("Supplier's product").':',
         'metadata'    => base64_encode(
             json_encode(
                 array(

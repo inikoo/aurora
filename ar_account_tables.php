@@ -572,7 +572,7 @@ function uploads($_data, $db, $user, $account) {
             switch ($data['Upload Object']) {
                 case 'supplier_part':
                     $object = sprintf(
-                        '<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's parts"));
+                        '<i  class="fa fa-fw fa-stop"></i> %s', _("Supplier's products"));
                     break;
                 case 'supplier':
                     $object = sprintf('<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers"));

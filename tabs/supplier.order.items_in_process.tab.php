@@ -14,7 +14,10 @@ $tipo    = 'supplier.order.items_in_process';
 $tab = 'supplier.order.items_in_process';
 
 
-
+/**
+ * @var $supplier \Supplier
+ */
+$supplier=$state['_object'];
 
 $table_views = array(
     'cartons' => array('label' => _('Ordering cartons'),),
@@ -45,18 +48,18 @@ $table_buttons[] = array(
     'icon'     => 'plus',
     'title'    => _('New item'),
     'id'       => 'new_item',
-    'class'    => 'items_operation'.($state['_object']->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
+    'class'    => 'items_operation'.($supplier->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
     'add_item' => array(
 
-        'field_label' => _("Supplier's part").':',
+        'field_label' => _("Supplier's product").':',
         'placeholder_qty' => _("Cartons"),
         'metadata'    => base64_encode(
             json_encode(
                 array(
                     'scope'      => 'supplier_part',
-                    'parent'     => $state['_object']->get('Purchase Order Parent'),
-                    'parent_key' => $state['_object']->get('Purchase Order Parent Key'),
-                    'options'    => array('for_purchase_order')
+                    'parent'     => $supplier->get('Purchase Order Parent'),
+                    'parent_key' => $supplier->get('Purchase Order Parent Key'),
+                    'options'    => array('for_purchase_order','carton')
                 )
             )
         )
@@ -64,6 +67,57 @@ $table_buttons[] = array(
     )
 
 );
+/*
+
+$table_buttons[] = array(
+    'icon'     => 'plus',
+    'title'    => _('New item'),
+    'id'       => 'new_item',
+    'class'    => 'items_operation'.($supplier->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
+    'add_item' => array(
+
+        'field_label' => _("Supplier's product").':',
+        'placeholder_qty' => _("SKOs"),
+        'metadata'    => base64_encode(
+            json_encode(
+                array(
+                    'scope'      => 'supplier_part',
+                    'parent'     => $supplier->get('Purchase Order Parent'),
+                    'parent_key' => $supplier->get('Purchase Order Parent Key'),
+                    'options'    => array('for_purchase_order','sko')
+                )
+            )
+        )
+
+    )
+
+);
+
+$table_buttons[] = array(
+    'icon'     => 'plus',
+    'title'    => _('New item'),
+    'id'       => 'new_item',
+    'class'    => 'items_operation'.($supplier->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
+    'add_item' => array(
+
+        'field_label' => _("Supplier's product").':',
+        'placeholder_qty' => _("Units"),
+        'metadata'    => base64_encode(
+            json_encode(
+                array(
+                    'scope'      => 'supplier_part',
+                    'parent'     => $supplier->get('Purchase Order Parent'),
+                    'parent_key' => $supplier->get('Purchase Order Parent Key'),
+                    'options'    => array('for_purchase_order','unit')
+                )
+            )
+        )
+
+    )
+
+);
+*/
+
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(
@@ -81,5 +135,3 @@ $smarty->assign(
 
 include 'utils/get_table_html.php';
 
-
-?>

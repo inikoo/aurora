@@ -14,7 +14,7 @@
             </td>
         </tr>
         <tr class="title">
-            <td colspan=2>{t}Supplier part{/t} </td>
+            <td colspan=2>{t}Supplier's product{/t} </td>
         </tr>
 
         <tr>

@@ -614,7 +614,7 @@ class PurchaseOrder extends DB_Table {
                         return '<span class="italic very_discreet">'._('Unknown Weight').'</span>';
                     }
                 } else {
-                    return ($this->get('Purchase Order Missing Weights') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without weight").'" ></i> ' : '').weight($this->get('Purchase Order Weight'), 'Kg', 0);
+                    return ($this->get('Purchase Order Missing Weights') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's products without weight").'" ></i> ' : '').weight($this->get('Purchase Order Weight'), 'Kg', 0);
                 }
                 break;
             case 'CBM':
@@ -623,7 +623,7 @@ class PurchaseOrder extends DB_Table {
                         return '<i class="fa fa-exclamation-circle error"></i> <span class="italic very_discreet error">'._('Unknown CBM').'</span>';
                     }
                 } else {
-                    return ($this->get('Purchase Order Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without CBM").'" ></i> ' : '').number($this->data['Purchase Order CBM']).' m³';
+                    return ($this->get('Purchase Order Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's products without CBM").'" ></i> ' : '').number($this->data['Purchase Order CBM']).' m³';
                 }
                 break;
             case 'Estimated Receiving Date':

@@ -104,12 +104,12 @@
                      class="order_operation {if $order->get('Agent Supplier Purchase Order State')!='Submitted'}hide{/if}">
                     <div id="create_spo_operation"
                          class="square_button right {if $order->get('Agent Supplier Purchase Order Number Items')==0}hide{/if} "
-                         title="{t}Create supplier's orders{/t}">
+                         title="{t}Create supplier's order{/t}">
                         <i class="fa fa-clipboard   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('create_spo')"></i>
                         <table id="create_spo_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Create supplier's orders{/t}</td>
+                                <td class="label" colspan="2">{t}Create supplier's order{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"

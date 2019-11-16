@@ -155,7 +155,7 @@ $supplier_part_fields[] = array(
 
 $supplier_part_fields[] = array(
     'label' => ($show_full_label
-        ? _("Supplier's part cartons")
+        ? _("Supplier's product cartons")
         : _(
             'Cartons'
         )),

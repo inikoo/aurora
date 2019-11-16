@@ -681,7 +681,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                         return '<span class="italic very_discreet">'._('Unknown Weight').'</span>';
                     }
                 } else {
-                    return ($this->get('Agent Supplier Purchase Order Missing Weights') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without weight").'" ></i> ' : '').weight(
+                    return ($this->get('Agent Supplier Purchase Order Missing Weights') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's products without weight").'" ></i> ' : '').weight(
                             $this->get('Agent Supplier Purchase Order Weight')
                         );
                 }
@@ -692,7 +692,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                         return '<span class="italic very_discreet error">'._('Unknown CBM').'</span>';
                     }
                 } else {
-                    return ($this->get('Agent Supplier Purchase Order Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without CBM").'" ></i> ' : '').number(
+                    return ($this->get('Agent Supplier Purchase Order Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's products without CBM").'" ></i> ' : '').number(
                             $this->data['Agent Supplier Purchase Order CBM']
                         ).' m³';
                 }

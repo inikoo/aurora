@@ -25,9 +25,9 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => true,
-            'header'        => "Supplier's part code",
+            'header'        => "Supplier's product code",
             'name'          => 'Supplier Part Reference',
-            'label'         => _("Supplier's part code"),
+            'label'         => _("Supplier's product code"),
             'checked'       => 0
         ),
         array(
@@ -36,7 +36,7 @@ $export_edit_template_fields = array(
             'required'      => true,
             'header'        => "Supplier's unit description",
             'name'          => 'Supplier Part Description',
-            'label'         => _("Supplier's part unit description").' ('._("for supplier's POs").')',
+            'label'         => _("Supplier's product unit description").' ('._("for supplier's POs").')',
             'checked'       => 0
         ),
 

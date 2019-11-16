@@ -60,7 +60,7 @@ $table_buttons[] = array(
     'icon'       => 'stop',
     'id'         => 'all_available_items',
     'class'      => 'items_operation'.($state['_object']->get('Supplier Delivery State') != 'In Process' ? ' hide' : ''),
-    'title'      => _("All supplier's parts"),
+    'title'      => _("All supplier's products"),
     'change_tab' => 'supplier.order.all_supplier_parts'
 );
 

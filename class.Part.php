@@ -797,7 +797,7 @@ class Part extends Asset {
 
             foreach ($this->get_supplier_parts('objects') as $supplier_part) {
                 $supplier_part->load_supplier();
-                $suppliers .= $supplier_part->supplier->get('Code').' '.$supplier_part->get('Supplier Part Packages Per Carton').' '._("Supplier's part ordering SKOs per carton").', ';
+                $suppliers .= $supplier_part->supplier->get('Code').' '.$supplier_part->get('Supplier Part Packages Per Carton').' '._("Supplier's product ordering SKOs per carton").', ';
 
             }
             $suppliers = preg_replace('/\, $/', '', $suppliers);
@@ -2796,21 +2796,7 @@ class Part extends Asset {
                 break;
 
 
-            /*
-            case 'Part SKOs per Carton skip update supplier part':
-                $this->update_field('Part SKOs per Carton', $value, $options);
-
-
-            case 'Part SKOs per Carton':
-                $this->update_field($field, $value, $options);
-
-                //foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-                //    $supplier_part->editor = $this->editor;
-                //    $supplier_part->update(array('Supplier Part Packages Per Carton skip update part' => $value), $options);
-                //}
-
-                break;
-            */ default:
+             default:
             $base_data = $this->base_data();
 
 
@@ -4548,7 +4534,7 @@ class Part extends Asset {
                     );
 
                     if ($supplier_part->duplicated_field == 'Supplier Part Reference') {
-                        $this->msg = _("Duplicated supplier's part reference");
+                        $this->msg = _("Duplicated supplier's product reference");
                     } else {
                         $this->msg = 'Duplicated '.$supplier_part->duplicated_field;
                     }

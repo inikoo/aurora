@@ -10,7 +10,7 @@ renderable: false
 },
 {
 name: "reference",
-label: "{t}Supplier's part code{/t}",
+label: "{t}Supplier's product code{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 events: {

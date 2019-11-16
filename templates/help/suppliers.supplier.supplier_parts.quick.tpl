@@ -11,7 +11,7 @@ About:
 
 <div class="item">
     <div class="question">
-        <i class="fa fa-caret-right bullet fw"></i> {t}How to add new supplier's part?{/t}
+        <i class="fa fa-caret-right bullet fw"></i> {t}How to add new supplier's product?{/t}
     </div>
     <div class="answer hide">
         <p>
@@ -21,7 +21,7 @@ About:
 </div>
 <div class="item">
     <div class="question">
-        <i class="fa fa-caret-right bullet fw"></i> {t}How to add supplier's parts in bulk?{/t}
+        <i class="fa fa-caret-right bullet fw"></i> {t}How to add supplier's products in bulk?{/t}
     </div>
     <div class="answer hide">
         <p>

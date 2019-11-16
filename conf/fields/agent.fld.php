@@ -303,7 +303,7 @@ $object_fields = array(
     ),
 
     array(
-        'label'      => _("Supplier's parts settings"),
+        'label'      => _("Supplier's products settings"),
         'show_title' => false,
         'fields'     => array(
 

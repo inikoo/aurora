@@ -1354,7 +1354,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _("Supplier's part").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
+    $title = _("Supplier's product").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
     $title .= ' <small class="padding_left_20"> '.$supplier_part_type_icon.' <i class="fa fa-long-arrow-right "></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
         .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'
@@ -1418,7 +1418,7 @@ function get_new_supplier_part_navigation($data, $smarty, $user, $db, $account) 
     $left_buttons[] = $up_button;
 
 
-    $title = '<span class="id ">'._("New Supplier's part").'</span>';
+    $title = '<span class="id ">'._("New supplier's product").'</span>';
 
 
     $_content = array(
@@ -1720,7 +1720,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
         $up_button = array(
             'icon'      => 'arrow-up',
-            'title'     => _("Supplier part").' '.$data['_parent']->get('Reference'),
+            'title'     => _("Supplier's product").' '.$data['_parent']->get('Reference'),
             'reference' => 'supplier/'.$data['_parent']->get(
                     'Supplier Part Supplier Key'
                 ).'/part/'.$data['_parent']->id
