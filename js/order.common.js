@@ -3157,3 +3157,76 @@ function clone_order(element){
 
 
 }
+
+function post_modify_item_order(data){
+
+    $('.order_operation').addClass('hide')
+
+    for (var key in data.metadata.operations) {
+        $('#' + data.metadata.operations[key]).removeClass('hide')
+    }
+
+    $('.Total_Amount').attr('amount', data.metadata.to_pay)
+    $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+    if (data.metadata.to_pay == 0) {
+        $('.Order_Payments_Amount').addClass('hide')
+        $('.Order_To_Pay_Amount').addClass('hide')
+
+    } else {
+        $('.Order_Payments_Amount').removeClass('hide')
+        $('.Order_To_Pay_Amount').removeClass('hide')
+
+    }
+
+    if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+        $('.Order_Paid').addClass('hide')
+    } else {
+        $('.Order_Paid').removeClass('hide')
+    }
+
+    if (data.metadata.to_pay <= 0) {
+        $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+    } else {
+        $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+    }
+
+
+    if (data.metadata.to_pay == 0) {
+        $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+    } else {
+        $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+    }
+
+
+    if (data.metadata.items == 0) {
+        $('#submit_operation').addClass('hide')
+        $('#send_to_warehouse_operation').addClass('hide')
+
+    }
+    else {
+        $('#submit_operation').removeClass('hide')
+        $('#send_to_warehouse_operation').removeClass('hide')
+    }
+
+
+    rows.fetch({
+        reset: true
+    });
+
+    for (var key in data.metadata.class_html) {
+        $('.' + key).html(data.metadata.class_html[key])
+    }
+
+    for (var key in data.metadata.hide) {
+        $('#' + data.metadata.hide[key]).addClass('hide')
+    }
+    for (var key in data.metadata.show) {
+        $('#' + data.metadata.show[key]).removeClass('hide')
+    }
+
+
+}

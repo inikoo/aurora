@@ -87,5 +87,3 @@ function update_table_state($data) {
 
 }
 
-
-?>

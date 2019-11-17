@@ -145,20 +145,26 @@ grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", t
 
 $('#new_item_carton').removeClass('hide')
 
+$('#upload_order_items').removeClass('hide')
+$('#upload_order_items_upload').data('field','Purchase Order Cartons')
+
 
 }else if(view=='skos'){
 grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'description_skos'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", true)
 $('#new_item_sko').removeClass('hide')
+$('#upload_order_items').removeClass('hide')
+$('#upload_order_items_upload').data('field','Purchase Order SKOs')
 
 
 }else if(view=='units'){
 grid.columns.findWhere({ name: 'description_units'} ).set("renderable", true)
-
 grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", true)
 $('#new_item_unit').removeClass('hide')
+$('#upload_order_items').removeClass('hide')
+$('#upload_order_items_upload').data('field','Purchase Order Units')
 
 }
 

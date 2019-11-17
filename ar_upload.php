@@ -66,7 +66,7 @@ switch ($tipo) {
                      )
         );
 
-        edit_objects($account, $db, $user, $editor, $data, $smarty);
+        edit_objects($account, $db, $user, $editor, $data);
         break;
 
     case 'upload_attachment':
@@ -112,6 +112,19 @@ switch ($tipo) {
         );
 
         upload_images($account, $db, $user, $editor, $data, $smarty);
+        break;
+    case 'add_items_to_order':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'numeric'),
+                         'field'      => array('type' => 'string'),
+
+
+                     )
+        );
+
+        add_items_to_order($account, $db, $user, $editor, $data, $smarty);
         break;
     default:
         $response = array(
@@ -942,25 +955,21 @@ function get_data($account, $db, $user, $data, $smarty) {
 }
 
 
-function edit_objects($account, $db, $user, $editor, $data, $smarty) {
+function edit_objects($account, $db, $user, $editor, $data) {
+
+    list(
+        $upload_files_data, $files_with_errors, $error_info
+        ) = process_files();
+
+
+    if ($error_info != '') {
+        echo json_encode($error_info);
+        exit;
+    }
+
+
     require_once 'class.Upload.php';
 
-    $valid_extensions = array(
-        'xls',
-        'xlt',
-        'xlm',
-        'xlsx',
-        'xlsm',
-        'xltx',
-        'xltm',
-        'xlsb',
-        'ods',
-        'slk',
-        'gnumeric',
-        'tsv',
-        'tab',
-        'csv'
-    );
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
@@ -977,111 +986,17 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
-        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
-        $postMax  = ini_get('post_max_size'); //grab the size limits...
-        $msg      = sprintf(
-            _(
-                "File can not be attached, please note files larger than %s will result in this error!, let's us know, an we will increase the size limits"
-            ), $postMax
-        );
-        $response = array(
-            'state' => 400,
-            'title' => _('Error'),
-            'msg'   => $msg,
-            'key'   => 'attach'
-        );
-        echo json_encode($response);
-        exit;
-
-    }
-
-    if (empty($_FILES)) {
-        $msg      = '_FILES array empty';
-        $response = array(
-            'state' => 400,
-            'title' => _('Error'),
-            'msg'   => _("File can't be uploaded").", ".$msg
-        );
-        echo json_encode($response);
-        exit;
-
-    }
-
-    $upload_files_data = array();
-    $files_with_errors = array();
-
-    foreach ($_FILES['files']['name'] as $file_key => $name) {
-
-
-        $error             = $_FILES['files']['error'][$file_key];
-        $size              = $_FILES['files']['size'][$file_key];
-        $original_tmp_name = $_FILES['files']['tmp_name'][$file_key];
-        $type              = $_FILES['files']['type'][$file_key];
-        $extension         = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-
-
-        if ($error) {
-            $msg = parse_upload_file_error_msg($error);
-
-            $files_with_errors[] = array(
-                'msg'      => $msg,
-                'filename' => $name
-            );
-            continue;
-
-        }
-
-        if ($size == 0) {
-            $msg                 = _("This file seems that is empty, have a look and try again").'.';
-            $files_with_errors[] = array(
-                'msg'      => $msg,
-                'filename' => $name
-            );
-            continue;
-
-
-        }
-
-        if (!in_array($extension, $valid_extensions)) {
-            $msg = _('Invalid file type').' <b>'.$extension.'</b> <i>('.$type.')</i>';
-
-            $files_with_errors[] = array(
-                'msg'      => $msg,
-                'title'    => _('Error'),
-                'filename' => $name
-            );
-            continue;
-
-        }
-
-        $tmp_name = 'up_'.microtime(true).'_'.$user->id.'_'.md5_file($original_tmp_name).'.'.pathinfo($name, PATHINFO_EXTENSION);
-
-        $upload_files_data[] = array(
-            'editor'               => $editor,
-            'Upload File Checksum' => md5_file($original_tmp_name),
-            'Upload File Name'     => $name,
-            'Upload File Size'     => filesize($original_tmp_name),
-            'Upload File Filename' => $original_tmp_name,
-            'Upload File Type'     => $type,
-            'Upload File Metadata' => json_encode(
-                array(
-                    'extension' => $extension,
-                    'type'      => $type,
-                    'tmp_name'  => $tmp_name
-                )
-            )
-
-        );
-
-
-    }
-
     $number_files_uploaded = count($upload_files_data);
     $fork_key              = false;
     $upload_key            = false;
 
-    if ($number_files_uploaded) {
+    if ($number_files_uploaded > 0) {
+
+        foreach ($upload_files_data as $_key => $_value) {
+            $upload_files_data[$_key]['editor'] = $editor;
+        }
+
+
         $upload_data = array(
             'editor'      => $editor,
             'Upload Type' => 'EditObjects',
@@ -1259,6 +1174,357 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
 
 }
+
+
+function add_items_to_order($account, $db, $user, $editor, $data) {
+
+    list(
+        $upload_files_data, $files_with_errors, $error_info
+        ) = process_files();
+
+
+    if ($error_info != '') {
+        echo json_encode($error_info);
+        exit;
+    }
+
+
+    $object         = get_object($data['parent'], $data['parent_key']);
+    $object->editor = $editor;
+
+
+    if (!$object->id) {
+        $msg      = 'parent key not found';
+        $response = array(
+            'state' => 400,
+            'msg'   => $msg
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $rows_data = array();
+    foreach ($upload_files_data as $upload_file_data) {
+
+
+        $inputFileType = IOFactory::identify($upload_file_data['Upload File Filename']);
+        $objReader     = IOFactory::createReader($inputFileType);
+        $objReader->setReadDataOnly(true);
+
+        $objPHPExcel = @$objReader->load($upload_file_data['Upload File Filename']);
+
+
+        $objWorksheet = $objPHPExcel->getActiveSheet();
+
+        $highestRow         = $objWorksheet->getHighestRow();
+        $highestColumn      = $objWorksheet->getHighestColumn();
+        $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+
+
+        for ($row = 1; $row <= $highestRow; ++$row) {
+            $row_data = array();
+            for ($col = 1; $col <= $highestColumnIndex; ++$col) {
+                $value          = $objWorksheet->getCellByColumnAndRow($col, $row)->getCalculatedValue();
+                $row_data[$col] = $value;
+            }
+            $rows_data[] = $row_data;
+        }
+    }
+
+    $discounts_data = array();
+
+    switch ($object->get_object_name()) {
+        case 'Purchase Order':
+
+
+            foreach ($rows_data as $row_index => $row_data) {
+
+                $qty = trim($row_data[2]);
+
+
+                list($item_key, $item_historic_key, $result) = find_purchase_order_item($db, $object, $row_data[1]);
+
+                if ($result != 'ok') {
+                    $feedback[$row_index] = array(
+                        'ignored',
+                        $result
+                    );
+                    continue;
+                }
+
+                if ($qty == '') {
+                    $qty = 0;
+                }
+
+                if (!is_numeric($qty)) {
+                    $feedback[$row_index] = array(
+                        'ignored',
+                        'qty_missing'
+                    );
+                    continue;
+                } elseif ($qty < 0) {
+                    $feedback[$row_index] = array(
+                        'ignored',
+                        'qty_error'
+                    );
+                    continue;
+                }
+
+                $transaction_data = array(
+                    'item_key'          => $item_key,
+                    'item_historic_key' => $item_historic_key,
+                    'qty'               => $qty,
+                    'field'             => $data['field']
+                );
+
+                $object->update_item($transaction_data);
+
+            }
+
+            break;
+    }
+
+    $update_metadata = $object->get_update_metadata();
+
+    $response = array(
+        'state'          => 200,
+        'tipo'           => 'add_items_to_order',
+        'metadata'       => $update_metadata,
+        'discounts_data' => $discounts_data
+    );
+    echo json_encode($response);
+
+}
+
+/**
+ * @param $db             \PDO
+ * @param $purchase_order \PurchaseOrder
+ * @param $code           string
+ */
+function find_purchase_order_item($db, $purchase_order, $code) {
+
+
+    if ($code == '') {
+        return array(
+            0,
+            0,
+            'code_empty'
+        );
+    }
+
+
+    if ($purchase_order->get('Purchase Order Parent') == 'Supplier') {
+        $sql  = "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=? and `Supplier Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'ok'
+                );
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        }
+        $sql  =
+            "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status`,`Part Status` from `Supplier Part Dimension` left join `Part Dimension` P on (`Part SKU`=`Supplier Part Part SKU`) where `Supplier Part Supplier Key`=? and `Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+
+
+                if ($row['Supplier Status'] == 'In Process' or $row['Supplier Status'] == 'In Use') {
+
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'ok'
+                    );
+                } elseif ($row['Supplier Status'] == 'Discontinuing') {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_discontinuing'
+                    );
+                } else {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_not_in_use'
+                    );
+                }
+
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        }
+
+
+    } else {
+
+    }
+
+
+}
+
+
+function process_files() {
+
+
+    $upload_files_data = array();
+    $files_with_errors = array();
+    $error_info        = '';
+
+
+    $valid_extensions = array(
+        'xls',
+        'xlt',
+        'xlm',
+        'xlsx',
+        'xlsm',
+        'xltx',
+        'xltm',
+        'xlsb',
+        'ods',
+        'slk',
+        'gnumeric',
+        'tsv',
+        'tab',
+        'csv'
+    );
+
+
+    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
+        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+        $postMax    = ini_get('post_max_size'); //grab the size limits...
+        $msg        = sprintf(
+            _(
+                "File can not be attached, please note files larger than %s will result in this error!, let's us know, an we will increase the size limits"
+            ), $postMax
+        );
+        $error_info = array(
+            'state' => 400,
+            'title' => _('Error'),
+            'msg'   => $msg,
+            'key'   => 'attach'
+        );
+
+
+    }
+
+    if (empty($_FILES)) {
+        $msg        = '_FILES array empty';
+        $error_info = array(
+            'state' => 400,
+            'title' => _('Error'),
+            'msg'   => _("File can't be uploaded").", ".$msg
+        );
+
+
+    }
+
+
+    if ($error_info == '') {
+
+
+        foreach ($_FILES['files']['name'] as $file_key => $name) {
+
+
+            $error             = $_FILES['files']['error'][$file_key];
+            $size              = $_FILES['files']['size'][$file_key];
+            $original_tmp_name = $_FILES['files']['tmp_name'][$file_key];
+            $type              = $_FILES['files']['type'][$file_key];
+            $extension         = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+
+            if ($error) {
+                $msg = parse_upload_file_error_msg($error);
+
+                $files_with_errors[] = array(
+                    'msg'      => $msg,
+                    'filename' => $name
+                );
+                continue;
+
+            }
+
+            if ($size == 0) {
+                $msg                 = _("This file seems that is empty, have a look and try again").'.';
+                $files_with_errors[] = array(
+                    'msg'      => $msg,
+                    'filename' => $name
+                );
+                continue;
+
+
+            }
+
+            if (!in_array($extension, $valid_extensions)) {
+                $msg = _('Invalid file type').' <b>'.$extension.'</b> <i>('.$type.')</i>';
+
+                $files_with_errors[] = array(
+                    'msg'      => $msg,
+                    'title'    => _('Error'),
+                    'filename' => $name
+                );
+                continue;
+
+            }
+
+            $tmp_name = 'up_'.microtime(true).'_'.md5_file($original_tmp_name).'.'.pathinfo($name, PATHINFO_EXTENSION);
+
+            $upload_files_data[] = array(
+                'Upload File Checksum' => md5_file($original_tmp_name),
+                'Upload File Name'     => $name,
+                'Upload File Size'     => filesize($original_tmp_name),
+                'Upload File Filename' => $original_tmp_name,
+                'Upload File Type'     => $type,
+                'Upload File Metadata' => json_encode(
+                    array(
+                        'extension' => $extension,
+                        'type'      => $type,
+                        'tmp_name'  => $tmp_name
+                    )
+                )
+
+            );
+
+
+        }
+    }
+
+
+    return array(
+        $upload_files_data,
+        $files_with_errors,
+        $error_info
+    );
+
+
+}
+
 
 function guess_file_format($filename) {
 
