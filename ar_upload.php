@@ -137,6 +137,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         $msg      = 'object key not found';
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => $msg
         );
         echo json_encode($response);
@@ -151,6 +152,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         $msg      = "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits";
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => _('Files could not be attached').".<br>".$msg,
             'key'   => 'attach'
         );
@@ -191,6 +193,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -204,6 +207,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -220,6 +224,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
             }
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => _('Files could not be attached')." $msg",
                 'key'   => 'attach'
             );
@@ -263,6 +268,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
             default:
                 $response = array(
                     'state' => 400,
+                    'title' => _('Error'),
                     'msg'   => 'object process not found'
 
                 );
@@ -274,6 +280,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         if ($parent->error) {
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => '<i class="fa fa-exclamation-circle"></i> '.$parent->msg,
 
             );
@@ -343,6 +350,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $msg      = 'object key not found';
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => $msg
         );
         echo json_encode($response);
@@ -359,6 +367,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         );
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => $msg,
             'key'   => 'attach'
         );
@@ -371,6 +380,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $msg      = '_FILES array empty';
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => _("Image can't be uploaded").", ".$msg
         );
         echo json_encode($response);
@@ -407,6 +417,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -420,6 +431,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -975,6 +987,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
         );
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => $msg,
             'key'   => 'attach'
         );
@@ -987,6 +1000,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
         $msg      = '_FILES array empty';
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => _("File can't be uploaded").", ".$msg
         );
         echo json_encode($response);
@@ -1034,6 +1048,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
             $files_with_errors[] = array(
                 'msg'      => $msg,
+                'title'    => _('Error'),
                 'filename' => $name
             );
             continue;
@@ -1201,9 +1216,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
         $state = 200;
     } elseif ($number_files_uploaded > 1) {
 
-        $msg   = '<i class="fa fa-spinner fa-spin"></i> '.sprintf(
-                _('Processing %s files'), $number_files_uploaded
-            );
+        $msg   = '<i class="fa fa-spinner fa-spin"></i> '.sprintf(_('Processing %s files'), $number_files_uploaded);
         $state = 200;
     } else {
         if (count($files_with_errors) == 1) {
@@ -1225,9 +1238,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
                 $msg   = '<i class="fa fa-exclamation-circle"></i> '.$error_msg;
                 $state = 400;
             } else {
-                $msg   = '<i class="fa fa-exclamation-circle"></i> '._(
-                        'No files uploaded'
-                    );
+                $msg   = '<i class="fa fa-exclamation-circle"></i> '._('No files uploaded');
                 $state = 400;
             }
         }
@@ -1251,48 +1262,22 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
 function guess_file_format($filename) {
 
-    $mimetype = 'Unknown';
+    $mime_type = mime_content_type($filename);
 
 
-    ob_start();
-    system("uname");
-    $system  = 'Unknown';
-    $_system = ob_get_clean();
-
-    // print "S:$system M:$mimetype\n";
-
-    if (preg_match('/darwin/i', $_system)) {
-        ob_start();
-        $system = 'Mac';
-        system('file -I "'.addslashes($filename).'"');
-        $mimetype = ob_get_clean();
-        $mimetype = preg_replace('/^.*\:/', '', $mimetype);
-
-    } elseif (preg_match('/linux/i', $_system)) {
-        ob_start();
-        $system   = 'Linux';
-        $mimetype = system('file -ib "'.addslashes($filename).'"');
-        $mimetype = ob_get_clean();
-    } else {
-        $system = 'Other';
-
-    }
-
-
-
-    if (preg_match('/png/i', $mimetype)) {
+    if (preg_match('/png/i', $mime_type)) {
         $format = 'png';
     } else {
-        if (preg_match('/jpeg/i', $mimetype)) {
+        if (preg_match('/jpeg/i', $mime_type)) {
             $format = 'jpeg';
         } else {
-            if (preg_match('/image.psd/i', $mimetype)) {
+            if (preg_match('/image.psd/i', $mime_type)) {
                 $format = 'psd';
             } else {
-                if (preg_match('/gif/i', $mimetype)) {
+                if (preg_match('/gif/i', $mime_type)) {
                     $format = 'gif';
                 } else {
-                    if (preg_match('/wbmp$/i', $mimetype)) {
+                    if (preg_match('/wbmp$/i', $mime_type)) {
                         $format = 'wbmp';
                     } else {
                         $format = 'other';
