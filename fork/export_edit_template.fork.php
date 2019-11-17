@@ -10,6 +10,12 @@
 */
 
 
+use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+
 function fork_export_edit_template($job) {
 
     include_once 'conf/export_edit_template_fields.php';
@@ -32,11 +38,6 @@ function fork_export_edit_template($job) {
         $output_type = 'xls';
     }
 
-
-
-
-    print_r($fork_data);
-    //return true;
 
     $user_key = $fork_data['user_key'];
 
@@ -62,7 +63,7 @@ function fork_export_edit_template($job) {
 
 
     $sql = sprintf(
-        'update `Download Dimension` set `Download State`="In Process",`Download Filename`=%s where `Download Key`=%d  ', prepare_mysql($output_filename.'.'.$output_type), $download_key
+        "update `Download Dimension` set `Download State`='In Process',`Download Filename`=%s where `Download Key`=%d  ", prepare_mysql($output_filename.'.'.$output_type), $download_key
 
     );
     $db->exec($sql);
@@ -75,7 +76,6 @@ function fork_export_edit_template($job) {
         case 'supplier_part':
             include_once 'class.SupplierPart.php';
             $object_id_name = 'Id: Supplier Part Key';
-            $download_type  = 'edit_supplier_parts';
             switch ($parent) {
                 case 'agent':
 
@@ -99,15 +99,14 @@ function fork_export_edit_template($job) {
         case 'part':
             include_once 'class.Part.php';
             $object_id_name = 'Id: Part SKU';
-            $download_type  = 'edit_parts';
             switch ($parent) {
                 case 'category':
 
                     $sql_count = sprintf(
-                        'SELECT count(*) AS num FROM `Category Bridge` WHERE `Subject`="Part" AND  `Category Key`=%d', $parent_key
+                        "SELECT count(*) AS num FROM `Category Bridge` WHERE `Subject`='Part' AND  `Category Key`=%d", $parent_key
                     );
                     $sql_data  = sprintf(
-                        'SELECT `Subject Key` AS id FROM `Category Bridge` WHERE `Subject`="Part" AND `Category Key`=%d', $parent_key
+                        "SELECT `Subject Key` AS id FROM `Category Bridge` WHERE `Subject`='Part' AND `Category Key`=%d", $parent_key
                     );
 
                     break;
@@ -167,7 +166,6 @@ function fork_export_edit_template($job) {
             include_once 'class.Store.php';
 
             $object_id_name = 'Id: Product ID';
-            $download_type  = 'edit_products';
 
 
             switch ($parent) {
@@ -238,11 +236,6 @@ function fork_export_edit_template($job) {
     }
 
 
-
-
-
-
-
     if ($result = $db->query($sql_count)) {
         if ($row = $result->fetch()) {
             $number_rows = $row['num'];
@@ -299,12 +292,8 @@ function fork_export_edit_template($job) {
     }
 
 
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
-
-    $objPHPExcel = new PHPExcel();
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel/Cell/AdvancedValueBinder.php';
-    PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_AdvancedValueBinder());
+    $objPHPExcel = new Spreadsheet();
+    Cell::setValueBinder(new AdvancedValueBinder());
 
 
     $objPHPExcel->getProperties()->setCreator($creator)->setLastModifiedBy($creator)->setTitle($title)->setSubject($subject)->setDescription($description)->setKeywords($keywords)->setCategory(
@@ -625,7 +614,7 @@ function fork_export_edit_template($job) {
                         array(
                             'borders' => array(
                                 'bottom' => array(
-                                    'style' => PHPExcel_Style_Border::BORDER_THIN,
+                                    'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                                     'color' => array('rgb' => '777777')
                                 )
                             )
@@ -649,7 +638,7 @@ function fork_export_edit_template($job) {
                 if ($data_row['cell_type'] == 'string' or $char_index == 1) {
 
                     $objPHPExcel->getActiveSheet()->setCellValueExplicit(
-                        $char.$row_index, strip_tags($data_row['value']), PHPExcel_Cell_DataType::TYPE_STRING
+                        $char.$row_index, strip_tags($data_row['value']), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
                     );
                 } else {
                     $objPHPExcel->getActiveSheet()->setCellValue(
@@ -730,29 +719,18 @@ function fork_export_edit_template($job) {
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
 
 
-    // exit('cacaca');
-
     try {
         $cellIterator->setIterateOnlyExistingCells(true);
-    } catch (PHPExcel_Exception $e) {
+    } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
 
     }
 
-    /** @var PHPExcel_Cell $cell */
+    /** @var \PhpOffice\PhpSpreadsheet\Cell\Cell $cell */
     foreach ($cellIterator as $cell) {
         $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
     }
 
     $objPHPExcel->getActiveSheet()->freezePane('A2');
-
-
-    /*
-    if (isset($_data['fork_data']['download_path'])) {
-        $download_path=$_data['fork_data']['download_path']."_$inikoo_account_code/";
-    }else {
-        $download_path="downloads_$inikoo_account_code/";
-    }
-*/
 
 
     $download_path = 'tmp/';
@@ -762,47 +740,21 @@ function fork_export_edit_template($job) {
 
         case('csv'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-            // header('Content-Type: text/csv');
-            // header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
-            // header('Cache-Control: max-age=0');
-            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV')->setDelimiter(',')->setEnclosure('')->setLineEnding("\r\n")->setSheetIndex(0)->save($output_file);
+            IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('')->setLineEnding("\r\n")->setSheetIndex(0)->save($output_file);
             break;
         case('xlsx'):
-
             $output_file = $download_path.$output_filename.'.'.$output_type;
-
-            //header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            //header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
-            //header('Cache-Control: max-age=0');
-
-            $objWriter = PHPExcel_IOFactory::createWriter(
-                $objPHPExcel, 'EXCEL2007'
-            )->setSheetIndex(0)->save($output_file);
+            IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save($output_file);
             break;
         case('xls'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-            //header('Content-Type: application/vnd.ms-excel');
-            //header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
-            //header('Cache-Control: max-age=0');
-
-
-            $objWriter = PHPExcel_IOFactory::createWriter(
-                $objPHPExcel, 'Excel5'
-            )->save($output_file);
+            IOFactory::createWriter($objPHPExcel, 'Xls')->save($output_file);
             break;
         case('pdf'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-
-            //header('Content-Type: application/pdf');
-            //header('Content-Disposition: attachment;filename="'.$filename.'.pdf"');
-            //header('Cache-Control: max-age=0');
             $objPHPExcel->getActiveSheet()->setShowGridLines(false);
-            $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(
-                PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE
-            );
-
-
-            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'PDF')->save($output_file);
+            $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+            IOFactory::createWriter($objPHPExcel, 'Pdf')->save($output_file);
             break;
 
     }
@@ -844,30 +796,8 @@ function fork_export_edit_template($job) {
     );
 
 
-    //$output_filename.'.'.$output_type
-
-    /*
-    $sql = sprintf(
-        "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Filename`,`Download User Key`,`Download Fork Key`,`Download Data`) VALUES (%s,%s,%s,%d,%d,%s) ",
-        prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($download_type), prepare_mysql($output_filename.'.'.$output_type), $user_key, $fork_key, prepare_mysql(file_get_contents($output_file))
-    );
-
-    $db->exec($sql);
-
-    $download_id = $db->lastInsertId();
-
-
-    $sql = sprintf(
-        "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ", ($row_index - 2),
-        prepare_mysql($download_id), $fork_key
-    );
-
-    $db->exec($sql);
-
-*/
-
     return false;
 }
 
 
-?>
+

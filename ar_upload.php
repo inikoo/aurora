@@ -9,6 +9,10 @@
 
 */
 
+
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/object_functions.php';
@@ -929,9 +933,6 @@ function get_data($account, $db, $user, $data, $smarty) {
 function edit_objects($account, $db, $user, $editor, $data, $smarty) {
     require_once 'class.Upload.php';
 
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
-
     $valid_extensions = array(
         'xls',
         'xlt',
@@ -1018,9 +1019,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
         }
 
         if ($size == 0) {
-            $msg                 = _(
-                    "This file seems that is empty, have a look and try again"
-                ).'.';
+            $msg                 = _("This file seems that is empty, have a look and try again").'.';
             $files_with_errors[] = array(
                 'msg'      => $msg,
                 'filename' => $name
@@ -1041,13 +1040,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
         }
 
-        $tmp_name = 'up_'.microtime(true).'_'.$user->id.'_'.md5_file(
-                $original_tmp_name
-            ).'.'.pathinfo($name, PATHINFO_EXTENSION);
-        $tmp_path = 'server_files/uploads/';
-
-        // rename($original_tmp_name, $tmp_path.$tmp_name);
-
+        $tmp_name = 'up_'.microtime(true).'_'.$user->id.'_'.md5_file($original_tmp_name).'.'.pathinfo($name, PATHINFO_EXTENSION);
 
         $upload_files_data[] = array(
             'editor'               => $editor,
@@ -1104,24 +1097,19 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
                 $db, $upload->id, $upload_file_data
             );
 
-            //print_r($upload_file_data);
 
-            $inputFileType = PHPExcel_IOFactory::identify(
-                $upload_file_data['Upload File Filename']
-            );
-            $objReader     = PHPExcel_IOFactory::createReader($inputFileType);
+            $inputFileType = IOFactory::identify($upload_file_data['Upload File Filename']);
+            $objReader     = IOFactory::createReader($inputFileType);
             $objReader->setReadDataOnly(true);
 
-            $objPHPExcel = @$objReader->load(
-                $upload_file_data['Upload File Filename']
-            );
+            $objPHPExcel = @$objReader->load($upload_file_data['Upload File Filename']);
 
 
             $objWorksheet = $objPHPExcel->getActiveSheet();
 
             $highestRow         = $objWorksheet->getHighestRow();
             $highestColumn      = $objWorksheet->getHighestColumn();
-            $highestColumnIndex = PHPExcel_Cell::columnIndexFromString(
+            $highestColumnIndex = Coordinate::columnIndexFromString(
                 $highestColumn
             );
             $row_data           = array();
@@ -1291,7 +1279,6 @@ function guess_file_format($filename) {
     }
 
 
-    //print "** $filename **";
 
     if (preg_match('/png/i', $mimetype)) {
         $format = 'png';
@@ -1314,11 +1301,9 @@ function guess_file_format($filename) {
             }
         }
     }
-    //  print "S:$system M:$mimetype\n";
-    // return;
 
     return $format;
 
 }
 
-?>
+
