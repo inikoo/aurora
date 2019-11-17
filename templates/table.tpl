@@ -308,7 +308,7 @@
 
         {foreach from=$table_buttons item=button }
 
-            {if $button.id=='upload_order_items'}
+            {if !empty($button.id) and $button.id=='upload_order_items'}
                     <div id="upload_order_items" class="table_button square_button right {if isset($button.class)}{$button.class}{/if}">
                         <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                             <input style="display:none" type="file" name="upload" id="upload_order_items_upload" class="table_input_file"
