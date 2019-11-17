@@ -18,6 +18,7 @@
         "nesk/puphpeteer": "^1.6",
         "rollbar/rollbar": "~1.5",
         "ext-pdo": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "phpoffice/phpspreadsheet": "^1.9"
     }
 }

@@ -83,6 +83,9 @@ if ($_data['tipo'] == 'timeserie_records') {
         $_tipo = 'client_order_items';
     }elseif ($_data['tipo'] == 'agent_supplier_order.items') {
         $_tipo = 'client_order_items';
+    }elseif($_data['tipo'] =='supplier.order.items_in_process') {
+        $_tipo = 'supplier.order.items';
+
     }elseif ($_data['tipo'] == 'sent_emails') {
         //print_r($_data);
         // todo parse request for prospects (ise state to find out)
