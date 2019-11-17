@@ -12,7 +12,7 @@
 /**
  * @var $order \Order
  */
-$order=$state['_object'];
+$order = $state['_object'];
 
 $tab     = 'order.items';
 $ar_file = 'ar_orders_tables.php';
@@ -22,7 +22,7 @@ $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'overview'     => array(
+    'overview'   => array(
         'label' => _('Description'),
         'title' => _('Description')
     ),
@@ -52,18 +52,30 @@ $parameters = array(
 );
 
 
-$table_buttons   = array();
+$table_buttons = array();
 
 
-if($order->get('State Index')>0 and  $order->get('State Index')<=40){
+if ($order->get('State Index') > 0 and $order->get('State Index') <= 40) {
+
+    $table_buttons[] = array(
+        'icon'         => 'upload',
+        'title'        => _('Upload items'),
+        'id'           => 'upload_order_items',
+        'upload_items' => array(
+            'tipo'       => 'add_item',
+            'parent'     => 'Order',
+            'parent_key' => $order->id,
+            'field'      => 'Order Quantity',
+        )
+    );
 
     $table_buttons[] = array(
         'icon'     => 'plus',
         'title'    => _('New item'),
         'id'       => 'new_item',
-        'class'    => 'items_operation '.(($order->get('State Index')>0 and  $order->get('State Index')<40)?'':'hide'),
+        'class'    => 'items_operation',
         'add_item' => array(
-            'field'      => 'Order Quantity',
+            'field'       => 'Order Quantity',
             'field_label' => _("Product").':',
             'metadata'    => base64_encode(
                 json_encode(
@@ -79,14 +91,16 @@ if($order->get('State Index')>0 and  $order->get('State Index')<=40){
         )
 
     );
+
+
 }
 
-if($order->get('State Index')==40){
+if ($order->get('State Index') == 40) {
 
     $table_buttons[] = array(
-        'icon'     => 'pencil-alt',
-        'title'    => _('Edit items'),
-        'id'       => 'edit_order_in_warehouse_items',
+        'icon'  => 'pencil-alt',
+        'title' => _('Edit items'),
+        'id'    => 'edit_order_in_warehouse_items',
     );
 
 }
@@ -98,21 +112,16 @@ $smarty->assign('object', $order);
 $smarty->assign('table_buttons', $table_buttons);
 
 
-
 $smarty->assign(
-    'table_metadata',
-                        json_encode(
-                            array(
-                                'parent'     => $state['object'],
-                                'parent_key' => $state['key'],
+    'table_metadata', json_encode(
+                        array(
+                            'parent'     => $state['object'],
+                            'parent_key' => $state['key'],
 
-                            )
                         )
+                    )
 
 );
-
-
-
 
 
 include('utils/get_table_html.php');

@@ -1234,43 +1234,49 @@ function add_items_to_order($account, $db, $user, $editor, $data) {
 
     $discounts_data = array();
 
-    switch ($object->get_object_name()) {
-        case 'Purchase Order':
 
+    foreach ($rows_data as $row_index => $row_data) {
 
-            foreach ($rows_data as $row_index => $row_data) {
+        $qty = trim($row_data[2]);
 
-                $qty = trim($row_data[2]);
-
-
+        switch ($object->get_object_name()) {
+            case 'Purchase Order':
                 list($item_key, $item_historic_key, $result) = find_purchase_order_item($db, $object, $row_data[1]);
+                break;
+            case 'Order':
+                list($item_key, $item_historic_key, $result) = find_order_item($db, $object, $row_data[1]);
+                break;
+        }
 
-                if ($result != 'ok') {
-                    $feedback[$row_index] = array(
-                        'ignored',
-                        $result
-                    );
-                    continue;
-                }
+        if ($result != 'ok') {
+            $feedback[$row_index] = array(
+                'ignored',
+                $result
+            );
+            continue;
+        }
 
-                if ($qty == '') {
-                    $qty = 0;
-                }
+        if ($qty == '') {
+            $qty = 0;
+        }
 
-                if (!is_numeric($qty)) {
-                    $feedback[$row_index] = array(
-                        'ignored',
-                        'qty_missing'
-                    );
-                    continue;
-                } elseif ($qty < 0) {
-                    $feedback[$row_index] = array(
-                        'ignored',
-                        'qty_error'
-                    );
-                    continue;
-                }
+        if (!is_numeric($qty)) {
+            $feedback[$row_index] = array(
+                'ignored',
+                'qty_missing'
+            );
+            continue;
+        } elseif ($qty < 0) {
+            $feedback[$row_index] = array(
+                'ignored',
+                'qty_error'
+            );
+            continue;
+        }
 
+
+        switch ($object->get_object_name()) {
+            case 'Purchase Order':
                 $transaction_data = array(
                     'item_key'          => $item_key,
                     'item_historic_key' => $item_historic_key,
@@ -1279,13 +1285,109 @@ function add_items_to_order($account, $db, $user, $editor, $data) {
                 );
 
                 $object->update_item($transaction_data);
+                break;
+            case 'Order':
+                /**
+                 * @var $object \Order
+                 */ $object->skip_update_after_individual_transaction = false;
 
-            }
+                if (in_array(
+                    $object->data['Order State'], array(
+                                                    'InWarehouse',
+                                                    'PackedDone'
+                                                )
+                )) {
+                    $dispatching_state = 'Ready to Pick';
+                } else {
 
-            break;
+                    $dispatching_state = 'In Process';
+                }
+
+                $payment_state = 'Waiting Payment';
+
+                $data['Current Dispatching State'] = $dispatching_state;
+                $data['Current Payment State']     = $payment_state;
+                $data['Metadata']                  = '';
+                $transaction_data                  = array(
+                    'item_key'                  => $item_key,
+                    'item_historic_key'         => $item_historic_key,
+                    'qty'                       => $qty,
+                    'field'                     => $data['field'],
+                    'Current Dispatching State' => $dispatching_state,
+                    'Current Payment State'     => $payment_state,
+                    'Metadata'                  => ''
+                );
+
+
+                $object->update_item($transaction_data);
+
+                break;
+        }
+
+
     }
 
-    $update_metadata = $object->get_update_metadata();
+
+    if ($object->get_object_name() == 'Order') {
+        $sql = sprintf(
+            'SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
+            $object->id
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if (in_array(
+                    $object->get('Order State'), array(
+                                                   'Cancelled',
+                                                   'Approved',
+                                                   'Dispatched',
+                                               )
+                )) {
+                    $discounts_class = '';
+                    $discounts_input = '';
+                } else {
+                    $discounts_class = 'button';
+                    $discounts_input = sprintf(
+                        '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                        $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], percentage($row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'])
+                    );
+                }
+                $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($row['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                        $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']
+                    ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
+
+
+                if (isset($data['tab']) and $data['tab'] == 'order.all_products') {
+                    $discounts_data[$row['Product ID']] = array(
+                        'deal_info' => $row['Deal Info'],
+                        'discounts' => $discounts,
+                        'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                    );
+                } else {
+                    $discounts_data[$row['Order Transaction Fact Key']] = array(
+                        'deal_info' => $row['Deal Info'],
+                        'discounts' => $discounts,
+                        'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                    );
+                }
+
+
+            }
+        }
+
+        $update_metadata                 = $object->get_update_metadata();
+        $update_metadata['deleted_otfs'] = $object->deleted_otfs;
+        $update_metadata['new_otfs']     = $object->new_otfs;
+
+
+    } else {
+
+        $update_metadata = $object->get_update_metadata();
+    }
+
+
 
     $response = array(
         'state'          => 200,
@@ -1296,6 +1398,7 @@ function add_items_to_order($account, $db, $user, $editor, $data) {
     echo json_encode($response);
 
 }
+
 
 /**
  * @param $db             \PDO
@@ -1315,6 +1418,7 @@ function find_purchase_order_item($db, $purchase_order, $code) {
 
 
     if ($purchase_order->get('Purchase Order Parent') == 'Supplier') {
+
         $sql  = "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=? and `Supplier Part Reference`=? ";
         $stmt = $db->prepare($sql);
         $stmt->execute(
@@ -1379,11 +1483,148 @@ function find_purchase_order_item($db, $purchase_order, $code) {
                     'supplier_part_not_available'
                 );
             }
+        } else {
+            return array(
+                0,
+                0,
+                'supplier_par_not_found'
+            );
         }
 
 
-    } else {
+    } elseif ($purchase_order->get('Purchase Order Parent') == 'Agent') {
 
+        $sql  =
+            "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status` from `Supplier Part Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  WHERE `Agent Supplier Agent Key`=?  and `Supplier Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'ok'
+                );
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        }
+        $sql  =
+            "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status`,`Part Status` from `Supplier Part Dimension`  LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  left join `Part Dimension` P on (`Part SKU`=`Supplier Part Part SKU`)  WHERE `Agent Supplier Agent Key`=?  and `Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+
+
+                if ($row['Supplier Status'] == 'In Process' or $row['Supplier Status'] == 'In Use') {
+
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'ok'
+                    );
+                } elseif ($row['Supplier Status'] == 'Discontinuing') {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_discontinuing'
+                    );
+                } else {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_not_in_use'
+                    );
+                }
+
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        } else {
+            return array(
+                0,
+                0,
+                'supplier_par_not_found'
+            );
+        }
+
+
+    }
+
+
+}
+
+
+/**
+ * @param $db             \PDO
+ * @param $purchase_order \Order
+ * @param $code           string
+ */
+function find_order_item($db, $purchase_order, $code) {
+
+
+    if ($code == '') {
+        return array(
+            0,
+            0,
+            'code_empty'
+        );
+    }
+
+
+    $sql  = "select `Product ID`,`Product Current Key`,`Product Status` from `Product Dimension` where `Product Store Key`=? and `Product Code`=? ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $purchase_order->get('Order Store Key'),
+            $code
+        )
+    );
+    if ($row = $stmt->fetch()) {
+        if ($row['Product Status'] == 'Active' or $row['Product Status'] == 'Discontinuing') {
+            return array(
+                $row['Product ID'],
+                $row['Product Current Key'],
+                'ok'
+            );
+        } elseif ($row['Product Status'] == 'InProcess') {
+            return array(
+                $row['Product ID'],
+                $row['Product Current Key'],
+                'product_in_process'
+            );
+        } else {
+            return array(
+                $row['Product ID'],
+                $row['Product Current Key'],
+                'product_not_available'
+            );
+        }
+    } else {
+        return array(
+            0,
+            0,
+            'product_not_found'
+        );
     }
 
 

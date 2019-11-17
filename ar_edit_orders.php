@@ -908,16 +908,11 @@ function edit_item_in_order($db,  $editor, $data) {
 
     }
 
-
     if ($data['parent'] == 'production_part') {
         $transaction_data = $parent->update_bill_of_materials($data);
-
-
     } else {
         $transaction_data = $parent->update_item($data);
-
     }
-
 
     $discounts_data = array();
 
