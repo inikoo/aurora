@@ -61,9 +61,24 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
 
 
+    set_error_handler(
+        function ($severity, $message, $file, $line) {
+            throw new ErrorException($message, $severity, $severity, $file, $line);
+        }
+    );
+
+    try {
+
+        $exchage_data=file_get_contents(sprintf('http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key, $currency_from, $currency_to));
+        $contents = json_decode($exchage_data, true);
+
+    }
+    catch (Exception $e) {
+        $contents=array();
+    }
 
 
-    $contents = json_decode(file_get_contents(sprintf('http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key, $currency_from, $currency_to)), true);
+
 
     if (!empty($contents['quotes']['USD'.$currency_from]) and !empty($contents['quotes']['USD'.$currency_to])) {
         $usd_cur1 = $contents['quotes']['USD'.$currency_from];
