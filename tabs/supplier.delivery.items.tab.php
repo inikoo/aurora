@@ -62,7 +62,7 @@ $parameters = array(
 
 $table_buttons   = array();
 
-
+/*
 
 $table_buttons[] = array(
     'icon'       => 'barcode',
@@ -70,6 +70,7 @@ $table_buttons[] = array(
     'class'      => 'items_operation '.($state['_object']->get('Supplier Delivery State') != 'Received' ? ' hide' : ''),
     'title'      => _("Book in using barcode scanner"),
 );
+
 
 
 
@@ -94,12 +95,8 @@ $table_buttons[] = array(
             json_encode(
                 array(
                     'scope'      => 'supplier_part',
-                    'parent'     => $state['_object']->get(
-                        'Supplier Delivery Parent'
-                    ),
-                    'parent_key' => $state['_object']->get(
-                        'Supplier Delivery Parent Key'
-                    ),
+                    'parent'     => $state['_object']->get('Supplier Delivery Parent'),
+                    'parent_key' => $state['_object']->get('Supplier Delivery Parent Key'),
                     'options'    => array()
                 )
             )
@@ -108,6 +105,9 @@ $table_buttons[] = array(
     )
 
 );
+
+*/
+
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(
