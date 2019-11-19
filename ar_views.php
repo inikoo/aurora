@@ -121,6 +121,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                  )
     );
 
+    //print_r($data);
+
 
     $old_weblocation = (isset($data['old_state']['module']) ? $data['old_state']['module'] : '').'|'.(isset($data['old_state']['section']) ? $data['old_state']['section'] : '');
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
@@ -359,7 +361,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     }
-
 
     $state['_parent'] = $_parent;
 
@@ -1363,11 +1364,27 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $response['app_state'] = $state;
 
 
-    // print_r($response);
-    // exit;
+    $encoded = json_encode($response);
 
-    echo json_encode($response);
+    if ($encoded == '') {
+        $encoded = json_encode(utf8ize($response));
+    }
 
+    echo $encoded;
+
+
+}
+
+function utf8ize($mixed) {
+    if (is_array($mixed)) {
+        foreach ($mixed as $key => $value) {
+            $mixed[$key] = utf8ize($value);
+        }
+    } elseif (is_string($mixed)) {
+        return mb_convert_encoding($mixed, "UTF-8", "UTF-8");
+    }
+
+    return $mixed;
 }
 
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
@@ -2543,10 +2560,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('packers'):
                     return get_packers_navigation($user, $smarty, $data);
                 case ('picker'):
-                    return get_picker_packer_navigation($data,$db,$user, $smarty);
+                    return get_picker_packer_navigation($data, $db, $user, $smarty);
 
                 case ('packer'):
-                    return get_picker_packer_navigation($data,$db,$user, $smarty);
+                    return get_picker_packer_navigation($data, $db, $user, $smarty);
 
                 case ('sales_representatives'):
                     return get_sales_representatives_navigation($user, $smarty, $data);
@@ -10490,7 +10507,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => '',
                     'reference' => 'report/pickers',
                 );
-                $staff=get_object('Staff',$state['key']);
+                $staff    = get_object('Staff', $state['key']);
 
                 $branch[] = array(
                     'label'     => $staff->get('Name'),
@@ -10498,7 +10515,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            }elseif ($state['section'] == 'packers') {
+            } elseif ($state['section'] == 'packers') {
                 $branch[] = array(
                     'label'     => _('Packers productivity'),
                     'icon'      => '',
@@ -10512,7 +10529,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'report/packers',
                 );
 
-                $staff=get_object('Staff',$state['key']);
+                $staff = get_object('Staff', $state['key']);
 
                 $branch[] = array(
                     'label'     => $staff->get('Name'),
@@ -10520,7 +10537,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            }elseif ($state['section'] == 'sales_representatives') {
+            } elseif ($state['section'] == 'sales_representatives') {
                 $branch[] = array(
                     'label'     => _('Sales representatives productivity'),
                     'icon'      => '',
