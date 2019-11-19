@@ -12,7 +12,6 @@
 
 require_once '../vendor/autoload.php';
 require_once 'utils/sentry.php';
-
 require 'keyring/key.php';
 
 session_start();
@@ -31,9 +30,6 @@ if (!$logged_in) {
         echo json_encode($response);
         exit;
     } else {
-
-        // print_r($_SERVER);
-
         header('Location: /login.sys?'.$redirect_to_login[0].'='.$redirect_to_login[1]);
         exit;
     }

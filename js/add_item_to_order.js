@@ -98,17 +98,12 @@ function get_items_select_for_add_item_to_order(element) {
 function select_add_item_option(element) {
 
     let form=$(element).closest('.add_item_form')
-
     form.find('.item').val($(element).data('formatted_value'))
     form.find('.add_item_save').data('item_key', $(element).data('item_key')).data('item_historic_key', $(element).data('item_historic_key'))
     form.find('.search_results_container').addClass('hide').removeClass('show')
 
-    form.find('.qty').focus()
-
-
+    form.find('.qty').trigger( "focus" )
     validate_add_item(form)
-
-
 }
 
 
@@ -122,7 +117,7 @@ function show_add_item_form(element) {
     element.find('.add_item_save').data('item_historic_key', '')
 
 
-    element.find('.item').val('').focus().removeClass('invalid')
+    element.find('.item').val('').trigger('focus').removeClass('invalid')
     element.find('.qty').val('').removeClass('invalid')
 
 }

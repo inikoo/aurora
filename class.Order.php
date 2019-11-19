@@ -2461,27 +2461,21 @@ class Order extends DB_Table {
                 //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
                 if ($row['Order State'] == 'Dispatched' or $row['Order State'] == 'Approved' or $row['Order State'] == 'PackedDone') {
                     $qty = number($row['Delivery Note Quantity']);
-
                 } else {
                     $qty = number($row['Order Quantity']);
-
                 }
-
 
                 $deal_info = $row['Deal Info'];
 
-
                 if ($row['Current Dispatching State'] == 'Out of Stock in Basket') {
                     $out_of_stock_info = _('Product out of stock, removed from basket');
-
-
                 } else {
-
                     $out_of_stock_info = '';
                 }
 
 
                 $items[] = array(
+                    'otf_key'              => $row['Order Transaction Fact Key'],
                     'code'                 => $row['Product Code'],
                     'product_id'           => $row['Product ID'],
                     'product_historic_key' => $row['Product Key'],
@@ -2499,10 +2493,6 @@ class Order extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2513,7 +2503,6 @@ class Order extends DB_Table {
 
     function get_formatted_payment_state() {
         return get_order_formatted_payment_state($this->data);
-
     }
 
     function get_date($field) {

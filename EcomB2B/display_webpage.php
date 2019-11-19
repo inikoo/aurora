@@ -14,6 +14,8 @@
 include_once 'utils/general_functions.php';
 
 include_once 'utils/web_common.php';
+include_once 'utils/web_set_locale.php';
+
 
 list($detected_device, $template_suffix) = get_device();
 
@@ -226,7 +228,17 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $store = get_object('Store', $website->get('Website Store Key'));
 
-    set_locate($website, $smarty);
+
+    if(!empty($_SESSION['website_locale'])) {
+        $website_locale = $_SESSION['website_locale'];
+    }else{
+        $_SESSION['website_locale'] = $website->get('Website Locale');
+        $website_locale             = $website->get('Website Locale');
+    }
+    $language=set_locate($website_locale);
+
+    $smarty->assign('language', $language);
+
 
     if ($website->get('Website Status') == 'InProcess') {
         $webpage_key = $website->get_system_webpage_key('launching.sys');

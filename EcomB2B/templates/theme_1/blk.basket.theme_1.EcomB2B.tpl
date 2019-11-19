@@ -10,16 +10,11 @@
 *}
 
 <style>
-
-
     .basket{
         font-size: 16px;
     }
 
-
-
     @media only screen  and (max-width: 1240px) {
-
         #basket_continue_shopping {
             display: none
         }
@@ -172,29 +167,18 @@
                      <span class="basket_order_items">
                     {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=true hide_title=true   items_data=$items_data }
                      </span>
-
-
-
-
                     <div style="margin-top:5px">
                         {$voucher_info}
-
                     </div>
-
-
                 </div>
 
 
 
 
          <div class="order_header container text_blocks  text_template_2">
-
-                <div class="text_block" >
-
-                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form"  style="box-shadow: none"
-
-
-                    {assign "voucher_code" $order->get_voucher_code()}
+             <div class="text_block" >
+                 <form action="" method="post" enctype="multipart/form-data"  class="sky-form"  style="box-shadow: none"
+                 {assign "voucher_code" $order->get_voucher_code()}
 
 
 

@@ -232,6 +232,7 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 
                     $otf_key = $this->db->lastInsertId();
 
+                    $this->new_otfs[] = $otf_key;
 
                     if ($dn_key) {
 
@@ -568,7 +569,8 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
             return array(
                 'updated'             => true,
                 'otf_key'             => $otf_key,
-                'to_charge'           => money($net_amount, $this->data['Order Currency']),
+                'to_charge'           => money($net_amount-$gross_discounts, $this->data['Order Currency']),
+
                 'item_discounts'      => $discounts,
                 'net_amount'          => $net_amount,
                 'delta_net_amount'    => $net_amount - $old_net_amount,

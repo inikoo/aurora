@@ -11,11 +11,16 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
+include_once 'utils/web_set_locale.php';
+
 
 $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
 
+
+$current_locale=set_locate($website->get('Website Locale'));
+//print $current_locale;
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -70,7 +75,7 @@ switch ($tipo) {
                      )
         );
 
-        update_item($data, $website,$customer, $order, $editor, $db);
+        update_item($data, $website, $customer, $order, $editor, $db);
 
 
         break;
@@ -139,16 +144,15 @@ switch ($tipo) {
 /**
  * @param $_data
  * @param $customer \Public_Customer
- * @param $website \Public_Website
- * @param $order \Public_Order
+ * @param $website  \Public_Website
+ * @param $order    \Public_Order
  * @param $editor
- * @param $db \PDO
+ * @param $db       \PDO
  */
-function update_item($_data, $website,$customer, $order, $editor, $db) {
+function update_item($_data, $website, $customer, $order, $editor, $db) {
 
 
     $customer->editor = $editor;
-
 
 
     if (!$order->id) {
@@ -161,15 +165,11 @@ function update_item($_data, $website,$customer, $order, $editor, $db) {
     }
 
 
-
-
-
-
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
 
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -228,21 +228,17 @@ function update_item($_data, $website,$customer, $order, $editor, $db) {
 
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
         $basket_history = array(
-            'otf_key'                 => $transaction_data['otf_key'],
-            'webpage_key'             => $_data['webpage_key'],
-            'product_id'              => $product->id,
-            'quantity_delta'          => $transaction_data['delta_qty'],
-            'quantity'                => $transaction_data['qty'],
-            'net_amount_delta'        => $transaction_data['delta_net_amount'],
-            'net_amount'              => $transaction_data['net_amount'],
+            'otf_key'           => $transaction_data['otf_key'],
+            'webpage_key'       => $_data['webpage_key'],
+            'product_id'        => $product->id,
+            'quantity_delta'    => $transaction_data['delta_qty'],
+            'quantity'          => $transaction_data['qty'],
+            'net_amount_delta'  => $transaction_data['delta_net_amount'],
+            'net_amount'        => $transaction_data['net_amount'],
             'page_section_type' => $_data['page_section_type'],
 
         );
@@ -318,10 +314,12 @@ function update_item($_data, $website,$customer, $order, $editor, $db) {
         $response = array(
             'state'               => 200,
             'quantity'            => $transaction_data['qty'],
+            'otf_key'             => $transaction_data['otf_key'],
             'product_pid'         => $product_pid,
             'description'         => $product->data['Product Units Per Case'].'x '.$product->data['Product Name'],
             'discount_percentage' => $transaction_data['discount_percentage'],
             'key'                 => $order->id,
+            'to_charge'      => $transaction_data['to_charge'],
 
             'metadata' => array(
                 'class_html'   => $class_html,
@@ -335,13 +333,13 @@ function update_item($_data, $website,$customer, $order, $editor, $db) {
             ),
 
 
-            'to_charge'      => $transaction_data['to_charge'],
+            'tmp'=>localeconv(),
+
             'discounts_data' => $discounts_data,
             'discounts'      => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
             'charges'        => ($order->data['Order Charges Net Amount'] != 0 ? true : false),
-
-            'order_empty' => ($order->get('Products') == 0 ? true : false),
-            'analytics'   => array(
+            'order_empty'    => ($order->get('Products') == 0 ? true : false),
+            'analytics'      => array(
                 'action' => ($transaction_data['delta_qty'] > 0 ? 'add' : ($transaction_data['delta_qty'] < 0 ? 'remove' : '')),
                 'event'  => ($transaction_data['delta_qty'] > 0 ? 'Add to cart' : ($transaction_data['delta_qty'] < 0 ? 'Remove from cart' : '')),
 
@@ -425,11 +423,10 @@ function invoice_address($data, $order, $editor, $website) {
     $order->update(array('Order Invoice Address' => json_encode($address_data)));
 
 
-
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -528,12 +525,11 @@ function delivery_address($data, $order, $editor, $website) {
     }
 
 
-
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
 
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -591,13 +587,11 @@ function update_special_instructions($data, $order, $editor) {
     );
 
 
-
-
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
 
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -819,11 +813,11 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
     }
 
 
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
 
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -896,7 +890,7 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
 
 
     $response = array(
-        'state'    => 200,
+        'state' => 200,
 
 
         'metadata' => array(
@@ -997,12 +991,11 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
             $db->exec($sql);
 
 
-
-            if($order->get('Order State')=='InBasket'){
+            if ($order->get('Order State') == 'InBasket') {
                 $order->fast_update(
                     array(
 
-                        'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                        'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
                     )
                 );
             }
