@@ -54,7 +54,7 @@ if ($result = $db->query($sql)) {
             }
 
             try {
-                $webpage->update_screenshots();
+                $webpage->update_screenshots('Desktop');
             } catch (Exception $e) {
                 print "error $url\n";
             }

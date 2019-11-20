@@ -18,6 +18,7 @@ include_once 'conf/object_fields.php';
  */
 $webpage = $state['_object'];
 
+
 $object_fields = get_object_fields($webpage, $db, $user, $smarty, array());
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);

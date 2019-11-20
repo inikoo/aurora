@@ -14,7 +14,12 @@ include_once 'utils/natural_language.php';
 
 trait ImageSubject {
 
-
+    /**
+     * @param        $raw_data
+     * @param string $metadata
+     *
+     * @return bool|\Image
+     */
     function add_image($raw_data, $metadata = '') {
 
 
