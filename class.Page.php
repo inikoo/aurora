@@ -3568,16 +3568,7 @@ class Page extends DB_Table {
 
         include 'keyring/screenshots.dns.php';
 
-        $token = "SCREENSHOTS_JWT";
-        $ch = curl_init('SCREENSHOTS_API_URL');
-
-
         $curl = curl_init();
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-
         $route='/'.$device;
         if($type!=''){
             $route.='/'.$type;
@@ -3586,12 +3577,9 @@ class Page extends DB_Table {
         curl_setopt_array(
             $curl, array(
             CURLOPT_HEADER=>1,
-            CURLOPT_VERBOSE=>1,
-            CURLOPT_RETURNTRANSFER=>1,
             CURLOPT_URL            => SCREENSHOTS_API_URL."/take$route?url=$url",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING       => "",
-            CURLOPT_MAXREDIRS      => 10,
             CURLOPT_TIMEOUT        => 30,
             CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST  => "GET",
@@ -3609,74 +3597,70 @@ class Page extends DB_Table {
         $response = curl_exec($curl);
         $err      = curl_error($curl);
 
-
-
         $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         $header = substr($response, 0, $header_size);
         $body = substr($response, $header_size);
 
         curl_close($curl);
 
-
-
         if (!$err) {
             if(preg_match('/Content-Type: image\/jpeg/',$header)){
                 $tmp_file='server_files/tmp/_screenshot_'.gmdate('U').'_'.md5($url).'.jpeg';
-                file_put_contents($tmp_file, $body);
 
-
-                $scope=$device;
-                if($type!=''){
-                    $scope.=' '.$type;
-                }
-                $scope.=' Screenshot';
-
-                $image_data                  = array(
-                    'Upload Data'                      => array(
-                        'tmp_name' => $tmp_file,
-                        'type'     => 'jpeg'
-                    ),
-                    'Image Filename'                   => $tmp_file,
-                    'Image Subject Object Image Scope' => $scope
-
-
-                );
-
-                $image=$this->add_image($image_data, 'no_history');
-
-
-
-                $_scope=strtolower(preg_replace('/\s/','_',$scope));
-
-                $old_screenshot_image_key      = $this->properties($_scope);
-
-                $this->update(
-                    array(
-                        $_scope     => $image->id,
-                    ), 'no_history'
-                );
-
-
-                if ($old_screenshot_image_key != $image->id) {
-                    $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-                    $stmt = $this->db->prepare($sql);
-                    $stmt->execute(
-                        array(
-                            $old_screenshot_image_key,
-                            $this->id,
-                            $scope
-                        )
-                    );
-                    if ($row = $stmt->fetch()) {
-                        $this->delete_image($row['Image Subject Key']);
+                if(file_put_contents($tmp_file, $body)){
+                    $scope=$device;
+                    if($type!=''){
+                        $scope.=' '.$type;
                     }
+                    $scope.=' Screenshot';
+
+                    $image_data                  = array(
+                        'Upload Data'                      => array(
+                            'tmp_name' => $tmp_file,
+                            'type'     => 'jpeg'
+                        ),
+                        'Image Filename'                   => $tmp_file,
+                        'Image Subject Object Image Scope' => $scope
+
+
+                    );
+
+                    $image=$this->add_image($image_data, 'no_history');
+
+
+
+                    $_scope=strtolower(preg_replace('/\s/','_',$scope));
+
+                    $old_screenshot_image_key      = $this->properties($_scope);
+
+                    $this->update(
+                        array(
+                            $_scope     => $image->id,
+                        ), 'no_history'
+                    );
+
+
+                    if ($old_screenshot_image_key != $image->id) {
+                        $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $old_screenshot_image_key,
+                                $this->id,
+                                $scope
+                            )
+                        );
+                        if ($row = $stmt->fetch()) {
+                            $this->delete_image($row['Image Subject Key']);
+                        }
+                    }
+
+
+                    if(file_exists($tmp_file)){
+                        unlink($tmp_file);
+                    }
+
                 }
-
-
-
-                unlink($tmp_file);
-
-
             }
 
 
