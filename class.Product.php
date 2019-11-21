@@ -3667,7 +3667,12 @@ class Product extends Asset {
 
     }
 
-    function update_sales_correlations($type = 'All', $limit = '5') {
+    function update_sales_correlations($type = 'All', $limit = '5',$db_replica='') {
+
+
+        if(!$db_replica){
+            $db_replica=$this->db;
+        }
 
         $store = get_object('Store', $this->get('Store Key'));
 
@@ -3723,7 +3728,7 @@ class Product extends Asset {
 
                 $_families = array($this->get('Product Family Category Key'));
                 $sql       = sprintf('select `Category B Key` from `Product Category Sales Correlation` where `Category B Key`=%d  and `Correlation`>0 order by `Correlation` desc limit %s ', $this->get('Product Family Category Key'), $limit);
-                if ($result = $this->db->query($sql)) {
+                if ($result = $db_replica->query($sql)) {
                     foreach ($result as $row) {
                         $_families[] = $row['Category B Key'];
                     }
@@ -3738,7 +3743,7 @@ class Product extends Asset {
         }
 
 
-        if ($result2 = $this->db->query($sql)) {
+        if ($result2 = $db_replica->query($sql)) {
 
             foreach ($result2 as $row2) {
 
@@ -3756,7 +3761,7 @@ class Product extends Asset {
                     $sql = sprintf(
                         "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order' ", $this->id
                     );
-                    if ($result = $this->db->query($sql)) {
+                    if ($result = $db_replica->query($sql)) {
                         if ($row = $result->fetch()) {
                             $all_A = $row['num'];
 
@@ -3766,7 +3771,7 @@ class Product extends Asset {
                     $sql = sprintf(
                         "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order' ", $row2['Product ID']
                     );
-                    if ($result = $this->db->query($sql)) {
+                    if ($result = $db_replica->query($sql)) {
                         if ($row = $result->fetch()) {
                             $all_B = $row['num'];
                         }
@@ -3777,13 +3782,13 @@ class Product extends Asset {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
                         );
-                        if ($result = $this->db->query($sql)) {
+                        if ($result = $db_replica->query($sql)) {
                             foreach ($result as $row) {
                                 $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`Product ID`=%d and OTF.`Customer Key`=%d limit 1", $row2['Product ID'], $row['Customer Key']
                                 );
                                 $found = false;
-                                if ($result = $this->db->query($sql)) {
+                                if ($result = $db_replica->query($sql)) {
                                     if ($row = $result->fetch()) {
                                         $found = true;
                                     }
@@ -3802,13 +3807,13 @@ class Product extends Asset {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $row2['Product ID']
                         );
-                        if ($result = $this->db->query($sql)) {
+                        if ($result = $db_replica->query($sql)) {
                             foreach ($result as $row) {
                                 $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`Product ID`=%d and OTF.`Customer Key`=%d limit 1", $this->id, $row['Customer Key']
                                 );
                                 $found = false;
-                                if ($result = $this->db->query($sql)) {
+                                if ($result = $db_replica->query($sql)) {
                                     if ($row = $result->fetch()) {
                                         $found = true;
                                     }
@@ -3848,7 +3853,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $this->id);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
 
 
@@ -3896,7 +3901,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
                                     if ($row4['num'] < $max_correlations) {
 
@@ -3950,7 +3955,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select max(`Correlation`) as corr ,count(*) as num from `Product Sales Anticorrelation` where `Product A ID`=%d    ", $this->id);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
 
 
@@ -4006,7 +4011,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select max(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
                                     if ($row4['num'] < $max_correlations) {
                                         $sql = sprintf(

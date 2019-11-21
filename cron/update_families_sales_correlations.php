@@ -15,6 +15,12 @@ $print_est = true;
 
 
 
+$dns_replica=$dns_replicas[array_rand($dns_replicas, 1)];
+$db_replica = new PDO(
+    "mysql:host=".$dns_replica['host'].";dbname=".$dns_replica['db'].";charset=utf8mb4", $dns_replica['user'], $dns_replica['pwd']
+);
+$db_replica->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
 
 
 
@@ -25,7 +31,7 @@ $sql = sprintf(
     "select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Product' and `Category Subject`='Product'  and `Category Branch Type`='Head' "
 );
 
-if ($result = $db->query($sql)) {
+if ($result = $db_replica->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
     } else {
@@ -41,12 +47,14 @@ $sql = sprintf(
 );
 
 
-if ($result = $db->query($sql)) {
+if ($result = $db_replica->query($sql)) {
     foreach ($result as $row) {
 
-
+        /**
+         * @var $category \ProductCategory
+         */
         $category = get_object('Category',$row['Category Key']);
-        $category->update_product_category_sales_correlations();
+        $category->update_product_category_sales_correlations($db_replica);
 
 
         $contador++;

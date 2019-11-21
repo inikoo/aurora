@@ -1061,13 +1061,20 @@ trait ProductCategory {
     }
 
 
-    function update_product_category_sales_correlations() {
+    function update_product_category_sales_correlations($db_replica='') {
+
+
+        if(!$db_replica){
+            $db_replica=$this->db;
+        }
 
         if ($this->get('Product Category Ignore Correlation') == 'Yes') {
             return;
         }
 
-        $store = get_object('Store', $this->get('Store Key'));
+        include_once 'class.Store.php';
+        $store=new Store('id',$this->get('Store Key'),'',$db_replica);
+
 
 
         if ($this->get('Category Subject') == 'Product') {
@@ -1100,7 +1107,7 @@ trait ProductCategory {
         }
 
 
-        if ($result2 = $this->db->query($sql)) {
+        if ($result2 = $db_replica->query($sql)) {
 
             foreach ($result2 as $row2) {
 
@@ -1122,7 +1129,7 @@ trait ProductCategory {
                     $sql = sprintf(
                         "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order' ", $this->id
                     );
-                    if ($result = $this->db->query($sql)) {
+                    if ($result = $db_replica->query($sql)) {
                         if ($row = $result->fetch()) {
                             $all_A = $row['num'];
 
@@ -1132,7 +1139,7 @@ trait ProductCategory {
                     $sql = sprintf(
                         "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order' ", $row2['Category Key']
                     );
-                    if ($result = $this->db->query($sql)) {
+                    if ($result = $db_replica->query($sql)) {
                         if ($row = $result->fetch()) {
                             $all_B = $row['num'];
                         }
@@ -1143,13 +1150,13 @@ trait ProductCategory {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
                         );
-                        if ($result = $this->db->query($sql)) {
+                        if ($result = $db_replica->query($sql)) {
                             foreach ($result as $row) {
                                 $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $row2['Category Key'], $row['Customer Key']
                                 );
                                 $found = false;
-                                if ($result = $this->db->query($sql)) {
+                                if ($result = $db_replica->query($sql)) {
                                     if ($row = $result->fetch()) {
                                         $found = true;
                                     }
@@ -1168,13 +1175,13 @@ trait ProductCategory {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $row2['Category Key']
                         );
-                        if ($result = $this->db->query($sql)) {
+                        if ($result = $db_replica->query($sql)) {
                             foreach ($result as $row) {
                                 $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $this->id, $row['Customer Key']
                                 );
                                 $found = false;
-                                if ($result = $this->db->query($sql)) {
+                                if ($result = $db_replica->query($sql)) {
                                     if ($row = $result->fetch()) {
                                         $found = true;
                                     }

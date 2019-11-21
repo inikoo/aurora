@@ -37,7 +37,7 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 $sql = sprintf(
-    "SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s order by RAND() ", $where
+    "SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s order by RAND()  ", $where
 );
 
 
