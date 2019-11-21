@@ -49,10 +49,10 @@ if ($result = $db_replica->query($sql)) {
         $product = get_object('Product', $row['Product ID']);
 
 
-        if(!empty($argv[1]) and in_array($argv[1],array('Same_Family','Exclude_Same_Family','Same_Department','Random','New','Best Sellers')) ){
+        if(!empty($argv[1]) and in_array($argv[1],array('Same_Family','Exclude_Same_Family','Same_Department','Random','New','Best Sellers','Auto')) ){
             $type=preg_replace('/\s/','_',$argv[1]);
         }else{
-            $type='All';
+            $type='Auto';
         }
 
         if(!empty($argv[2]) and is_numeric($argv[2])  and $argv[2]>0 ){
