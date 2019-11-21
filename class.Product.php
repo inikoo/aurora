@@ -1506,8 +1506,9 @@ class Product extends Asset {
             $webpage->update(array('Webpage State' => $_state), 'no_history');
         }
 
-        $this->update_webpages();
-
+        if ($web_availability_updated) {
+            $this->update_webpages('web_state');
+        }
 
     }
 
@@ -1642,7 +1643,7 @@ class Product extends Asset {
 
     }
 
-    function update_webpages() {
+    function update_webpages($metadata='') {
 
 
         $webpages_to_reindex = array();
@@ -1665,8 +1666,9 @@ class Product extends Asset {
         foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
             if ($webpage_to_reindex_key > 0) {
                 $sql = sprintf(
-                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql($date)
+                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (%s,%s,%s,%d,%s) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s , `Stack Metadata`=%s , `Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql('from_product_'.$metadata),
+                    prepare_mysql($date), prepare_mysql('from_product_'.$metadata)
 
                 );
                 $this->db->exec($sql);
@@ -2142,7 +2144,7 @@ class Product extends Asset {
                 );
 
 
-                $this->update_webpages();
+                $this->update_webpages('next_shipment');
 
             }
 
@@ -2379,7 +2381,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('weight');
 
                 break;
 
@@ -2432,7 +2434,7 @@ class Product extends Asset {
                 $this->fast_update(array('Product Unit XHTML Dimensions' => $this->get('Unit Dimensions')));
 
 
-                $this->update_webpages();
+                $this->update_webpages('dimensions');
 
 
                 break;
@@ -2540,7 +2542,7 @@ class Product extends Asset {
 
 
                 $this->updated = $updated;
-                $this->update_webpages();
+                $this->update_webpages('materials');
                 break;
 
 
@@ -2591,7 +2593,7 @@ class Product extends Asset {
                 $updated = $this->updated;
                 $this->update_historic_object();
                 $this->updated = $updated;
-                $this->update_webpages();
+                $this->update_webpages('code');
                 break;
 
             case 'Product Name':
@@ -2606,7 +2608,7 @@ class Product extends Asset {
                 $updated = $this->updated;
                 $this->update_historic_object();
 
-                $this->update_webpages();
+                $this->update_webpages('name');
 
                 $this->updated = $updated;
 
@@ -2636,7 +2638,7 @@ class Product extends Asset {
                     ),
 
                 );
-                $this->update_webpages();
+                $this->update_webpages('label');
                 break;
             case 'Product Label in Family':
 
@@ -2645,7 +2647,7 @@ class Product extends Asset {
                 );// Migration
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('label_in_family');
                 break;
 
 
@@ -2711,7 +2713,7 @@ class Product extends Asset {
                     );
 
                 }
-                $this->update_webpages();
+                $this->update_webpages('rrp');
 
                 break;
 
@@ -2761,7 +2763,7 @@ class Product extends Asset {
 
                 );
 
-                $this->update_webpages();
+                $this->update_webpages('units_per_case');
 
 
                 $this->update_historic_object();
@@ -2976,7 +2978,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('mix_properties');
 
                 break;
             case 'Product Origin Country Code':
@@ -3022,7 +3024,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('country_origin');
                 break;
 
             case 'History Note':
@@ -3667,11 +3669,11 @@ class Product extends Asset {
 
     }
 
-    function update_sales_correlations($type = 'All', $limit = '5',$db_replica='') {
+    function update_sales_correlations($type = 'All', $limit = '5', $db_replica = '') {
 
 
-        if(!$db_replica){
-            $db_replica=$this->db;
+        if (!$db_replica) {
+            $db_replica = $this->db;
         }
 
         $store = get_object('Store', $this->get('Store Key'));
