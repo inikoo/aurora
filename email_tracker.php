@@ -408,7 +408,6 @@ if ($validator->isValid($sns)) {
 
                 if ($email_tracking->get('Email Tracking Email Template Type Key') > 0) {
 
-                    //'email_template_update_sent_emails_totals','email_campaign_update_sent_emails_totals','email_template_type_update_sent_emails_totals','shipping_zone_usage','timeseries_stats','data_sets_stats','deal_campaign','deal','deal_component','update_order_in_basket_low_priority','update_order_in_basket','reindex_webpage','warehouse_ISF','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy','product_sales','product_family_sales','product_department_sales','part_sales','part_category_sales','supplier_sales','supplier_category_sales'
 
 
                     $sql = "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
