@@ -1646,6 +1646,7 @@ class Product extends Asset {
     function update_webpages($metadata='') {
 
 
+
         $webpages_to_reindex = array();
 
         $sql  = "select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Scope Key`=? ";
@@ -1666,11 +1667,11 @@ class Product extends Asset {
         foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
             if ($webpage_to_reindex_key > 0) {
                 $sql = sprintf(
-                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (%s,%s,%s,%d,%s) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s , `Stack Metadata`=%s , `Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql('from_product_'.$metadata),
+                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (%s,%s,%s,%d,%s) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s , `Stack Metadata`=%s , `Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql('from_product_'.$metadata),
                     prepare_mysql($date), prepare_mysql('from_product_'.$metadata)
 
                 );
+                //print "$sql\n";
                 $this->db->exec($sql);
 
             }
@@ -2690,7 +2691,7 @@ class Product extends Asset {
                 }
 
                 $this->updated = $updated;
-                $this->update_webpages();
+                $this->update_webpages('price');
                 break;
 
 
