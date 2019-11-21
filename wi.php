@@ -72,7 +72,7 @@ if ($redis->exists($image_code)) {
 
 require_once 'vendor/autoload.php';
 
-use \Gumlet\ImageResize;
+use Gumlet\ImageResize;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 
@@ -106,8 +106,7 @@ if ($row = $stmt->fetch()) {
     $image_mime = $row['Image MIME Type'];
 
 
-
-    $image_path=preg_replace('/\/\//','/',$image_path);
+    $image_path = preg_replace('/\/\//', '/', $image_path);
 
     $cached_image_path = preg_replace('/^img\/public_db/', 'img/public_cache', $image_path);
     $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
@@ -121,21 +120,65 @@ if ($row = $stmt->fetch()) {
         mkdir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1]);
     }
 
+    $resized_done   = false;
+    $optimized_done = false;
 
     if ($size_r != '') {
         list($w, $h) = preg_split('/x/', $size_r);
-        $image              = new ImageResize($image_path);
-        $image->quality_jpg = 100;
-        $image->quality_png = 9;
-
-        $image->resizeToBestFit($w, $h);
 
 
+        if ($image_mime == 'image/gif') {
+
+            include_once 'utils/image_functions.php';
+
+            if (is_animated_gif($image_path)) {
 
 
+                include_once 'external_libs/gifresizer.php';
+                $gr           = new gifresizer;
+                $gr->temp_dir = "/tmp";
+                $gr->resize($image_path, $cached_image_path, $w, $h);
+                $resized_done = true;
+                $optimized_done = true;
+            }
 
 
-        $image->save($cached_image_path);
+        }
+
+
+        if (!$resized_done) {
+
+            $image              = new ImageResize($image_path);
+            $image->quality_jpg = 100;
+            $image->quality_png = 9;
+
+            $image->resizeToBestFit($w, $h);
+            $image->save($cached_image_path);
+
+            if (file_exists($cached_image_path)) {
+                usleep(1000);
+            }
+            if (file_exists($cached_image_path)) {
+                usleep(2000);
+            }
+            if (file_exists($cached_image_path)) {
+                usleep(3000);
+            }
+            if (file_exists($cached_image_path)) {
+                usleep(100000);
+            }
+        }
+
+    } else {
+
+
+        copy($image_path, $cached_image_path);
+    }
+
+    if (!$optimized_done) {
+
+        $optimizerChain = OptimizerChainFactory::create();
+        $optimizerChain->optimize($cached_image_path);
 
         if (file_exists($cached_image_path)) {
             usleep(1000);
@@ -149,30 +192,7 @@ if ($row = $stmt->fetch()) {
         if (file_exists($cached_image_path)) {
             usleep(100000);
         }
-    } else {
-
-
-
-        copy($image_path, $cached_image_path);
     }
-
-
-    $optimizerChain = OptimizerChainFactory::create();
-    $optimizerChain->optimize($cached_image_path);
-
-    if (file_exists($cached_image_path)) {
-        usleep(1000);
-    }
-    if (file_exists($cached_image_path)) {
-        usleep(2000);
-    }
-    if (file_exists($cached_image_path)) {
-        usleep(3000);
-    }
-    if (file_exists($cached_image_path)) {
-        usleep(100000);
-    }
-
 
     $redis->set(
         $image_code, json_encode(
@@ -212,5 +232,4 @@ if ($row = $stmt->fetch()) {
     echo "Image not found";
     exit();
 }
-
 
