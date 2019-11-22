@@ -15,7 +15,7 @@
  * @return int
  */
 function get_website_key_from_domain($redis) {
-    $redis_key = 'GET_WK'.$_SERVER['SERVER_NAME'];
+    $redis_key = 'GET_WK2'.$_SERVER['SERVER_NAME'];
     if ($redis->exists($redis_key)) {
         return $redis->get($redis_key);
     } else {
