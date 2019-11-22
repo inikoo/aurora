@@ -181,6 +181,12 @@
             {else}
                 {assign "with_profile" 1} {assign "with_forms" 1}
             {/if}
+            {elseif $block.type=='client'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "with_profile" 1} {assign "with_forms" 1}
+                {/if}
         {elseif $block.type=='checkout'}
             {if !$logged_in}
                 {assign "with_not_found" 1}

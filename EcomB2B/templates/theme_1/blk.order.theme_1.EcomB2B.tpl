@@ -15,7 +15,7 @@
     @media only screen  and (max-width: 1240px) {
 
         #basket_continue_shopping {
-            display: none
+            display: none;
         }
     }
 

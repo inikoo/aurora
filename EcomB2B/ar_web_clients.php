@@ -172,7 +172,7 @@ function get_clients($customer, $db) {
 
     while ($row = $stmt->fetch()) {
         $data[] = array(
-            $row['Customer Client Code'],
+            sprintf('<a href="client.sys?id=%d">%s</a>',$row['Customer Client Key'],$row['Customer Client Code']),
             $row['Customer Client Name'],
             $row['Customer Client Orders'],
             $action

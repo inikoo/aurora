@@ -339,10 +339,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     }
-
-
-
-    if ($webpage->get('Webpage Code') == 'clients.sys') {
+    elseif ($webpage->get('Webpage Code') == 'clients.sys') {
 
         require_once 'utils/get_addressing.php';
 
@@ -366,8 +363,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     }
-
-    if ($webpage->get('Webpage Code') == 'login.sys') {
+    elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
         if (!empty($_GET['invoice_pdf'])) {
             $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
@@ -378,6 +374,12 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         }
 
     }
+    elseif ($webpage->get('Webpage Code') == 'client.sys') {
+
+            $smarty->assign('client_key', (isset($_REQUEST['id'])?$_REQUEST['id']:0));
+    }
+
+
 
 
     if ($webpage->get('Webpage Scope') == 'Product') {

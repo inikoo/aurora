@@ -73,6 +73,7 @@
             {assign "with_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
+            {assign "with_client" false}
             {assign "with_favourites" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
@@ -114,7 +115,17 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
-
+                    {elseif $block.type=='client'}
+                        {if $logged_in}
+                            {assign "with_client" 1}
+                            <div id="client">
+                                <div style="text-align: center">
+                                    <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
 
 
 
@@ -622,18 +633,19 @@
             getScript("/assets/desktop.forms.min.js", function () {
                 getScript("/assets/desktop.profile.min.js", function () {
                 $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=", function (data) {
-
-
                     $('#profile').html(data.html)
-
-
-
-
-
                 })
                 })
             })
             {/if}
+            {if $with_client==1}
+                  getScript("/assets/desktop.forms.min.js", function () {
+                      $.getJSON("ar_web_client.php?tipo=get_client_html&id={$client_key}&device_prefix=", function (data) {
+                          $('#client').html(data.html)
+                       })
+                   })
+             {/if}
+
             {if $with_register==1}
             $('#register_header_button').addClass('hide')
             getScript("/assets/desktop.forms.min.js", function () {

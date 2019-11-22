@@ -1,6 +1,6 @@
 var columns = [
 {
-name: "site_key",
+name: "website_key",
 label: "",
 editable: false,
 renderable: false,

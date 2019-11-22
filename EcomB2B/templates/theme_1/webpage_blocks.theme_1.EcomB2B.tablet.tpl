@@ -59,6 +59,7 @@
             {assign "with_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
+            {assign "with_client" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
             {assign "with_clients" false}
@@ -102,6 +103,17 @@
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                             {/if}
+                     {elseif $block.type=='client'}
+                         {if $logged_in}
+                             {assign "with_client" 1}
+                             <div id="client">
+                                 <div style="text-align: center">
+                                     <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                 </div>
+                             </div>
+                         {else}
+                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
+                         {/if}
                         {elseif $block.type=='checkout'}
                             {if $logged_in}{assign "with_checkout" 1}
                                 <div id="checkout">
@@ -489,6 +501,14 @@
 
                 })
                 {/if}
+                {if $with_client==1}
+                getScript("/assets/mobile.forms.min.js", function () {
+                    $.getJSON("ar_web_client.php?tipo=get_client_html&device_prefix=tablet", function (data) {
+                        $('#client').html(data.html)
+                    })
+                })
+                {/if}
+
                 {if $with_register==1}
                 getScript("/assets/mobile.forms.min.js", function () {
 

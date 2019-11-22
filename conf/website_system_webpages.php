@@ -920,7 +920,6 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Clients',
             'Webpage Code'             => 'clients.sys',
-           // 'Webpage Browser Title'    => _('Clients'),
             'Webpage Name'             => _('Clients'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => '',
@@ -930,6 +929,32 @@ function website_system_webpages_config($website_type) {
                         array(
                             'type'          => 'clients',
                             'label'         => _('Clients'),
+                            'icon'          => 'fa-user',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array()
+                        )
+
+                    )
+                )
+            )
+
+        ),
+        'client.sys'        => array(
+            'Webpage Scope'            => 'Client',
+            'Webpage Scope Metadata'   => '',
+            'Webpage Type'             => 'Client',
+            'Webpage Code'             => 'client.sys',
+            'Webpage Name'             => _('Client'),
+            'Webpage Meta Description' => '',
+            'Webpage Scope Metadata'   => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'client',
+                            'label'         => _('Client'),
                             'icon'          => 'fa-user',
                             'show'          => 1,
                             'top_margin'    => 40,

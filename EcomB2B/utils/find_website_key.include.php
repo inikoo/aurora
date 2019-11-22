@@ -11,7 +11,8 @@
 
 
 if ( preg_match('/bali|sasi|sakoi|geko/', gethostname()) ) {
-    $_SESSION['website_key'] = 1;
+    include 'keyring/dns.php';
+    $_SESSION['website_key'] =$_website_key;
 } else {
 
     include_once 'utils/general_functions.php';

@@ -429,6 +429,39 @@ class Public_Customer_Client extends DBW_Table {
 
     }
 
+    function get_orders_data() {
+
+        $orders_data = array();
+        $sql         = sprintf('select `Order Invoice Key`,`Order Key`,`Order Public ID`,`Order Date`,`Order Total Amount`,`Order State`,`Order Currency` from `Order Dimension` where `Order Customer Client Key`=%d order by `Order Date` desc ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                switch ($row['Order State']) {
+                    default:
+                        $state = $row['Order State'];
+                }
+
+                $orders_data[] = array(
+                    'key'         => $row['Order Key'],
+                    'invoice_key' => $row['Order Invoice Key'],
+                    'number'      => $row['Order Public ID'],
+                    'date'        => strftime("%e %b %Y", strtotime($row['Order Date'].' +0:00')),
+                    'state'       => $state,
+                    'total'       => money($row['Order Total Amount'], $row['Order Currency'])
+
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        return $orders_data;
+
+    }
+
 
     function get_field_label($field) {
 
