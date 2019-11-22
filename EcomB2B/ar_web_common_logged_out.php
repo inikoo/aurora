@@ -20,12 +20,12 @@ include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';
 include_once 'utils/network_functions.php';
 
-
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
 session_start();
 if (empty($_SESSION['website_key'])) {
-    $redis = new Redis();
-    $redis->connect('127.0.0.1', 6379);
-    include('utils/find_website_key.include.php');
+    include_once('utils/find_website_key.include.php');
+    $_SESSION['website_key']=get_website_key_from_domain($redis);
 }
 
 if (!isset($_REQUEST['tipo'])) {

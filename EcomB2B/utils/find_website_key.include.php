@@ -9,47 +9,54 @@
 
 */
 
+/**
+ * @param $redis \Redis
+ *
+ * @return int
+ */
+function get_website_key_from_domain($redis) {
+    $redis_key = 'GET_WK'.$_SERVER['SERVER_NAME'];
+    if ($redis->exists($redis_key)) {
+        return $redis->get($redis_key);
+    } else {
+        if (preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
 
-if ( preg_match('/bali|sasi|sakoi|geko/', gethostname()) ) {
-    include 'keyring/dns.php';
-    $_SESSION['website_key'] =$_website_key;
-} else {
-
-    include_once 'utils/general_functions.php';
-    require_once 'keyring/dns.php';
-
-    $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-    );
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-
-    $server_name = $_SERVER['SERVER_NAME'];//preg_replace('/^www\./','',$_SERVER['SERVER_NAME']);
-
-    $sql = sprintf(
-        'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($server_name)
-    );
-
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $_SESSION['website_key'] = $row['Website Key'];
-
-
-
-
+            /** @var $_website_key integer */
+            include 'keyring/dns.php';
+            $redis->set(
+                $redis_key, $_website_key
+            );
+            return $_website_key;
         } else {
 
-            print 'E1 SERVER_NAME '.$_SERVER['SERVER_NAME'];
-            exit;
+            /** @var $dns_host string */
+            /** @var $dns_db string */
+            /** @var $dns_user string */
+            /** @var $dns_pwd string */
+            require_once 'keyring/dns.php';
+
+            $db = new PDO(
+                "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+            );
+            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            $sql = "SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=?";
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $_SERVER['SERVER_NAME']
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $redis->set(
+                    $redis_key, $row['Website Key']
+                );
+                return $row['Website Key'];
+            } else {
+                Sentry\captureMessage('Can not find website key from '.$_SERVER['SERVER_NAME']);
+                exit;
+            }
         }
-    } else {
-
-
-        print 'E2 SERVER_NAME '.$_SERVER['SERVER_NAME'];
-        exit;
-
     }
-
-
 }

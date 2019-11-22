@@ -40,7 +40,8 @@ if(session_id() == '' || !isset($_SESSION)) {
 
 
 if (empty($_SESSION['website_key'])) {
-    include('utils/find_website_key.include.php');
+    include_once('utils/find_website_key.include.php');
+    $_SESSION['website_key']=get_website_key_from_domain($redis);
 }
 
 $is_cached = false;

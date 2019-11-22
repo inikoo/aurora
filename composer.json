@@ -19,6 +19,7 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "phpoffice/phpspreadsheet": "^1.9",
-        "rbdwllr/reallysimplejwt": "^2.1"
+        "rbdwllr/reallysimplejwt": "^2.1",
+      "ext-redis": "*"
     }
 }
