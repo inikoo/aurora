@@ -264,3 +264,17 @@ function update_order_item($_data, $website, $customer, $order, $editor, $db) {
     echo json_encode($response);
 
 }
+
+function create_order($editor, $customer) {
+
+
+    $order_data = array(
+        'editor' => $editor
+    );
+
+
+    $order = $customer->create_order($order_data);
+
+
+    return $order;
+}
