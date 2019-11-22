@@ -31,17 +31,17 @@ $smarty->setCacheDir('server_files/smarty/cache');
 $smarty->setConfigDir('server_files/smarty/configs');
 $smarty->addPluginsDir('./smarty_plugins');
 
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
 
 if(session_id() == '' || !isset($_SESSION)) {
     session_start();
 }
 
 
-//if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
-
+if (empty($_SESSION['website_key'])) {
     include('utils/find_website_key.include.php');
-
-//}
+}
 
 $is_cached = false;
 
@@ -56,7 +56,6 @@ if (!$is_cached) {
 
     if (!isset($db)) {
 
-        require 'keyring/dns.php';
 
         $db = new PDO(
             "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
@@ -407,6 +406,3 @@ if (!$is_cached) {
 
 }
 
-
-
-?>

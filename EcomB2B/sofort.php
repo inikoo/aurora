@@ -11,16 +11,10 @@
 
 require_once '../vendor/autoload.php';
 require_once 'utils/sentry.php';
-
-
-
 require_once 'utils/placed_order_functions.php';
 require_once 'utils/aes.php';
 
-
-
-
-$smarty               = new Smarty();
+$smarty = new Smarty();
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
@@ -40,15 +34,19 @@ include_once 'utils/general_functions.php';
 include_once 'utils/network_functions.php';
 
 
+
 session_start();
 
-include('utils/find_website_key.include.php');
+if (empty($_SESSION['website_key'])) {
+    $redis = new Redis();
+    $redis->connect('127.0.0.1', 6379);
+    include('utils/find_website_key.include.php');
+}
 
-
-if(isset($_REQUEST['cancel'])){
-    $cancel=true;
-}else{
-    $cancel=false;
+if (isset($_REQUEST['cancel'])) {
+    $cancel = true;
+} else {
+    $cancel = false;
 }
 
 if (!isset($db)) {
@@ -59,7 +57,7 @@ if (!isset($db)) {
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 }
 $website = get_object('Website', $_SESSION['website_key']);
-$account=get_object('Account',1);
+$account = get_object('Account', 1);
 
 
 $order = get_object('Order', $_REQUEST['order_key']);
@@ -86,13 +84,13 @@ $store->editor    = $editor;
 foreach ($order->get_payments('objects') as $payment) {
     if ($payment->get('Payment Metadata') == $_REQUEST['conf'] and $payment->get('Payment Transaction ID') == $_REQUEST['tx']) {
         $payment->editor = $editor;
-        $payment->update(array('Payment Transaction Status' => ( $cancel?'Cancelled':'Completed')));
+        $payment->update(array('Payment Transaction Status' => ($cancel ? 'Cancelled' : 'Completed')));
 
     }
 
 }
 
-if($cancel){
+if ($cancel) {
     header('Location: checkout.sys');
     exit;
 
@@ -111,34 +109,25 @@ $order->update(
 );
 
 
-
-
-
-
-$email_template_type=get_object('Email_Template_Type','Order Confirmation|'.$website->get('Website Store Key'),'code_store');
-$email_template = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+$email_template_type      = get_object('Email_Template_Type', 'Order Confirmation|'.$website->get('Website Store Key'), 'code_store');
+$email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
-$send_data=array(
-    'Email_Template_Type'=>$email_template_type,
-    'Email_Template'=>$email_template,
-    'Order'=>$order,
-    'Order Info'=>get_pay_info($order, $website, $smarty),
-    'Pay Info'=> get_order_info($order)
+$send_data = array(
+    'Email_Template_Type' => $email_template_type,
+    'Email_Template'      => $email_template,
+    'Order'               => $order,
+    'Order Info'          => get_pay_info($order, $website, $smarty),
+    'Pay Info'            => get_order_info($order)
 
 );
 
 
-
-
-
-$published_email_template->send($customer,$send_data);
-
+$published_email_template->send($customer, $send_data);
 
 
 setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
 header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
 exit;
 
-?>

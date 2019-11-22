@@ -22,9 +22,11 @@ include_once 'utils/network_functions.php';
 
 
 session_start();
-
-include('utils/find_website_key.include.php');
-
+if (empty($_SESSION['website_key'])) {
+    $redis = new Redis();
+    $redis->connect('127.0.0.1', 6379);
+    include('utils/find_website_key.include.php');
+}
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -58,9 +60,6 @@ if ($logged_in) {
 
 
 $account=get_object('Account',1);
-
-
-
 require_once 'utils/ar_web_common.php';
 
 
