@@ -622,7 +622,7 @@ function save_add_item(save_button) {
 
     var form_data = new FormData();
 
-    form_data.append("tipo", 'update_item')
+    form_data.append("tipo", 'update_order_item')
     form_data.append("webpage_key", $('#webpage_data').data('webpage_key'))
     form_data.append("page_section_type", 'Add_Basket')
 
@@ -632,7 +632,7 @@ function save_add_item(save_button) {
 
     var request = $.ajax({
 
-        url: "/ar_web_basket.php",
+        url: "/ar_web_update_order_item.php",
         data: form_data,
         processData: false,
         contentType: false,

@@ -85,7 +85,7 @@ $(function () {
         }
 
 
-        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
+        var request = 'ar_web_update_order_item.php?tipo=update_order_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
 
 
         $.getJSON(request, function (data) {
@@ -264,7 +264,7 @@ function save_item_qty_change(element) {
     var settings = $(element).closest('span').data('settings')
 
 
-    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.item_key + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
+    var request = 'ar_web_update_order_item.php?tipo=update_order_item&product_id=' + settings.item_key + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
 
 
     $.getJSON(request, function (data) {

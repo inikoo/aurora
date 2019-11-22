@@ -19,7 +19,7 @@ $account = get_object('Account', 1);
 $website = get_object('Website', $_SESSION['website_key']);
 
 
-$current_locale=set_locate($website->get('Website Locale'));
+$current_locale = set_locate($website->get('Website Locale'));
 //print $current_locale;
 
 if (!isset($_REQUEST['tipo'])) {
@@ -65,6 +65,7 @@ switch ($tipo) {
 
         break;
 
+    //Delete this!!!!!!!!!!!!!!! after cool down period
     case 'update_item':
         $data = prepare_values(
             $_REQUEST, array(
@@ -80,11 +81,11 @@ switch ($tipo) {
 
         break;
 
-
     case 'get_charges_info':
 
         get_charges_info($order);
         break;
+
     case 'special_instructions':
         $data = prepare_values(
             $_REQUEST, array(
@@ -94,6 +95,7 @@ switch ($tipo) {
         );
         update_special_instructions($data, $order, $editor);
         break;
+
     case 'invoice_address':
         $data = prepare_values(
             $_REQUEST, array(
@@ -103,6 +105,7 @@ switch ($tipo) {
         );
         invoice_address($data, $order, $editor, $website);
         break;
+
     case 'delivery_address':
         $data = prepare_values(
             $_REQUEST, array(
@@ -112,7 +115,6 @@ switch ($tipo) {
         );
         delivery_address($data, $order, $editor, $website);
         break;
-
 
     case 'web_toggle_charge':
         $data = prepare_values(
@@ -141,14 +143,7 @@ switch ($tipo) {
 
 }
 
-/**
- * @param $_data
- * @param $customer \Public_Customer
- * @param $website  \Public_Website
- * @param $order    \Public_Order
- * @param $editor
- * @param $db       \PDO
- */
+//Delete this!!!!!!!!!!!!!!! after cool down period
 function update_item($_data, $website, $customer, $order, $editor, $db) {
 
 
@@ -319,7 +314,7 @@ function update_item($_data, $website, $customer, $order, $editor, $db) {
             'description'         => $product->data['Product Units Per Case'].'x '.$product->data['Product Name'],
             'discount_percentage' => $transaction_data['discount_percentage'],
             'key'                 => $order->id,
-            'to_charge'      => $transaction_data['to_charge'],
+            'to_charge'           => $transaction_data['to_charge'],
 
             'metadata' => array(
                 'class_html'   => $class_html,
@@ -333,7 +328,7 @@ function update_item($_data, $website, $customer, $order, $editor, $db) {
             ),
 
 
-            'tmp'=>localeconv(),
+            'tmp' => localeconv(),
 
             'discounts_data' => $discounts_data,
             'discounts'      => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
