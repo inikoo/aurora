@@ -9,10 +9,6 @@
  Version 3
 
 */
-
-require_once '../vendor/autoload.php';
-
-
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
 require_once 'utils/aes.php';
