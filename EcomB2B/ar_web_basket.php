@@ -360,6 +360,7 @@ function update_item($_data, $website, $customer, $order, $editor, $db) {
 
 }
 
+//delete this
 function create_order($editor, $customer) {
 
 

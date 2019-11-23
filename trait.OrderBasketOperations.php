@@ -15,7 +15,7 @@ trait OrderBasketOperations {
 
     function create_order($data) {
 
-        global $account;
+        $account=get_object('Account',1);
 
 
         $this->editor           = $data['editor'];

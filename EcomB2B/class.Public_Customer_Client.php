@@ -297,7 +297,7 @@ class Public_Customer_Client extends DBW_Table {
 
     function create_order() {
 
-        global $account;
+         $account=get_object('Account',1);
 
 
         $order_data = array(
