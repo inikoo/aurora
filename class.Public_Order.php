@@ -226,7 +226,7 @@ class Public_Order extends DBW_Table {
                     $this->db->exec($sql);
                     $sql = "UPDATE `Order No Product Transaction Deal Bridge` SET `Order No Product Transaction Deal Pinned`='Yes' WHERE `Order Key`=?   ";
 
-                    $this->this->prepare($sql)->execute(array($this->id));
+                    $this->db->prepare($sql)->execute(array($this->id));
 
 
                     $this->fast_update(
