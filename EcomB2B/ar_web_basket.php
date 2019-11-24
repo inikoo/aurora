@@ -751,7 +751,7 @@ function get_basket_html($data, $customer) {
 
         list(
             $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
-            ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+            ) = get_address_form_data($order->get('Order Delivery Address Country 2 Alpha Code'), $website->get('Website Locale'));
 
         $smarty->assign('delivery_address_labels', $delivery_address_labels);
         $smarty->assign('delivery_required_fields', $delivery_required_fields);
