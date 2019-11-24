@@ -11,7 +11,7 @@
 
 include_once 'ar_web_common_logged_in.php';
 
-require_once 'utils/get_addressing.php';
+require_once __DIR__.'/utils/get_addressing.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -27,15 +27,13 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 
-//print_r($_REQUEST);
-
 switch ($tipo) {
 
 
     case 'get_client_html':
         $data = prepare_values(
             $_REQUEST, array(
-                         'id'   => array('type' => 'numeric'),
+                         'id'            => array('type' => 'numeric'),
                          'device_prefix' => array(
                              'type'     => 'string',
                              'optional' => true
@@ -43,70 +41,33 @@ switch ($tipo) {
                      )
         );
 
-        get_client_html($data, $customer, $db);
+        get_client_html($data, $customer);
 
 
         break;
-    case 'contact_details':
+    case 'update_customer_client_details':
         $data = prepare_values(
             $_REQUEST, array(
+                         'key'  => array('type' => 'key'),
                          'data' => array('type' => 'json array'),
 
                      )
         );
-        contact_details($db, $data, $customer, $editor);
+        update_customer_client_details($data, $customer->id, $editor);
         break;
 
-    case 'unsubscribe':
+
+    case 'update_contact_address':
         $data = prepare_values(
             $_REQUEST, array(
-                         'data'          => array('type' => 'json array'),
-                         'selector'      => array('type' => 'string'),
-                         'authenticator' => array('type' => 'string'),
-
-                     )
-        );
-        unsubscribe($db, $data, $editor);
-        break;
-
-    case 'invoice_address':
-        $data = prepare_values(
-            $_REQUEST, array(
+                         'key'  => array('type' => 'key'),
                          'data' => array('type' => 'json array'),
 
                      )
         );
-        invoice_address($db, $data, $customer, $editor);
-        break;
-    case 'delivery_address':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'data' => array('type' => 'json array'),
-
-                     )
-        );
-        delivery_address($db, $data, $customer, $editor);
+        update_contact_address($data, $customer->id, $editor);
         break;
 
-
-    case 'update_password':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'pwd' => array('type' => 'string'),
-
-                     )
-        );
-        update_password($db, $data, $editor);
-        break;
-    case 'poll':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'data' => array('type' => 'json array'),
-
-                     )
-        );
-        update_poll($db, $data, $customer, $editor);
-        break;
 
     default:
         $response = array(
@@ -118,7 +79,35 @@ switch ($tipo) {
         break;
 }
 
-function invoice_address($db, $data, $customer, $editor) {
+/**
+ * @param $data array
+ * @param $customer_key integer
+ * @param $editor array
+ */
+function update_contact_address($data, $customer_key, $editor) {
+
+
+
+    $customer_client = get_object('Customer_Client', $data['key']);
+    if (!$customer_client->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    if ($customer_client->get('Customer Client Customer Key') != $customer_key) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $customer_client->editor = $editor;
 
 
     $address_data = array(
@@ -157,76 +146,7 @@ function invoice_address($db, $data, $customer, $editor) {
 
     }
 
-
-    $customer->editor = $editor;
-    $customer->update(array('Customer Invoice Address' => json_encode($address_data)));
-
-
-    echo json_encode(
-        array(
-            'state'    => 200,
-            'metadata' => array(
-                'class_html' => array(
-                    'Tax_Number_Valid' => $customer->get('Tax Number Valid'),
-                )
-            )
-        )
-    );
-
-
-}
-
-function delivery_address($db, $data, $customer, $editor) {
-
-
-    $customer->editor = $editor;
-
-
-    if ($data['data']['delivery_address_link']) {
-        $customer->update(array('Customer Delivery Address Link' => 'Billing'));
-
-    } else {
-        $customer->update(array('Customer Delivery Address Link' => 'None'));
-
-        $address_data = array(
-            'Address Line 1'               => '',
-            'Address Line 2'               => '',
-            'Address Sorting Code'         => '',
-            'Address Postal Code'          => '',
-            'Address Dependent Locality'   => '',
-            'Address Locality'             => '',
-            'Address Administrative Area'  => '',
-            'Address Country 2 Alpha Code' => '',
-        );
-
-
-        foreach ($data['data'] as $key => $value) {
-
-            if ($key == 'addressLine1') {
-                $key = 'Address Line 1';
-            } elseif ($key == 'addressLine2') {
-                $key = 'Address Line 2';
-            } elseif ($key == 'sortingCode') {
-                $key = 'Address Sorting Code';
-            } elseif ($key == 'postalCode') {
-                $key = 'Address Postal Code';
-            } elseif ($key == 'dependentLocality') {
-                $key = 'Address Dependent Locality';
-            } elseif ($key == 'locality') {
-                $key = 'Address Locality';
-            } elseif ($key == 'administrativeArea') {
-                $key = 'Address Administrative Area';
-            } elseif ($key == 'country') {
-                $key = 'Address Country 2 Alpha Code';
-            }
-
-            $address_data[$key] = $value;
-
-        }
-
-        $customer->update(array('Customer Delivery Address' => json_encode($address_data)));
-
-    }
+    $customer_client->update(array('Customer Client Contact Address' => json_encode($address_data)));
 
 
     echo json_encode(
@@ -238,7 +158,31 @@ function delivery_address($db, $data, $customer, $editor) {
 
 }
 
-function contact_details($db, $data, $customer, $editor) {
+/**
+ * @param $data
+ * @param $customer_key integer
+ * @param $editor       array
+ */
+function update_customer_client_details($data, $customer_key, $editor) {
+
+
+    $customer_client = get_object('Customer_Client', $data['key']);
+    if (!$customer_client->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    if ($customer_client->get('Customer Client Customer Key') != $customer_key) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
 
 
     $update_data = array();
@@ -246,44 +190,30 @@ function contact_details($db, $data, $customer, $editor) {
     foreach ($data['data'] as $key => $value) {
 
         if ($key == 'company') {
-            $key = 'Customer Company Name';
+            $key = 'Customer Client Company Name';
         } elseif ($key == 'contact_name') {
-            $key = 'Customer Main Contact Name';
+            $key = 'Customer Client Main Contact Name';
         } elseif ($key == 'email') {
-            $key = 'Customer Main Plain Email';
+            $key = 'Customer Client Main Plain Email';
         } elseif ($key == 'mobile') {
-            $key = 'Customer Main Plain Mobile';
-        } elseif ($key == 'registration_number') {
-            $key = 'Customer Registration Number';
-        } elseif ($key == 'tax_number') {
-            $key = 'Customer Tax Number';
-        } elseif ($key == 'newsletter') {
-            $key   = 'Customer Send Newsletter';
-            $value = ($value ? 'Yes' : 'No');
-        } elseif ($key == 'email_marketing') {
-            $key   = 'Customer Send Email Marketing';
-            $value = ($value ? 'Yes' : 'No');
-        } elseif ($key == 'postal_marketing') {
-            $key   = 'Customer Send Postal Marketing';
-            $value = ($value ? 'Yes' : 'No');
+            $key = 'Customer Client Main Plain Mobile';
+        } elseif ($key == 'code') {
+            $key = 'Customer Client Code';
         }
         $update_data[$key] = $value;
 
     }
 
-    //print_r($update_data);
 
-    $customer->editor = $editor;
-    $customer->update($update_data);
+    $customer_client->editor = $editor;
+    $customer_client->update($update_data);
 
 
     echo json_encode(
         array(
             'state'    => 200,
             'metadata' => array(
-                'class_html' => array(
-                    'Tax_Number_Valid' => $customer->get('Tax Number Valid'),
-                )
+                'class_html' => array()
             )
         )
     );
@@ -291,75 +221,7 @@ function contact_details($db, $data, $customer, $editor) {
 
 }
 
-function update_password($db, $data, $editor) {
-
-
-    $website_user         = get_object('User', $_SESSION['website_user_key']);
-    $website_user->editor = $editor;
-
-
-    if ($website_user->id) {
-
-        $website_user->update(
-            array(
-                'Website User Password Hash' => password_hash($data['pwd'], PASSWORD_DEFAULT, array('cost' => 12)),
-
-
-            ), 'no_history'
-        );
-
-        $website_user->update(
-            array(
-                'Website User Password' => $data['pwd'],
-
-
-            ), 'no_history'
-        );
-
-
-        echo json_encode(
-            array(
-                'state' => 200
-            )
-        );
-        exit;
-
-    } else {
-        echo json_encode(
-            array(
-                'state'      => 400,
-                'error_type' => 'User not found'
-            )
-        );
-        exit;
-    }
-
-
-}
-
-function update_poll($db, $data, $customer, $editor) {
-
-    $customer->editor = $editor;
-    foreach ($data['data'] as $_key => $value) {
-
-        if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
-
-            $poll_key = $matches[1];
-            $customer->update(array('Customer Poll Query '.$poll_key => $value));
-
-
-        }
-    }
-
-    echo json_encode(
-        array(
-            'state' => 200
-        )
-    );
-    exit;
-}
-
-function get_client_html($data, $customer, $db) {
+function get_client_html($data, $customer) {
 
 
     $smarty = new Smarty();
@@ -370,15 +232,15 @@ function get_client_html($data, $customer, $db) {
     $smarty->addPluginsDir('./smarty_plugins');
 
 
-    $website = get_object('Website', $_SESSION['website_key']);
-    $store   = get_object('Store', $website->get('Website Store Key'));
-    $customer_client=get_object('Customer_Client', $data['id']);
+    $website         = get_object('Website', $_SESSION['website_key']);
+    $store           = get_object('Store', $website->get('Website Store Key'));
+    $customer_client = get_object('Customer_Client', $data['id']);
 
 
     $webpage = $website->get_webpage('client.sys');
     $content = $webpage->get('Content Data');
 
-
+    $block='';
     $block_found = false;
     $block_key   = false;
     foreach ($content['blocks'] as $_block_key => $_block) {
@@ -410,8 +272,8 @@ function get_client_html($data, $customer, $db) {
     $smarty->assign('logged_in', true);
 
 
-    require_once 'utils/get_addressing.php';
-    require_once 'utils/get_countries.php';
+    require_once __DIR__.'/utils/get_addressing.php';
+    require_once __DIR__.'/utils/get_countries.php';
 
 
     list(
@@ -428,8 +290,6 @@ function get_client_html($data, $customer, $db) {
     $smarty->assign('countries', $countries);
 
 
-
-
     $response = array(
         'state' => 200,
         'html'  => $smarty->fetch('theme_1/blk.client.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
@@ -439,72 +299,3 @@ function get_client_html($data, $customer, $db) {
     echo json_encode($response);
 
 }
-
-function unsubscribe($db, $data, $editor) {
-
-
-    include_once('class.WebAuth.php');
-    $auth = new WebAuth();
-
-    $unsubscribe_customer_key = $auth->get_customer_from_unsubscribe_link($data['selector'], $data['authenticator']);
-
-
-    if ($unsubscribe_customer_key != '') {
-        $unsubscribe_customer = get_object('Customer', $unsubscribe_customer_key);
-        if (!$unsubscribe_customer->id) {
-            echo json_encode(
-                array(
-                    'state'      => 400,
-                    'error_type' => 'Customer not found'
-                )
-            );
-            exit;
-        }
-    } else {
-        echo json_encode(
-            array(
-                'state'      => 400,
-                'error_type' => 'Customer not found'
-            )
-        );
-        exit;
-    }
-
-    $update_data = array();
-
-
-    foreach ($data['data'] as $key => $value) {
-
-        if ($key == 'newsletter') {
-            $key   = 'Customer Send Newsletter';
-            $value = ($value ? 'Yes' : 'No');
-        } elseif ($key == 'email_marketing') {
-            $key   = 'Customer Send Email Marketing';
-            $value = ($value ? 'Yes' : 'No');
-        } elseif ($key == 'postal_marketing') {
-            $key   = 'Customer Send Postal Marketing';
-            $value = ($value ? 'Yes' : 'No');
-        }
-        $update_data[$key] = $value;
-
-    }
-
-    //print_r($update_data);
-
-    $unsubscribe_customer->editor = $editor;
-    $unsubscribe_customer->update($update_data);
-
-
-    echo json_encode(
-        array(
-            'state'    => 200,
-            'metadata' => array(
-                'class_html' => array()
-            )
-        )
-    );
-
-
-}
-
-

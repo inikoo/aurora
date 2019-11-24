@@ -270,19 +270,15 @@ class Public_Customer_Client extends DBW_Table {
 
 
         switch ($field) {
-
-
             case 'Customer Client Contact Address':
-
                 $this->update_address('Contact', json_decode($value, true), $options);
-
-
-                break;
-
-
                 break;
             case 'Customer Client Location':
             case 'Customer Client Code':
+            case 'Customer Client Company Name':
+            case 'Customer Client Main Contact Name':
+            case 'Customer Client Main Plain Email':
+            case 'Customer Client Main Plain Mobile':
 
                 $this->update_field($field, $value, $options);
 

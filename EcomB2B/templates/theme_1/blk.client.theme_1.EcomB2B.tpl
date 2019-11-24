@@ -15,14 +15,14 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
+<div id="block_{$key}" data-block_key="{$key}"  data-client_key="{$customer_client->id}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
-    <div class="text_blocks container ">
+    <div class="text_blocks container"   >
 
         <div style="width: 250px" id="client_menu" class="text_block ">
 
             <h4>{if !empty($data.labels._customer_client_title)}{$data.labels._customer_client_title}{else}{t}Customer details{/t}{/if}</h4>
-            <ul>
+            <ul class="clean">
                 <li>
                  <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
@@ -47,7 +47,7 @@
 
                     <h4>{if !empty($data.labels._customer_orders_title)}{$data.labels._customer_orders_title}{else}{t}Customer's orders{/t}{/if}</h4>
 
-                <ul class=" arrows_list1">
+                <ul class="clean">
                     <li>
 
 
@@ -145,7 +145,7 @@
 
 
 
-                        <fieldset id="delivery_address_fields" class="{if $customer_client->get('Customer Client Delivery Address Link')=='Billing'}hide{/if}" style="position:relative">
+                        <fieldset id="delivery_address_fields" class="{if $customer_client->get('Customer Client Contact Address Link')=='Billing'}hide{/if}" style="position:relative">
 
 
                             <section id="delivery_addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}hide{/if}">
@@ -153,7 +153,7 @@
                                 <label for="file" class="input">
                                     <label class="label">{if !empty($labels.address_addressLine1)}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
 
-                                    <input value="{$customer_client->get('Customer Client Delivery Address Line 1')}" type="text" name="addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                    <input value="{$customer_client->get('Customer Client Contact Address Line 1')}" type="text" name="addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
                                            placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
                                     <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                                 </label>
@@ -163,7 +163,7 @@
                                 <label for="file" class="input">
                                     <label class="label">{if !empty($labels.address_addressLine2)}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
 
-                                    <input value="{$customer_client->get('Customer Client Delivery Address Line 2')}" type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                    <input value="{$customer_client->get('Customer Contact Delivery Address Line 2')}" type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
                                            placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
                                     <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                                 </label>
@@ -175,7 +175,7 @@
                                     <label class="input">
                                         <label class="label">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
 
-                                        <input value="{$customer_client->get('Customer Client Delivery Address Sorting Code')}" type="text" name="sortingCode"
+                                        <input value="{$customer_client->get('Customer Client Contact Address Sorting Code')}" type="text" name="sortingCode"
                                                class="{if 'sortingCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
                                                placeholder="{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
@@ -190,7 +190,7 @@
                                     <label class="input">
                                         <label class="label">{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}</label>
 
-                                        <input value="{$customer_client->get('Customer Client Delivery Address Postal Code')}" type="text" name="postalCode"
+                                        <input value="{$customer_client->get('Customer Client Contact Address Postal Code')}" type="text" name="postalCode"
                                                class="{if 'postalCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
                                                placeholder="{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}</b>
@@ -205,7 +205,7 @@
                                     <label class="input">
                                         <label class="label">{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}</label>
 
-                                        <input value="{$customer_client->get('Customer Client Delivery Address Dependent Locality')}" type="text" name="dependentLocality"
+                                        <input value="{$customer_client->get('Customer Client Contact Address Dependent Locality')}" type="text" name="dependentLocality"
                                                class="{if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
                                                placeholder="{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"])}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"])}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}</b>
@@ -219,7 +219,7 @@
                                     <label class="input">
                                         <label class="label">{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}</label>
 
-                                        <input value="{$customer_client->get('Customer Client Delivery Address Locality')}" type="text" name="locality" class="{if 'locality'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                        <input value="{$customer_client->get('Customer Client Contact Address Locality')}" type="text" name="locality" class="{if 'locality'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
                                                placeholder="{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}</b>
                                     </label>
@@ -233,7 +233,7 @@
                                     <label class="input">
                                         <label class="label">{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}</label>
 
-                                        <input value="{$customer_client->get('Customer Client Delivery Address Administrative Area')}" type="text" name="administrativeArea"
+                                        <input value="{$customer_client->get('Customer Client Contact Address Administrative Area')}" type="text" name="administrativeArea"
                                                class="{if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
                                                placeholder="{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"])}{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}">
                                         <b class="tooltip tooltip-bottom-right">{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}</b>
@@ -250,7 +250,7 @@
                                             <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                                             {foreach from=$countries item=country}
-                                                <option value="{$country['2alpha']}" {if $country['2alpha']==$customer_client->get('Customer Client Delivery Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                                <option value="{$country['2alpha']}" {if $country['2alpha']==$customer_client->get('Customer Client Contact Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
                                             {/foreach}
 
 
@@ -433,8 +433,8 @@
 
             var ajaxData = new FormData();
 
-            ajaxData.append("tipo", 'customer_client_details')
-            ajaxData.append("key", $(''))
+            ajaxData.append("tipo", 'update_customer_client_details')
+            ajaxData.append("key", $('.client').data('client_key'))
 
             ajaxData.append("data", JSON.stringify(register_data))
 
@@ -642,7 +642,9 @@
 
             var ajaxData = new FormData();
 
-            ajaxData.append("tipo", 'delivery_address')
+            ajaxData.append("tipo", 'update_contact_address')
+            ajaxData.append("key", $('.client').data('client_key'))
+
             ajaxData.append("data", JSON.stringify(register_data))
 
 
