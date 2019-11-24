@@ -961,11 +961,9 @@ function website_system_webpages_config($website_type) {
                             'bottom_margin' => 60,
                             'labels'        => array()
                         )
-
                     )
                 )
             )
-
         ),
         'clients_orders.sys' => array(
             'Webpage Scope'            => 'Clients_Orders',
@@ -990,6 +988,47 @@ function website_system_webpages_config($website_type) {
                         )
 
                     )
+                )
+            )
+
+        ),
+        'client_basket.sys' => array(
+            'Webpage Scope'            => 'Client_Basket',
+            'Webpage Scope Metadata'   => '',
+            'Webpage Type'             => 'Ordering',
+            'Webpage Code'             => 'client_basket.sys',
+            'Webpage Name'             => _("Client basket"),
+            'Webpage Meta Description' => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'locked' => true,
+                            'type'   => 'client_basket',
+                            'label'  => _('Basket'),
+                            'icon'   => 'fa-basket',
+                            'show'   => 1,
+                            '_order_number_label' => _('Order number'),
+                            '_delivery_address_label' => _('Delivery address'),
+                            '_items_gross' => _('Items Gross'),
+                            '_discounts'   => _('Discounts'),
+                            '_items_net'   => _('Items Net'),
+                            '_charges'     => _('Charges'),
+                            '_shipping'    => _('Shipping'),
+                            '_net'         => _('Net'),
+                            '_tax'         => _('Tax'),
+                            '_total'       => _('Total'),
+                            '_credit'       => _('Credit'),
+                            '_total_to_pay' => _('To pay'),
+                            '_special_instructions' => _('Special Instructions'),
+                            '_go_checkout_label' => _('Go to checkout'),
+
+                        )
+
+
+                    )
+
+
                 )
             )
 

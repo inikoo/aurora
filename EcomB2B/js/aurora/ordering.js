@@ -212,27 +212,30 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
 });
 
 
-function save_item_qty_change(element) {
+function save_item_qty_change(element,options) {
 
+    console.log(options)
 
     if ($(element).hasClass('fa-exclamation-circle')) {
         return;
     }
 
 
-    $(element).addClass('fa-spinner fa-spin')
+    $(element).addClass('fa-spinner fa-spin');
 
-    var input = $(element).closest('span').find('input')
+    let input = $(element).closest('span').find('input');
 
     input.prop('readonly', true);
 
+    let _icon,qty,ar_file;
     if ($(element).hasClass('fa-plus')) {
 
 
-        var _icon = 'fa-plus'
+         _icon = 'fa-plus';
+
 
         if (isNaN(input.val()) || input.val() == '') {
-            var qty = 1
+             qty = 1
         } else {
             qty = parseFloat(input.val()) + 1
         }
@@ -243,60 +246,69 @@ function save_item_qty_change(element) {
 
 
         if (isNaN(input.val()) || input.val() == '' || input.val() == 0) {
-            var qty = 0
+             qty = 0
         } else {
             qty = parseFloat(input.val()) - 1
         }
 
-        input.val(qty).addClass('discreet')
+        input.val(qty).addClass('discreet');
 
-        var _icon = 'fa-minus'
+         _icon = 'fa-minus'
 
     } else {
         qty = parseFloat(input.val())
-
-        var _icon = 'fa-save'
+         _icon = 'fa-save'
 
     }
 
     if (qty == '') qty = 0;
 
-    var settings = $(element).closest('span').data('settings')
+    const settings = $(element).closest('span').data('settings');
+
+    const ajaxData = new FormData();
+    ajaxData.append("product_id",settings.item_key)
+    ajaxData.append("qty",qty);
+    ajaxData.append("webpage_key",$('#webpage_data').data('webpage_key'));
+    ajaxData.append("page_section_type","Basket")
+
+    if(options!=undefined &&  options.type=='client_order'){
+        ajaxData.append("tipo", 'update_client_order_item');
+        ajaxData.append("client_key",options.client_key);
+        ajaxData.append("order_key",options.order_key);
+        ar_file="/ar_web_update_client_order_item.php";
+
+    }else{
+        ajaxData.append("tipo", 'update_order_item');
+        ar_file="/ar_web_update_order_item.php";
+    }
 
 
-    var request = 'ar_web_update_order_item.php?tipo=update_order_item&product_id=' + settings.item_key + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
+    $.ajax({
+        url: ar_file, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+                $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-save').addClass('fa-plus')
+                $(element).closest('span').find('i.minus').removeClass('hide fa-spinner fa-spin').addClass('fa-minus')
+                post_save_change_item_in_basket(data)
 
 
-    $.getJSON(request, function (data) {
-        input.prop('readonly', false).removeClass('discreet');
+            } else if (data.state == '400') {
+                $(element).removeClass('fa-spinner fa-spin fa-disk').addClass(_icon)
+                $(element).closest('tr').find('.item_amount').html(data.to_charge)
 
-        if (data.state == 200) {
-
-
-            $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-save').addClass('fa-plus')
-            $(element).closest('span').find('i.minus').removeClass('hide fa-spinner fa-spin').addClass('fa-minus')
-
-            post_save_change_item_in_basket(data)
+                swal(data.msg)
+            }
 
 
-            //input.val(data.quantity).data('ovalue', data.quantity).prop('readonly', false);
 
-        } else if (data.state == 201) {
-
-            // window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').data('webpage_key')
-
-
-        } else if (data.state == 400) {
-
-            $(element).removeClass('fa-spinner fa-spin fa-disk').addClass(_icon)
-            $(element).closest('tr').find('.item_amount').html(data.to_charge)
-
-            swal(data.msg)
+        }, error: function () {
 
         }
+    });
 
 
-    })
 
 }
 

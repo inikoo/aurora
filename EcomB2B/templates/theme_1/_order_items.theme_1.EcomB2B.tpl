@@ -45,7 +45,7 @@
 
 
 
-    <tr>
+    <tr class="basket_order_ths {if !$order->id}hide{/if}">
         <th class="text-left">{t}Code{/t}</th>
         <th class="text-left">{t}Description{/t}</th>
         <th class="text-right">{t}Quantity{/t}</th>

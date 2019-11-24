@@ -83,7 +83,7 @@
                             <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
                         </tr>
                         <tr class="Deal_Amount_Off_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if}">
-                            <td>{if !empty($labels._amout_off)}{$labels._amout_off}{else}{t}Amount off{/t}{/if}</td>
+                            <td>{if !empty($labels._amount_off)}{$labels._amount_off}{else}{t}Amount off{/t}{/if}</td>
                             <td class="text-right Deal_Amount_Off">{$order->get('Deal Amount Off')}</td>
                         </tr>
 

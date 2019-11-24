@@ -71,6 +71,7 @@
             {assign "with_login" false}
             {assign "with_register" false}
             {assign "with_basket" false}
+            {assign "with_client_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
             {assign "with_client" false}
@@ -92,7 +93,7 @@
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}
 
-                    {if $block.type=='basket'}
+                    {if $block.type=='basket' }
                         {if $logged_in}{assign "with_basket" 1}
                             <div id="basket">
                                 <div style="text-align: center">
@@ -103,7 +104,17 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
+                        {elseif $block.type=='client_basket'}
+                            {if $logged_in}{assign "with_client_basket" 1}
+                                <div id="client_basket">
+                                    <div style="text-align: center">
+                                        <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                    </div>
 
+                                </div>
+                            {else}
+                                {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                            {/if}
                     {elseif $block.type=='profile'}
                         {if $logged_in}
                             {assign "with_profile" 1}
@@ -501,8 +512,7 @@
             getScript("/assets/desktop.logged_in.min.js", function () {
                 getScript("/assets/desktop.forms.min.js", function () {
                     getScript("/assets/desktop.basket.min.js", function () {
-
-                    $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
+                        $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
 
                         $('#basket').html(data.html)
 
@@ -538,13 +548,22 @@
                     })
                 })
             })
+            {/if}
+            {if $with_client_basket==1}
+                            getScript("/assets/desktop.logged_in.min.js", function () {
+                                getScript("/assets/desktop.forms.min.js", function () {
+                                    getScript("/assets/desktop.client_basket.min.js", function () {
+                                        $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key={$client_key}&device_prefix=", function (data) {
+                                            $('#client_basket').html(data.html);
 
+
+                                        })
+                                    })
+                                })
+                            });
             {/if}
             {if $with_thanks==1}
-
-
-
-            getScript("/assets/desktop.logged_in.min.js", function () {
+                            getScript("/assets/desktop.logged_in.min.js", function () {
 
                 var getUrlParameter = function getUrlParameter(sParam) {
                     var sPageURL = window.location.search.substring(1),
@@ -722,10 +741,10 @@
                             return;
                         }
 
-                        $('#register_button').addClass('wait')
-                        $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+                        $('#register_button').addClass('wait');
+                        $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin');
 
-                        var register_data = {}
+                        let register_data = { }
 
                         $("#registration_form input:not(.ignore)").each(function (i, obj) {
                             if (!$(obj).attr('name') == '') {
@@ -1556,6 +1575,7 @@
     {/if}
 
 </script>
+
 {if $with_gallery==1}
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="pswp__bg"></div>

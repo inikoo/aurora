@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 29 May 2017 at 19:40:24 GMT+8, Cyberjaya, Malaysia
+ Created:  24 November 2019  16:44::55  +0100, Mijas Costa, Spain
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -84,6 +84,8 @@
 
     <div class="order_header  text_blocks  text_template_3">
         <div class="text_block ">
+
+
             <h5>
                     <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
                      <span id="_delivery_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
@@ -99,20 +101,7 @@
                 </div>
 
 
-        <div class="text_block">
-            <h5 >
-                        <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
-                    <span id="_invoice_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
-                    </h5>
-                        <p>
-                        The Business Centre</br>
-                        61 Wellfield Road</br>
-                        Roath</br>
-                        Cardiff</br>
-                        CF24 3DG </br>
-                        United Kingdom</br>
-                    </p>
-                </div>
+
 
             <div class="totals text_block">
 
@@ -138,7 +127,7 @@
                             <td class="text-right">£268.32</td>
                         </tr>
                         <tr>
-                            <td  id="_amount_off"  class="website_localized_label" contenteditable="true" >{if isset($labels._amount_off) and $labels._amount_off!=''}{$labels._amount_off}{else}{t}Amount off{/t}{/if}</td>
+                            <td  id="_amout_off"  class="website_localized_label" contenteditable="true" >{if isset($labels._amout_off) and $labels._amout_off!=''}{$labels._amout_off}{else}{t}Amount off{/t}{/if}</td>
 
 
                             <td class="text-right">£0.00</td>
@@ -215,24 +204,6 @@
                     style="box-shadow: none"
 
 
-                    <section>
-
-                        <div class="row">
-                            <section class="col col-6">
-                                <label class="input">
-                                    <i class="icon-append fa fa-tag"></i>
-                                    <input style="color:lightgrey" type="text" name="name" id="_voucher" value="{$data._voucher}" >
-                                </label>
-                            </section>
-                            <section class="col col-6">
-                                <button style="margin:0px" type="submit" class="button"  ><span id="_voucher_label" contenteditable="true">{$data._voucher_label}</span></button>
-
-                            </section>
-                        </div>
-
-
-
-                    </section>
 
                     <section style="border: none">
                                 <label class="textarea">
@@ -276,7 +247,7 @@
 
 <script>
 
-    $("#_special_instructions,#_voucher").on('input propertychange', function() {
+    $("#_special_instructions).on('input propertychange', function() {
         $('#save_button', window.parent.document).addClass('save button changed valid')
 
     });

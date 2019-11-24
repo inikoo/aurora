@@ -19,8 +19,10 @@ Author: Raul Perusquia <raul@inikoo.com>
     <link href="/css/login.min.css?v=3" rel="stylesheet">
 
 
-    <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
-    </script>
+    <script
+            src="https://browser.sentry-cdn.com/5.9.1/bundle.min.js"
+            integrity="sha384-/x1aHz0nKRd6zVUazsV6CbQvjJvr6zQL2CHbQZf3yoLkezyEtZUpqUNnOLW9Nt3v"
+            crossorigin="anonymous"></script>
     <script>
         Sentry.init({
             dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169'});

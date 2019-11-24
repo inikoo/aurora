@@ -691,13 +691,27 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                     );
 
                 } else {
-                    $edit_quantity     = sprintf(
-                        '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
+
+                    if($this->get('Order Customer Client Key')>0){
+
+                        $edit_quantity     = sprintf(
+                            '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
+                        <i onClick="save_item_qty_change(this,{type:\'client_order\',client_key:'.$this->get('Order Customer Client Key').',order_key:'.$this->id.'})" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
+                        <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
+                        <i onClick="save_item_qty_change(this,{type:\'client_order\',client_key:'.$this->get('Order Customer Client Key').',order_key:'.$this->id.'})"  class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
+                            $row['Order Quantity'] + 0
+                        );
+                    }else{
+
+                        $edit_quantity     = sprintf(
+                            '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i onClick="save_item_qty_change(this)" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
                         <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
                         <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
-                        $row['Order Quantity'] + 0
-                    );
+                            $row['Order Quantity'] + 0
+                        );
+                    }
+
                     $out_of_stock_info = '';
                 }
 

@@ -20,7 +20,7 @@
 {if $logged_in}
     <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" ></span>
 {/if}
-<div id="page-transitions">
+<div id="page-transitions" class="tablet">
     {include file="theme_1/header.theme_1.EcomB2B.tablet.tpl"}
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
