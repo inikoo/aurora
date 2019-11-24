@@ -208,7 +208,7 @@ module.exports = function (grunt) {
         },
         cssmin: {
             options: {
-                shorthandCompacting: false, roundingPrecision: -1, sourceMap: true,
+                 sourceMap: true
             },
 
             ecom_css: {
