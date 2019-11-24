@@ -37,3 +37,4 @@ server_files/
 /css/staging/
 /EcomB2B/assets/
 /assets/*.min*
+cron/add_new_system_webpage.php
