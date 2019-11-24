@@ -10,10 +10,9 @@
 */
 
 require_once __DIR__.'/common.php';
-$print_est = false;
 
 if (!empty($argv[1]) and $argv[1] == 'Departments') {
-    $type = 'Category';
+    $subject = 'Category';
 } else {
     $subject = 'Product';
 
@@ -23,6 +22,12 @@ if (!empty($argv[2]) and is_numeric($argv[2]) and $argv[2] > 0) {
     $time_limit = ceil(3600 * $argv[2]);
 } else {
     $time_limit = 0;
+}
+
+if (!empty($argv[3]) and $argv[3] == 'Verbose') {
+    $print_est = true;
+} else {
+    $print_est = false;
 }
 
 $dns_replica = $dns_replicas[array_rand($dns_replicas, 1)];
