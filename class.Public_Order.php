@@ -10,14 +10,14 @@
 
 */
 
-include_once 'trait.OrderShippingOperations.php';
-include_once 'trait.OrderChargesOperations.php';
-include_once 'trait.OrderDiscountOperations.php';
-include_once 'trait.OrderItems.php';
-include_once 'trait.OrderPayments.php';
-include_once 'trait.OrderCalculateTotals.php';
-include_once 'trait.OrderBasketOperations.php';
-include_once 'trait.OrderTax.php';
+include_once __DIR__.'/trait.OrderShippingOperations.php';
+include_once __DIR__.'/trait.OrderChargesOperations.php';
+include_once __DIR__.'/trait.OrderDiscountOperations.php';
+include_once __DIR__.'/trait.OrderItems.php';
+include_once __DIR__.'/trait.OrderPayments.php';
+include_once __DIR__.'/trait.OrderCalculateTotals.php';
+include_once __DIR__.'/trait.OrderBasketOperations.php';
+include_once __DIR__.'/trait.OrderTax.php';
 
 
 include_once 'class.DBW_Table.php';
@@ -30,7 +30,7 @@ class Public_Order extends DBW_Table {
     var $amount_off_allowance_data = false;
 
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db       = $db;
@@ -57,13 +57,13 @@ class Public_Order extends DBW_Table {
             return;
         }
 
-        $this->get_data($arg1, $arg2, $arg3);
+        $this->get_data($arg1, $arg2);
 
 
     }
 
 
-    function get_data($key, $id, $aux_id = false) {
+    function get_data($key, $id) {
 
         if ($key == 'id') {
             $sql = sprintf(
@@ -81,23 +81,14 @@ class Public_Order extends DBW_Table {
 
     }
 
-    function set_display_currency($currency_code, $exchange) {
-        $this->currency_code = $currency_code;
-        $this->exchange      = $exchange;
-
-    }
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
         switch ($field) {
 
-
             case('Order For Collection'):
-
                 $this->update_for_collection($value, $options);
                 break;
-
             case('Order Tax Number'):
                 $this->update_tax_number($value);
                 break;
@@ -105,31 +96,21 @@ class Public_Order extends DBW_Table {
                 $this->update_tax_number_valid($value);
                 break;
             case 'Order Invoice Address':
-
-
                 $this->update_address('Invoice', json_decode($value, true));
-
-
                 $customer = get_object('Customer', $this->data['Order Customer Key']);
                 $customer->update_field_switcher('Customer Invoice Address', $value, '', array('no_propagate_orders' => true));
-
-
                 break;
             case 'Order Delivery Address':
                 $this->update_address('Delivery', json_decode($value, true));
                 break;
 
             case('Order State'):
-                $this->update_state($value, $options, $metadata);
+                $this->update_state($value);
                 break;
 
             default:
                 $base_data = $this->base_data();
-
-
                 if (array_key_exists($field, $base_data)) {
-                    // print "xxx-> $field : $value -> ".$this->data[$field]." \n";
-
                     if ($value != $this->data[$field]) {
 
                         $this->update_field($field, $value, $options);
@@ -139,11 +120,11 @@ class Public_Order extends DBW_Table {
 
     }
 
-    function update_state($value, $options = '', $metadata = array()) {
+    function update_state($value) {
 
         $date = gmdate('Y-m-d H:i:s');
 
-        include_once 'utils/new_fork.php';
+        include_once __DIR__.'/utils/new_fork.php';
         $account = get_object('Account', 1);
 
 
@@ -185,11 +166,9 @@ class Public_Order extends DBW_Table {
                     $operations = array('send_to_warehouse');
 
 
-                    $sql = sprintf(
-                        'update `Order Transaction Fact` set `Current Dispatching State`="Submitted by Customer" where `Order Key`=%d  and `Current Dispatching State` in ("In Process by Customer","In Process")  ', $this->id
-                    );
+                    $sql = "update `Order Transaction Fact` set `Current Dispatching State`='Submitted by Customer' where `Order Key`=?  and `Current Dispatching State` in ('In Process by Customer','In Process')  ";
+                    $this->db->prepare($sql)->execute(array($this->id));
 
-                    $this->db->exec($sql);
 
                     $deals_component_data = array();
 
@@ -200,10 +179,6 @@ class Public_Order extends DBW_Table {
                         if ($row = $result->fetch()) {
                             $deal_components = $row['deal_components'];
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
 
@@ -224,10 +199,6 @@ class Public_Order extends DBW_Table {
 
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
                     if ($deal_components != '') {
@@ -253,11 +224,10 @@ class Public_Order extends DBW_Table {
                         "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
                     );
                     $this->db->exec($sql);
-                    $sql = sprintf(
-                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
-                    );
+                    $sql = "UPDATE `Order No Product Transaction Deal Bridge` SET `Order No Product Transaction Deal Pinned`='Yes' WHERE `Order Key`=?   ";
 
-                    $this->db->exec($sql);
+                    $this->this->prepare($sql)->execute(array($this->id));
+
 
                     $this->fast_update(
                         array(
@@ -303,50 +273,31 @@ class Public_Order extends DBW_Table {
 
     }
 
-    function get($key, $arg1 = '') {
+    function get($key) {
 
 
         switch ($key) {
 
             case ('State Index'):
-
-
                 switch ($this->data['Order State']) {
                     case 'InBasket':
                         return 10;
-                        break;
-
-
                     case 'InProcess':
                         return 30;
-                        break;
                     case 'InWarehouse':
                         return 40;
-                        break;
-
                     case 'PackedDone':
                         return 80;
-                        break;
                     case 'Approved':
                         return 90;
-                        break;
                     case 'Dispatched':
                         return 100;
-                        break;
                     case 'Cancelled':
                         return -10;
-                        break;
-
-
                     default:
                         return 0;
-                        break;
                 }
-
-                break;
             case ('State'):
-
-
                 switch ($this->data['Order State']) {
                     case('InBasket'):
                         $state = _('In Basket');
@@ -358,8 +309,6 @@ class Public_Order extends DBW_Table {
                         $state = _('Picking order');
                         break;
                     case('PackedDone'):
-                        $state = _('Packed');
-                        break;
                     case('Approved'):
                         $state = _('Packed');
                         break;
@@ -378,19 +327,10 @@ class Public_Order extends DBW_Table {
                 }
 
                 return $state;
-                break;
             case 'Date':
-
                 return strftime("%e %B %Y", strtotime($this->data['Order Date'].' +0:00'));
-                break;
-
-
             case 'Currency Code':
-
                 return $this->data['Order Currency'];
-                break;
-
-
             case 'Order Invoice Address':
             case 'Order Delivery Address':
 
@@ -401,7 +341,6 @@ class Public_Order extends DBW_Table {
                 }
 
                 $address_fields = array(
-
                     'Address Recipient'            => $this->get($type.' Address Recipient'),
                     'Address Organization'         => $this->get($type.' Address Organization'),
                     'Address Line 1'               => $this->get($type.' Address Line 1'),
@@ -412,37 +351,22 @@ class Public_Order extends DBW_Table {
                     'Address Locality'             => $this->get($type.' Address Locality'),
                     'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
                     'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
-
-
                 );
 
                 return json_encode($address_fields);
-                break;
             case 'Invoice Address':
             case 'Delivery Address':
-
                 return $this->get('Order '.$key.' Formatted');
-                break;
-
             case 'Basket Items Discount Amount':
                 return money(-1 * $this->data['Order Items Discount Amount'], $this->data['Order Currency']);
-                break;
             case 'Basket Payments Amount':
                 return money(-1 * $this->data['Order Payments Amount'], $this->data['Order Currency']);
-                break;
             case 'Basket To Pay Amount':
-
                 if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
                     return money($this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
-
                 } else {
                     return money(0, $this->data['Order Currency']);
-
                 }
-
-
-                break;
-
             case 'Order Basket To Pay Amount':
 
                 if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
@@ -452,18 +376,18 @@ class Public_Order extends DBW_Table {
 
                 }
 
-                break;
+
             case('Deal Amount Off'):
                 return money(
                     -1 * $this->data['Order Deal Amount Off'], $this->currency_code
                 );
             case 'Products':
                 return number($this->data['Order Number Items']);
-                break;
+
 
             case 'Total':
                 return money($this->data['Order Total Amount'], $this->data['Order Currency']);
-                break;
+
 
             case 'Available Credit Amount':
 
@@ -475,9 +399,6 @@ class Public_Order extends DBW_Table {
                 }
 
 
-                break;
-
-
             case 'Shipping Net Amount':
                 if ($this->data['Order Shipping Method'] == 'TBC') {
                     return 'TBC';
@@ -487,7 +408,6 @@ class Public_Order extends DBW_Table {
                     );
                 }
 
-                break;
 
             case 'Pinned Deal Deal Components':
 
@@ -529,6 +449,7 @@ class Public_Order extends DBW_Table {
 
         }
 
+        return '';
     }
 
 
@@ -558,8 +479,7 @@ class Public_Order extends DBW_Table {
         $sql = sprintf(
             "select `Charge Key` ,`Charge Name`,`Charge Scope` ,`Charge Store Key`,`Charge Description` ,`Charge Metadata` ,
  (select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges'  and `Transaction Type Key`=`Charge Key`  limit 1  ) as onptf_key   
- from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer'  and `Charge Active`='Yes'  ",
-            $this->id, $this->get('Order Store Key')
+ from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer'  and `Charge Active`='Yes'  ", $this->id, $this->get('Order Store Key')
         );
 
 
@@ -572,11 +492,10 @@ class Public_Order extends DBW_Table {
                 $charges[] = array(
 
 
-                    'description'   => $row['Charge Description'].' ('.money($row['Charge Metadata'], $this->get('Currency Code')).')',
+                    'description' => $row['Charge Description'].' ('.money($row['Charge Metadata'], $this->get('Currency Code')).')',
 
                     'quantity_edit' => '<i onclick="web_toggle_selected_by_customer_charge(this)"  data-charge_key="'.$row['Charge Key'].'" data-onptf_key="'.$onptf_key.'"    class="'.($onptf_key > 0 ? 'fa-toggle-on' : 'fa-toggle-off')
                         .' far  " style="cursor: pointer" ></i>',
-
 
 
                     'net' => sprintf('<span  class="  selected_by_customer_charge">%s</span>', ($onptf_key > 0 ? money($row['Charge Metadata'], $this->get('Currency Code')) : '')),
@@ -586,8 +505,6 @@ class Public_Order extends DBW_Table {
 
             }
         }
-
-
 
 
         return $charges;
@@ -627,9 +544,9 @@ class Public_Order extends DBW_Table {
 
                 $options = '<div data-selected="'.$selected.'"  data-deal_component_key="'.$row['Deal Component Key'].'"  data-otdb_key="'.$row['Order Transaction Deal Key'].'" class="deal_component_choose_by_customer">';
                 foreach ($allowances['options'] as $product_id => $option) {
-                    $options .= '<span onclick="web_select_deal_component_choose_by_customer(this)" data-product_id="'.$product_id.'" class="deal_component_item deal_component_item_'.$product_id.'    margin_right_30"  style="cursor:pointer"> <span>'.$option['Description'].'</span>
-<i class="margin_left_10 far '.($selected == $product_id
-                            ? 'fa-dot-circle' : 'fa-circle').' "></i>
+                    $options .= '<span onclick="web_select_deal_component_choose_by_customer(this)" data-product_id="'.$product_id.'" class="deal_component_item deal_component_item_'.$product_id.'    margin_right_30"  style="cursor:pointer"> <span>'
+                        .$option['Description'].'</span>
+<i class="margin_left_10 far '.($selected == $product_id ? 'fa-dot-circle' : 'fa-circle').' "></i>
 </span><br/>';
                 }
 
