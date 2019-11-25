@@ -523,13 +523,15 @@ function get_checkout_html($data, $website,$customer, $smarty) {
 
 
     $theme   = $website->get('Website Theme');
-
+/*
     if(isset($data['client_order_key'])){
         $order = get_object('Order',$data['client_order_key']);
 
     }else{
         $order = get_object('Order', $customer->get_order_in_process_key());
     }
+*/
+    $order = get_object('Order', $customer->get_order_in_process_key());
 
 
     $order->fast_update(
