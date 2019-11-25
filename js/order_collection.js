@@ -163,14 +163,10 @@ $(document).on('click', '.order_delivery_directory_item', function () {
     });
 
 
-    request.fail(function (jqXHR, textStatus) {
+    request.fail(function () {
 
         delivery_options.removeClass('wait');
-
         icon.addClass('fa-circle').removeClass('fa-spinner fa-spin');
-
-
-
 
     });
 

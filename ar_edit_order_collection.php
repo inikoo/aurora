@@ -51,7 +51,6 @@ switch ($tipo) {
             'resp'  => 'Tipo not found '.$tipo
         );
         echo json_encode($response);
-        exit;
         break;
 }
 
