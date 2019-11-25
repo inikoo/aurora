@@ -1020,12 +1020,10 @@ function save_data_entry_picking_aid() {
 
     });
 
-   console.log(fields)
-    console.log(items)
 
 
-    $.post("/ar_edit_orders.php", {
-        tipo: 'data_entry_picking_aid',
+
+    $.post("/ar_data_entry_picking_aid.php", {
         order_key: $('.input_picking_sheet_table').data('order_key'),
         delivery_note_key: $('.input_picking_sheet_table').data('delivery_note_key'),
         level: $('.order_data_entry_picking_aid_state_after_save').val(),
@@ -1035,7 +1033,6 @@ function save_data_entry_picking_aid() {
         .done(function (data) {
 
 
-            console.log(data)
             if(data.state==200){
 
                 change_tab('order.items',{'reload_showcase': 1})

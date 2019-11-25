@@ -33,19 +33,6 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
-    case 'data_entry_picking_aid':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'delivery_note_key' => array('type' => 'key'),
-                         'order_key'         => array('type' => 'key'),
-                         'level'             => array('type' => 'numeric'),
-                         'items'             => array('type' => 'json array'),
-                         'fields'            => array('type' => 'json array'),
-                     )
-        );
-        data_entry_picking_aid($data, $editor, $smarty, $db, $account, $user);
-
-        break;
     case 'get_input_delivery_note_packing_all_locations':
         $data = prepare_values(
             $_REQUEST, array(
@@ -2281,45 +2268,6 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
         'state'                => 200,
         'locations'            => $locations,
         'picked_offline_input' => $picked_offline_input
-    );
-
-    echo json_encode($response);
-    exit;
-
-}
-
-
-function data_entry_picking_aid($data, $editor, $smarty, $db, $account) {
-
-
-    include_once 'utils/data_entry_picking_aid.class.php';
-
-
-    $data_entry_picking_aid = new data_entry_picking_aid($data, $editor, $db, $account);
-
-
-    $validation = $data_entry_picking_aid->parse_input_data();
-    if (!$validation['valid']) {
-
-
-        echo json_encode($validation['response']);
-        exit;
-    }
-
-
-    $data_entry_picking_aid->update_delivery_note();
-
-
-    $data_entry_picking_aid->process_transactions();
-
-    $data_entry_picking_aid->finish_packing();
-
-
-    //  print_r($data);
-
-
-    $response = array(
-        'state' => 200
     );
 
     echo json_encode($response);
