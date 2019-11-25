@@ -513,7 +513,7 @@
                     <tr>
                         <td class="label">{t}Border{/t}</td>
                         <td class="margins_container unselectable border border-width" data-scope="border">
-                            <input data-margin="top-width" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom-width" class=" edit_margin bottom" value="" placeholder="0">
+                            <input data-margin="top-width" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom-width" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
                             <input data-margin="left-width" class=" edit_margin left" value="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" placeholder="0">
 
                             <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>

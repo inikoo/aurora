@@ -36,7 +36,7 @@
             <tr>
                 <td class="label">{t}Margin{/t}</td>
                 <td class="margins_container unselectable margin" data-scope="margin">
-                    <input data-margin="top" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="" placeholder="0">
+                    <input data-margin="top" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
                     <input data-margin="left" class=" edit_margin left" value="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" placeholder="0">
 
                     <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
@@ -48,7 +48,7 @@
             <tr>
                 <td class="label">{t}Padding{/t}</td>
                 <td class="margins_container unselectable padding" data-scope="padding">
-                    <input data-margin="top" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="" placeholder="0">
+                    <input data-margin="top" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
                     <input data-margin="left" class=" edit_margin left" value="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" placeholder="0">
 
                     <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
@@ -60,7 +60,7 @@
             <tr>
                 <td class="label">{t}Border{/t}</td>
                 <td class="margins_container unselectable border border-width" data-scope="border">
-                    <input data-margin="top-width" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom-width" class=" edit_margin bottom" value="" placeholder="0">
+                    <input data-margin="top-width" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom-width" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
                     <input data-margin="left-width" class=" edit_margin left" value="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" placeholder="0">
 
                     <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
@@ -1530,6 +1530,8 @@
                         show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),
+                        top_margin: $(obj).attr('left_margin'),
+                        bottom_margin: $(obj).attr('right_margin'),
                         sort: $(obj).find('.products').data('sort'),
                         item_headers: ($(obj).find('.products').hasClass('no_items_header') ? false : true),
                         items: items
@@ -1695,15 +1697,7 @@
                     break;
 
                 case 'text':
-
-
                     var text_blocks = []
-
-
-
-
-
-
                     $('.text_block', obj).each(function (i, text_block) {
 
 
@@ -1735,8 +1729,11 @@
                     });
 
                     blocks.push({
-                        type: 'text', label: '{t}Text{/t}', icon: 'fa-font', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
-
+                        type: 'text', label: '{t}Text{/t}', icon: 'fa-font', show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        left_margin: $(obj).attr('left_margin'),
+                        right_margin: $(obj).attr('right_margin'),
                         template: $(obj).find('.text_blocks').data('template'), text_blocks: text_blocks,
 
                     })
@@ -2148,6 +2145,7 @@
 
         content_data.blocks = blocks
 
+console.log(content_data)
 
         var ajaxData = new FormData();
 
