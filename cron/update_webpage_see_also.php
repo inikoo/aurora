@@ -11,8 +11,6 @@
 */
 
 require_once 'common.php';
-
-
 $editor = array(
     'Author Name'  => '',
     'Author Alias' => '',
@@ -22,28 +20,11 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where     `Website Theme`="theme_1" ');
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-
-        $webpage = get_object('Webpage', $row['Page Key']);
-
-        print $webpage->id.' '.$webpage->get('Webpage URL')."\n";
-        $webpage->refill_see_also(false, 5);
-
-
-
-
-
-
-
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
+$sql = "SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Theme`='theme_1'";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+while ($row = $stmt->fetch()) {
+    $webpage = get_object('Webpage', $row['Page Key']);
+    print $webpage->id.' '.$webpage->get('Webpage URL')."\n";
+    $webpage->refill_see_also(false, 5);
 }
-
-
-?>
