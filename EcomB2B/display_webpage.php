@@ -371,11 +371,12 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     }
     elseif ($webpage->get('Webpage Code') == 'client.sys') {
-
             $smarty->assign('client_key', (isset($_REQUEST['id'])?$_REQUEST['id']:0));
     } elseif ($webpage->get('Webpage Code') == 'client_basket.sys') {
 
         $smarty->assign('client_key', (isset($_REQUEST['client_id'])?$_REQUEST['client_id']:0));
+    }elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
+        $smarty->assign('client_order_key', (isset($_REQUEST['order_key'])?$_REQUEST['order_key']:0));
     }
 
 

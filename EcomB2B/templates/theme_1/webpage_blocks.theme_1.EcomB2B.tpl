@@ -608,20 +608,17 @@
             getScript("/assets/desktop.logged_in.min.js", function () {
                 getScript("/assets/desktop.forms.min.js", function () {
                     getScript("/assets/desktop.checkout.min.js", function () {
-                        $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
+                        const checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix{if isset($client_order_key)}&client_order_key={$client_order_key}{/if}";
 
-
+                        $.getJSON(checkout_request, function (data) {
 
                             $('#bottom_header  .control_panel').html('<a id="go_back_basket hide"  href="basket.sys" class="button"><i class="far fa-arrow-alt-left  " title="{t}Go back to basket{/t}" aria-hidden="true"></i>\n' + '<span>{if empty($labels._go_back_to_basket)}{t}Go back to basket{/t}{else}{$labels._go_back_to_basket}{/if}</span></a>')
 
                             $('#checkout').html(data.html)
 
-                            $("form").submit(function(e) {
-
+                            $("form").on('submit',function(e) {
                                 e.preventDefault();
                                 e.returnValue = false;
-
-                                // do things
                             });
 
 

@@ -30,7 +30,7 @@
 {assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
 
-<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}" data-order_key="{$order->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
     <div class="order_header  text_blocks  text_template_21">
@@ -181,7 +181,7 @@
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
 
                         <section class="col col-11">
-                            <button id="basket_go_to_checkout" onclick="$(this).find('i').addClass('fa-spinner fa-spin'); window.location = 'checkout.sys'"  style="margin:0px;{if $order->get('Products')==0 }display:none{/if}" type="submit" class="button"><b>{$data._go_checkout_label}</b> <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                            <button id="basket_go_to_checkout"   style="margin:0px;{if $order->get('Products')==0 }display:none{/if}" type="submit" class="button"><b>{$data._go_checkout_label}</b> <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
 
                             <button id="basket_continue_shopping" onclick="$(this).find('i').addClass('fa-spinner fa-spin'); window.location = '/'"  style="margin:0px;margin-right:30px;" type="submit" class="button"><i  class=" fa fa-fw fa-arrow-left" aria-hidden="true"></i> {if !empty($data._go_shop_label)}{$data._go_shop_label}{else}{t}Continue shopping{/t}{/if}  </button>
 
@@ -206,18 +206,15 @@
 
 <script>
 
-    $("form").submit(function(e) {
+    $('#basket_go_to_checkout').on('click',function() {
+        $(this).find('i').addClass('fa-spinner fa-spin');
+        window.location = 'checkout.sys?order_key='+$('.client_basket').data('order_key')
+    });
+
+    $("form").on('submit',function(e) {
         e.preventDefault();
         e.returnValue = false;
     });
-
-
-
-
-
-
-
-
 
     {foreach from=$items_data item="item" }
     ga('auTracker.ec:addProduct',{$item.analytics_data} );

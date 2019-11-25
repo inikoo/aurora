@@ -24,7 +24,7 @@ $smarty->addPluginsDir('./smarty_plugins');
 
 $account = get_object('Account', 1);
 
-
+$website = get_object('Website', $_SESSION['website_key']);
 //print_r($_REQUEST);
 //exit;
 
@@ -57,11 +57,15 @@ switch ($tipo) {
                          'device_prefix' => array(
                              'type'     => 'string',
                              'optional' => true
+                         ),
+                         'client_order_key' => array(
+                             'type'     => 'string',
+                             'optional' => true
                          )
                      )
         );
 
-        get_checkout_html($data, $customer, $smarty);
+        get_checkout_html($data, $website,$customer, $smarty);
 
 
         break;
@@ -505,17 +509,28 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
 }
 
-
-function get_checkout_html($data, $customer, $smarty) {
+/**
+ * @param $data
+ * @param $website
+ * @param $customer
+ * @param $smarty
+ */
+function get_checkout_html($data, $website,$customer, $smarty) {
 
 
     require_once "utils/aes.php";
 
 
-    $website = get_object('Website', $_SESSION['website_key']);
+
     $theme   = $website->get('Website Theme');
 
-    $order = get_object('Order', $customer->get_order_in_process_key());
+    if(isset($data['client_order_key'])){
+        $order = get_object('Order',$data['client_order_key']);
+
+    }else{
+        $order = get_object('Order', $customer->get_order_in_process_key());
+    }
+
 
     $order->fast_update(
         array(

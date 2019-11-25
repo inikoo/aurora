@@ -106,10 +106,6 @@ trait Send_Email {
                 }
 
 
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
             if ($with_products == 0) {
