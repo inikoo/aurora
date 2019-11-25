@@ -110,7 +110,7 @@
                     {/if}
                     <div class="ordering log_out hide" >
 
-                        <div ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+                        <div ><span class="login_button " >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
                         <div ><span class="register_button" > {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
 
 
@@ -126,7 +126,9 @@
                     <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
 
                 </div>
-                <div style="padding:{$item.padding}px" size_class="{$item.size_class}" data-padding="{$item.padding}" class="fr-view txt {$item.size_class}">{$item.text}</div>
+                <div size_class="{$item.size_class}" data-padding="{$item.padding}" class="fr-view txt {$item.size_class}">
+                    <div  style="padding:{$item.padding}px">{$item.text}</div>
+                </div>
 
 
             {elseif $item.type=='image'}

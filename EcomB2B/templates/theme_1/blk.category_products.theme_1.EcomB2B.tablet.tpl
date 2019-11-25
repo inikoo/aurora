@@ -64,7 +64,7 @@
                                 {if !empty($item.rrp)}<div><small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$item.rrp}</small></div>{/if}
                             </div>
                         {else}
-                            <div class="product_prices  " style="font-size: 14px;padding:0px 4px">
+                            <div class="product_prices  " style="text-align:center;font-size: 14px;padding:0px 4px">
                                 <div class="product_price">{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
 
                             </div>
@@ -130,16 +130,9 @@
                             </div>
                         {/if}
                     </div>
-
                 {elseif $item.type=='text'}
-                    <div  class="panel_txt_control hide" >
-                        <span class="hide"><i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20"></span>
-                        <i class="far fa-trash-alt padding_left_10 like_button" title="{t}Delete{/t}"></i>
-                        <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
 
-                    </div>
-                    <div style="padding:{$item.padding}px" size_class="{$item.size_class}" data-padding="{$item.padding}" class="fr-view txt {$item.size_class}">{$item.text}</div>
-
+                    <div class="fr-view txt {$item.size_class}">{$item.text}</div>
 
                 {elseif $item.type=='image'}
 

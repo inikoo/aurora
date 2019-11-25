@@ -287,8 +287,11 @@
 
         {/if}
 
-        {foreach from=$website->style  item=style  }
+        {foreach from=$website->style  item=style}
+
+        {if $style[0]!='.product_block'}
         {$style[0]}{ {$style[1]}: {$style[2]}}
+        {/if}
         {/foreach}
 
         {foreach from=$website->mobile_style  item=style  }

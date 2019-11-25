@@ -155,7 +155,9 @@
                         <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
 
                     </div>
-                    <div style="padding:{$item.padding}px" size_class="{$item.size_class}" data-padding="{$item.padding}" class="fr-view txt {$item.size_class}">{$item.text}</div>
+                    <div class="fr-view txt {$item.size_class}">
+                        {$item.text}
+                    </div>
 
 
                 {elseif $item.type=='image'}
