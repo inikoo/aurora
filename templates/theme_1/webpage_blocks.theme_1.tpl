@@ -1353,7 +1353,7 @@
                         auto_last_updated: $(obj).find('.see_also').data('auto_last_updated'),
                         auto_items: $(obj).find('.see_also').children().length,
                         show_title: ($(obj).find('.products_title').hasClass('hide') ? false : true),
-                        title: $(obj).find('.products_title').html(),
+                        overwrite_title: $(obj).find('#overwrite_title').html(),
 
 
                     })
