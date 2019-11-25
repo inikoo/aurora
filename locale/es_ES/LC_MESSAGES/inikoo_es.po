@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-16 12:18+0100\n"
-"PO-Revision-Date: 2019-11-16 12:42+0100\n"
+"PO-Revision-Date: 2019-11-25 13:44+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -4456,7 +4456,7 @@ msgstr "3m"
 #: app_files/po_sources_from_smarty/au.php:13175
 #: app_files/po_sources_from_smarty/au.php:13181
 msgid "1Y"
-msgstr " 1A"
+msgstr "1A"
 
 #: app_files/po_sources_from_smarty/au.php:167
 #: app_files/po_sources_from_smarty/au.php:584
@@ -8923,8 +8923,6 @@ msgid "Schedule mailshot"
 msgstr "Nuevo correo electrónico"
 
 #: app_files/po_sources_from_smarty/au.php:2747
-#, fuzzy
-#| msgid "Send Now"
 msgid "Send now"
 msgstr "Enviar ahora"
 
@@ -8975,10 +8973,8 @@ msgstr "Pendiente devolución"
 #: app_files/po_sources_from_smarty/au.php:15626
 #: app_files/po_sources_from_smarty/au.php:15752
 #: app_files/po_sources_from_smarty/au.php:15755
-#, fuzzy
-#| msgid "Bounced"
 msgid "Bounces"
-msgstr "Rebotado"
+msgstr "Rebotes"
 
 #: app_files/po_sources_from_smarty/au.php:2780
 #: app_files/po_sources_from_smarty/au.php:9596
@@ -8987,8 +8983,6 @@ msgstr "Rebotado"
 #: app_files/po_sources_from_smarty/au.php:12626
 #: app_files/po_sources_from_smarty/au.php:13253
 #: app_files/po_sources_from_smarty/au.php:15758
-#, fuzzy
-#| msgid "Hard bounce"
 msgid "Hard bounces"
 msgstr "Rebote duro"
 
@@ -12172,10 +12166,8 @@ msgstr "Lógo"
 
 #: app_files/po_sources_from_smarty/au.php:6242
 #: app_files/po_sources_from_smarty/au.php:8033
-#, fuzzy
-#| msgid "Margin"
 msgid "Left margin"
-msgstr "Margen"
+msgstr "Margen izquerdo"
 
 #: app_files/po_sources_from_smarty/au.php:6257
 msgid "Column"
@@ -12262,10 +12254,8 @@ msgstr "Restablecimiento de contraseña"
 
 #: app_files/po_sources_from_smarty/au.php:6590
 #: app_files/po_sources_from_smarty/au.php:6671
-#, fuzzy
-#| msgid "Message"
 msgid "Messages"
-msgstr "Mensage"
+msgstr "Mensages"
 
 #: app_files/po_sources_from_smarty/au.php:6593
 msgid "Password changed"
@@ -12457,23 +12447,19 @@ msgstr "Sección del Cliente"
 #: app_files/po_sources_from_smarty/au.php:6845
 #: app_files/po_sources_from_smarty/au.php:21932
 #: conf/website_system_webpages.php:225 conf/website_system_webpages.php:231
-#, fuzzy
 msgid "Registration form"
-msgstr "Registro"
+msgstr "Formulario de registro"
 
 #: app_files/po_sources_from_smarty/au.php:6854 ar_products_tables.php:2366
 #: ar_products_tables.php:2370 ar_websites_tables.php:947
 #: ar_websites_tables.php:951 class.Page.php:1419 conf/webpage_blocks.php:140
 #: conf/webpage_blocks.php:148
-#, fuzzy
 msgid "See also"
 msgstr "Ver también"
 
 #: app_files/po_sources_from_smarty/au.php:6866 conf/webpage_blocks.php:34
-#, fuzzy
-#| msgid "Dashboard"
 msgid "Blackboard"
-msgstr "Inicio"
+msgstr "Pizzara"
 
 #: app_files/po_sources_from_smarty/au.php:6872 ar_account_tables.php:90
 #: ar_views.php:10166 conf/export_fields.php:1225
@@ -12497,10 +12483,8 @@ msgstr "No encontrado"
 
 #: app_files/po_sources_from_smarty/au.php:6878
 #: conf/website_system_webpages.php:742
-#, fuzzy
-#| msgid "Offline"
 msgid "Offline page"
-msgstr "Fuera de Stock"
+msgstr "Pagina fuera de linea"
 
 #: app_files/po_sources_from_smarty/au.php:6881
 #: conf/website_system_webpages.php:772 conf/website_system_webpages.php:779
@@ -12855,8 +12839,6 @@ msgstr "Beneficiaria"
 #: app_files/po_sources_from_smarty/web.php:3305
 #: app_files/po_sources_from_smarty/web.php:3479
 #: app_files/po_sources_from_smarty/web.php:3494
-#, fuzzy
-#| msgid "Account Number"
 msgid "Account Number"
 msgstr "Número de Cuenta"
 
@@ -13274,8 +13256,6 @@ msgstr "Fecha del pedido"
 
 #: app_files/po_sources_from_smarty/au.php:7700
 #: app_files/po_sources_from_smarty/web.php:3341
-#, fuzzy
-#| msgid "Invoice Number"
 msgid "Invoice Number"
 msgstr "Número de factura"
 
@@ -13297,8 +13277,6 @@ msgstr "Referencia de pedido del cliente"
 #: app_files/po_sources_from_smarty/au.php:17684
 #: app_files/po_sources_from_smarty/au.php:17756
 #: app_files/po_sources_from_smarty/web.php:3347
-#, fuzzy
-#| msgid "Payment State"
 msgid "Payment State"
 msgstr "Estado del pago"
 
@@ -13593,17 +13571,14 @@ msgstr "Ingresar"
 #: app_files/po_sources_from_smarty/au.php:7907
 #: app_files/po_sources_from_smarty/au.php:7988
 #: app_files/po_sources_from_smarty/au.php:22412
-#, fuzzy
-#| msgid "Extension"
 msgid "Text version"
-msgstr "Extensión"
+msgstr "Versión texto"
 
 #: app_files/po_sources_from_smarty/au.php:7910
 #: app_files/po_sources_from_smarty/au.php:7991
 #: app_files/po_sources_from_smarty/au.php:22415
-#, fuzzy
 msgid "HTML version"
-msgstr "Permisos del Sistema"
+msgstr "Versión HTML"
 
 #: app_files/po_sources_from_smarty/au.php:7913
 #: app_files/po_sources_from_smarty/au.php:7994
@@ -20286,7 +20261,7 @@ msgstr "Marketing de correos electrónicos"
 #: ar_marketing_tables.php:996 ar_marketing_tables.php:1149
 #: conf/email_templates_data.php:96
 msgid "Invitation"
-msgstr "invitación"
+msgstr "Invitación"
 
 #: ar_customers_tables.php:2209 ar_marketing_tables.php:1000
 #: ar_marketing_tables.php:1153
@@ -21264,8 +21239,8 @@ msgstr "% s ordenado por un cliente"
 #: ar_orders_tables.php:2033 pdf/order_pick_aid.pdf.php:227
 msgid "item"
 msgid_plural "items"
-msgstr[0] "Artículo"
-msgstr[1] "Ar"
+msgstr[0] "artículo"
+msgstr[1] "articulos"
 
 #: ar_orders_tables.php:2239
 msgid "not fully picked"
