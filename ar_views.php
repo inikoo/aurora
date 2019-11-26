@@ -1797,7 +1797,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
                 $html = get_showcase($data, $smarty, $user, $db);
             } else {
                 include_once 'showcase/supplier.delivery.show.php';
-                $html = get_showcase($data, $smarty, $user, $db);
+                $html = get_supplier_delivery_showcase($data, $smarty);
             }
             $title = $data['_object']->get('Public ID');
 
