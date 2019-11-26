@@ -419,11 +419,18 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 }
 
 
+/**
+ * @param $order \Public_Order
+ * @param $amount
+ * @param $editor
+ * @param $db \PDO
+ * @param $account \Public_Account
+ *
+ * @return array
+ */
 function pay_credit($order, $amount, $editor, $db, $account) {
 
-
-    include_once 'utils/currency_functions.php';
-
+    include_once __DIR__.'/utils/currency_functions.php';
 
     $store    = get_object('store', $order->get('Order Store Key'));
     $customer = get_object('Customer', $order->get('Customer Key'));
@@ -479,16 +486,9 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
     );
 
-    //print $sql;
 
     $db->exec($sql);
-
     $reference = $db->lastInsertId();
-
-
-    //print " ****> $reference <*****";
-
-
     $payment->fast_update(array('Payment Transaction ID' => sprintf('%05d', $reference)));
 
 
@@ -511,27 +511,39 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
 /**
  * @param $data
- * @param $website
- * @param $customer
- * @param $smarty
+ * @param $website  \Public_Website
+ * @param $customer \Public_Customer
+ * @param $smarty   \Smarty
+ *
+ * @throws \SmartyException
  */
 function get_checkout_html($data, $website,$customer, $smarty) {
 
 
-    require_once "utils/aes.php";
-
-
+    require_once __DIR__.'/utils/aes.php';
 
     $theme   = $website->get('Website Theme');
-/*
-    if(isset($data['client_order_key'])){
+
+
+    if($website->get('Website Type')=='EcomDS'){
+
+        if(empty($data['client_order_key']) or !is_numeric($data['client_order_key']) or $data['client_order_key']<=0 ){
+
+            $response = array(
+                'state' => 400,
+                'msg'   => 'client order key not provided'
+
+            );
+            echo json_encode($response);
+            exit;
+        }
+
         $order = get_object('Order',$data['client_order_key']);
 
     }else{
         $order = get_object('Order', $customer->get_order_in_process_key());
     }
-*/
-    $order = get_object('Order', $customer->get_order_in_process_key());
+
 
 
     $order->fast_update(
@@ -543,15 +555,10 @@ function get_checkout_html($data, $website,$customer, $smarty) {
 
     if (!$order->id or ($order->get('Products') == 0)) {
 
-        // print '>'.$data['device_prefix'].'<';
-
-
         $response = array(
             'state' => 200,
             'html'  => $smarty->fetch('theme_1/checkout_no_order.'.$theme.'.EcomB2B.tpl'),
         );
-
-
         echo json_encode($response);
         exit;
     }
@@ -566,7 +573,7 @@ function get_checkout_html($data, $website,$customer, $smarty) {
 
     $content = $webpage->get('Content Data');
 
-
+    $block   =array();
     $block_found = false;
     $block_key   = false;
     foreach ($content['blocks'] as $_block_key => $_block) {
@@ -672,7 +679,6 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
         $msg = _('There was a problem with your saved card').'<br>'.sprintf(_('click in %s and provide the credit card details again'), '<b>'._('Pay with other card').'</b>');
 
         $response = array(
-
             'state' => 400,
             'msg'   => $msg
 
