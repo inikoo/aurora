@@ -16,7 +16,7 @@ About:
     </div>
     <div class="answer hide">
         <p>
-            Each supplier's part has a <em>part</em> associated the sales are calculated over that <em>part</em>.
+            Each supplier's product has a <em>part</em> associated the sales are calculated over that <em>part</em>.
 
         </p>
         <p class="think">

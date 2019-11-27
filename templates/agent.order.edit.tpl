@@ -16,7 +16,7 @@
 </style>
 
 <div id="item_problems_dialog" class="hide" style="background-color: white;border: 1px solid #ccc;padding: 10px;position: absolute;z-index: 2000">
-    <table class="item_problems" border="0">
+    <table class="item_problems" >
         <tr class="_top">
             <td colspan="2" class="item_problems_title">  </td>
             <td  class="aright"><i class="fa fa-window-close button" onclick="$('#item_problems_dialog').addClass('hide')"></i>  </td>

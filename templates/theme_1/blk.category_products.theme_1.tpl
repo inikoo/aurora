@@ -97,10 +97,10 @@
                     {elseif  $item.web_state=='For Sale'}
 
                         <div class="order_row empty">
-                            <input maxlength=6 style="" class='order_input ' type="text"' size='2' value='' data-ovalue=''>
+                            <input maxlength=6 class='order_input ' type="text"' size='2' value='' data-ovalue=''>
 
                                 <div class="label sim_button" style="margin-left:57px">
-                                    <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
+                                    <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span >{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
 
 
                         </div>
@@ -110,7 +110,7 @@
                     {/if}
                     <div class="ordering log_out hide" >
 
-                        <div ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+                        <div ><span class="login_button " >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
                         <div ><span class="register_button" > {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
 
 
@@ -126,7 +126,9 @@
                     <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
 
                 </div>
-                <div style="padding:{$item.padding}px" size_class="{$item.size_class}" data-padding="{$item.padding}" class="fr-view txt {$item.size_class}">{$item.text}</div>
+                <div size_class="{$item.size_class}" data-padding="{$item.padding}" class="fr-view txt {$item.size_class}">
+                    <div  style="padding:{$item.padding}px">{$item.text}</div>
+                </div>
 
 
             {elseif $item.type=='image'}
@@ -138,7 +140,7 @@
             {elseif $item.type=='video'}
 
                 <div class="panel  {$item.type} {$item.size_class}" size_class="{$item.size_class}" video_id="{$item.video_id}">
-                    <iframe width="470" height="{if $data.item_headers}330{else}290{/if}" frameborder="0" allowfullscreen="" src="https://www.youtube.com/embed/{$item.video_id}?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
+                    <iframe width="470" height="{if $data.item_headers}330{else}290{/if}" frameallowfullscreen="" src="https://www.youtube.com/embed/{$item.video_id}?rel=0&amp;controls=0&amp;showinfo=0"></iframe>
                     <div class="block_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
                 </div>
 

@@ -56,7 +56,7 @@
                 </span>
             </div>
             <div class="timestamp">
-                <span class="">&nbsp;
+                <span >&nbsp;
 
                     {foreach from=$deliveries item=dn name=dns}
                         <span class="link" onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')">{$dn->get('Public ID')}</span>{if $smarty.foreach.dns.last}{else},{/if}
@@ -192,12 +192,12 @@
     <div style=" align-items: stretch;flex: 1;" class="block ">
 
 
-        <table border="0" style="margin-bottom: 20px" >
+        <table style="margin-bottom: 20px" >
 
 
             <tr>
                 <td style="text-align: center" colspan="2">
-                    <span style=""><i class="fa fa-bars fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
+                    <span ><i class="fa fa-bars fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
                     <span class="{if $order->get('State Index')<60}super_discreet{/if}" style="padding-left:20px"><i
                                 class="fa fa-arrow-circle-down  fa-fw discreet" aria-hidden="true"></i> <span
                                 class="Purchase_Order_Number_Supplier_Delivery_Items">{$order->get('Number Supplier Delivery Items')}</span></span>
@@ -232,7 +232,7 @@
                          title="{t}delete{/t}">
                         <i class="far fa-trash-alt very_discreet " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('delete')"></i>
-                        <table id="delete_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="delete_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Delete purchase order{/t}</td>
                             </tr>
@@ -256,7 +256,7 @@
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('cancel')"></i>
-                        <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="cancel_dialog" class="order_operation_dialog hide">
                             <tr class="top ">
                                 <td class="label" colspan="2">{t}Cancel purchase order{/t}</td>
                             </tr>
@@ -283,7 +283,7 @@
                         <span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')"> <i
                                     class="fa fa-fill-drip discreet " aria-hidden="true"></i> <i
                                     class="fa fa-ban fa-stack-1x discreet error"></i> </span>
-                        <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_submit_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send back to planning{/t}</td>
                             </tr>
@@ -311,7 +311,7 @@
                          title="{t}Start manufacturing{/t}">
                         <i class="fa fa-fill-drip   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('submit')"></i>
-                        <table id="submit_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="submit_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Start manufacturing{/t}</td>
                             </tr>
@@ -341,7 +341,7 @@
         </div>
 
 
-        <table border="0" >
+        <table >
 
 
             <tr class="processing_times  {if  $order->get('State Index') >= 10 }hide{/if} " style="    border-bottom: 1px solid #ccc;">
@@ -379,7 +379,7 @@
 
 
 
-        <table border="0" style="margin-bottom: 20px" >
+        <table style="margin-bottom: 20px" >
 
             <tr style="border-bottom:1px solid #ccc;" >
                 <td style="padding-top: 0px;padding-bottom: 0px" class="label">{t}Stock value{/t}</td>
@@ -446,7 +446,7 @@
 
     </div>
     <div style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
             <tr>
                 <td class="label ">{t}Delivery number{/t}</td>
                 <td>

@@ -16,7 +16,6 @@ if ($user->get('User Type') == 'Agent') {
     $table_views = array(
         'overview' => array(
             'label' => _('Overview')
-
         ),
         'barcodes' => array('label' => _("Id's & Barcodes")),
 
@@ -24,7 +23,6 @@ if ($user->get('User Type') == 'Agent') {
 
 } else {
     $tab = 'supplier.supplier_parts';
-
 
     $table_views = array(
         'overview' => array(
@@ -42,6 +40,10 @@ if ($user->get('User Type') == 'Agent') {
 
 }
 
+/**
+ * @var $supplier \Supplier
+ */
+$supplier=$state['_object'];
 
 $ar_file = 'ar_suppliers_tables.php';
 $tipo    = 'supplier_parts';
@@ -51,7 +53,6 @@ $default = $user->get_tab_defaults($tab);
 
 $table_filters = array(
     'reference' => array(
-        'label' => _('Reference'),
         'label' => _('Reference'),
     ),
 
@@ -63,21 +64,17 @@ $parameters = array(
 
 );
 
-
-// Editing ======
-
 include_once 'conf/export_edit_template_fields.php';
-
 
 $edit_table_dialog = array(
     'new_item'         => array(
         'icon'      => 'plus',
-        'title'     => _("New supplier's part"),
+        'title'     => _("New supplier's product"),
         'reference' => "supplier/".$state['key']."/part/new"
     ),
     'upload_items'     => array(
         'icon'         => 'plus',
-        'label'        => _("Upload supplier's parts"),
+        'label'        => _("Upload supplier's products"),
         'template_url' => '/upload_arrangement.php?object=supplier_part&parent=supplier&parent_key='.$state['key'],
 
         'tipo'        => 'edit_objects',
@@ -92,7 +89,7 @@ $edit_table_dialog = array(
         'parent'     => $state['object'],
         'parent_key' => $state['key'],
         'object'     => 'supplier_part',
-        'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
+        'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $supplier->get('Code')),
     ),
 
 );
@@ -104,7 +101,7 @@ $objects = 'supplier_part';
 $edit_fields = $export_edit_template_fields[$objects];
 
 
-if ($state['_object']->data['Supplier On Demand'] == 'No') {
+if ($supplier->data['Supplier On Demand'] == 'No') {
 
     foreach ($edit_fields as $key => $value) {
         if ($value['name'] == 'Supplier Part On Demand') {
@@ -112,34 +109,19 @@ if ($state['_object']->data['Supplier On Demand'] == 'No') {
             break;
         }
     }
-
 }
-
 
 $smarty->assign('edit_fields', $edit_fields);
 
-
-if ($state['_object']->get('Supplier Type') != 'Archived') {
-
+if ($supplier->get('Supplier Type') != 'Archived') {
     $table_buttons = array();
-
     $table_buttons[] = array(
         'icon'  => 'edit_add',
-        'title' => _("Edit supplier's parts"),
+        'title' => _("Edit supplier's products"),
         'id'    => 'edit_dialog'
     );
-
-
-
     $smarty->assign('table_buttons', $table_buttons);
-
-
 }
 
 $smarty->assign('table_top_template', 'supplier_parts.edit.tpl');
-
-
 include 'utils/get_table_html.php';
-
-
-

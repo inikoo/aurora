@@ -34,7 +34,7 @@
                 <label   class="label">{$data.labels._unsubscribe_text}</label>
             </fieldset>
 
-            <fieldset style="">
+            <fieldset >
 
                 <section>
                     <label style="border:none" class="checkbox "><input type="checkbox" {if $unsubscribe_customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{$data.labels._newsletter}</label>

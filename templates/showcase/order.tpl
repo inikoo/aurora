@@ -100,7 +100,7 @@
                 <div class="timestamp">
 			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;
 
-                    <span class="">&nbsp;{$dn->get('Creation Date')}&nbsp;</span>
+                    <span >&nbsp;{$dn->get('Creation Date')}&nbsp;</span>
 
                 &nbsp;</span>
                 </div>
@@ -112,7 +112,7 @@
                     <span class="state ">&nbsp;{$dn->get('State')}&nbsp;<span></i></span></span>
                 </div>
                 <div class="timestamp">
-                <span class="Order_Inputted_Date">&nbsp;<span class="">{$dn->get('Picking and Packing Percentage or Date')}</span>
+                <span class="Order_Inputted_Date">&nbsp;<span >{$dn->get('Picking and Packing Percentage or Date')}</span>
                     &nbsp;</span>
                 </div>
                 <div class="dot"></div>
@@ -213,7 +213,7 @@
             </div>
 
             <div class="data_field small {if $customer->get('Customer Main Plain Email')==''}hide{/if}" style="margin-top:5px">
-                <div class="">
+                <div >
                     <i class="fal fa-envelope fa-fw" title="{t}Email{/t}"></i> {if $customer->get('Customer Main Plain Email')!=''}{mailto address=$customer->get('Customer Main Plain Email')}{/if}
                 </div>
             </div>
@@ -273,7 +273,7 @@
                 <div id="cancel_operations" class="order_operation {if $order->get('State Index')<0 or  $order->get('State Index')>=40 }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
-                        <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="cancel_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2">{t}Cancel order{/t}</td>
                             </tr>
@@ -298,7 +298,7 @@
                         <i class="fal fa-shopping-basket discreet error button" aria-hidden="true" onclick="toggle_order_operation_dialog('undo_submit')"></i>
 
 
-                        <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_submit_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send back to basket{/t}</td>
                             </tr>
@@ -316,7 +316,7 @@
 						<i class="fa fa-plane discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
 						</span>
-                        <table id="undo_send_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_send_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Unmark as send{/t}</td>
                             </tr>
@@ -401,7 +401,7 @@
                 <div id="create_refund_operations" class="order_operation {if !($order->get('State Index')==100   )     }hide{/if}">
                     <div class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fal fa-file-invoice-dollar error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
-                        <table id="create_refund_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
+                        <table id="create_refund_dialog" class="order_operation_dialog hide" style="color:#777">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Create refund{/t}</td>
                             </tr>
@@ -420,7 +420,7 @@
                 <div id="create_credit_note_operations" class="order_operation hide {if !( $order->get('Order To Pay Amount')<=0)       }hide{/if}">
                     <div class="square_button right  " title="{t}Create credit note{/t}">
                         <i class="fal money-check-alt " aria-hidden="true" onclick="toggle_order_operation_dialog('create_credit_note')"></i>
-                        <table id="create_credit_note_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
+                        <table id="create_credit_note_dialog" class="order_operation_dialog hide" style="color:#777">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Create credit note{/t}</td>
                             </tr>
@@ -439,7 +439,7 @@
                      class="order_operation {if {$order->get('State Index')}<100    }hide{/if}">
                     <div class="square_button right  " title="{t}Create replacement{/t}">
                         <i class="fa fa-truck red " aria-hidden="true" onclick="toggle_order_operation_dialog('create_replacement')"></i>
-                        <table id="create_replacement_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
+                        <table id="create_replacement_dialog" class="order_operation_dialog hide" style="color:#777">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Create replacement{/t}</td>
                             </tr>
@@ -457,7 +457,7 @@
                      class="order_operation {if {$order->get('State Index')}<100  or $order->get('Order Return State')=='InWarehouse' or $order->get('Order Return State')=='PackedDone'  or $order->get('Order Return State')=='Approved'   }hide{/if}">
                     <div class="square_button right  " title="{t}Create return{/t}">
                         <i class="fas fa-backspace red " aria-hidden="true" onclick="toggle_order_operation_dialog('create_return')"></i>
-                        <table id="create_return_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
+                        <table id="create_return_dialog" class="order_operation_dialog hide" style="color:#777">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Create return{/t}</td>
                             </tr>
@@ -474,7 +474,7 @@
                 <div id="create_invoice_operations" class="order_operation  {if  $order->get('State Index')!=80}hide{/if}">
                     <div class="square_button right  " title="{t}Create invoice{/t}">
                         <i class="fal fa-file-invoice-dollar  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
-                        <table id="create_invoice_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="create_invoice_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Invoice order{/t}</td>
                             </tr>
@@ -490,7 +490,7 @@
                 <div id="recreate_invoice_operations" class="order_operation {if ( $order->get('State Index')>80 and !$order->get('Order Invoice Key')>0 ) }{else}hide{/if}">
                     <div class="square_button right  " title="{t}Create invoice again{/t}">
                         <i class="fas fa-file-invoice-dollar  " aria-hidden="true" onclick="toggle_order_operation_dialog('recreate_invoice')"></i>
-                        <table id="recreate_invoice_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="recreate_invoice_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Invoice order again{/t}</td>
                             </tr>
@@ -506,7 +506,7 @@
                 <div id="send_to_warehouse_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Items')==0   }hide{/if}">
                     <div class="square_button right  " title="{t}Send to warehouse{/t}">
                         <i class="fas fa-dolly-flatbed-alt" aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
-                        <table id="send_to_warehouse_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="send_to_warehouse_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
                             </tr>
@@ -523,7 +523,7 @@
                 <div id="submit_operations" class="order_operation {if $order->get('State Index')!=10   or  $order->get('Order Number Items')==0 }hide{/if}">
                     <div class="square_button right  " title="{t}Submit{/t}">
                         <i class="fa fa-paper-plane   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i>
-                        <table id="submit_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="submit_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Submit order{/t}</td>
                             </tr>
@@ -548,7 +548,7 @@
 
         </div>
 
-        <table border="0" class="info_block acenter">
+        <table class="info_block acenter">
 
             <tr>
 
@@ -576,7 +576,7 @@
                 </td>
             </tr>
         </table>
-        <table border="0" class="totals" style=";">
+        <table class="totals" style=";">
 
 
             <tr class="subtotal first">
@@ -588,7 +588,7 @@
         </table>
 
 
-        <table border="0" class="totals  {if $order->get('Order Items Out of Stock Amount')==0}hide{/if} " style=";">
+        <table class="totals  {if $order->get('Order Items Out of Stock Amount')==0}hide{/if} " style=";">
 
 
             <tr class="subtotal first error">
@@ -626,8 +626,8 @@
 
             <div id="add_discount_results_container" class="search_results_container " style="width:400px;">
 
-                <table id="add_discount_results" border="0" style="background:white;font-size:90%">
-                    <tr class="hide" style="" id="add_discount_search_result_template" field="" item_key="" item_historic_key=""
+                <table id="add_discount_results" style="background:white;font-size:90%">
+                    <tr class="hide" id="add_discount_search_result_template" field="" item_key="" item_historic_key=""
                         formatted_value="" onClick="select_add_discount_option(this)">
                         <td class="code" style="padding-left:5px;"></td>
                         <td class="label" style="padding-left:5px;"></td>
@@ -639,7 +639,7 @@
         </div>
 
 
-        <table border="0" class="totals" style="margin-top:0px;border-top:none">
+        <table class="totals" style="margin-top:0px;border-top:none">
 
 
             <tr class="subtotal Items_Discount_Amount_tr  {if $order->get('Order Items Discount Amount')==0}hide{/if}" style="margin-top:0px;border-top:none">
@@ -694,7 +694,7 @@
                     <div id="submit_operations" class="order_operation {if !($dn->get('State Index')==80   and  $dn->get('Delivery Note Type')!='Order') }hide{/if}">
                         <div class="square_button right  " title="{t}Approve dispatch{/t}">
                             <i class="fa fa-thumbs-up   " aria-hidden="true" onclick="toggle_order_operation_dialog('approve_replacement')"></i>
-                            <table id="approve_replacement_dialog" border="0" class="order_operation_dialog hide">
+                            <table id="approve_replacement_dialog" class="order_operation_dialog hide">
                                 <tr class="top">
                                     <td class="label" colspan="2">{t}Approve dispatch{/t}</td>
                                 </tr>
@@ -734,7 +734,7 @@
         </div>
 
 
-        <div id="invoices" class="invoices {if $invoices|@count == 0}hide{/if}" style="">
+        <div id="invoices" class="invoices {if $invoices|@count == 0}hide{/if}" >
 
 
             {foreach from=$invoices item=invoice}
@@ -754,7 +754,7 @@
             {/foreach}
         </div>
 
-        <div id="deleted_invoices" class="invoices {if $deleted_invoices|@count == 0}hide{/if}" style="">
+        <div id="deleted_invoices" class="invoices {if $deleted_invoices|@count == 0}hide{/if}" >
 
 
             {foreach from=$deleted_invoices item=invoice}
@@ -891,7 +891,7 @@
         <div style="clear:both"></div>
 
 
-        <table border="0" class="totals  payment_overview  {if $order->get('Order State')=='InBasket' and empty($payments) }hide{/if}" style="width: 100%">
+        <table class="totals  payment_overview  {if $order->get('Order State')=='InBasket' and empty($payments) }hide{/if}" style="width: 100%">
 
 
             <tbody id="total_payments" class="{if $order->get('State Index')<0}hide{/if}">
@@ -927,7 +927,7 @@
 
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-        <table border="0" class="totals" style="position:relative;top:-5px">
+        <table class="totals" style="position:relative;top:-5px">
 
             <tr>
                 <td class="label">{t}Items{/t}</td>
@@ -1015,7 +1015,7 @@
 
         <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
 
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
             <tr>
                 <td style="width: 500px">
                 <td>
@@ -1075,7 +1075,7 @@
 
         <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
 
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
             <tr>
                 <td style="width: 400px">
                 <td>

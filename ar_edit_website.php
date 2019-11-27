@@ -754,7 +754,7 @@ function update_website_styles($data, $editor) {
 
 
 
-                $settings['logo_website_website'] = 'wi.php?id='.$matches[1].'&s='.get_image_size($matches[1], $width * 2, $height * 2, 'fit_highest');
+                $settings['logo_website_website'] = 'wi.php?id='.$matches[1];
             }
 
         }

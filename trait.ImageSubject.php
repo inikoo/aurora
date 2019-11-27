@@ -14,7 +14,12 @@ include_once 'utils/natural_language.php';
 
 trait ImageSubject {
 
-
+    /**
+     * @param        $raw_data
+     * @param string $metadata
+     *
+     * @return bool|\Image
+     */
     function add_image($raw_data, $metadata = '') {
 
 
@@ -417,14 +422,14 @@ trait ImageSubject {
 
         if ($this->table_name == 'Category') {
 
-            $this->update_webpages();
+            $this->update_webpages('main_image');
 
 
         } elseif ($this->table_name == 'Part') {
             $this->activate();
         } elseif ($this->table_name == 'Product') {
 
-            $this->update_webpages();
+            $this->update_webpages('main_image');
 
 
         }

@@ -214,30 +214,27 @@ function change_color(color,element,scope){
 
 
 
-$(document).on('input propertychange,change', '.edit_margin', function (evt) {
+$(document).on('input propertychange,change', '.edit_block_margin', function (evt) {
 
-
-    change_margins(this)
+    change_block_margins(this)
 
 
 });
 
-function change_margins(input){
+function change_block_margins(input){
 
     if (!validate_signed_integer($(input).val(), 300)) {
         $(input).removeClass('error')
         var value = $(input).val()
-
     } else {
         value = 0;
-
         $(input).addClass('error')
     }
 
     var element=$(input).closest('.element_for_margins').data('element')
     var scope=$(input).closest('.margins_container').data('scope')
 
-   // console.log(element)
+
 
     element.css(scope+'-'+$(input).data('margin'), value + "px")
 

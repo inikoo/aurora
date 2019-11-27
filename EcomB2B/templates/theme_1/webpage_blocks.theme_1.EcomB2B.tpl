@@ -42,8 +42,8 @@
                             {/if}</span>
                     {/foreach}
                     </div>
-                    <div style="" class="nav">{if $navigation.prev}<a href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a
-                            href="{$navigation.next.link}" title="{$navigation.next.title}"><i style="" class="fas fa-arrow-right next"></i></a>{/if}</div>
+                    <div class="nav">{if $navigation.prev}<a href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a
+                            href="{$navigation.next.link}" title="{$navigation.next.title}"><i class="fas fa-arrow-right next"></i></a>{/if}</div>
                     <div style="clear:both"></div>
                 </div>
 
@@ -54,7 +54,7 @@
                 <div class="discounts top_body"  >
                     {foreach from=$discounts.deals item=deal_data }
                     <div class="discount_card" key="{$deal_data.key}">
-                        <div class="discount_icon" style="">{$deal_data.icon}</div>
+                        <div class="discount_icon" >{$deal_data.icon}</div>
                         <span  class="discount_name">{$deal_data.name}</span>
                         {if  $deal_data.until!=''}<small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label" >{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}{/if}</small>
 
@@ -71,8 +71,10 @@
             {assign "with_login" false}
             {assign "with_register" false}
             {assign "with_basket" false}
+            {assign "with_client_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
+            {assign "with_client" false}
             {assign "with_favourites" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
@@ -91,7 +93,7 @@
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}
 
-                    {if $block.type=='basket'}
+                    {if $block.type=='basket' }
                         {if $logged_in}{assign "with_basket" 1}
                             <div id="basket">
                                 <div style="text-align: center">
@@ -102,7 +104,17 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
+                        {elseif $block.type=='client_basket'}
+                            {if $logged_in}{assign "with_client_basket" 1}
+                                <div id="client_basket">
+                                    <div style="text-align: center">
+                                        <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                    </div>
 
+                                </div>
+                            {else}
+                                {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                            {/if}
                     {elseif $block.type=='profile'}
                         {if $logged_in}
                             {assign "with_profile" 1}
@@ -114,7 +126,17 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
-
+                    {elseif $block.type=='client'}
+                        {if $logged_in}
+                            {assign "with_client" 1}
+                            <div id="client">
+                                <div style="text-align: center">
+                                    <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
 
 
 
@@ -490,8 +512,7 @@
             getScript("/assets/desktop.logged_in.min.js", function () {
                 getScript("/assets/desktop.forms.min.js", function () {
                     getScript("/assets/desktop.basket.min.js", function () {
-
-                    $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
+                        $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
 
                         $('#basket').html(data.html)
 
@@ -527,13 +548,22 @@
                     })
                 })
             })
+            {/if}
+            {if $with_client_basket==1}
+                            getScript("/assets/desktop.logged_in.min.js", function () {
+                                getScript("/assets/desktop.forms.min.js", function () {
+                                    getScript("/assets/desktop.client_basket.min.js", function () {
+                                        $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key={$client_key}&device_prefix=", function (data) {
+                                            $('#client_basket').html(data.html);
 
+
+                                        })
+                                    })
+                                })
+                            });
             {/if}
             {if $with_thanks==1}
-
-
-
-            getScript("/assets/desktop.logged_in.min.js", function () {
+                            getScript("/assets/desktop.logged_in.min.js", function () {
 
                 var getUrlParameter = function getUrlParameter(sParam) {
                     var sPageURL = window.location.search.substring(1),
@@ -578,20 +608,17 @@
             getScript("/assets/desktop.logged_in.min.js", function () {
                 getScript("/assets/desktop.forms.min.js", function () {
                     getScript("/assets/desktop.checkout.min.js", function () {
-                        $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
+                        const checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix{if isset($client_order_key)}&client_order_key={$client_order_key}{/if}";
 
-
+                        $.getJSON(checkout_request, function (data) {
 
                             $('#bottom_header  .control_panel').html('<a id="go_back_basket hide"  href="basket.sys" class="button"><i class="far fa-arrow-alt-left  " title="{t}Go back to basket{/t}" aria-hidden="true"></i>\n' + '<span>{if empty($labels._go_back_to_basket)}{t}Go back to basket{/t}{else}{$labels._go_back_to_basket}{/if}</span></a>')
 
                             $('#checkout').html(data.html)
 
-                            $("form").submit(function(e) {
-
+                            $("form").on('submit',function(e) {
                                 e.preventDefault();
                                 e.returnValue = false;
-
-                                // do things
                             });
 
 
@@ -622,18 +649,19 @@
             getScript("/assets/desktop.forms.min.js", function () {
                 getScript("/assets/desktop.profile.min.js", function () {
                 $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=", function (data) {
-
-
                     $('#profile').html(data.html)
-
-
-
-
-
                 })
                 })
             })
             {/if}
+            {if $with_client==1}
+                  getScript("/assets/desktop.forms.min.js", function () {
+                      $.getJSON("ar_web_client.php?tipo=get_client_html&id={$client_key}&device_prefix=", function (data) {
+                          $('#client').html(data.html)
+                       })
+                   })
+             {/if}
+
             {if $with_register==1}
             $('#register_header_button').addClass('hide')
             getScript("/assets/desktop.forms.min.js", function () {
@@ -710,10 +738,10 @@
                             return;
                         }
 
-                        $('#register_button').addClass('wait')
-                        $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+                        $('#register_button').addClass('wait');
+                        $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin');
 
-                        var register_data = {}
+                        let register_data = { }
 
                         $("#registration_form input:not(.ignore)").each(function (i, obj) {
                             if (!$(obj).attr('name') == '') {
@@ -1544,6 +1572,7 @@
     {/if}
 
 </script>
+
 {if $with_gallery==1}
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="pswp__bg"></div>

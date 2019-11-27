@@ -55,8 +55,6 @@ class Public_Customer_Client extends DBW_Table {
         }
 
 
-
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id       = $this->data['Customer Client Key'];
             $this->metadata = json_decode($this->data['Customer Client Metadata'], true);
@@ -69,14 +67,14 @@ class Public_Customer_Client extends DBW_Table {
     function create($raw_data, $address_raw_data) {
 
 
+        if (empty($raw_data['Customer Client Code'])) {
+            $this->error = true;
+            $this->msg   = _('Unique customer reference required');
 
-        if(empty($raw_data['Customer Client Code'])){
-            $this->error=true;
-            $this->msg=_('Unique customer reference required');
             return;
         }
 
-        $sql="select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Code`=? and `Customer Client Customer Key`=?";
+        $sql  = "select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Code`=? and `Customer Client Customer Key`=?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -85,10 +83,11 @@ class Public_Customer_Client extends DBW_Table {
             )
         );
         if ($row = $stmt->fetch()) {
-            $this->error=true;
-            $this->msg=_('Other customer has same unique reference');
+            $this->error = true;
+            $this->msg   = _('Other customer has same unique reference');
+
             return;
-            }
+        }
 
 
         $this->editor = $raw_data['editor'];
@@ -115,8 +114,6 @@ class Public_Customer_Client extends DBW_Table {
 
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
-
-
 
 
             if ($this->data['Customer Client Company Name'] != '') {
@@ -158,9 +155,9 @@ class Public_Customer_Client extends DBW_Table {
             $this->new = true;
 
 
-        }else{
-            $this->error=true;
-            $this->msg='Unknown error';
+        } else {
+            $this->error = true;
+            $this->msg   = 'Unknown error';
         }
 
 
@@ -171,8 +168,6 @@ class Public_Customer_Client extends DBW_Table {
         if (!$this->id) {
             return '';
         }
-
-
 
 
         switch ($key) {
@@ -243,20 +238,18 @@ class Public_Customer_Client extends DBW_Table {
 
     function get_order_in_process_key() {
 
-
-        $order_key = false;
-        $sql       = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=%d AND `Order State`='InBasket' ", $this->id
+        $sql       = "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=? AND `Order State`='InBasket' ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $order_key = $row['Order Key'];
-            }
+        if ($row = $stmt->fetch()) {
+            $order_key = $row['Order Key'];
+        }else{
+            $order_key = false;
         }
-
 
         return $order_key;
     }
@@ -270,19 +263,15 @@ class Public_Customer_Client extends DBW_Table {
 
 
         switch ($field) {
-
-
             case 'Customer Client Contact Address':
-
                 $this->update_address('Contact', json_decode($value, true), $options);
-
-
-                break;
-
-
                 break;
             case 'Customer Client Location':
             case 'Customer Client Code':
+            case 'Customer Client Company Name':
+            case 'Customer Client Main Contact Name':
+            case 'Customer Client Main Plain Email':
+            case 'Customer Client Main Plain Mobile':
 
                 $this->update_field($field, $value, $options);
 
@@ -297,7 +286,7 @@ class Public_Customer_Client extends DBW_Table {
 
     function create_order() {
 
-        global $account;
+        $account = get_object('Account', 1);
 
 
         $order_data = array(
@@ -380,18 +369,14 @@ class Public_Customer_Client extends DBW_Table {
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
-
-        include_once 'class.Order.php';
-        $order = new Order('new', $order_data);
-
+        include_once 'class.Public_Order.php';
+        $order = new Public_Order('new', $order_data);
 
         if ($order->error) {
             $this->error = true;
             $this->msg   = $order->msg;
-
             return $order;
         }
-
 
         $order->fast_update_json_field('Order Metadata', 'cc_email', $this->data['Customer Client Main Plain Email']);
         $order->fast_update_json_field('Order Metadata', 'cc_telephone', $this->get('Phone'));
@@ -426,6 +411,39 @@ class Public_Customer_Client extends DBW_Table {
 
         return $number;
 
+
+    }
+
+    function get_orders_data() {
+
+        $orders_data = array();
+        $sql         = sprintf('select `Order Invoice Key`,`Order Key`,`Order Public ID`,`Order Date`,`Order Total Amount`,`Order State`,`Order Currency` from `Order Dimension` where `Order Customer Client Key`=%d order by `Order Date` desc ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                switch ($row['Order State']) {
+                    default:
+                        $state = $row['Order State'];
+                }
+
+                $orders_data[] = array(
+                    'key'         => $row['Order Key'],
+                    'invoice_key' => $row['Order Invoice Key'],
+                    'number'      => $row['Order Public ID'],
+                    'date'        => strftime("%e %b %Y", strtotime($row['Order Date'].' +0:00')),
+                    'state'       => $state,
+                    'total'       => money($row['Order Total Amount'], $row['Order Currency'])
+
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        return $orders_data;
 
     }
 
@@ -487,7 +505,6 @@ class Public_Customer_Client extends DBW_Table {
         return $label;
 
     }
-
 
 
 }

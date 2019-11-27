@@ -44,10 +44,10 @@ $parameters = array(
 $table_buttons = array();
 /*
 if ($state['_object']->get('Supplier Number Parts')>0) {
-	$table_buttons[]=array('icon'=>'edit', 'title'=>_("Edit supplier's parts"), 'id'=>'edit_table');
+	$table_buttons[]=array('icon'=>'edit', 'title'=>_("Edit supplier's products"), 'id'=>'edit_table');
 }
 
-$table_buttons[]=array('icon'=>'plus', 'title'=>_("New supplier's part"), 'reference'=>"supplier/".$state['key']."/part/new");
+$table_buttons[]=array('icon'=>'plus', 'title'=>_("New supplier's product"), 'reference'=>"supplier/".$state['key']."/part/new");
 
 $smarty->assign('table_buttons', $table_buttons);
 
@@ -57,7 +57,7 @@ $smarty->assign('upload_file', array(
 		'parent'=>$state['object'],
 		'parent_key'=>$state['key'],
 		'object'=>'supplier_part',
-		'label'=>_("Upload supplier's parts")
+		'label'=>_("Upload supplier's products")
 
 	));
 */

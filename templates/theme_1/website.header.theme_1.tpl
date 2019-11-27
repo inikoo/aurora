@@ -95,7 +95,7 @@
 <div class="wrapper_boxed">
 
 
-    <div id="aux" class="">
+    <div id="aux" >
 
 
 
@@ -226,7 +226,7 @@
         </div>
 
 
-        <div id="bottom_header" class="">
+        <div id="bottom_header" >
 
 
 
@@ -262,7 +262,7 @@
         <div id=body" style="min-height: 500px;border-top:1px solid #ccc"  >
 
 
-            <table id="main_settings" style="">
+            <table id="main_settings" >
 
 
                 <tr>

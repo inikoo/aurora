@@ -18,7 +18,7 @@
     </div>
     <div id="info" style="float:left;margin-top:20px;width:300px;margin-left:20px">
         <div id="overviews">
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 <tr id="status_tr" class="main">
                     <td class=" highlight">{$barcode->get('Status')} </td>
                     <td class="aright"> {$barcode->get('Parts')} </td>

@@ -625,9 +625,6 @@ class Part extends Asset {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $products;
@@ -696,10 +693,10 @@ class Part extends Asset {
 
         //print $this->get('Reference').' '.$products_web_status."\n";
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Part Products Web Status' => $products_web_status
-            ), 'no_history'
+            )
         );
 
 
@@ -729,7 +726,6 @@ class Part extends Asset {
                     case 'star':
                         return '&#9733;';
                         break;
-
                     case 'skull':
                         return '&#9760;';
                         break;
@@ -801,7 +797,7 @@ class Part extends Asset {
 
             foreach ($this->get_supplier_parts('objects') as $supplier_part) {
                 $supplier_part->load_supplier();
-                $suppliers .= $supplier_part->supplier->get('Code').' '.$supplier_part->get('Supplier Part Packages Per Carton').' '._("Supplier's part ordering SKOs per carton").', ';
+                $suppliers .= $supplier_part->supplier->get('Code').' '.$supplier_part->get('Supplier Part Packages Per Carton').' '._("Supplier's product ordering SKOs per carton").', ';
 
             }
             $suppliers = preg_replace('/\, $/', '', $suppliers);
@@ -2800,21 +2796,7 @@ class Part extends Asset {
                 break;
 
 
-            /*
-            case 'Part SKOs per Carton skip update supplier part':
-                $this->update_field('Part SKOs per Carton', $value, $options);
-
-
-            case 'Part SKOs per Carton':
-                $this->update_field($field, $value, $options);
-
-                //foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-                //    $supplier_part->editor = $this->editor;
-                //    $supplier_part->update(array('Supplier Part Packages Per Carton skip update part' => $value), $options);
-                //}
-
-                break;
-            */ default:
+             default:
             $base_data = $this->base_data();
 
 
@@ -4552,7 +4534,7 @@ class Part extends Asset {
                     );
 
                     if ($supplier_part->duplicated_field == 'Supplier Part Reference') {
-                        $this->msg = _("Duplicated supplier's part reference");
+                        $this->msg = _("Duplicated supplier's product reference");
                     } else {
                         $this->msg = 'Duplicated '.$supplier_part->duplicated_field;
                     }
@@ -4656,11 +4638,10 @@ class Part extends Asset {
     function update_products_data() {
 
 
-        //'InProcess','Active','Suspended',,'Discontinued'
 
         $active_products    = 0;
         $no_active_products = 0;
-
+        $online_products=0;
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Product Part Bridge`  LEFT JOIN `Product Dimension` P ON (P.`Product ID`=`Product Part Product ID`)  WHERE `Product Part Part SKU`=%d  AND `Product Status` IN ('InProcess','Active','Discontinuing') ", $this->id
@@ -4670,10 +4651,6 @@ class Part extends Asset {
             if ($row = $result->fetch()) {
                 $active_products = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $sql = sprintf(
@@ -4695,7 +4672,7 @@ class Part extends Asset {
             array(
                 'Part Number Active Products'    => $active_products,
                 'Part Number No Active Products' => $no_active_products,
-
+                'Part Number Products Online'    => $online_products,
             )
 
         );

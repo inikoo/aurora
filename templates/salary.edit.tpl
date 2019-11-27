@@ -9,7 +9,7 @@
 
 <input id="{$field.id}" type="hidden" class="salary_input_field" value="{$field.value}" has_been_valid="0"/>
 <div id="salary" class="salary hide">
-    <table border="0">
+    <table >
         <tr>
             <td class="label"> {t}Frequency{/t} </td>
             <td class="header_field salary_frequency inline_options medium">

@@ -18,8 +18,8 @@
 
 
         <span style="margin-left:50px">{t}Margin{/t}:</span>
-        <input data-margin="top" class=" edit_margin top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}" placeholder="0">
-        <input data-margin="bottom" class=" edit_margin bottom" value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}">
+        <input data-margin="top" class="edit_block_margin edit_block_input top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}" placeholder="0">
+        <input data-margin="bottom" class="edit_block_margin edit_block_input bottom" value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}">
 
         <span class="padding_left_20 padding_right_10">{t}View{/t}:</span>
         <span class="with_items button unselectable  " onClick="change_webpage_favourites_view('with_items')"><i class="far fa-box-full  fa-fw"></i> {t}With favourites{/t}</span>

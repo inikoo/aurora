@@ -9,14 +9,17 @@
 
  Version 3.0
 */
+
+use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+
 require_once 'common.php';
 require_once 'utils/object_functions.php';
 
 require_once 'conf/export_edit_template_fields.php';
-
-require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
-require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
-require_once 'external_libs/PHPExcel/Classes/PHPExcel/Cell/AdvancedValueBinder.php';
 
 
 $creator     = 'Aurora.systems';
@@ -36,11 +39,11 @@ $object = get_object($_REQUEST['object'], 0);
 
 switch ($object->get_object_name()) {
     case 'Staff':
-        $filename = _('new_employees');
+        $filename = 'new_employees';
         $options  = array();
         break;
     case 'Part':
-        $filename = _('new_parts');
+        $filename = 'new_parts';
         $options  = array(
             'new'        => true,
             'part_scope' => true
@@ -48,7 +51,7 @@ switch ($object->get_object_name()) {
         break;
     case 'Supplier Part':
 
-        $filename = _('new_supplier_parts');
+        $filename = 'new_supplier_parts';
 
 
         $valid_fields = $export_edit_template_fields['supplier_part'];
@@ -56,7 +59,7 @@ switch ($object->get_object_name()) {
 
         break;
     case 'Location':
-        $filename     = _('new_locations');
+        $filename     = 'new_locations';
         $valid_fields = $export_edit_template_fields['location'];
         if (isset($_REQUEST['parent']) and $_REQUEST['parent'] == 'warehouse_area') {
             unset($valid_fields[1]);
@@ -66,7 +69,7 @@ switch ($object->get_object_name()) {
 
         break;
     case 'Warehouse Area':
-        $filename     = _('new_warehouse_area');
+        $filename     = 'new_warehouse_area';
         $valid_fields = $export_edit_template_fields['warehouse_area'];
         $key_field    = 'Id: Warehouse Area Key';
         break;
@@ -75,15 +78,11 @@ switch ($object->get_object_name()) {
         break;
 }
 
-//if (!$object_fields=get_object_fields($object, $db, $user, $smarty, $options)) {
-// exit("Error. can't get object fields");
-//}
-
-//print_r($object_fields);
 
 
-$objPHPExcel = new PHPExcel();
-PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_AdvancedValueBinder());
+
+$objPHPExcel = new Spreadsheet();
+Cell::setValueBinder(new AdvancedValueBinder());
 
 
 $objPHPExcel->getProperties()->setCreator($creator)->setLastModifiedBy($creator)->setTitle($title)->setSubject($subject)->setDescription($description)->setKeywords($keywords)->setCategory($category);
@@ -98,7 +97,7 @@ $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
     array(
         'borders' => array(
             'bottom' => array(
-                'style' => PHPExcel_Style_Border::BORDER_THIN,
+                'style' => Border::BORDER_THIN,
                 'color' => array('rgb' => '777777')
             )
         )
@@ -132,7 +131,7 @@ foreach ($valid_fields as $field) {
             array(
                 'borders' => array(
                     'bottom' => array(
-                        'style' => PHPExcel_Style_Border::BORDER_THIN,
+                        'style' => Border::BORDER_THIN,
                         'color' => array('rgb' => '777777')
                     )
                 )
@@ -159,8 +158,6 @@ foreach ($valid_fields as $field) {
 
 
     if ($field['show_for_new']) {
-
-
         $char = number2alpha($char_index);
         $objPHPExcel->getActiveSheet()->setCellValue(
             $char.$row_index, strip_tags($field['default_value'])
@@ -177,7 +174,7 @@ foreach ($valid_fields as $field) {
 $sheet        = $objPHPExcel->getActiveSheet();
 $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
 $cellIterator->setIterateOnlyExistingCells(true);
-/** @var PHPExcel_Cell $cell */
+/** @var \PhpOffice\PhpSpreadsheet\Cell\Cell $cell */
 foreach ($cellIterator as $cell) {
     $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 }
@@ -189,34 +186,18 @@ $download_path = 'server_files/tmp/';
 
 switch ($output_type) {
 
-    case('csv'):
-        $output_file = $download_path.$filename.'.'.$output_type;
-        // header('Content-Type: text/csv');
-        // header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
-        // header('Cache-Control: max-age=0');
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV')->setDelimiter(',')->setEnclosure('')->setLineEnding("\r\n")->setSheetIndex(0)->save($output_file);
-        break;
-    case('xlsx'):
 
-        $output_file = $download_path.$filename.'.'.$output_type;
 
-        //header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        //header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
-        //header('Cache-Control: max-age=0');
-
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'EXCEL2007')->setSheetIndex(0)->save($output_file);
-        break;
     case('xls'):
-        $output_file = $download_path.$filename.'.'.$output_type;
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
         header('Cache-Control: max-age=0');
 
-        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5')->save('php://output');
+        $objWriter = IOFactory::createWriter($objPHPExcel, 'Xls')->save('php://output');
         break;
 
 
 }
 
 
-?>
+

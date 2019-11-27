@@ -33,14 +33,10 @@ if (!empty($_REQUEST['s'])) {
     $size_r = '';
 }
 
-$redis = new Redis();
-if ($redis->connect('127.0.0.1', 6379)) {
-    $redis_on = true;
-} else {
-    $redis_on = false;
-}
 
-//$cache_file = 'image_cache/'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
+
 
 $image_code = 'pi.'.DNS_ACCOUNT_CODE.'.'.$image_key.'_'.$size_r;
 

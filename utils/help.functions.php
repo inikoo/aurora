@@ -19,7 +19,7 @@ function get_help_title($state, $user) {
     }
 
     if ($state['tab'] == 'supplier.supplier_parts') {
-        return _("Supplier's part list & adding supplier parts");
+        return _("Supplier's product list & adding supplier's products");
     } elseif ($state['tab'] == 'employees') {
         if ($user->can_create('staff')) {
             return _('Employees list & adding employees');

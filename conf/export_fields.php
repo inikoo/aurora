@@ -9,7 +9,7 @@
 
 */
 
-global $account;
+$account=get_object('Account',1);
 
 $export_fields = array(
     'customers' => array(
@@ -446,7 +446,7 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Supplier Part Reference`',
-            'label'   => _("Supplier's part code"),
+            'label'   => _("Supplier's product code"),
             'checked' => 1
         ),
         array(
@@ -533,7 +533,7 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Supplier Part Reference`',
-            'label'   => _("Supplier's part code"),
+            'label'   => _("Supplier's product code"),
             'checked' => 1
         ),
         array(

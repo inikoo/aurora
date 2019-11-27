@@ -19,7 +19,7 @@
     </div>
     <div id="info">
         <div id="overviews">
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 <tr class="main  ">
                     <td class=" title">{t}Deleted{/t}</td>
                     <td class="aright ">{$employee->get('Deleted Date')}</td>

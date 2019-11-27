@@ -17,8 +17,8 @@
     <input style="margin-right:2px" id="add_allowance_to_order_recursion_deal_qty" class="qty width_50 " value="" placeholder="%">
     <div id="add_allowance_to_order_recursion_deal_results_container" class="search_results_container hide" style="width:400px;">
 
-        <table id="add_allowance_to_order_recursion_deal_results" border="0" style="background:white;font-size:90%">
-            <tr class="hide" style="" id="add_allowance_to_order_recursion_deal_search_result_template" field="" item_key="" item_historic_key=""
+        <table id="add_allowance_to_order_recursion_deal_results" style="background:white;font-size:90%">
+            <tr class="hide" id="add_allowance_to_order_recursion_deal_search_result_template" field="" item_key="" item_historic_key=""
                 formatted_value="" onClick="select_add_allowance_to_order_recursion_deal_option(this)">
                 <td class="code" style="padding-left:5px;"></td>
                 <td class="label" style="padding-left:5px;"></td>

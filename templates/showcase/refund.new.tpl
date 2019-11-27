@@ -28,7 +28,7 @@
             </div>
 
             <div class="data_field small {if $order->get('Telephone')==''}hide{/if}  " style="margin-top:5px">
-                <div class=""><i class="fa fa-phone fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Telephone">{$order->get('Telephone')}</span></div>
+                <div ><i class="fa fa-phone fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Telephone">{$order->get('Telephone')}</span></div>
 
 
             </div>
@@ -36,7 +36,7 @@
             <div class="data_field small {if $order->get('Email')==''}hide{/if}" style="margin-top:5px">
 
 
-                <div class=""><i class="fa fa-envelope fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Email">{$order->get('Email')}</span></div>
+                <div ><i class="fa fa-envelope fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i><span class="Order_Email">{$order->get('Email')}</span></div>
 
             </div>
 
@@ -162,7 +162,7 @@
 
 <div style="clear:both"></div></div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-    <table border="0" class="totals" style="position:relative;top:-5px">
+    <table class="totals" style="position:relative;top:-5px">
 
         <tr class="total ">
 
@@ -248,19 +248,19 @@
             </div>
         </div>
 
-        <table border="0" class="info_block acenter">
+        <table class="info_block acenter">
 
             <tr>
 
                 <td>
-                    <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="affected_items">0</span> / <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
+                    <span ><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="affected_items">0</span> / <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
                     <span style="padding-left:20px"><i class="fa fa-percent fa-fw  " aria-hidden="true"></i> <span class="percentage_refunded">0.00</span>%</span>
 
 
                 </td>
             </tr>
 
-            <table border="0" class="totals" style="position:relative;top:20px">
+            <table class="totals" style="position:relative;top:20px">
 
 
                 <tr class="subtotal first">
@@ -292,7 +292,7 @@
 
         <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
 
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
             <tr>
                 <td style="width: 500px">
                 <td>
@@ -351,7 +351,7 @@
 </style>
 
 <div class="feedback_otf_form hide" style="position:absolute;background-color:#fff;z-index:2000;padding:10px 0px 10px 10px;width: 500px;border:1px solid #ccc"  data-feedback_set_label="<i class='fa fa-comment-alt-exclamation padding_right_5'></i> {t}Feedback set{/t}">
-    <table border="0" style="width: 100%">
+    <table style="width: 100%">
         <tr>
             <td>
                 <span  onclick="feedback_otf_scope_clicked(this)" data-label="{t}Supplier{/t}" data-scope="Supplier" class="scope button very_discreet_on_hover Supplier"> <i class="far fa-square"></i> {t}Supplier{/t}</span>

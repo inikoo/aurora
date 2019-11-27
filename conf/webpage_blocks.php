@@ -145,7 +145,6 @@ function get_webpage_blocks($theme = '') {
             'item_headers'      => false,
             'items'             => array(),
             'sort'              => 'Manual',
-            'title'             => _('See also'),
             'show_title'        => true
         ),
 

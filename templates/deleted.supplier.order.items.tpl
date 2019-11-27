@@ -1,6 +1,6 @@
 <table>
     <tr>
-        <th>{t}Supplier's part code{/t}</th>
+        <th>{t}Supplier's product code{/t}</th>
         <th>{t}Quantity{/t}</th>
     </tr>
     <tr>

@@ -73,7 +73,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" class=""><i onclick="open_export_config()" class="fa fa-cogs button hide"></i></td>
+                    <td colspan="2" ><i onclick="open_export_config()" class="fa fa-cogs button hide"></i></td>
                     <td>
                         <div onclick="hide_export_dialog()" class="button disabled"><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}
                         </div>

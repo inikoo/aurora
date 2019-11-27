@@ -276,6 +276,15 @@ class Page extends DB_Table {
             $this->update_url();
             $this->refresh_cache();
 
+
+            $account=get_object('Account',1);
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_take_webpage_screenshot', array(
+                'webpage_key' => $this->id,
+            ), $account->get('Account Code'), $this->db
+            );
+
             return $this;
 
 
@@ -765,10 +774,10 @@ class Page extends DB_Table {
 
             $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 
-            $redis->delete($cache_id_prefix.$this->data['Webpage Code']);
-            $redis->delete($cache_id_prefix.strtolower($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.strtoupper($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.ucfirst($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.$this->data['Webpage Code']);
+            $redis->del($cache_id_prefix.strtolower($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.strtoupper($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.ucfirst($this->data['Webpage Code']));
 
 
         }
@@ -3121,30 +3130,36 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-        if ($this->get('Webpage Scope') == 'Category Products' and $publish_products) {
+        if ($this->get('Webpage Scope') == 'Category Products' ) {
 
 
-            include_once 'class.Page.php';
+            $category = get_object('Category', $this->get('Webpage Scope Key'));
+
+            if ($category->get('Product Category Department Category Key')) {
+                $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
+                $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                $parent_webpage->reindex_items();
+
+            }
 
 
-            $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
+            if($publish_products) {
+                include_once 'class.Page.php';
+                $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
 
-                    $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
+                        $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
-                    if ($webpage->id) {
+                        if ($webpage->id) {
 
-                        $webpage->publish();
+                            $webpage->publish();
+                        }
+
                     }
-
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -3161,6 +3176,12 @@ class Page extends DB_Table {
             $product = get_object('Product', $this->get('Webpage Scope Key'));
             $product->fast_update(array('Product Published Webpage Description' => $web_text));
 
+            if ($product->get('Product Family Category Key')) {
+                $family         = get_object('Category', $product->get('Product Family Category Key'));
+                $family_webpage = get_object('Webpage', $family->get('Product Category Webpage Key'));
+                $family_webpage->reindex_items();
+            }
+
         }
 
 
@@ -3175,6 +3196,8 @@ class Page extends DB_Table {
             'webpage_key' => $this->id,
         ), $account->get('Account Code'), $this->db
         );
+
+
 
 
         $this->update_metadata = array(
@@ -3328,14 +3351,14 @@ class Page extends DB_Table {
 
             $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 
-            $redis->delete($cache_id_prefix.$this->data['Webpage Code']);
-            $redis->delete($cache_id_prefix.strtolower($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.strtoupper($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.ucfirst($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.$this->data['Webpage Code']);
+            $redis->del($cache_id_prefix.strtolower($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.strtoupper($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.ucfirst($this->data['Webpage Code']));
 
             include_once 'utils/string_functions.php';
             foreach (permutation_letter_case($this->data['Webpage Code']) as $permutation) {
-                $redis->delete($cache_id_prefix.$permutation);
+                $redis->del($cache_id_prefix.$permutation);
 
             }
 
@@ -3512,7 +3535,7 @@ class Page extends DB_Table {
 
     }
 
-    function update_screenshots($type = 'current') {
+    function update_screenshots($device = 'Desktop',$type='') {
 
 
         if (in_array(
@@ -3531,11 +3554,6 @@ class Page extends DB_Table {
             return;
         }
 
-        include_once 'utils/screenshot_functions.php';
-
-
-        $tmp_file_root = sprintf('server_files/tmp/original_%d_%d', gmdate('U'), $this->id);
-
 
         $url = $this->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
 
@@ -3545,258 +3563,111 @@ class Page extends DB_Table {
         }
 
 
-        $puppeteer = new Puppeteer;
-        $browser   = $puppeteer->launch(
-            array(
-                'headless' => true,
-                'args'     => array(
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox'
-                )
-            )
-        );
+        include 'keyring/screenshots.dns.php';
 
-
-        if ($type == 'current') {
-            $page = $browser->newPage();
-            $page->setViewport(
-                array(
-                    'width'  => 1366,
-                    'height' => 1024
-                )
-            );
-
-            try {
-                $page->tryCatch->goto(
-                    $url, array(
-                            'timeout'   => 120000,
-                            'waitUntil' => 'networkidle0'
-                        )
-                );
-            } catch (Node\Exception $exception) {
-                return false;
-            }
-
-
-            $page->screenshot(
-                [
-                    'path' => $tmp_file_root.'_desktop_screenshot.jpeg',
-                    'type' => 'jpeg'
-                ]
-            );
-            $page->screenshot(
-                [
-                    'path'     => $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg',
-                    'type'     => 'jpeg',
-                    'fullPage' => true
-                ]
-            );
-            $page->close();
-
-            $page = $browser->newPage();
-            $page->emulate(
-                array(
-                    'userAgent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
-
-                    'viewport' => array(
-                        'width'             => 375,
-                        'height'            => 667,
-                        'deviceScaleFactor' => 2,
-                        'isMobile'          => true,
-                        'hasTouch'          => true,
-                        'isLandscape'       => false
-                    )
-                )
-            );
-
-
-            try {
-                $page->tryCatch->goto(
-                    $url, array(
-                            'timeout'   => 120000,
-                            'waitUntil' => 'networkidle0'
-                        )
-                );
-            } catch (Node\Exception $exception) {
-                return false;
-            }
-
-
-            $page->screenshot(
-                [
-                    'path' => $tmp_file_root.'_mobile_screenshot.jpeg',
-                    'type' => 'jpeg'
-                ]
-            );
-
-            $page->close();
-
-
-            $page = $browser->newPage();
-            $page->emulate(
-                array(
-                    'userAgent' => 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
-
-                    'viewport' => array(
-                        'width'             => 1024,
-                        'height'            => 768,
-                        'deviceScaleFactor' => 2,
-                        'isMobile'          => true,
-                        'hasTouch'          => true,
-                        'isLandscape'       => true
-                    )
-                )
-            );
-
-
-            try {
-                $page->tryCatch->goto(
-                    $url, array(
-                            'timeout'   => 120000,
-                            'waitUntil' => 'networkidle0'
-                        )
-                );
-            } catch (Node\Exception $exception) {
-                return false;
-            }
-
-
-            $page->screenshot(
-                [
-                    'path' => $tmp_file_root.'_tablet_screenshot.jpeg',
-                    'type' => 'jpeg'
-                ]
-            );
-
-
-            $browser->close();
-
-            /*.
-            exit;
-
-            $cmd = sprintf('node node/screenshots.js --type="current_screenshots" --file_root="%s" --url="%s" &', $tmp_file_root, addslashes($url));
-
-
-            exec($cmd, $output);
-    */
-
-
-            $current_desktop_image_key      = $this->properties('desktop_screenshot');
-            $current_tablet_image_key       = $this->properties('tablet_screenshot');
-            $current_mobile_image_key       = $this->properties('mobile_screenshot');
-            $current_full_webpage_image_key = $this->properties('full_webpage_screenshot');
-
-
-            $desktop_image      = process_screenshot($this, $tmp_file_root.'_desktop_screenshot.jpeg', 'Desktop');
-            $mobile_image       = process_screenshot($this, $tmp_file_root.'_mobile_screenshot.jpeg', 'Mobile');
-            $tablet_image       = process_screenshot($this, $tmp_file_root.'_tablet_screenshot.jpeg', 'Tablet');
-            $full_webpage_image = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
-
-
-            $this->update(
-                array(
-                    'desktop_screenshot'      => $desktop_image->id,
-                    'mobile_screenshot'       => $mobile_image->id,
-                    'tablet_screenshot'       => $tablet_image->id,
-                    'full_webpage_screenshot' => $full_webpage_image->id
-                ), 'no_history'
-            );
-
-            unlink($tmp_file_root.'_desktop_screenshot.jpeg');
-            unlink($tmp_file_root.'_mobile_screenshot.jpeg');
-            unlink($tmp_file_root.'_tablet_screenshot.jpeg');
-            unlink($tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg');
-
-            if ($current_desktop_image_key != $desktop_image->id) {
-
-                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $current_desktop_image_key,
-                        $this->id,
-                        'Desktop Screenshot'
-                    )
-                );
-                if ($row = $stmt->fetch()) {
-                    $this->delete_image($row['Image Subject Key']);
-                }
-
-            }
-
-            if ($current_tablet_image_key != $tablet_image->id) {
-
-                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $current_tablet_image_key,
-                        $this->id,
-                        'Tablet Screenshot'
-                    )
-                );
-                if ($row = $stmt->fetch()) {
-                    $this->delete_image($row['Image Subject Key']);
-                }
-
-            }
-
-            if ($current_mobile_image_key != $mobile_image->id) {
-
-                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $current_mobile_image_key,
-                        $this->id,
-                        'Mobile Screenshot'
-                    )
-                );
-                if ($row = $stmt->fetch()) {
-                    $this->delete_image($row['Image Subject Key']);
-                }
-
-            }
-
-            if ($current_full_webpage_image_key != $full_webpage_image->id) {
-
-                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $current_full_webpage_image_key,
-                        $this->id,
-                        'Full Webpage Thumbnail Screenshot'
-                    )
-                );
-                if ($row = $stmt->fetch()) {
-                    $this->delete_image($row['Image Subject Key']);
-                }
-
-            }
-        } elseif ($type == 'history') {
-            /*
-             *
-             *
-            async function history_screenshots() {
-                let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-                let page = await browser.newPage();
-                await page.setViewport({ width: 1366, height: 1024 });
-                await page.goto(url , {timeout: 1200000,waitUntil: 'networkidle0'});
-                await page.screenshot({ path: `${file_root}_desktop_full_screenshot.jpeg`, type: 'jpeg', fullPage: true});
-                await page.close();
-
-                await browser.close();
-            }
-             *
-             */
+        $curl = curl_init();
+        $route='/'.$device;
+        if($type!=''){
+            $route.='/'.$type;
         }
 
-        return true;
+        curl_setopt_array(
+            $curl, array(
+            CURLOPT_HEADER=>1,
+            CURLOPT_URL            => SCREENSHOTS_API_URL."/take$route?url=$url",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING       => "",
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST  => "GET",
+            CURLOPT_HTTPHEADER     => array(
+                "Accept: */*",
+                "Accept-Encoding: gzip, deflate",
+                "Authorization: Bearer ".SCREENSHOTS_JWT,
+                "Cache-Control: no-cache",
+                "Connection: keep-alive",
+                "cache-control: no-cache"
+            ),
+        )
+        );
+
+        $response = curl_exec($curl);
+        $err      = curl_error($curl);
+
+        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+
+        curl_close($curl);
+
+        if (!$err) {
+            if(preg_match('/Content-Type: image\/jpeg/',$header)){
+                $tmp_file='server_files/tmp/_screenshot_'.gmdate('U').'_'.md5($url).'.jpeg';
+
+                if(file_put_contents($tmp_file, $body)){
+                    $scope=$device;
+                    if($type!=''){
+                        $scope.=' '.$type;
+                    }
+                    $scope.=' Screenshot';
+
+                    $image_data                  = array(
+                        'Upload Data'                      => array(
+                            'tmp_name' => $tmp_file,
+                            'type'     => 'jpeg'
+                        ),
+                        'Image Filename'                   => $tmp_file,
+                        'Image Subject Object Image Scope' => $scope
+
+
+                    );
+
+                    $image=$this->add_image($image_data, 'no_history');
+
+
+
+                    $_scope=strtolower(preg_replace('/\s/','_',$scope));
+
+                    $old_screenshot_image_key      = $this->properties($_scope);
+
+                    $this->update(
+                        array(
+                            $_scope     => $image->id,
+                        ), 'no_history'
+                    );
+
+
+                    if ($old_screenshot_image_key != $image->id) {
+                        $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $old_screenshot_image_key,
+                                $this->id,
+                                $scope
+                            )
+                        );
+                        if ($row = $stmt->fetch()) {
+                            $this->delete_image($row['Image Subject Key']);
+                        }
+                    }
+
+
+                    if(file_exists($tmp_file)){
+                        unlink($tmp_file);
+                    }
+
+                }
+            }
+
+
+
+
+
+        }
+
+
+
 
     }
 

@@ -29,7 +29,7 @@ $table_filters = array(
     //	'code'=>array('label'=>_('Code'),'title'=>_('Product code')),
     'reference' => array(
         'label' => _('Reference'),
-        'title' => _("Supplier's part reference")
+        'title' => _("Supplier's product reference")
     ),
 
 );

@@ -104,12 +104,12 @@
                      class="order_operation {if $order->get('Agent Supplier Purchase Order State')!='Submitted'}hide{/if}">
                     <div id="create_spo_operation"
                          class="square_button right {if $order->get('Agent Supplier Purchase Order Number Items')==0}hide{/if} "
-                         title="{t}Create supplier's orders{/t}">
+                         title="{t}Create supplier's order{/t}">
                         <i class="fa fa-clipboard   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('create_spo')"></i>
-                        <table id="create_spo_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="create_spo_dialog" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Create supplier's orders{/t}</td>
+                                <td class="label" colspan="2">{t}Create supplier's order{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
@@ -126,7 +126,7 @@
             </div>
         </div>
 
-        <table border="0" class=" ">
+        <table class=" ">
         <tr style="    border-bottom: 1px solid #ccc;">
             <td style="text-align: center;padding: 0px" colspan="2">
                 <a href="/pdf/supplier.order.pdf.php?id={$order->id}" target="_blank"><img class="button pdf_link"  style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
@@ -167,7 +167,7 @@
         </div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-        <table border="0" class="info_block center">
+        <table class="info_block center">
 
             <tr>
                 <td style="text-align: center"title="{t}Weight{/t}"><i class="far fa-fw fa-weight-hanging" title="{t}Weight{/t}"></i> <span  class="Agent_Supplier_Purchase_Order_Weight " >{$order->get('Weight')}</span></td>
@@ -180,7 +180,7 @@
         </div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-        <table border="0" class="info_block">
+        <table class="info_block">
             <tr>
                 <td class="label">{t}Cost{/t} ({$order->get('Agent Supplier Purchase Order Currency Code')})</td>
                 <td class="aright Purchase_Order_Amount">{$order->get('Amount')}</td>
@@ -198,7 +198,7 @@
         <i key="" class="far fa-square fa-fw button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
     </div>
     <div style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
-        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
             <tr>
                 <td class="label ">{t}Delivery number{/t}</td>
                 <td>

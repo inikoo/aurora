@@ -2239,7 +2239,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             .' padding_left_10 error"><i class="fa fa-exclamation-circle"></i> '._('not fully picked').': <span class="items_with_problems ">'.$no_picked_number_items.'</span> <span class="strong  percentage_items_with_problems">('.percentage(
                 $no_picked_number_items, $total_number_items
             ).')</span>
-        <span class=padding_left_10> <span class=""><span class="items_with_problems_amount">'.money($no_picked_amount, $currency_code).'</span> <span class="strong percentage_items_with_problems_amount">('.percentage($no_picked_amount, $total_amount)
+        <span class=padding_left_10> <span ><span class="items_with_problems_amount">'.money($no_picked_amount, $currency_code).'</span> <span class="strong percentage_items_with_problems_amount">('.percentage($no_picked_amount, $total_amount)
             .')</span></span></span></span>';
 
     }

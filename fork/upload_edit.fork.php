@@ -11,17 +11,16 @@
 */
 
 
+
 function fork_upload_edit($job) {
 
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     include_once 'class.User.php';
     include_once 'class.Upload.php';
     include_once 'conf/export_edit_template_fields.php';
     include_once 'utils/invalid_messages.php';
     include_once 'utils/object_functions.php';
-
-    include_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
-    include_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
 
 
 
@@ -34,12 +33,9 @@ function fork_upload_edit($job) {
 
     $fork_data           = $_data['fork_data'];
     $fork_key            = $_data['fork_key'];
-    $inikoo_account_code = $_data['inikoo_account_code'];
     $db                  = $_data['db'];
-    $session             = $_data['session'];
 
 
-    print_r($fork_data);
 
     $account = new Account($db);
 
@@ -724,4 +720,4 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 }
 
 
-?>
+

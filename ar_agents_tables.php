@@ -214,7 +214,7 @@ function client_order_items($_data, $db, $user, $account) {
                 if ($data['Supplier Part Currency Code'] != $account->get(
                         'Account Currency'
                     )) {
-                    $subtotals .= ' <span class="">('.money(
+                    $subtotals .= ' <span >('.money(
                             $amount * $purchase_order->get(
                                 'Purchase Order Currency Exchange'
                             ), $account->get('Account Currency')
@@ -510,7 +510,7 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
                 if ($data['Supplier Part Currency Code'] != $account->get(
                         'Account Currency'
                     )) {
-                    $subtotals .= ' <span class="">('.money(
+                    $subtotals .= ' <span >('.money(
                             $amount * $purchase_order->get(
                                 'Purchase Order Currency Exchange'
                             ), $account->get('Account Currency')
@@ -842,7 +842,7 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
                 if ($data['Supplier Part Currency Code'] != $account->get(
                         'Account Currency'
                     )) {
-                    $subtotals .= ' <span class="">('.money(
+                    $subtotals .= ' <span >('.money(
                             $amount * $purchase_order->get(
                                 'Purchase Order Currency Exchange'
                             ), $account->get('Account Currency')

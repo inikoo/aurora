@@ -127,7 +127,7 @@ class Product extends Asset {
 
     function get($key, $arg1 = '') {
 
-        global $account;
+
 
         include_once 'utils/natural_language.php';
 
@@ -231,6 +231,9 @@ class Product extends Asset {
 
 
             case 'Price':
+
+
+                $account=get_object('Account',1);
 
                 $price = money(
                     $this->data['Product Price'], $this->data['Store Currency Code']
@@ -1506,8 +1509,9 @@ class Product extends Asset {
             $webpage->update(array('Webpage State' => $_state), 'no_history');
         }
 
-        $this->update_webpages();
-
+        if ($web_availability_updated) {
+            $this->update_webpages('web_state');
+        }
 
     }
 
@@ -1642,7 +1646,8 @@ class Product extends Asset {
 
     }
 
-    function update_webpages() {
+    function update_webpages($metadata='') {
+
 
 
         $webpages_to_reindex = array();
@@ -1665,8 +1670,8 @@ class Product extends Asset {
         foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
             if ($webpage_to_reindex_key > 0) {
                 $sql = sprintf(
-                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql($date)
+                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (%s,%s,%s,%d,%s) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s , `Stack Metadata`=%s , `Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql('from_product_'.$metadata),
+                    prepare_mysql($date), prepare_mysql('from_product_'.$metadata)
 
                 );
                 $this->db->exec($sql);
@@ -2142,7 +2147,7 @@ class Product extends Asset {
                 );
 
 
-                $this->update_webpages();
+                $this->update_webpages('next_shipment');
 
             }
 
@@ -2379,7 +2384,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('weight');
 
                 break;
 
@@ -2432,7 +2437,7 @@ class Product extends Asset {
                 $this->fast_update(array('Product Unit XHTML Dimensions' => $this->get('Unit Dimensions')));
 
 
-                $this->update_webpages();
+                $this->update_webpages('dimensions');
 
 
                 break;
@@ -2540,7 +2545,7 @@ class Product extends Asset {
 
 
                 $this->updated = $updated;
-                $this->update_webpages();
+                $this->update_webpages('materials');
                 break;
 
 
@@ -2591,7 +2596,7 @@ class Product extends Asset {
                 $updated = $this->updated;
                 $this->update_historic_object();
                 $this->updated = $updated;
-                $this->update_webpages();
+                $this->update_webpages('code');
                 break;
 
             case 'Product Name':
@@ -2606,7 +2611,7 @@ class Product extends Asset {
                 $updated = $this->updated;
                 $this->update_historic_object();
 
-                $this->update_webpages();
+                $this->update_webpages('name');
 
                 $this->updated = $updated;
 
@@ -2636,7 +2641,7 @@ class Product extends Asset {
                     ),
 
                 );
-                $this->update_webpages();
+                $this->update_webpages('label');
                 break;
             case 'Product Label in Family':
 
@@ -2645,7 +2650,7 @@ class Product extends Asset {
                 );// Migration
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('label_in_family');
                 break;
 
 
@@ -2688,7 +2693,7 @@ class Product extends Asset {
                 }
 
                 $this->updated = $updated;
-                $this->update_webpages();
+                $this->update_webpages('price');
                 break;
 
 
@@ -2711,7 +2716,7 @@ class Product extends Asset {
                     );
 
                 }
-                $this->update_webpages();
+                $this->update_webpages('rrp');
 
                 break;
 
@@ -2761,7 +2766,7 @@ class Product extends Asset {
 
                 );
 
-                $this->update_webpages();
+                $this->update_webpages('units_per_case');
 
 
                 $this->update_historic_object();
@@ -2976,7 +2981,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('mix_properties');
 
                 break;
             case 'Product Origin Country Code':
@@ -3022,7 +3027,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages();
+                $this->update_webpages('country_origin');
                 break;
 
             case 'History Note':
@@ -3158,7 +3163,9 @@ class Product extends Asset {
 
         );
 
-        global $account;
+
+
+        $account=get_object('Account',1);
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
@@ -3667,7 +3674,12 @@ class Product extends Asset {
 
     }
 
-    function update_sales_correlations($type = 'All', $limit = '5') {
+    function update_sales_correlations($type = 'All', $limit = '5', $db_replica = '') {
+
+
+        if (!$db_replica) {
+            $db_replica = $this->db;
+        }
 
         $store = get_object('Store', $this->get('Store Key'));
 
@@ -3723,7 +3735,7 @@ class Product extends Asset {
 
                 $_families = array($this->get('Product Family Category Key'));
                 $sql       = sprintf('select `Category B Key` from `Product Category Sales Correlation` where `Category B Key`=%d  and `Correlation`>0 order by `Correlation` desc limit %s ', $this->get('Product Family Category Key'), $limit);
-                if ($result = $this->db->query($sql)) {
+                if ($result = $db_replica->query($sql)) {
                     foreach ($result as $row) {
                         $_families[] = $row['Category B Key'];
                     }
@@ -3738,7 +3750,7 @@ class Product extends Asset {
         }
 
 
-        if ($result2 = $this->db->query($sql)) {
+        if ($result2 = $db_replica->query($sql)) {
 
             foreach ($result2 as $row2) {
 
@@ -3756,7 +3768,7 @@ class Product extends Asset {
                     $sql = sprintf(
                         "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order' ", $this->id
                     );
-                    if ($result = $this->db->query($sql)) {
+                    if ($result = $db_replica->query($sql)) {
                         if ($row = $result->fetch()) {
                             $all_A = $row['num'];
 
@@ -3766,7 +3778,7 @@ class Product extends Asset {
                     $sql = sprintf(
                         "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order' ", $row2['Product ID']
                     );
-                    if ($result = $this->db->query($sql)) {
+                    if ($result = $db_replica->query($sql)) {
                         if ($row = $result->fetch()) {
                             $all_B = $row['num'];
                         }
@@ -3777,13 +3789,13 @@ class Product extends Asset {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
                         );
-                        if ($result = $this->db->query($sql)) {
+                        if ($result = $db_replica->query($sql)) {
                             foreach ($result as $row) {
                                 $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`Product ID`=%d and OTF.`Customer Key`=%d limit 1", $row2['Product ID'], $row['Customer Key']
                                 );
                                 $found = false;
-                                if ($result = $this->db->query($sql)) {
+                                if ($result = $db_replica->query($sql)) {
                                     if ($row = $result->fetch()) {
                                         $found = true;
                                     }
@@ -3802,13 +3814,13 @@ class Product extends Asset {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $row2['Product ID']
                         );
-                        if ($result = $this->db->query($sql)) {
+                        if ($result = $db_replica->query($sql)) {
                             foreach ($result as $row) {
                                 $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`Product ID`=%d and OTF.`Customer Key`=%d limit 1", $this->id, $row['Customer Key']
                                 );
                                 $found = false;
-                                if ($result = $this->db->query($sql)) {
+                                if ($result = $db_replica->query($sql)) {
                                     if ($row = $result->fetch()) {
                                         $found = true;
                                     }
@@ -3848,7 +3860,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $this->id);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
 
 
@@ -3896,7 +3908,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
                                     if ($row4['num'] < $max_correlations) {
 
@@ -3950,7 +3962,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select max(`Correlation`) as corr ,count(*) as num from `Product Sales Anticorrelation` where `Product A ID`=%d    ", $this->id);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
 
 
@@ -4006,7 +4018,7 @@ class Product extends Asset {
 
                             $sql = sprintf("select max(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
 
-                            if ($result4 = $this->db->query($sql)) {
+                            if ($result4 = $db_replica->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
                                     if ($row4['num'] < $max_correlations) {
                                         $sql = sprintf(

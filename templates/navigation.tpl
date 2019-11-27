@@ -44,7 +44,7 @@
         </div>
         <div id="results_container" class="search_results_container">
             <div id="results_container_shifted" class="hide">
-                <table id="results" border="0">
+                <table id="results" >
                     <tr class="hide" id="search_result_template" view=""
                         onClick="change_view(this.getAttribute('view'))">
                         <td class="store padding_left_20 hide"></td>

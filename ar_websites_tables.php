@@ -151,7 +151,7 @@ function queries($_data, $db, $user) {
 
 
         $adata[] = array(
-            'site_key' => $data['Website Key'],
+            'website_key' => $data['Website Key'],
             'date'     => strftime(
                 "%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')
             ),
@@ -192,7 +192,7 @@ function search_history($_data, $db, $user) {
         $user = $data['User Alias'];
 
         $adata[] = array(
-            'site_key' => $data['Website Key'],
+            'website_key' => $data['Website Key'],
             'date'     => strftime(
                 "%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')
             ),

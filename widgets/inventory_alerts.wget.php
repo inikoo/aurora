@@ -11,24 +11,23 @@
 */
 
 
-function get_inventory_alerts( $db, $account, $user, $smarty) {
+function get_inventory_alerts($db, $account, $user, $smarty) {
 
     $html = '';
 
 
-    $all_active=$account->get('Account Active Parts Number')+$account->get('Account In Process Parts Number')+$account->get('Account Discontinuing Parts Number');
+    $active = $account->get('Account Active Parts Number') + $account->get('Account Discontinuing Parts Number');
+
+    $active_plus_in_process = $active + $account->get('Account In Process Parts Number');
+
 
     $data = get_widget_data(
 
-        $all_active-$account->get('Account Active Parts with SKO Barcode Number'),
-        $all_active,
-        0,
-        0
+        $active_plus_in_process - $account->get('Account Active Parts with SKO Barcode Number'), $active_plus_in_process, 0, 0
 
     );
-    
 
-    
+
     if ($data['ok']) {
 
 
@@ -37,9 +36,7 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
     }
 
 
-
-
-    if($account->get('Account Parts with Barcode Number Error')>0) {
+    if ($account->get('Account Parts with Barcode Number Error') > 0) {
 
         $data = get_widget_data(
 
@@ -59,10 +56,7 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
 
     $data = get_widget_data(
 
-        $account->get('Account Active Parts with SKO Invalid Weight'),
-        $all_active,
-        0,
-        0
+        $account->get('Account Active Parts with SKO Invalid Weight'), $active_plus_in_process, 0, 0
 
     );
     if ($data['ok']) {
@@ -72,6 +66,22 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
         $html .= '<div class="parts_with_weight_error">'.$smarty->fetch('dashboard/inventory.parts_with_weight_errors.dbard.tpl').'</div>';
     }
 
+
+    $data = get_widget_data(
+        $account->get('Account Parts No Products'), $active, 0, 0
+    );
+    if ($data['ok']) {
+        $smarty->assign('data', $data);
+        $html .= '<div class="parts_no_products_error">'.$smarty->fetch('dashboard/inventory.parts_with_no_products.dbard.tpl').'</div>';
+    }
+
+    $data = get_widget_data(
+        $account->get('Account Parts Forced not for Sale'), $active, 0, 0
+    );
+    if ($data['ok']) {
+        $smarty->assign('data', $data);
+        $html .= '<div class="orced_not_for_sale_on_website_error">'.$smarty->fetch('dashboard/inventory.parts_forced_not_for_sale_on_website.dbard.tpl').'</div>';
+    }
     return $html;
 
 
@@ -104,21 +114,22 @@ function get_widget_data($value, $total, $min, $max) {
         $data['min']       = 0;
         $data['max']       = $min;
 
-    } else if($percentage >= $max) {
-        $data['color_min'] = '#E0115F';//red
-        $data['color_max'] = '#E0115F';//red
-        $data['min']       = 0;
-        $data['max']       = $min;
-
     } else {
-        $data['color_min'] = '#f7da40';//yellow
-        $data['color_max'] = '#E0115F';//red
-        $data['min']       = $min;
-        $data['max']       = $max;
+        if ($percentage >= $max) {
+            $data['color_min'] = '#E0115F';//red
+            $data['color_max'] = '#E0115F';//red
+            $data['min']       = 0;
+            $data['max']       = $min;
+
+        } else {
+            $data['color_min'] = '#f7da40';//yellow
+            $data['color_max'] = '#E0115F';//red
+            $data['min']       = $min;
+            $data['max']       = $max;
+        }
     }
 
     return $data;
 }
 
 
-?>

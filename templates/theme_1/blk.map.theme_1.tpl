@@ -25,5 +25,5 @@
 
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " top_margin="{$top_margin}" bottom_margin="{$bottom_margin}" style="width:100%;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
-    <iframe class="google-map"  _src="{$data.src}" src="{if $data.src=='#map'}{$store->get('Store Google Map URL')}{else}{$data.src}{/if}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
+    <iframe class="google-map"  _src="{$data.src}" src="{if $data.src=='#map'}{$store->get('Store Google Map URL')}{else}{$data.src}{/if}" framescrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
 </div>

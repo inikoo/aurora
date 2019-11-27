@@ -13,7 +13,7 @@
     <div style="width: 400px;float: left">
         <div id="overviews">
 
-            <table border="0" class="overview">
+            <table class="overview">
                 <tr>
                     <td>{t}Status{/t}:</td>
                     <td class="aright "><span class="Payment_Transaction_status">{$payment->get('Transaction Status')}</span></td>

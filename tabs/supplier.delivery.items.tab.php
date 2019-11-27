@@ -62,7 +62,7 @@ $parameters = array(
 
 $table_buttons   = array();
 
-
+/*
 
 $table_buttons[] = array(
     'icon'       => 'barcode',
@@ -73,11 +73,12 @@ $table_buttons[] = array(
 
 
 
+
 $table_buttons[] = array(
     'icon'       => 'stop',
     'id'         => 'all_available_items',
     'class'      => 'items_operation'.($state['_object']->get('Supplier Delivery State') != 'In Process' ? ' hide' : ''),
-    'title'      => _("All supplier's parts"),
+    'title'      => _("All supplier's products"),
     'change_tab' => 'supplier.order.all_supplier_parts'
 );
 
@@ -89,17 +90,13 @@ $table_buttons[] = array(
     'class'    => 'items_operation'.($state['_object']->get('Supplier Delivery State') != 'In Process' ? ' hide' : ''),
     'add_item' => array(
 
-        'field_label' => _("Supplier's part").':',
+        'field_label' => _("Supplier's product").':',
         'metadata'    => base64_encode(
             json_encode(
                 array(
                     'scope'      => 'supplier_part',
-                    'parent'     => $state['_object']->get(
-                        'Supplier Delivery Parent'
-                    ),
-                    'parent_key' => $state['_object']->get(
-                        'Supplier Delivery Parent Key'
-                    ),
+                    'parent'     => $state['_object']->get('Supplier Delivery Parent'),
+                    'parent_key' => $state['_object']->get('Supplier Delivery Parent Key'),
                     'options'    => array()
                 )
             )
@@ -108,6 +105,9 @@ $table_buttons[] = array(
     )
 
 );
+
+*/
+
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(

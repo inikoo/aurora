@@ -10,6 +10,7 @@
 
 function fork_asset_sales($job) {
 
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
 

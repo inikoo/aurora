@@ -733,7 +733,7 @@ class Supplier extends SubjectSupplier {
 
         if (!isset($data['Supplier Part Reference']) or $data['Supplier Part Reference'] == '') {
             $this->error      = true;
-            $this->msg        = _("Supplier's part reference missing");
+            $this->msg        = _("Supplier's product reference missing");
             $this->error_code = 'supplier_part_reference_missing';
             $this->metadata   = '';
 
@@ -742,7 +742,7 @@ class Supplier extends SubjectSupplier {
 
         if (!isset($data['Supplier Part Description']) or $data['Supplier Part Description'] == '') {
             $this->error      = true;
-            $this->msg        = _("Supplier's part unit description missing");
+            $this->msg        = _("Supplier's product unit description missing");
             $this->error_code = 'supplier_part_unt_description_missing';
             $this->metadata   = '';
 
@@ -760,7 +760,7 @@ class Supplier extends SubjectSupplier {
                 if ($row['num'] > 0) {
                     $this->error      = true;
                     $this->msg        = sprintf(
-                        _('Duplicated supplier part reference (%s)'), $data['Supplier Part Reference']
+                        _("Duplicated supplier's product reference (%s)"), $data['Supplier Part Reference']
                     );
                     $this->error_code = 'duplicate_supplier_part_reference';
                     $this->metadata   = $data['Supplier Part Reference'];
@@ -1342,7 +1342,7 @@ class Supplier extends SubjectSupplier {
                     );
 
                     if ($supplier_part->duplicated_field == 'Supplier Part Reference') {
-                        $this->msg = _("Duplicated supplier's part reference");
+                        $this->msg = _("Duplicated supplier's product reference");
                     } else {
                         $this->msg = 'Duplicated '.$supplier_part->duplicated_field;
                     }

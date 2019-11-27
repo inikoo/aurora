@@ -1,5 +1,5 @@
 
-        <table style="width:50%;float:right;width:100%;" border="0">
+        <table style="width:50%;float:right;width:100%;" >
             <tbody class="{if $dn->get('State Index')>=70}hide{/if}">
                 <tr>
             <td>
@@ -19,7 +19,7 @@
                    onclick="save_this_field(this)"></i>
                 <div id="set_packer_results_container" class="search_results_container">
 
-                    <table id="set_packer_results" border="0"  >
+                    <table id="set_packer_results" >
 
                         <tr class="hide" id="set_packer_search_result_template" field="" value=""
                                                        formatted_value="" onClick="select_dropdown_handler('packer',this)">

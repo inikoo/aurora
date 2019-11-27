@@ -39,7 +39,7 @@
 
     <input id="email_template_key" value="{if $number_templates==1}{$template_key}{/if}" type="hidden" >
 
-    <table border="0" style="width: 100%">
+    <table style="width: 100%">
 
         <tr>
             <td ><span id="template_instructions"  {if $number_templates==1}style="visibility:hidden"{/if} >{t}Choose template{/t}</span></td>
@@ -53,7 +53,7 @@
 
                     <ul id="template_options_ul" style="position: relative:top:-5px;border-top: 1px solid #ccc;border-left:0px;border-right: 0px">
                         {foreach from=$templates item=template key=value}
-                            <li class="" onclick="select_option_template(this,'{$template->id}' )">{$template->get('Name')}</li>
+                            <li onclick="select_option_template(this,'{$template->id}' )">{$template->get('Name')}</li>
                         {/foreach}
                     </ul>
                 </div>
@@ -73,7 +73,7 @@
             <td class="aright padding_right_10">
                 <span id="go_to_email_editor" class="like_button unselectable hide" onclick="compose_personalized_email(this)"   title="{t}Click to start personalizing the invitation{/t}"> <span class="margin_right_10">{t}Go to editor{/t}</span> <i class="fa fa-pen-alt fa-fw"></i></span>
 
-                <span id="send_invitation"  class="like_button unselectable" onclick="send_invitation(this)"  title="{t}Send invitation email now{/t}"> <span class="">{t}Send{/t}</span> <i class="fa fa-paper-plane fa-fw"></i></span>
+                <span id="send_invitation"  class="like_button unselectable" onclick="send_invitation(this)"  title="{t}Send invitation email now{/t}"> <span >{t}Send{/t}</span> <i class="fa fa-paper-plane fa-fw"></i></span>
             </td>
         </tr>
 

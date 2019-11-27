@@ -12,7 +12,7 @@
 
 <div id="image_tooltip_edit" class="hide" style="z-index: 2000;background-color: #fff;padding:20px;border:1px solid #ccc;width: 670px;position: absolute;">
 
-    <input style="width:600px" val="">  <i  onClick="set_image_tooltip()" style="" class="like_button fa fa-fw fa-check-circle" aria-hidden="true"></i>
+    <input style="width:600px" val="">  <i  onClick="set_image_tooltip()" class="like_button fa fa-fw fa-check-circle" aria-hidden="true"></i>
 
 </div>
 

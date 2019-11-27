@@ -40,7 +40,7 @@
 <div id="account" style="display:none">
 
     <div class="block">
-        <table border="0" id="stores" class="data_list">
+        <table id="stores" class="data_list">
             <tr id="stores_tr" class="bottom-border">
                 <td class="aright"> {t}Stores{/t}:</td>
                 <td class="aright"><span id="stores_number">{$account->get('Stores')}</span></td>
@@ -56,7 +56,7 @@
         </table>
     </div>
     <div class="block">
-        <table border="0" id="websites" class="data_list">
+        <table id="websites" class="data_list">
             <tr id="websites_tr" class="bottom-border">
                 <td class="aright"> {t}Websites{/t}:</td>
                 <td class="aright"><span id="websites_number">{$account->get('Websites')}</span></td>
@@ -72,7 +72,7 @@
         </table>
     </div>
     <div class="block">
-        <table border="0" id="warehouses" class="data_list">
+        <table id="warehouses" class="data_list">
             <tr id="warehouses_tr" class="bottom-border">
                 <td class="aright"> {t}Warehouses{/t}:</td>
                 <td class="aright"><span id="warehouses_number">{$account->get('Warehouses')}</span></td>

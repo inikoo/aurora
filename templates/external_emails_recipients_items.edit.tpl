@@ -12,7 +12,7 @@
 
 {foreach from=$external_emails item=external_email}
 
-    <tr class="">
+    <tr >
         <td class="operations">
             <i class="far fa-trash-alt very_discreet_on_hover  button" aria-hidden="true" onclick="remove_recipient(this)"></i>
         </td>

@@ -12,6 +12,7 @@ include_once 'utils/new_fork.php';
 
 function fork_send_mailshot($job) {
 
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     $time_start_tier_1 = microtime_float();
     $time_start_tier_2 = microtime_float();

@@ -11,11 +11,16 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
+include_once 'utils/web_set_locale.php';
+
 
 $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
 
+
+$current_locale = set_locate($website->get('Website Locale'));
+//print $current_locale;
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -60,26 +65,13 @@ switch ($tipo) {
 
         break;
 
-    case 'update_item':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'product_id'        => array('type' => 'key'),
-                         'qty'               => array('type' => 'string'),
-                         'webpage_key'       => array('type' => 'numeric'),
-                         'page_section_type' => array('type' => 'string')
-                     )
-        );
-
-        update_item($data, $website,$customer, $order, $editor, $db);
-
-
-        break;
 
 
     case 'get_charges_info':
 
         get_charges_info($order);
         break;
+
     case 'special_instructions':
         $data = prepare_values(
             $_REQUEST, array(
@@ -89,6 +81,7 @@ switch ($tipo) {
         );
         update_special_instructions($data, $order, $editor);
         break;
+
     case 'invoice_address':
         $data = prepare_values(
             $_REQUEST, array(
@@ -98,6 +91,7 @@ switch ($tipo) {
         );
         invoice_address($data, $order, $editor, $website);
         break;
+
     case 'delivery_address':
         $data = prepare_values(
             $_REQUEST, array(
@@ -107,7 +101,6 @@ switch ($tipo) {
         );
         delivery_address($data, $order, $editor, $website);
         break;
-
 
     case 'web_toggle_charge':
         $data = prepare_values(
@@ -134,251 +127,6 @@ switch ($tipo) {
         web_toggle_deal_component_choose_by_customer($data, $editor, $db, $order, $customer);
         break;
 
-}
-
-/**
- * @param $_data
- * @param $customer \Public_Customer
- * @param $website \Public_Website
- * @param $order \Public_Order
- * @param $editor
- * @param $db \PDO
- */
-function update_item($_data, $website,$customer, $order, $editor, $db) {
-
-
-    $customer->editor = $editor;
-
-
-
-    if (!$order->id) {
-
-        $order = create_order($editor, $customer);
-
-        $order->fast_update(array('Order Website Key' => $website->id));
-        $_SESSION['order_key'] = $order->id;
-
-    }
-
-
-
-
-
-
-    if($order->get('Order State')=='InBasket'){
-        $order->fast_update(
-            array(
-
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
-            )
-        );
-    }
-
-    $product_pid = $_data['product_id'];
-    $quantity    = $_data['qty'];
-
-
-    if ($quantity == '') {
-        $quantity = 0;
-    }
-
-    if (is_numeric($quantity) and $quantity >= 0) {
-        $quantity = ceil($quantity);
-
-
-        $dispatching_state = 'In Process';
-
-
-        $payment_state = 'Waiting Payment';
-
-
-        $product = get_object('Product', $product_pid);
-        $data    = array(
-            'date'                      => gmdate('Y-m-d H:i:s'),
-            'item_historic_key'         => $product->get('Product Current Key'),
-            'item_key'                  => $product->id,
-            'Metadata'                  => '',
-            'qty'                       => $quantity,
-            'Current Dispatching State' => $dispatching_state,
-            'Current Payment State'     => $payment_state
-        );
-
-        $discounted_products                             = $order->get_discounted_products();
-        $order->skip_update_after_individual_transaction = false;
-        //print_r($data);
-        $transaction_data = $order->update_item($data);
-
-
-        $discounts_data = array();
-
-
-        $sql = sprintf(
-            'SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF LEFT JOIN  `Order Transaction Deal Bridge` B ON (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
-            $order->id
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $discounts_data[$row['Order Transaction Fact Key']] = array(
-                    'deal_info' => $row['Deal Info'],
-                    'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
-                );
-
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $basket_history = array(
-            'otf_key'                 => $transaction_data['otf_key'],
-            'webpage_key'             => $_data['webpage_key'],
-            'product_id'              => $product->id,
-            'quantity_delta'          => $transaction_data['delta_qty'],
-            'quantity'                => $transaction_data['qty'],
-            'net_amount_delta'        => $transaction_data['delta_net_amount'],
-            'net_amount'              => $transaction_data['net_amount'],
-            'page_section_type' => $_data['page_section_type'],
-
-        );
-        $order->add_basket_history($basket_history);
-
-
-        $new_discounted_products = $order->get_discounted_products();
-        foreach ($new_discounted_products as $key => $value) {
-            $discounted_products[$key] = $value;
-        }
-
-
-        $hide         = array();
-        $show         = array();
-        $add_class    = array();
-        $remove_class = array();
-
-        $labels = $website->get('Localised Labels');
-
-        if ($order->get('Shipping Net Amount') == 'TBC') {
-            $shipping_amount = sprintf('<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>%s</small>', (!empty($labels['_we_will_contact_you']) ? $labels['_we_will_contact_you'] : _('We will contact you')));
-        } else {
-            $shipping_amount = $order->get('Shipping Net Amount');
-        }
-
-        if ($order->get('Order Charges Net Amount') == 0) {
-
-            $add_class['order_charges_container'] = 'very_discreet';
-
-            $hide[] = 'order_charges_info';
-        } else {
-            $remove_class['order_charges_container'] = 'very_discreet';
-
-            $show[] = 'order_charges_info';
-        }
-
-
-        if ($order->get('Order Items Discount Amount') == 0) {
-
-            $hide[] = 'order_items_gross_container';
-            $hide[] = 'order_items_discount_container';
-        } else {
-            $show[] = 'order_items_gross_container';
-            $show[] = 'order_items_discount_container';
-        }
-
-
-        if ($order->get('Order Deal Amount Off') == 0) {
-            $hide[] = 'Deal_Amount_Off_tr';
-        } else {
-            $show[] = 'Deal_Amount_Off_tr';
-        }
-
-
-        $class_html = array(
-            'Deal_Amount_Off'         => $order->get('Deal Amount Off'),
-            'order_items_gross'       => $order->get('Items Gross Amount'),
-            'order_items_discount'    => $order->get('Basket Items Discount Amount'),
-            'order_items_net'         => $order->get('Items Net Amount'),
-            'order_net'               => $order->get('Total Net Amount'),
-            'order_tax'               => $order->get('Total Tax Amount'),
-            'order_charges'           => $order->get('Charges Net Amount'),
-            'order_credits'           => $order->get('Net Credited Amount'),
-            'available_credit_amount' => $order->get('Available Credit Amount'),
-            'order_shipping'          => $shipping_amount,
-            'order_total'             => $order->get('Total Amount'),
-            'to_pay_amount'           => $order->get('Basket To Pay Amount'),
-            'ordered_products_number' => $order->get('Products'),
-            'order_amount'            => ((!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net') ? $order->get('Items Net Amount') : $order->get('Total'))
-        );
-
-
-        $response = array(
-            'state'               => 200,
-            'quantity'            => $transaction_data['qty'],
-            'product_pid'         => $product_pid,
-            'description'         => $product->data['Product Units Per Case'].'x '.$product->data['Product Name'],
-            'discount_percentage' => $transaction_data['discount_percentage'],
-            'key'                 => $order->id,
-
-            'metadata' => array(
-                'class_html'   => $class_html,
-                'hide'         => $hide,
-                'show'         => $show,
-                'add_class'    => $add_class,
-                'remove_class' => $remove_class,
-                'new_otfs'     => $order->new_otfs,
-                'deleted_otfs' => $order->deleted_otfs,
-
-            ),
-
-
-            'to_charge'      => $transaction_data['to_charge'],
-            'discounts_data' => $discounts_data,
-            'discounts'      => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
-            'charges'        => ($order->data['Order Charges Net Amount'] != 0 ? true : false),
-
-            'order_empty' => ($order->get('Products') == 0 ? true : false),
-            'analytics'   => array(
-                'action' => ($transaction_data['delta_qty'] > 0 ? 'add' : ($transaction_data['delta_qty'] < 0 ? 'remove' : '')),
-                'event'  => ($transaction_data['delta_qty'] > 0 ? 'Add to cart' : ($transaction_data['delta_qty'] < 0 ? 'Remove from cart' : '')),
-
-                'product_data' => array(
-                    'id'       => $product->get('Code'),
-                    'name'     => $product->get('Name'),
-                    'category' => $product->get('Family Code'),
-                    'price'    => $product->get('Product Price'),
-                    'quantity' => abs($transaction_data['delta_qty']),
-                )
-
-
-            )
-
-
-        );
-    } else {
-        $response = array('state' => 200);
-    }
-
-
-    echo json_encode($response);
-
-}
-
-function create_order($editor, $customer) {
-
-
-    $order_data = array(
-        'editor' => $editor
-    );
-
-
-    $order = $customer->create_order($order_data);
-
-
-    return $order;
 }
 
 function invoice_address($data, $order, $editor, $website) {
@@ -425,11 +173,10 @@ function invoice_address($data, $order, $editor, $website) {
     $order->update(array('Order Invoice Address' => json_encode($address_data)));
 
 
-
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -528,12 +275,11 @@ function delivery_address($data, $order, $editor, $website) {
     }
 
 
-
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
 
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -591,13 +337,11 @@ function update_special_instructions($data, $order, $editor) {
     );
 
 
-
-
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
 
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -638,6 +382,9 @@ function get_items_html($data, $customer) {
 
     $theme = $website->get('Website Theme');
 
+    /**
+     * @var $order \Public_Order
+     */
     $order = get_object('Order', $customer->get_order_in_process_key());
 
 
@@ -646,7 +393,6 @@ function get_items_html($data, $customer) {
     $smarty->assign('items_data', $order->get_items());
     $smarty->assign('interactive_charges_data', $order->get_interactive_charges_data());
 
-    // print_r( $order->get_interactive_deal_component_data());
 
     $smarty->assign('interactive_deal_component_data', $order->get_interactive_deal_component_data());
 
@@ -750,7 +496,12 @@ function get_basket_html($data, $customer) {
 
         list(
             $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
-            ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+            ) = get_address_form_data(
+            ($order->get('Order Invoice Address Country 2 Alpha Code')==''?
+                ($customer->get('Customer Invoice Address Country 2 Alpha Code')==''?$store->get('Store Home Country Code 2 Alpha'):$customer->get('Customer Invoice Address Country 2 Alpha Code'))
+                :$order->get('Order Invoice Address Country 2 Alpha Code'))
+
+                                     , $website->get('Website Locale'));
 
 
         $smarty->assign('invoice_address_labels', $invoice_address_labels);
@@ -759,9 +510,16 @@ function get_basket_html($data, $customer) {
         $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
 
 
+
+
         list(
             $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
-            ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+            ) = get_address_form_data(
+
+            ($order->get('Order Delivery Address Country 2 Alpha Code')==''?
+                ($customer->get('Customer Delivery Address Country 2 Alpha Code')==''?$store->get('Store Home Country Code 2 Alpha'):$customer->get('Customer Delivery Address Country 2 Alpha Code'))
+                :$order->get('Order Delivery Address Country 2 Alpha Code'))
+                , $website->get('Website Locale'));
 
         $smarty->assign('delivery_address_labels', $delivery_address_labels);
         $smarty->assign('delivery_required_fields', $delivery_required_fields);
@@ -819,11 +577,11 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
     }
 
 
-    if($order->get('Order State')=='InBasket'){
+    if ($order->get('Order State') == 'InBasket') {
         $order->fast_update(
             array(
 
-                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
             )
         );
     }
@@ -896,7 +654,7 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
 
 
     $response = array(
-        'state'    => 200,
+        'state' => 200,
 
 
         'metadata' => array(
@@ -997,12 +755,11 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
             $db->exec($sql);
 
 
-
-            if($order->get('Order State')=='InBasket'){
+            if ($order->get('Order State') == 'InBasket') {
                 $order->fast_update(
                     array(
 
-                        'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                        'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
                     )
                 );
             }

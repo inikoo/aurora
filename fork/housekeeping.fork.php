@@ -10,12 +10,14 @@
 
 function fork_housekeeping($job) {
 
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
     list($account, $db, $data, $editor, $session) = $_data;
+
 
     print $data['type']."\n";
     //return true;
@@ -294,26 +296,18 @@ function fork_housekeeping($job) {
             break;
         case 'feedback':
 
-
             foreach ($data['feedback'] as $feedback) {
-
-
                 $feedback_data = array(
                     'Feedback Date'       => gmdate('Y-m-d H:i:s'),
                     'Feedback User Key'   => $data['user_key'],
                     'Feedback Parent'     => $data['parent'],
                     'Feedback Parent Key' => $data['parent_key'],
                     'Feedback Message'    => $feedback['feedback']
-
                 );
 
                 foreach ($feedback['scopes'] as $scope) {
                     $feedback_data['Feedback '.$scope] = 'Yes';
                 }
-
-
-                //  print_r($feedback_data);
-
 
                 $sql = sprintf(
                     "INSERT INTO `Feedback Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_data)).'`', join(',', array_fill(0, count($feedback_data), '?'))

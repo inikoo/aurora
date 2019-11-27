@@ -373,7 +373,7 @@ class Account extends DB_Table {
                 $number = 0;
 
 
-                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  and ( `Supplier Delivery CBM`<25 or `Supplier Delivery CBM` is null )" ;
+                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  and ( `Supplier Delivery CBM`<25 or `Supplier Delivery CBM` is null )";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute();
                 if ($row = $stmt->fetch()) {
@@ -472,7 +472,8 @@ class Account extends DB_Table {
             case 'Active Production Stock Critical Deliveries Number':
             case 'Active Production Stock Zero Deliveries Number':
 
-
+            case 'Parts No Products':
+            case 'Parts Forced not for Sale':
                 return number($this->data['Account '.$key]);
                 break;
             case 'Percentage Contacts With Orders':
@@ -828,15 +829,14 @@ class Account extends DB_Table {
 
     function update_warehouses_data() {
         $number_stores = 0;
-        $sql           = sprintf(
-            'SELECT count(*) AS num FROM `Warehouse Dimension` WHERE `Warehouse State`="Active"'
-        );
+
+        $sql = "SELECT count(*) AS num FROM `Warehouse Dimension` WHERE `Warehouse State`='Active'";
         if ($row = $this->db->query($sql)->fetch()) {
             $number_stores = $row['num'];
         }
 
-        $this->update(
-            array('Account Warehouses' => $number_stores), 'no_history'
+        $this->fast_update(
+            array('Account Warehouses' => $number_stores)
         );
 
     }
@@ -852,7 +852,11 @@ class Account extends DB_Table {
         $number_parts_with_invalid_weight = 0;
 
 
-        $sql = sprintf('SELECT count(*) AS num ,`Part Status`  FROM `Part Dimension`  GROUP BY `Part Status`');
+        $number_parts_with_no_products           = 0;
+        $number_parts_forced_not_for_sale_online = 0;
+
+
+        $sql = "SELECT count(*) AS num ,`Part Status`  FROM `Part Dimension`  GROUP BY `Part Status`";
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 switch ($row['Part Status']) {
@@ -871,16 +875,10 @@ class Account extends DB_Table {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`!="Not In Use" AND `Part SKO Barcode`!=""  '
-        );
+        $sql = "SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`!='Not In Use' AND `Part SKO Barcode`!=''  ";
         if ($row = $this->db->query($sql)->fetch()) {
             $number_parts_no_sko_barcodes = $row['num'];
         }
@@ -900,11 +898,23 @@ class Account extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`!="Not In Use" and  `Part Package Weight Status`!="OK"       '
-        );
+        $sql = "SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`!='Not In Use' and  `Part Package Weight Status`!='OK'";
         if ($row = $this->db->query($sql)->fetch()) {
             $number_parts_with_invalid_weight = $row['num'];
+        }
+
+        //'In Process','Not In Use','In Use','Discontinuing'
+        $sql  = "SELECT `Part Products Web Status`,count(*) AS num FROM `Part Dimension` WHERE `Part Status` in ('In Use','Discontinuing') group by `Part Products Web Status`  ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            if ($row['Part Products Web Status'] == 'Offline' or $row['Part Products Web Status'] == 'Out of Stock') {
+                $number_parts_forced_not_for_sale_online += $row['num'];
+            }
+
+            if ($row['Part Products Web Status'] == 'No Products') {
+                $number_parts_with_no_products = $row['num'];
+            }
         }
 
 
@@ -918,8 +928,8 @@ class Account extends DB_Table {
                 'Account Parts with Barcode Number Error'      => $number_parts_barcode_error,
                 'Account Parts with Barcode Number'            => $number_parts_with_barcode,
                 'Account Active Parts with SKO Invalid Weight' => $number_parts_with_invalid_weight,
-
-
+                'Account Parts No Products'                    => $number_parts_with_no_products,
+                'Account Parts Forced not for Sale'            => $number_parts_forced_not_for_sale_online
             ), 'Account Data'
         );
 

@@ -36,7 +36,7 @@
 <div class="wrapper_boxed">
 
 
-    <div id="aux" class="">
+    <div id="aux" >
 
 
 
@@ -373,7 +373,7 @@
                         <td class="label">{t}Navigation bottom border{/t}</td>
                         <td class="margins_container unselectable border border-width" data-scope="navigation_bottom_border">
 
-                            <input data-margin="bottom-width" class=" edit_margin navigation_bottom_border" value="" style="" placeholder="0">
+                            <input data-margin="bottom-width" class=" edit_margin navigation_bottom_border" value="" placeholder="0">
 
                             <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
                             <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
@@ -513,8 +513,8 @@
                     <tr>
                         <td class="label">{t}Border{/t}</td>
                         <td class="margins_container unselectable border border-width" data-scope="border">
-                            <input data-margin="top-width" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom-width" class=" edit_margin bottom" value="" style="" placeholder="0">
-                            <input data-margin="left-width" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" style="" placeholder="0">
+                            <input data-margin="top-width" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom-width" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
+                            <input data-margin="left-width" class=" edit_margin left" value="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" placeholder="0">
 
                             <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
                             <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
@@ -700,7 +700,7 @@
 
 
 
-        <div id="bottom_header" class="">
+        <div id="bottom_header" >
 
 
             {foreach from=$header_data.menu.columns item=column key=key}
@@ -734,7 +734,7 @@
 
 
         </div>
-        <div id="_menu_blocks" class="" style="position:absolute">
+        <div id="_menu_blocks" style="position:absolute">
             {foreach from=$header_data.menu.columns item=column key=key}
                 {if $column.type=='three_columns'}
                     <div id="menu_block_menu_{$key}" class="_menu_block menu_block hide" data-key="{$key}">
@@ -748,9 +748,9 @@
                             {elseif $sub_column.type=='text'}
                                 <div class="text">
                                     {if  $sub_column.url!=''}
-                                        <a href="{$sub_column.url}"><img style="width: 100%" src="{$sub_column.image}" alt="" class=""/></a>
+                                        <a href="{$sub_column.url}"><img style="width: 100%" src="{$sub_column.image}" alt="" /></a>
                                     {else}
-                                        <img src="{$sub_column.image}" alt="" class=""/>
+                                        <img src="{$sub_column.image}" alt="" />
                                     {/if}
                                     <div>
                                         {$sub_column.text}
@@ -786,7 +786,7 @@
 
         <div id="body"   >
             <div class="navigation top_body" onclick="open_navigation_style()" >
-                <div class="breadcrumbs" style="">
+                <div class="breadcrumbs" >
                     <span class="breadcrumb ">
                         <a href="#" title="{t}Home{/t}"><i class="fa fa-home"></i></a>
                             <i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>
@@ -805,7 +805,7 @@
                 </div>
 
 
-                <div style="" class="nav">
+                <div class="nav">
 
 
                     <a href="#" title=""><i class="fas fa-arrow-left"></i></a>
@@ -855,10 +855,10 @@
                                         {else}
 
                                         <div class="order_row empty  order_row_ ">
-                                            <input maxlength=6 style="" class='order_input  ' type="text"' size='2' value='' data-ovalue=''>
+                                            <input maxlength=6 class='order_input  ' type="text"' size='2' value='' data-ovalue=''>
 
                                             <div class="label sim_button" style="margin-left:57px">
-                                                <i class="hide fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
+                                                <i class="hide fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span >{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
                                             </div>
 
 
@@ -910,10 +910,10 @@
                                 </div>
                             {else}
                             <div class="order_row {if $store->get('Store Type')=='Dropshipping'}remove_from_portfolio{else}ordered{/if}  order_row_ ">
-                                <input maxlength=6 style="" class='order_input  ' type="text"' size='2' value='1' >
+                                <input maxlength=6 class='order_input  ' type="text"' size='2' value='1' >
 
                                 <div class="label sim_button" style="margin-left:57px">
-                                    <i class=" fa fa-thumbs-up fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}</span>
+                                    <i class=" fa fa-thumbs-up fa-fw" aria-hidden="true"></i> <span >{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}</span>
                                 </div>
                             </div>
                             {/if}
@@ -1108,7 +1108,7 @@
                                 <div class="footer_block">
 
 
-                                    <ul class="address " style="">
+                                    <ul class="address " >
                                         {foreach from=$column.items item=item }
                                             {if $item.type=='logo'}
                                                 <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>

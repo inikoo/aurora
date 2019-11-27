@@ -2042,7 +2042,7 @@ $tab_defaults = array(
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
-        //'export_fields' => $export_fields['supplier.order.items']
+        'export_fields' => $export_fields['supplier.order.items']
 
 
     ),
@@ -2756,6 +2756,26 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['parts_weight_errors'])[0],
         'elements'      => $elements_options['parts_weight_errors'],
         'export_fields' => $export_fields['parts_weight_errors']
+
+    ),
+    'inventory.parts_no_products.wget'  => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 1000,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+
+
+    ),
+    'inventory.parts_forced_not_for_sale_on_website.wget'  => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 1000,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+
 
     ),
     'inventory.parts_barcode_errors.wget' => array(

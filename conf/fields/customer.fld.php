@@ -268,11 +268,11 @@ if ($new) {
                     'id'              => 'Customer_Subscriptions',
                     'edit'            => 'no_icon',
                     'value'           => $object->get('Customer Subscriptions'),
-                    'formatted_value' => '<span id="Customer_Send_Newsletter_field" class="button value valid" onclick="toggle_subscription_from_new(this)" field_type="subscription" field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="">'
+                    'formatted_value' => '<span id="Customer_Send_Newsletter_field" class="button value valid" onclick="toggle_subscription_from_new(this)" field_type="subscription" field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Newsletter').'</span></span>'
-                        .'<span id="Customer_Send_Email_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Email_Marketing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="">'
+                        .'<span id="Customer_Send_Email_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Email_Marketing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Marketing emails').'</span></span>'
-                        .'<span id="Customer_Send_Postal_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Postal_Marketing" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="">'
+                        .'<span id="Customer_Send_Postal_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Postal_Marketing" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Postal marketing').'</span></span>',
                     'label'           => _('Subscriptions'),
                     'required'        => false,

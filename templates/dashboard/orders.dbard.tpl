@@ -22,21 +22,21 @@
     <li id="order_flow_submitted" class="flex-item order_flow {if $order_flow=='submitted_not_paid' or  $order_flow=='submitted' }selected{/if}" >
         <span>{t}Submitted{/t}</span>
         <div class="title">
-            <span class="" >
+            <span >
                 <span class="Orders_In_Process_Not_Paid_Number button {if  $order_flow=='submitted_not_paid'}blue{/if}" title="{t}Unpaid submitted orders{/t}" onclick="get_orders_table('submitted_not_paid',{ parent: 'store','parent_key':{$store->id}})">
                     <i style="font-size: 50%" class="fa fa-dollar-sign discreet" aria-hidden="true"></i> {$store->get('Orders In Process Not Paid Number')}
                 </span> | </span>
             <span class="Orders_In_Process_Paid_Number button {if  $order_flow=='submitted'}blue{/if}" title="{t}Paid submitted orders{/t}"
                   onclick="get_orders_table('submitted',{ parent: 'store','parent_key':{$store->id}})">{$store->get('Orders In Process Paid Number')} <i style="font-size: 50%" class="fa fa-dollar-sign success" aria-hidden="true"></i> </span>  </div>
         <div >
-            <span class=""><span onclick="get_orders_table('submitted_not_paid',{ parent: 'store','parent_key':{$store->id}})" class="{if  $order_flow=='submitted_not_paid'}blue{/if} button Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$store->get('DC Orders In Process Not Paid Amount')}{else}{$store->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$store->get('DC Orders In Process Not Paid Amount Minify')}{else}{$store->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
+            <span ><span onclick="get_orders_table('submitted_not_paid',{ parent: 'store','parent_key':{$store->id}})" class="{if  $order_flow=='submitted_not_paid'}blue{/if} button Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$store->get('DC Orders In Process Not Paid Amount')}{else}{$store->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$store->get('DC Orders In Process Not Paid Amount Minify')}{else}{$store->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
             <span  onclick="get_orders_table('submitted',{ parent: 'store','parent_key':{$store->id}})" class="{if  $order_flow=='submitted'}blue{/if}  button Orders_In_Process_Paid_Amount" title="{if $currency=='account'}{$store->get('DC Orders In Process Paid Amount')}{else}{$store->get('Orders In Process Paid Amount')}{/if}">{if $currency=='account'}{$store->get('DC Orders In Process Paid Amount Minify')}{else}{$store->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
 
     </li>
     <li id="order_flow_in_warehouse" class="flex-item order_flow {if $order_flow=='in_warehouse' or  $order_flow=='in_warehouse_with_alerts' }selected{/if}">
         <span>{t}In Warehouse{/t}</span>
         <div class="title">
-            <span class="" >
+            <span >
             <span class="Orders_In_Warehouse_No_Alerts_Number button {if  $order_flow=='in_warehouse'}blue{/if} " title="{t}Orders in warehouse without alerts{/t}" onclick="get_orders_table('in_warehouse',{ parent: 'store','parent_key':{$store->id}})">
                <i style="font-size: 50%" class="fa fa-bell invisible" aria-hidden="true"></i>  {$store->get('Orders In Warehouse No Alerts Number')}
             </span>
@@ -75,7 +75,7 @@
 
     <li id="order_flow_dispatched" class="flex-item order_flow {if $order_flow=='dispatched_today'}selected{/if}">
         <span>{t}Dispatched today{/t}</span>
-        <div class="title"><span class="" >
+        <div class="title"><span >
 
             <span class="Orders_Dispatched_Today_Number button" title="{t}Today's dispatched orders{/t}"  onclick="get_orders_table('dispatched_today',{ 'parent': 'store','parent_key':{$store->id}})">{$store->get('Orders Dispatched Today Number')} <i style="font-size: 50%" class="hide fa fa-paper-plane " aria-hidden="true"></i> </span> </div>
         <div >

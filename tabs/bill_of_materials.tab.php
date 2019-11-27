@@ -47,6 +47,7 @@ $table_buttons[] = array(
     'class' => 'items_operation',
 
     'add_item' => array(
+        'field'      => 'Units',
         'placeholder_qty' => _('qty (Units)'),
         'placeholder'     => _('Part reference'),
         'field_label'     => _("Material").':',
@@ -76,7 +77,7 @@ $smarty->assign(
         array(
             'parent'     => $state['object'],
             'parent_key' => $state['key'],
-            'field'      => 'Units'
+
         )
     )
 

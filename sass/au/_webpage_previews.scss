@@ -48,8 +48,12 @@
 
 }
 
+.block_margins_container{
+  display: inline;
+}
 
-.edit_margin{
+
+.edit_block_input{
   width: 40px;text-align:center;
   &.top{
     border-top:2px solid #000;
@@ -57,7 +61,16 @@
 
   &.bottom{
     border-bottom:2px solid #000;
-  border-left:none;
+
+  }
+
+  &.left{
+    border-left:2px solid #000;
+
+  }
+  &.right{
+    border-right:2px solid #000;
+
   }
 
 }

@@ -14,6 +14,7 @@ include_once 'utils/object_functions.php';
 
 function fork_time_series($job) {
 
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_data($job)) {
         return;

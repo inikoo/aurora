@@ -20,7 +20,7 @@
 {if $logged_in}
     <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" ></span>
 {/if}
-<div id="page-transitions">
+<div id="page-transitions" class="tablet">
     {include file="theme_1/header.theme_1.EcomB2B.tablet.tpl"}
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
@@ -38,10 +38,10 @@
             </div>
             {/if}
             {if isset($discounts) and count($discounts.deals)>0 }
-                <div class="discounts" style="">
+                <div class="discounts" >
                     {foreach from=$discounts.deals item=deal_data }
                     <div class="discount_card" key="{$deal_data.key}" >
-                        <div class="discount_icon" style="">{$deal_data.icon}</div>
+                        <div class="discount_icon" >{$deal_data.icon}</div>
                         <span  class="discount_name">{$deal_data.name}</span>
                         {if  $deal_data.until!=''}<small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label" >{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}{/if}</small>
 
@@ -59,6 +59,7 @@
             {assign "with_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
+            {assign "with_client" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
             {assign "with_clients" false}
@@ -102,6 +103,17 @@
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                             {/if}
+                     {elseif $block.type=='client'}
+                         {if $logged_in}
+                             {assign "with_client" 1}
+                             <div id="client">
+                                 <div style="text-align: center">
+                                     <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                 </div>
+                             </div>
+                         {else}
+                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
+                         {/if}
                         {elseif $block.type=='checkout'}
                             {if $logged_in}{assign "with_checkout" 1}
                                 <div id="checkout">
@@ -489,6 +501,14 @@
 
                 })
                 {/if}
+                {if $with_client==1}
+                getScript("/assets/mobile.forms.min.js", function () {
+                    $.getJSON("ar_web_client.php?tipo=get_client_html&device_prefix=tablet", function (data) {
+                        $('#client').html(data.html)
+                    })
+                })
+                {/if}
+
                 {if $with_register==1}
                 getScript("/assets/mobile.forms.min.js", function () {
 

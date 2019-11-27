@@ -59,7 +59,7 @@
 
 
                             <i class="far fa-trash-alt discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
-                            <table id="delete_dialog" border="0" class="order_operation_dialog hide">
+                            <table id="delete_dialog" class="order_operation_dialog hide">
                                 <tr class="top">
                                     <td colspan="2">{t}Delete mailshot{/t}</td>
                                 </tr>
@@ -102,7 +102,7 @@
 
 
                             <i class="far fa-skull discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('start_purge')"></i>
-                            <table id="start_purge_dialog" border="0" class="order_operation_dialog hide">
+                            <table id="start_purge_dialog" class="order_operation_dialog hide">
                                 <tr class="top">
                                     <td colspan="2">{t}Start purge{/t}</td>
                                 </tr>
@@ -127,12 +127,12 @@
                 </div>
             </div>
 
-            <table border="0" class="hide info_block acenter">
+            <table class="hide info_block acenter">
 
                 <tr>
 
                     <td>
-                        <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$purge->get('Number Items')}</span></span>
+                        <span ><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$purge->get('Number Items')}</span></span>
                         <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " aria-hidden="true"></i> <span class="Order_Number_Items_with_Deals">{$purge->get('Number Items with Deals')}</span></span>
                         <span class="error {if $purge->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
                                     class="Order_Number_Items_with_Out_of_Stock">{$purge->get('Number Items Out of Stock')}</span></span>

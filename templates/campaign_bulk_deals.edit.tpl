@@ -238,18 +238,18 @@
 
 <div id="campaign_bulk_deals_edit_dialog" class="hide" style="position:absolute;width:500px;background: #fff;border: 1px solid #ccc;padding: 10px">
 
-    <table border="0" style="width: 100%">
+    <table style="width: 100%">
         <tr>
             <td class="target italic discreet"></td>
             <td class="aright"><i onclick="$('#campaign_bulk_deals_edit_dialog').addClass('hide')" class="fa fa-window-close button"></i></td>
         </tr>
         <tr>
             <td>{t}Order quantity{/t}</td>
-            <td><input style="width: 100px" class="terms" style=""></td>
+            <td><input style="width: 100px" class="terms" ></td>
         </tr>
         <tr>
             <td>{t}Percentage off{/t}</td>
-            <td><input style="width: 100px" class="allowance" style="" placeholder="%"></td>
+            <td><input style="width: 100px" class="allowance" placeholder="%"></td>
         </tr>
         <tr>
             <td>{t}Description{/t}</td>
@@ -267,7 +267,7 @@
 <div id="campaign_bulk_deals_status_edit_dialog" class="hide" style="position:absolute;width:150px;background: #fff;border: 1px solid #ccc;padding: 10px">
 
 
-    <table border="0">
+    <table >
 
         <tr>
             <td class="target italic discreet padding_right_20"></td>

@@ -11,11 +11,7 @@
 */
 
 $redis = new Redis();
-if ($redis->connect('127.0.0.1', 6379)) {
-    $redis_on = true;
-} else {
-    $redis_on = false;
-}
+$redis->connect('127.0.0.1', 6379);
 
 
 $state = json_decode($_REQUEST['state'], true);

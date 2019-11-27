@@ -17,6 +17,15 @@ gettext("Click to be notified by email when back in stock");
 gettext("Expected");
 
 /* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.mobile.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.mobile.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.mobile.tpl */
+gettext("Remove from portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.mobile.tpl */
 gettext("For prices, please login or register");
 
 /* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.mobile.tpl */
@@ -197,6 +206,9 @@ gettext("For prices, please login or register");
 gettext("Add to portfolio");
 
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tpl */
 gettext("Remove from portfolio");
 
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tpl */
@@ -347,7 +359,7 @@ gettext("Save");
 gettext("Close");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.tablet.tpl */
-gettext("invoice Address");
+gettext("Invoice address");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.tablet.tpl */
 gettext("Address Line 1");
@@ -665,6 +677,18 @@ gettext("Copyright");
 gettext("All rights reserved");
 
 /* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
+gettext("Profile");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
+gettext("Orders");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
+gettext("Profile");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
+gettext("Portfolio");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
 gettext("Basket");
 
 /* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
@@ -775,6 +799,54 @@ gettext("Empty basket");
 /* ../EcomB2B/templates//theme_1/blk.basket_no_order.theme_1.EcomB2B.tpl */
 gettext("Continue shopping");
 
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Customers");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Add customer");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Name");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Orders");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("New customer");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Unique customer reference");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Reference");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Contact name");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tablet.tpl */
+gettext("Country");
+
 /* ../EcomB2B/templates//theme_1/blk.unsubscribe.theme_1.EcomB2B.mobile.tpl */
 gettext("Please, go to your profile and unsubscribe");
 
@@ -801,6 +873,18 @@ gettext("Copyright");
 
 /* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.tablet.tpl */
 gettext("All rights reserved");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.tablet.tpl */
+gettext("Profile");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.tablet.tpl */
+gettext("Orders");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.tablet.tpl */
+gettext("Profile");
+
+/* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.tablet.tpl */
+gettext("Portfolio");
 
 /* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.tablet.tpl */
 gettext("Basket");
@@ -877,6 +961,9 @@ gettext("Credit");
 /* ../EcomB2B/templates//theme_1/placed_order.theme_1.EcomB2B.mobile.tpl */
 gettext("To pay");
 
+/* ../EcomB2B/templates//theme_1/blk.portfolio.theme_1.EcomB2B.tablet.tpl */
+gettext("My portfolio");
+
 /* ../EcomB2B/templates//theme_1/blk.profile.theme_1.EcomB2B.tpl */
 gettext("Contact details");
 
@@ -891,12 +978,6 @@ gettext("Delivery address");
 
 /* ../EcomB2B/templates//theme_1/blk.profile.theme_1.EcomB2B.tpl */
 gettext("Poll");
-
-/* ../EcomB2B/templates//theme_1/blk.profile.theme_1.EcomB2B.tpl */
-gettext("Orders");
-
-/* ../EcomB2B/templates//theme_1/blk.profile.theme_1.EcomB2B.tpl */
-gettext("Customers");
 
 /* ../EcomB2B/templates//theme_1/blk.profile.theme_1.EcomB2B.tpl */
 gettext("Orders");
@@ -1109,6 +1190,15 @@ gettext("Price");
 gettext("RRP");
 
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.mobile.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.mobile.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.mobile.tpl */
+gettext("Remove from portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.mobile.tpl */
 gettext("Out of stock");
 
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.mobile.tpl */
@@ -1188,6 +1278,54 @@ gettext("Copyright");
 
 /* ../EcomB2B/templates//theme_1/footer.theme_1.EcomB2B.tablet.tpl */
 gettext("All rights reserved");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Customers");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Add customer");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Name");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Orders");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("New customer");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Unique customer reference");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Reference");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Contact name");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.mobile.tpl */
+gettext("Country");
 
 /* ../EcomB2B/templates//theme_1/blk.already_logged_in.theme_1.EcomB2B.tablet.tpl */
 gettext("You are already logged in");
@@ -1394,6 +1532,15 @@ gettext("Price");
 gettext("RRP");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
+gettext("Remove from portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
 gettext("Out of stock");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
@@ -1404,6 +1551,9 @@ gettext("Click to be notified by email when back in stock");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
 gettext("Click to be notified by email when back in stock");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
+gettext("Expected");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.mobile.tpl */
 gettext("For prices, please login or register");
@@ -1571,6 +1721,15 @@ gettext("Click to be notified by email when back in stock");
 gettext("Click to be notified by email when back in stock");
 
 /* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tpl */
+gettext("Remove from portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tpl */
 gettext("Order now");
 
 /* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tpl */
@@ -1628,6 +1787,15 @@ gettext("Click to be notified by email when back in stock");
 gettext("Expected");
 
 /* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tablet.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tablet.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tablet.tpl */
+gettext("Remove from portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tablet.tpl */
 gettext("For prices, please login or register");
 
 /* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tablet.tpl */
@@ -1662,6 +1830,9 @@ gettext("Materials");
 
 /* ../EcomB2B/templates//theme_1/blk.product.theme_1.EcomB2B.tablet.tpl */
 gettext("Ingredients");
+
+/* ../EcomB2B/templates//theme_1/blk.portfolio.theme_1.EcomB2B.mobile.tpl */
+gettext("My portfolio");
 
 /* ../EcomB2B/templates//theme_1/blk.profile.theme_1.EcomB2B.mobile.tpl */
 gettext("Poll");
@@ -1952,6 +2123,33 @@ gettext("Required field");
 gettext("Required field");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Filter products");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Error");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
 gettext("Error");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
@@ -1968,9 +2166,6 @@ gettext("Please enter your registered email address");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
 gettext("Please enter a valid email address");
-
-/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
-gettext("Ordered");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tpl */
 gettext("Ordered");
@@ -2028,6 +2223,15 @@ gettext("RRP");
 
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
 gettext("For prices, please login or register");
+
+/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
+gettext("Remove from portfolio");
 
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
 gettext("Expected");
@@ -2136,6 +2340,36 @@ gettext("Enter the same password as above");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
 gettext("Enter at least 8 characters");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Filter products");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Filter customers");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Error");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
+gettext("Required field");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
 gettext("Error");
@@ -2360,7 +2594,7 @@ gettext("Save");
 gettext("Close");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.mobile.tpl */
-gettext("invoice Address");
+gettext("Invoice address");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.mobile.tpl */
 gettext("Address Line 1");
@@ -2460,6 +2694,15 @@ gettext("RRP");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tablet.tpl */
 gettext("For prices, please login or register");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tablet.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tablet.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tablet.tpl */
+gettext("Remove from portfolio");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tablet.tpl */
 gettext("Out of stock");
@@ -2609,7 +2852,7 @@ gettext("Save");
 gettext("Close");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.tpl */
-gettext("invoice Address");
+gettext("Invoice address");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.tpl */
 gettext("Address Line 1");
@@ -2815,6 +3058,51 @@ gettext("No products has been ordered");
 /* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
 gettext("Customers");
 
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Add customer");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Name");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Orders");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("New customer");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Unique customer reference");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Reference");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Contact name");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.clients.theme_1.EcomB2B.tpl */
+gettext("Country");
+
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tpl */
 gettext("More info");
 
@@ -2826,6 +3114,15 @@ gettext("RRP");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tpl */
 gettext("For prices, please login or register");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tpl */
+gettext("Add to portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tpl */
+gettext("In portfolio");
+
+/* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tpl */
+gettext("Remove from portfolio");
 
 /* ../EcomB2B/templates//theme_1/blk.products.theme_1.EcomB2B.tpl */
 gettext("Out of stock");
@@ -2934,6 +3231,36 @@ gettext("Enter the same password as above");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
 gettext("Enter at least 8 characters");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Filter products");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Filter customers");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Error");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
+gettext("Required field");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.mobile.tpl */
 gettext("Error");

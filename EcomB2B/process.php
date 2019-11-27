@@ -16,42 +16,14 @@ require_once 'utils/sentry.php';
 
 
 $redis = new Redis();
-if ($redis->connect('127.0.0.1', 6379)) {
-    $redis_on = true;
-} else {
-    $redis_on = false;
-}
+$redis->connect('127.0.0.1', 6379);
 
 session_start();
+
 if (empty($_SESSION['website_key'])) {
-
-
-    if (isset($_SESSION['site_key']) or isset($_SESSION['logged_in'])) {
-
-        $_SESSION = array();
-
-        if (ini_get("session.use_cookies")) {
-            $params = session_get_cookie_params();
-
-            setcookie(
-                'sk', '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]
-            );
-            setcookie(
-                'page_key', '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]
-            );
-            setcookie(
-                'user_handle', '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]
-            );
-        }
-        session_regenerate_id();
-        session_destroy();
-
-        session_start();
-    }
-
-    include('utils/find_website_key.include.php');
+    include_once('utils/find_website_key.include.php');
+    $_SESSION['website_key']=get_website_key_from_domain($redis);
 }
-
 
 $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
 $url = preg_replace('/\?.*$/', '', $url);
@@ -97,9 +69,7 @@ if ($url == 'sitemap.xml') {
     exit;
 
 }
-
-
-if ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
+elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
 
 
     $db = new PDO(
@@ -143,30 +113,18 @@ $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$_SESSION['website_key'].'_'.$url;
 
 if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
-
 } else {
-
-
     $webpage_id = get_url($_SESSION['website_key'], $url, $dns_host, $dns_user, $dns_pwd, $dns_db);
     $redis->set($url_cache_key, $webpage_id);
-
-
 }
-
-
 
 
 if (is_numeric($webpage_id)) {
     $website_key = $_SESSION['website_key'];
     $webpage_key = $webpage_id;
     include 'display_webpage.php';
-
-
 } else {
-
-
     header("Location: https://".$_SERVER['SERVER_NAME']."$webpage_id");
-
 }
 if (isset($db)) {
     $db = null;

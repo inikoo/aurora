@@ -158,6 +158,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Public_Webpage.php';
             $object = new  Public_Webpage('scope', 'Product', $key);
             break;
+        case 'customer_client':
+            require_once "class.Public_Customer_Client.php";
+            $object = new Public_Customer_Client($key);
+            break;
         default:
             exit('need to complete Pub  E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");
             break;

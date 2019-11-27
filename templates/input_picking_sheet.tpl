@@ -47,7 +47,7 @@
 
 <div  style="border-bottom: 1px solid #ccc;">
 
-<table class="input_picking_sheet_table"  data-order_key="{$order->id}" data-delivery_note_key="{$dn->id}" border="0" data-labels='{
+<table class="input_picking_sheet_table"  data-order_key="{$order->id}" data-delivery_note_key="{$dn->id}" data-labels='{
 "missing_fields":"{t}Missing required fields:{/t}",
 "packer":"{t}Packer{/t}",
 "picker":"{t}Picker{/t}",
@@ -88,7 +88,7 @@
 
             <div id="set_picker_results_container" class="search_results_container hide">
 
-                <table id="set_picker_results" border="0"  >
+                <table id="set_picker_results" >
 
                     <tr class="hide" id="set_picker_search_result_template" field="" value=""
                         formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('picker',this)">
@@ -171,7 +171,7 @@
     </tr>
 
     <tr class="_bottom">
-        <td style="" >
+        <td >
 
 
 
@@ -190,7 +190,7 @@
 
             <div id="set_packer_results_container" class="search_results_container hide">
 
-                <table id="set_packer_results" border="0"  >
+                <table id="set_packer_results" >
 
                     <tr class="hide" id="set_packer_search_result_template" field="" value=""
                         formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('packer',this)">
@@ -232,7 +232,7 @@
 
 
         </td>
-        <td style="" >
+        <td >
 
             <input id="set_dn_parcels" data-field="Delivery Note Number Parcels" class=" width_50 field_to_check input_field " type="number"  min="0"  value="{$store->settings('data_entry_picking_aid_default_number_boxes')}" has_been_valid="0"/>
 

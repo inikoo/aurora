@@ -9,6 +9,10 @@
 
 */
 
+
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/object_functions.php';
@@ -62,7 +66,7 @@ switch ($tipo) {
                      )
         );
 
-        edit_objects($account, $db, $user, $editor, $data, $smarty);
+        edit_objects($account, $db, $user, $editor, $data);
         break;
 
     case 'upload_attachment':
@@ -109,6 +113,19 @@ switch ($tipo) {
 
         upload_images($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'add_items_to_order':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'numeric'),
+                         'field'      => array('type' => 'string'),
+
+
+                     )
+        );
+
+        add_items_to_order($account, $db, $user, $editor, $data, $smarty);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -133,6 +150,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         $msg      = 'object key not found';
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => $msg
         );
         echo json_encode($response);
@@ -147,6 +165,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         $msg      = "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits";
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => _('Files could not be attached').".<br>".$msg,
             'key'   => 'attach'
         );
@@ -187,6 +206,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -200,6 +220,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -216,6 +237,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
             }
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => _('Files could not be attached')." $msg",
                 'key'   => 'attach'
             );
@@ -259,6 +281,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
             default:
                 $response = array(
                     'state' => 400,
+                    'title' => _('Error'),
                     'msg'   => 'object process not found'
 
                 );
@@ -270,6 +293,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
         if ($parent->error) {
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => '<i class="fa fa-exclamation-circle"></i> '.$parent->msg,
 
             );
@@ -339,6 +363,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $msg      = 'object key not found';
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => $msg
         );
         echo json_encode($response);
@@ -355,6 +380,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         );
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => $msg,
             'key'   => 'attach'
         );
@@ -367,6 +393,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $msg      = '_FILES array empty';
         $response = array(
             'state' => 400,
+            'title' => _('Error'),
             'msg'   => _("Image can't be uploaded").", ".$msg
         );
         echo json_encode($response);
@@ -403,6 +430,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -416,6 +444,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
             $response = array(
                 'state' => 400,
+                'title' => _('Error'),
                 'msg'   => $msg,
                 'key'   => 'attach'
             );
@@ -926,28 +955,21 @@ function get_data($account, $db, $user, $data, $smarty) {
 }
 
 
-function edit_objects($account, $db, $user, $editor, $data, $smarty) {
+function edit_objects($account, $db, $user, $editor, $data) {
+
+    list(
+        $upload_files_data, $files_with_errors, $error_info
+        ) = process_files();
+
+
+    if ($error_info != '') {
+        echo json_encode($error_info);
+        exit;
+    }
+
+
     require_once 'class.Upload.php';
 
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
-
-    $valid_extensions = array(
-        'xls',
-        'xlt',
-        'xlm',
-        'xlsx',
-        'xlsm',
-        'xltx',
-        'xltm',
-        'xlsb',
-        'ods',
-        'slk',
-        'gnumeric',
-        'tsv',
-        'tab',
-        'csv'
-    );
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
@@ -964,116 +986,17 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
-        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
-        $postMax  = ini_get('post_max_size'); //grab the size limits...
-        $msg      = sprintf(
-            _(
-                "File can not be attached, please note files larger than %s will result in this error!, let's us know, an we will increase the size limits"
-            ), $postMax
-        );
-        $response = array(
-            'state' => 400,
-            'msg'   => $msg,
-            'key'   => 'attach'
-        );
-        echo json_encode($response);
-        exit;
-
-    }
-
-    if (empty($_FILES)) {
-        $msg      = '_FILES array empty';
-        $response = array(
-            'state' => 400,
-            'msg'   => _("File can't be uploaded").", ".$msg
-        );
-        echo json_encode($response);
-        exit;
-
-    }
-
-    $upload_files_data = array();
-    $files_with_errors = array();
-
-    foreach ($_FILES['files']['name'] as $file_key => $name) {
-
-
-        $error             = $_FILES['files']['error'][$file_key];
-        $size              = $_FILES['files']['size'][$file_key];
-        $original_tmp_name = $_FILES['files']['tmp_name'][$file_key];
-        $type              = $_FILES['files']['type'][$file_key];
-        $extension         = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-
-
-        if ($error) {
-            $msg = parse_upload_file_error_msg($error);
-
-            $files_with_errors[] = array(
-                'msg'      => $msg,
-                'filename' => $name
-            );
-            continue;
-
-        }
-
-        if ($size == 0) {
-            $msg                 = _(
-                    "This file seems that is empty, have a look and try again"
-                ).'.';
-            $files_with_errors[] = array(
-                'msg'      => $msg,
-                'filename' => $name
-            );
-            continue;
-
-
-        }
-
-        if (!in_array($extension, $valid_extensions)) {
-            $msg = _('Invalid file type').' <b>'.$extension.'</b> <i>('.$type.')</i>';
-
-            $files_with_errors[] = array(
-                'msg'      => $msg,
-                'filename' => $name
-            );
-            continue;
-
-        }
-
-        $tmp_name = 'up_'.microtime(true).'_'.$user->id.'_'.md5_file(
-                $original_tmp_name
-            ).'.'.pathinfo($name, PATHINFO_EXTENSION);
-        $tmp_path = 'server_files/uploads/';
-
-        // rename($original_tmp_name, $tmp_path.$tmp_name);
-
-
-        $upload_files_data[] = array(
-            'editor'               => $editor,
-            'Upload File Checksum' => md5_file($original_tmp_name),
-            'Upload File Name'     => $name,
-            'Upload File Size'     => filesize($original_tmp_name),
-            'Upload File Filename' => $original_tmp_name,
-            'Upload File Type'     => $type,
-            'Upload File Metadata' => json_encode(
-                array(
-                    'extension' => $extension,
-                    'type'      => $type,
-                    'tmp_name'  => $tmp_name
-                )
-            )
-
-        );
-
-
-    }
-
     $number_files_uploaded = count($upload_files_data);
     $fork_key              = false;
     $upload_key            = false;
 
-    if ($number_files_uploaded) {
+    if ($number_files_uploaded > 0) {
+
+        foreach ($upload_files_data as $_key => $_value) {
+            $upload_files_data[$_key]['editor'] = $editor;
+        }
+
+
         $upload_data = array(
             'editor'      => $editor,
             'Upload Type' => 'EditObjects',
@@ -1104,24 +1027,19 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
                 $db, $upload->id, $upload_file_data
             );
 
-            //print_r($upload_file_data);
 
-            $inputFileType = PHPExcel_IOFactory::identify(
-                $upload_file_data['Upload File Filename']
-            );
-            $objReader     = PHPExcel_IOFactory::createReader($inputFileType);
+            $inputFileType = IOFactory::identify($upload_file_data['Upload File Filename']);
+            $objReader     = IOFactory::createReader($inputFileType);
             $objReader->setReadDataOnly(true);
 
-            $objPHPExcel = @$objReader->load(
-                $upload_file_data['Upload File Filename']
-            );
+            $objPHPExcel = @$objReader->load($upload_file_data['Upload File Filename']);
 
 
             $objWorksheet = $objPHPExcel->getActiveSheet();
 
             $highestRow         = $objWorksheet->getHighestRow();
             $highestColumn      = $objWorksheet->getHighestColumn();
-            $highestColumnIndex = PHPExcel_Cell::columnIndexFromString(
+            $highestColumnIndex = Coordinate::columnIndexFromString(
                 $highestColumn
             );
             $row_data           = array();
@@ -1213,9 +1131,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
         $state = 200;
     } elseif ($number_files_uploaded > 1) {
 
-        $msg   = '<i class="fa fa-spinner fa-spin"></i> '.sprintf(
-                _('Processing %s files'), $number_files_uploaded
-            );
+        $msg   = '<i class="fa fa-spinner fa-spin"></i> '.sprintf(_('Processing %s files'), $number_files_uploaded);
         $state = 200;
     } else {
         if (count($files_with_errors) == 1) {
@@ -1237,9 +1153,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
                 $msg   = '<i class="fa fa-exclamation-circle"></i> '.$error_msg;
                 $state = 400;
             } else {
-                $msg   = '<i class="fa fa-exclamation-circle"></i> '._(
-                        'No files uploaded'
-                    );
+                $msg   = '<i class="fa fa-exclamation-circle"></i> '._('No files uploaded');
                 $state = 400;
             }
         }
@@ -1261,51 +1175,616 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-function guess_file_format($filename) {
 
-    $mimetype = 'Unknown';
+function add_items_to_order($account, $db, $user, $editor, $data) {
+
+    list(
+        $upload_files_data, $files_with_errors, $error_info
+        ) = process_files();
 
 
-    ob_start();
-    system("uname");
-    $system  = 'Unknown';
-    $_system = ob_get_clean();
+    if ($error_info != '') {
+        echo json_encode($error_info);
+        exit;
+    }
 
-    // print "S:$system M:$mimetype\n";
 
-    if (preg_match('/darwin/i', $_system)) {
-        ob_start();
-        $system = 'Mac';
-        system('file -I "'.addslashes($filename).'"');
-        $mimetype = ob_get_clean();
-        $mimetype = preg_replace('/^.*\:/', '', $mimetype);
+    $object         = get_object($data['parent'], $data['parent_key']);
+    $object->editor = $editor;
 
-    } elseif (preg_match('/linux/i', $_system)) {
-        ob_start();
-        $system   = 'Linux';
-        $mimetype = system('file -ib "'.addslashes($filename).'"');
-        $mimetype = ob_get_clean();
-    } else {
-        $system = 'Other';
+
+    if (!$object->id) {
+        $msg      = 'parent key not found';
+        $response = array(
+            'state' => 400,
+            'msg'   => $msg
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $rows_data = array();
+    foreach ($upload_files_data as $upload_file_data) {
+
+
+        $inputFileType = IOFactory::identify($upload_file_data['Upload File Filename']);
+        $objReader     = IOFactory::createReader($inputFileType);
+        $objReader->setReadDataOnly(true);
+
+        $objPHPExcel = @$objReader->load($upload_file_data['Upload File Filename']);
+
+
+        $objWorksheet = $objPHPExcel->getActiveSheet();
+
+        $highestRow         = $objWorksheet->getHighestRow();
+        $highestColumn      = $objWorksheet->getHighestColumn();
+        $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+
+
+        for ($row = 1; $row <= $highestRow; ++$row) {
+            $row_data = array();
+            for ($col = 1; $col <= $highestColumnIndex; ++$col) {
+                $value          = $objWorksheet->getCellByColumnAndRow($col, $row)->getCalculatedValue();
+                $row_data[$col] = $value;
+            }
+            $rows_data[] = $row_data;
+        }
+    }
+
+    $discounts_data = array();
+
+
+    foreach ($rows_data as $row_index => $row_data) {
+
+        $qty = trim($row_data[2]);
+
+        switch ($object->get_object_name()) {
+            case 'Purchase Order':
+                list($item_key, $item_historic_key, $result) = find_purchase_order_item($db, $object, $row_data[1]);
+                break;
+            case 'Order':
+                list($item_key, $item_historic_key, $result) = find_order_item($db, $object, $row_data[1]);
+                break;
+        }
+
+        if ($result != 'ok') {
+            $feedback[$row_index] = array(
+                'ignored',
+                $result
+            );
+            continue;
+        }
+
+        if ($qty == '') {
+            $qty = 0;
+        }
+
+        if (!is_numeric($qty)) {
+            $feedback[$row_index] = array(
+                'ignored',
+                'qty_missing'
+            );
+            continue;
+        } elseif ($qty < 0) {
+            $feedback[$row_index] = array(
+                'ignored',
+                'qty_error'
+            );
+            continue;
+        }
+
+
+        switch ($object->get_object_name()) {
+            case 'Purchase Order':
+                $transaction_data = array(
+                    'item_key'          => $item_key,
+                    'item_historic_key' => $item_historic_key,
+                    'qty'               => $qty,
+                    'field'             => $data['field']
+                );
+
+                $object->update_item($transaction_data);
+                break;
+            case 'Order':
+                /**
+                 * @var $object \Order
+                 */ $object->skip_update_after_individual_transaction = false;
+
+                if (in_array(
+                    $object->data['Order State'], array(
+                                                    'InWarehouse',
+                                                    'PackedDone'
+                                                )
+                )) {
+                    $dispatching_state = 'Ready to Pick';
+                } else {
+
+                    $dispatching_state = 'In Process';
+                }
+
+                $payment_state = 'Waiting Payment';
+
+                $data['Current Dispatching State'] = $dispatching_state;
+                $data['Current Payment State']     = $payment_state;
+                $data['Metadata']                  = '';
+                $transaction_data                  = array(
+                    'item_key'                  => $item_key,
+                    'item_historic_key'         => $item_historic_key,
+                    'qty'                       => $qty,
+                    'field'                     => $data['field'],
+                    'Current Dispatching State' => $dispatching_state,
+                    'Current Payment State'     => $payment_state,
+                    'Metadata'                  => ''
+                );
+
+
+                $object->update_item($transaction_data);
+
+                break;
+        }
+
 
     }
 
 
-    //print "** $filename **";
+    if ($object->get_object_name() == 'Order') {
+        $sql = sprintf(
+            'SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
+            $object->id
+        );
 
-    if (preg_match('/png/i', $mimetype)) {
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if (in_array(
+                    $object->get('Order State'), array(
+                                                   'Cancelled',
+                                                   'Approved',
+                                                   'Dispatched',
+                                               )
+                )) {
+                    $discounts_class = '';
+                    $discounts_input = '';
+                } else {
+                    $discounts_class = 'button';
+                    $discounts_input = sprintf(
+                        '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                        $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], percentage($row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'])
+                    );
+                }
+                $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($row['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                        $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']
+                    ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
+
+
+                if (isset($data['tab']) and $data['tab'] == 'order.all_products') {
+                    $discounts_data[$row['Product ID']] = array(
+                        'deal_info' => $row['Deal Info'],
+                        'discounts' => $discounts,
+                        'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                    );
+                } else {
+                    $discounts_data[$row['Order Transaction Fact Key']] = array(
+                        'deal_info' => $row['Deal Info'],
+                        'discounts' => $discounts,
+                        'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                    );
+                }
+
+
+            }
+        }
+
+        $update_metadata                 = $object->get_update_metadata();
+        $update_metadata['deleted_otfs'] = $object->deleted_otfs;
+        $update_metadata['new_otfs']     = $object->new_otfs;
+
+
+    } else {
+
+        $update_metadata = $object->get_update_metadata();
+    }
+
+
+
+    $response = array(
+        'state'          => 200,
+        'tipo'           => 'add_items_to_order',
+        'metadata'       => $update_metadata,
+        'discounts_data' => $discounts_data
+    );
+    echo json_encode($response);
+
+}
+
+
+/**
+ * @param $db             \PDO
+ * @param $purchase_order \PurchaseOrder
+ * @param $code           string
+ */
+function find_purchase_order_item($db, $purchase_order, $code) {
+
+
+    if ($code == '') {
+        return array(
+            0,
+            0,
+            'code_empty'
+        );
+    }
+
+
+    if ($purchase_order->get('Purchase Order Parent') == 'Supplier') {
+
+        $sql  = "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status` from `Supplier Part Dimension` where `Supplier Part Supplier Key`=? and `Supplier Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'ok'
+                );
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        }
+        $sql  =
+            "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status`,`Part Status` from `Supplier Part Dimension` left join `Part Dimension` P on (`Part SKU`=`Supplier Part Part SKU`) where `Supplier Part Supplier Key`=? and `Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+
+
+                if ($row['Supplier Status'] == 'In Process' or $row['Supplier Status'] == 'In Use') {
+
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'ok'
+                    );
+                } elseif ($row['Supplier Status'] == 'Discontinuing') {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_discontinuing'
+                    );
+                } else {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_not_in_use'
+                    );
+                }
+
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        } else {
+            return array(
+                0,
+                0,
+                'supplier_par_not_found'
+            );
+        }
+
+
+    } elseif ($purchase_order->get('Purchase Order Parent') == 'Agent') {
+
+        $sql  =
+            "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status` from `Supplier Part Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  WHERE `Agent Supplier Agent Key`=?  and `Supplier Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'ok'
+                );
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        }
+        $sql  =
+            "select `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Status`,`Part Status` from `Supplier Part Dimension`  LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  left join `Part Dimension` P on (`Part SKU`=`Supplier Part Part SKU`)  WHERE `Agent Supplier Agent Key`=?  and `Part Reference`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $purchase_order->get('Purchase Order Parent Key'),
+                $code
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Supplier Part Status'] == 'Available') {
+
+
+                if ($row['Supplier Status'] == 'In Process' or $row['Supplier Status'] == 'In Use') {
+
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'ok'
+                    );
+                } elseif ($row['Supplier Status'] == 'Discontinuing') {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_discontinuing'
+                    );
+                } else {
+                    return array(
+                        $row['Supplier Part Key'],
+                        $row['Supplier Part Historic Key'],
+                        'part_not_in_use'
+                    );
+                }
+
+            } else {
+                return array(
+                    $row['Supplier Part Key'],
+                    $row['Supplier Part Historic Key'],
+                    'supplier_part_not_available'
+                );
+            }
+        } else {
+            return array(
+                0,
+                0,
+                'supplier_par_not_found'
+            );
+        }
+
+
+    }
+
+
+}
+
+
+/**
+ * @param $db             \PDO
+ * @param $purchase_order \Order
+ * @param $code           string
+ */
+function find_order_item($db, $purchase_order, $code) {
+
+
+    if ($code == '') {
+        return array(
+            0,
+            0,
+            'code_empty'
+        );
+    }
+
+
+    $sql  = "select `Product ID`,`Product Current Key`,`Product Status` from `Product Dimension` where `Product Store Key`=? and `Product Code`=? ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $purchase_order->get('Order Store Key'),
+            $code
+        )
+    );
+    if ($row = $stmt->fetch()) {
+        if ($row['Product Status'] == 'Active' or $row['Product Status'] == 'Discontinuing') {
+            return array(
+                $row['Product ID'],
+                $row['Product Current Key'],
+                'ok'
+            );
+        } elseif ($row['Product Status'] == 'InProcess') {
+            return array(
+                $row['Product ID'],
+                $row['Product Current Key'],
+                'product_in_process'
+            );
+        } else {
+            return array(
+                $row['Product ID'],
+                $row['Product Current Key'],
+                'product_not_available'
+            );
+        }
+    } else {
+        return array(
+            0,
+            0,
+            'product_not_found'
+        );
+    }
+
+
+}
+
+
+function process_files() {
+
+
+    $upload_files_data = array();
+    $files_with_errors = array();
+    $error_info        = '';
+
+
+    $valid_extensions = array(
+        'xls',
+        'xlt',
+        'xlm',
+        'xlsx',
+        'xlsm',
+        'xltx',
+        'xltm',
+        'xlsb',
+        'ods',
+        'slk',
+        'gnumeric',
+        'tsv',
+        'tab',
+        'csv'
+    );
+
+
+    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
+        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
+        $postMax    = ini_get('post_max_size'); //grab the size limits...
+        $msg        = sprintf(
+            _(
+                "File can not be attached, please note files larger than %s will result in this error!, let's us know, an we will increase the size limits"
+            ), $postMax
+        );
+        $error_info = array(
+            'state' => 400,
+            'title' => _('Error'),
+            'msg'   => $msg,
+            'key'   => 'attach'
+        );
+
+
+    }
+
+    if (empty($_FILES)) {
+        $msg        = '_FILES array empty';
+        $error_info = array(
+            'state' => 400,
+            'title' => _('Error'),
+            'msg'   => _("File can't be uploaded").", ".$msg
+        );
+
+
+    }
+
+
+    if ($error_info == '') {
+
+
+        foreach ($_FILES['files']['name'] as $file_key => $name) {
+
+
+            $error             = $_FILES['files']['error'][$file_key];
+            $size              = $_FILES['files']['size'][$file_key];
+            $original_tmp_name = $_FILES['files']['tmp_name'][$file_key];
+            $type              = $_FILES['files']['type'][$file_key];
+            $extension         = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+
+            if ($error) {
+                $msg = parse_upload_file_error_msg($error);
+
+                $files_with_errors[] = array(
+                    'msg'      => $msg,
+                    'filename' => $name
+                );
+                continue;
+
+            }
+
+            if ($size == 0) {
+                $msg                 = _("This file seems that is empty, have a look and try again").'.';
+                $files_with_errors[] = array(
+                    'msg'      => $msg,
+                    'filename' => $name
+                );
+                continue;
+
+
+            }
+
+            if (!in_array($extension, $valid_extensions)) {
+                $msg = _('Invalid file type').' <b>'.$extension.'</b> <i>('.$type.')</i>';
+
+                $files_with_errors[] = array(
+                    'msg'      => $msg,
+                    'title'    => _('Error'),
+                    'filename' => $name
+                );
+                continue;
+
+            }
+
+            $tmp_name = 'up_'.microtime(true).'_'.md5_file($original_tmp_name).'.'.pathinfo($name, PATHINFO_EXTENSION);
+
+            $upload_files_data[] = array(
+                'Upload File Checksum' => md5_file($original_tmp_name),
+                'Upload File Name'     => $name,
+                'Upload File Size'     => filesize($original_tmp_name),
+                'Upload File Filename' => $original_tmp_name,
+                'Upload File Type'     => $type,
+                'Upload File Metadata' => json_encode(
+                    array(
+                        'extension' => $extension,
+                        'type'      => $type,
+                        'tmp_name'  => $tmp_name
+                    )
+                )
+
+            );
+
+
+        }
+    }
+
+
+    return array(
+        $upload_files_data,
+        $files_with_errors,
+        $error_info
+    );
+
+
+}
+
+
+function guess_file_format($filename) {
+
+    $mime_type = mime_content_type($filename);
+
+
+    if (preg_match('/png/i', $mime_type)) {
         $format = 'png';
     } else {
-        if (preg_match('/jpeg/i', $mimetype)) {
+        if (preg_match('/jpeg/i', $mime_type)) {
             $format = 'jpeg';
         } else {
-            if (preg_match('/image.psd/i', $mimetype)) {
+            if (preg_match('/image.psd/i', $mime_type)) {
                 $format = 'psd';
             } else {
-                if (preg_match('/gif/i', $mimetype)) {
+                if (preg_match('/gif/i', $mime_type)) {
                     $format = 'gif';
                 } else {
-                    if (preg_match('/wbmp$/i', $mimetype)) {
+                    if (preg_match('/wbmp$/i', $mime_type)) {
                         $format = 'wbmp';
                     } else {
                         $format = 'other';
@@ -1314,11 +1793,9 @@ function guess_file_format($filename) {
             }
         }
     }
-    //  print "S:$system M:$mimetype\n";
-    // return;
 
     return $format;
 
 }
 
-?>
+

@@ -28,7 +28,7 @@
 
             {if $navigation.show }
 
-            <table border="0" style="margin:0px; " >
+            <table style="margin:0px; " >
 
                 <tr>
                     <td style="text-align: left;padding-left: 5px">
@@ -62,10 +62,10 @@
 
 
             {if isset($discounts) and count($discounts.deals)>0 }
-                <div class="discounts" style="">
+                <div class="discounts" >
                     {foreach from=$discounts.deals item=deal_data }
                     <div class="discount_card" key="{$deal_data.key}" >
-                        <div class="discount_icon" style="">{$deal_data.icon}</div>
+                        <div class="discount_icon" >{$deal_data.icon}</div>
                         <span  class="discount_name">{$deal_data.name}</span>
 
                         {if  $deal_data.until!=''}<small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label" >{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}{/if}</small>
@@ -83,6 +83,7 @@
             {assign "with_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
+            {assign "with_client" false}
             {assign "with_favourites" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
@@ -117,6 +118,17 @@
                         {if $logged_in}
                             {assign "with_profile" 1}
                             <div id="profile">
+                                <div style="text-align: center">
+                                    <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='client'}
+                        {if $logged_in}
+                            {assign "with_client" 1}
+                            <div id="client">
                                 <div style="text-align: center">
                                     <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
                                 </div>
@@ -522,7 +534,14 @@
 
             })
             {/if}
-                {if $with_register==1}
+                {if $with_client==1}
+                getScript("/assets/mobile.forms.min.js", function () {
+                    $.getJSON("ar_web_client.php?tipo=get_client_html&device_prefix=mobile", function (data) {
+                        $('#client').html(data.html)
+                    })
+                })
+                {/if}
+            {if $with_register==1}
             getScript("/assets/mobile.forms.min.js", function () {
 
 

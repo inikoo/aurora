@@ -19,5 +19,5 @@
 
 
     </div>
-    <div id="search_results" class="" style="min-height: 400px"></div>
+    <div id="search_results" style="min-height: 400px"></div>
 </div>

@@ -19,7 +19,7 @@
 
         <div id="overviews">
 
-            <table border="0" class="overview">
+            <table class="overview">
 
                 <tr>
                     <td>{t}Stock value{/t}:</td>

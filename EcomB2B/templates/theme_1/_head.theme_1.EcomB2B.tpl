@@ -132,10 +132,9 @@
 
     {if isset($sentry_js)  }
         <script
-                src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
-                integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ"
-                crossorigin="anonymous"></script>
-
+  src="https://browser.sentry-cdn.com/5.9.1/bundle.min.js"
+  integrity="sha384-/x1aHz0nKRd6zVUazsV6CbQvjJvr6zQL2CHbQZf3yoLkezyEtZUpqUNnOLW9Nt3v"
+  crossorigin="anonymous"></script>
     <script>
             Sentry.init({
                 dsn: '{$sentry_js}' ,
@@ -181,6 +180,12 @@
             {else}
                 {assign "with_profile" 1} {assign "with_forms" 1}
             {/if}
+            {elseif $block.type=='client'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "with_profile" 1} {assign "with_forms" 1}
+                {/if}
         {elseif $block.type=='checkout'}
             {if !$logged_in}
                 {assign "with_not_found" 1}
@@ -209,7 +214,7 @@
             {else}
                 {assign "with_thanks" 1} {assign "with_order" 1}
             {/if}
-        {elseif $block.type=='basket'}
+        {elseif $block.type=='basket' or $block.type=='client_basket'}
             {if !$logged_in}
                 {assign "with_not_found" 1}
             {else}

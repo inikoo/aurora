@@ -3,7 +3,7 @@
         <div class="showcase">
 
             <h1 class="hide">{$_title}</h1>
-            <table class="">
+            <table >
 
 
 

@@ -7,10 +7,10 @@
     <tr>
         {for $col=1 to 3}
             <td style="width: 70mm;height: 29.7mm">
-                <table border="0" style='font-size:2.0mm; float:left;  font-family: Arial, " Helvetica Neue , Helvetica, sans-serif";' >
+                <table style='font-size:2.0mm; float:left;  font-family: Arial, " Helvetica Neue , Helvetica, sans-serif";' >
                     <tr>
                         <td style="height:100%;" valign="top">
-                            <table border="0" style="height: 100%;">
+                            <table style="height: 100%;">
                                 <tr>
                                     <td>
                                         <b>{$part->get('Reference')}</b></td>
@@ -27,7 +27,7 @@
                                             Imported from {$part->get('Origin Country')} by {$account->get('Name')}
                                             <br>
                                         {else}
-                                            <span style="">{$account->get('Name')}</span>
+                                            <span >{$account->get('Name')}</span>
                                             <br>
                                         {/if}
                                     </td>

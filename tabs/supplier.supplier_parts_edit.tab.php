@@ -14,7 +14,7 @@ include_once 'conf/export_edit_template_fields.php';
 
 $objects = 'supplier_part';
 $smarty->assign(
-    'title', sprintf(_("Supplier's parts in %s"), $state['_object']->get('Code'))
+    'title', sprintf(_("Supplier's products in %s"), $state['_object']->get('Code'))
 );
 $smarty->assign('parent', $state['object']);
 $smarty->assign('parent_key', $state['key']);

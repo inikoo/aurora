@@ -75,9 +75,9 @@
 
 
         <span style="margin-left:50px">{t}Margin{/t}:</span>
-        <input data-margin="top" class=" edit_margin top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}" placeholder="0"><input data-margin="bottom" class=" edit_margin bottom"
+        <input data-margin="top" class="edit_block_margin edit_block_input top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}" placeholder="0"><input data-margin="bottom" class="edit_block_margin edit_block_input bottom"
                                                                                                                                                       value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}"
-                                                                                                                                                      style="" placeholder="0">
+                                                                                                                                                      placeholder="0">
 
 
         <span id='toggle_category_products_item_headers' onclick="toggle_category_products_item_headers(this)" class="padding_left_20 unselectable button"><i class="fa {if $block.item_headers}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Header{/t}</span>

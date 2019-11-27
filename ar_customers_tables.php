@@ -1911,7 +1911,7 @@ function sales_history($_data, $db, $user, $account) {
 
             if (isset($last_year_data[$_date_last_year])) {
                 $record_data[$_date]['delta_sales_1yb'] =
-                    '<span class="" title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
+                    '<span title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
             }
 
             //    print_r($record_data);

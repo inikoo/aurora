@@ -31,7 +31,7 @@
 
 
 
-    <span id="save_button" class="" style="float:right" onClick="$('#preview')[0].contentWindow.save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+    <span id="save_button" style="float:right" onClick="$('#preview')[0].contentWindow.save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
 
 </div>
@@ -47,17 +47,17 @@
     <i class="far hide fa-expand-alt button" onclick="toggle_showcase(this)"></i>
 
 
-    <span id="save_button_mobile" class="" style="float:right" onClick="$('#preview_mobile')[0].contentWindow.save_mobile_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+    <span id="save_button_mobile" style="float:right" onClick="$('#preview_mobile')[0].contentWindow.save_mobile_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
 
 </div>
 
 
-<iframe id="preview" class="" style="width:100%;height: 1000px" frameBorder="0" src="/website.header.php?&website_key={$website->id}&theme={$theme}"></iframe>
+<iframe id="preview" style="width:100%;height: 1000px" frameBorder="0" src="/website.header.php?&website_key={$website->id}&theme={$theme}"></iframe>
 
 
 <div id="mobile_preview_container" style="position: relative;" class="hide">
-    <iframe id="preview_mobile" class="" style="width:400px;height: 700px;margin: 20px 50px !important" frameBorder="0" src="/website.header.mobile.php?&website_key={$website->id}&theme={$theme}"></iframe>
+    <iframe id="preview_mobile" style="width:400px;height: 700px;margin: 20px 50px !important" frameBorder="0" src="/website.header.mobile.php?&website_key={$website->id}&theme={$theme}"></iframe>
 
 
     <table id="main_settings" data-website_key="{$website->id}" style="position: absolute;left:540px;top:40px">

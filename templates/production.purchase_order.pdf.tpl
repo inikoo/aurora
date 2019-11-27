@@ -96,7 +96,7 @@
 </head>
 <body>
 <htmlpageheader name="myheader">
-    <table width="100%" style="font-size: 9pt;" border="0">
+    <table width="100%" style="font-size: 9pt;" >
 
         <tr>
 

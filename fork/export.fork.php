@@ -12,19 +12,28 @@
 
 use \Gumlet\ImageResize;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 function fork_export($job) {
 
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     require_once 'vendor/autoload.php';
     include_once 'utils/image_functions.php';
 
 
     if (!$_data = get_fork_metadata($job)) {
-        return;
+        return false;
     }
 
-    list($account, $db, $fork_data, $editor, $session) = $_data;
+    /**
+     * @var $account \Account
+     * @var $db \PDO
+     */
+    $account=$_data[0];
+    $db=$_data[1];
+    $fork_data=$_data[2];
 
     $inikoo_account_code = $account->get('Account Code');
 
@@ -33,7 +42,6 @@ function fork_export($job) {
     $sql_count     = $fork_data['sql_count'];
     $sql_data      = $fork_data['sql_data'];
     $user_key      = $fork_data['user_key'];
-    $download_type = $fork_data['table'];
     $download_key  = $fork_data['download_key'];
 
 
@@ -43,28 +51,23 @@ function fork_export($job) {
     $description = '';
     $keywords    = '';
     $category    = '';
-    //$filename    = 'output';
 
 
     $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_data['table'].'_'.$download_key;
 
-    //print "Exporting $output_filename\n";
-
-
-    $sql = sprintf(
-        'update `Download Dimension` set `Download State`="In Process",`Download Filename`=%s where `Download Key`=%d  ', prepare_mysql($output_filename.'.'.$output_type), $download_key
-
-    );
-
-    $db->exec($sql);
-
-
     $files_to_delete = array();
-
-
     $columns_no_resize = array();
-
     $number_rows = 0;
+
+    $sql = "update `Download Dimension` set `Download State`='In Process',`Download Filename`=? where `Download Key`=?  ";
+
+
+    $stmt= $db->prepare($sql);
+    $stmt->execute(array(
+                       $output_filename.'.'.$output_type,
+                       $download_key
+                   ));
+
 
 
     if ($sql_count != '') {
@@ -73,9 +76,6 @@ function fork_export($job) {
             if ($row = $result->fetch()) {
                 $number_rows = $row['num'];
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            //  exit;
         }
 
     } else {
@@ -122,12 +122,8 @@ function fork_export($job) {
     );
 
 
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
-
-    $objPHPExcel = new PHPExcel();
-    require_once 'external_libs/PHPExcel/Classes/PHPExcel/Cell/AdvancedValueBinder.php';
-    PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_AdvancedValueBinder());
+    $objPHPExcel = new Spreadsheet();
+    \PhpOffice\PhpSpreadsheet\Cell\Cell::setValueBinder(new \PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder());
 
 
     $objPHPExcel->getProperties()->setCreator($creator)->setLastModifiedBy($creator)->setTitle($title)->setSubject($subject)->setDescription($description)->setKeywords($keywords)->setCategory(
@@ -144,7 +140,7 @@ function fork_export($job) {
 
     if (empty($fork_data['fields']) or $fork_data['fields'] == '') {
 
-        $sql = sprintf('update `Download Dimension` set `Download State`="Error" where `Download Key`=%d  ', download_key);
+        $sql = sprintf("update `Download Dimension` set `Download State`='Error' where `Download Key`=%d  ", download_key);
         $db->exec($sql);
 
         return 1;
@@ -291,7 +287,7 @@ function fork_export($job) {
 
                         $columns_no_resize[] = $char;
 
-                        $objDrawing = new PHPExcel_Worksheet_Drawing();    //create object for Worksheet drawing
+                        $objDrawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();    //create object for Worksheet drawing
                         $objDrawing->setName('Image');        //set name to image
                         $objDrawing->setDescription('Item image'); //set description to image
 
@@ -325,7 +321,6 @@ function fork_export($job) {
 
 
 
-                      // print "$cached_image_path\n";
 
                         if (!file_exists($cached_image_path)) {
 
@@ -436,7 +431,7 @@ function fork_export($job) {
 
                     if ($type == 'text') {
 
-                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, PHPExcel_Cell_DataType::TYPE_STRING);
+                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 
                     } else {
                         $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
@@ -508,21 +503,7 @@ function fork_export($job) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql_data\n";
-        // exit;
     }
-
-
-
-    /*
-    if (isset($_data['fork_data']['download_path'])) {
-        $download_path=$_data['fork_data']['download_path']."_$inikoo_account_code/";
-    }else {
-        $download_path="downloads_$inikoo_account_code/";
-    }
-*/
 
 
 
@@ -530,7 +511,7 @@ function fork_export($job) {
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
     $cellIterator->setIterateOnlyExistingCells(true);
-    /** @var PHPExcel_Cell $cell */
+    /** @var \PhpOffice\PhpSpreadsheet\Cell\Cell $cell */
     foreach ($cellIterator as $cell) {
 
         // print_r($cell->getColumn());
@@ -552,58 +533,42 @@ function fork_export($job) {
 
         case('csv'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-            // header('Content-Type: text/csv');
-            // header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
-            // header('Cache-Control: max-age=0');
-            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV')->setDelimiter(',')->setEnclosure('')->setLineEnding("\r\n")->setSheetIndex(0)->save($output_file);
+
+            IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('')->setLineEnding("\r\n")->setSheetIndex(0)->save($output_file);
             break;
         case('xlsx'):
 
             $output_file = $download_path.$output_filename.'.'.$output_type;
 
-            //header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            //header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
-            //header('Cache-Control: max-age=0');
-
-            $objWriter = PHPExcel_IOFactory::createWriter(
-                $objPHPExcel, 'EXCEL2007'
-            )->setSheetIndex(0)->save($output_file);
+            IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save($output_file);
             break;
         case('xls'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-            //header('Content-Type: application/vnd.ms-excel');
-            //header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
-            //header('Cache-Control: max-age=0');
 
-            $objWriter = PHPExcel_IOFactory::createWriter(
-                $objPHPExcel, 'Excel5'
-            )->save($output_file);
+
+            IOFactory::createWriter($objPHPExcel, 'Xls')->save($output_file);
             break;
         case('pdf'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
 
-            //header('Content-Type: application/pdf');
-            //header('Content-Disposition: attachment;filename="'.$filename.'.pdf"');
-            //header('Cache-Control: max-age=0');
-            $objPHPExcel->getActiveSheet()->setShowGridLines(false);
+               $objPHPExcel->getActiveSheet()->setShowGridLines(false);
             $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(
-                PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE
+                \PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE
             );
 
 
-            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'PDF')->save($output_file);
+            IOFactory::createWriter($objPHPExcel, 'Pdf')->save($output_file);
             break;
 
     }
 
 
     $sql = sprintf(
-        'update `Download Dimension` set `Download State`="Finish" , `Download Data`=%s   where `Download Key`=%d ', prepare_mysql(file_get_contents($output_file)), $download_key
+        "update `Download Dimension` set `Download State`='Finish' , `Download Data`=%s   where `Download Key`=%d ", prepare_mysql(file_get_contents($output_file)), $download_key
 
     );
 
     $db->exec($sql);
-
 
     $socket->send(
         json_encode(
@@ -617,9 +582,7 @@ function fork_export($job) {
 
                         'progress_info' => _('Done'),
                         'progress'      => sprintf(
-                            '%s/%s (%s)', number($number_rows), number($number_rows), percentage(
-                                            $number_rows, $number_rows
-                                        )
+                            '%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)
                         ),
                         'percentage'    => percentage($number_rows, $number_rows),
 

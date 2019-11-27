@@ -382,7 +382,7 @@ class Public_Store {
 
                 include_once 'utils/new_fork.php';
 
-                global $account;
+                $account=get_object('Account',1);
 
                 $this->new_customer = true;
 

@@ -29,22 +29,22 @@
 
 <div id="campaign_order_recursion_components_edit_dialog" class="hide" style="position:absolute;width:300px;background: #fff;border: 1px solid #ccc;padding: 10px">
 
-    <table border="0" style="width: 100%">
+    <table style="width: 100%">
         <tr>
             <td class="target italic discreet"></td>
             <td class="aright"><i onclick="$('#campaign_order_recursion_components_edit_dialog').addClass('hide')" class="fa fa-window-close button"></i></td>
         </tr>
         <tr>
             <td>{t}Name{/t}</td>
-            <td><input class="name" style=""></td>
+            <td><input class="name" ></td>
         </tr>
         <tr>
             <td>{t}Allowance{/t}</td>
-            <td><input class="allowance" style=""></td>
+            <td><input class="allowance" ></td>
         </tr>
         <tr>
             <td>{t}Label{/t}</td>
-            <td><input class="description" style=""></td>
+            <td><input class="description" ></td>
         </tr>
         <tr>
             <td colspan="2" class="aright"><span class="save" onclick="save_edit_component_allowance(this)">{t}Save{/t} <i class="fa fa-fw fa-cloud"></i></span></td>
@@ -58,7 +58,7 @@
 <div id="campaign_order_recursion_components_status_edit_dialog" class="hide" style="position:absolute;width:150px;background: #fff;border: 1px solid #ccc;padding: 10px">
 
 
-    <table border="0">
+    <table >
 
         <tr>
             <td class="target italic discreet padding_right_20"></td>

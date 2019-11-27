@@ -72,7 +72,7 @@ $table_buttons = array();
 
 $table_buttons[] = array(
     'icon'  => 'edit_add',
-    'title' => _("Edit supplier's parts"),
+    'title' => _("Edit supplier's products"),
     'id'    => 'edit_dialog'
 );
 $smarty->assign('table_buttons', $table_buttons);

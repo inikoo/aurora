@@ -170,6 +170,11 @@
 	color: #0b0b0b;
 }
 
+.tablet .header-logo{
+	width:400px;
+}
+
+
 /*Animated Icons*/
 .menu-icon-light em{background-color:#FFFFFF!important;}
 

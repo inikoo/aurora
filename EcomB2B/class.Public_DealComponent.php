@@ -13,28 +13,35 @@
 
 
 class Public_DealComponent  {
+    /**
+     * @var \PDO
+     */
+    public $db;
+
+    /**
+     * @var array
+     */
+    public $data;
+    /**
+     * @var integer
+     */
+    public $id;
+
+    function __construct($a1, $a2 = false,$_db = false) {
 
 
-    function Public_DealComponent($a1, $a2 = false) {
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
-
-        global $db;
-        $this->db = $db;
-
-        $this->table_name    = 'Deal Component';
-        $this->ignore_fields = array('Deal Component Key');
 
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id', $a1);
         } else {
-            if (($a1 == 'new' or $a1 == 'create') and is_array($a2)) {
-                $this->find($a2, 'create');
-
-            } elseif (preg_match('/find/i', $a1)) {
-                $this->find($a2, $a1);
-            } else {
-                $this->get_data($a1, $a2);
-            }
+            $this->get_data($a1, $a2);
         }
 
     }
@@ -46,17 +53,20 @@ class Public_DealComponent  {
             $sql = sprintf(
                 "SELECT * FROM `Deal Component Dimension` WHERE `Deal Component Key`=%d", $tag
             );
+        }else{
+            return false;
         }
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id             = $this->data['Deal Component Key'];
         }
+        return true;
 
 
     }
 
-    function get($key = '', $arg = false) {
+    function get($key = '') {
 
 
         switch ($key) {
@@ -86,4 +96,3 @@ class Public_DealComponent  {
   
 }
 
-?>

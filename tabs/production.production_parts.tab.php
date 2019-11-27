@@ -52,12 +52,12 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
     $edit_table_dialog = array(
         'new_item'         => array(
             'icon'      => 'plus',
-            'title'     => _("New supplier's part"),
+            'title'     => _("New supplier's product"),
             'reference' => "production/".$state['key']."/part/new"
         ),
         'upload_items'     => array(
             'icon'         => 'plus',
-            'label'        => _("Upload supplier's parts"),
+            'label'        => _("Upload supplier's products"),
             'template_url' => '/upload_arrangement.php?object=supplier_part&parent=supplier&parent_key='.$state['key'],
 
             'tipo'        => 'edit_objects',
@@ -107,7 +107,7 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
 
         $table_buttons[] = array(
             'icon'  => 'edit_add',
-            'title' => _("Edit supplier's parts"),
+            'title' => _("Edit supplier's products"),
             'id'    => 'edit_dialog'
         );
 

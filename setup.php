@@ -39,14 +39,8 @@ include_once 'class.Category.php';
 $memcached = new Memcached();
 $memcached->addServer($memcache_ip, 11211);
 
-
 $redis = new Redis();
-if ($redis->connect('127.0.0.1', 6379)) {
-    $redis_on = true;
-} else {
-    $redis_on = false;
-}
-
+$redis->connect('127.0.0.1', 6379);
 
 date_default_timezone_set('UTC');
 

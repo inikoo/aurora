@@ -20,6 +20,7 @@ require_once 'keyring/key.php';
 require_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
 require_once 'utils/object_functions.php';
+require_once 'utils/fake_session.class.php';
 
 require_once "class.Account.php";
 
@@ -31,36 +32,13 @@ if (class_exists('Memcached')) {
 
 
 $redis = new Redis();
-if ($redis->connect('127.0.0.1', 6379)) {
-    $redis_on = true;
-} else {
-    $redis_on = false;
-}
+$redis->connect('127.0.0.1', 6379);
 
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-
-
-class fake_session {
-    function __construct() {
-        $this->data = array();
-    }
-
-    function set($key, $value) {
-        $this->data[$key] = $value;
-    }
-
-    function get($key) {
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
-        } else {
-            return false;
-        }
-    }
-}
 
 $session = new fake_session;
 

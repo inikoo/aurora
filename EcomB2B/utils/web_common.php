@@ -109,37 +109,3 @@ function get_logged_in(){
     return $logged_in;
 
 }
-
-function set_locate($website,&$smarty){
-
-
-   if(!empty($_SESSION['website_locale'])) {
-        $website_locale = $_SESSION['website_locale'];
-    }else{
-        $_SESSION['website_locale'] = $website->get('Website Locale');
-        $website_locale             = $website->get('Website Locale');
-    }
-
-
-    $language= substr($website_locale, 0, 2);
-    $smarty->assign('language', $language);
-
-    $locale = $website_locale.'.UTF-8';
-
-
-
-
-    putenv('LC_MESSAGES='.$locale);
-
-    if (defined('LC_MESSAGES')) {
-        setlocale(LC_MESSAGES, $locale);
-    } else {
-        setlocale(LC_ALL, $locale);
-    }
-    bindtextdomain("inikoo", "./locale");
-    textdomain("inikoo");
-    bind_textdomain_codeset("inikoo", 'UTF-8');
-
-    setlocale(LC_TIME, $locale);
-
-}

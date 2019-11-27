@@ -36,8 +36,8 @@
             <tr>
                 <td class="label">{t}Margin{/t}</td>
                 <td class="margins_container unselectable margin" data-scope="margin">
-                    <input data-margin="top" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="" style="" placeholder="0">
-                    <input data-margin="left" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" style="" placeholder="0">
+                    <input data-margin="top" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
+                    <input data-margin="left" class=" edit_margin left" value="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" placeholder="0">
 
                     <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
                     <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
@@ -48,8 +48,8 @@
             <tr>
                 <td class="label">{t}Padding{/t}</td>
                 <td class="margins_container unselectable padding" data-scope="padding">
-                    <input data-margin="top" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="" style="" placeholder="0">
-                    <input data-margin="left" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" style="" placeholder="0">
+                    <input data-margin="top" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
+                    <input data-margin="left" class=" edit_margin left" value="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" placeholder="0">
 
                     <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
                     <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
@@ -60,8 +60,8 @@
             <tr>
                 <td class="label">{t}Border{/t}</td>
                 <td class="margins_container unselectable border border-width" data-scope="border">
-                    <input data-margin="top-width" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom-width" class=" edit_margin bottom" value="" style="" placeholder="0">
-                    <input data-margin="left-width" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" style="" placeholder="0">
+                    <input data-margin="top-width" class="edit_block_margin edit_block_input top" value=""  placeholder="0"><input data-margin="bottom-width" class="edit_block_margin edit_block_input bottom" value="" placeholder="0">
+                    <input data-margin="left-width" class=" edit_margin left" value="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" placeholder="0">
 
                     <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
                     <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
@@ -111,7 +111,7 @@
 
 
     <div id="panel_txt_control" class="hide">
-        <div class="panel_txt_control" style="">
+        <div class="panel_txt_control" >
             <i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20">
             <i onclick="delete_panel_text(this)" class="far fa-trash-alt padding_left_10 like_button" title="{t}Delete{/t}"></i>
 
@@ -354,7 +354,7 @@
     </div>
 
 
-    <div id="simple_line_icons_control_center" class="input_container  hide   " style="">
+    <div id="simple_line_icons_control_center" class="input_container  hide   " >
 
         <div style="margin-bottom:5px"><i onClick="$(this).closest('div').addClass('hide')" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i></div>
 
@@ -518,7 +518,7 @@
                 <span class="breadcrumbs">{$breadcrumb.label} {if !$smarty.foreach.breadcrumbs.last}<i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>{/if}</span>
 
             {/foreach}
-            <div style="" class="nav"><i class="fas fa-arrow-left"></i>  <i style="" class="fas fa-arrow-right next"></i></div>
+            <div class="nav"><i class="fas fa-arrow-left"></i>  <i class="fas fa-arrow-right next"></i></div>
             <div style="clear:both"></div>
         </div>
         {/if}
@@ -528,7 +528,7 @@
             <div class="discounts top_body" >
             {foreach from=$discounts.deals item=deal_data }
             <div class="discount_card" data-key="{$deal_data.key}" >
-                <div class="discount_icon" style="">{$deal_data.icon}</div>
+                <div class="discount_icon" >{$deal_data.icon}</div>
                 <span contenteditable="true" class="discount_name">{$deal_data.name}</span>
                 {if  $deal_data.until!=''}<small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label" contenteditable="true">{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}{/if}</small>
                 <br/>
@@ -1353,7 +1353,7 @@
                         auto_last_updated: $(obj).find('.see_also').data('auto_last_updated'),
                         auto_items: $(obj).find('.see_also').children().length,
                         show_title: ($(obj).find('.products_title').hasClass('hide') ? false : true),
-                        title: $(obj).find('.products_title').html(),
+                        overwrite_title: $(obj).find('#overwrite_title').html(),
 
 
                     })
@@ -1530,6 +1530,8 @@
                         show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),
+                        top_margin: $(obj).attr('left_margin'),
+                        bottom_margin: $(obj).attr('right_margin'),
                         sort: $(obj).find('.products').data('sort'),
                         item_headers: ($(obj).find('.products').hasClass('no_items_header') ? false : true),
                         items: items
@@ -1695,15 +1697,7 @@
                     break;
 
                 case 'text':
-
-
                     var text_blocks = []
-
-
-
-
-
-
                     $('.text_block', obj).each(function (i, text_block) {
 
 
@@ -1735,8 +1729,11 @@
                     });
 
                     blocks.push({
-                        type: 'text', label: '{t}Text{/t}', icon: 'fa-font', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
-
+                        type: 'text', label: '{t}Text{/t}', icon: 'fa-font', show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        left_margin: $(obj).attr('left_margin'),
+                        right_margin: $(obj).attr('right_margin'),
                         template: $(obj).find('.text_blocks').data('template'), text_blocks: text_blocks,
 
                     })
@@ -2148,6 +2145,7 @@
 
         content_data.blocks = blocks
 
+console.log(content_data)
 
         var ajaxData = new FormData();
 
@@ -2600,7 +2598,7 @@ console.log($(element))
         video.attr('video_id', video_link)
 
 
-        video.html('<iframe width="470" height="330" frameborder="0" allowfullscreen="" src="https://www.youtube.com/embed/'+video_link+'?rel=0&amp;controls=0&amp;showinfo=0"></iframe><div class="block_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>')
+        video.html('<iframe width="470" height="330" frameallowfullscreen="" src="https://www.youtube.com/embed/'+video_link+'?rel=0&amp;controls=0&amp;showinfo=0"></iframe><div class="block_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>')
 
 
 

@@ -400,6 +400,15 @@ gettext("Containers in transit");
 /* ../templates//dashboard/inventory.dbard.tpl */
 gettext("Smaller deliveries in transit");
 
+/* ../templates//dashboard/inventory.dbard.tpl */
+gettext("Forgotten parts");
+
+/* ../templates//dashboard/inventory.dbard.tpl */
+gettext("Parts with no products associated");
+
+/* ../templates//dashboard/inventory.dbard.tpl */
+gettext("Parts forced offline/out of stock on website");
+
 /* ../templates//dashboard/inventory.parts_with_barcode_errors.dbard.tpl */
 gettext("EAN barcodes errors");
 
@@ -676,6 +685,9 @@ gettext("Sales representative reports");
 /* ../templates//dashboard/warehouse.parts_to_replenish.dbard.tpl */
 gettext("Insufficient picking stock");
 
+/* ../templates//dashboard/inventory.parts_with_no_products.dbard.tpl */
+gettext("No products");
+
 /* ../templates//dashboard/warehouse.locations_with_errors.dbard.tpl */
 gettext("Urgent audit");
 
@@ -756,6 +768,9 @@ gettext("Sales");
 
 /* ../templates//dashboard/sales_overview.mobile.dbard.tpl */
 gettext("1y");
+
+/* ../templates//dashboard/inventory.parts_forced_not_for_sale_on_website.dbard.tpl */
+gettext("Not online");
 
 /* ../templates//dashboard/inventory.parts_with_weight_errors.dbard.tpl */
 gettext("Anomalous weight");
@@ -2033,6 +2048,9 @@ gettext("Return payment pending");
 gettext("PDF Invoice");
 
 /* ../templates//showcase/order.tpl */
+gettext("Pro mode");
+
+/* ../templates//showcase/order.tpl */
 gettext("Recommended retail prices");
 
 /* ../templates//showcase/order.tpl */
@@ -2186,10 +2204,10 @@ gettext("Port of export");
 gettext("Port of import");
 
 /* ../templates//showcase/client_order.tpl */
-gettext("Create supplier's orders");
+gettext("Create supplier's order");
 
 /* ../templates//showcase/client_order.tpl */
-gettext("Create supplier's orders");
+gettext("Create supplier's order");
 
 /* ../templates//showcase/client_order.tpl */
 gettext("Save");
@@ -2372,10 +2390,10 @@ gettext("Submitted");
 gettext("Cancelled");
 
 /* ../templates//showcase/agent_supplier_order.tpl */
-gettext("Create supplier's orders");
+gettext("Create supplier's order");
 
 /* ../templates//showcase/agent_supplier_order.tpl */
-gettext("Create supplier's orders");
+gettext("Create supplier's order");
 
 /* ../templates//showcase/agent_supplier_order.tpl */
 gettext("Save");
@@ -6307,6 +6325,234 @@ gettext("Close text edit mode");
 /* ../templates//theme_1/blk.clients.theme_1.tpl */
 gettext("Customers");
 
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Add customer");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Code");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Name");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Placeholder");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Tooltip");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Ok");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 1");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 1");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 2");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 2");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Dependent locality (City divisions)");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Neighborhood");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Neighborhood");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("District");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("District");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Townland");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Townland");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Village (Township)");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Village (Township)");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Suburb");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Suburb");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Locality (City)");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("City");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("City");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Suburb");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Suburb");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("District");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("District");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Post town");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Post town");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Country administrative divisions");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("State");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("State");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Province");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Province");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Island");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Island");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Department");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Department");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("County");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("County");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Area");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Area");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Prefecture");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Prefecture");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("District");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("District");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Emirate");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Emirate");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Postal code");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Postal code");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Sorting code");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Sorting code");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Country");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Country");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Ok");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("New customer");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Unique customer reference");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Reference");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Contact name");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Contact name");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Company name");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Company name");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Email");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Email");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Mobile");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Mobile");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 1");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 1");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 2");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address Line 2");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Sorting code");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Sorting code");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Country");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Address labels");
+
+/* ../templates//theme_1/blk.clients.theme_1.tpl */
+gettext("Save");
+
 /* ../templates//theme_1/blk.reset_password.theme_1.tpl */
 gettext("Placeholder");
 
@@ -7808,7 +8054,7 @@ gettext("Please assign picker");
 gettext("Please assign packer");
 
 /* ../templates//deleted.supplier.order.items.tpl */
-gettext("Supplier's part code");
+gettext("Supplier's product code");
 
 /* ../templates//deleted.supplier.order.items.tpl */
 gettext("Quantity");
@@ -9646,6 +9892,24 @@ gettext("Quantity");
 /* ../templates//columns/timeserie.records.cols.tpl */
 gettext("Date");
 
+/* ../templates//columns/packer.feedback.cols.tpl */
+gettext("Delivery note");
+
+/* ../templates//columns/packer.feedback.cols.tpl */
+gettext("Delivery date");
+
+/* ../templates//columns/packer.feedback.cols.tpl */
+gettext("Part");
+
+/* ../templates//columns/packer.feedback.cols.tpl */
+gettext("Complain date");
+
+/* ../templates//columns/packer.feedback.cols.tpl */
+gettext("Reporter");
+
+/* ../templates//columns/packer.feedback.cols.tpl */
+gettext("Note");
+
 /* ../templates//columns/supplier_part.supplier.deliveries.cols.tpl */
 gettext("Number");
 
@@ -10577,7 +10841,7 @@ gettext("Code");
 gettext("Name");
 
 /* ../templates//columns/deleted.supplier.order.items.cols.tpl */
-gettext("Supplier's part code");
+gettext("Supplier's product code");
 
 /* ../templates//columns/deleted.supplier.order.items.cols.tpl */
 gettext("Cartons");
@@ -10821,6 +11085,27 @@ gettext("Items with problems");
 
 /* ../templates//columns/agent.client_orders.cols.tpl */
 gettext("Total");
+
+/* ../templates//columns/picker.delivery_notes.cols.tpl */
+gettext("Number");
+
+/* ../templates//columns/picker.delivery_notes.cols.tpl */
+gettext("Date creation");
+
+/* ../templates//columns/picker.delivery_notes.cols.tpl */
+gettext("Customer");
+
+/* ../templates//columns/picker.delivery_notes.cols.tpl */
+gettext("Type");
+
+/* ../templates//columns/picker.delivery_notes.cols.tpl */
+gettext("Status");
+
+/* ../templates//columns/picker.delivery_notes.cols.tpl */
+gettext("Weight");
+
+/* ../templates//columns/picker.delivery_notes.cols.tpl */
+gettext("Parcels");
 
 /* ../templates//columns/campaign_order_recursion.components.cols.tpl */
 gettext("Description");
@@ -12746,7 +13031,7 @@ gettext("Suppliers");
 gettext("Assigned");
 
 /* ../templates//columns/category.supplier_categories.cols.tpl */
-gettext("Supplier's parts");
+gettext("Supplier's products");
 
 /* ../templates//columns/category.supplier_categories.cols.tpl */
 gettext("Active parts");
@@ -13597,6 +13882,48 @@ gettext("Caption");
 /* ../templates//columns/supplier.images.cols.tpl */
 gettext("Operations");
 
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Reference");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("SKO description");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Stock weight");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Stock value");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Stock");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Active products");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Dispatched");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("1YB");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Revenue");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("1YB");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Lost");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Bought");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Dispatched/w");
+
+/* ../templates//columns/inventory.parts_forced_not_for_sale_on_website.wget.cols.tpl */
+gettext("Weeks available");
+
 /* ../templates//columns/list.history.cols.tpl */
 gettext("Date");
 
@@ -13605,18 +13932,6 @@ gettext("Author");
 
 /* ../templates//columns/list.history.cols.tpl */
 gettext("Note");
-
-/* ../templates//columns/website.user.pageviews.cols.tpl */
-gettext("Page");
-
-/* ../templates//columns/website.user.pageviews.cols.tpl */
-gettext("Type");
-
-/* ../templates//columns/website.user.pageviews.cols.tpl */
-gettext("Page title");
-
-/* ../templates//columns/website.user.pageviews.cols.tpl */
-gettext("Date");
 
 /* ../templates//columns/store.history.cols.tpl */
 gettext("Date");
@@ -14258,7 +14573,7 @@ gettext("Location");
 gettext("Last PO");
 
 /* ../templates//columns/suppliers.cols.tpl */
-gettext("Supplier's parts");
+gettext("Supplier's products");
 
 /* ../templates//columns/suppliers.cols.tpl */
 gettext("Active parts");
@@ -14325,6 +14640,45 @@ gettext("Delta % 1y");
 
 /* ../templates//columns/supplier.timeseries_record.parts.cols.tpl */
 gettext("Delta 1y");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Reference");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("SKO description");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Stock weight");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Stock value");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Stock");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Dispatched");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("1YB");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Revenue");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("1YB");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Lost");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Bought");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Dispatched/w");
+
+/* ../templates//columns/inventory.parts_no_products.wget.cols.tpl */
+gettext("Weeks available");
 
 /* ../templates//columns/vouchers.cols.tpl */
 gettext("Name");
@@ -14923,6 +15277,27 @@ gettext("Preview");
 /* ../templates//columns/mailshot.workshop.previous_mailshots.cols.tpl */
 gettext("Operations");
 
+/* ../templates//columns/packer.delivery_notes.cols.tpl */
+gettext("Number");
+
+/* ../templates//columns/packer.delivery_notes.cols.tpl */
+gettext("Date creation");
+
+/* ../templates//columns/packer.delivery_notes.cols.tpl */
+gettext("Customer");
+
+/* ../templates//columns/packer.delivery_notes.cols.tpl */
+gettext("Type");
+
+/* ../templates//columns/packer.delivery_notes.cols.tpl */
+gettext("Status");
+
+/* ../templates//columns/packer.delivery_notes.cols.tpl */
+gettext("Weight");
+
+/* ../templates//columns/packer.delivery_notes.cols.tpl */
+gettext("Parcels");
+
 /* ../templates//columns/suppliers.supplier_parts.out_of_stock.cols.tpl */
 gettext("Supplier");
 
@@ -15111,6 +15486,24 @@ gettext("Total");
 
 /* ../templates//columns/agent.orders.cols.tpl */
 gettext("Total AC");
+
+/* ../templates//columns/picker.feedback.cols.tpl */
+gettext("Delivery note");
+
+/* ../templates//columns/picker.feedback.cols.tpl */
+gettext("Delivery date");
+
+/* ../templates//columns/picker.feedback.cols.tpl */
+gettext("Part");
+
+/* ../templates//columns/picker.feedback.cols.tpl */
+gettext("Complain date");
+
+/* ../templates//columns/picker.feedback.cols.tpl */
+gettext("Reporter");
+
+/* ../templates//columns/picker.feedback.cols.tpl */
+gettext("Note");
 
 /* ../templates//columns/store.credits.cols.tpl */
 gettext("Customer Id");
@@ -16766,7 +17159,7 @@ gettext("Location");
 gettext("Last PO");
 
 /* ../templates//columns/production.suppliers.cols.tpl */
-gettext("Supplier's parts");
+gettext("Supplier's products");
 
 /* ../templates//columns/production.suppliers.cols.tpl */
 gettext("Active parts");
@@ -17540,7 +17933,7 @@ gettext("Location");
 gettext("Last PO");
 
 /* ../templates//columns/category.suppliers.cols.tpl */
-gettext("Supplier's parts");
+gettext("Supplier's products");
 
 /* ../templates//columns/category.suppliers.cols.tpl */
 gettext("Active parts");
@@ -17588,7 +17981,7 @@ gettext("Location");
 gettext("Last PO");
 
 /* ../templates//columns/agent.suppliers.cols.tpl */
-gettext("Supplier's parts");
+gettext("Supplier's products");
 
 /* ../templates//columns/agent.suppliers.cols.tpl */
 gettext("Active parts");
@@ -18009,6 +18402,63 @@ gettext("Dispatched");
 
 /* ../templates//columns/part_families.cols.tpl */
 gettext("1YB");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("ID");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Name");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Location");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Since");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Last invoice");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Payments");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Invoices");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Logins");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Fail Logins");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Pageviews");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Company");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Main contact");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Email");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Mobile");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Telephone");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Invoiced");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Invoiced Net");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Clients");
+
+/* ../templates//columns/customers_dropshipping.cols.tpl */
+gettext("Portfolio");
 
 /* ../templates//columns/newsletter.mail_list.cols.tpl */
 gettext("Email");
@@ -18596,13 +19046,13 @@ gettext("The <b>root</b> user is a special account with authorisation to create 
 gettext("Is important to provide a strong password, and that only trusted persons have access to the mobile and recovery email");
 
 /* ../templates//help/suppliers.supplier.supplier_parts.quick.tpl */
-gettext("How to add new supplier's part?");
+gettext("How to add new supplier's product?");
 
 /* ../templates//help/suppliers.supplier.supplier_parts.quick.tpl */
 gettext("Click in the<i class=\"fa fa-plus\"></i>icon at the table header");
 
 /* ../templates//help/suppliers.supplier.supplier_parts.quick.tpl */
-gettext("How to add supplier's parts in bulk?");
+gettext("How to add supplier's products in bulk?");
 
 /* ../templates//help/suppliers.supplier.supplier_parts.quick.tpl */
 gettext("Click in the <i class=\"fa fa-cloud-upload\"></i>\n                icon at the table header to upload a excel or a CSV file with the following fields");
@@ -20888,7 +21338,7 @@ gettext("Add another");
 gettext("Clone it");
 
 /* ../templates//presentation_cards/supplier_part.pcard.tpl */
-gettext("Supplier part");
+gettext("Supplier's product");
 
 /* ../templates//presentation_cards/customer_poll_query_option.pcard.tpl */
 gettext("Success");
@@ -20982,9 +21432,6 @@ gettext("Success");
 
 /* ../templates//presentation_cards/attachment.pcard.tpl */
 gettext("Attach other file");
-
-/* ../templates//presentation_cards/attachment.pcard.tpl */
-gettext("Attachment's list");
 
 /* ../templates//presentation_cards/attachment.pcard.tpl */
 gettext("Attachment");

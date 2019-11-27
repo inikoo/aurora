@@ -492,7 +492,7 @@ $this->msg=_('Barcode already in the system');
     }
 
     function get_field_label($field) {
-        global $account;
+
 
         switch ($field) {
 

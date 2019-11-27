@@ -751,6 +751,15 @@ $object_fields = array(
                 'required'   => true,
                 'type'       => 'value'
             ),
+            array(
+                'id'         => 'Localised_Labels_see_also',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_see_also']) ? _('See also') : $labels['_see_also']),
+                'label'      => _('See also'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
 
         )

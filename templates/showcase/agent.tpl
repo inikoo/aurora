@@ -102,7 +102,7 @@
     </div>
     <div id="info" >
         <div id="overviews" style="width: 275px;min-width: auto">
-            <table border="0" class="overview">
+            <table class="overview">
                 <tr>
                     <td>{t}Suppliers{/t}:</td>
                     <td class="aright Agent_Number_Suppliers">{$agent->get('Number Suppliers')}</td>

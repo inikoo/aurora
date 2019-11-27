@@ -109,7 +109,7 @@
                     <span class="state ">{t}Cancelled{/t}</span>
                 </div>
                 <div class="timestamp">
-                    <span class="">&nbsp;{$delivery_note->get('Cancelled Datetime')}</span>
+                    <span >&nbsp;{$delivery_note->get('Cancelled Datetime')}</span>
                 </div>
                 <div class="dot"></div>
             </li>
@@ -148,7 +148,7 @@
                 <div id="delete_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')>0       }hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
                         <i class="far fa-trash-alt very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
-                        <table id="delete_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="delete_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Delete delivery note{/t}</td>
                             </tr>
@@ -171,7 +171,7 @@
 						</span>
 
 
-                        <table id="undo_picking_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_picking_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Set back to waiting to be picked{/t}</td>
                             </tr>
@@ -188,7 +188,7 @@
                      class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0  or  $delivery_note->get('State Index')<0 or  $delivery_note->get('State Index')>=80  }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
-                        <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="cancel_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2">{t}Cancel delivery note{/t}</td>
                             </tr>
@@ -209,7 +209,7 @@
 
 
 
-                        <table id="undo_packed_done_dialog" border="0" class="order_operation_dialog hide">
+                        <table id="undo_packed_done_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Open boxes{/t}</td>
                             </tr>
@@ -263,7 +263,7 @@
             <span class="button" onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
         </div>
         <div class="_items_cost" style="padding:5px 10px;margin-bottom:0px;{if  $delivery_note->get('State Index')!=100 }border-bottom: 1px solid #ccc{/if}">
-            <table border="0" style="width: 100%;">
+            <table style="width: 100%;">
 
 
                 <tr>
@@ -274,14 +274,14 @@
         </div>
 
         <div class="state info_block  {if  $delivery_note->get('State Index')==100 }hide{/if}" style="text-align: center;padding:5px 10px;border-bottom:none;">
-            <table border="0" style="width: 100%;">
+            <table style="width: 100%;">
 
 
                 <tr>
 
 
                     <td>
-                    <span style=""><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
+                    <span ><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
                           <span class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
 
                <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
@@ -311,18 +311,18 @@
     <div class="block" style="padding:20px 10px 0px 10px">
 
 
-        <table border="0" style="min-width:500px " class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90   }hide{/if} ">
+        <table style="min-width:500px " class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90   }hide{/if} ">
 
 
             <tr>
                 <td class="aleft" style="width: 80px">{t}Parcels{/t}:</td>
-                <td class="">
+                <td >
                     <input id="number_parcel_field" style="width:75px" value="{$delivery_note->get('Delivery Note Number Parcels')}" ovalue="{$delivery_note->get('Delivery Note Number Parcels')}"
                            placeholder="{t}number{/t}"> <i onCLick="save_number_parcels(this)" class="fa fa-plus button" aria-hidden="true"></i>
 
                 </td>
                 <td class="aright"> {t}Weight{/t}:</td>
-                <td class=""><span><input id="weight_field" style="width:75px" value="{$delivery_note->get('Weight For Edit')}" ovalue="{$delivery_note->get('Weight For Edit')}" placeholder="{t}Kg{/t}"> <i
+                <td ><span><input id="weight_field" style="width:75px" value="{$delivery_note->get('Weight For Edit')}" ovalue="{$delivery_note->get('Weight For Edit')}" placeholder="{t}Kg{/t}"> <i
                                 onCLick="save_delivery_note_weight(this)" class="fa fa-cloud button hide" aria-hidden="true"></i>
 
                 </td>
@@ -375,14 +375,14 @@
         </table>
 
 
-        <table border="0"  class="final_info_block  {if  $delivery_note->get('State Index')!=100 }hide{/if} ">
+        <table class="final_info_block  {if  $delivery_note->get('State Index')!=100 }hide{/if} ">
 
 
             <tr>
 
 
                 <td>
-                    <span style=""><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
+                    <span ><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
                           <span class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
 
                <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
@@ -445,9 +445,9 @@
 
 <div class="table_new_fields delivery_note_handling_fields   {if $delivery_note->get('State Index')<=10    }hide{/if} " style="border-bottom:1px solid #ccc;">
 
-    <div class="" style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
+    <div style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
 
-        <table style="width:100%;min-height: 100px;" border="0">
+        <table style="width:100%;min-height: 100px;" >
 
             <tr>
                 <td style="width: 50%;padding:10px;border-right:1px solid whitesmoke">
@@ -462,7 +462,7 @@
                     <i id="set_picker_save_button" class="fa fa-cloud save dropdown_select hide" onclick="save_this_field(this)"></i>
                     <div id="set_picker_results_container" class="search_results_container hide">
 
-                        <table id="set_picker_results" border="0">
+                        <table id="set_picker_results" >
 
                             <tr class="hide" id="set_picker_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_handler('picker',this)">
                                 <td class="code"></td>
@@ -491,8 +491,8 @@
         </table>
 
     </div>
-    <div class="" style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
-        <table style="width:100%;min-height: 100px;" border="0">
+    <div style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
+        <table style="width:100%;min-height: 100px;" >
 
             <tr>
                 <td style="width: 50%;padding:10px;border-right:1px solid whitesmoke">
@@ -507,7 +507,7 @@
                     <i id="set_packer_save_button" class="fa fa-cloud save dropdown_select hide" onclick="save_this_field(this)"></i>
                     <div id="set_packer_results_container" class="search_results_container hide">
 
-                        <table id="set_packer_results" border="0">
+                        <table id="set_packer_results" >
 
                             <tr class="hide" id="set_packer_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_handler('packer',this)">
 
@@ -537,14 +537,14 @@
         </table>
     </div>
 
-    <div class="" style="align-items: stretch;flex: 1;padding:40px 20px;border-left:1px solid #ccc;text-align: center">
+    <div style="align-items: stretch;flex: 1;padding:40px 20px;border-left:1px solid #ccc;text-align: center">
         <span>{t}Picking aid{/t}</span>
         <a style="position: relative;top:2.5px;" class="pdf_link" target='_blank' href="/pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img style="width: 50px" src="/art/pdf.gif"></a>
 
 
     </div>
 
-    <div class="" style="align-items: stretch;flex: 1;padding:40px 20px;border-left:1px solid #ccc;text-align: center">
+    <div style="align-items: stretch;flex: 1;padding:40px 20px;border-left:1px solid #ccc;text-align: center">
 
         <div class="hide fast_track_packing_operation">
 
@@ -557,7 +557,7 @@
         </div>
     </div>
 
-    <div class="" style="align-items: stretch;flex: 1;padding:40px 20px;border-left:1px solid #ccc;text-align: center">
+    <div style="align-items: stretch;flex: 1;padding:40px 20px;border-left:1px solid #ccc;text-align: center">
         <div class="hide fast_track_packing_operation">
             <span id="save_picking_offline" onclick="save_picking_offline()" class="save">{t}Pack order{/t} <i class="fa fa-cloud" aria-hidden="true"></i></span>
         </div>

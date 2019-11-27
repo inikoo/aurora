@@ -254,6 +254,8 @@ class Customer_Client extends Subject {
             return;
         }
 
+
+
         switch ($field) {
 
 

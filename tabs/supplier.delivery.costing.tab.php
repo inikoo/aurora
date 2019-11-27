@@ -105,8 +105,11 @@ $smarty->assign('number_zero_placed_items',$number_zero_placed_items);
 
 $smarty->assign('table_top_template', 'supplier.delivery.costing.tpl');
 
+$smarty->assign('table_identification', 'supplier_delivery_costing_table');
+
+
 
 include 'utils/get_table_html.php';
 
 
-?>
+

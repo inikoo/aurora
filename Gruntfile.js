@@ -49,6 +49,11 @@ module.exports = function (grunt) {
                 },
                 src: ['EcomB2B/js/libs/jquery-ui.js', 'EcomB2B/js/libs/jquery.form.min.js', 'EcomB2B/js/libs/jquery.validate.min.js', 'EcomB2B/js/libs/additional-methods.min.js', 'EcomB2B/js/libs/sweetalert.min.js', 'EcomB2B/js/libs/sha256.js', 'EcomB2B/js/au_forms/aurora_forms.js'],
                 dest: 'EcomB2B/assets/desktop.forms.min.js'
+            }, ecom_desktop_client_basket: {
+                options: {
+                    sourceMap: true,
+                }, src: ['EcomB2B/js/basket_checkout/client_basket.js'],
+                dest: 'EcomB2B/assets/desktop.client_basket.min.js'
             }, ecom_desktop_basket: {
                 options: {
                     sourceMap: true,
@@ -143,7 +148,13 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 }, src: ['js/common.js', 'js/help.js', 'js/keyboard_shortcuts.js', 'js/barcode_scanner.js', 'js/edit.js',
 
-                    'js/mixed_recipients.edit.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/pdf.js', 'js/edit_webpage_edit.js', 'js/new.js', 'js/order.common.js', 'js/email_campaign.common.js', 'js/supplier.order.js', 'js/supplier.delivery.js', 'js/part_locations.edit.js', 'js/part_locations.edit_locations.js', 'js/part_locations.stock_check.js', 'js/part_locations.move_stock.js', 'js/fast_track_packing.js', 'js/sticky_notes.js', 'js/picking_and_packing.js', 'js/app.js', 'js/real_time.js', 'js/customers.js', 'js/customer_orders.js', 'js/customer_client.js', 'js/customer_client_orders.js'
+                    'js/mixed_recipients.edit.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/pdf.js', 'js/edit_webpage_edit.js', 'js/new.js',
+                    'js/order.common.js', 'js/order_collection.js',
+
+                    'js/email_campaign.common.js',
+                    'js/supplier.order.js', 'js/supplier.delivery.js','js/supplier.delivery.costing.js',
+                    'js/part_locations.edit.js', 'js/part_locations.edit_locations.js', 'js/part_locations.stock_check.js', 'js/part_locations.move_stock.js', 'js/fast_track_packing.js', 'js/sticky_notes.js', 'js/picking_and_packing.js', 'js/app.js', 'js/real_time.js', 'js/customers.js', 'js/customer_orders.js', 'js/customer_client.js', 'js/customer_client_orders.js',
+                    'js/add_item_to_order.js','js/upload.js'
 
 
                 ], dest: 'assets/aurora.min.js',
@@ -207,7 +218,7 @@ module.exports = function (grunt) {
         },
         cssmin: {
             options: {
-                shorthandCompacting: false, roundingPrecision: -1, sourceMap: true,
+                 sourceMap: true
             },
 
             ecom_css: {
@@ -368,7 +379,7 @@ module.exports = function (grunt) {
             ecom_basket_checkout: {
                 files: [{
                     expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: [
-                        'desktop.basket.min.js','desktop.checkout.min.js','desktop.profile.min.js','mobile.basket.min.js','mobile.checkout.min.js','mobile.profile.min.js'
+                        'desktop.basket.min.js', 'desktop.client_basket.min.js','desktop.checkout.min.js','desktop.profile.min.js','mobile.basket.min.js','mobile.checkout.min.js','mobile.profile.min.js'
                     ], rename: function (dest, src) {
                         return dest + src.replace('.min', '.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min');
                     }
@@ -518,6 +529,8 @@ module.exports = function (grunt) {
             }, ecom_basket_checkout: {
                 src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /desktop.basket.\.*min.js"/g, to: 'desktop.basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
+                },{
+                    from: /desktop.client_basket.\.*min.js"/g, to: 'desktop.client_basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }, {
                     from: /mobile.basket.\.*min.js"/g, to: 'mobile.basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }, {
@@ -615,7 +628,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('ecom_image_gallery', ['terser:ecom_image_gallery', 'copy:ecom_image_gallery', 'replace:ecom_image_gallery']);
 
-    grunt.registerTask('ecom_basket_checkout', ['terser:ecom_desktop_basket', 'terser:ecom_desktop_checkout', 'terser:ecom_desktop_profile',
+    grunt.registerTask('ecom_basket_checkout', ['terser:ecom_desktop_basket', 'terser:ecom_desktop_client_basket', 'terser:ecom_desktop_checkout', 'terser:ecom_desktop_profile',
         'terser:ecom_mobile_basket', 'terser:ecom_mobile_profile', 'terser:ecom_mobile_checkout','copy:ecom_basket_checkout', 'replace:ecom_basket_checkout'
 
     ]);
@@ -647,7 +660,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('pweb', ['copy:fa_webfonts', 'sass:ecom_css', 'cssmin:ecom_css',
             'terser:ecom_desktop_in','terser:ecom_desktop_out','terser:ecom_desktop_forms','terser:ecom_mobile_forms','terser:ecom_mobile','terser:ecom_mobile_custom','terser:ecom_datatables',
-            'terser:ecom_desktop_logged_in', 'terser:ecom_dropshipping_logged_in','terser:ecom_image_gallery','terser:ecom_desktop_basket', 'terser:ecom_desktop_checkout', 'terser:ecom_desktop_profile',
+            'terser:ecom_desktop_logged_in', 'terser:ecom_dropshipping_logged_in','terser:ecom_image_gallery','terser:ecom_desktop_basket','terser:ecom_desktop_client_basket', 'terser:ecom_desktop_checkout', 'terser:ecom_desktop_profile',
         'terser:ecom_mobile_basket', 'terser:ecom_mobile_profile', 'terser:ecom_mobile_checkout','terser:ecom_mobile_in'
 
     ]);

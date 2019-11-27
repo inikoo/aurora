@@ -696,11 +696,9 @@ $(document).on('input propertychange', '.edit_margin', function (evt) {
 
     if ($(this).data('margin') == 'top') {
 
-        console.log($("#preview").contents().find('#block_'+block_key).attr('top_margin'))
 
         $("#preview").contents().find('#block_'+block_key).attr('top_margin', value).css("padding-top", value + "px")
 
-        console.log($("#preview").contents().find('#block_'+block_key).attr('top_margin'))
 
     } else if ($(this).data('margin') == 'bottom') {
         $("#preview").contents().find('#block_'+block_key).attr('bottom_margin', value).css("padding-bottom", value + "px")
@@ -832,3 +830,42 @@ function hide_webpage_editor(){
     $('#tabs').removeClass('hide')
 
 }
+
+
+
+
+$(document).on('input propertychange,change', '.edit_block_margin', function (evt) {
+
+    if (!validate_signed_integer($(this).val(), 300)) {
+        $(this).removeClass('error')
+        var value = $(this).val()
+    } else {
+        value = 0;
+        $(this).addClass('error')
+    }
+
+
+    var block_key=$(this).closest('.edit_mode').attr('key')
+
+
+    console.log($(this))
+
+    if ($(this).data('margin') == 'top') {
+        console.log('#block_'+block_key)
+
+        console.log($("#preview").contents().find('#block_'+block_key))
+        $("#preview").contents().find('#block_'+block_key).attr('top_margin', value).css("padding-top", value + "px")
+    } else if ($(this).data('margin') == 'bottom') {
+        $("#preview").contents().find('#block_'+block_key).attr('bottom_margin', value).css("padding-bottom", value + "px")
+    }else if ($(this).data('margin') == 'left') {
+        $("#preview").contents().find('#block_'+block_key).attr('left_margin', value).css("padding-left", value + "px")
+    }else if ($(this).data('margin') == 'right') {
+        $("#preview").contents().find('#block_'+block_key).attr('right_margin', value).css("padding-right", value + "px")
+    }
+
+
+    $('#save_button').addClass('save button changed valid')
+
+
+
+});

@@ -227,7 +227,7 @@ class SupplierPart extends DB_Table {
             $this->fast_update(array('Supplier Part Properties' => '{}'));
 
 
-            $this->msg = "Supplier part added";
+            $this->msg = "Supplier product added";
             $this->get_data('id', $this->id);
 
 
@@ -235,7 +235,7 @@ class SupplierPart extends DB_Table {
 
             $history_data = array(
                 'Action'           => 'created',
-                'History Abstract' => _("Supplier's part created"),
+                'History Abstract' => _("Supplier's product created"),
                 'History Details'  => ''
             );
             $this->add_subject_history(
@@ -323,9 +323,7 @@ class SupplierPart extends DB_Table {
                 }
                 if ($this->data['Supplier On Demand'] == 'No' and $value == 'Yes') {
                     $this->error = true;
-                    $this->msg   = _(
-                        "Supplier part can't set up as on demand because supplier isn't configured to allow that"
-                    );
+                    $this->msg   = _("Supplier's product can't set up as on demand because supplier isn't configured to allow that");
 
                     return;
                 }
@@ -374,7 +372,7 @@ class SupplierPart extends DB_Table {
                 }
                 if ($this->data['Supplier Part On Demand'] == 'No' and $value == 'Yes') {
                     $this->error = true;
-                    $this->msg   = _("Supplier part must be on demand");
+                    $this->msg   = _("Supplier's product must be on demand");
 
                     return;
                 }
@@ -578,9 +576,7 @@ class SupplierPart extends DB_Table {
                         if ($row['num'] > 0) {
                             $this->error = true;
                             $this->msg   = sprintf(
-                                _(
-                                    "Can't move supplier, another supplier part has same reference (%s)"
-                                ), $this->get('Supplier Part Reference')
+                                _("Can't move supplier, another supplier's product has same reference (%s)"), $this->get('Supplier Part Reference')
                             );
 
                             return;
@@ -647,7 +643,7 @@ class SupplierPart extends DB_Table {
                 $history_data = array(
                     'Action'           => 'edited',
                     'History Abstract' => sprintf(
-                        "Supplier's part %s supplier moved to supplier %s%s", sprintf(
+                        "Supplier's product %s supplier moved to supplier %s%s", sprintf(
                         '<span class="button" onClick="change_view(\'supplier/%d/part/%d\')">%s</span>', $supplier->id, $this->id, $this->get('Reference')
                     ), sprintf(
                             '<span class="button" onClick="change_view(\'supplier/%d\')">%s</span>', $supplier->id, $supplier->get('Code')
@@ -1717,7 +1713,7 @@ class SupplierPart extends DB_Table {
                 }
 
 
-                $extra_cost = ' <span class="">'.percentage($this->data['Supplier Part Unit Extra Cost Percentage'], 1).'</span>';
+                $extra_cost = ' <span >'.percentage($this->data['Supplier Part Unit Extra Cost Percentage'], 1).'</span>';
 
 
                 $extra_cost .= ' <span class="discreet">'.money($this->data['Supplier Part Unit Extra Cost'], $this->data['Supplier Part Currency Code']).'</span>';
@@ -2000,7 +1996,7 @@ class SupplierPart extends DB_Table {
 
         $history_data = array(
             'History Abstract' => sprintf(
-                _("Supplier's part record %s deleted"), $this->data['Supplier Part Reference']
+                _("Supplier's product record %s deleted"), $this->data['Supplier Part Reference']
             ),
             'History Details'  => '',
             'Action'           => 'deleted'

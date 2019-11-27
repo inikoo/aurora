@@ -13,7 +13,7 @@
 <div id="dashboard_kpis" style="margin-top:20px;padding:0px" class="dashboard">
     
 
-<table border="0" style="width:100%">
+<table style="width:100%">
     <tr class="main_title small_row">
         <td colspan="9">
             <span style="padding-left:20px">{t}KPIs{/t}</span>

@@ -151,7 +151,7 @@
     <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid two-up">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="310" style=" width:310px; padding-right: 10px; padding-left: 10px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num6" style="Float: left;max-width: 320px;min-width: 310px;width: 310px;width: calc(6510px - 1000%);background-color: transparent;">
@@ -161,7 +161,7 @@
 
                             <div align="left" class="img-container left" style="padding-right: 0px;  padding-left: 0px;">
                                 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px;" align="left"><![endif]-->
-                                <div style="line-height:15px;font-size:1px">&#160;</div>  <img class="left" align="left" border="0" src="https://pro-bee-beepro-assets.s3.amazonaws.com/templates/default/42/ecommerce-template_logo.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 186px" width="186" />
+                                <div style="line-height:15px;font-size:1px">&#160;</div>  <img class="left" align="left" src="https://pro-bee-beepro-assets.s3.amazonaws.com/templates/default/42/ecommerce-template_logo.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 186px" width="186" />
                                 <div style="line-height:15px;font-size:1px">&#160;</div><!--[if mso]></td></tr></table><![endif]-->
                             </div>
 
@@ -191,7 +191,7 @@
     </div>    <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="620" style=" width:620px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num12" style="min-width: 320px;max-width: 620px;width: 620px;width: calc(30000% - 185380px);background-color: transparent;">
@@ -215,7 +215,7 @@
     </div>    <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="620" style=" width:620px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num12" style="min-width: 320px;max-width: 620px;width: 620px;width: calc(30000% - 185380px);background-color: transparent;">
@@ -239,7 +239,7 @@
     </div>    <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid two-up">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="310" style=" width:310px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num6" style="Float: left;max-width: 320px;min-width: 310px;width: 310px;width: calc(6510px - 1000%);background-color: transparent;">
@@ -265,7 +265,7 @@
 
                             <div align="right" class="img-container right" style="padding-right: 0px;  padding-left: 0px;">
                                 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px;" align="right"><![endif]-->
-                                <img class="right" align="right" border="0" src="https://pro-bee-beepro-assets.s3.amazonaws.com/templates/default/42/ecommerce-template_sign.jpg" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 94px" width="94" />
+                                <img class="right" align="right" src="https://pro-bee-beepro-assets.s3.amazonaws.com/templates/default/42/ecommerce-template_sign.jpg" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 94px" width="94" />
                                 <!--[if mso]></td></tr></table><![endif]-->
                             </div>
 
@@ -295,7 +295,7 @@
     </div>    <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="620" style=" width:620px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num12" style="min-width: 320px;max-width: 620px;width: 620px;width: calc(30000% - 185380px);background-color: transparent;">
@@ -319,7 +319,7 @@
     </div>    <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid four-up">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="155" style=" width:155px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num3" style="Float: left;max-width: 320px;min-width: 155px;width: 155px;width: calc(102455px - 16500%);background-color: transparent;">
@@ -391,7 +391,7 @@
     </div>    <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="620" style=" width:620px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num12" style="min-width: 320px;max-width: 620px;width: 620px;width: calc(30000% - 185380px);background-color: transparent;">
@@ -415,7 +415,7 @@
     </div>    <div style="background-color:transparent;">
         <div style="Margin: 0 auto;min-width: 320px;max-width: 620px;width: 620px;width: calc(31000% - 197780px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid ">
             <div style="border-collapse: collapse;display: table;width: 100%;">
-                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
+                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" style="width: 620px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]-->
 
                 <!--[if (mso)|(IE)]><td align="center" width="620" style=" width:620px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]-->
                 <div class="col num12" style="min-width: 320px;max-width: 620px;width: 620px;width: calc(30000% - 185380px);background-color: transparent;">

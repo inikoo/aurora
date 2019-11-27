@@ -105,7 +105,7 @@ function get_users_read_time_data($redis, $account) {
                     'icon'=>$icon,
                     'alias'=>$_user['alias'],
                     'request'=>$_user['request'],
-                    'web_location'=>$_user['web_location'],
+                    'web_location'=>(isset($_user['web_location'])?$_user['web_location']:''),
                 );
 
 

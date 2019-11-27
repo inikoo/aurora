@@ -1,0 +1,1 @@
+ALTER TABLE `Stack Dimension` ADD `Stack Metadata` VARCHAR(255) NULL DEFAULT NULL AFTER `Stack Counter`;

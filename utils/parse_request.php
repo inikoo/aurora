@@ -1140,6 +1140,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
                     break;
                 }
 
+
+
                 $module  = 'websites';
                 $section = 'analytics';
                 $object  = 'website';
@@ -1190,6 +1192,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
                         if ($view_path[2] == 'webpage') {
+
+
                             $section    = 'webpage';
                             $object     = 'webpage';
                             $parent     = 'website';
@@ -1198,6 +1202,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                             if (is_numeric($view_path[3])) {
                                 $key = $view_path[3];
                             }
+
 
 
                         }
@@ -5757,7 +5762,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
     }
 
 
-    // print_r($_data);
 
 
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
@@ -5777,6 +5781,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
         'extra_tab'  => $extra_tab,
         'title'      => parse_title($module, $section, $modules)
     );
+
 
 
     if (isset($_data['otf'])) {

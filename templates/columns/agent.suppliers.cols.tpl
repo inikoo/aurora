@@ -78,7 +78,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "supplier_parts",
-label: "{t}Supplier's parts{/t}",
+label: "{t}Supplier's products{/t}",
 editable: false,
 
 defaultOrder:1,

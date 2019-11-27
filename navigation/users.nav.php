@@ -927,7 +927,7 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
     $sections['users']['selected'] = true;
 
 
-    $title = _('API key').': <span class="">'.$object->get('Scope').'</span> (<span class="id">'.$object->get('Code').'</span>)';
+    $title = _('API key').': <span >'.$object->get('Scope').'</span> (<span class="id">'.$object->get('Code').'</span>)';
 
     $_content = array(
         'sections_class' => '',
@@ -1165,7 +1165,7 @@ function get_deleted_api_key_navigation($data, $smarty, $user, $db, $account) {
     $sections['users']['selected'] = true;
 
 
-    $title = _('Deleted API key').': <span class="">'.$object->get('Deleted Scope').'</span> (<span class="id">'.$object->get('Deleted Code').'</span>)';
+    $title = _('Deleted API key').': <span >'.$object->get('Deleted Scope').'</span> (<span class="id">'.$object->get('Deleted Code').'</span>)';
 
     $_content = array(
         'sections_class' => '',

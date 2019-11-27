@@ -11,16 +11,16 @@
 */
 
 
-include_once 'utils/general_functions.php';
-
-include_once 'utils/web_common.php';
+include_once __DIR__.'/utils/general_functions.php';
+include_once __DIR__.'/utils/web_common.php';
+include_once __DIR__.'/utils/web_set_locale.php';
 
 list($detected_device, $template_suffix) = get_device();
 
 if (!isset($db)) {
-    require 'keyring/dns.php';
+    require __DIR__.'/keyring/dns.php';
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 }
@@ -44,7 +44,7 @@ $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
 if (isset($is_homepage)) {
-    include_once 'utils/public_object_functions.php';
+    include_once __DIR__.'/utils/public_object_functions.php';
 
     $website = get_object('Website', $_SESSION['website_key']);
 
@@ -58,8 +58,8 @@ if (isset($is_homepage)) {
     }
 
 } elseif (isset($is_reset)) {
-    include_once 'utils/public_object_functions.php';
-    include_once 'utils/network_functions.php';
+    include_once __DIR__.'/utils/public_object_functions.php';
+    include_once __DIR__.'/utils/network_functions.php';
 
     $website = get_object('Website', $_SESSION['website_key']);
 
@@ -87,8 +87,6 @@ if (isset($is_homepage)) {
             $form_error = $result;
         }
 
-    } else {
-        //todo remove the reset password
     }
 
 
@@ -96,8 +94,8 @@ if (isset($is_homepage)) {
 
 
 } elseif (isset($is_unsubscribe)) {
-    include_once 'utils/public_object_functions.php';
-    include_once 'utils/network_functions.php';
+    include_once __DIR__.'/utils/public_object_functions.php';
+    include_once __DIR__.'/utils/network_functions.php';
 
     $website = get_object('Website', $_SESSION['website_key']);
 
@@ -132,7 +130,7 @@ $is_devel = preg_match('/bali|sasi|sakoi|geko/', gethostname());
 
 
 if (isset($_REQUEST['snapshot'])) {
-    require 'keyring/key.php';
+    require __DIR__.'/keyring/key.php';
 
     if ($_REQUEST['snapshot'] == md5(VKEY.'||'.date('Ymd'))) {
 
@@ -156,7 +154,7 @@ if (isset($_REQUEST['snapshot'])) {
 //if ($logged_in and !$is_devel) {
 if ($logged_in) {
 
-    include_once 'utils/new_fork.php';
+    include_once __DIR__.'/utils/new_fork.php';
 
 
     new_housekeeping_fork(
@@ -198,8 +196,8 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
 
 
-    include_once 'utils/public_object_functions.php';
-    include_once 'utils/natural_language.php';
+    include_once __DIR__.'/utils/public_object_functions.php';
+    include_once __DIR__.'/utils/natural_language.php';
 
     $webpage = get_object('Webpage', $webpage_key);
 
@@ -226,7 +224,17 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $store = get_object('Store', $website->get('Website Store Key'));
 
-    set_locate($website, $smarty);
+
+    if(!empty($_SESSION['website_locale'])) {
+        $website_locale = $_SESSION['website_locale'];
+    }else{
+        $_SESSION['website_locale'] = $website->get('Website Locale');
+        $website_locale             = $website->get('Website Locale');
+    }
+    $language=set_locate($website_locale);
+
+    $smarty->assign('language', $language);
+
 
     if ($website->get('Website Status') == 'InProcess') {
         $webpage_key = $website->get_system_webpage_key('launching.sys');
@@ -298,13 +306,13 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     if ($webpage->get('Webpage Code') == 'register.sys') {
-        require_once 'utils/get_addressing.php';
+        require_once __DIR__.'/utils/get_addressing.php';
         //print_r( $website->settings);
 
         list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
         //print_r( $website->settings);
 
-        require_once 'utils/get_countries.php';
+        require_once __DIR__.'/utils/get_countries.php';
         $countries = get_countries($website->get('Website Locale'));
 
 
@@ -327,16 +335,13 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     }
+    elseif ($webpage->get('Webpage Code') == 'clients.sys') {
 
-
-
-    if ($webpage->get('Webpage Code') == 'clients.sys') {
-
-        require_once 'utils/get_addressing.php';
+        require_once __DIR__.'/utils/get_addressing.php';
 
         list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
 
-        require_once 'utils/get_countries.php';
+        require_once __DIR__.'/utils/get_countries.php';
         $countries = get_countries($website->get('Website Locale'));
 
         $required_fields[]='client_reference';
@@ -354,8 +359,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     }
-
-    if ($webpage->get('Webpage Code') == 'login.sys') {
+    elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
         if (!empty($_GET['invoice_pdf'])) {
             $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
@@ -366,6 +370,15 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         }
 
     }
+    elseif ($webpage->get('Webpage Code') == 'client.sys') {
+            $smarty->assign('client_key', (isset($_REQUEST['id'])?$_REQUEST['id']:0));
+    } elseif ($webpage->get('Webpage Code') == 'client_basket.sys') {
+
+        $smarty->assign('client_key', (isset($_REQUEST['client_id'])?$_REQUEST['client_id']:0));
+    }elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
+        $smarty->assign('client_order_key', (isset($_REQUEST['order_key'])?$_REQUEST['order_key']:0));
+    }
+
 
 
     if ($webpage->get('Webpage Scope') == 'Product') {
@@ -387,12 +400,12 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
+
     $smarty->assign('settings', $website_settings);
 
 
     //print $template;
 
-} else {
 }
 
 

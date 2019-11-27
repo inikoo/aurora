@@ -168,11 +168,12 @@ function get_clients($customer, $db) {
     );
 
 
-    $action='<button>'._('New order').'</button>';
 
     while ($row = $stmt->fetch()) {
+        $action='<button onclick="window.location.href = \'client_basket.sys?client_id='.$row['Customer Client Key'].'\';">'._('New order').'</button>';
+
         $data[] = array(
-            $row['Customer Client Code'],
+            sprintf('<a href="client.sys?id=%d">%s</a>',$row['Customer Client Key'],$row['Customer Client Code']),
             $row['Customer Client Name'],
             $row['Customer Client Orders'],
             $action

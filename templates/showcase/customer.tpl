@@ -103,7 +103,7 @@
 
     <div style="float: right;width: 300px;">
         <div id="overviews">
-            <table border="0" class="overview" style="">
+            <table class="overview" >
                 <tr id="account_balance_tr" class="main">
                     <td id="account_balance_label">{t}Account Balance{/t}
 
@@ -138,7 +138,7 @@
                 </tr>
 
             </table>
-            <table border="0" class="overview">
+            <table class="overview">
 
                 <tr class="Customer_Sales_Representative_tr {if !$customer->get('Customer Sales Representative Key')>0}hide{/if}" >
                     <td>{t}Account manager{/t} </td>
@@ -284,7 +284,7 @@
 
         <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
 
-        <table border="0" style="width:50%;float:right;width:100%;">
+        <table style="width:50%;float:right;width:100%;">
             <tr>
                 <td class="strong " style="width: 100px;text-align: right;padding-right: 20px">
                 {t}Transfer credit to{/t}
@@ -345,7 +345,7 @@
     <div style="align-items: stretch;flex: 1;padding:0px;border-bottom: 1px solid #ccc;position: relative">
 
 
-        <table border="0" style="float:right;width:100%;">
+        <table style="float:right;width:100%;">
 
             <tr>
                 <td colspan="3" style="border-bottom:1px solid #ccc;padding-left: 20px">
@@ -410,7 +410,7 @@
     <div style="align-items: stretch;flex: 1;padding:0px;border-bottom: 1px solid #ccc;position: relative">
 
 
-        <table border="0" style="float:right;width:100%;">
+        <table style="float:right;width:100%;">
 
             <tr>
                 <td colspan="3" style="border-bottom:1px solid #ccc;padding-left: 20px">

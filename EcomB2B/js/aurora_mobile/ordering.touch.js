@@ -90,7 +90,7 @@ function save_item_qty_change(element) {
     var settings = order_div.data('settings')
 
 
-    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.pid +'&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
+    var request = 'ar_web_update_order_item.php?tipo=update_order_item&product_id=' + settings.pid +'&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
 
 
     //console.log(request)

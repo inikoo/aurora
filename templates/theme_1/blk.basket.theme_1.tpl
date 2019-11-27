@@ -138,7 +138,7 @@
                             <td class="text-right">£268.32</td>
                         </tr>
                         <tr>
-                            <td  id="_amout_off"  class="website_localized_label" contenteditable="true" >{if isset($labels._amout_off) and $labels._amout_off!=''}{$labels._amout_off}{else}{t}Amount off{/t}{/if}</td>
+                            <td  id="_amount_off"  class="website_localized_label" contenteditable="true" >{if isset($labels._amount_off) and $labels._amount_off!=''}{$labels._amount_off}{else}{t}Amount off{/t}{/if}</td>
 
 
                             <td class="text-right">£0.00</td>
