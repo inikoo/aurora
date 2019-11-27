@@ -378,8 +378,19 @@ switch ($time) {
             array()
         );
         while ($row = $stmt->fetch()) {
-            $store = get_object('Store', $row['Customer Key'] );
+            $store = get_object('Store', $row['Store Key'] );
             $store->update_customers_data();
+
+        }
+
+        $sql="select `Website Key` from `Website Dimension`   ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array()
+        );
+        while ($row = $stmt->fetch()) {
+            $website = get_object('Website', $row['Website Key'] );
+            $website->update_sitemap();
 
         }
 

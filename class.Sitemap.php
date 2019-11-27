@@ -14,6 +14,11 @@
 
 class Sitemap {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
+
     private $compress;
     private $page = 'index';
     private $index = 1;
@@ -287,5 +292,3 @@ class Sitemap {
 
 }
 
-
-?>

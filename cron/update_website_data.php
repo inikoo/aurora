@@ -35,6 +35,7 @@ while ($row = $stmt->fetch()) {
     $website = get_object('Website', $row['Website Key']);
     $website->update_users_data();
     $website->update_website_webpages_data();
+    $website->update_sitemap();
 
     include_once 'conf/webpage_types.php';
 

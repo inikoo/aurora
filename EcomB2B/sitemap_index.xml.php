@@ -8,35 +8,31 @@
 
  Version 2.0
 */
-include_once 'common.php';
+include_once __DIR__.'/common.php';
 
 
-$xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-$xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
-$sql=sprintf("select `Sitemap Name` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Website Key`=%d",
-	$website_key
+$xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+$xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+$sql = "select `Sitemap Name` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Website Key`=?";
+
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array(
+        $website_key
+    )
 );
-
-	$site_protocol='https';
-
-	if ($result=$db->query($sql)) {
-			foreach ($result as $row) {
-                $xml .= '  <sitemap>' . "\n";
-                $xml .= '    <loc>https://'. $website->get('Website URL').'/'.preg_replace('/\-1\.xml\.gz/','',$row['Sitemap Name']).'.xml</loc>' . "\n";
-                $xml .= '    <lastmod>' . date('Y-m-d', strtotime($row['Sitemap Date'])) . '</lastmod>' . "\n";
-                $xml .= '  </sitemap>' . "\n";
-			}
-	}else {
-			print_r($error_info=$db->errorInfo());
-			print "$sql\n";
-			exit;
-	}
+while ($row = $stmt->fetch()) {
+    $xml .= '  <sitemap>'."\n";
+    $xml .= '    <loc>https://'.$website->get('Website URL').'/'.preg_replace('/-1\.xml\.gz/', '', $row['Sitemap Name']).'.xml</loc>'."\n";
+    $xml .= '    <lastmod>'.date('Y-m-d', strtotime($row['Sitemap Date'])).'</lastmod>'."\n";
+    $xml .= '  </sitemap>'."\n";
+    }
 
 
 
-$xml .= '</sitemapindex>' . "\n";
+$xml .= '</sitemapindex>'."\n";
 
 header("Content-Type:text/xml");
 print $xml;
 
-?>
+

@@ -1,0 +1,1 @@
+ALTER TABLE `Sitemap Dimension` DROP `Sitemap Site Key`;

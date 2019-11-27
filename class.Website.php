@@ -778,6 +778,7 @@ class Website extends DB_Table {
         $this->msg          = $page->msg;
         $this->error        = $page->error;
 
+        $this->update_sitemap();
 
         return $page;
 
@@ -1100,6 +1101,7 @@ class Website extends DB_Table {
         $this->msg          = $page->msg;
         $this->error        = $page->error;
 
+        $this->update_sitemap();
 
         return $page->id;
 
@@ -1177,7 +1179,7 @@ class Website extends DB_Table {
         }
 
 
-
+        $this->update_sitemap();
 
 
         return $page->id;
@@ -1351,10 +1353,6 @@ class Website extends DB_Table {
                 $updated = $row['Webpage Launch Date'];
                 $sitemap->url($row['Webpage URL'], $updated, 'monthly');
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
