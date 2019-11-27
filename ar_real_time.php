@@ -46,13 +46,14 @@ switch ($tipo) {
             'resp'  => 'Tipo not found '.$tipo
         );
         echo json_encode($response);
-        exit;
         break;
 }
 
-
+/**
+ * @param $redis \Redis
+ * @param $account \Account
+ */
 function real_time_users($redis, $account) {
-
 
     $response = array(
         'state' => 200,
@@ -61,7 +62,11 @@ function real_time_users($redis, $account) {
     echo json_encode($response);
 }
 
-
+/**
+ * @param $data
+ * @param $redis \Redis
+ * @param $account \Account
+ */
 function real_time_website_users($data, $redis, $account) {
 
     $real_time_website_users_data=get_website_users_read_time_data($redis,$account,$data['website_key']);

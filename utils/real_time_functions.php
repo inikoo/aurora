@@ -9,10 +9,16 @@
 
 */
 
-
+/**
+ * @param $redis   \Redis
+ * @param $account \Account
+ * @param $website_key
+ *
+ * @return array
+ */
 function get_website_users_read_time_data($redis, $account, $website_key) {
 
-    $real_time_users = $redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$website_key, 0, 1000, 'WITHSCORES');
+    $real_time_users = $redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$website_key, 0, 1000, true);
 
 
     $users_desktop = 0;
@@ -72,24 +78,20 @@ function get_website_users_read_time_data($redis, $account, $website_key) {
 
 }
 
+/**
+ * @param $redis   \Redis
+ * @param $account \Account
+ *
+ * @return array
+ */
 function get_users_read_time_data($redis, $account) {
 
-    $real_time_users_data = $redis->ZREVRANGE('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES');
-
-
-    $real_time_users = array();
+    $real_time_users_data = $redis->ZREVRANGE('_IU'.$account->get('Code'), 0, 100, true);
+    $real_time_users      = array();
     foreach ($real_time_users_data as $user_key => $timestamp) {
-
-
         $_user = $redis->hgetall('_IUObj'.$account->get('Code').':'.$user_key);
-
-
         if (isset($_user['alias'])) {
-
-
             $date = strftime("%H:%M %Z", $timestamp);
-
-
             if ($_user['logged_in']) {
 
                 if ((gmdate('U') - $timestamp) < 300) {
@@ -100,36 +102,30 @@ function get_users_read_time_data($redis, $account) {
                 }
 
                 $real_time_users[] = array(
-                    'user_key'=>$user_key,
-                    'type'=>'logged_in',
-                    'icon'=>$icon,
-                    'alias'=>$_user['alias'],
-                    'request'=>$_user['request'],
-                    'web_location'=>(isset($_user['web_location'])?$_user['web_location']:''),
+                    'user_key'     => $user_key,
+                    'type'         => 'logged_in',
+                    'icon'         => $icon,
+                    'alias'        => $_user['alias'],
+                    'request'      => $_user['request'],
+                    'web_location' => (isset($_user['web_location']) ? $_user['web_location'] : ''),
                 );
 
 
             } else {
-
-                $icon = '<i class="far fa-fw  fa-circle-notch error" title="'.$date.'"></i>';
-
-
+                $icon              = '<i class="far fa-fw  fa-circle-notch error" title="'.$date.'"></i>';
                 $real_time_users[] = array(
-                    'user_key'=>$user_key,
-                    'type'=>'logged_out',
-                    'icon'=>$icon,
-                    'alias'=>$_user['alias'],
-                    'request'=>'',
-                    'web_location'=>''
+                    'user_key'     => $user_key,
+                    'type'         => 'logged_out',
+                    'icon'         => $icon,
+                    'alias'        => $_user['alias'],
+                    'request'      => '',
+                    'web_location' => ''
                 );
-
-
             }
 
         }
     }
 
     return $real_time_users;
-
 
 }

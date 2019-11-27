@@ -984,7 +984,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
-                // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' * '.$state['section']);
             }
 
 

@@ -52,7 +52,7 @@ function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
                 </table>';
 
         $online          = false;
-        $real_time_users = $redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$website_key, 0, 1000, 'WITHSCORES');
+        $real_time_users = $redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$website_key, 0, 1000, true);
         foreach ($real_time_users as $_key => $timestamp) {
 
             $_customer_key = preg_replace('/^.*\|/', '', $_key);
