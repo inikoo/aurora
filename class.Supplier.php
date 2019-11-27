@@ -734,7 +734,7 @@ class Supplier extends SubjectSupplier {
         if (!isset($data['Supplier Part Reference']) or $data['Supplier Part Reference'] == '') {
             $this->error      = true;
             $this->msg        = _("Supplier's product reference missing");
-            $this->error_code = 'supplier_part_reference_missing';
+            $this->error_code = 'supplier_product_reference_missing';
             $this->metadata   = '';
 
             return;

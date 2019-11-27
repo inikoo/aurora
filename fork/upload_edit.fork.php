@@ -535,7 +535,9 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
             include_once 'class.SupplierPart.php';
 
-
+        /**
+         * @var $parent \Supplier
+         */
             $object = $parent->create_supplier_part_record(
                 $data['fields_data'], $data['allow_duplicate_part_reference']
             );

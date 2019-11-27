@@ -785,8 +785,8 @@ function upload_records($_data, $db, $user, $account) {
                         case 'created':
                             $state = '<i class="fa fa-check success" aria-hidden="true"></i>  <span class="success">'._('Created').'</span>';
                             break;
-                        case 'supplier_part_reference_missing':
-                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Supplier\'s part reference missing').'</span>';
+                        case 'supplier_product_reference_missing':
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Supplier\'s product reference missing').'</span>';
                             break;
                         case 'part_unit_description_missing':
                             $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._('Unit description missing').'</span>';
