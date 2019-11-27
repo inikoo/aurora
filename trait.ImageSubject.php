@@ -20,6 +20,12 @@ trait ImageSubject {
      *
      * @return bool|\Image
      */
+
+    /**
+     * @var \PDO
+     */
+    public $db;
+
     function add_image($raw_data, $metadata = '') {
 
 
@@ -619,4 +625,3 @@ trait ImageSubject {
 }
 
 
-?>

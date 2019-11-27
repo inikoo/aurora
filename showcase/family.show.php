@@ -26,6 +26,7 @@ function get_family_showcase($data, $smarty) {
         return "";
     }
 
+
     $category->load_acc_data();
     $category->get_webpage();
     $smarty->assign('category', $category);

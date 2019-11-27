@@ -49,6 +49,9 @@ if ($stmt->execute()) {
 
         $page             = get_object('Webpage', $row['Page Key']);
         $page->editor     = $editor;
+        /**
+         * @var \ProductCategory $category
+         */
         $category         = get_object('Category', $page->get('Webpage Scope Key'));
         $category->editor = $editor;
         $category->update_product_category_products_data();

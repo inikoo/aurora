@@ -1,5 +1,4 @@
 <?php
-
 /*
 
  About:
@@ -13,10 +12,20 @@
 
 require_once 'utils/date_functions.php';
 
-
+/**
+ * Trait ProductCategory
+ */
 trait ProductCategory {
 
+    /**
+     * @param     $data
+     * @param int $fork_key
+     */
 
+    /**
+     * @var \PDO
+     */
+    public $db;
 
     function create_product_timeseries($data, $fork_key = 0) {
 
@@ -105,7 +114,12 @@ trait ProductCategory {
 
     }
 
-
+    /**
+     * @param      $timeseries \Timeseries
+     * @param      $to
+     * @param      $from
+     * @param bool $fork_key
+     */
     function update_product_timeseries_record($timeseries, $to, $from, $fork_key = false) {
 
         if ($this->get('Category Branch Type') == 'Root') {
@@ -164,16 +178,25 @@ trait ProductCategory {
 
             if ($invoices != 0 or $customers != 0 or $net != 0) {
                 list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
-                $sql = sprintf(
-                    'UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Float A`=%.2f ,`Timeseries Record Float B`=%.2f ,`Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
-                    $invoices, $customers, $net, $dc_net, prepare_mysql('Data'), $timeseries_record_key
 
+
+                $sql = "UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=? ,`Timeseries Record Integer B`=?,`Timeseries Record Float A`=? ,`Timeseries Record Float B`=? ,`Timeseries Record Type`=? WHERE `Timeseries Record Key`=?";
+
+                $update = $this->db->prepare($sql);
+
+                $update->execute(
+                    array(
+                        $invoices,
+                        $customers,
+                        $net,
+                        $dc_net,
+                        'Data',
+                        $timeseries_record_key
+                    )
                 );
 
-                $update_sql = $this->db->prepare($sql);
-                $update_sql->execute();
 
-                if ($update_sql->rowCount() or $date == date('Y-m-d')) {
+                if ($update->rowCount() or $date == date('Y-m-d')) {
                     $timeseries->fast_update(
                         array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                     );
@@ -235,6 +258,12 @@ trait ProductCategory {
 
     }
 
+    /**
+     * @param $timeseries \Timeseries
+     * @param $date_frequency_period
+     *
+     * @return array
+     */
     function get_product_timeseries_record_data($timeseries, $date_frequency_period) {
 
 
@@ -258,7 +287,7 @@ trait ProductCategory {
                 $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
             );
 
-            //print "$sql\n";
+
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -282,14 +311,17 @@ trait ProductCategory {
                     $dc_net
                 );
 
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
         }
+
+        return array(
+            0,
+            0,
+            0,
+            0
+        );
 
 
     }
@@ -310,7 +342,7 @@ trait ProductCategory {
         }
 
 
-        $product_ids = preg_replace('/\,$/', '', $product_ids);
+        $product_ids = preg_replace('/,$/', '', $product_ids);
 
         if ($product_ids != '' and $this->get('Category Subject') == 'Category') {
             $category_ids = $product_ids;
@@ -327,7 +359,7 @@ trait ProductCategory {
                 print "$sql\n";
                 exit;
             }
-            $product_ids = preg_replace('/\,$/', '', $product_ids);
+            $product_ids = preg_replace('/,$/', '', $product_ids);
 
         }
 
@@ -664,8 +696,6 @@ trait ProductCategory {
         $this->get_data('id', $this->id);
 
 
-
-
         $type = 'Category';
         $sql  = sprintf(
             "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s", $this->id, prepare_mysql($type)
@@ -925,8 +955,6 @@ trait ProductCategory {
     }
 
 
-
-
     function get_deal_components($scope = 'keys', $options = 'Active') {
 
         switch ($options) {
@@ -1012,17 +1040,13 @@ trait ProductCategory {
         $targeted_customers = get_targeted_categories_customers(array(), $this->db, $this->id, $targeted_threshold);
 
 
-        $spread_customers = get_spread_categories_customers(array(), $this->db, $this->id, 5*$targeted_threshold);
+        $spread_customers = get_spread_categories_customers(array(), $this->db, $this->id, 5 * $targeted_threshold);
 
 
+        $customer = array_diff($spread_customers, $targeted_customers);
 
 
-        $customer=array_diff($spread_customers,$targeted_customers);
-
-
-
-        $estimated_recipients=count($customer);
-
+        $estimated_recipients = count($customer);
 
 
         $this->fast_update_json_field('Category Properties', 'donut_marketing_customers', $estimated_recipients);
@@ -1039,7 +1063,6 @@ trait ProductCategory {
 
 
         $estimated_recipients = count(get_targeted_categories_customers(array(), $this->db, $this->id, $targeted_threshold));
-
 
 
         $this->fast_update_json_field('Category Properties', 'targeted_marketing_customers', $estimated_recipients);
@@ -1061,11 +1084,11 @@ trait ProductCategory {
     }
 
 
-    function update_product_category_sales_correlations($db_replica='') {
+    function update_product_category_sales_correlations($db_replica = '') {
 
 
-        if(!$db_replica){
-            $db_replica=$this->db;
+        if (!$db_replica) {
+            $db_replica = $this->db;
         }
 
         if ($this->get('Product Category Ignore Correlation') == 'Yes') {
@@ -1073,8 +1096,7 @@ trait ProductCategory {
         }
 
         include_once 'class.Store.php';
-        $store=new Store('id',$this->get('Store Key'),'',$db_replica);
-
+        $store = new Store('id', $this->get('Store Key'), '', $db_replica);
 
 
         if ($this->get('Category Subject') == 'Product') {
