@@ -3580,12 +3580,12 @@ class Store extends DB_Table {
         if (array_key_exists('Family Category Code', $data)) {
             include_once 'class.Category.php';
             $root_category = new Category('id', $this->get('Store Family Category Key'), false, $this->db);
+            $root_category->fork=$this->fork;
             if ($root_category->id) {
                 $root_category->editor = $this->editor;
                 $family                = $root_category->create_category(array('Category Code' => $data['Family Category Code']));
                 if ($family->id) {
                     $data['Product Family Category Key'] = $family->id;
-
                 }
             }
             unset($data['Family Category Code']);
@@ -3777,7 +3777,7 @@ class Store extends DB_Table {
 
 
         $product = new Product('find', $data, 'create');
-
+        $product->fork=$this->fork;
 
         if ($product->id) {
 
@@ -3820,7 +3820,7 @@ class Store extends DB_Table {
 
                 $product->update_status_from_parts();
 
-                global $account;
+                 $account=get_object('Account',1);
 
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(

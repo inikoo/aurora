@@ -1523,7 +1523,7 @@ class Category extends DB_Table {
 
 
         $subcategory = new Category('find create', $data);
-
+        $subcategory->fork=$this->fork;
 
         //   print_r($subcategory);
 

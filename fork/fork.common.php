@@ -167,10 +167,10 @@ function get_fork_data($job) {
         $warehouse_key = '';
 
         $sql  = "SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`='Active' limit 1";
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        if ($row = $stmt->fetch()) {
-            $warehouse_key = $row['Warehouse Key'];
+        $stmt2 = $db->prepare($sql);
+        $stmt2->execute();
+        if ($row2 = $stmt2->fetch()) {
+            $warehouse_key = $row2['Warehouse Key'];
         }
         $session->set('current_warehouse', $warehouse_key);
 

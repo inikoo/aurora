@@ -447,20 +447,12 @@ class Image extends DB_Table {
 
         if(isset($this->fork) and $this->fork){
             $account=get_object('Account',1);
-
             chdir('img_'.$account->get('Code'));
             chdir('../');
-
-
-
-
         }
 
 
         $path_root='img';
-
-
-
 
         if (!preg_match('/^[a-f0-9]{32}$/i', $checksum)) {
             exit('wrong checksum');

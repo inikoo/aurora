@@ -17,6 +17,7 @@ abstract class DB_Table extends stdClass {
      * @var string
      */
     public $id = 0;
+
     public $warning = false;
     public $deleted = false;
     public $error = false;
