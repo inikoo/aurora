@@ -10,7 +10,7 @@
 
 function fork_housekeeping($job) {
 
-    global $account,$db;// remove the global $db and $account is removed
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
         return true;

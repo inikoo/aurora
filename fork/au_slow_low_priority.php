@@ -29,7 +29,9 @@ $worker = new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("au_take_webpage_screenshot", "fork_take_webpage_screenshot");
 
-
+$db      = false;
+$account = false;
+$session = false;
 
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {

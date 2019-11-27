@@ -12,7 +12,7 @@ include_once 'utils/new_fork.php';
 
 function fork_take_webpage_screenshot($job) {
 
-    global $account,$db;// remove the global $db and $account is removed
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
         return true;

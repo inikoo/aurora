@@ -31,6 +31,10 @@ $worker->addServer('127.0.0.1');
 $worker->addFunction("au_export", "fork_export");
 $worker->addFunction("au_export_edit_template", "fork_export_edit_template");
 
+$db      = false;
+$account = false;
+$session = false;
+
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {
         $db = null;

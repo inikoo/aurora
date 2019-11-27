@@ -14,7 +14,7 @@
 
 function fork_upload_edit($job) {
 
-    global $account,$db;// remove the global $db and $account is removed
+    global $account,$db,$session;// remove the global $db and $account is removed
 
     include_once 'class.User.php';
     include_once 'class.Upload.php';
