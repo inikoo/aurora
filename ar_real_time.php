@@ -28,7 +28,7 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'users':
-        real_time_users($redis, $account, $user);
+        real_time_users($redis, $account);
         break;
     case 'website_users':
 
@@ -38,7 +38,7 @@ switch ($tipo) {
 
                      )
         );
-        real_time_website_users($data, $redis, $account, $user);
+        real_time_website_users($data, $redis, $account);
         break;
     default:
         $response = array(
@@ -51,7 +51,7 @@ switch ($tipo) {
 }
 
 
-function real_time_users($redis, $account, $user) {
+function real_time_users($redis, $account) {
 
 
     $response = array(
@@ -59,95 +59,15 @@ function real_time_users($redis, $account, $user) {
         'users_data'  => get_users_read_time_data($redis, $account)
     );
     echo json_encode($response);
-    exit;
-
-    /*
-    $html            = '<table class="real_time_users">';
-    $real_time_users = $redis->ZREVRANGE('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES');
-
-
-    foreach ($real_time_users as $user_key => $timestamp) {
-
-
-        $_user = $redis->hgetall('_IUObj'.$account->get('Code').':'.$user_key);
-
-
-        if (isset($_user['alias'])) {
-
-
-            $date = strftime("%H:%M %Z", $timestamp);
-
-
-            if ($user_key != $user->id) {
-
-                if ($_user['logged_in']) {
-
-                    if ((gmdate('U') - $timestamp) < 300) {
-                        $icon = '<i class="fa fa-fw fa-circle success" title="'.$date.'"></i>';
-                    } else {
-                        $icon = '<i class="far fa-fw fa-circle success" title="'.$date.'"></i>';
-
-                    }
-
-                    if (!empty($_user['web_location'])) {
-                        $web_location = $_user['web_location'];
-
-                        if (!empty($_user['request'])) {
-                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
-
-                        } else {
-                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td >'.$web_location.' **</td>';
-
-                        }
-
-
-                    } else {
-                        if (!empty($_user['request'])) {
-                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fal fa-eye-evil"></i></td>';
-                        } else {
-                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td ><i class="fal fa-eye-evil"></i> **</td>';
-
-                        }
-                    }
-                } else {
-                    $html .= '<tr><td><i class="far fa-fw fa-circle-notch error" title="'.$date.'"></i></td><td>'.$_user['alias'].'</td><td class="discreet error">'._('Log out').'</td>';
-
-                }
-
-
-            }
-
-
-            $html .= '</tr>';
-
-        }
-
-
-    }
-
-    $html .= '</table>';
-
-
-    $response = array(
-        'state' => 200,
-        'html'  => $html
-    );
-    echo json_encode($response);
-    exit;
-*/
-
 }
 
 
-function real_time_website_users($data, $redis, $account, $user) {
+function real_time_website_users($data, $redis, $account) {
 
     $real_time_website_users_data=get_website_users_read_time_data($redis,$account,$data['website_key']);
     $real_time_website_users_data['state']=200;
 
-
     echo json_encode($real_time_website_users_data);
     exit;
-
-
 }
 
