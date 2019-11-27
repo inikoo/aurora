@@ -574,7 +574,7 @@ class Website extends DB_Table {
             case 'header_background_icon':
             case 'content_background_icon':
             case 'background_icon':
-                switch ($this->get(preg_replace('/icon/','type',$key))) {
+                switch ($this->get(preg_replace('/icon/', 'type', $key))) {
 
                     case 'no_repeat':
                         return 'fa-arrow-to-left';
@@ -731,7 +731,6 @@ class Website extends DB_Table {
         }
 
 
-
         if (empty($data['Webpage Meta Description'])) {
             $data['Webpage Meta Description'] = '';
         }
@@ -865,7 +864,6 @@ class Website extends DB_Table {
         }
 
 
-
         $this->fast_update(array('Website Settings' => json_encode($this->settings)));
 
 
@@ -945,8 +943,7 @@ class Website extends DB_Table {
             case 'Website Settings Browser Title Format':
 
 
-
-                $this->fast_update_json_field('Website Settings',$field,$value);
+                $this->fast_update_json_field('Website Settings', $field, $value);
 
                 $this->clean_cache();
                 break;
@@ -1113,34 +1110,25 @@ class Website extends DB_Table {
 
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
-        include_once 'class.Product.php';
 
 
-        $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`='Product' AND `Webpage Scope Key`=%d  AND `Webpage Website Key`=%d ", $product_id, $this->id
+        $product = get_object('Product', $product_id);
+
+        $sql = "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Scope`='Product' AND `Webpage Scope Key`=?  AND `Webpage Website Key`=? ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $product_id,
+                $this->id
+            )
         );
-
-        //print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $product = new Product($product_id);
-
-                $product->fast_update(array('Product Webpage Key' => $row['Page Key']));
-
-                return $row['Page Key'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        if ($row = $stmt->fetch()) {
+            $product->fast_update(array('Product Webpage Key' => $row['Page Key']));
+            return $row['Page Key'];
         }
 
-
-        $product = get_object('product', $product_id);
 
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
 
@@ -1149,16 +1137,15 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Webpage Scope'                          => 'Product',
-            'Webpage Scope Key'                      => $product->id,
-            'Webpage Website Key'                    => $this->id,
-            'Webpage Store Key'                      => $product->get('Product Store Key'),
-            'Webpage Type Key'                       => $webpage_type->id,
-            'Webpage Code'                           => $page_code,
-            'Webpage Number See Also Links'          => 5,
-            'Webpage Creation Date'                  => gmdate('Y-m-d H:i:s'),
-            'Webpage Name'                           => $product->get('Name'),
-            //'Webpage Browser Title'                  => $product->get('Name'),
+            'Webpage Scope'                 => 'Product',
+            'Webpage Scope Key'             => $product->id,
+            'Webpage Website Key'           => $this->id,
+            'Webpage Store Key'             => $product->get('Product Store Key'),
+            'Webpage Type Key'              => $webpage_type->id,
+            'Webpage Code'                  => $page_code,
+            'Webpage Number See Also Links' => 5,
+            'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
+            'Webpage Name'                  => $product->get('Name'),
 
             'editor' => $this->editor
 
@@ -1166,11 +1153,6 @@ class Website extends DB_Table {
 
 
         $page = new Page('find', $page_data, 'create');
-
-
-        // print $page->id;
-
-
         $product->fast_update(array('Product Webpage Key' => $page->id));
 
 
@@ -1187,13 +1169,15 @@ class Website extends DB_Table {
         $page->reset_object();
 
 
-        //todo: AUR-33
-        // 'InProcess','Active','Suspended','Discontinuing','Discontinued'
+
         if ($product->get('Product Status') == 'Discontinued' or $product->get('Product Status') == 'Suspended') {
             $page->unpublish();
         } elseif ($product->get('Product Status') == 'Discontinuing' or $product->get('Product Status') == 'Active') {
             $page->publish();
         }
+
+
+
 
 
         return $page->id;

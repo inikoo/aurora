@@ -1674,7 +1674,6 @@ class Product extends Asset {
                     prepare_mysql($date), prepare_mysql('from_product_'.$metadata)
 
                 );
-                //print "$sql\n";
                 $this->db->exec($sql);
 
             }

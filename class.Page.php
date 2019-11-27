@@ -3130,30 +3130,36 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-        if ($this->get('Webpage Scope') == 'Category Products' and $publish_products) {
+        if ($this->get('Webpage Scope') == 'Category Products' ) {
 
 
-            include_once 'class.Page.php';
+            $category = get_object('Category', $this->get('Webpage Scope Key'));
+
+            if ($category->get('Product Category Department Category Key')) {
+                $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
+                $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                $parent_webpage->reindex_items();
+
+            }
 
 
-            $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
+            if($publish_products) {
+                include_once 'class.Page.php';
+                $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
 
-                    $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
+                        $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
-                    if ($webpage->id) {
+                        if ($webpage->id) {
 
-                        $webpage->publish();
+                            $webpage->publish();
+                        }
+
                     }
-
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -3170,6 +3176,12 @@ class Page extends DB_Table {
             $product = get_object('Product', $this->get('Webpage Scope Key'));
             $product->fast_update(array('Product Published Webpage Description' => $web_text));
 
+            if ($product->get('Product Family Category Key')) {
+                $family         = get_object('Category', $product->get('Product Family Category Key'));
+                $family_webpage = get_object('Webpage', $family->get('Product Category Webpage Key'));
+                $family_webpage->reindex_items();
+            }
+
         }
 
 
@@ -3184,21 +3196,6 @@ class Page extends DB_Table {
             'webpage_key' => $this->id,
         ), $account->get('Account Code'), $this->db
         );
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'        => 'clean_webpage_cache',
-            'webpage_key' => $this->id,
-        ), $account->get('Account Code'), $this->db
-        );
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'        => 'clean_webpage_cache',
-            'webpage_key' => $this->id,
-        ), $account->get('Account Code'), $this->db
-        );
-
 
 
 
