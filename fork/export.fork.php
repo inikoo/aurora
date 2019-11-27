@@ -17,6 +17,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 function fork_export($job) {
 
+    global $account,$db;// remove the global $db and $account is removed
 
     require_once 'vendor/autoload.php';
     include_once 'utils/image_functions.php';
@@ -568,7 +569,6 @@ function fork_export($job) {
     );
 
     $db->exec($sql);
-
 
     $socket->send(
         json_encode(

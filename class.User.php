@@ -977,7 +977,7 @@ class User extends DB_Table {
                 break;
             case 'User Display Timezone':
                 $this->fast_update_json_field('User Settings', 'Timezone', $value);
-                global $session;
+
 
                 $account = get_object('Account', '');
 

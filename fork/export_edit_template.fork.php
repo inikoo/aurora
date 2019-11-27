@@ -18,6 +18,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 function fork_export_edit_template($job) {
 
+    global $account,$db;// remove the global $db and $account is removed
+
     include_once 'conf/export_edit_template_fields.php';
 
 

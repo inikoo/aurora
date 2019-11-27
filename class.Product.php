@@ -127,7 +127,7 @@ class Product extends Asset {
 
     function get($key, $arg1 = '') {
 
-        global $account;
+
 
         include_once 'utils/natural_language.php';
 
@@ -231,6 +231,9 @@ class Product extends Asset {
 
 
             case 'Price':
+
+
+                $account=get_object('Account',1);
 
                 $price = money(
                     $this->data['Product Price'], $this->data['Store Currency Code']
@@ -3161,7 +3164,9 @@ class Product extends Asset {
 
         );
 
-        global $account;
+
+
+        $account=get_object('Account',1);
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(

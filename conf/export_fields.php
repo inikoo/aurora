@@ -9,7 +9,7 @@
 
 */
 
-global $account;
+$account=get_object('Account',1);
 
 $export_fields = array(
     'customers' => array(

@@ -19,17 +19,17 @@ require_once 'utils/fake_session.class.php';
 include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';
-
 include 'utils/natural_language.php';
-include 'slow_low_priority.fork.php';
 
+include 'export.fork.php';
+include 'export_edit_template.fork.php';
 
 
 $worker = new GearmanWorker();
 $worker->addServer('127.0.0.1');
-$worker->addFunction("au_take_webpage_screenshot", "fork_take_webpage_screenshot");
 
-
+$worker->addFunction("au_export", "fork_export");
+$worker->addFunction("au_export_edit_template", "fork_export_edit_template");
 
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {

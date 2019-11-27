@@ -15,13 +15,13 @@
  * @param $smarty \Smarty
  * @param $user \User
  * @param $db \PDO
+ * @param $account \Account
  *
  * @return string
  */
-function get_invoice_showcase($data, $smarty, $user, $db) {
+function get_invoice_showcase($data, $smarty, $user, $db,$account) {
     require_once 'utils/geography_functions.php';
 
-    global $account;
 
     if (!$data['_object']->id) {
         return "";

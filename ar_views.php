@@ -1625,7 +1625,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         case 'invoice':
         case 'refund':
             include_once 'showcase/invoice.show.php';
-            $html         = get_invoice_showcase($data, $smarty, $user, $db);
+            $html         = get_invoice_showcase($data, $smarty, $user, $db,$account);
             $title        = $data['_object']->get('Public ID');
             $web_location = '<i class="fal fa-fw fa-file-invoice-dollar"></i> '.$title;
 
