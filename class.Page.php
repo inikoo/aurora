@@ -774,10 +774,10 @@ class Page extends DB_Table {
 
             $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 
-            $redis->delete($cache_id_prefix.$this->data['Webpage Code']);
-            $redis->delete($cache_id_prefix.strtolower($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.strtoupper($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.ucfirst($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.$this->data['Webpage Code']);
+            $redis->del($cache_id_prefix.strtolower($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.strtoupper($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.ucfirst($this->data['Webpage Code']));
 
 
         }
@@ -3354,14 +3354,14 @@ class Page extends DB_Table {
 
             $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 
-            $redis->delete($cache_id_prefix.$this->data['Webpage Code']);
-            $redis->delete($cache_id_prefix.strtolower($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.strtoupper($this->data['Webpage Code']));
-            $redis->delete($cache_id_prefix.ucfirst($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.$this->data['Webpage Code']);
+            $redis->del($cache_id_prefix.strtolower($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.strtoupper($this->data['Webpage Code']));
+            $redis->del($cache_id_prefix.ucfirst($this->data['Webpage Code']));
 
             include_once 'utils/string_functions.php';
             foreach (permutation_letter_case($this->data['Webpage Code']) as $permutation) {
-                $redis->delete($cache_id_prefix.$permutation);
+                $redis->del($cache_id_prefix.$permutation);
 
             }
 
