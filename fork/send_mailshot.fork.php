@@ -7,7 +7,7 @@
  Version 2.0
 */
 
-include 'utils/object_functions.php';
+include_once 'utils/object_functions.php';
 include_once 'utils/new_fork.php';
 
 function fork_send_mailshot($job) {

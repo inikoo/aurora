@@ -15,6 +15,7 @@ require_once 'vendor/autoload.php';
 require_once "class.Account.php";
 require_once 'fork.common.php';
 require_once 'utils/fake_session.class.php';
+include_once 'utils/object_functions.php';
 
 include 'utils/aes.php';
 include 'utils/general_functions.php';

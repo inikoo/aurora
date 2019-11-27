@@ -16,12 +16,13 @@ require_once 'vendor/autoload.php';
 require_once "class.Account.php";
 require_once 'fork.common.php';
 require_once 'utils/fake_session.class.php';
-
+include_once 'utils/object_functions.php';
 
 include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';
 include 'utils/natural_language.php';
+
 include 'upload_edit.fork.php';
 include 'housekeeping.fork.php';
 include 'asset_sales.fork.php';
