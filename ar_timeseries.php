@@ -41,7 +41,7 @@ switch ($tipo) {
         );
         asset_sales($db, $data, $account);
         break;
-   /*
+
     case 'part_stock':
         $data = prepare_values(
             $_REQUEST, array(
@@ -54,7 +54,7 @@ switch ($tipo) {
         );
         part_stock($db, $data, $account);
         break;
-*/
+
     case 'csv':
         $data = prepare_values(
             $_REQUEST, array(
@@ -433,10 +433,9 @@ count(distinct `Customer Key`) as customers
 
 }
 
-/*
-function part_stock_to_delete($db, $data, $account) {
 
-    global $memcache_ip;
+function part_stock($db, $data, $account) {
+
 
     switch ($data['parent']) {
         case 'part':
@@ -454,24 +453,12 @@ function part_stock_to_delete($db, $data, $account) {
     $where_interval = prepare_mysql_dates($data['from'], $data['to'], '`Date`');
     $where .= $where_interval['mysql'];
 
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
+    //$cache = new Memcached();
+    //$cache->addServer($memcache_ip, 11211);
 
     $sql    = sprintf(
         "SELECT %s FROM `Inventory Spanshot Fact` %s   %s  ORDER BY `Date` DESC ", $fields, $where, $group
     );
-    $result = $cache->get($account->get('Code').'SQL'.md5($sql));
-    if ($result and false) {
-        print "Date,Open,High,Low,Close,Volume,Adj Close\n";
-        foreach ($result as $row) {
-
-            print sprintf(
-                "%s,%s,%s,%s,%s\n", $row['Date'], $row['open'], $row['high'], $row['low'], $row['close']
-            );
-
-        }
-
-    } else {
 
 
         $res = array();
@@ -496,11 +483,9 @@ function part_stock_to_delete($db, $data, $account) {
         }
 
 
-        $cache->set($account->get('Code').'SQL'.md5($sql), $res, 86400);
-    }
 
 
 }
-*/
+
 
 
