@@ -55,7 +55,7 @@ switch ($tipo) {
                          'key' => array('type' => 'key')
                      )
         );
-        template_text($data,$db);
+        template_text($data);
         break;
     default:
         $response = array(
@@ -67,16 +67,18 @@ switch ($tipo) {
         break;
 }
 
-
+/**
+ * @param $data
+ * @param $db \PDO
+ */
 function email_text($data, $db) {
 
     $text = '';
 
-    $sql = sprintf('select `Email Tracking Email Copy Subject`, `Email Tracking Email Copy Body` from `Email Tracking Email Copy` where `Email Tracking Email Copy Key`=%d ', $data['key']);
+    $sql = sprintf('select `Email Tracking Email Copy Subject`, `Email Tracking Email Copy Compressed Body` from `Email Tracking Email Copy` where `Email Tracking Email Copy Key`=%d ', $data['key']);
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-            $text = $row['Email Tracking Email Copy Body'];
-
+            $text = gzuncompress($row['Email Tracking Email Copy Compressed Body']);
         }
 
     }
@@ -105,13 +107,9 @@ function template_data($data) {
 
     switch ($data['field']) {
         case 'json':
-
-
             print $email_template->get('Email Template Editing JSON');
             break;
     }
 
-
 }
 
-?>

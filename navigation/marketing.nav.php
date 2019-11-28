@@ -1350,6 +1350,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
     if ($data['parent']) {
 
+
         switch ($data['parent']) {
 
             case 'email_campaign_type':
@@ -1448,29 +1449,26 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
 
         switch ($data['parent']) {
-            /*
+
                      case 'email_campaign_type':
 
 
-                         switch ($data['_parent']->get('Email Campaign Type Scope')) {
-                             case 'Customer Notification':
-
 
                                  $placeholder = _('Search emails');
-                                 $sections    = get_sections('customers', $data['_parent']->get('Store Key'));
+                                 $sections    = get_sections('products', $data['_parent']->get('Store Key'));
 
 
                                  $up_button = array(
                                      'icon'      => 'arrow-up',
                                      'title'     => $data['_parent']->get('Label'),
-                                     'reference' => 'customers/'.$data['_parent']->get('Store Key').'/notifications/'.$data['_parent']->id
+                                     'reference' => 'marketing/'.$data['_parent']->get('Store Key').'/emails/'.$data['_parent']->id
                                  );
 
                                  if ($prev_key) {
                                      $left_buttons[] = array(
                                          'icon'      => 'arrow-left',
                                          'title'     => $prev_title,
-                                         'reference' => 'customers/'.$data['_parent']->get('Store Key').'/notifications/'.$data['_parent']->id.'/tracking/'.$prev_key
+                                         'reference' => 'marketing/'.$data['_parent']->get('Store Key').'/emails/'.$data['_parent']->id.'/tracking/'.$prev_key
                                      );
 
                                  } else {
@@ -1488,7 +1486,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                                      $left_buttons[] = array(
                                          'icon'      => 'arrow-right',
                                          'title'     => $next_title,
-                                         'reference' => 'customers/'.$data['_parent']->get('Store Key').'/notifications/'.$data['_parent']->id.'/tracking/'.$next_key
+                                         'reference' => 'marketing/'.$data['_parent']->get('Store Key').'/emails/'.$data['_parent']->id.'/tracking/'.$next_key
                                      );
 
                                  } else {
@@ -1503,11 +1501,10 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
                                  $title = sprintf(_('Tracking email sent to %s'), '<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>');
 
-                                 break;
-                         }
-
 
                          break;
+
+                         /*
                      case 'email_campaign':
 
                          $email_campaign_type = get_object('email_campaign_type', $data['_parent']->get('Email Campaign Email Template Type Key'));

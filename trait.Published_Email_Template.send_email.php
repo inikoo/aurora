@@ -375,7 +375,6 @@ trait Send_Email {
                                                                                'Order Confirmation',
                                                                                'Delivery Confirmation',
                                                                                'OOS Notification',
-                                                                               'Password Reminder',
                                                                                'Invite',
                                                                                'Invite Mailshot',
                                                                                'GR Reminder',
@@ -384,16 +383,18 @@ trait Send_Email {
                                                                            )
             )) {
 
-                $sql = sprintf(
-                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ', $email_tracking->id, prepare_mysql($subject),
-                    (isset($html_part) ? prepare_mysql($html_part) : prepare_mysql($text_part)
+                $sql ="insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Compressed Body`) values (?,?,?) ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
 
+                        $email_tracking->id,
+                        $subject,
+                        gzcompress((isset($html_part) ? $html_part : $text_part))
 
                     )
-
-
                 );
-                $this->db->exec($sql);
+
 
             }
 

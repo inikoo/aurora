@@ -3041,6 +3041,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                         $section = 'mailshot';
                                                         $object  = 'mailshot';
                                                         $key     = $view_path[4];
+
                                                         if (isset($view_path[5])) {
 
 
@@ -3061,6 +3062,11 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                                 }
 
                                                             }
+
+
+
+
+
                                                         }
 
 
@@ -3071,6 +3077,23 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                     }
 
                                                 }
+                                            }
+                                            elseif ($view_path[3] == 'tracking') {
+
+
+                                                $section = 'email_tracking';
+
+                                                $parent     = 'email_campaign_type';
+                                                $parent_key = $key;
+
+                                                if (is_numeric($view_path[4])) {
+                                                    $section = 'email_tracking';
+                                                    $object  = 'email_tracking';
+                                                    $key     = $view_path[4];
+
+
+                                                }
+
                                             }
 
 

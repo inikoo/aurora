@@ -296,6 +296,7 @@ function sent_emails($_data, $db, $user) {
         $_parent = get_object('customer', $_data['parameters']['parent_key']);
     }
 
+
     if ($_data['parameters']['parent'] == 'mailshot') {
 
         if ($email_campaign_type->get('Email Campaign Type Scope') == 'Marketing') {
@@ -303,6 +304,9 @@ function sent_emails($_data, $db, $user) {
 
 
         } else {
+
+
+
             $link = 'customers/%d/notifications/%d/mailshot/%d/tracking/%d';
 
         }
@@ -400,9 +404,15 @@ function sent_emails($_data, $db, $user) {
             $subject = '';
             if ($_data['parameters']['parent'] == 'email_campaign_type') {
 
+
+
+
                 switch ($parent->get('Email Campaign Type Scope')) {
                     case 'Customer Notification':
                         $email = sprintf('<span class="link" onclick="change_view(\'customers/%d/notifications/%d/tracking/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']);
+                        break;
+                    case 'Marketing':
+                        $email = sprintf('<span class="link" onclick="change_view(\'marketing/%d/emails/%d/tracking/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']);
                         break;
                     default:
                         $email = sprintf('<span class="link" onclick="change_view(\'email_campaign_type/%d/%d/tracking/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']);
@@ -440,6 +450,8 @@ function sent_emails($_data, $db, $user) {
 
 
             }
+
+
 
 
             $adata[] = array(

@@ -13,11 +13,10 @@
 $email_tracking = $state['_object'];
 
 
-$sql=sprintf('select `Email Tracking Email Copy Subject`, `Email Tracking Email Copy Body` from `Email Tracking Email Copy` where `Email Tracking Email Copy Key`=%d ',$email_tracking->id);
+$sql=sprintf('select `Email Tracking Email Copy Subject` from `Email Tracking Email Copy` where `Email Tracking Email Copy Key`=%d ',$email_tracking->id);
 if ($result=$db->query($sql)) {
     if ($row = $result->fetch()) {
 
-//$row['Email Tracking Email Copy Body']
 
         $html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$row['Email Tracking Email Copy Subject'].'</div><div class="__email_text" style="border:1px solid #ccc;border-top:none"></div></div>';
 
@@ -62,15 +61,5 @@ request.fail(function( jqXHR, textStatus ) {
 
 
     }
-}else {
-	print_r($error_info=$db->errorInfo());
-	print "$sql\n";
-	exit;
 }
 
-
-
-
-
-
-?>
