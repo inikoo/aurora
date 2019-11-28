@@ -2903,6 +2903,10 @@ $modules = array(
                         'label' => _('Asset links'),
                         'icon'  => 'grip-horizontal'
                     ),
+                    'webpage.containers'  => array(
+                        'label' => _('Where is shown'),
+                        'icon'  => 'grip-vertical'
+                    ),
                     'webpage.preview' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench',

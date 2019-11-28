@@ -106,7 +106,7 @@ class Page extends DB_Table {
             $this->get_deleted_data($tag);
 
             return;
-        }else{
+        } else {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS WHERE `Page Key`=%d", $tag
             );
@@ -277,7 +277,7 @@ class Page extends DB_Table {
             $this->refresh_cache();
 
 
-            $account=get_object('Account',1);
+            $account = get_object('Account', 1);
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_take_webpage_screenshot', array(
@@ -365,8 +365,6 @@ class Page extends DB_Table {
                 }
 
 
-
-
             case 'State':
 
                 switch ($this->data['Webpage State']) {
@@ -384,7 +382,6 @@ class Page extends DB_Table {
                 }
 
 
-
             case 'Send Email Address':
                 $store = get_object('Store', $this->data['Webpage Store Key']);
 
@@ -395,7 +392,6 @@ class Page extends DB_Table {
                 $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 return $store->get('Store Email Template Signature');
-
 
 
             case 'Email':
@@ -430,8 +426,6 @@ class Page extends DB_Table {
                 }
 
 
-
-
                 return false;
 
 
@@ -459,7 +453,6 @@ class Page extends DB_Table {
                 }
 
                 return $content_data;
-
 
 
             case 'Scope Metadata':
@@ -494,16 +487,15 @@ class Page extends DB_Table {
             case 'Webpage Browser Title':
             case 'Browser Title':
 
-                $website=get_object('Website',$this->get('Webpage Website Key'));
-                $title_format=$website->get('Website Settings Browser Title Format');
+                $website      = get_object('Website', $this->get('Webpage Website Key'));
+                $title_format = $website->get('Website Settings Browser Title Format');
 
-                $placeholders=array(
-                    '[Webpage]'=>$this->data['Webpage Name'],
-                    '[Website]'=>$website->get('Webpage Name')
+                $placeholders = array(
+                    '[Webpage]' => $this->data['Webpage Name'],
+                    '[Website]' => $website->get('Webpage Name')
                 );
 
-                return strtr($title_format,$placeholders);
-
+                return strtr($title_format, $placeholders);
 
 
             default:
@@ -525,7 +517,6 @@ class Page extends DB_Table {
 
         return false;
     }
-
 
 
     function refresh_cache() {
@@ -2739,7 +2730,7 @@ class Page extends DB_Table {
 
         $offline_items_category_key_index = array();
         $sql                              = sprintf(
-            "SELECT  B.`Category Key` FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
+            "SELECT  B.`Category Key` FROM `Category Bridge` B  LEFT JOIN `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
             WHERE  B.`Category Key`=%d  AND  (`Product Category Public`='No'  OR `Webpage State` NOT IN ('Online','Ready')  )  ", $this->get('Webpage Scope Key')
 
 
@@ -2812,10 +2803,6 @@ class Page extends DB_Table {
                                     } else {
                                         unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
                                     }
-                                } else {
-                                    print_r($error_info = $this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
                                 }
 
 
@@ -2861,7 +2848,7 @@ class Page extends DB_Table {
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
-        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d AND `Website Webpage Scope Type` IN ("Subject","Guest")  ', $this->id);
+        $sql = sprintf("DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d AND `Website Webpage Scope Type` IN ('Subject','Guest')  ", $this->id);
         $this->db->exec($sql);
 
         $index = 0;
@@ -2875,7 +2862,7 @@ class Page extends DB_Table {
                             $block_index, $item['webpage_key'], $this->get('Webpage Website Key'), $this->id, prepare_mysql('Category'), $item['category_key'], prepare_mysql($item['item_type']), $index
 
                         );
-                        //print "$sql\n";
+
 
                         $this->db->exec($sql);
                         $index++;
@@ -3130,7 +3117,7 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-        if ($this->get('Webpage Scope') == 'Category Products' ) {
+        if ($this->get('Webpage Scope') == 'Category Products') {
 
 
             $category = get_object('Category', $this->get('Webpage Scope Key'));
@@ -3143,7 +3130,7 @@ class Page extends DB_Table {
             }
 
 
-            if($publish_products) {
+            if ($publish_products) {
                 include_once 'class.Page.php';
                 $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
@@ -3196,8 +3183,6 @@ class Page extends DB_Table {
             'webpage_key' => $this->id,
         ), $account->get('Account Code'), $this->db
         );
-
-
 
 
         $this->update_metadata = array(
@@ -3391,9 +3376,9 @@ class Page extends DB_Table {
                 $label = _('email');
                 break;
 
-           // case 'Webpage Browser Title':
-           //     $label = _('browser title');
-           //     break;
+            // case 'Webpage Browser Title':
+            //     $label = _('browser title');
+            //     break;
             case 'Webpage Meta Description':
                 $label = _('meta description');
                 break;
@@ -3414,29 +3399,29 @@ class Page extends DB_Table {
         $this->reindex_items();
         $this->update_navigation();
 
+        /*
         switch ($this->get('Webpage Scope')) {
             case 'Category Products':
 
-                $sql = sprintf(
-                    'SELECT `Product Webpage Key` FROM `Website Webpage Scope Map` left join `Product Dimension` on (`Product ID`=`Website Webpage Scope Scope Key`) WHERE `Website Webpage Scope Webpage Key`=%d and `Website Webpage Scope Scope`="Product" ', $this->id
-
+                $sql  = "SELECT `Product Webpage Key` FROM `Website Webpage Scope Map` left join `Product Dimension` on (`Product ID`=`Website Webpage Scope Scope Key`) WHERE `Website Webpage Scope Webpage Key`=? and `Website Webpage Scope Scope`='Product'";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
                 );
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-                        $webpage = get_object('Webpage', $row['Product Webpage Key']);
-                        if ($webpage->id) {
-                            $webpage->reindex_items();
-                            $webpage->update_navigation();
-                        }
-
-
+                while ($row = $stmt->fetch()) {
+                    $webpage = get_object('Webpage', $row['Product Webpage Key']);
+                    if ($webpage->id) {
+                        $webpage->reindex_items();
+                        $webpage->update_navigation();
                     }
                 }
 
 
         }
+
+        */
 
     }
 
@@ -3535,7 +3520,7 @@ class Page extends DB_Table {
 
     }
 
-    function update_screenshots($device = 'Desktop',$type='') {
+    function update_screenshots($device = 'Desktop', $type = '') {
 
 
         if (in_array(
@@ -3565,53 +3550,53 @@ class Page extends DB_Table {
 
         include 'keyring/screenshots.dns.php';
 
-        $curl = curl_init();
-        $route='/'.$device;
-        if($type!=''){
-            $route.='/'.$type;
+        $curl  = curl_init();
+        $route = '/'.$device;
+        if ($type != '') {
+            $route .= '/'.$type;
         }
 
         curl_setopt_array(
             $curl, array(
-            CURLOPT_HEADER=>1,
-            CURLOPT_URL            => SCREENSHOTS_API_URL."/take$route?url=$url",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING       => "",
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST  => "GET",
-            CURLOPT_HTTPHEADER     => array(
-                "Accept: */*",
-                "Accept-Encoding: gzip, deflate",
-                "Authorization: Bearer ".SCREENSHOTS_JWT,
-                "Cache-Control: no-cache",
-                "Connection: keep-alive",
-                "cache-control: no-cache"
-            ),
-        )
+                     CURLOPT_HEADER         => 1,
+                     CURLOPT_URL            => SCREENSHOTS_API_URL."/take$route?url=$url",
+                     CURLOPT_RETURNTRANSFER => true,
+                     CURLOPT_ENCODING       => "",
+                     CURLOPT_TIMEOUT        => 30,
+                     CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                     CURLOPT_CUSTOMREQUEST  => "GET",
+                     CURLOPT_HTTPHEADER     => array(
+                         "Accept: */*",
+                         "Accept-Encoding: gzip, deflate",
+                         "Authorization: Bearer ".SCREENSHOTS_JWT,
+                         "Cache-Control: no-cache",
+                         "Connection: keep-alive",
+                         "cache-control: no-cache"
+                     ),
+                 )
         );
 
         $response = curl_exec($curl);
         $err      = curl_error($curl);
 
         $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        $header = substr($response, 0, $header_size);
-        $body = substr($response, $header_size);
+        $header      = substr($response, 0, $header_size);
+        $body        = substr($response, $header_size);
 
         curl_close($curl);
 
         if (!$err) {
-            if(preg_match('/Content-Type: image\/jpeg/',$header)){
-                $tmp_file='server_files/tmp/_screenshot_'.gmdate('U').'_'.md5($url).'.jpeg';
+            if (preg_match('/Content-Type: image\/jpeg/', $header)) {
+                $tmp_file = 'server_files/tmp/_screenshot_'.gmdate('U').'_'.md5($url).'.jpeg';
 
-                if(file_put_contents($tmp_file, $body)){
-                    $scope=$device;
-                    if($type!=''){
-                        $scope.=' '.$type;
+                if (file_put_contents($tmp_file, $body)) {
+                    $scope = $device;
+                    if ($type != '') {
+                        $scope .= ' '.$type;
                     }
-                    $scope.=' Screenshot';
+                    $scope .= ' Screenshot';
 
-                    $image_data                  = array(
+                    $image_data = array(
                         'Upload Data'                      => array(
                             'tmp_name' => $tmp_file,
                             'type'     => 'jpeg'
@@ -3622,23 +3607,22 @@ class Page extends DB_Table {
 
                     );
 
-                    $image=$this->add_image($image_data, 'no_history');
+                    $image = $this->add_image($image_data, 'no_history');
 
 
+                    $_scope = strtolower(preg_replace('/\s/', '_', $scope));
 
-                    $_scope=strtolower(preg_replace('/\s/','_',$scope));
-
-                    $old_screenshot_image_key      = $this->properties($_scope);
+                    $old_screenshot_image_key = $this->properties($_scope);
 
                     $this->update(
                         array(
-                            $_scope     => $image->id,
+                            $_scope => $image->id,
                         ), 'no_history'
                     );
 
 
                     if ($old_screenshot_image_key != $image->id) {
-                        $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+                        $sql  = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
                         $stmt = $this->db->prepare($sql);
                         $stmt->execute(
                             array(
@@ -3653,7 +3637,7 @@ class Page extends DB_Table {
                     }
 
 
-                    if(file_exists($tmp_file)){
+                    if (file_exists($tmp_file)) {
                         unlink($tmp_file);
                     }
 
@@ -3661,18 +3645,47 @@ class Page extends DB_Table {
             }
 
 
-
-
-
         }
-
-
 
 
     }
 
     function properties($key) {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
+    function get_upstream_webpage_keys(){
+        $webpage_keys = array();
+
+        $sql = sprintf(
+            "select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where  `Website Webpage Scope Scope Webpage Key`=%d ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if($row['Website Webpage Scope Webpage Key']){
+                    $webpage_keys[$row['Website Webpage Scope Webpage Key']] = $row['Website Webpage Scope Webpage Key'];
+                }
+            }
+        }
+        return $webpage_keys;
+    }
+
+    function get_downstream_webpage_keys(){
+        $webpage_keys = array();
+
+        $sql = sprintf(
+            "select `Website Webpage Scope Scope Webpage Key`  from `Website Webpage Scope Map` where  `Website Webpage Scope Webpage Key`=%d ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if($row['Website Webpage Scope Webpage Key']){
+                    $webpage_keys[$row['Website Webpage Scope Scope Webpage Key']] = $row['Website Webpage Scope Scope Webpage Key'];
+                }
+            }
+        }
+        return $webpage_keys;
     }
 
 }

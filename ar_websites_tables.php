@@ -89,7 +89,9 @@ switch ($tipo) {
     case 'webpage_assets':
         webpage_assets(get_table_parameters(), $db, $user);
         break;
-
+    case 'webpage_containers':
+        webpage_containers(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -896,6 +898,99 @@ function webpage_types($_data, $db, $user) {
 
 
 function webpage_assets($_data, $db, $user) {
+
+    $rtext_label = 'webpage';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+        if ($data['Webpage State'] == 'Online') {
+            $state = '<i class="far fa-globe" aria-hidden="true"></i>';
+        } else {
+            $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
+
+        }
+
+        switch ($data['Webpage Scope']) {
+            case 'Product':
+                $scope = sprintf('<i class="fal fa-cube" title="%s" ></i>', _('Product'));
+                break;
+            case 'Category Products':
+                $scope = sprintf('<i class="fal fa-folder-open" aria-hidden="true" title="" ></i>', _('Family'));
+                break;
+
+            case 'Category Categories':
+                $scope = sprintf('<i class="fal fa-folder-tree" aria-hidden="true" title="" ></i>', _('Categories'));
+
+                break;
+
+            default:
+                $scope = '';
+                break;
+        }
+
+        switch ($data['Website Webpage Scope Type']) {
+            case 'Guest':
+                $type = _('Guest');
+                break;
+            case 'Category_Products_Item':
+                $type = _("Family's product").' <i class="fal padding_left_5 fa-cart-plus"></i>';
+                break;
+            case 'Products_Item':
+                $type = _('Related product').' <i class="fal padding_left_5 fa-cart-plus"></i>';
+                break;
+            case 'See_Also_Category_Auto':
+            case 'See_Also_Product_Auto':
+                $type = _('See also').' <i class="fal padding_left_5 fa-robot"></i>';
+                break;
+            case 'See_Also_Category_Manual':
+            case 'See_Also_Product_Manual':
+                $type = _('See also').' <i class="fal padding_left_5 fa-brain"></i>';
+                break;
+            case 'Product_Main_Webpage':
+                $type = _('Product webpage').' <i class="padding_left_5 fal fa-browser"></i>';
+                break;
+
+            default:
+                $type = $data['Website Webpage Scope Type'];
+                break;
+        }
+
+        $adata[] = array(
+            'id'   => (integer)$data['Webpage Key'],
+            'code' => sprintf('<span class="link url" onclick="change_view(\'website/%d/webpage/%d/asset/%d\')">%s</span>', $data['Webpage Website Key'], $parameters['parent_key'], $data['Webpage Key'], strtolower($data['Webpage Code'])),
+            'name' => $data['Webpage Name'],
+
+            'state' => $state,
+            'type'  => $type,
+            'scope' => $scope,
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function webpage_containers($_data, $db, $user) {
 
     $rtext_label = 'webpage';
     include_once 'prepare_table/init.php';

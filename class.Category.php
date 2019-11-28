@@ -1522,8 +1522,8 @@ class Category extends DB_Table {
         // $data['editor']
 
 
-        $subcategory = new Category('find create', $data);
-        $subcategory->fork=$this->fork;
+        $subcategory       = new Category('find create', $data);
+        $subcategory->fork = $this->fork;
 
         //   print_r($subcategory);
 
@@ -3307,40 +3307,50 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     }
 
 
-    function update_webpages($metadata='') {
+    function update_webpages($change_type) {
+
 
 
         if ($this->data['Category Scope'] == 'Product') {
-            $webpages_to_reindex = array();
-
-            $sql = sprintf(
-                "select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`='Category' and `Website Webpage Scope Scope Key`=%d ", $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $webpages_to_reindex[$row['Website Webpage Scope Webpage Key']] = $row['Website Webpage Scope Webpage Key'];
 
 
-                }
-            }
-            $webpages_to_reindex[$this->get('Product Category Webpage Key')] = $this->get('Product Category Webpage Key');
+            $webpage = get_object('Webpage', $this->get('Product Category Webpage Key'));
+            $webpage->reindex();
 
-            $date = gmdate('Y-m-d H:i:s');
-            foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
-                if ($webpage_to_reindex_key > 0) {
-                    $sql = sprintf(
-                        'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (%s,%s,%s,%d,%s) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s , `Stack Metadata`=%s, `Stack Counter`=`Stack Counter`+1 ',
-                        prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql('from_cat'.$metadata),prepare_mysql($date),prepare_mysql('from_cat'.$metadata)
 
+            switch ($change_type) {
+                case 'main_image':
+                    $account = get_object('Account', 1);
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_reindex_webpages', array(
+                        'type'          => 'reindex_webpages_items',
+                        'webpages_keys' => $webpage->get_upstream_webpage_keys(),
+                    ), $account->get('Account Code'), $this->db
                     );
-                    $this->db->exec($sql);
+                    break;
+                default:
 
-                }
+                    $webpages_to_reindex = array_merge(
+                        $webpage->get_upstream_webpage_keys(), $webpage->get_downstream_webpage_keys()
+                    );
 
+                    $date = gmdate('Y-m-d H:i:s');
+                    foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
+                        if ($webpage_to_reindex_key > 0) {
+
+
+                            $sql = sprintf(
+                                'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (%s,%s,%s,%d,%s) 
+                                ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s , `Stack Metadata`=%s, `Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key,
+                                prepare_mysql('from_cat'.$change_type), prepare_mysql($date), prepare_mysql('from_cat'.$change_type)
+
+                            );
+                            $this->db->exec($sql);
+                        }
+                    }
             }
+
 
         }
 

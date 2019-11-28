@@ -25,6 +25,7 @@ include 'utils/natural_language.php';
 
 include 'export.fork.php';
 include 'export_edit_template.fork.php';
+include 'reindex_webpages.fork.php';
 
 
 $worker = new GearmanWorker();
@@ -32,6 +33,7 @@ $worker->addServer('127.0.0.1');
 
 $worker->addFunction("au_export", "fork_export");
 $worker->addFunction("au_export_edit_template", "fork_export_edit_template");
+$worker->addFunction("au_reindex_webpages", "fork_reindex_webpages");
 
 $db      = false;
 $account = false;
