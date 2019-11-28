@@ -46,7 +46,7 @@ trait ImageSubject {
             'editor'      => $this->editor
         );
 
-        if($this->fork)
+        if($this->fork){
             $data['fork']=true;
         }
 
