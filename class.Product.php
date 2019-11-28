@@ -3737,7 +3737,7 @@ class Product extends Asset {
             default:
 
                 $_families = array($this->get('Product Family Category Key'));
-                $sql       = sprintf('select `Category B Key` from `Product Category Sales Correlation` where `Category B Key`=%d  and `Correlation`>0 order by `Correlation` desc limit %s ', $this->get('Product Family Category Key'), $limit);
+                $sql       = sprintf('select `Category B Key` from `Product Category Sales Correlation` where `Category B Key`=%d   order by `Correlation` desc limit %s ', $this->get('Product Family Category Key'), $limit);
                 if ($result = $db_replica->query($sql)) {
                     foreach ($result as $row) {
                         $_families[] = $row['Category B Key'];
