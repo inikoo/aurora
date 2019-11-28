@@ -2471,9 +2471,8 @@ function delivery_checking_items($_data, $db, $user, $account) {
             }
 
             if ($locations != '') {
-                $description .= '<br><i style="margin-left:4px" class="fa fa-inventory button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._(
-                        'Hide locations'
-                    ).'"    onClick="show_part_locations(this)" ></i>';
+                $description .= '<br><i style="margin-left:4px" class="fa fa-inventory button discreet  hide'.($number_locations == 0 ? 'hide' : '').
+                    '" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._('Hide locations').'"    onClick="show_part_locations(this)" ></i>';
 
 
                 $description .= $locations;
@@ -2481,7 +2480,7 @@ function delivery_checking_items($_data, $db, $user, $account) {
             }
 
 
-            if ($data['Supplier Delivery Checked Units'] == '') {
+            if ($data['Supplier Delivery Checked Units'] == '' or $data['Part Units Per Package']==0) {
 
                 $sko_checked_quantity = '';
 
