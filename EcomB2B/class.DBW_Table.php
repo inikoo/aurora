@@ -11,8 +11,6 @@
 
 abstract class DBW_Table extends stdClass {
 
-    public $errors_while_updating = array();
-    public $updated_fields = array();
     public $data = array();
     public $id = 0;
     public $warning = false;
@@ -22,13 +20,11 @@ abstract class DBW_Table extends stdClass {
     public $new = false;
     public $updated = false;
     public $new_value = false;
-    public $error_updated = false;
     public $msg_updated = '';
     public $found = false;
     public $found_key = false;
     public $no_history = false;
     public $candidate = array();
-    public $updated_field = array();
     public $editor = array(
         'Author Name'  => false,
         'Author Alias' => false,

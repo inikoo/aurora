@@ -46,7 +46,7 @@ trait ImageSubject {
             'editor'      => $this->editor
         );
 
-        if(!empty($this->fork)){
+        if($this->fork)
             $data['fork']=true;
         }
 
@@ -127,12 +127,8 @@ trait ImageSubject {
             $subject_key = $this->id;
             $subject     = $this->table_name;
 
+            $image->fork=$this->fork;
 
-            if(!empty($this->fork)){
-                $image->fork=$this->fork;
-            }else{
-                $image->fork=false;
-            }
 
 
 

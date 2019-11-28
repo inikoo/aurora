@@ -528,7 +528,7 @@ class Page extends DB_Table {
         $smarty_web = new Smarty();
 
 
-        if (empty($this->fork)) {
+        if(!$this->fork) {
             $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
@@ -575,7 +575,7 @@ class Page extends DB_Table {
         $smarty_web = new Smarty();
 
 
-        if (empty($this->fork)) {
+        if(!$this->fork) {
             $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
@@ -739,7 +739,7 @@ class Page extends DB_Table {
 
         $smarty_web = new Smarty();
 
-        if (empty($this->fork)) {
+        if(!$this->fork) {
             $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);

@@ -445,7 +445,7 @@ class Image extends DB_Table {
 
         $current_cwd=getcwd();
 
-        if(isset($this->fork) and $this->fork){
+        if($this->fork){
             $account=get_object('Account',1);
             chdir('img_'.$account->get('Code'));
             chdir('../');

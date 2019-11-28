@@ -19,8 +19,7 @@ function fork_reindex_webpages($job) {
     list($account, $db, $data, $editor, $session) = $_data;
 
 
-    print $data['type']."\n";
-    //return true;
+
     switch ($data['type']) {
 
 

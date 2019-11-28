@@ -6,8 +6,6 @@ abstract class DB_Table extends stdClass {
      * @var $db PDO
      */
     public $db;
-    public $errors_while_updating = array();
-    public $updated_fields = array();
     /**
      * @var array
      */
@@ -17,6 +15,10 @@ abstract class DB_Table extends stdClass {
      * @var string
      */
     public $id = 0;
+    /**
+     * @var bool
+     */
+    public $fork = false;
 
     public $warning = false;
     public $deleted = false;
@@ -25,13 +27,11 @@ abstract class DB_Table extends stdClass {
     public $new = false;
     public $updated = false;
     public $new_value = false;
-    public $error_updated = false;
     public $msg_updated = '';
     public $found = false;
     public $found_key = false;
     public $no_history = false;
     public $candidate = array();
-    public $updated_field = array();
     public $editor = array(
         'Author Name'  => false,
         'Author Alias' => false,

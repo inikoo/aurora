@@ -40,7 +40,7 @@ class Store extends DB_Table {
 
         $this->table_name    = 'Store';
         $this->ignore_fields = array('Store Key');
-        $this->fork          = false;
+
 
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id', $a1);
