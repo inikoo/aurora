@@ -1,0 +1,1 @@
+ALTER TABLE `Email Tracking Email Copy` DROP `Email Tracking Email Copy Body`;

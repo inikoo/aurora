@@ -379,7 +379,6 @@ trait Send_Email {
                                                                                'Invite Mailshot',
                                                                                'GR Reminder',
                                                                                'Registration',
-                                                                               'AbandonedCart'
                                                                            )
             )) {
 
