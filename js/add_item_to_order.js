@@ -23,20 +23,10 @@ function delayed_on_change_add_item_field(object, timeout) {
 function get_items_select_for_add_item_to_order(element) {
 
 
-    console.log(element)
 
     element.removeClass('invalid')
-
-
-
-
     var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(element.find('.item').val()) + '&scope=item' + '&metadata=' + atob(element.data("metadata")) + '&state=' + JSON.stringify(state)
-
-
     $.getJSON(request, function (data) {
-
-
-
         if (data.number_results > 0) {
             element.find('.search_results_container').removeClass('hide').addClass('show')
             element.find('.item').removeClass('invalid')

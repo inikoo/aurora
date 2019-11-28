@@ -1,5 +1,3 @@
-
-
 {if isset($table_top_template)}
     {include file=$table_top_template  }
 {/if}
@@ -302,11 +300,15 @@
 
 
     </div>
+
+
+
     <div id="table_buttons" class="hide">
 
         {if isset($table_buttons)   }
 
         {foreach from=$table_buttons item=button }
+
 
             {if !empty($button.id) and $button.id=='upload_order_items'}
                     <div id="upload_order_items" class="table_button square_button right {if isset($button.class)}{$button.class}{/if}">
@@ -318,11 +320,13 @@
                         <label for="upload_order_items_upload"> <i class="fa fa-upload button"></i></label>
                         </form>
                     </div>
+        {else}
+
+
+        {if isset($button.move_all_parts_from_location)}{include file="move_all_parts_from_location.tpl" data=$button.move_all_parts_from_location }{/if}
 
 
 
-
-            {else}
 
             {if isset($button.inline_new_object)}{include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}}{/if}
 
@@ -551,6 +555,8 @@
             <label for="file_upload"><i class="fa {if isset($upload_file.icon)}{$upload_file.icon}{else}fa-upload{/if} fa-fw button"></i></label>
         </form>
     </div>
+
+
     <span id="file_upload_msg" style="float:right;padding-right:10px"></span>
     <script>
         var droppedFiles = false;
@@ -641,6 +647,10 @@
     {/if}
     </div>
 
+    {if isset($table_operation_msg)}
+        <span class="{$table_operation_msg}" style="float:right;margin-right: 10px"></span>
+
+    {/if}
 
     <span class="padding_left_10" id="rtext"></span></div>
 

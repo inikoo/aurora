@@ -96,11 +96,6 @@ function get_form_validation_state() {
             // console.log(index)
             //   console.log($(this).attr('id'))
 
-            console.log(field)
-            console.log($('#' + field + '_field').hasClass('valid'))
-
-
-
             if($(this).attr('field_type')=='date_interval'   ){
                 component_validation = 'valid'
 
@@ -114,9 +109,7 @@ function get_form_validation_state() {
                     component_validation = 'valid'
                 } else {
                     component_validation = 'potentially_valid'
-                    console.log($(this).attr('field_type'))
 
-                    console.log(field)
                 }
             }
 
@@ -141,7 +134,6 @@ function get_form_validation_state() {
 
         });
 
-        console.log('val: '+form_validation)
 
         return form_validation
     }
@@ -171,7 +163,7 @@ function process_form_validation(validation, submitting) {
                 $('#' + field + '_field').addClass('invalid')
 
 
-                console.log(field)
+
 
 
             }

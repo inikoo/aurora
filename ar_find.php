@@ -123,7 +123,7 @@ switch ($tipo) {
                              'type'     => 'numeric',
                              'optional' => true
                          ),
-                         'state'      => array('type' => 'json array'),
+                         'state'      => array('type' => 'json array','optional' => true),
                          'metadata'   => array(
                              'type'     => 'json array',
                              'optional' => true

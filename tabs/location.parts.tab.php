@@ -35,16 +35,14 @@ $parameters = array(
 );
 
 
-
-$table_buttons   = array();
-
+$table_buttons = array();
 
 
 $table_buttons[] = array(
-    'icon'     => 'plus',
-    'title'    => _('New part'),
-    'id'       => 'new_part',
-    'class'    => 'part',
+    'icon'                 => 'plus',
+    'title'                => _('New part'),
+    'id'                   => 'new_part',
+    'class'                => 'part',
     'add_part_to_location' => array(
 
         'field_label' => _("Part").':',
@@ -63,20 +61,36 @@ $table_buttons[] = array(
 
 );
 
+
+$table_buttons[] = array(
+    'icon'                         => 'person-dolly',
+    'title'                        => _('Move all parts'),
+    'class'                        => 'move_all_parts_from_location',
+    'id'                           => 'move_all_parts_from_location',
+    'move_all_parts_from_location' => array(
+        'field_id' => 'Location Code',
+        'field_label'=>_('Move to location'),
+        'placeholder'=>_('code'),
+        'location_key'=>$state['key']
+
+    )
+);
+
+
 $smarty->assign(
-    'table_metadata',
-                        json_encode(
-                            array(
-                                'parent'     => $state['object'],
-                                'parent_key' => $state['key'],
-                                'field'      => 'part'
-                            )
+    'table_metadata', json_encode(
+                        array(
+                            'parent'     => $state['object'],
+                            'parent_key' => $state['key'],
+                            'field'      => 'part'
                         )
+                    )
 
 );
 
 
 $smarty->assign('table_buttons', $table_buttons);
+$smarty->assign('table_operation_msg', 'move_all_parts_from_location_inline_msg');
 
 
 
@@ -84,8 +98,5 @@ $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign('table_top_template', 'location.parts.edit.tpl');
 
-
 include 'utils/get_table_html.php';
 
-
-?>

@@ -30,7 +30,19 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'move_all_parts_from_location':
+        $data = prepare_values(
+            $_REQUEST, array(
 
+                         'from_location_key' => array('type' => 'key'),
+                         'to_location_key'   => array('type' => 'key'),
+                         'remove_after'      => array('type' => 'string')
+
+                     )
+        );
+
+        move_all_parts_from_location($account, $db, $user, $editor, $data, $smarty);
+        break;
     case 'get_part_locations_html':
         $data = prepare_values(
             $_REQUEST, array(
@@ -93,8 +105,6 @@ switch ($tipo) {
 
         set_as_picking_location($account, $db, $user, $editor, $data, $smarty);
         break;
-
-
     case 'place_part':
 
         $data = prepare_values(
@@ -113,8 +123,6 @@ switch ($tipo) {
 
         place_part($account, $db, $user, $editor, $data, $smarty);
         break;
-
-
     case 'new_part_location':
 
         $data = prepare_values(
@@ -129,7 +137,6 @@ switch ($tipo) {
 
         new_part_location($account, $db, $user, $editor, $data, $smarty);
         break;
-
     case 'add_part_to_location':
 
         $data = prepare_values(
@@ -145,8 +152,6 @@ switch ($tipo) {
 
         add_part_to_location($account, $db, $user, $editor, $data, $smarty);
         break;
-
-
     case 'disassociate_location_part':
 
         $data = prepare_values(
@@ -160,7 +165,6 @@ switch ($tipo) {
 
         disassociate_location_part($account, $db, $user, $editor, $data, $smarty);
         break;
-
     case 'edit_part_location_stock':
 
         $data = prepare_values(
@@ -176,7 +180,6 @@ switch ($tipo) {
 
         edit_part_location_stock($account, $db, $user, $editor, $data, $smarty);
         break;
-
     case 'edit_part_location_note':
 
         $data = prepare_values(
@@ -189,8 +192,6 @@ switch ($tipo) {
 
         edit_part_location_note($account, $db, $user, $editor, $data, $smarty);
         break;
-
-
     case 'edit_stock':
 
         $data = prepare_values(
@@ -208,7 +209,6 @@ switch ($tipo) {
 
         edit_stock($account, $db, $user, $editor, $data, $smarty);
         break;
-
     case 'edit_leakages':
 
         $data = prepare_values(
@@ -239,7 +239,6 @@ switch ($tipo) {
 
         send_to_production($account, $db, $user, $editor, $data, $smarty);
         break;
-
     case 'itf_cost':
 
         $data = prepare_values(
@@ -277,6 +276,65 @@ switch ($tipo) {
         break;
 }
 
+function move_all_parts_from_location($account, $db, $user, $editor, $data, $smarty){
+
+    if($data['from_location_key']==$data['to_location_key']){
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Same location'
+        );
+        echo json_encode($response);
+        return;
+    }
+
+    $location_from=get_object('Location',$data['from_location_key']);
+
+
+    $location_to=get_object('Location',$data['to_location_key']);
+
+    $number_parts=0;
+
+    foreach($location_from->get_parts('part_location_object') as $part_location_from){
+
+        $part_location_from->editor=$editor;
+
+        $part_location_data = array(
+            'Location Key' => $location_to->id,
+            'Part SKU'     => $part_location_from->part->id,
+            'editor'       => $editor
+        );
+        $number_parts++;
+
+        new PartLocation('find', $part_location_data, 'create');
+
+
+        $part_location_from->move_stock(
+            array(
+                'Destination Key'  => $location_to->id,
+                'Quantity To Move' => $part_location_from->get('Quantity On Hand')
+            )
+        );
+
+        if($data['remove_after']=='Yes'){
+            $part_location_from->disassociate();
+        }
+
+
+    }
+    $response = array(
+        'state' => 200,
+        'msg'   => sprintf(
+            ngettext('%s part was moved to %s', '%s parts were moved to %s', $number_parts), number($number_parts),
+            sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>',$location_to->get('Location Warehouse Key'),$location_to->id,$location_to->get('Code')
+            )
+        )
+    );
+    echo json_encode($response);
+    exit;
+
+}
+
+
 function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
     //print_r($data);
@@ -296,10 +354,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
         foreach ($result as $row) {
 
             $amount_paid = (($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2];
-            $sql = sprintf(
+            $sql         = sprintf(
                 'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f   where `Purchase Order Transaction Fact Key`=%d    ',
-                $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2],
-                $row['Purchase Order Transaction Fact Key']
+                $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2], $row['Purchase Order Transaction Fact Key']
 
             );
 
@@ -351,7 +408,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
                     }
 
-                 //   {"placement_data":[{"oif_key":"44589259","wk":"1","lk":"14158","l":"Unit 3","qty":"540"}]}
+                    //   {"placement_data":[{"oif_key":"44589259","wk":"1","lk":"14158","l":"Unit 3","qty":"540"}]}
 
                     $parts_data[$row['Supplier Part Part SKU']] = ($min_date != '' ? gmdate('Y-m-d', $min_date) : '');
 
@@ -363,7 +420,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                             );
                             $db->exec($sql);
 
-                            $sql=sprintf('insert into `ITF POTF Costing Done Bridge`  values (%d,%d)  ',$placement_data['oif_key'],$row['Purchase Order Transaction Fact Key']);
+                            $sql = sprintf('insert into `ITF POTF Costing Done Bridge`  values (%d,%d)  ', $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']);
                             $db->exec($sql);
 
 
@@ -580,10 +637,10 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
     }
 
     $part           = get_object('Part', $data['part_sku']);
-    $part_locations = $part->get_locations('part_location_object','stock');
+    $part_locations = $part->get_locations('part_location_object', 'stock');
 
 
-   // print_r($part_locations);
+    // print_r($part_locations);
 
     $has_picking_location = false;
     foreach ($part_locations as $part_location) {
@@ -602,23 +659,16 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
     if (!$has_picking_location) {
 
 
-
-
-
         foreach ($part_locations as $part_location) {
 
-            if($part_location->location->id!=$warehouse->get('Warehouse Unknown Location Key')   ){
+            if ($part_location->location->id != $warehouse->get('Warehouse Unknown Location Key')) {
                 $part_location->update(array('Part Location Can Pick' => 'Yes'));
                 break;
             }
 
 
-
-
         }
     }
-
-
 
 
     $part = get_object('Part', $data['part_sku']);
@@ -627,9 +677,6 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
     $smarty->assign('locations_data', $part->get_locations('data'));
-
-
-
 
 
     $response = array(
@@ -702,9 +749,7 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
         */
 
         $picking_location_icon = sprintf(
-            '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>',
-            $part_location->part->id,
-            $part_location->location->id,
+            '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>', $part_location->part->id, $part_location->location->id,
             ($part_location->get('Can Pick') == 'Yes' ? '' : 'super_discreet_on_hover button'), ($part_location->get('Can Pick') == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
         );
@@ -833,10 +878,10 @@ function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty)
 
 /**
  * @param $editor   array
- * @param $data array
- * @param $smarty \Smarty
+ * @param $data     array
+ * @param $smarty   \Smarty
  */
-function edit_part_move_stock( $editor, $data, $smarty) {
+function edit_part_move_stock($editor, $data, $smarty) {
 
 
     $part = get_object('Part', $data['part_sku']);
@@ -897,9 +942,9 @@ function edit_part_move_stock( $editor, $data, $smarty) {
             exit;
         }
 
-        $part_location_from         = new PartLocation($part->sku, $movement['from_location_key']);
+        $part_location_from = new PartLocation($part->sku, $movement['from_location_key']);
 
-        if(!$part_location_from->ok){
+        if (!$part_location_from->ok) {
             $response = array(
                 'state' => 400,
                 'msg'   => 'from location_part not found'
@@ -910,9 +955,6 @@ function edit_part_move_stock( $editor, $data, $smarty) {
         }
 
         $part_location_from->editor = $editor;
-
-
-
 
 
         //$part_location_to         = new PartLocation($part->sku, $movement['to_location_key']);
@@ -935,7 +977,7 @@ function edit_part_move_stock( $editor, $data, $smarty) {
         exit;
     }
 
-    if($part_location_from->error){
+    if ($part_location_from->error) {
         $response = array(
             'state' => 400,
             'msg'   => $part_location_from->msg
@@ -943,7 +985,6 @@ function edit_part_move_stock( $editor, $data, $smarty) {
         echo json_encode($response);
         exit;
     }
-
 
 
     $response = array('state' => 200);
@@ -1205,8 +1246,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             $exchange = $object->get('Supplier Delivery Currency Exchange');
 
             $amount_per_sko = round(
-                $row['Part Units Per Package'] * ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Checked Units']
-                , 4
+                $row['Part Units Per Package'] * ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Checked Units'], 4
             );
 
 

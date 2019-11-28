@@ -149,7 +149,7 @@ module.exports = function (grunt) {
                 }, src: ['js/common.js', 'js/help.js', 'js/keyboard_shortcuts.js', 'js/barcode_scanner.js', 'js/edit.js',
 
                     'js/mixed_recipients.edit.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/pdf.js', 'js/edit_webpage_edit.js', 'js/new.js',
-                    'js/order.common.js', 'js/order_collection.js',
+                    'js/order.common.js', 'js/order_collection.js', 'js/location_parts.js',
 
                     'js/email_campaign.common.js',
                     'js/supplier.order.js', 'js/supplier.delivery.js','js/supplier.delivery.costing.js',
