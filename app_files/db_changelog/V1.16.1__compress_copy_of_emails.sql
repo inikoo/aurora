@@ -1,0 +1,1 @@
+ALTER TABLE `Email Tracking Email Copy` ADD `Email Tracking Email Copy Compressed Body` BLOB NULL DEFAULT NULL AFTER `Email Tracking Email Copy Body`;
