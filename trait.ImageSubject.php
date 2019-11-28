@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 17 February 2016 at 20:36:41 GMT+8, Kuala Lumpur, Maysia
+ Created: 17 February 2016 at 20:36:41 GMT+8, Kuala Lumpur, Malysia
 
  Copyright (c) 2016, Inikoo
 
@@ -84,30 +84,26 @@ trait ImageSubject {
                 $account = new Account();
                 if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key') and $object_image_scope == 'Marketing') {
 
-                    $sql = sprintf(
-                        'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`=%s  ', prepare_mysql($this->get('Code'))
+                    $sql = "ELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`='Product' AND `Category Code`=%s ";
+
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->get('Code')
+                        )
                     );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-                            $category         = new Category($row['Category Key']);
-                            $category->editor = $this->editor;
-                            $category->link_image($image->id, 'Marketing');
-
-                        }
-
+                    while ($row = $stmt->fetch()) {
+                        $category         = get_object('Category', $row['Category Key']);
+                        $category->editor = $this->editor;
+                        $category->link_image($image->id, 'Marketing');
                     }
-
                 }
 
             }
 
             return $image;
         } else {
-
-
             $this->error = true;
             $this->msg   = "Can't create/found image (b), ".$image->msg;
 
@@ -185,22 +181,15 @@ trait ImageSubject {
 
 
             switch ($subject) {
+                case 'Part':
                 case 'Product':
                     if($object_image_scope=='Marketing'){
                         $is_public = 'Yes';
                     }
 
                     break;
-                case 'Part':
-                    if($object_image_scope=='Marketing'){
-                        $is_public = 'Yes';
-                    }
-
-                    break;
-                case 'Webpage':
-                    $is_public = 'Yes';
-                    break;
                 case 'Website':
+                case 'Webpage':
                     $is_public = 'Yes';
                     break;
                 case 'Category':
@@ -272,10 +261,6 @@ trait ImageSubject {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql";
-                exit;
             }
 
 
@@ -302,7 +287,6 @@ trait ImageSubject {
         $sql              = sprintf(
             "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ", prepare_mysql($subject), $this->id
         );
-        //print $sql;
 
 
         if ($result = $this->db->query($sql)) {
@@ -380,10 +364,6 @@ trait ImageSubject {
                 $this->db->exec($sql);
                 $order++;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
 
         $this->update_main_image();
@@ -409,11 +389,7 @@ trait ImageSubject {
             $main_image_key = 0;
         }
 
-        //$this->data['Product Main Image']=$main_image_src;
-        //$this->data['Product Main Image Key']=$main_image_key;
-
-
-        $this->fast_update(
+           $this->fast_update(
             array(
                 $this->table_name.' Main Image'     => $main_image_src,
                 $this->table_name.' Main Image Key' => $main_image_key
@@ -450,10 +426,6 @@ trait ImageSubject {
             if ($row = $result->fetch()) {
                 $image_key = $row['Image Subject Image Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
 
 
@@ -512,8 +484,6 @@ trait ImageSubject {
             exit;
         }
 
-        //1474527 ,1576664
-
         return $images_slideshow;
     }
 
@@ -540,40 +510,10 @@ trait ImageSubject {
                 $image->delete();
 
 
-                $order_index = $this->reindex_order();
+                 $this->reindex_order();
 
 
-                /*
 
-                if ($this->table_name == 'Part') {
-
-                    foreach ($this->get_products('objects') as $product) {
-
-                        if (count($product->get_parts()) == 1) {
-                            $product->editor = $this->editor;
-
-
-                            $sql = sprintf(
-                                'SELECT `Image Subject Key` FROM `Image Subject Bridge` WHERE  `Image Subject Image Key`=%d  AND `Image Subject Object`="Product" AND   `Image Subject Object Key`=%d ',
-                                $row['Image Subject Image Key'], $product->id
-                            );
-
-
-                            if ($result2 = $this->db->query($sql)) {
-                                foreach ($result2 as $row2) {
-                                    $product->delete_image($row2['Image Subject Key']);
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                exit;
-                            }
-
-                        }
-
-                    }
-
-                }
-*/
 
             } else {
                 $this->error;
@@ -600,10 +540,6 @@ trait ImageSubject {
                 'UPDATE  `Image Subject Bridge` SET `Image Subject Order`=0  WHERE `Image Subject Key`=%d ', $key
             );
         }
-
-
-        //  print "$sql\n";
-
 
         $this->db->exec($sql);
 
