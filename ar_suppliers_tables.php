@@ -2503,8 +2503,17 @@ function delivery_checking_items($_data, $db, $user, $account) {
                 $data['Supplier Part Historic Key'], ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
             );
 
+           if($data['Part Units Per Package']==0){
+               $quantity_error='<i class="error fa fa-exclamation-circle" title="'._('Units per SKO is zero').'"></i> ';
+               $quantity=0;
+           }else{
+               $quantity_error='';
+               $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
 
-            $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
+           }
+
+
+
 
             if ($data['Metadata'] == '') {
                 $metadata = array();
@@ -2578,7 +2587,7 @@ function delivery_checking_items($_data, $db, $user, $account) {
                 'sko_edit_checked_quantity' => $edit_sko_checked_quantity,
                 'sko_checked_quantity'      => number($sko_checked_quantity),
                 'subtotals'                 => $subtotals,
-                'qty'                       => number($quantity),
+                'qty'                       => $quantity_error.number($quantity),
                 'items_qty'                 => $items_qty,
                 'placement'                 => $placement
             );
