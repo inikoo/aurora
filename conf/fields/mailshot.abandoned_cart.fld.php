@@ -53,13 +53,13 @@ if ($object->get('State Index') < 50) {
                 'formatted_value' => '<span id="Email_Campaign_Abandoned_Cart_Type_Inactive_field" class=" '.($object->get('Email Campaign Abandoned Cart Type') == 'Inactive' ? 'valid' : 'very_discreet_on_hover')
                     .'  button value valid  Email_Campaign_Abandoned_Cart_Type" onclick="toggle_email_campaign_abandoned_cart_type(this)" value="Inactive" field_type="radio_option" field="Email_Campaign_Abandoned_Cart_Type"  style="margin-right:40px"><i class=" radio far fa-fw  '
                     .($object->get('Email Campaign Abandoned Cart Type') == 'Inactive' ? 'fa-dot-circle' : 'fa-circle').'" aria-hidden="true"></i> <span >'
-                    ._('Inactive days').'  <i class="fa fa-arrow-from-right"></i></span></span>'
+                    ._('Inactive form more than days').'  <i class="fa fa-arrow-from-right"></i></span></span>'
 
 
                     .'<span id="Email_Campaign_Abandoned_Cart_Type_Last_Updated_field" class=" '.($object->get('Email Campaign Abandoned Cart Type') == 'Last_Updated' ? 'valid' : 'very_discreet_on_hover')
                     .'  Email_Campaign_Abandoned_Cart_Type  value valid button" onclick="toggle_email_campaign_abandoned_cart_type(this)"  field_type="radio_option"  value="Last_Updated" field="Email_Campaign_Abandoned_Cart_Type"  style="margin-right:40px"><i class="radio far fa-fw '
                     .($object->get('Email Campaign Abandoned Cart Type') == 'Last_Updated' ? 'fa-dot-circle' : 'fa-circle').'" aria-hidden="true"></i> <span >'
-                    ._('Order last updated').' <i class="fa fa-arrow-from-left"></i></span></span>',
+                    ._('Order last updated with in').' <i class="fa fa-arrow-from-left"></i></span></span>',
 
 
                 'label'    => _('Type'),
