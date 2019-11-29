@@ -2446,15 +2446,14 @@ class Page extends DB_Table {
         }
 
 
-
         foreach ($block['items'] as $item_key => $item) {
 
 
             if ($item['type'] == 'category') {
 
                 $sql = sprintf(
-                    "SELECT `Category Label`,`Webpage URL`,`Webpage Code`,`Page Key`,`Category Code`,`Product Category Active Products`,`Category Main Image Key`
-                   `Product Category Dimension` P      LEFT JOIN 
+                    "SELECT `Category Key`,`Category Label`,`Webpage URL`,`Webpage Code`,`Page Key`,`Category Code`,`Product Category Active Products`,`Category Main Image Key`
+                   from `Product Category Dimension` P      LEFT JOIN 
                    `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) 
                    LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
                 WHERE  `Product Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')  ", $item['category_key']
@@ -2463,10 +2462,17 @@ class Page extends DB_Table {
                 );
 
 
+
+
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
-                        $image_key = $this->data['Category Main Image Key'];
+                        $category=get_object('Category',$row['Category Key']);
+
+                        $image_key = $category->data['Category Main Image Key'];
+
+
+
 
                         if ($block['auto'] == true) {
                             $content_data['blocks'][$block_key]['items'][$item_key]['header_text'] = $row['Category Label'];
@@ -2477,6 +2483,8 @@ class Page extends DB_Table {
 
                             }
                         }else{
+
+
 
                             if($content_data['blocks'][$block_key]['items'][$item_key]['image_src']=='/art/nopic.png' ){
                                 $image_src = '/wi.php?id='.$image_key;
@@ -2500,7 +2508,7 @@ class Page extends DB_Table {
 
                         $content_data['blocks'][$block_key]['items'][$item_key]['link']         = $row['Webpage URL'];
                         $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code'] = $row['Webpage Code'];
-                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']  = $row['`Page Key'];
+                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']  = $row['Page Key'];
 
 
                     } else {
