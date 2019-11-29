@@ -1981,6 +1981,8 @@ class Supplier extends SubjectSupplier {
     function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
 
+        include_once 'utils/date_functions.php';
+
         $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
 
 
