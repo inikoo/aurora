@@ -1850,14 +1850,14 @@ function order_items($_data, $db, $user, $account) {
 
             $amount = '<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
 
-            if ($data['Part Package Weight'] > 0) {
+            if ($data['Part Package Weight'] > 0 and $units_per_sko!=0) {
                 $weight = weight(
                     $data['Part Package Weight'] * $data['Purchase Order Submitted Units'] / $units_per_sko
                 );
             } else {
                 $weight = '<i class="error fa fa-exclamation-circle"></i>';
             }
-            if ($data['Supplier Part Carton CBM'] > 0) {
+            if ($data['Supplier Part Carton CBM'] > 0  and  $units_per_sko!=0 and  $skos_per_carton!=0 ) {
                 $cbm = number(
                         $data['Purchase Order Submitted Units'] * $data['Supplier Part Carton CBM'] / $units_per_sko / $skos_per_carton
                     ).' m³';
@@ -1902,8 +1902,17 @@ function order_items($_data, $db, $user, $account) {
 
 
             $units_qty       = $data['Purchase Order Submitted Units'];
-            $skos_qty        = $units_qty / $units_per_sko;
-            $cartons_qty     = $skos_qty / $skos_per_carton;
+            if( $skos_per_carton!=0){
+                $skos_qty        = $units_qty / $units_per_sko;
+            }else{
+                $skos_qty=0;
+            }
+            if( $skos_per_carton!=0) {
+                $cartons_qty = $skos_qty / $skos_per_carton;
+            }else{
+                $cartons_qty=0;
+
+            }
             $transaction_key = $data['Purchase Order Transaction Fact Key'];
 
             if (
