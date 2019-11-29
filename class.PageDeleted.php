@@ -101,7 +101,7 @@ class PageDeleted {
         $stmt = $this->db->prepare($sql);
 
         $i = 1;
-        foreach ($this->data as $key => $value) {
+        foreach ($data as $key => $value) {
 
             $stmt->bindValue($i, $value);
             $i++;

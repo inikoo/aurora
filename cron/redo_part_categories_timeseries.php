@@ -30,7 +30,7 @@ $editor = array(
 $timeseries = get_time_series_config();
 
 $where = ' and `Part Category Key`=13227';
-//$where = '';
+$where = '';
 
 // OR ( `Part Category Status`='NotInUse' AND DATE(`Part Category Valid To`)=? ) ) ";
 
