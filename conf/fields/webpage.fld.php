@@ -196,7 +196,6 @@ $object_fields[] = array(
             'type'              => 'value',
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
 
-
         ),
         array(
             'id'   => 'Webpage_Name',

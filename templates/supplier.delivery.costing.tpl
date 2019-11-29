@@ -15,7 +15,7 @@
     }
 </style>
 
-<div style="border-bottom:1px solid #ccc;padding:20px;position: relative;min-height: 60px">
+<div  class="control_supplier_delivery_costing_container"  style="border-bottom:1px solid #ccc;padding:20px;position: relative;min-height: 60px">
 
     <div style="float: left;width: 800px">
         <table class="control_supplier_delivery_costing" data-currency_symbol="{$currency_symbol}" data-delivery_key="{$delivery->id}">
@@ -73,7 +73,7 @@
 
     </div>
 
-    <span  class="save_button save valid changed" style="float:right" onClick="save_costing()"> {t}Finish costing{/t} <i class="fa fa-cloud  " aria-hidden="true"></i></span>
+    <span  class="save_button save valid changed" style="float:right" > {t}Finish costing{/t} <i class="fa fa-cloud  " aria-hidden="true"></i></span>
 
 
     <div style="clear: both">

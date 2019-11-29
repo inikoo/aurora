@@ -318,7 +318,7 @@ $(function () {
     });
 
 
-    $tab.on('click', '.control_supplier_delivery_costing .save_button', function () {
+    $tab.on('click', '.control_supplier_delivery_costing_container .save_button', function () {
 
         if (!$(this).hasClass('valid')) {
             return;
