@@ -711,6 +711,8 @@ class Page extends DB_Table {
         if (isset($content_data['blocks'])) {
             foreach ($content_data['blocks'] as $block_key => $block) {
                 $block_index++;
+
+
                 switch ($block['type']) {
                     case 'category_products':
                         $this->reindex_category_products($block_index);
@@ -2444,7 +2446,6 @@ class Page extends DB_Table {
         }
 
 
-        //    print_r($block['items']);
 
         foreach ($block['items'] as $item_key => $item) {
 
@@ -2465,30 +2466,31 @@ class Page extends DB_Table {
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
+                        $image_key = $this->data['Category Main Image Key'];
 
                         if ($block['auto'] == true) {
                             $content_data['blocks'][$block_key]['items'][$item_key]['header_text'] = $row['Category Label'];
-
-
-                            $image_key = $this->data['Category Main Image Key'];
-
-
                             if ($image_key) {
-                                $image_src = '/image.php?id='.$image_key;
+                                $image_src = '/wi.php?id='.$image_key;
                             } else {
                                 $image_src = '/art/nopic.png';
 
                             }
+                        }else{
 
-                            if ($image_src != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
-
-                                $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = $image_src;
-
-                                $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
-                                $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
+                            if($content_data['blocks'][$block_key]['items'][$item_key]['image_src']=='/art/nopic.png' ){
+                                $image_src = '/wi.php?id='.$image_key;
+                            }else{
+                                $image_src=$content_data['blocks'][$block_key]['items'][$item_key]['image_src'];
                             }
 
+                        }
 
+
+                        if ($image_src != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
+                            $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = $image_src;
+                            $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
+                            $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
                         }
 
 
@@ -2518,20 +2520,26 @@ class Page extends DB_Table {
                             $product = get_object('Public_Product', $item['product_id']);
                             $product->load_webpage();
 
+                            $image_src = $product->get('Image');
 
                             if ($block['auto'] == true) {
                                 $content_data['blocks'][$block_key]['items'][$item_key]['header_text'] = $product->get('Name');
+                            }else{
 
-                                $image_src = $product->get('Image');
-                                if ($image_src != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
-
-                                    $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = $image_src;
-
-                                    $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
-                                    $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
+                                if($content_data['blocks'][$block_key]['items'][$item_key]['image_src']!='/art/nopic.png' ){
+                                    $image_src =$content_data['blocks'][$block_key]['items'][$item_key]['image_src'];
                                 }
 
                             }
+
+                            if ($image_src != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
+
+                                $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = $image_src;
+
+                                $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
+                                $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
+                            }
+
 
 
                             $content_data['blocks'][$block_key]['items'][$item_key]['link']         = $product->webpage->get('URL');
@@ -3399,29 +3407,7 @@ class Page extends DB_Table {
         $this->reindex_items();
         $this->update_navigation();
 
-        /*
-        switch ($this->get('Webpage Scope')) {
-            case 'Category Products':
 
-                $sql  = "SELECT `Product Webpage Key` FROM `Website Webpage Scope Map` left join `Product Dimension` on (`Product ID`=`Website Webpage Scope Scope Key`) WHERE `Website Webpage Scope Webpage Key`=? and `Website Webpage Scope Scope`='Product'";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $this->id
-                    )
-                );
-                while ($row = $stmt->fetch()) {
-                    $webpage = get_object('Webpage', $row['Product Webpage Key']);
-                    if ($webpage->id) {
-                        $webpage->reindex_items();
-                        $webpage->update_navigation();
-                    }
-                }
-
-
-        }
-
-        */
 
     }
 

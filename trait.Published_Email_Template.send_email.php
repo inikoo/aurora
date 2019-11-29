@@ -366,7 +366,6 @@ trait Send_Email {
             );
             $this->db->exec($sql);
 
-
             $email_tracking->update_state('Sent');
 
 
@@ -932,7 +931,6 @@ trait Send_Email {
 
 
                 $info .= sprintf('<p style="border:1px solid orange;width: 100%%;padding-top: 20px;padding-bottom: 20px"><span style="padding:0px 20px;color:#777">%s</span></p>', $note);
-
                 $link = sprintf(
                     '%s/orders/%d/%d/invoice/%d', $this->account->get('Account System Public URL'),
 
