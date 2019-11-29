@@ -62,6 +62,7 @@ function date_frequency_range($db, $frequency, $first, $last) {
             );
 
 
+
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     $dates[$row['date_index']] = array(

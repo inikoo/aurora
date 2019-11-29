@@ -104,8 +104,7 @@ trait PartCategory {
     }
 
 
-    function update_part_timeseries_record($timeseries, $to, $from, $fork_key = false) {
-
+    function update_part_timeseries_record($timeseries,  $from,$to, $fork_key = false) {
 
         if ($this->get('Category Branch Type') == 'Root') {
 
@@ -138,9 +137,13 @@ trait PartCategory {
             $this->db->exec($sql);
         }
 
+
+
         $timeseries->fast_update(
             array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
         );
+
+
 
 
         $index = 0;
@@ -149,6 +152,7 @@ trait PartCategory {
             list($sold_amount, $deliveries, $skos) = $this->get_part_timeseries_record_data($timeseries, $date_frequency_period);
 
             //print_r($date_frequency_period);
+            //print "$sold_amount, $deliveries, $skos\n";
             $_date = gmdate(
                 'Y-m-d', strtotime($date_frequency_period['from'].' +0:00')
             );
@@ -162,6 +166,8 @@ trait PartCategory {
                     $deliveries, $skos, $sold_amount, prepare_mysql('Data'), $timeseries_record_key
 
                 );
+                
+                //print $sql."\n";
 
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();

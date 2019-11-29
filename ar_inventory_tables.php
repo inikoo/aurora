@@ -2070,7 +2070,7 @@ function sales_history($_data, $db, $user, $account) {
     );
 
 
-    //  print $sql;
+    // print $sql;
 
     $last_year_data = array();
 
