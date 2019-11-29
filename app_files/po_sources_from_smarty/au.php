@@ -185,10 +185,13 @@ gettext("Set extra costs");
 gettext("exclude 0 SKOs in");
 
 /* ../templates//supplier.delivery.costing.tpl */
-gettext("distribute equally each item ");
+gettext("Distribute");
 
 /* ../templates//supplier.delivery.costing.tpl */
-gettext("Distribute");
+gettext("Distribute equally each item");
+
+/* ../templates//supplier.delivery.costing.tpl */
+gettext("Distribute depending on value");
 
 /* ../templates//supplier.delivery.costing.tpl */
 gettext("Set extra costs");
@@ -197,10 +200,13 @@ gettext("Set extra costs");
 gettext("exclude 0 SKOs in");
 
 /* ../templates//supplier.delivery.costing.tpl */
-gettext("distribute equally each item ");
+gettext("Distribute");
 
 /* ../templates//supplier.delivery.costing.tpl */
-gettext("Distribute");
+gettext("Distribute equally each item");
+
+/* ../templates//supplier.delivery.costing.tpl */
+gettext("Distribute depending on value");
 
 /* ../templates//supplier.delivery.costing.tpl */
 gettext("Finish costing");
@@ -5611,6 +5617,9 @@ gettext("Add category");
 /* ../templates//theme_1/blk.see_also.theme_1.tpl */
 gettext("Delete this section");
 
+/* ../templates//theme_1/blk.see_also.theme_1.tpl */
+gettext("See also");
+
 /* ../templates//theme_1/blk.control.map.theme_1.tpl */
 gettext("Margin");
 
@@ -5652,6 +5661,45 @@ gettext("Log out");
 
 /* ../templates//theme_1/header.theme_1.mobile.tpl */
 gettext("All rights reserved");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Delivery Address");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Items Gross");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Discounts");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Items Net");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Amount off");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Charges");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Shipping");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Net");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Tax");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Total");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Credit");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("To pay");
+
+/* ../templates//theme_1/blk.client_basket.theme_1.tpl */
+gettext("Continue shopping");
 
 /* ../templates//theme_1/blk.control.clients_orders.theme_1.tpl */
 gettext("Backstage view");
@@ -7472,6 +7520,9 @@ gettext("Set order for collection");
 gettext("Order for collection");
 
 /* ../templates//order_delivery_addresses_directory.tpl */
+gettext("Order for collection");
+
+/* ../templates//order_delivery_addresses_directory.tpl */
 gettext("Delivery to this address");
 
 /* ../templates//order_delivery_addresses_directory.tpl */
@@ -8415,6 +8466,15 @@ gettext("Amount");
 
 /* ../templates//columns/customer.active_portfolio.cols.tpl */
 gettext("Last order");
+
+/* ../templates//columns/webpage.containers.cols.tpl */
+gettext("Code");
+
+/* ../templates//columns/webpage.containers.cols.tpl */
+gettext("Name");
+
+/* ../templates//columns/webpage.containers.cols.tpl */
+gettext("Type");
 
 /* ../templates//columns/supplier_part.feedback.cols.tpl */
 gettext("Part");
@@ -21606,6 +21666,12 @@ gettext("Inactive user");
 
 /* ../templates//users_recipients_items.edit.tpl */
 gettext("No email set");
+
+/* ../templates//move_all_parts_from_location.tpl */
+gettext("Invalid value");
+
+/* ../templates//move_all_parts_from_location.tpl */
+gettext("Remove from here after");
 
 /* ../templates//mixed_recipients.edit.tpl */
 gettext("No recipients set");

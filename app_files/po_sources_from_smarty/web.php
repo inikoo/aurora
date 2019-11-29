@@ -658,6 +658,168 @@ gettext("Forbidden");
 /* ../EcomB2B/templates//theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl */
 gettext("You are not logged in");
 
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Customer details");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Customer details");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Delivery address");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Customer's orders");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Orders");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Customer details");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Code");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Code");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Unique customer code");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Company");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Company");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Company");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Contact name");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Name");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Name");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Mobile");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Mobile");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Mobile");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Email");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Email");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Email");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Save");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Delivery address");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Address Line 1");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Address Line 2");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Sorting code");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Country");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Save");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Orders");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Number");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Date");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Status");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Total");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Error");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Error");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Invalid email");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Email address is already in registered");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Error");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
+/* ../EcomB2B/templates//theme_1/blk.client.theme_1.EcomB2B.tpl */
+gettext("Required field");
+
 /* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
 gettext("Search");
 
@@ -712,6 +874,9 @@ gettext("Copyright");
 /* ../EcomB2B/templates//theme_1/header.theme_1.EcomB2B.mobile.tpl */
 gettext("All rights reserved");
 
+/* ../EcomB2B/templates//theme_1/blk.see_also.theme_1.EcomB2B.tpl */
+gettext("See also");
+
 /* ../EcomB2B/templates//theme_1/placed_order.theme_1.EcomB2B.tablet.tpl */
 gettext("Order number");
 
@@ -747,6 +912,18 @@ gettext("Total");
 
 /* ../EcomB2B/templates//theme_1/_order_items.theme_1.EcomB2B.tpl */
 gettext("Order number");
+
+/* ../EcomB2B/templates//theme_1/_order_items.theme_1.EcomB2B.tpl */
+gettext("Invalid value");
+
+/* ../EcomB2B/templates//theme_1/_order_items.theme_1.EcomB2B.tpl */
+gettext("Add product");
+
+/* ../EcomB2B/templates//theme_1/_order_items.theme_1.EcomB2B.tpl */
+gettext("Product code");
+
+/* ../EcomB2B/templates//theme_1/_order_items.theme_1.EcomB2B.tpl */
+gettext("Quantity");
 
 /* ../EcomB2B/templates//theme_1/_order_items.theme_1.EcomB2B.tpl */
 gettext("Code");
@@ -1678,6 +1855,57 @@ gettext("Empty basket");
 /* ../EcomB2B/templates//theme_1/blk.basket_no_order.theme_1.EcomB2B.tablet.tpl */
 gettext("No products has been ordered");
 
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Order number");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Customer");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Delivery Address:");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Items Gross");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Items Discounts");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Items Net");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Amount off");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Charges");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Shipping");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("We will contact you");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Total Net");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Tax");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Total");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Paid");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Credit");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("To pay");
+
+/* ../EcomB2B/templates//theme_1/blk.client_basket.theme_1.EcomB2B.tpl */
+gettext("Continue shopping");
+
 /* ../EcomB2B/templates//theme_1/blk.unsubscribe.theme_1.EcomB2B.tpl */
 gettext("Please, go to your profile and unsubscribe");
 
@@ -2206,6 +2434,9 @@ gettext("Thanks");
 /* ../EcomB2B/templates//theme_1/_search_results.theme_1.EcomB2B.mobile.tpl */
 gettext("Results");
 
+/* ../EcomB2B/templates//theme_1/blk.see_also.theme_1.EcomB2B.mobile.tpl */
+gettext("See also");
+
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
 gettext("Ordered");
 
@@ -2254,14 +2485,8 @@ gettext("Login");
 /* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
 gettext("Register");
 
-/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
-gettext("Padding");
-
-/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
-gettext("Delete");
-
-/* ../EcomB2B/templates//theme_1/blk.category_products.theme_1.EcomB2B.tablet.tpl */
-gettext("Close text edit mode");
+/* ../EcomB2B/templates//theme_1/blk.see_also.theme_1.EcomB2B.tablet.tpl */
+gettext("See also");
 
 /* ../EcomB2B/templates//theme_1/webpage_blocks.theme_1.EcomB2B.tablet.tpl */
 gettext("Valid until");
@@ -2777,7 +3002,7 @@ gettext("We will contact you");
 gettext("Total Net");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.tpl */
-gettext("Taxx");
+gettext("Tax");
 
 /* ../EcomB2B/templates//theme_1/blk.basket.theme_1.EcomB2B.tpl */
 gettext("Total");

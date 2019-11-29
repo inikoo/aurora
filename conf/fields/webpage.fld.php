@@ -191,7 +191,7 @@ $object_fields[] = array(
             'edit'              => ($edit ? 'string' : ''),
             'value'             => htmlspecialchars($object->get('Webpage Code')),
             'formatted_value'   => $object->get('Code'),
-            'label'             => ucfirst($object->get_field_label('Webpage Code')).' <span class="warning small '.($new ? 'hide' : '').'   "><i class="fa fa-exclamation-triangle    " aria-hidden="true"></i> '._('URL will change').'</span>',
+            'label'             => _('Code').' <span class="small">(<i class="fa fa-exclamation-triangle warning padding_right_5  '.($new ? 'hide' : '').' " title="'._('URL will change').'"></i>URL)</span>',
             'required'          => true,
             'type'              => 'value',
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
@@ -204,27 +204,14 @@ $object_fields[] = array(
 
             'value'           => htmlspecialchars($object->get('Webpage Name')),
             'formatted_value' => $object->get('Webpage Name'),
-            'label'           => ucfirst($object->get_field_label('Webpage Name')),
+            'label'           => _('Name').' <span class="small">(Links/Browser title)</span>',
             'required'        => true,
             'type'            => 'value',
 
 
         ),
 
-        /*
-        array(
-            'id'   => 'Webpage_Browser_Title',
-            'edit' => ($edit ? 'string' : ''),
 
-            'value'           => htmlspecialchars($object->get('Webpage Browser Title')),
-            'formatted_value' => $object->get('Webpage Browser Title'),
-            'label'           => ucfirst($object->get_field_label('Webpage Browser Title')),
-            'required'        => true,
-            'type'            => 'value',
-
-
-        ),
-        */
 
 
         array(
