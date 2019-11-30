@@ -11,6 +11,10 @@
 */
 
 use \Gumlet\ImageResize;
+use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -123,7 +127,7 @@ function fork_export($job) {
 
 
     $objPHPExcel = new Spreadsheet();
-    \PhpOffice\PhpSpreadsheet\Cell\Cell::setValueBinder(new \PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder());
+    Cell::setValueBinder(new AdvancedValueBinder());
 
 
     $objPHPExcel->getProperties()->setCreator($creator)->setLastModifiedBy($creator)->setTitle($title)->setSubject($subject)->setDescription($description)->setKeywords($keywords)->setCategory(
@@ -140,7 +144,7 @@ function fork_export($job) {
 
     if (empty($fork_data['fields']) or $fork_data['fields'] == '') {
 
-        $sql = sprintf("update `Download Dimension` set `Download State`='Error' where `Download Key`=%d  ", download_key);
+        $sql = sprintf("update `Download Dimension` set `Download State`='Error' where `Download Key`=%d  ", $download_key);
         $db->exec($sql);
 
         return 1;
@@ -174,23 +178,10 @@ function fork_export($job) {
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 
-           // print_r($row);
-            //usleep(10000);
-
-            // exit;
 
             if ($row_index == 1) {
 
-                //print_r($fork_data);
-                //	print_r($row);
 
-
-                /*
-                foreach ($fork_data['fields'] as $field_key) {
-                    if (isset($field_set[$field_key]))
-                        $fields.=$field_set[$field_key]['name'].',';
-                }
-*/
 
 
                 $char_index = 1;
@@ -219,13 +210,7 @@ function fork_export($job) {
 
 
                 }
-                /*
-                foreach ($row as $_key=>$value) {
-                    $char=number2alpha($char_index);
-                    $objPHPExcel->getActiveSheet()->setCellValue($char . $row_index, strip_tags($_key));
-                    $char_index++;
-                }
-                */
+
                 $row_index++;
             }
 
@@ -270,7 +255,7 @@ function fork_export($job) {
                         }
 
                         $materials = ucfirst(
-                            preg_replace('/^\, /', '', $materials)
+                            preg_replace('/^, /', '', $materials)
                         );
 
                     }
@@ -287,7 +272,7 @@ function fork_export($job) {
 
                         $columns_no_resize[] = $char;
 
-                        $objDrawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();    //create object for Worksheet drawing
+                        $objDrawing = new Drawing();    //create object for Worksheet drawing
                         $objDrawing->setName('Image');        //set name to image
                         $objDrawing->setDescription('Item image'); //set description to image
 
@@ -445,7 +430,6 @@ function fork_export($job) {
 
 
             if (microtime(true) > $show_feedback) {
-                //print 'xx '.microtime(true) ." -> $show_feedback\n";
 
 
                 $sql = sprintf(
@@ -498,31 +482,33 @@ function fork_export($job) {
 
             }
 
-
-            //
-
-
         }
     }
 
 
+    try {
+        $sheet = $objPHPExcel->getActiveSheet();
 
+        $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+        $cellIterator->setIterateOnlyExistingCells(true);
 
-    $sheet        = $objPHPExcel->getActiveSheet();
-    $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
-    $cellIterator->setIterateOnlyExistingCells(true);
-    /** @var \PhpOffice\PhpSpreadsheet\Cell\Cell $cell */
-    foreach ($cellIterator as $cell) {
+        foreach ($cellIterator as $cell) {
 
-        // print_r($cell->getColumn());
-        if (in_array($cell->getColumn(), $columns_no_resize)) {
-            $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
-        } else {
-            $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+            // print_r($cell->getColumn());
+            if (in_array($cell->getColumn(), $columns_no_resize)) {
+                $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
+            } else {
+                $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            }
 
         }
 
+
+    } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
+
     }
+
 
     $objPHPExcel->getActiveSheet()->freezePane('A2');
 
@@ -533,19 +519,14 @@ function fork_export($job) {
 
         case('csv'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-
             IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('')->setLineEnding("\r\n")->setSheetIndex(0)->save($output_file);
             break;
         case('xlsx'):
-
             $output_file = $download_path.$output_filename.'.'.$output_type;
-
             IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save($output_file);
             break;
         case('xls'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-
-
             IOFactory::createWriter($objPHPExcel, 'Xls')->save($output_file);
             break;
         case('pdf'):
@@ -553,7 +534,7 @@ function fork_export($job) {
 
                $objPHPExcel->getActiveSheet()->setShowGridLines(false);
             $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(
-                \PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE
+                PageSetup::ORIENTATION_LANDSCAPE
             );
 
 
