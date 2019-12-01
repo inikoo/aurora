@@ -145,7 +145,7 @@ function fork_sales_correlation($job) {
          */
         $category = get_object('Category', $data['key']);
 
-        print 'Calculating correlation cat: '.$category->get('Code')."\n";
+        //print 'Calculating correlation cat: '.$category->get('Code')."\n";
         $category->update_product_category_sales_correlations($db_replica);
     } elseif ($data['object'] == 'Product') {
 
