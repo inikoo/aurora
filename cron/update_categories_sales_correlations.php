@@ -24,7 +24,7 @@ $editor = array(
 );
 
 $print_est = false;
-$fork = false;
+$fork      = false;
 
 
 if (!empty($argv[1]) and $argv[1] == 'Departments') {
@@ -34,12 +34,12 @@ if (!empty($argv[1]) and $argv[1] == 'Departments') {
 
 }
 
-if (!empty($argv[2])){
+if (!empty($argv[2])) {
 
     if ($argv[2] == 'Verbose') {
         $print_est = true;
-    } elseif($argv[2] == 'Fork') {
-        $fork=true;
+    } elseif ($argv[2] == 'Fork') {
+        $fork = true;
     }
 
 }
@@ -50,11 +50,6 @@ if (!empty($argv[3]) and is_numeric($argv[3]) and $argv[3] > 0) {
 } else {
     $time_limit = 0;
 }
-
-
-
-
-
 
 
 $dns_replica = $dns_replicas[array_rand($dns_replicas, 1)];
@@ -92,19 +87,18 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
 
 
-
-    if($fork){
+    if ($fork) {
 
         new_housekeeping_fork(
             'au_sales_correlation', array(
             'object' => 'Category',
             'key'    => $row['Category Key'],
-            'editor'=>$editor
+            'editor' => $editor
 
         ), $account->get('Account Code'), $db
         );
 
-    }else {
+    } else {
 
         /**
          * @var $category \ProductCategory

@@ -114,7 +114,6 @@ function fork_redo_time_series($job) {
 
 function fork_sales_correlation($job) {
 
-
     global $account, $db, $session;// remove the global $db and $account is removed
 
 
@@ -138,11 +137,15 @@ function fork_sales_correlation($job) {
     $db_replica->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+
+
     if ($data['object'] == 'Category') {
         /**
          * @var $category \ProductCategory
          */
         $category = get_object('Category', $data['key']);
+
+        print 'Calculating correlation cat: '.$category->get('Code')."\n";
         $category->update_product_category_sales_correlations($db_replica);
     } elseif ($data['object'] == 'Product') {
 

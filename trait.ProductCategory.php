@@ -1236,7 +1236,7 @@ trait ProductCategory {
                         }
 
 
-                        // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB $customers_zero  $person_correlation\n ";
+                         print "\t\t ".$this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB $customers_zero  $person_correlation\n ";
 
 
                         $sql = sprintf(
