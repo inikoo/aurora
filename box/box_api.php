@@ -190,6 +190,7 @@ if ($authenticated == 'OK') {
 
                     $_response = array(
                         'state' => 'Fail',
+                        'msg'=>$err
                     );
 
                 } else {

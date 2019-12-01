@@ -3753,6 +3753,7 @@ class Product extends Asset {
         }
 
 
+
         if ($result2 = $db_replica->query($sql)) {
 
             foreach ($result2 as $row2) {

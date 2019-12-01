@@ -10,6 +10,22 @@
 */
 
 require_once __DIR__.'/common.php';
+include_once 'utils/new_fork.php';
+
+$editor = array(
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => 'System',
+    'Author Alias' => 'System',
+);
+
+$print_est = false;
+$fork = false;
+
 
 if (!empty($argv[1]) and $argv[1] == 'Departments') {
     $subject = 'Category';
@@ -18,17 +34,28 @@ if (!empty($argv[1]) and $argv[1] == 'Departments') {
 
 }
 
-if (!empty($argv[2]) and is_numeric($argv[2]) and $argv[2] > 0) {
-    $time_limit = ceil(3600 * $argv[2]);
+if (!empty($argv[2])){
+
+    if ($argv[2] == 'Verbose') {
+        $print_est = true;
+    } elseif($argv[2] == 'Fork') {
+        $fork=true;
+    }
+
+}
+
+
+if (!empty($argv[3]) and is_numeric($argv[3]) and $argv[3] > 0) {
+    $time_limit = ceil(3600 * $argv[3]);
 } else {
     $time_limit = 0;
 }
 
-if (!empty($argv[3]) and $argv[3] == 'Verbose') {
-    $print_est = true;
-} else {
-    $print_est = false;
-}
+
+
+
+
+
 
 $dns_replica = $dns_replicas[array_rand($dns_replicas, 1)];
 $db_replica  = new PDO(
@@ -63,24 +90,41 @@ $stmt->execute(
     )
 );
 while ($row = $stmt->fetch()) {
-    /**
-     * @var $category \ProductCategory
-     */
-    $category = get_object('Category', $row['Category Key']);
-    $category->update_product_category_sales_correlations($db_replica);
 
 
-    $contador++;
-    $lap_time1 = date('U');
-    if ($print_est) {
-        print 'Cate sales correlation '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
-                "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
-            )."h  ($contador/$total) \r";
-    }
 
-    if ($time_limit > 0 and ($lap_time1 - $lap_time0) > $time_limit) {
-        print "Finishing after timeout reached\n";
-        break;
+    if($fork){
+
+        new_housekeeping_fork(
+            'au_sales_correlation', array(
+            'object' => 'Category',
+            'key'    => $row['Category Key'],
+            'editor'=>$editor
+
+        ), $account->get('Account Code'), $db
+        );
+
+    }else {
+
+        /**
+         * @var $category \ProductCategory
+         */
+        $category = get_object('Category', $row['Category Key']);
+        $category->update_product_category_sales_correlations($db_replica);
+
+
+        $contador++;
+        $lap_time1 = date('U');
+        if ($print_est) {
+            print 'Cate sales correlation '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
+        }
+
+        if ($time_limit > 0 and ($lap_time1 - $lap_time0) > $time_limit) {
+            print "Finishing after timeout reached\n";
+            break;
+        }
     }
 }
 

@@ -28,7 +28,7 @@ function fork_take_webpage_screenshot($job) {
     } catch (Exception $e) {
 
         echo $e->getMessage();
-        print "error $url\n";
+        print "error $webpage->get('URL')\n";
     }
 
 
@@ -108,6 +108,50 @@ function fork_redo_time_series($job) {
             break;
     }
 
+
+}
+
+
+function fork_sales_correlation($job) {
+
+
+    global $account, $db, $session;// remove the global $db and $account is removed
+
+
+    if (!$_data = get_fork_metadata($job)) {
+        return true;
+    }
+
+    list($account, $db, $data, $editor) = $_data;
+
+
+
+    include "keyring/dns.".$account->get('Account Code').".php";
+    /**
+     * @var $dns_replicas array
+     */
+    $dns_replica = $dns_replicas[array_rand($dns_replicas, 1)];
+
+    $db_replica = new PDO(
+        "mysql:host=".$dns_replica['host'].";dbname=".$dns_replica['db'].";charset=utf8mb4", $dns_replica['user'], $dns_replica['pwd']
+    );
+    $db_replica->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+    if ($data['object'] == 'Category') {
+        /**
+         * @var $category \ProductCategory
+         */
+        $category = get_object('Category', $data['key']);
+        $category->update_product_category_sales_correlations($db_replica);
+    } elseif ($data['object'] == 'Product') {
+
+        $product = get_object('Product', $data['key'], false, $db);
+        $product->update_sales_correlations($data['options']['type'], $data['options']['limit'], $db_replica);
+    }
+
+
+    return true;
 
 }
 

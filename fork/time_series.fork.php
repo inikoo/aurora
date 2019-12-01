@@ -49,4 +49,3 @@ function fork_time_series($job) {
 }
 
 
-?>
