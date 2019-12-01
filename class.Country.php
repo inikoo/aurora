@@ -15,14 +15,28 @@
 
 
 class Country {
-
+    /**
+     * @var \PDO
+     */
+    public $db;
+    /**
+     * @var  array
+     */
     var $data = array();
+    /**
+     * @var  integer|bool
+     */
     var $id = false;
 
-    function __construct($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false, $_db = false) {
 
-        global $db;
-        $this->db = $db;
+
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
 
         if ($arg1 == 'id' and is_numeric($arg2)) {
@@ -37,22 +51,15 @@ class Country {
             $this->get_data('find', $arg2);
 
             return;
-        } elseif (preg_match('/^(minicode|2alpha|2 alpha code)$/i', $arg1)) {
-            $this->get_data('2 alpha code', $arg2);
+        } elseif ($arg1 == '2alpha') {
+            $this->get_data('2alpha', $arg2);
 
             return;
-        } elseif ($arg1 == 'name' and $arg2 != '') {
-            $name = $arg2;
-            $this->get_data('name', $name);
+        } elseif ($arg1 == 'name') {
+            $this->get_data('name', $arg2);
 
             return;
-        } elseif ($arg1 == 'new' and is_array($arg2)) {
-            $this->create('name', $name);
-
-            return;
-        }
-
-        if (is_numeric($arg1) and !$arg2) {
+        } elseif (is_numeric($arg1) and !$arg2) {
             $this->get_data('id', $arg1);
         }
 
@@ -84,7 +91,6 @@ class Country {
             }
 
 
-
             if (strlen($id) == 3) {
                 $sql = sprintf(
                     "SELECT * FROM kbase.`Country Dimension` C WHERE `Country Code`=%s", prepare_mysql($id)
@@ -94,7 +100,7 @@ class Country {
 
                     return;
                 }
-            }elseif (strlen($id) == 2) {
+            } elseif (strlen($id) == 2) {
                 $sql = sprintf(
                     "SELECT * FROM kbase.`Country Dimension` C WHERE `Country 2 Alpha Code`=%s", prepare_mysql($id)
                 );
@@ -144,7 +150,7 @@ class Country {
             }
 
             return;
-        } elseif ($key == '2 alpha code' or $key == '2alpha') {
+        } elseif ($key == '2alpha') {
             $sql = sprintf(
                 "SELECT * FROM kbase.`Country Dimension` C WHERE `Country 2 Alpha Code`=%s", prepare_mysql($id)
             );
@@ -171,29 +177,11 @@ class Country {
                 $this->id = $this->data['Country Key'];
             }
 
-            return;
 
-            $sql = sprintf(
-                "SELECT * FROM kbase.`Country Dimension` C WHERE `Country Official Name`=%s", prepare_mysql($id)
-            );
-            if ($this->data = $this->db->query($sql)->fetch()) {
-                $this->id = $this->data['Country Key'];
-            }
-
-            return;
-            $sql = sprintf(
-                "SELECT * FROM kbase.`Country Dimension` C WHERE `Country Native Name`=%s", prepare_mysql($id)
-            );
-            if ($this->data = $this->db->query($sql)->fetch()) {
-                $this->id = $this->data['Country Key'];
-            }
-
-            return;
         }
 
 
     }
-
 
     function get($key) {
 
@@ -223,65 +211,20 @@ class Country {
 
     }
 
-
-    function get_formatted_exchange_reverse($currency_code, $date = false, $display = '') {
-        switch ($display) {
-            case('tr'):
-
-                return '<tr><td>'.money(1, $currency_code).'</td><td>=</td><td>'.money(
-                        $this->exchange($currency_code, $date), $this->data['Country Currency Code']
-                    )."</td></tr>";
-
-                break;
-            default:
-                return money(1, $currency_code).'='.money(
-                        $this->exchange($currency_code, $date), $this->data['Country Currency Code']
-                    );
+    function get_alias() {
+        $alias = array();
+        $sql   = "select `Country Alias` from kbase.`Country Alias Dimension` where `Country Alias Code`=? and `Country Alias Type` in ('Misspelling','Short Name','Alias') ";
+        $stmt  = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->data['Country Code']
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $alias[] = $row['Country Alias'];
         }
 
-    }
-
-    function exchange($currency_code, $date = false) {
-        include_once 'utils/currency_functions.php';
-
-
-        if(!$date){
-            $exchange= currency_conversion($currency_code,$this->data['Country Currency Code']);
-        }else{
-            $exchange=  get_historic_exchange($currency_code,$this->data['Country Currency Code'],$date);
-        }
-
-        return $exchange;
-
-    }
-
-    function get_formatted_exchange($currency_code, $date = false, $display = '') {
-        switch ($display) {
-            case('tr'):
-
-                return '<tr><td>'.money(1, $this->data['Country Currency Code']).'</td><td>=</td><td>'.money(
-                        1 / $this->exchange($currency_code, $date), $currency_code
-                    )."</td></tr>";
-
-                break;
-            default:
-
-                return money(1, $this->data['Country Currency Code']).'='.money(
-                        1 / $this->exchange($currency_code, $date), $currency_code
-                    );
-        }
-    }
-
-    function get_country_name($locale = 'en_GB') {
-        /*
-        include 'country_localized_names.php';
-        if (array_key_exists($locale,$country_names)) {
-            if (isset( $country_names[$locale][$this->data['Country 2 Alpha Code']])) {
-                return $country_names[$locale][$this->data['Country 2 Alpha Code']];
-            }
-        }
-        */
-        return $this->data['Country Name'];
+        return $alias;
 
     }
 
@@ -289,4 +232,4 @@ class Country {
 }
 
 
-?>
+

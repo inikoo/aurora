@@ -4043,6 +4043,13 @@ class Customer extends Subject {
         return false;
     }
 
+    function index_elastic_search(){
+        include_once 'utils/ES_Indexer.class.php';
+        $account=get_object('Account',1);
+        $indexer=new ES_indexer($account->get('Code'),$this,$this->db);
+        $indexer->add_customer();
+    }
+
 
 }
 

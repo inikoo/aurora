@@ -313,4 +313,4 @@ $sql_totals
 $fields
     = "`Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date`";
 
-?>
+
