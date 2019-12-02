@@ -1273,7 +1273,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'     => 'part_stock_run',
-                    'part_sku' => $this->id,
+                    'part_sku' => $part_location->part->sku,
                 ), $account->get('Account Code')
                 );
 
