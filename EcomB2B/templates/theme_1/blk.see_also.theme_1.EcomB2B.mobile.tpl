@@ -16,7 +16,7 @@
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="    _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
-    <h1 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;" >{if !empty($data.overwrite_title)}{$data.overwrite_title}{elseif !empty($lables._see_also)}{$lables._see_also}{else}{t}See also{/t}{/if}</h1>
+    <h1 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;" >{if !empty($lables._see_also)}{$lables._see_also}{else}{t}See also{/t}{/if}</h1>
 
 
     <div class="store-items clear" style="margin-top:20px;clear: both">
