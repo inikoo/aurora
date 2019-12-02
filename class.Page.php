@@ -1910,7 +1910,7 @@ class Page extends DB_Table {
 
 
                 $sql  =
-                    'select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline" and `Page Key`!=?  and `Webpage Website Key`=? and `Webpage Code`>? order by `Webpage Code`,`Page Key` ';
+                    "select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`='Cats'  and `Webpage State`!='Offline' and `Page Key`!=?  and `Webpage Website Key`=? and `Webpage Code`>? order by `Webpage Code`,`Page Key` ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
                     array(
@@ -1929,7 +1929,7 @@ class Page extends DB_Table {
 
                 } else {
                     $sql   =
-                        'select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline"  and `Page Key`!=?  and `Webpage Website Key`=?   order by `Webpage Code`,`Page Key` ';
+                        "select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`='Cats'  and `Webpage State`!='Offline'  and `Page Key`!=?  and `Webpage Website Key`=?   order by `Webpage Code`,`Page Key` ";
                     $stmt2 = $this->db->prepare($sql);
                     $stmt2->execute(
                         array(
@@ -1941,12 +1941,12 @@ class Page extends DB_Table {
                         $next_key = $row2['Page Key'];
 
                     } else {
-
+                        $next_key=0;
                     }
                 }
 
                 $sql  =
-                    'select `Page Key`,`Webpage Code` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline" and `Page Key`!=?  and `Webpage Website Key`=? and `Webpage Code`<? order by `Webpage Code` desc ,`Page Key` desc  ';
+                    "select `Page Key`,`Webpage Code` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`='Cats'  and `Webpage State`!='Offline' and `Page Key`!=?  and `Webpage Website Key`=? and `Webpage Code`<? order by `Webpage Code` desc ,`Page Key` desc";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
                     array(
@@ -1966,7 +1966,7 @@ class Page extends DB_Table {
 
                 } else {
                     $sql =
-                        'select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline"  and `Page Key`!=?  and `Webpage Website Key`=?   order by `Webpage Code` desc,`Page Key` desc ';
+                        "select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`='Cats'  and `Webpage State`!='Offline'  and `Page Key`!=?  and `Webpage Website Key`=?   order by `Webpage Code` desc,`Page Key` desc";
 
 
                     $stmt2 = $this->db->prepare($sql);
@@ -1980,7 +1980,7 @@ class Page extends DB_Table {
                         $prev_key = $row2['Page Key'];
 
                     } else {
-
+                        $prev_key=0;
                     }
                 }
 
@@ -2010,7 +2010,7 @@ class Page extends DB_Table {
                         'title'       => $next_category_webpage->get('Webpage Browser Title'),
                         'type'        => 'Category Products',
                         'icon'        => 'folder-open',
-                        'key'         => $prev_category_webpage->id
+                        'key'         => $next_category_webpage->id
                     );
                 }
 

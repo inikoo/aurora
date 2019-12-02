@@ -37,7 +37,7 @@ if ($result=$db->query($sql)) {
         print 'Reindex '.$webpage->get('Code')."\n";
 
 
-        $webpage->reindex_items();
+        $webpage->reindex();
 
         }
 }else {
