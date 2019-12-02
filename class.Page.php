@@ -1997,6 +1997,7 @@ class Page extends DB_Table {
                         'icon'        => 'folder-open',
                         'key'         => $prev_category_webpage->id
                     );
+                    $navigation['prev'] = $prev;
                 }
 
 
@@ -2012,11 +2013,12 @@ class Page extends DB_Table {
                         'icon'        => 'folder-open',
                         'key'         => $next_category_webpage->id
                     );
+                    $navigation['next'] = $next;
                 }
 
 
-                $navigation['prev'] = $prev;
-                $navigation['next'] = $next;
+
+
 
                 break;
 
