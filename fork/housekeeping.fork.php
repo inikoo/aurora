@@ -10,7 +10,7 @@
 
 function fork_housekeeping($job) {
 
-    global $account,$db,$session;// remove the global $db and $account is removed
+    global $account, $db, $session;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
@@ -609,7 +609,12 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
             break;
-
+        case 'part_stock_run':
+            /**
+             * @var $part \Part
+             */ $part = get_object('Part', $data['part_sku']);
+            $part->update_stock_run();
+            break;
         case 'update_part_status':
 
             /**
@@ -1270,8 +1275,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $website                = get_object('Website', $data['website_key']);
             $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
             $website->editor        = $data['editor'];
-
-
 
 
             $sql = sprintf(

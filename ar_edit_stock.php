@@ -276,27 +276,28 @@ switch ($tipo) {
         break;
 }
 
-function move_all_parts_from_location($account, $db, $user, $editor, $data, $smarty){
+function move_all_parts_from_location($account, $db, $user, $editor, $data, $smarty) {
 
-    if($data['from_location_key']==$data['to_location_key']){
+    if ($data['from_location_key'] == $data['to_location_key']) {
         $response = array(
             'state' => 400,
             'msg'   => 'Same location'
         );
         echo json_encode($response);
+
         return;
     }
 
-    $location_from=get_object('Location',$data['from_location_key']);
+    $location_from = get_object('Location', $data['from_location_key']);
 
 
-    $location_to=get_object('Location',$data['to_location_key']);
+    $location_to = get_object('Location', $data['to_location_key']);
 
-    $number_parts=0;
+    $number_parts = 0;
 
-    foreach($location_from->get_parts('part_location_object') as $part_location_from){
+    foreach ($location_from->get_parts('part_location_object') as $part_location_from) {
 
-        $part_location_from->editor=$editor;
+        $part_location_from->editor = $editor;
 
         $part_location_data = array(
             'Location Key' => $location_to->id,
@@ -315,7 +316,7 @@ function move_all_parts_from_location($account, $db, $user, $editor, $data, $sma
             )
         );
 
-        if($data['remove_after']=='Yes'){
+        if ($data['remove_after'] == 'Yes') {
             $part_location_from->disassociate();
         }
 
@@ -324,9 +325,9 @@ function move_all_parts_from_location($account, $db, $user, $editor, $data, $sma
     $response = array(
         'state' => 200,
         'msg'   => sprintf(
-            ngettext('%s part was moved to %s', '%s parts were moved to %s', $number_parts), number($number_parts),
-            sprintf('<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>',$location_to->get('Location Warehouse Key'),$location_to->id,$location_to->get('Code')
-            )
+            ngettext('%s part was moved to %s', '%s parts were moved to %s', $number_parts), number($number_parts), sprintf(
+                                                                                               '<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $location_to->get('Location Warehouse Key'), $location_to->id, $location_to->get('Code')
+                                                                                           )
         )
     );
     echo json_encode($response);
@@ -1147,8 +1148,6 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
     include_once 'class.PartLocation.php';
     include_once 'utils/currency_functions.php';
 
-    $account = get_object('Account', 1);
-
 
     $part_location_data = array(
         'Location Key' => $data['location_key'],
@@ -1210,13 +1209,9 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             }
 
 
-            //$part = get_object('part', $data['part_sku']);
+            $part_location = new PartLocation('find', $part_location_data, 'create');
 
 
-            // $old_value = $part->get('Part Cost in Warehouse');
-
-
-            $part_location         = new PartLocation('find', $part_location_data, 'create');
             $part_location->editor = $editor;
             if (!$part_location) {
                 $response = array(
@@ -1229,6 +1224,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
             // $data['qty'] <--- SKOs
             //
+
 
             $units_qty_placed = $data['qty'] * $row['Part Units Per Package'];
 
@@ -1252,27 +1248,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
             if ($account->get('Account Add Stock Value Type') == 'Last Price') {
 
-
-                /*
-
-                $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko), 'no_history');
-
-
-                if ($old_value != $amount_per_sko) {
-
-
-                    $history_data = array(
-                        'Action'           => 'edited',
-                        'History Abstract' => sprintf(
-                            _('Part stock value changed to %s following %s policy after received from supplier delivery %s'), $part->get('Cost in Warehouse only'), '<span class="italic">'._('Last delivery cost set stock value').'</span>', $origin
-                        ),
-                        'History Details'  => ''
-                    );
-                    $part->add_subject_history($history_data, true, 'No', 'Changes', $part->get_object_name(), $part->id);
-
-                }
-
-                */
                 $oif_key = $part_location->add_stock(
                     array(
                         'Quantity' => $data['qty'],
@@ -1292,7 +1267,16 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 );
 
 
-                $part_location->part->update_stock_run();
+                include_once 'utils/new_fork.php';
+
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'     => 'part_stock_run',
+                    'part_sku' => $this->id,
+                ), $account->get('Account Code')
+                );
+
 
             }
 
@@ -1344,9 +1328,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                             $row['Quantity On Hand']
                         ).'</div></div>';
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
 
@@ -1371,9 +1352,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             echo json_encode($response);
             exit;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 

@@ -1291,12 +1291,13 @@ class SupplierDelivery extends DB_Table {
             case 'Supplier Delivery Units':
                 return $this->update_item_delivery_units($data);
                 break;
-            */ case 'Supplier Delivery Checked Units':
+            */
+            case 'Supplier Delivery Checked Units':
             return $this->update_item_delivery_checked_units($data);
-            break;
+
             case 'Supplier Delivery Placed SKOs':
                 return $this->update_item_delivery_placed_skos($data);
-                break;
+
             default:
                 return false;
                 break;
@@ -1732,6 +1733,9 @@ class SupplierDelivery extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
+
 
                 $placement_sko_qty = $this->get_placement_quantity($transaction_key);
 
