@@ -584,6 +584,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
 
+
             foreach ($data['parts_data'] as $part_sku => $from_date) {
 
 

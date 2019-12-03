@@ -36,64 +36,74 @@ class ES_indexer {
      */
     var $account_code;
 
-    function __construct($account_code, $object, $db) {
-        $this->client       = ClientBuilder::create()->build();
+    function __construct($hosts,$account_code, $object, $db) {
+        $this->client       = ClientBuilder::create()->setHosts($hosts)->build();
         $this->object       = $object;
         $this->db           = $db;
         $this->account_code = $account_code;
     }
 
+    public function add_order(){
+        $this->primary   = array();
+        $this->secondary = array();
+        $this->alias     = array();
+        
+        $this->primary[] = $this->object->get('Public ID');
 
+        
+
+    }    
+    
     public function add_customer() {
 
 
-        $primary   = array();
-        $secondary = array();
-        $alias     = array();
+        $this->primary   = array();
+        $this->secondary = array();
+        $this->alias     = array();
 
-        $primary[] = 'C'.$this->object->get_formatted_id();
+        $this->primary[] = 'C'.$this->object->get_formatted_id();
 
-        $primary[] = $this->object->get_formatted_id();
-        $primary[] = $this->object->id;
+        $this->primary[] = $this->object->get_formatted_id();
+        $this->primary[] = $this->object->id;
 
-        $primary[] = $this->object->get('Name');
-        $primary[] = $this->object->get('Main Contact Name');
-        $primary[] = $this->object->get('Customer Main Plain Email');
+        $this->primary[] = $this->object->get('Name');
+        $this->primary[] = $this->object->get('Main Contact Name');
+        $this->primary[] = $this->object->get('Customer Main Plain Email');
 
         foreach($this->object->get_other_emails_data() as $other_mail_data){
-            $primary[] = $other_mail_data['email'];
+            $this->primary[] = $other_mail_data['email'];
         }
 
 
-        $primary[] = $this->object->get('Customer Tax Number');
-        $primary[] = $this->object->get('Customer Registration Number');
-        $primary[] = $this->object->get('Customer Website');
+        $this->primary[] = $this->object->get('Customer Tax Number');
+        $this->primary[] = $this->object->get('Customer Registration Number');
+        $this->primary[] = $this->object->get('Customer Website');
 
 
         list($address_tokens, $address_aux) = $this->tokenize_address('Contact');
-        $primary = array_merge($primary, $address_tokens);
-        $alias   = array_merge($alias, $address_aux);
+        $this->primary = array_merge($this->primary, $address_tokens);
+        $this->alias   = array_merge($this->alias, $address_aux);
 
         list($address_tokens, $address_aux) = $this->tokenize_address('Invoice');
-        $primary = array_merge($primary, $address_tokens);
-        $alias     = array_merge($alias, $address_aux);
+        $this->primary = array_merge($this->primary, $address_tokens);
+        $this->alias     = array_merge($this->alias, $address_aux);
 
         list($address_tokens, $address_aux) = $this->tokenize_address('Delivery');
-        $primary = array_merge($primary, $address_tokens);
-        $alias     = array_merge($alias, $address_aux);
+        $this->primary = array_merge($this->primary, $address_tokens);
+        $this->alias     = array_merge($this->alias, $address_aux);
 
         list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Mobile'), $this->object->get('Customer Contact Address Country 2 Alpha Code'));
-        $primary = array_merge($primary, $tel_tokens);
-        $alias   = array_merge($alias, $tel_aux);
+        $this->primary = array_merge($this->primary, $tel_tokens);
+        $this->alias   = array_merge($this->alias, $tel_aux);
 
         list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Telephone'), $this->object->get('Customer Contact Address Country 2 Alpha Code'));
-        $primary = array_merge($primary, $tel_tokens);
-        $alias   = array_merge($alias, $tel_aux);
+        $this->primary = array_merge($this->primary, $tel_tokens);
+        $this->alias   = array_merge($this->alias, $tel_aux);
 
-        $primary[] = $this->object->get('Sticky Note');
+        $this->primary[] = $this->object->get('Sticky Note');
 
 
-        $secondary   = array_diff($secondary, $primary);
+        $this->secondary   = array_diff($this->secondary, $this->primary);
 
         $sql  = "select `History Details`,`History Abstract` from `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`) where    B.`Customer Key`=? and `Type`='Notes'  ";
         $stmt = $this->db->prepare($sql);
@@ -103,41 +113,49 @@ class ES_indexer {
             )
         );
         while ($row = $stmt->fetch()) {
-            $secondary[] = $row['History Details'];
-            $secondary[] = $row['History Abstract'];
+            $this->secondary[] = $row['History Details'];
+            $this->secondary[] = $row['History Abstract'];
         }
 
 
-        $alias = array_diff($alias, $primary);
-        $alias = array_diff($alias, $secondary);
+        $this->alias = array_diff($this->alias, $this->primary);
+        $this->alias = array_diff($this->alias, $this->secondary);
 
+        $this->label=$this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
+        $this->url=sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
 
-        $params = [
+        $this->add_index('c', 'Customer',$this->object->get('Customer Store Key'));
+       
+    }
+
+    
+    private function add_index($prefix,$object,$store_key=''){
+         $params = [
             'index' => strtolower('au_'.$this->account_code),
-            'id'    => 'c'.$this->object->id,
+            'id'    => $prefix.$this->object->id,
             'body'  => array(
-                'url'          => sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id),
-                'object'       => 'Customer',
-                'result_label' => $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location'),
-                'primary'      => $this->flatten($primary),
-                'secondary'    => $this->flatten($secondary),
-                'alias'        => $this->flatten($alias),
-                'store_key'    => $this->object->get('Customer Store Key')
+                'url'          => $this->url,
+                'object'       => $object,
+                'result_label' => $this->label,
+                'primary'      => $this->flatten($this->primary),
+                'secondary'    => $this->flatten($this->secondary),
+                'alias'        => $this->flatten($this->alias),
+                'store_key'    => $store_key
             )
         ];
 
-        //print_r($params);
 
         $this->client->index($params);
     }
-
+    
+    
     private function tokenize_address($type) {
 
         include_once 'class.Country.php';
 
 
         $tokens = array();
-        $alias  = array();
+        $this->alias  = array();
 
         $tokens[] = $this->object->get($type.' Address Recipient');
         $tokens[] = $this->object->get($type.' Address Organization');
@@ -159,27 +177,27 @@ class ES_indexer {
         $tokens[] = $country->get('Country Official Name');
 
         foreach ($country->get_alias() as $county_alias) {
-            $alias[] = $county_alias;
+            $this->alias[] = $county_alias;
             if (strlen($county_alias) < 5) {
-                $alias[] = preg_replace('/\s+/', '', $county_alias);
+                $this->alias[] = preg_replace('/\s+/', '', $county_alias);
             }
 
         }
 
         return array(
             $tokens,
-            $alias
+            $this->alias
         );
     }
 
     private function tokenize_telephone_number($number, $country) {
 
         $tokens = array();
-        $alias  = array();
+        $this->alias  = array();
         if ($number == '') {
             return array(
                 $tokens,
-                $alias
+                $this->alias
             );
         }
 
@@ -191,25 +209,25 @@ class ES_indexer {
             $tokens[] = preg_replace('/[^0-9]/', '', $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL));
 
 
-            $alias[] = $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL);
-            $alias[] = $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL);
+            $this->alias[] = $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL);
+            $this->alias[] = $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL);
 
-            $alias[] = $phoneUtil->format($_number, PhoneNumberFormat::E164);
+            $this->alias[] = $phoneUtil->format($_number, PhoneNumberFormat::E164);
 
-            $alias[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::E164));
-            $alias[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL));
-            $alias[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL));
+            $this->alias[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::E164));
+            $this->alias[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL));
+            $this->alias[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL));
 
         } catch (NumberParseException $e) {
             return array(
                 $tokens,
-                $alias
+                $this->alias
             );
         }
 
         return array(
             $tokens,
-            $alias
+            $this->alias
         );
 
     }
