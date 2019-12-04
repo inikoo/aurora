@@ -96,6 +96,9 @@ function get_total_objects($db, $object_name) {
         case 'Customers':
             $sql = "select count(*) as num from `Customer Dimension`";
             break;
+        case 'Orders':
+            $sql = "select count(*) as num from `Order Dimension`";
+            break;
         default:
             return $total_objects;
     }
