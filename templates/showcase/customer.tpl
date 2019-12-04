@@ -40,8 +40,7 @@
             <div class="data_field" style="min-width: 270px;">
                 <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male"></i><span class="Main_Contact_Name_Formatted">{$customer->get('Main Contact Name Formatted')}</span>
             </div>
-            <div class="data_field" style="min-width: 270px;">
-                <i title
+
             <div id="Customer_Main_Plain_Email_display"
                  class="data_field   {if !$customer->get('Customer Main Plain Email')}hide{/if}">
                 <i class="fa fa-fw fa-at"></i> <span
