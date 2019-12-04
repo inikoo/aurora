@@ -178,7 +178,6 @@ class ES_indexer {
             )
         ];
 
-         print_r($params);
 
         $this->client->index($params);
     }
