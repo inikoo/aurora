@@ -37,6 +37,9 @@ function fork_upload_edit($job) {
 
 
 
+   // print_r($fork_data);
+
+
     $account = new Account($db);
 
 
@@ -63,6 +66,8 @@ function fork_upload_edit($job) {
     );
     $db->exec($sql);
 
+
+   // print_r($upload);
 
     //exit($upload->get('Upload Object'));
 
@@ -105,7 +110,7 @@ function fork_upload_edit($job) {
             $object_name  = 'warehouse_area';
             break;
         case 'prospect':
-            include_once 'class.SupplierPart.php';
+            include_once 'class.Prospect.php';
             $valid_keys   = array('Prospect Key');
             $valid_fields = $export_edit_template_fields['prospect'];
             $object_name  = 'prospect';
@@ -130,6 +135,7 @@ function fork_upload_edit($job) {
 
     foreach ($fields as $key => $value) {
         $value = _trim($value);
+
         if (preg_match('/^Id\s*:\s*(.+)$/', _trim($value), $matches)) {
             if (in_array($matches[1], $valid_keys)) {
                 $key_index = $key;
@@ -170,6 +176,8 @@ function fork_upload_edit($job) {
             "UPDATE `Upload Dimension` SET `Upload State`='Finished' WHERE `Upload Key`=%d ", $upload->id
         );
         $db->exec($sql);
+
+        print 'index not found';
 
         return false;
 
@@ -219,9 +227,6 @@ function fork_upload_edit($job) {
                         return false;
                     }
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
 
@@ -448,11 +453,7 @@ function update_upload_edit_stats($fork_key, $upload_key, $db) {
         foreach ($result as $row) {
             $elements[$row['Upload Record State']] = $row['num'];
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
-
 
     $sql = sprintf(
         'UPDATE `Fork Dimension` SET `Fork Operations Done`=%d,`Fork Operations No Changed`=%d,  `Fork Operations Errors`=%d ,`Fork Operations Cancelled`=%d WHERE `Fork Key`=%d ', ($elements['OK'] + $elements['Warning']), $elements['NoChange'], $elements['Error'],
