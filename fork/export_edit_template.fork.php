@@ -27,7 +27,7 @@ function fork_export_edit_template($job) {
         return;
     }
 
-    list($account, $db, $fork_data, $editor, $session) = $_data;
+    list($account, $db, $fork_data, $editor, $session,$ES_hosts) = $_data;
 
     $inikoo_account_code = $account->get('Account Code');
 

@@ -16,7 +16,7 @@ function fork_reindex_webpages($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor, $session) = $_data;
+    list($account, $db, $data, $editor, $session,$ES_hosts) = $_data;
 
 
 

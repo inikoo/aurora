@@ -1070,6 +1070,7 @@ class Customer extends Subject {
         }
 
         if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
+            $this->index_elastic_search(get_ES_hosts());
             return;
         }
 
@@ -1084,7 +1085,7 @@ class Customer extends Subject {
                 $sql = sprintf("update `Order Dimension` set `Order Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
 
-
+                $this->index_elastic_search(get_ES_hosts());
                 break;
             case 'Customer Delivery Sticky Note':
 
@@ -1217,7 +1218,7 @@ class Customer extends Subject {
 
                 }
 
-
+                $this->index_elastic_search(get_ES_hosts());
                 break;
 
             case('Customer Tax Number Valid'):
@@ -1264,13 +1265,16 @@ class Customer extends Subject {
 
             case('Customer Sticky Note'):
                 $this->update_field_switcher('Sticky Note', $value);
+                $this->index_elastic_search(get_ES_hosts());
                 break;
             case('Sticky Note'):
                 $this->update_field('Customer '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
+                $this->index_elastic_search(get_ES_hosts());
                 break;
             case('Note'):
                 $this->add_note($value);
+                $this->index_elastic_search(get_ES_hosts());
                 break;
             case('Attach'):
                 $this->add_attach($value);

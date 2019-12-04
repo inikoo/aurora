@@ -16,7 +16,7 @@ function fork_housekeeping($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor, $session) = $_data;
+    list($account, $db, $data, $editor, $session,$ES_hosts) = $_data;
 
 
     print $data['type']."\n";
@@ -1114,7 +1114,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     )
                 )
             );
-
+            $order->index_elastic_search($ES_hosts);
 
             break;
         case 'update_charges_data':
@@ -1179,7 +1179,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $store->update_orders();
             $account->update_orders();
-
+            $order->index_elastic_search($ES_hosts);
 
             break;
 
@@ -1207,7 +1207,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store->update_orders();
 
             $account->update_orders();
-
+            $order->index_elastic_search($ES_hosts);
 
             break;
 
@@ -1268,7 +1268,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $campaign->update_usage();
             }
 
-
+            $order->index_elastic_search($ES_hosts);
             break;
         case 'website_launched':
 
@@ -1376,7 +1376,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     }
                 }
             }
-
+            $customer->index_elastic_search($ES_hosts);
 
             break;
         case 'customer_client_created':
@@ -1683,7 +1683,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             }
 
-
+            $order->index_elastic_search($ES_hosts);
             break;
 
         case 'order_dispatched':
@@ -1743,7 +1743,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $account->update_inventory_dispatched_data('ytd');
             $account->update_inventory_dispatched_data('qtd');
             $account->update_inventory_dispatched_data('all');
-
+            $order->index_elastic_search($ES_hosts);
             break;
         case 'invoice_created':
 

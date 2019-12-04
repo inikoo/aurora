@@ -17,7 +17,7 @@ function fork_take_webpage_screenshot($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor) = $_data;
+    list($account, $db, $data, $editor,$session,$ES_hosts) = $_data;
 
 
     $webpage       = get_object('Webpage', $data['webpage_key']);
@@ -45,7 +45,7 @@ function fork_redo_time_series($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor) = $_data;
+    list($account, $db, $data, $editor,$session,$ES_hosts) = $_data;
 
     require_once 'conf/timeseries.php';
     $timeseries = get_time_series_config();
@@ -121,7 +121,7 @@ function fork_sales_correlation($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor) = $_data;
+    list($account, $db, $data, $editor,$session,$ES_hosts) = $_data;
 
 
 

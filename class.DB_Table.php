@@ -967,6 +967,8 @@ abstract class DB_Table extends stdClass {
         $account=get_object('Account',1);
         $indexer=new ES_indexer($hosts,$account->get('Code'),$this,$this->db);
         $indexer->add_object();
+
+
     }
 
 

@@ -21,7 +21,7 @@ function fork_asset_sales($job) {
 
 
 
-    list($account, $db, $data,$editor,$session) = $_data;
+    list($account, $db, $data,$editor,$session,$ES_hosts) = $_data;
     print_r($data);
    //return true;
 
