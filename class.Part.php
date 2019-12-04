@@ -273,10 +273,10 @@ class Part extends Asset {
                 }
             }
 
-
             $this->validate_barcode();
-
             $this->update_weight_status();
+
+            $this->index_elastic_search();
 
 
         } else {
@@ -1981,7 +1981,7 @@ class Part extends Asset {
                 }
 
                 $this->update_field($field, $value, $options);
-
+                $this->index_elastic_search();
                 break;
 
             case 'Part Reference':
@@ -2014,25 +2014,19 @@ class Part extends Asset {
                     exit;
                 }
                 $this->update_field($field, $value, $options);
-
+                $this->index_elastic_search();
 
                 break;
             case 'Part Unit Price':
 
-                /*
-			if ($value==''   ) {
-				$this->error=true;
-				$this->msg=_('Unit recommended price missing');
-				return;
-			}
-*/ if ($value != '' and (!is_numeric($value) or $value < 0)) {
-                $this->error = true;
-                $this->msg   = sprintf(
-                    _('Invalid unit recommended price (%s)'), $value
-                );
+                if ($value != '' and (!is_numeric($value) or $value < 0)) {
+                    $this->error = true;
+                    $this->msg   = sprintf(
+                        _('Invalid unit recommended price (%s)'), $value
+                    );
 
-                return;
-            }
+                    return;
+                }
                 $this->update_field('Part Unit Price', $value, $options);
                 if ($this->data['Part Commercial Value'] == '') {
                     $this->update_margin();
@@ -2056,20 +2050,14 @@ class Part extends Asset {
 
             case 'Part Unit RRP':
 
-                /*
-			if ($value==''   ) {
-				$this->error=true;
-				$this->msg=_('Unit recommended price missing');
-				return;
-			}
-*/ if ($value != '' and (!is_numeric($value) or $value < 0)) {
-                $this->error = true;
-                $this->msg   = sprintf(
-                    _('Invalid unit recommended RRP (%s)'), $value
-                );
+                if ($value != '' and (!is_numeric($value) or $value < 0)) {
+                    $this->error = true;
+                    $this->msg   = sprintf(
+                        _('Invalid unit recommended RRP (%s)'), $value
+                    );
 
-                return;
-            }
+                    return;
+                }
 
 
                 $this->update_field('Part Unit RRP', $value, $options);
@@ -2243,9 +2231,6 @@ class Part extends Asset {
                     foreach ($result as $row) {
                         $materials_to_update[$row['Material Key']] = true;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
 
@@ -2321,29 +2306,12 @@ class Part extends Asset {
                     }
 
                 }
-
+                $this->index_elastic_search();
 
                 $this->updated = $updated;
                 break;
 
-            /*
-                        case '':
-
-
-                            foreach ($this->get_products('objects') as $product) {
-
-                                if (count($product->get_parts()) == 1) {
-                                    $product->editor = $this->editor;
-                                    $product->update(
-                                        array('Product Materials' => $value), $options.' from_part'
-                                    );
-                                }
-
-                            }
-
-
-                            break;
-            */ case 'Part Package Dimensions':
+            case 'Part Package Dimensions':
             case 'Part Unit Dimensions':
 
 
@@ -2616,6 +2584,8 @@ class Part extends Asset {
                         $this->update_metadata = array('parts_with_no_sko_barcode' => $smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl'));
                     }
                 }
+
+                $this->index_elastic_search();
                 break;
 
 
@@ -2741,6 +2711,7 @@ class Part extends Asset {
 
 
                 $this->update_status($value, $options);
+                $this->index_elastic_search();
                 break;
 
             case 'Part Symbol':
