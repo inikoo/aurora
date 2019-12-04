@@ -16,7 +16,7 @@ use Elasticsearch\ClientBuilder;
 
 require 'vendor/autoload.php';
 
-$client = ClientBuilder::create()->build();
+$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
 //curl -X DELETE 'http://localhost:9200/_all
 
@@ -35,6 +35,15 @@ $params = [
                     'object'       => array(
                         'type' => 'keyword',
                         'index' => false
+                    ),
+                    'status'       => array(
+                        'type' => 'keyword',
+                        'index' => false
+
+                    ),
+                    'weight'       => array(
+                        'type' => 'byte',
+
                     ),
                     'result_label'       => array(
                         'type' => 'text',
@@ -62,3 +71,5 @@ $params = [
 
 $response = $client->indices()->create($params);
 print_r($response);
+
+

@@ -14,8 +14,40 @@ require 'common.php';
 
 require 'vendor/autoload.php';
 
+
+update_parts_index($db);
+
 update_orders_index($db);
 update_customers_index($db);
+
+
+
+/**
+ * @param $db \PDO
+ */
+function update_parts_index($db) {
+
+    $object_name='Parts';
+    $hosts     = get_ES_hosts();
+    $print_est = true;
+
+    $total = get_total_objects($db, $object_name);
+    $lap_time0 = date('U');
+    $contador  = 0;
+
+
+    $sql = "select `Part SKU` from `Part Dimension`  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Part', $row['Part SKU']);
+        $object->index_elastic_search($hosts);
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+}
 
 
 /**
@@ -98,6 +130,9 @@ function get_total_objects($db, $object_name) {
             break;
         case 'Orders':
             $sql = "select count(*) as num from `Order Dimension`";
+            break;
+        case 'Parts':
+            $sql = "select count(*) as num from `Part Dimension`";
             break;
         default:
             return $total_objects;
