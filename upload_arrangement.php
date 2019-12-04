@@ -49,14 +49,16 @@ switch ($object->get_object_name()) {
             'part_scope' => true
         );
         break;
+    case 'Prospect':
+        $filename = 'new_prospects';
+        $options  = array();
+        $valid_fields = $export_edit_template_fields['prospect'];
+        $key_field    = 'Id: Prospect Key';
+        break;
     case 'Supplier Part':
-
         $filename = 'new_supplier_parts';
-
-
         $valid_fields = $export_edit_template_fields['supplier_part'];
         $key_field    = 'Id: Supplier Part Key';
-
         break;
     case 'Location':
         $filename     = 'new_locations';
@@ -65,8 +67,6 @@ switch ($object->get_object_name()) {
             unset($valid_fields[1]);
         }
         $key_field = 'Id: Location Key';
-
-
         break;
     case 'Warehouse Area':
         $filename     = 'new_warehouse_area';

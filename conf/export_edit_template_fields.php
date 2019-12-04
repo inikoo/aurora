@@ -939,7 +939,63 @@ $export_edit_template_fields = array(
 
 
     ),
+    'prospect' => array(
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Company',
+            'name'          => 'Prospect Company Name',
+            'label'         => _('Company'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
 
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Contact Name',
+            'name'          => 'Prospect Main Contact Name',
+            'label'         => _('Contact name'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Email',
+            'name'          => 'Prospect Main Plain Email',
+            'label'         => _('Email'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Mobile',
+            'name'          => 'Prospect Main Plain Mobile',
+            'label'         => _('Mobile'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Telephone',
+            'name'          => 'Prospect Main Plain Telephone',
+            'label'         => _('Telephone'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+
+
+    ),
 );
 
-?>
+

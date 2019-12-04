@@ -78,6 +78,16 @@ switch ($parameters['parent']) {
                 );
 
                 break;
+            case 'prospect':
+                $table
+                       = '  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Prospect Dimension` O on (O.`Prospect Key`=R.`Upload Record Object Key`) ';
+                $object_field
+                       = ' `Prospect Name` as object_name,"" as object_auxiliar_name,CONCAT("prospects/",`Prospect Store Key`,"/",`Upload Record Object Key`) as link ';
+                $where = sprintf(
+                    " where  `Upload Record Upload Key`=%d ", $parameters['parent_key']
+                );
+
+                break;
             default:
                 exit('object not supported in upload_records.ptble.php '.$upload->get('Upload Object'));
                 break;

@@ -104,12 +104,18 @@ function fork_upload_edit($job) {
             $valid_fields = $export_edit_template_fields['warehouse_area'];
             $object_name  = 'warehouse_area';
             break;
+        case 'prospect':
+            include_once 'class.SupplierPart.php';
+            $valid_keys   = array('Prospect Key');
+            $valid_fields = $export_edit_template_fields['prospect'];
+            $object_name  = 'prospect';
+            break;
 
         default:
             print 'error, Upload Object not set up, check: upload.edit.fork.php';
 
-            return;
-            break;
+            return false;
+
     }
 
 
@@ -548,41 +554,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             }
 
             break;
-        case 'part':
-        case 'Part':
 
-
-            /*
-            include_once 'class.Part.php';
-            include_once 'class.Supplier.php';
-
-
-            $supplier=new Supplier('code', $data['fields_data']['Supplier Part Supplier Key']);
-
-            if (!$supplier->id) {
-                $msg=sprintf(_('Supplier with code %s not found', $data['Supplier Part Supplier Key']));
-                $error=true;
-                $error_code='parent_not_found';
-                $error_metadata=json_encode(array('msg'=>$msg));
-            }else {
-
-                $data['fields_data']['Supplier Part Supplier Key']=$supplier->id;
-
-
-                $parent=$supplier;
-                $parent->editor=$editor;
-                $supplier_part=$parent->create_supplier_part_record($data['fields_data']);
-                //print_r($parent);
-                if (!$parent->error) {
-                    $object=get_object('Part', $supplier_part->get('Part SKU'));
-                }
-                $error=$parent->error;
-                $error_metadata=$parent->error_metadata;
-                $error_code=$parent->error_code;
-
-            }
-    */
-            break;
         case 'Manufacture_Task':
             include_once 'class.Manufacture_Task.php';
             $object = $parent->create_manufacture_task($data['fields_data']);
@@ -680,8 +652,17 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
                 $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
                 $error_code     = $parent->error_code;
             }
-
-
+            break;
+        case 'prospect':
+            include_once 'class.Prospect.php';
+            $object = $parent->create_prospect(
+                $data['fields_data']
+            );
+            if ($parent->error) {
+                $error          = $parent->error;
+                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
+                $error_code     = $parent->error_code;
+            }
             break;
         default:
 

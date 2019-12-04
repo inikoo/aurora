@@ -577,6 +577,9 @@ function uploads($_data, $db, $user, $account) {
                 case 'supplier':
                     $object = sprintf('<i  class="fa fa-fw fa-ship"></i> %s', _("Suppliers"));
                     break;
+                case 'prospect':
+                    $object = sprintf('<i  class="fa fa-fw fa-user"></i> %s', _("Prospects"));
+                    break;
                 default:
                     $object = $data['Upload Object'];
             }

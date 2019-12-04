@@ -102,9 +102,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $section = 'dashboard';
                             } elseif ($view_path[1] == 'settings') {
                                 $section = 'settings';
-                            }
-
-                            elseif ($view_path[1] == 'website') {
+                            } elseif ($view_path[1] == 'website') {
 
 
                                 if (!$user->can_view('websites')) {
@@ -114,17 +112,15 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 }
 
 
-
-
                                 if (isset($view_path[2])) {
                                     if ($view_path[2] == 'new') {
 
-                                        $module  = 'products';
+                                        $module     = 'products';
                                         $parent     = 'store';
                                         $parent_key = $key;
-                                        $key    = '';
-                                        $section = 'website.new';
-                                        $object  = 'website';
+                                        $key        = '';
+                                        $section    = 'website.new';
+                                        $object     = 'website';
 
 
                                     }
@@ -132,8 +128,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 }
 
 
-                            }
-                             elseif ($view_path[1] == 'charge') {
+                            } elseif ($view_path[1] == 'charge') {
                                 $section = 'charge';
                                 $object  = 'charge';
 
@@ -1141,7 +1136,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 }
 
 
-
                 $module  = 'websites';
                 $section = 'analytics';
                 $object  = 'website';
@@ -1202,7 +1196,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
                             if (is_numeric($view_path[3])) {
                                 $key = $view_path[3];
                             }
-
 
 
                         }
@@ -1788,6 +1781,17 @@ function parse_request($_data, $db, $modules, $account, $user) {
                         } elseif ($view_path[0] == 'new') {
                             $section = 'prospect.new';
                             $object  = '';
+                        } elseif ($view_path[0] == 'upload') {
+                            $section = 'upload';
+                            $object  = 'upload';
+
+
+                            if (isset($view_path[1])) {
+
+                                if (is_numeric($view_path[1])) {
+                                    $key = $view_path[1];
+                                }
+                            }
                         } elseif ($view_path[0] == 'template') {
 
 
@@ -3064,9 +3068,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                             }
 
 
-
-
-
                                                         }
 
 
@@ -3077,8 +3078,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                     }
 
                                                 }
-                                            }
-                                            elseif ($view_path[3] == 'tracking') {
+                                            } elseif ($view_path[3] == 'tracking') {
 
 
                                                 $section = 'email_tracking';
@@ -5785,8 +5785,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
     }
 
 
-
-
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -5804,7 +5802,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
         'extra_tab'  => $extra_tab,
         'title'      => parse_title($module, $section, $modules)
     );
-
 
 
     if (isset($_data['otf'])) {

@@ -3373,57 +3373,62 @@ class Store extends DB_Table {
 
         $data['Prospect Sales Representative Key'] = $sales_representative->id;
 
-        $address_fields = array(
-            'Address Recipient'            => $data['Prospect Main Contact Name'],
-            'Address Organization'         => $data['Prospect Company Name'],
-            'Address Line 1'               => '',
-            'Address Line 2'               => '',
-            'Address Sorting Code'         => '',
-            'Address Postal Code'          => '',
-            'Address Dependent Locality'   => '',
-            'Address Locality'             => '',
-            'Address Administrative Area'  => '',
-            'Address Country 2 Alpha Code' => $data['Prospect Contact Address country'],
+        if(!empty($data['Prospect Contact Address country'])){
+            $address_fields = array(
+                'Address Recipient'            => $data['Prospect Main Contact Name'],
+                'Address Organization'         => $data['Prospect Company Name'],
+                'Address Line 1'               => '',
+                'Address Line 2'               => '',
+                'Address Sorting Code'         => '',
+                'Address Postal Code'          => '',
+                'Address Dependent Locality'   => '',
+                'Address Locality'             => '',
+                'Address Administrative Area'  => '',
+                'Address Country 2 Alpha Code' => $data['Prospect Contact Address country'],
 
-        );
-        unset($data['Prospect Contact Address country']);
+            );
+            unset($data['Prospect Contact Address country']);
 
-        if (isset($data['Prospect Contact Address addressLine1'])) {
-            $address_fields['Address Line 1'] = $data['Prospect Contact Address addressLine1'];
-            unset($data['Prospect Contact Address addressLine1']);
-        }
-        if (isset($data['Prospect Contact Address addressLine2'])) {
-            $address_fields['Address Line 2'] = $data['Prospect Contact Address addressLine2'];
-            unset($data['Prospect Contact Address addressLine2']);
-        }
-        if (isset($data['Prospect Contact Address sortingCode'])) {
-            $address_fields['Address Sorting Code'] = $data['Prospect Contact Address sortingCode'];
-            unset($data['Prospect Contact Address sortingCode']);
-        }
-        if (isset($data['Prospect Contact Address postalCode'])) {
-            $address_fields['Address Postal Code'] = $data['Prospect Contact Address postalCode'];
-            unset($data['Prospect Contact Address postalCode']);
+            if (isset($data['Prospect Contact Address addressLine1'])) {
+                $address_fields['Address Line 1'] = $data['Prospect Contact Address addressLine1'];
+                unset($data['Prospect Contact Address addressLine1']);
+            }
+            if (isset($data['Prospect Contact Address addressLine2'])) {
+                $address_fields['Address Line 2'] = $data['Prospect Contact Address addressLine2'];
+                unset($data['Prospect Contact Address addressLine2']);
+            }
+            if (isset($data['Prospect Contact Address sortingCode'])) {
+                $address_fields['Address Sorting Code'] = $data['Prospect Contact Address sortingCode'];
+                unset($data['Prospect Contact Address sortingCode']);
+            }
+            if (isset($data['Prospect Contact Address postalCode'])) {
+                $address_fields['Address Postal Code'] = $data['Prospect Contact Address postalCode'];
+                unset($data['Prospect Contact Address postalCode']);
+            }
+
+            if (isset($data['Prospect Contact Address dependentLocality'])) {
+                $address_fields['Address Dependent Locality'] = $data['Prospect Contact Address dependentLocality'];
+                unset($data['Prospect Contact Address dependentLocality']);
+            }
+
+            if (isset($data['Prospect Contact Address locality'])) {
+                $address_fields['Address Locality'] = $data['Prospect Contact Address locality'];
+                unset($data['Prospect Contact Address locality']);
+            }
+
+            if (isset($data['Prospect Contact Address administrativeArea'])) {
+                $address_fields['Address Administrative Area'] = $data['Prospect Contact Address administrativeArea'];
+                unset($data['Prospect Contact Address administrativeArea']);
+            }
+
+        }else{
+            $address_fields=false;
         }
 
-        if (isset($data['Prospect Contact Address dependentLocality'])) {
-            $address_fields['Address Dependent Locality'] = $data['Prospect Contact Address dependentLocality'];
-            unset($data['Prospect Contact Address dependentLocality']);
-        }
 
-        if (isset($data['Prospect Contact Address locality'])) {
-            $address_fields['Address Locality'] = $data['Prospect Contact Address locality'];
-            unset($data['Prospect Contact Address locality']);
-        }
 
-        if (isset($data['Prospect Contact Address administrativeArea'])) {
-            $address_fields['Address Administrative Area'] = $data['Prospect Contact Address administrativeArea'];
-            unset($data['Prospect Contact Address administrativeArea']);
-        }
 
-        //print_r($address_fields);
-        // print_r($data);
 
-        //exit;
 
         $prospect = new Prospect('new', $data, $address_fields);
 
@@ -3438,6 +3443,7 @@ class Store extends DB_Table {
             } else {
                 $this->error = true;
                 $this->msg   = $prospect->msg;
+                $this->error_code=$prospect->error_code;
 
             }
 
@@ -3445,6 +3451,7 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $prospect->msg;
+            $this->error_code=$prospect->error_code;
         }
 
 

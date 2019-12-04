@@ -3950,4 +3950,60 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
 
 }
 
+function get_upload_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('customers', $data['parent_key']);
+
+
+
+
+
+
+    if ($data['_object']->get('Upload Object') == 'prospect') {
+
+        $_section = 'prospects';
+        if (isset($sections[$_section])) {
+            $sections[$_section]['selected'] = true;
+        }
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => sprintf(
+                _('Prospects: %s'), $data['_parent']->get('Code')
+            ),
+            'reference' => 'prospects/'.$data['parent_key']
+        );
+
+        $title = sprintf(
+            _('Upload into prospects %s'), $data['_parent']->get('Code')
+        );
+
+    }
+
+    $left_buttons[] = $up_button;
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search customers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 

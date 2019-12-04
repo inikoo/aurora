@@ -2143,6 +2143,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             require_once 'navigation/customers.nav.php';
 
 
+
             switch ($data['section']) {
 
                 case ('customer'):
@@ -2265,6 +2266,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_prospects_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+
+                case ('upload'):
+                    return get_upload_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+
 
                 case ('prospect.new'):
                     return get_new_prospect_navigation(

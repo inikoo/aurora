@@ -9,8 +9,6 @@
 
 */
 
-use Aws\Ses\SesClient;
-
 include_once 'class.Subject.php';
 
 
@@ -101,6 +99,7 @@ class Prospect extends Subject {
         if (!isset($raw_data['Prospect Store Key']) or !preg_match('/^\d+$/i', $raw_data['Prospect Store Key'])) {
             $this->error = true;
             $this->msg   = 'missing store key';
+            $this->error_code=='missing store key';
 
         }
 
@@ -115,12 +114,10 @@ class Prospect extends Subject {
                 $this->error = true;
                 $this->found = true;
                 $this->msg   = _('Another prospect with same email has been found');
+                $this->error_code= 'duplicated email';
 
                 return;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -132,7 +129,7 @@ class Prospect extends Subject {
 
     }
 
-    function create($raw_data, $address_raw_data, $args = '') {
+    function create($raw_data, $address_raw_data) {
 
 
         $this->data = $this->base_data();
@@ -184,8 +181,9 @@ class Prospect extends Subject {
             }
             $this->update_field('Prospect Name', $prospect_name, 'no_history');
 
-
-            $this->update_address('Contact', $address_raw_data, 'no_history');
+            if (is_array($address_raw_data)) {
+                $this->update_address('Contact', $address_raw_data, 'no_history');
+            }
 
 
             $this->update(
@@ -594,10 +592,10 @@ class Prospect extends Subject {
 
                 $this->fast_update(
                     array(
-                        'Prospect Status'            => 'Registered',
-                        'Prospect Registration Date' => gmdate('Y-m-d H:i:s'),
-                        'Prospect Customer Key'      => $customer->id,
-                        'Prospect Customer Assigned by User Key'=>$this->editor['User Key']
+                        'Prospect Status'                        => 'Registered',
+                        'Prospect Registration Date'             => gmdate('Y-m-d H:i:s'),
+                        'Prospect Customer Key'                  => $customer->id,
+                        'Prospect Customer Assigned by User Key' => $this->editor['User Key']
 
                     )
                 );
@@ -606,7 +604,8 @@ class Prospect extends Subject {
                 $history_data = array(
                     'History Abstract' => sprintf(
                         _('Prospect manually linked to customer %s'),
-                        '<span class="button padding_left_5" onClick="change_view(\'customers/'.$customer->get('Store Key').'/'.$customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$customer->get('Name').'</span> (<span class="link">'.$customer->get_formatted_id().'</span>)</span>'
+                        '<span class="button padding_left_5" onClick="change_view(\'customers/'.$customer->get('Store Key').'/'.$customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$customer->get('Name').'</span> (<span class="link">'
+                        .$customer->get_formatted_id().'</span>)</span>'
                     ),
 
 
@@ -767,7 +766,8 @@ class Prospect extends Subject {
                         $history_data = array(
                             'History Abstract' => sprintf(
                                 _('Prospect has been invoiced, %s'),
-                                '<span class="button padding_left_5" onClick="change_view(\'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id.'\')"><i class="fa fa-file-invoice-dollar "></i> <span class="link">'.$invoice->get('Invoice Public ID').'</span></span>'
+                                '<span class="button padding_left_5" onClick="change_view(\'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id.'\')"><i class="fa fa-file-invoice-dollar "></i> <span class="link">'.$invoice->get('Invoice Public ID')
+                                .'</span></span>'
                             ),
 
 
@@ -911,19 +911,21 @@ class Prospect extends Subject {
 
                     $this->fast_update(
                         array(
-                            'Prospect Status'    => $value,
-                            'Prospect Lost Date' => '',
-                            'Prospect Lost Registered' => '',
-                            'Prospect Lost Invoiced' => '',
-                            'Prospect Customer Assigned by User Key'=>''
+                            'Prospect Status'                        => $value,
+                            'Prospect Lost Date'                     => '',
+                            'Prospect Lost Registered'               => '',
+                            'Prospect Lost Invoiced'                 => '',
+                            'Prospect Customer Assigned by User Key' => ''
                         )
                     );
 
 
                     $history_data = array(
-                        'History Abstract' => sprintf(_('Prospect unlinked from customer %s'),
-                                                      '<span class="button padding_left_5" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$this->customer->get('Name').'</span> (<span class="link">'
-                                                      .$this->customer->get_formatted_id().'</span>)</span>'),
+                        'History Abstract' => sprintf(
+                            _('Prospect unlinked from customer %s'),
+                            '<span class="button padding_left_5" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$this->customer->get('Name')
+                            .'</span> (<span class="link">'.$this->customer->get_formatted_id().'</span>)</span>'
+                        ),
                         'History Details'  => '',
                         'Action'           => 'edited'
                     );
