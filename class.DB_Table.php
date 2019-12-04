@@ -962,6 +962,13 @@ abstract class DB_Table extends stdClass {
         }
     }
 
+    function index_elastic_search($hosts){
+        include_once 'utils/ES_Indexer.class.php';
+        $account=get_object('Account',1);
+        $indexer=new ES_indexer($hosts,$account->get('Code'),$this,$this->db);
+        $indexer->add_object();
+    }
+
 
 }
 

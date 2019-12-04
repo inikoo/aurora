@@ -41,25 +41,49 @@ class ES_indexer {
         $this->object       = $object;
         $this->db           = $db;
         $this->account_code = $account_code;
-    }
-
-    public function add_order(){
         $this->primary   = array();
         $this->secondary = array();
         $this->alias     = array();
-        
+    }
+
+    private function add_order(){
+
+
+        $amount="(".$this->object->get('Total Amount');
+        if($this->object->get('Order Currency Exchange')!=1){
+            $amount.=', '.$this->object->get('DC Total Amount');
+        }
+        $amount.=') ';
+
+        $this->label=$this->object->get('Public ID')." $amount".$this->object->get('State');
+        $this->url=sprintf('orders/%d/%d', $this->object->get('Order Store Key'), $this->object->id);
+
         $this->primary[] = $this->object->get('Public ID');
 
-        
+        $this->secondary[] = $this->object->get('Order Sticky Note');
+        $this->secondary[] = $this->object->get('Order Cancel Note');
+        $this->secondary[] = $this->object->get('Order Customer Sevices Note');
+
+
+
+        list($address_tokens, $address_aux) = $this->tokenize_address('Invoice');
+        $this->secondary = array_merge($this->secondary, $address_tokens);
+        $this->alias     = array_merge($this->alias, $address_aux);
+
+        list($address_tokens, $address_aux) = $this->tokenize_address('Delivery');
+        $this->secondary = array_merge($this->secondary, $address_tokens);
+        $this->alias     = array_merge($this->alias, $address_aux);
+
+        $this->remove_duplicated_tokens();
+        $this->add_index('o', 'Order',$this->object->get('Order Store Key'));
 
     }    
     
-    public function add_customer() {
+    private function add_customer() {
 
+        $this->label=$this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
+        $this->url=sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
 
-        $this->primary   = array();
-        $this->secondary = array();
-        $this->alias     = array();
 
         $this->primary[] = 'C'.$this->object->get_formatted_id();
 
@@ -99,10 +123,7 @@ class ES_indexer {
         list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Telephone'), $this->object->get('Customer Contact Address Country 2 Alpha Code'));
         $this->primary = array_merge($this->primary, $tel_tokens);
         $this->alias   = array_merge($this->alias, $tel_aux);
-
         $this->primary[] = $this->object->get('Sticky Note');
-
-
         $this->secondary   = array_diff($this->secondary, $this->primary);
 
         $sql  = "select `History Details`,`History Abstract` from `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`) where    B.`Customer Key`=? and `Type`='Notes'  ";
@@ -112,23 +133,36 @@ class ES_indexer {
                 $this->object->id
             )
         );
+
         while ($row = $stmt->fetch()) {
             $this->secondary[] = $row['History Details'];
             $this->secondary[] = $row['History Abstract'];
         }
 
-
-        $this->alias = array_diff($this->alias, $this->primary);
-        $this->alias = array_diff($this->alias, $this->secondary);
-
-        $this->label=$this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
-        $this->url=sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
-
+        $this->remove_duplicated_tokens();
         $this->add_index('c', 'Customer',$this->object->get('Customer Store Key'));
        
     }
 
-    
+
+    function remove_duplicated_tokens(){
+        $this->secondary   = array_diff($this->secondary, $this->primary);
+        $this->alias = array_diff($this->alias, $this->primary);
+        $this->alias = array_diff($this->alias, $this->secondary);
+    }
+
+    public function add_object(){
+        switch ($this->object->get_object_name()){
+            case 'Customer':
+                $this->add_customer();
+                break;
+            case 'Order':
+                $this->add_order();
+                break;
+        }
+    }
+
+
     private function add_index($prefix,$object,$store_key=''){
          $params = [
             'index' => strtolower('au_'.$this->account_code),
@@ -144,6 +178,7 @@ class ES_indexer {
             )
         ];
 
+         print_r($params);
 
         $this->client->index($params);
     }
