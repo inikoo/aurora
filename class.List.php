@@ -354,7 +354,7 @@ class SubjectList extends DB_Table {
 
 
             foreach ($countries_data as $country_data) {
-                $tmp .= sprintf('<img src="/art/flags/%s.gif" title="%s" > %s, ', strtolower($country_data['code']), $country_data['code'], $country_data['name']);
+                $tmp .= sprintf('<img src="/art/flags/%s.png" title="%s" > %s, ', strtolower($country_data['code']), $country_data['code'], $country_data['name']);
             }
 
             $tmp = preg_replace('/\, $/', '', $tmp);

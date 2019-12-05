@@ -717,7 +717,7 @@ $supplier_part_fields[] = array(
             'right_code'      => 'PE',
             'value'           => $object->part->get('Part HTSUS Code'),
             'formatted_value' => $object->part->get('HTSUS Code'),
-            'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img src="/art/flags/us.gif"/></span>',
+            'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img src="/art/flags/us.png"/></span>',
             'invalid_msg'     => get_invalid_message('string'),
             'required'        => false,
             'type'            => 'value'

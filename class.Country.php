@@ -188,7 +188,7 @@ class Country {
 
         switch ($key) {
             case 'Flag':
-                return '<img src="/art/flags/'.strtolower($this->data['Country 2 Alpha Code']).'.gif"/>';
+                return '<img src="/art/flags/'.strtolower($this->data['Country 2 Alpha Code']).'.png"/>';
                 break;
             case 'Population':
                 return number($this->data['Country Population']);

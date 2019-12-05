@@ -109,7 +109,7 @@ function parse_geolocation_data($api_result) {
     if ($country->id) {
         $location = trim(
             sprintf(
-                '<img src="/art/flags/%s.gif" title="%s"> %s', strtolower($country->get('Country 2 Alpha Code')), $country->get('Country Name'), $location
+                '<img src="/art/flags/%s.png" title="%s"> %s', strtolower($country->get('Country 2 Alpha Code')), $country->get('Country Name'), $location
             )
         );
     } elseif ($api_result['country_code'] != '') {

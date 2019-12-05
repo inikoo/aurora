@@ -65,10 +65,10 @@ function fork_housekeeping($job) {
             if ($geolocation_data['Location'] == '') {
 
                 if (!empty($data['server_data']['HTTP_CF_IPCOUNTRY'])) {
-                    $webuser_data['location'] = '<img src="/art/flags/'.strtolower($data['server_data']['HTTP_CF_IPCOUNTRY']).'.gif">';
+                    $webuser_data['location'] = '<img src="/art/flags/'.strtolower($data['server_data']['HTTP_CF_IPCOUNTRY']).'.png">';
 
                 } else {
-                    $webuser_data['location'] = '<img src="/art/flags/xx.gif"> <span class="italic very_discreet">'._('Unknown').'</span>';
+                    $webuser_data['location'] = '<img src="/art/flags/zz.png"> <span class="italic very_discreet">'._('Unknown').'</span>';
 
                 }
 

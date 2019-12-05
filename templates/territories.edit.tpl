@@ -187,7 +187,7 @@
         clone.prop('id', '')
         clone.removeClass('hide').addClass('new')
         clone.attr('iso2', selected_country.iso2)
-        clone.find('.territory_country_flag').html('<img src="/art/flags/'+selected_country.iso2+'.gif" title="'+selected_country.iso2+'" />')
+        clone.find('.territory_country_flag').html('<img src="/art/flags/'+selected_country.iso2+'.png" title="'+selected_country.iso2+'" />')
         clone.find('.territory_country_name').html(selected_country.name)
 
         $("#territories_items").append(clone);

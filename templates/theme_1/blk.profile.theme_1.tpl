@@ -714,7 +714,7 @@
                         <td class="like_button">0000A</td>
                         <td class="like_button">Mr Smith</td>
                         <td>hello@example.com</td>
-                        <td><img src="/art/flags/gb.gif"/>  Liverpool</td>
+                        <td><img src="/art/flags/gb.png"/>  Liverpool</td>
                         <td class="text-right">2</td>
                         <td class="text-right" id="_clients_td_new_order" contenteditable="true">{if empty($data.labels._clients_td_new_order)}{t}New order{/t}{else}{$data.labels._clients_td_new_order}{/if} <i class="fa fa-fw fa-plus"></i></td>
                     </tr>
@@ -722,7 +722,7 @@
                         <td class="like_button">0000B</td>
                         <td class="like_button">Mrs White</td>
                         <td>contact@example.com</td>
-                        <td><img src="/art/flags/gb.gif"/>  Newquay</td>
+                        <td><img src="/art/flags/gb.png"/>  Newquay</td>
                         <td class="text-right">4</td>
                         <td class="text-right" id="_clients_td_active_order" contenteditable="true">{if empty($data.labels._clients_td_active_order)}{t}Currently in basket{/t}{else}{$data.labels._clients_td_active_order}{/if} <i class="fa fa-fw fa-shopping-basket"></i></td>
 
@@ -731,7 +731,7 @@
                         <td class="like_button">0000G</td>
                         <td class="like_button">Mr Grumpy</td>
                         <td>hi@example.com</td>
-                        <td><img src="/art/flags/gb.gif"/>  Durham</td>
+                        <td><img src="/art/flags/gb.png"/>  Durham</td>
                         <td class="text-right">4</td>
                         <td class="text-right" id="_clients_td_inactive_order" contenteditable="true">{if empty($data.labels._clients_td_inactive_order)}{t}Bring to basket{/t}{else}{$data.labels._clients_td_inactive_order}{/if} <i class="far fa-fw fa-layer-plus"></i></td>
 

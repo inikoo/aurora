@@ -270,7 +270,7 @@ trait Address {
                     array(
                         $this->table_name.' Location' => trim(
                             sprintf(
-                                '<img src="/art/flags/%s.gif" alt="%s" title="%s"> %s', strtolower($this->get('Contact Address Country 2 Alpha Code')), $this->get('Contact Address Country 2 Alpha Code'),$this->get('Contact Address Country 2 Alpha Code'), $location
+                                '<img src="/art/flags/%s.png" alt="%s" title="%s"> %s', strtolower($this->get('Contact Address Country 2 Alpha Code')), $this->get('Contact Address Country 2 Alpha Code'),$this->get('Contact Address Country 2 Alpha Code'), $location
                             )
                         )
                     ), 'no_history'

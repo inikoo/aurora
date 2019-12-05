@@ -507,7 +507,7 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
                 'state'                => $state,
                 'billing_country'      => $data['Invoice Address Country 2 Alpha Code'],
                 'billing_country_flag' => sprintf(
-                    '<img title="%s" src="/art/flags/%s.gif">', $data['Country Name'], strtolower($data['Invoice Address Country 2 Alpha Code'])
+                    '<img title="%s" src="/art/flags/%s.png">', $data['Country Name'], strtolower($data['Invoice Address Country 2 Alpha Code'])
                 )
 
             );

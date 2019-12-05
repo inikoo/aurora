@@ -1163,7 +1163,7 @@ class Part extends Asset {
 
                     return '<img src="/art/flags/'.strtolower(
                             $country->get('Country 2 Alpha Code')
-                        ).'.gif" title="'.$country->get('Country Code').'"> '._(
+                        ).'.png" title="'.$country->get('Country Code').'"> '._(
                             $country->get('Country Name')
                         );
                 } else {

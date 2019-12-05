@@ -1555,7 +1555,7 @@ function shipping_zones($_data, $db, $user) {
                 //print_r($territories_data);
 
                 foreach ($territories_data as $territory) {
-                    $territories .= '<img class="padding_left_5" style="width:20px" src="/art/flags/'.strtolower($territory['country_code']).'.gif"> '.$territory['country_code'];
+                    $territories .= '<img class="padding_left_5" style="width:20px" src="/art/flags/'.strtolower($territory['country_code']).'.png"> '.$territory['country_code'];
 
                     if (isset($territory['excluded_postal_codes'])) {
                         $territories .= ' <span class="error small">(<i class="fa fa-map-marker-alt-slash error" title="'._('Exclude postal codes').'" ></i> '.$territory['excluded_postal_codes'].')</span> ';

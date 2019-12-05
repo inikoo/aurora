@@ -127,7 +127,7 @@ if ($parameters['f_field'] == 'customer' and $f_value != '') {
             $wheref .= " and  `Delivery Note Country Code`='".$f_value."'    ";
             $country   = new Country('code', $f_value);
             $find_data = ' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code'])
-                .'.gif" alt="'.$country->data['Country Code'].'"/>';
+                .'.png" alt="'.$country->data['Country Code'].'"/>';
         }
     }
 }
