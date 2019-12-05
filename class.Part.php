@@ -2772,7 +2772,6 @@ class Part extends Asset {
 
 
                 if (array_key_exists($field, $base_data)) {
-                    //print "$field $value  ".$this->data[$field]." \n";
                     if ($value != $this->data[$field]) {
 
                         if ($field == 'Part General Description' or $field == 'Part Health And Safety') {

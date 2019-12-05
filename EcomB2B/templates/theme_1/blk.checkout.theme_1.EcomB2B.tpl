@@ -143,7 +143,6 @@
 
     <div class="container clear  {if $order->get('Order Basket To Pay Amount')==0}hide{/if}">
 
-
                 {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
 
                 <ul class="tabs3">
@@ -323,8 +322,6 @@
                                     </div>
 
                                     <div class="row">
-
-
 
 
                                     </div>
@@ -542,8 +539,6 @@
 
 
                             {elseif $block=='Bank'}
-
-
                                 <form action="" class="sky-form" style="max-width: 500px;">
                                     <header id="_form_title_bank">{$data.labels._form_title_bank}</header>
 
@@ -571,6 +566,7 @@
 
 
                             <form action="" class="sky-form" style="max-width: 500px;">
+
                                 <header id="_form_title_bank">{$data.labels._form_title_cash_on_delivery}</header>
 
 

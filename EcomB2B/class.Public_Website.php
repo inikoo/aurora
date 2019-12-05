@@ -86,7 +86,6 @@ class Public_Website {
             }
 
 
-
             if (empty($this->data['Website Mobile Style'])) {
                 $this->mobile_style = array();
             } else {
@@ -97,11 +96,6 @@ class Public_Website {
 
 
     }
-
-    function settings($key) {
-        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
-    }
-
 
     function get_webpage($code) {
 
@@ -116,7 +110,6 @@ class Public_Website {
 
 
     }
-
 
     function get_system_webpage_key($code) {
 
@@ -236,7 +229,6 @@ class Public_Website {
                 return $labels;
 
 
-
             case 'Website Store Key':
             case 'Website Locale':
             case 'Website Name':
@@ -291,6 +283,9 @@ class Public_Website {
 
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
 
     function get_payment_accounts($delivery_2alpha_country = '') {
 
@@ -301,12 +296,15 @@ class Public_Website {
             $this->id
         );
 
-
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
 
                 $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
+
+
+
+                $ok = true;
                 switch ($payment_account->get('Payment Account Block')) {
                     case 'BTree':
                         $icon            = 'fa fa-credit-card';
@@ -338,6 +336,7 @@ class Public_Website {
                         $analytics_label = 'Sofort';
                         break;
                     case 'Bank':
+
                         $icon            = 'fa fa-university';
                         $tab_label_index = '_bank_label';
                         $tab_label       = '';
@@ -348,40 +347,36 @@ class Public_Website {
                     case 'ConD':
 
 
-                        if (!in_array($delivery_2alpha_country, $payment_account->get('Valid Delivery Countries'))) {
-                            continue 2;
+                        if (in_array($delivery_2alpha_country, $payment_account->get('Valid Delivery Countries'))) {
+                            $icon            = 'fa fa-handshake';
+                            $tab_label_index = '_cash_on_delivery_label';
+                            $tab_label       = '';
+                            $short_label     = '';
+                            $analytics_label = 'Cash on delivery';
+                        } else {
+                            $ok = false;
                         }
 
-
-                        $icon            = 'fa fa-handshake';
-                        $tab_label_index = '_cash_on_delivery_label';
-                        $tab_label       = '';
-                        $short_label     = '';
-                        $analytics_label = 'Cash on delivery';
                         break;
                     default:
-
+                        $ok = false;
 
                 }
 
+                if ($ok) {
 
-                $payments_accounts[] = array(
-                    'object'          => $payment_account,
-                    'icon'            => $icon,
-                    'tab_label_index' => $tab_label_index,
-                    'tab_label'       => $tab_label,
-                    'short_label'     => $short_label,
-                    'analytics_label' => $analytics_label
-                );
-
+                    $payments_accounts[] = array(
+                        'object'          => $payment_account,
+                        'icon'            => $icon,
+                        'tab_label_index' => $tab_label_index,
+                        'tab_label'       => $tab_label,
+                        'short_label'     => $short_label,
+                        'analytics_label' => $analytics_label
+                    );
+                }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
-        //  print_r($payments_accounts);
 
         return $payments_accounts;
 
