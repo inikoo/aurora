@@ -276,7 +276,7 @@ class Part extends Asset {
             $this->validate_barcode();
             $this->update_weight_status();
 
-            $this->index_elastic_search();
+            $this->index_elastic_search(get_ES_hosts());
 
 
         } else {
@@ -1981,7 +1981,7 @@ class Part extends Asset {
                 }
 
                 $this->update_field($field, $value, $options);
-                $this->index_elastic_search();
+                $this->index_elastic_search(get_ES_hosts());
                 break;
 
             case 'Part Reference':
@@ -2014,7 +2014,7 @@ class Part extends Asset {
                     exit;
                 }
                 $this->update_field($field, $value, $options);
-                $this->index_elastic_search();
+                $this->index_elastic_search(get_ES_hosts());
 
                 break;
             case 'Part Unit Price':
@@ -2306,7 +2306,7 @@ class Part extends Asset {
                     }
 
                 }
-                $this->index_elastic_search();
+                $this->index_elastic_search(get_ES_hosts());
 
                 $this->updated = $updated;
                 break;
@@ -2585,7 +2585,7 @@ class Part extends Asset {
                     }
                 }
 
-                $this->index_elastic_search();
+                $this->index_elastic_search(get_ES_hosts());
                 break;
 
 
@@ -2711,7 +2711,7 @@ class Part extends Asset {
 
 
                 $this->update_status($value, $options);
-                $this->index_elastic_search();
+                $this->index_elastic_search(get_ES_hosts());
                 break;
 
             case 'Part Symbol':
