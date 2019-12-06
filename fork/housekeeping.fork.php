@@ -2820,7 +2820,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
 
 
-        case 'clean_webpage_cache':
+        case 'webpage_published':
 
 
             $webpage = get_object('Webpage', $data['webpage_key']);
@@ -2860,7 +2860,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $redis->set($url_cache_key, $webpage->id);
 
             }
-
+            $webpage->index_elastic_search($ES_hosts);
 
             break;
 

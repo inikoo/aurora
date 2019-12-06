@@ -3197,7 +3197,7 @@ class Page extends DB_Table {
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'        => 'clean_webpage_cache',
+            'type'        => 'webpage_published',
             'webpage_key' => $this->id,
         ), $account->get('Account Code'), $this->db
         );
