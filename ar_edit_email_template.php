@@ -510,22 +510,17 @@ function send_test_email($data, $smarty) {
 
     }
 
-    $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
-        '/\[Unsubscribe]/', function () use ($website, $smarty) {
-
-
-        //  print $website->get('Website URL').'/unsubscribe.php';
+    $request['Message']['Body']['Html']['Data'] = preg_replace_callback('/\[Unsubscribe]/', function () use ($website, $smarty) {
         $smarty->assign('link', $website->get('Website URL').'/unsubscribe.php');
-
         return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
-
-
     }, $request['Message']['Body']['Html']['Data']
     );
 
-    //print_r($ses_clients);
-
-    //print array_rand($ses_clients);
+    $request['Message']['Body']['Html']['Data'] = preg_replace_callback('/\[Stop_Junk_Mail]/', function () use ($website, $smarty) {
+        $smarty->assign('link', $website->get('Website URL').'/unsubscribe.php');
+        return $smarty->fetch('stop_junk_email.placeholder.tpl');
+    }, $request['Message']['Body']['Html']['Data']
+    );
 
 
     try {

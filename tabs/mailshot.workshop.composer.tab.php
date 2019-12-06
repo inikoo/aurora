@@ -48,6 +48,7 @@ $merge_tags     = '';
 $merge_contents = '';
 
 
+
 if ($email_template->get('Email Template Role') == 'OOS Notification') {
     $merge_tags = ",{ name: '"._('Back in stock products')."',value: '[Products]'}";
 
@@ -59,6 +60,23 @@ if ($email_template->get('Email Template Role') == 'OOS Notification') {
 
 } elseif ($email_template->get('Email Template Role') == 'AbandonedCart') {
     $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
+
+}elseif ($email_template->get('Email Template Role') == 'Invite Full Mailshot') {
+    $merge_contents = "{ name: '"._('Stop junk mail')."',value: '[Stop_Junk_Mail]'}";
+    $merge_tags = "{ name: '"._('Greetings')."',value: '[Greetings]'},
+    { name: '"._('Prospect name')."',value: '[Prospect Name]'},
+     { name: '"._('Contact name, Company')."',value: '[Name,Company]'},
+      { name: '"._('Contact name')."',value: '[Name]'},
+       { name: '"._('Signature')."',value: '[Signature Name]'},
+    
+    ";
+
+
+
+
+
+    $smarty->assign('overwrite_merge_tags', true);
+
 
 } elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
     $merge_tags = ",{ name: '"._('Last order number')."',value: '[Order Number]'},{ name: '"._('Last order date')."',value: '[Order Date]'},

@@ -100,7 +100,7 @@ function unsubscribe($db, $data, $editor,$account) {
     include_once('class.WebAuth.php');
     $auth = new WebAuth();
 
-    $unsubscribe_customer_key = $auth->get_customer_from_unsubscribe_link($data['selector'], $data['authenticator']);
+    list($unsubscribe_subject_type,$unsubscribe_customer_key) = $auth->get_customer_from_unsubscribe_link($data['selector'], $data['authenticator']);
 
 
     if ($unsubscribe_customer_key != '') {

@@ -19,7 +19,12 @@
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="_block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
+    {if !empty($is_prospect)}
 
+        <div style="text-align:center;margin-top: 100px;margin-bottom: 200px ">
+            {if !empty($data.labels._removed_from_mailing_list)}{$data.labels._removed_from_mailing_list}{else}{t}You have been removed from the mailing list{/t}{/if}
+        </div>
+    {else}
     <div class="block reg_form">
         <form id="unsubscribe" class="sky-form  {if $unsubscribe_customer_key==''}submited{/if} ">
             <header  >{$data.labels._unsubscribe_title}  </header>
@@ -73,117 +78,110 @@
         </form>
     </div>
 
+    <script>
+        $("form").on('submit', function (e) {
 
-</div>
-<script>
+            e.preventDefault();
+            e.returnValue = false;
 
+        });
+        $("#unsubscribe").validate({
 
-
-    $("form").on('submit', function (e) {
-
-        e.preventDefault();
-        e.returnValue = false;
-
-    });
+            submitHandler: function (form) {
 
 
-    $("#unsubscribe").validate({
+                var button = $('#_save_unsubscribe_label');
 
-        submitHandler: function (form) {
+                if (button.hasClass('wait')) {
+                    return;
+                }
 
-
-            var button = $('#_save_unsubscribe_label');
-
-            if (button.hasClass('wait')) {
-                return;
-            }
-
-            button.addClass('wait')
-            button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
+                button.addClass('wait')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
-            var register_data = {}
+                var register_data = {}
 
-                $("#unsubscribe input:not(.ignore)").each(function (i, obj) {
-                    if (!$(obj).attr('name') == '') {
+                    $("#unsubscribe input:not(.ignore)").each(function (i, obj) {
+                        if (!$(obj).attr('name') == '') {
 
 
-                        if ($(obj).attr('type') == 'checkbox') {
-                            register_data[$(obj).attr('name')] = $(obj).is(':checked')
-                        } else {
-                            register_data[$(obj).attr('name')] = $(obj).val()
+                            if ($(obj).attr('type') == 'checkbox') {
+                                register_data[$(obj).attr('name')] = $(obj).is(':checked')
+                            } else {
+                                register_data[$(obj).attr('name')] = $(obj).val()
+                            }
+
                         }
 
-                    }
+                    });
 
+
+
+
+                var ajaxData = new FormData();
+
+                ajaxData.append("tipo", 'unsubscribe')
+                ajaxData.append("selector", '{$selector}')
+
+                ajaxData.append("authenticator", '{$authenticator}')
+
+                ajaxData.append("data", JSON.stringify(register_data))
+
+
+                $.ajax({
+                    url: "/ar_web_unsubscribe.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+                    }, success: function (data) {
+
+                        console.log(data)
+
+                        if (data.state == '200') {
+
+                            for (var key in data.metadata.class_html) {
+                                $('.' + key).html(data.metadata.class_html[key])
+                            }
+
+                            swal("{t}Saved{/t}")
+                        } else if (data.state == '400') {
+                            swal("{t}Error{/t}!", data.msg, "error")
+                        }
+
+
+                        button.removeClass('wait').addClass('invisible')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+
+
+                    }, error: function () {
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+
+                    }
                 });
 
 
+            },
 
-
-            var ajaxData = new FormData();
-
-            ajaxData.append("tipo", 'unsubscribe')
-            ajaxData.append("selector", '{$selector}')
-
-            ajaxData.append("authenticator", '{$authenticator}')
-
-            ajaxData.append("data", JSON.stringify(register_data))
-
-
-            $.ajax({
-                url: "/ar_web_unsubscribe.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
-                }, success: function (data) {
-
-                    console.log(data)
-
-                    if (data.state == '200') {
-
-                        for (var key in data.metadata.class_html) {
-                            $('.' + key).html(data.metadata.class_html[key])
-                        }
-
-                       swal("{t}Saved{/t}")
-                    } else if (data.state == '400') {
-                        swal("{t}Error{/t}!", data.msg, "error")
-                    }
-
-
-                    button.removeClass('wait').addClass('invisible')
-                    button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
-
-
-                }, error: function () {
-                    button.removeClass('wait')
-                    button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
-
-                }
-            });
-
-
-        },
-
-        // Rules for form validation
-        rules: {
+            // Rules for form validation
+            rules: {
 
 
 
-        },
+            },
 
-        // Messages for form validation
-        messages: {
-
-
-
-        },
-
-        // Do not change code below
-        errorPlacement: function (error, element) {
-            error.insertAfter(element.parent());
-        }
-    });
+            // Messages for form validation
+            messages: {
 
 
 
+            },
 
-</script>
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    </script>
+    {/if}
+
+</div>
+

@@ -83,6 +83,7 @@ function send_mailshot($data, $account, $editor, $db) {
             'au_housekeeping', array(
             'type'         => 'send_mailshot',
             'mailshot_key' => $mailshot->id,
+            'editor'      => $editor
 
         ), $account->get('Account Code')
         );

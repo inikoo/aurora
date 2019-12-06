@@ -77,7 +77,7 @@ $table_buttons[] = array(
     'id'    => 'new_spread_mailshot',
     'class' => ' new_spread_mailshot '.($disable?'super_discreet':'new_marketing_mailshot'),
 
-    'attr'  => array(
+    'data-'  => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
@@ -122,7 +122,7 @@ $table_buttons[] = array(
     'class' => 'new_donut_mailshot   '.($disable?'super_discreet':'new_marketing_mailshot'),
 
 
-    'attr'  => array(
+    'data_attr'  => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
@@ -165,7 +165,7 @@ $table_buttons[] = array(
     'id'    => 'new_targeted_mailshot',
     'class' => ' new_targeted_mailshot '.($disable?'super_discreet':'new_marketing_mailshot'),
 
-    'attr'  => array(
+    'data_attr'  => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
@@ -178,10 +178,6 @@ $table_buttons[] = array(
 
 );
 
-
-$smarty->assign(
-    'js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 

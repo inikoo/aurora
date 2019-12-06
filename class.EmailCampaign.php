@@ -14,8 +14,6 @@ include_once 'class.DB_Table.php';
 
 class EmailCampaign extends DB_Table {
 
-    var $new = false;
-    var $updated_data = array();
 
     function __construct($arg1 = false, $arg2 = false) {
 
@@ -81,24 +79,6 @@ class EmailCampaign extends DB_Table {
         $this->found     = false;
         $this->found_key = false;
 
-        /*
-                $sql = sprintf(
-                    "SELECT `Email Campaign Key` FROM `Email Campaign Dimension` WHERE `Email Campaign Store Key`=%d AND `Email Campaign Name`=%s", $raw_data['Email Campaign Store Key'], prepare_mysql($raw_data['Email Campaign Name'])
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $this->found_key = $row['Email Campaign Key'];
-                        $this->found     = true;
-                        $this->get_data('id', $this->found_key);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-        */
 
         $create = '';
         if (preg_match('/create/i', $options)) {
@@ -143,32 +123,23 @@ class EmailCampaign extends DB_Table {
         $data['Email Campaign Last Updated Date'] = gmdate('Y-m-d H:i:s');
 
 
-        $keys   = '(';
-        $values = 'values(';
+        $sql = sprintf(
+            "INSERT INTO `Email Campaign Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+
+        $i = 1;
         foreach ($data as $key => $value) {
-            $keys .= "`$key`,";
-            if ($key = '') {
-                $values .= prepare_mysql($value, false).",";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
 
 
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-
-
-        $sql = "insert into `Email Campaign Dimension` $keys  $values";
-
-        // print $sql;
-
-        if ($this->db->exec($sql)) {
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
-
             $this->get_data('id', $this->id);
-
-
             $this->new = true;
 
             $store = get_object('Store', $this->data['Email Campaign Store Key']);
@@ -182,7 +153,9 @@ class EmailCampaign extends DB_Table {
                     break;
                 case 'Newsletter':
                     $history_abstract = _('Newsletter created');
-
+                    break;
+                case 'Invite Full Mailshot':
+                    $history_abstract = _('Invitation mailshot');
                     break;
                 default:
 
@@ -198,7 +171,7 @@ class EmailCampaign extends DB_Table {
                 'Action'           => 'created'
             );
 
-            $history_key = $this->add_subject_history(
+            $this->add_subject_history(
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
@@ -604,7 +577,6 @@ class EmailCampaign extends DB_Table {
 
                     break;
                 case 'Marketing':
-                    $store = get_object('Store', $this->get('Store Key'));
 
                     include_once 'utils/asset_marketing_customers.php';
 
@@ -676,6 +648,28 @@ class EmailCampaign extends DB_Table {
 
 
                     break;
+
+                case 'Invite Full Mailshot':
+
+                    $metadata = $this->get('Metadata');
+
+                    $sql =
+                        "select count(*)  as num from `Prospect Dimension` where `Prospect Store Key`=? and `Prospect Main Plain Email`!='' and  ( `Prospect Status`='NoContacted'  or  ( `Prospect Status`='Contacted' and  `Prospect Last Contacted Date`<= CURRENT_DATE - INTERVAL ? DAY   )  )  ";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->get('Store Key'),
+                            (empty($metadata['Cool_Down_Days']) ? 180 : $metadata['Cool_Down_Days'])
+                        )
+                    );
+                    if ($row = $stmt->fetch()) {
+                        $estimated_recipients = $row['num'];
+                    }
+
+
+                    break;
+
                 default:
 
             }
@@ -1211,75 +1205,6 @@ class EmailCampaign extends DB_Table {
 
     }
 
-
-    function create_email_tracking($customer_key, $email, $recipient_type, $account, $email_template_type, $email_template, $contador, $thread_size, $thread) {
-
-
-        $sql_find = sprintf(
-            'select `Email Tracking Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%s and `Email Tracking Email`=%s ', $this->id, prepare_mysql($email)
-        );
-
-        if ($result_find = $this->db->query($sql_find)) {
-            if ($row_find = $result_find->fetch()) {
-
-            } else {
-                $email_tracking_data = array(
-                    'Email Tracking Email' => $email,
-
-                    'Email Tracking Email Template Type Key'      => $email_template_type->id,
-                    'Email Tracking Email Template Key'           => $email_template->id,
-                    'Email Tracking Email Mailshot Key'           => $this->id,
-                    'Email Tracking Published Email Template Key' => $email_template->get('Email Template Published Email Key'),
-                    'Email Tracking Recipient'                    => $recipient_type,
-                    'Email Tracking Recipient Key'                => $customer_key,
-                    'Email Tracking Thread'                       => $thread
-
-                );
-
-
-                new Email_Tracking('new', $email_tracking_data);
-
-                $contador++;
-                if ($contador > $thread_size) {
-
-
-                    $client        = new GearmanClient();
-                    $fork_metadata = json_encode(
-                        array(
-                            'code' => addslashes($account->get('Code')),
-                            'data' => array(
-                                'mailshot' => $this->id,
-                                'thread'   => $thread,
-                            )
-                        )
-                    );
-                    $client->addServer('127.0.0.1');
-                    $client->doBackground('au_send_mailshot', $fork_metadata);
-                    $thread++;
-
-                    if ($thread > 1) {
-                        $thread_size = 250;
-                    } elseif ($thread > 10) {
-                        $thread_size = 500;
-                    }
-
-                    $contador = 0;
-
-
-                }
-
-
-            }
-        }
-
-        return array(
-            $contador,
-            $thread_size,
-            $thread
-        );
-
-    }
-
     function send_mailshot($first_thread = 1) {
 
         include_once 'class.Email_Tracking.php';
@@ -1289,8 +1214,13 @@ class EmailCampaign extends DB_Table {
         $email_template_type = get_object('email_template_type', $this->data['Email Campaign Email Template Type Key']);
         $email_template      = get_object('email_template', $this->data['Email Campaign Email Template Key']);
 
+        if ($this->data['Email Campaign Type'] == 'Invite Full Mailshot') {
+            $recipient_type = 'Prospect';
 
-        $recipient_type = 'Customer';
+        } else {
+            $recipient_type = 'Customer';
+
+        }
 
         $thread      = $first_thread;
         $thread_size = 50;
@@ -1402,6 +1332,7 @@ class EmailCampaign extends DB_Table {
                     'data' => array(
                         'mailshot' => $this->id,
                         'thread'   => $thread,
+                        'editor'   => $this->editor
                     )
                 )
             );
@@ -1422,6 +1353,74 @@ class EmailCampaign extends DB_Table {
 
     }
 
+    function create_email_tracking($customer_key, $email, $recipient_type, $account, $email_template_type, $email_template, $contador, $thread_size, $thread) {
+
+
+        $sql_find = sprintf(
+            'select `Email Tracking Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%s and `Email Tracking Email`=%s ', $this->id, prepare_mysql($email)
+        );
+
+        if ($result_find = $this->db->query($sql_find)) {
+            if ($row_find = $result_find->fetch()) {
+
+            } else {
+                $email_tracking_data = array(
+                    'Email Tracking Email' => $email,
+
+                    'Email Tracking Email Template Type Key'      => $email_template_type->id,
+                    'Email Tracking Email Template Key'           => $email_template->id,
+                    'Email Tracking Email Mailshot Key'           => $this->id,
+                    'Email Tracking Published Email Template Key' => $email_template->get('Email Template Published Email Key'),
+                    'Email Tracking Recipient'                    => $recipient_type,
+                    'Email Tracking Recipient Key'                => $customer_key,
+                    'Email Tracking Thread'                       => $thread
+
+                );
+
+
+                new Email_Tracking('new', $email_tracking_data);
+
+                $contador++;
+                if ($contador > $thread_size) {
+
+
+                    $client        = new GearmanClient();
+                    $fork_metadata = json_encode(
+                        array(
+                            'code' => addslashes($account->get('Code')),
+                            'data' => array(
+                                'mailshot' => $this->id,
+                                'thread'   => $thread,
+                            )
+                        )
+                    );
+                    $client->addServer('127.0.0.1');
+                    $client->doBackground('au_send_mailshot', $fork_metadata);
+                    $thread++;
+
+                    if ($thread > 1) {
+                        $thread_size = 250;
+                    } elseif ($thread > 10) {
+                        $thread_size = 500;
+                    }
+
+                    $contador = 0;
+
+
+                }
+
+
+            }
+        }
+
+        return array(
+            $contador,
+            $thread_size,
+            $thread
+        );
+
+    }
+
     function get_recipients_sql() {
 
         switch ($this->data['Email Campaign Type']) {
@@ -1437,7 +1436,6 @@ class EmailCampaign extends DB_Table {
                 return $sql;
 
 
-                break;
             case 'AbandonedCart':
 
                 $metadata = $this->get('Metadata');
@@ -1459,7 +1457,6 @@ class EmailCampaign extends DB_Table {
                 return $sql;
 
 
-                break;
             case 'OOS Notification':
 
 
@@ -1488,7 +1485,16 @@ class EmailCampaign extends DB_Table {
                 return $sql;
 
 
-                break;
+            case 'Invite Full Mailshot':
+
+                $metadata = $this->get('Metadata');
+
+                $sql = sprintf(
+                    "select `Prospect Key`,`Prospect Main Plain Email` from `Prospect Dimension` where `Prospect Store Key`=%d and `Prospect Main Plain Email`!='' and  ( `Prospect Status`='NoContacted'  or  ( `Prospect Status`='Contacted' and  `Prospect Last Contacted Date`<= CURRENT_DATE - INTERVAL %d DAY   )  )  ",
+                    $this->data['Email Campaign Store Key'], (empty($metadata['Cool_Down_Days']) ? 180 : $metadata['Cool_Down_Days'])
+                );
+
+                return $sql;
 
             case 'Marketing':
                 $metadata = $this->get('Metadata');
@@ -1509,7 +1515,6 @@ class EmailCampaign extends DB_Table {
                             return $sql;
 
 
-                            break;
                         default:
                             break;
                     }

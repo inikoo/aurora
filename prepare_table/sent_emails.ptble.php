@@ -29,8 +29,6 @@ if ($parameters['parent'] == 'prospect') {
 
 
 switch ($parameters['parent']) {
-
-
     case('prospect'):
         $where = sprintf(
             ' where `Email Tracking Recipient`="Prospect"  and  `Email Tracking Recipient Key`=%d', $parameters['parent_key']
@@ -43,9 +41,22 @@ switch ($parameters['parent']) {
         break;
     case 'email_campaign':
     case 'mailshot':
+        if ($email_campaign_type->get('Code') == 'Invite Full Mailshot') {
+
+            $table  = '`Email Tracking Dimension`  left join `Email Campaign Type Dimension`  on (`Email Tracking Email Template Type Key`=`Email Campaign Type Key`)  
+    left join `Published Email Template Dimension` on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)
+    left join `Prospect Dimension` on (`Email Tracking Recipient Key`=`Prospect Key`) ';
+
+
+            $fields =
+                "`Email Tracking Delivery Status Code`,`Email Tracking Email`,`Prospect Store Key` as store_key,`Prospect Key` as recipient_key,`Prospect Name` as recipient_name,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
+
+
+        }
         $where = sprintf(
             ' where   `Email Tracking Email Mailshot Key`=%d', $parameters['parent_key']
         );
+
         break;
     case 'email_campaign_type':
 
@@ -152,4 +163,4 @@ if ($order == 'subject') {
 $sql_totals = "select count(*) as num from $table $where ";
 
 
-?>
+

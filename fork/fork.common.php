@@ -82,6 +82,7 @@ function get_fork_metadata($job) {
     }
     $session->set('current_warehouse', $warehouse_key);
 
+
     $elasticsearch_hosts=get_ES_hosts();
 
     return array(

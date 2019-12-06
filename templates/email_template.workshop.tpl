@@ -115,7 +115,10 @@
 
     }
 
-    var mergeTags = [{
+    var mergeTags = [
+
+        {if empty($overwrite_merge_tags)}
+        {
         name: '{t}Greetings{/t}', value: '[Greetings]'
     }, {
         name: '{t}Customer name{/t}', value: '[Customer Name]'
@@ -126,6 +129,7 @@
     }, {
         name: '{t}Signature{/t}', value: '[Signature]'
     }
+    {/if}
         {$merge_tags}
 
     ];

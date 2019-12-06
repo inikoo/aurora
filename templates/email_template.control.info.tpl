@@ -9,28 +9,12 @@
 -->
 *}
 {if $data.scope=='EmailCampaign'}
-
-
     {if $data.published}
-
         <br/>
-
     {elseif $data.edited_date!='' }
         <span style="font-size: 85%;font-style: italic" class="discreet   ">
       {t}last saved{/t}:<span class=" edited_date">{$data.edited_date}</span>
-
-
-
-
-     {/if}
-
-
-
-
-
-
-
-
+    {/if}
 {else}
     <span style="font-size: 85%;font-style: italic" class="discreet  {if !$data.editing}invisible{/if} ">({t}Unpublished version on editor{/t})  <span class=" edited_date">{$data.edited_date}</span></span>
     <br>

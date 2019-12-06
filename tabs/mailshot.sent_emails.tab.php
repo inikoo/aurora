@@ -21,6 +21,7 @@ $tab     = 'mailshot.sent_emails';
 $ar_file = 'ar_mailshots_tables.php';
 $tipo    = 'sent_emails';
 
+$smarty->assign('mailshot_type', $state['_object']->get('Email Campaign Type'));
 
 
 $default = $user->get_tab_defaults($tab);
@@ -52,4 +53,3 @@ $table_buttons = array();
 include 'utils/get_table_html.php';
 
 
-?>

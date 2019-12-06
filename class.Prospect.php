@@ -99,7 +99,7 @@ class Prospect extends Subject {
         if (!isset($raw_data['Prospect Store Key']) or !preg_match('/^\d+$/i', $raw_data['Prospect Store Key'])) {
             $this->error = true;
             $this->msg   = 'missing store key';
-            $this->error_code=='missing store key';
+            $this->error_code == 'missing store key';
 
         }
 
@@ -111,10 +111,10 @@ class Prospect extends Subject {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->error = true;
-                $this->found = true;
-                $this->msg   = _('Another prospect with same email has been found');
-                $this->error_code= 'duplicated email';
+                $this->error      = true;
+                $this->found      = true;
+                $this->msg        = _('Another prospect with same email has been found');
+                $this->error_code = 'duplicated email';
 
                 return;
             }
@@ -383,7 +383,7 @@ class Prospect extends Subject {
                         array(
                             'Prospect Status'                   => 'Contacted',
                             'Prospect First Contacted Date'     => gmdate('Y-m-d H:i:s'),
-                            'Prospect Last Contacted Date'     => gmdate('Y-m-d H:i:s'),
+                            'Prospect Last Contacted Date'      => gmdate('Y-m-d H:i:s'),
                             'Prospect User Key'                 => $this->editor['User Key'],
                             'Prospect Sales Representative Key' => $sales_representative->id
 
@@ -391,11 +391,11 @@ class Prospect extends Subject {
                     );
 
 
-                }else{
+                } else {
                     $this->fast_update(
                         array(
 
-                            'Prospect Last Contacted Date'     => gmdate('Y-m-d H:i:s'),
+                            'Prospect Last Contacted Date' => gmdate('Y-m-d H:i:s'),
 
 
                         )
@@ -643,6 +643,46 @@ class Prospect extends Subject {
         }
     }
 
+
+    function mailshot_sent($tracking_key,$subject){
+
+        $history_data = array(
+            'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
+                    '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $tracking_key, $subject
+                ),
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Emails', 'Prospect', $this->id
+        );
+
+
+        if ($this->data['Prospect Status'] == 'NoContacted') {
+            $this->fast_update(
+                array(
+                    'Prospect Status'               => 'Contacted',
+                    'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+                    'Prospect Last Contacted Date'  => gmdate('Y-m-d H:i:s'),
+
+                )
+            );
+
+
+        } else {
+            $this->fast_update(
+                array(
+                    'Prospect Last Contacted Date' => gmdate('Y-m-d H:i:s'),
+                )
+            );
+        }
+
+
+    }
+
+
     function send_invitation($email_template_key) {
         $email_template_type = get_object('Email_Template_Type', 'Invite Mailshot|'.$this->get('Prospect Store Key'), 'code_store');
 
@@ -696,12 +736,11 @@ class Prospect extends Subject {
 
 
             if ($this->data['Prospect Status'] == 'NoContacted') {
-
-
                 $this->fast_update(
                     array(
                         'Prospect Status'               => 'Contacted',
                         'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+                        'Prospect Last Contacted Date'  => gmdate('Y-m-d H:i:s'),
 
                     )
                 );
@@ -727,6 +766,12 @@ class Prospect extends Subject {
                     );
                 }
 
+            } else {
+                $this->fast_update(
+                    array(
+                        'Prospect Last Contacted Date' => gmdate('Y-m-d H:i:s'),
+                    )
+                );
             }
 
         } else {
@@ -970,6 +1015,43 @@ class Prospect extends Subject {
 
     }
 
+    function opt_out($date) {
+
+
+        if ($this->data['Prospect Status'] == 'Contacted' or $this->data['Prospect Status'] == 'NoContacted') {
+
+            $this->fast_update(
+                array(
+                    'Prospect Status'    => 'NotInterested',
+                    'Prospect Lost Date' => $date
+                )
+            );
+            $history_data = array(
+                'History Abstract' => _('Recipient opt out'),
+                'History Details'  => '',
+                'Action'           => 'edited'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+        } elseif ($this->data['Prospect Status'] == 'NotInterested') {
+            $history_data = array(
+                'History Abstract' => _('Recipient opt out again'),
+                'History Details'  => '',
+                'Action'           => 'edited'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+        } else {
+            return;
+        }
+
+
+    }
+
     function unlink_customer() {
 
 
@@ -1014,8 +1096,6 @@ class Prospect extends Subject {
             $history_data = array(
                 'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
                         '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $published_email_template->email_tracking->id, $published_email_template->get('Published Email Template Subject')
-
-
                     ),
                 'History Details'  => '',
                 'Action'           => 'edited'
@@ -1033,6 +1113,7 @@ class Prospect extends Subject {
                     array(
                         'Prospect Status'               => 'Contacted',
                         'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+                        'Prospect Last Contacted Date'  => gmdate('Y-m-d H:i:s'),
 
                     )
                 );
@@ -1058,7 +1139,15 @@ class Prospect extends Subject {
                     );
                 }
 
+            } else {
+                $this->fast_update(
+                    array(
+                        'Prospect Last Contacted Date' => gmdate('Y-m-d H:i:s'),
+
+                    )
+                );
             }
+
 
         }
         $this->update_metadata = array(

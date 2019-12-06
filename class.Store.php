@@ -4490,7 +4490,9 @@ class Store extends DB_Table {
 
 
         if (preg_match('/Store Notification (.+) Recipients/', $field, $matches)) {
-
+            /**
+             * @var $email_template_type \EmailCampaignType
+             */
             $email_template_type = get_object('Email_Template_Type', $matches[1].'|'.$this->id, 'code_store');
             $email_template_type->update_number_subscribers();
         }

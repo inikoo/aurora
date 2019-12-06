@@ -32,10 +32,23 @@ cell: Backgrid.HtmlCell.extend({
 {
 name: "customer",
 label: "{t}Customer{/t}",
+
+renderable:{if $mailshot_type=='Invite Full Mailshot'}false{else}true{/if},
 sortType: "toggle",
 editable: false,
 
 {if $sort_key=='customer'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ })
+},
+{
+name: "prospect",
+renderable:{if $mailshot_type=='Invite Full Mailshot'}true{else}false{/if},
+
+label: "{t}Prospect{/t}",
+sortType: "toggle",
+editable: false,
+
+{if $sort_key=='prospect'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ })
 },
 

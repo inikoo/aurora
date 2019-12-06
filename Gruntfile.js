@@ -19,7 +19,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 },
-                src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
+                src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js'],
                 dest: 'EcomB2B/assets/desktop.out.min.js'
             }, ecom_desktop_logged_in: {
                 options: {
@@ -152,6 +152,7 @@ module.exports = function (grunt) {
                     'js/order.common.js', 'js/order_collection.js', 'js/location_parts.js',
 
                     'js/email_campaign.common.js',
+                    'js/new_marketing_mailshot.js',
                     'js/supplier.order.js', 'js/supplier.delivery.js','js/supplier.delivery.costing.js',
                     'js/part_locations.edit.js', 'js/part_locations.edit_locations.js', 'js/part_locations.stock_check.js', 'js/part_locations.move_stock.js', 'js/fast_track_packing.js', 'js/sticky_notes.js', 'js/picking_and_packing.js', 'js/app.js', 'js/real_time.js', 'js/customers.js', 'js/customer_orders.js', 'js/customer_client.js', 'js/customer_client_orders.js',
                     'js/add_item_to_order.js','js/upload.js'
@@ -446,6 +447,8 @@ module.exports = function (grunt) {
                     expand: true, cwd: 'fork/', src: ['*.php'], dest: '../fork/'
                 }, {
                     expand: true, src: ['templates/unsubscribe*.tpl'], dest: '../fork/'
+                }, {
+                    expand: true, src: ['templates/stop_junk_email*.tpl'], dest: '../fork/'
                 }, {
                     expand: true, src: ['templates/notification_emails/*.tpl'], dest: '../fork/'
                 }

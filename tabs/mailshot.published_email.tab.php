@@ -19,7 +19,6 @@ $published_email_template = get_object('Published_Email_Template',$email_templat
 
 
 
-//$html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div style="border:1px solid #ccc;border-top:none">'.$published_email_template->get('Published Email Template HTML').'</div></div>';
 
 
 
@@ -43,6 +42,3 @@ request.fail(function( jqXHR, textStatus ) {
 });</script>';
 
 
-
-
-?>

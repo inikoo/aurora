@@ -281,15 +281,13 @@ function email_tracking_events($_data, $db, $user) {
 function sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
-    include_once 'prepare_table/init.php';
-    include_once 'utils/parse_email_status_codes.php';
 
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
 
 
     $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
+
+
+
     if ($_data['parameters']['parent'] == 'mailshot' or $_data['parameters']['parent'] == 'email_campaign') {
         $email_campaign_type = get_object('email_campaign_type', $parent->get('Email Campaign Email Template Type Key'));
     } elseif ($_data['parameters']['parent'] == 'customer') {
@@ -297,18 +295,23 @@ function sent_emails($_data, $db, $user) {
     }
 
 
+    include_once 'prepare_table/init.php';
+
+
+    include_once 'utils/parse_email_status_codes.php';
+
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+
     if ($_data['parameters']['parent'] == 'mailshot') {
 
         if ($email_campaign_type->get('Email Campaign Type Scope') == 'Marketing') {
             $link = 'marketing/%d/emails/%d/mailshot/%d/tracking/%d';
-
-
         } else {
-
-
-
             $link = 'customers/%d/notifications/%d/mailshot/%d/tracking/%d';
-
         }
 
 
@@ -402,7 +405,7 @@ function sent_emails($_data, $db, $user) {
             $state = sprintf('<span class="email_tracking_state_%d">%s</span>', $data['Email Tracking Key'], $state);
 
             $customer  = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
-            $prospects = sprintf('<span class="link" onclick="change_view(\'prospects/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
+            $prospect = sprintf('<span class="link" onclick="change_view(\'prospects/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
 
             $subject = '';
             if ($_data['parameters']['parent'] == 'email_campaign_type') {
@@ -463,7 +466,7 @@ function sent_emails($_data, $db, $user) {
                 'email'    => $email,
                 'type'     => $_type,
                 'subject'  => $subject,
-                'prospect' => $prospects,
+                'prospect' => $prospect,
                 'customer' => $customer,
                 'date'     => strftime("%a, %e %b %Y %R:%S %Z", strtotime($data['Email Tracking Created Date'].' +0:00')),
 

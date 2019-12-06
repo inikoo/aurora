@@ -58,7 +58,7 @@ $table_buttons[] = array(
     'id'    => 'new_mailshot',
     'class'=>'new_marketing_mailshot',
 
-    'attr'  => array(
+    'data_attr'  => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'=>'Customer_List',
@@ -70,9 +70,6 @@ $table_buttons[] = array(
 
 );
 
-$smarty->assign(
-    'js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 $smarty->assign('table_buttons', $table_buttons);

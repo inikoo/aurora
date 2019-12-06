@@ -403,7 +403,8 @@ trait Send_Email {
             $this->email_tracking = $email_tracking;
 
 
-        } catch (AwsException $e) {
+        }
+        catch (AwsException $e) {
 
             //print_r($request);
 
@@ -463,8 +464,17 @@ trait Send_Email {
                 'email_template_key'      => $email_tracking->get('Email Tracking Email Template Key'),
                 'email_template_type_key' => $email_tracking->get('Email Tracking Email Template Type Key'),
 
+
             ), $this->account->get('Account Code')
             );
+
+
+
+
+        }else{
+            if($recipient->get_object_name()=='Prospect'){
+                $recipient->mailshot_sent($email_tracking->id,$subject);
+            }
         }
 
 
@@ -1058,22 +1068,29 @@ trait Send_Email {
                     '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty, $localised_labels) {
 
                     if (isset($data['Unsubscribe URL'])) {
-
-
                         $smarty->assign('localised_labels', $localised_labels);
-
-
                         $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
-
-                        // print $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
-
                         return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
 
                     }
-
-
                 }, $html
                 );
+
+                $html = preg_replace_callback(
+                    '/\[Stop_Junk_Mail]/', function () use ($email_tracking, $recipient, $data, $smarty, $localised_labels) {
+
+                    if (isset($data['Unsubscribe URL'])) {
+                        $smarty->assign('localised_labels', $localised_labels);
+                        $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
+                        return $smarty->fetch('stop_junk_email.placeholder.tpl');
+
+                    }
+                }, $html
+                );
+
+
+
+
         }
 
         return $html;

@@ -36,7 +36,7 @@ $smarty->setConfigDir('server_files/smarty/configs');
 $smarty->addPluginsDir('./smarty_plugins');
 
 if (defined('SENTRY_DNS_ECOM_JS')) {
-    $smarty->assign('sentry_js',SENTRY_DNS_ECOM_JS);
+    $smarty->assign('sentry_js', SENTRY_DNS_ECOM_JS);
 }
 
 
@@ -97,31 +97,61 @@ if (isset($is_homepage)) {
     include_once __DIR__.'/utils/public_object_functions.php';
     include_once __DIR__.'/utils/network_functions.php';
 
-    $website = get_object('Website', $_SESSION['website_key']);
-
+    $website     = get_object('Website', $_SESSION['website_key']);
     $webpage_key = $website->get_system_webpage_key('unsubscribe.sys');
-
-
     include_once('class.WebAuth.php');
     $auth = new WebAuth();
 
-    $unsubscribe_customer_key = $auth->get_customer_from_unsubscribe_link((isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+    list($unsubscribe_subject_type, $unsubscribe_subject_key) = $auth->get_customer_from_unsubscribe_link((isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+
+    if ($unsubscribe_subject_type == 'Customer') {
+        if ($unsubscribe_subject_key != '') {
+            $unsubscribe_customer = get_object('Customer', $unsubscribe_subject_key);
+            if (!$unsubscribe_customer->id) {
+                $unsubscribe_subject_key = '';
+            } else {
+                $smarty->assign('unsubscribe_customer', $unsubscribe_customer);
+
+            }
+        }
+        $smarty->assign('selector', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
+        $smarty->assign('authenticator', (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+        $smarty->assign('unsubscribe_customer_key', $unsubscribe_subject_key);
+        $smarty->assign('is_unsubscribe', true);
+    } elseif ($unsubscribe_subject_type == 'Prospect') {
+
+        if ($unsubscribe_subject_key != '') {
+
+            $sql  = "select `Prospect Key` from `Prospect Dimension` where `Prospect Key`=?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $unsubscribe_subject_key
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                include_once __DIR__.'/utils/new_fork.php';
 
 
-    if ($unsubscribe_customer_key != '') {
-        $unsubscribe_customer = get_object('Customer', $unsubscribe_customer_key);
-        if (!$unsubscribe_customer->id) {
-            $unsubscribe_customer_key = '';
-        } else {
-            $smarty->assign('unsubscribe_customer', $unsubscribe_customer);
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'         => 'unsubscribe_prospect',
+                    'prospect_key' => $row['Prospect Key'],
+                    'date'=>gmdate('Y-m-d H:i:s')
+
+                ), DNS_ACCOUNT_CODE
+                );
+            }
+
 
         }
-    }
-    $smarty->assign('selector', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
-    $smarty->assign('authenticator', (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
-    $smarty->assign('unsubscribe_customer_key', $unsubscribe_customer_key);
-    $smarty->assign('is_unsubscribe', true);
 
+        $smarty->assign('is_prospect', true);
+
+        $smarty->assign('is_unsubscribe', true);
+
+    }
 
 }
 
@@ -148,7 +178,6 @@ if (isset($_REQUEST['snapshot'])) {
 
 
 }
-
 
 
 //if ($logged_in and !$is_devel) {
@@ -225,13 +254,13 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $store = get_object('Store', $website->get('Website Store Key'));
 
 
-    if(!empty($_SESSION['website_locale'])) {
+    if (!empty($_SESSION['website_locale'])) {
         $website_locale = $_SESSION['website_locale'];
-    }else{
+    } else {
         $_SESSION['website_locale'] = $website->get('Website Locale');
         $website_locale             = $website->get('Website Locale');
     }
-    $language=set_locate($website_locale);
+    $language = set_locate($website_locale);
 
     $smarty->assign('language', $language);
 
@@ -334,8 +363,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
 
-    }
-    elseif ($webpage->get('Webpage Code') == 'clients.sys') {
+    } elseif ($webpage->get('Webpage Code') == 'clients.sys') {
 
         require_once __DIR__.'/utils/get_addressing.php';
 
@@ -344,7 +372,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         require_once __DIR__.'/utils/get_countries.php';
         $countries = get_countries($website->get('Website Locale'));
 
-        $required_fields[]='client_reference';
+        $required_fields[] = 'client_reference';
 
 
         $smarty->assign('address_labels', $address_labels);
@@ -353,13 +381,11 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         $smarty->assign('no_required_fields', $no_required_fields);
 
 
-
         $smarty->assign('countries', $countries);
         $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
 
-    }
-    elseif ($webpage->get('Webpage Code') == 'login.sys') {
+    } elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
         if (!empty($_GET['invoice_pdf'])) {
             $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
@@ -369,16 +395,14 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
         }
 
-    }
-    elseif ($webpage->get('Webpage Code') == 'client.sys') {
-            $smarty->assign('client_key', (isset($_REQUEST['id'])?$_REQUEST['id']:0));
+    } elseif ($webpage->get('Webpage Code') == 'client.sys') {
+        $smarty->assign('client_key', (isset($_REQUEST['id']) ? $_REQUEST['id'] : 0));
     } elseif ($webpage->get('Webpage Code') == 'client_basket.sys') {
 
-        $smarty->assign('client_key', (isset($_REQUEST['client_id'])?$_REQUEST['client_id']:0));
-    }elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
-        $smarty->assign('client_order_key', (isset($_REQUEST['order_key'])?$_REQUEST['order_key']:0));
+        $smarty->assign('client_key', (isset($_REQUEST['client_id']) ? $_REQUEST['client_id'] : 0));
+    } elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
+        $smarty->assign('client_order_key', (isset($_REQUEST['order_key']) ? $_REQUEST['order_key'] : 0));
     }
-
 
 
     if ($webpage->get('Webpage Scope') == 'Product') {

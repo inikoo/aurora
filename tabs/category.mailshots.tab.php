@@ -73,7 +73,7 @@ $table_buttons[] = array(
     'title' => _('Create mail bomb').$_customers,
     'id'    => 'new_spread_mailshot',
     'class' => 'new_marketing_mailshot new_spread_mailshot',
-    'attr'  => array(
+    'data_attr'  => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
@@ -111,7 +111,7 @@ $table_buttons[] = array(
     'id'    => 'new_donut_mailshot',
     'class' => 'new_marketing_mailshot new_donut_mailshot',
 
-    'attr' => array(
+    'data_attr' => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
@@ -149,7 +149,7 @@ $table_buttons[] = array(
     'id'    => 'new_targeted_mailshot',
     'class' => 'new_marketing_mailshot new_targeted_mailshot',
 
-    'attr' => array(
+    'data_attr' => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
@@ -163,9 +163,6 @@ $table_buttons[] = array(
 );
 
 
-$smarty->assign(
-    'js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 $smarty->assign('table_buttons', $table_buttons);

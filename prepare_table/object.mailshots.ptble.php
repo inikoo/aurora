@@ -12,6 +12,7 @@
 $group='';
 
 
+
 switch ($parameters['parent']) {
     case('email_campaign_type'):
         $where = sprintf(
@@ -107,5 +108,4 @@ $fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`
 
 
 $sql_totals = "select count(*) as num from $table $where ";
-//print $sql_totals;
 

@@ -722,7 +722,33 @@ $object_fields = array(
                 'required'   => true,
                 'type'       => 'value'
             ),
-
+            array(
+                'id'         => 'Localised_Labels_remove_from_junk_text',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_unsubscribe_text']) ? _('You want to be removed from this mailing list?') : $labels['_remove_from_junk_text']),
+                'label'      => _('Stop junk mail text'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_remove_from_junk_link',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_unsubscribe_link']) ? _('Click here to be removed') : $labels['_remove_from_junk_link']),
+                'label'      => _('Stop junk mail link text'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_removed_from_mailing_list',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_unsubscribe_link']) ? _('You have been removed from the mailing list') : $labels['_removed_from_mailing_list']),
+                'label'      => _('Removed from mailing list'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
         )
     ),

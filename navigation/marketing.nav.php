@@ -1351,6 +1351,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
     if ($data['parent']) {
 
 
+
         switch ($data['parent']) {
 
             case 'email_campaign_type':
@@ -1358,6 +1359,9 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 break;
             case 'mailshot':
                 $tab = 'mailshot.sent_emails';
+                $email_campaign_type = get_object('email_campaign_type', $data['_parent']->get('Email Campaign Email Template Type Key'));
+
+
                 break;
 
 

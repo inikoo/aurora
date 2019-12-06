@@ -91,7 +91,7 @@ function fork_housekeeping($job) {
 
             }
 
-
+            $webpage_label='';
             $sql  = 'select `Webpage Code`, `Webpage Scope` ,`Webpage Scope Key`,`Webpage URL` ,`Page Key`  from `Page Store Dimension` where `Page Key`=? ';
             $stmt = $db->prepare($sql);
             $stmt->execute(
@@ -221,7 +221,6 @@ function fork_housekeeping($job) {
                                             'webpage_label'        => $webpage_label,
                                             'device_label'         => $webuser_data['device_label'],
                                             'user_location'        => $webuser_data['location'],
-                                            'webpage_label'        => $webuser_data['webpage_label'],
                                             'customer_online_icon' => '<i title="'._('Online').'" class="far success fa-globe"></i>',
                                         ),
                                         'hide'       => array('customer_web_info_log_out'),
@@ -1874,7 +1873,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $socket->connect("tcp://localhost:5555");
 
             $email_campaign = get_object('email_campaign', $data['mailshot_key']);
-
+            $email_campaign->editor=$data['editor'];
 
             if ($email_campaign->id) {
                 $email_campaign->socket = $socket;
@@ -1907,6 +1906,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $max_thread = 1;
                 if ($result = $db->query($sql)) {
                     foreach ($result as $row) {
+
 
 
                         $client        = new GearmanClient();
@@ -3226,7 +3226,29 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_portfolio();
             break;
+        case 'unsubscribe_prospect':
+            print_r($data);
+            /**
+             * @var $prospect \Prospect
+             */
 
+            $prospect = get_object('Prospect', $data['prospect_key']);
+
+            $editor = array(
+                'Author Name'  => $prospect->get('Name'),
+                'Author Alias' => $prospect->get('Name'),
+                'Author Type'  => 'Prospect',
+                'Author Key'   => $prospect->id,
+                'Subject'      => 'Prospect',
+                'Subject Key'  => $prospect->id,
+                'User Key'     => 0,
+                'Date'         => $data['date']
+            );
+
+
+            $prospect->editor=$editor;
+            $prospect->opt_out($data['date']);
+            break;
         default:
             break;
 

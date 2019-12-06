@@ -48,6 +48,7 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
     switch ($email_campaign->get('Email Campaign Type')) {
         case 'AbandonedCart':
         case 'Newsletter':
+        case 'Invite Full Mailshot':
         case 'Marketing':
             return $smarty->fetch('showcase/email_campaign.tpl');
             break;
@@ -58,5 +59,3 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
 }
 
-
-?>

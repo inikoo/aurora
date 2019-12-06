@@ -94,8 +94,6 @@ class WebAuth {
         }
 
 
-
-
         return $website_user_log_key;
 
 
@@ -125,9 +123,6 @@ class WebAuth {
         );
 
 
-
-
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
@@ -143,7 +138,7 @@ class WebAuth {
                 $customer_key     = $row['Website User Customer Key'];
 
 
-              //  print $password;
+                //  print $password;
 
                 //if (password_verify($password, ($row['Website User Password Hash'])) {
                 if ($row['Website User Password'] == $password) {
@@ -237,8 +232,6 @@ class WebAuth {
                 "UPDATE `Website User Data` SET `Website User Failed Login Count`=%d, `Website User Last Failed Login IP`=%s,`Website User Last Failed Login`=%s WHERE `Website User Key`=%d", $num_failed_logs, prepare_mysql($ip), prepare_mysql($date), $website_user_key
             );
             $this->db->exec($sql);
-
-
 
 
         }
@@ -475,7 +468,8 @@ class WebAuth {
 
         include_once 'keyring/key.php';
 
-        $customer_key = '';
+        $recipient_type = 'Customer';
+        $recipient_key  = '';
 
 
         $sql = sprintf('select `Email Tracking Recipient`,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Key`=%d ', $selector);
@@ -484,21 +478,21 @@ class WebAuth {
             if ($row = $result->fetch()) {
 
                 if (hash_equals(hash('sha256', IKEY.$row['Email Tracking Recipient Key'].$selector), $authenticator)) {
-                    $customer_key = $row['Email Tracking Recipient Key'];
+                    $recipient_key  = $row['Email Tracking Recipient Key'];
+                    $recipient_type = $row['Email Tracking Recipient'];
                 }
 
 
             } else {
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
-        return $customer_key;
+        return array(
+            $recipient_type,
+            $recipient_key
+        );
 
 
     }
@@ -506,4 +500,3 @@ class WebAuth {
 
 }
 
-?>

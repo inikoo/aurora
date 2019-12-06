@@ -52,6 +52,11 @@ function fork_send_mailshot($job) {
 
     $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
+    if(isset($data['editor'])){
+        $published_email_template->editor=$data['editor'];
+    }
+
+
     if (isset($socket)) {
         $published_email_template->socket = $socket;
     }
@@ -96,8 +101,15 @@ function fork_send_mailshot($job) {
                 exit;
             }
 
+            $recipient=get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']);
+            if(isset($data['editor'])){
+                $recipient->editor=$data['editor'];
+            }
 
-            $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
+            $published_email_template->send($recipient, $send_data, $smarty);
+
+
+
 
 
             $time_end = microtime_float();
