@@ -1,0 +1,1 @@
+ALTER TABLE `Email Campaign Dimension`    CHANGE `Email Campaign Type` `Email Campaign Type` ENUM ('Newsletter','Marketing','GR Reminder','AbandonedCart','Invite Mailshot','OOS Notification','Invite Full Mailshot') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Marketing';
