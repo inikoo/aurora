@@ -996,6 +996,10 @@ function email_template_types($_data, $db, $user) {
                 $_type  = _('Invitation');
                 $status = '';
                 break;
+            case 'Invite Full Mailshot':
+                $_type  = _('Invitation mailshot');
+                $status = '';
+                break;
             case 'Invite':
                 $_type  = _('Invitation (Personalized)');
                 $status = '';
@@ -1143,7 +1147,10 @@ function marketing_emails($_data, $db, $user) {
                 $mailshots = number($data['Email Campaign Type Mailshots']);
 
                 break;
-
+            case 'Invite Full Mailshot':
+                $_type  = _('Invitation mailshot');
+                $status = '';
+                break;
 
             case 'Invite Mailshot':
                 $_type  = _('Invitation');

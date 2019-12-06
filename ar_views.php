@@ -4302,7 +4302,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }
 
 
-            } elseif ($data['_object']->get('Email Campaign Type Code') == 'Invite Mailshot' or $data['_object']->get('Email Campaign Type Code') == 'Invite') {
+            } elseif ($data['_object']->get('Email Campaign Type Code') == 'Invite Mailshot' or $data['_object']->get('Email Campaign Type Code') == 'Invite' or $data['_object']->get('Email Campaign Type Code') == 'Invite Full Mailshot') {
                 $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
                 $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
                 $_content['tabs']['email_campaign_type.workshop']['class']        = 'hide';

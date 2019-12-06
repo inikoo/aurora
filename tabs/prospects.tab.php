@@ -92,6 +92,9 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
         'title' => _("Edit supplier's products"),
         'id'    => 'edit_dialog'
     );
+
+
+
     $smarty->assign('table_buttons', $table_buttons);
 
 

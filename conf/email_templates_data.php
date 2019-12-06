@@ -98,6 +98,13 @@ $email_templates_data = array(
         'sender'  => 'Store'
 
     ),
+    'Invite Full Mailshot'      => array(
+        'key'     => 'Invitation',
+        'name'    => _('Invitation'),
+        'subject' => _('Hello'),
+        'sender'  => 'Store'
+
+    ),
 
 
 

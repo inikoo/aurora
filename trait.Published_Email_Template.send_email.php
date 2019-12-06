@@ -376,6 +376,7 @@ trait Send_Email {
                                                                                'OOS Notification',
                                                                                'Invite',
                                                                                'Invite Mailshot',
+                                                                               'Invite Full Mailshot',
                                                                                'GR Reminder',
                                                                                'Registration',
                                                                            )
@@ -487,7 +488,7 @@ trait Send_Email {
 
             case 'Invite':
             case 'Invite Mailshot':
-
+            case 'Invite Full Mailshot':
                 $this->placeholders['[Prospect Name]'] = $recipient->get('Name');
 
                 break;

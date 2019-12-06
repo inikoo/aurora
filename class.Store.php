@@ -424,7 +424,6 @@ class Store extends DB_Table {
             $campaign_data = array(
                 'Deal Campaign Code' => 'VO',
                 'Deal Campaign Icon' => '<i class="far fa-money-bill-wave"></i>',
-
                 'Deal Campaign Name'       => 'Vouchers',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',

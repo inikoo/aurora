@@ -207,6 +207,9 @@ class EmailCampaignType extends DB_Table {
                     case 'Invite Mailshot':
                         $name = _("Prospect's invitations");
                         break;
+                    case 'Invite Full Mailshot':
+                        $name = _("Prospect's mailshots");
+                        break;
                     case 'Invite':
                         $name = _("Personalised prospect invitations");
                         break;

@@ -349,6 +349,9 @@ function sent_emails($_data, $db, $user) {
                 case 'Invite Mailshot':
                     $_type = _('Invitation');
                     break;
+                case 'Invite Full Mailshot':
+                    $_type = _('Invitation mailshot');
+                    break;
                 case 'Invite':
                     $_type = _('Personalized invitation');
                     break;

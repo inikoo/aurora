@@ -152,6 +152,7 @@ class Prospect extends Subject {
             if (in_array(
                 $key, array(
                         'Prospect First Contacted Date',
+                        'Prospect Last Contacted Date',
                         'Prospect Lost Date',
                         'Prospect Registration Date',
                         'Prospect Customer Key'
@@ -382,6 +383,7 @@ class Prospect extends Subject {
                         array(
                             'Prospect Status'                   => 'Contacted',
                             'Prospect First Contacted Date'     => gmdate('Y-m-d H:i:s'),
+                            'Prospect Last Contacted Date'     => gmdate('Y-m-d H:i:s'),
                             'Prospect User Key'                 => $this->editor['User Key'],
                             'Prospect Sales Representative Key' => $sales_representative->id
 
@@ -389,6 +391,15 @@ class Prospect extends Subject {
                     );
 
 
+                }else{
+                    $this->fast_update(
+                        array(
+
+                            'Prospect Last Contacted Date'     => gmdate('Y-m-d H:i:s'),
+
+
+                        )
+                    );
                 }
 
 
