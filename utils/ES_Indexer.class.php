@@ -315,6 +315,25 @@ class ES_indexer {
 
     }
 
+    private function add_webpage() {
+
+
+        $this->label = $this->object->get('Webpage Code').', '.$this->object->get('URL');
+        $this->url   = sprintf('part/%d', $this->object->id);
+        $this->status=$this->object->get('Part Status');
+
+        $this->primary[] = $this->object->get('Part Reference');
+        $this->primary[] = $this->object->get('Part Package Description');
+        $this->primary[] = $this->object->get('Part SKO Barcode');
+
+        $this->secondary[] = strip_tags($this->object->get('Materials'));
+
+
+        $this->remove_duplicated_tokens();
+        $this->add_index('sko', 'Part');
+
+    }
+
 
 }
 
