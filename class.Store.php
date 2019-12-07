@@ -248,7 +248,7 @@ class Store extends DB_Table {
 
             require_once 'conf/timeseries.php';
 
-            $timeseries = get_time_series_config();
+            $timeseries      = get_time_series_config();
             $timeseries_data = $timeseries['Store'];
 
             include_once 'class.Timeserie.php';
@@ -262,19 +262,19 @@ class Store extends DB_Table {
 
 
             include_once 'class.Payment_Service_Provider.php';
-            $account_payments = new Payment_Service_Provider('block', 'Accounts');
-            $payment_account_credits=$account_payments->create_payment_account(
+            $account_payments        = new Payment_Service_Provider('block', 'Accounts');
+            $payment_account_credits = $account_payments->create_payment_account(
                 array(
                     'Payment Account Block' => 'Accounts',
-                    'Payment Account Code' => 'IA_'.$this->get('Code'),
-                    'Payment Account Name' => 'Accounts '.$this->get('Code'),
+                    'Payment Account Code'  => 'IA_'.$this->get('Code'),
+                    'Payment Account Name'  => 'Accounts '.$this->get('Code'),
 
                 )
             );
 
             $this->fast_update(
                 array(
-                'Store Customer Payment Account Key'=>$payment_account_credits->id
+                    'Store Customer Payment Account Key' => $payment_account_credits->id
                 )
             );
 
@@ -333,14 +333,15 @@ class Store extends DB_Table {
 
 
             $deal_data = array(
-                'Deal Name'                          => 'Order Recursion Campaign',
-                'Deal Description'                   => "",
-                'Deal Term Allowances Label'         => "",
-                'Deal Trigger'                       => 'Order',
-                'Deal Trigger Key'                   => '0',
-                'Deal Trigger XHTML Label'           => '',
-                'Deal Terms Type'                    => 'Order Interval',
-                'Deal Terms'                         => '30 day'
+                'Deal Name'                  => 'Order Recursion Campaign',
+                'Deal Description'           => "",
+                'Deal Term Allowances Label' => "",
+                'Deal Trigger'               => 'Order',
+                'Deal Trigger Key'           => '0',
+                'Deal Trigger XHTML Label'   => '',
+                'Deal Terms Type'            => 'Order Interval',
+                'Deal Terms'                 => '30 day',
+                'Deal Begin Date'            => gmdate('Y-m-d H:i:s')
             );
 
 
@@ -348,8 +349,8 @@ class Store extends DB_Table {
 
 
             $bulk_discounts_campaign_data = array(
-                'Deal Campaign Name' => 'Bulk discount',
-                'Deal Campaign Icon' => '<i class="far fa-ball-pile"></i>',
+                'Deal Campaign Name'       => 'Bulk discount',
+                'Deal Campaign Icon'       => '<i class="far fa-ball-pile"></i>',
                 'Deal Campaign Code'       => 'VL',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
@@ -422,8 +423,8 @@ class Store extends DB_Table {
             $this->create_campaign($campaign_data);
 
             $campaign_data = array(
-                'Deal Campaign Code' => 'VO',
-                'Deal Campaign Icon' => '<i class="far fa-money-bill-wave"></i>',
+                'Deal Campaign Code'       => 'VO',
+                'Deal Campaign Icon'       => '<i class="far fa-money-bill-wave"></i>',
                 'Deal Campaign Name'       => 'Vouchers',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
@@ -3372,7 +3373,7 @@ class Store extends DB_Table {
 
         $data['Prospect Sales Representative Key'] = $sales_representative->id;
 
-        if(!empty($data['Prospect Contact Address country'])){
+        if (!empty($data['Prospect Contact Address country'])) {
             $address_fields = array(
                 'Address Recipient'            => $data['Prospect Main Contact Name'],
                 'Address Organization'         => $data['Prospect Company Name'],
@@ -3420,13 +3421,9 @@ class Store extends DB_Table {
                 unset($data['Prospect Contact Address administrativeArea']);
             }
 
-        }else{
-            $address_fields=false;
+        } else {
+            $address_fields = false;
         }
-
-
-
-
 
 
         $prospect = new Prospect('new', $data, $address_fields);
@@ -3440,17 +3437,17 @@ class Store extends DB_Table {
 
 
             } else {
-                $this->error = true;
-                $this->msg   = $prospect->msg;
-                $this->error_code=$prospect->error_code;
+                $this->error      = true;
+                $this->msg        = $prospect->msg;
+                $this->error_code = $prospect->error_code;
 
             }
 
             return $prospect;
         } else {
-            $this->error = true;
-            $this->msg   = $prospect->msg;
-            $this->error_code=$prospect->error_code;
+            $this->error      = true;
+            $this->msg        = $prospect->msg;
+            $this->error_code = $prospect->error_code;
         }
 
 
@@ -3585,8 +3582,8 @@ class Store extends DB_Table {
 
         if (array_key_exists('Family Category Code', $data)) {
             include_once 'class.Category.php';
-            $root_category = new Category('id', $this->get('Store Family Category Key'), false, $this->db);
-            $root_category->fork=$this->fork;
+            $root_category       = new Category('id', $this->get('Store Family Category Key'), false, $this->db);
+            $root_category->fork = $this->fork;
             if ($root_category->id) {
                 $root_category->editor = $this->editor;
                 $family                = $root_category->create_category(array('Category Code' => $data['Family Category Code']));
@@ -3782,8 +3779,8 @@ class Store extends DB_Table {
         }
 
 
-        $product = new Product('find', $data, 'create');
-        $product->fork=$this->fork;
+        $product       = new Product('find', $data, 'create');
+        $product->fork = $this->fork;
 
         if ($product->id) {
 
@@ -3826,7 +3823,7 @@ class Store extends DB_Table {
 
                 $product->update_status_from_parts();
 
-                 $account=get_object('Account',1);
+                $account = get_object('Account', 1);
 
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
