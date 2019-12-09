@@ -11,8 +11,6 @@
 */
 
 require_once 'common.php';
-require_once 'class.Part.php';
-require_once 'class.Category.php';
 
 $editor = array(
 
@@ -34,12 +32,12 @@ $print_est = true;
 
 
 $sql = sprintf(
-    'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC '
+    'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU`  DESC '
 );
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $part = new Part($row['Part SKU']);
+        $part = get_object('Part',$row['Part SKU']);
 
 
         if($part->get('Part Unit Dimensions')!=''){
@@ -63,10 +61,6 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 
 
-?>
