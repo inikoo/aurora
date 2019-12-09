@@ -165,7 +165,7 @@
 
                 <div class="container order basket   " style="margin-bottom: 30px">
                      <span class="basket_order_items">
-                    {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=true hide_title=true   items_data=$items_data }
+                    {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=true hide_title=true  items_data=$items_data }
                      </span>
                     <div style="margin-top:5px">
                         {$voucher_info}

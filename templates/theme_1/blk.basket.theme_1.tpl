@@ -118,7 +118,13 @@
 
 
 
+
+
+
                     <table >
+
+
+
 
                         <tbody>
                         <tr>
@@ -209,7 +215,7 @@
 
 
     <div class="order_header container text_blocks  text_template_2">
-        <div class="text_block"  style="display:none"  >
+        <div class="text_block"   >
 
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
                     style="box-shadow: none"

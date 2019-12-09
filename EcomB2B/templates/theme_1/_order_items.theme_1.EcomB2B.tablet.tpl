@@ -15,7 +15,7 @@
 <table class="order_items" border="1">
     <thead>
     <tr >
-        <th colspan="2" class="text-left padding_left_10">{t}Items{/t}</th>
+        <th colspan="2" class="text-left padding_left_10">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
 
     </tr>
     </thead>

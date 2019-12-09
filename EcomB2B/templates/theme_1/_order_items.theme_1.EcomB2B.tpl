@@ -24,8 +24,8 @@
             <div style="" class="add_item_form" >
                 <span class="hide add_item_invalid_msg">{t}Invalid value{/t}</span>
                 <span class="discreet">{if !empty($labels._add_product_to_basket)}{$labels._add_product_to_basket}{else}{t}Add product{/t}{/if}</span>
-                <input style="margin-right:2px;margin-left: 5px"  class="item " value="" placeholder="{t}Product code{/t}"/>
-                <input style="margin-right:2px;width: 150px" class="qty  " value="" placeholder="{t}Quantity{/t}"/>
+                <input style="margin-right:2px;margin-left: 5px"  class="item " value="" placeholder="{if !empty($labels._add_product_to_basket_code_placeholder)}{$labels._add_product_to_basket_code_placeholder}{else}{t}Product code{/t}{/if}"/>
+                <input style="margin-right:2px;width: 150px" class="qty  " value="" placeholder="{if !empty($labels._add_product_to_basket_qty_placeholder)}{$labels._add_product_to_basket_qty_placeholder}{else}{t}Quantity{/t}{/if}"/>
                 <div  class="search_results_container hide" >
                     <table class="add_item_results" >
                         <tr class="hide add_item_search_result_template"  data-item_key="" data-item_historic_key=""
@@ -46,10 +46,10 @@
 
 
     <tr class="basket_order_ths {if !$order->id}hide{/if}">
-        <th class="text-left">{t}Code{/t}</th>
-        <th class="text-left">{t}Description{/t}</th>
-        <th class="text-right">{t}Quantity{/t}</th>
-        <th class="text-right">{t}Amount net{/t}</th>
+        <th class="text-left">{if !empty($labels._items_code)}{$labels._items_code}{else}{t}Code{/t}{/if}</th>
+        <th class="text-left">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
+        <th class="text-right">{if !empty($labels._items_quantity)}{$labels._items_quantity}{else}{t}Quantity{/t}{/if}</th>
+        <th class="text-right">{if !empty($labels._items_amount_net)}{$labels._items_amount_net}{else}{t}Amount net{/t}{/if}</th>
     </tr>
     </thead>
     <tbody>

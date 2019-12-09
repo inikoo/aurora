@@ -14,13 +14,13 @@
 <table class="order_items" style="margin-bottom: 0px">
     <thead>
     <tr >
-        <th colspan="2" class="text-left padding_left_10">{t}Items{/t}</th>
+        <th colspan="2" class="text-left padding_left_10">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
 
     </tr>
     </thead>
     <tbody>
 
-    {foreach from=$items_data item="item" }g
+    {foreach from=$items_data item="item" }
 
         <tr>
             <td style="text-align: left">{$item.code_description}
