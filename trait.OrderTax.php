@@ -309,6 +309,9 @@ trait OrderTax {
                             case 'IVA+RE (26,2%)':
                                 $tax_category_name = 'IVA+RE (26,2%)';
                                 break;
+                            case 'Outside the scope of VAT':
+                                $tax_category_name = _('Outside the scope of VAT');
+                                break;
                             case 'EU with valid tax code':
                                 $tax_category_name = _('EU with valid tax code');
                                 break;
@@ -340,11 +343,11 @@ trait OrderTax {
                     )) {
 
                     return array(
-                        'code'                     => $tax_category['Excluded']['code'],
-                        'name'                     => $tax_category['Excluded']['name'],
-                        'rate'                     => $tax_category['Excluded']['rate'],
-                        'reason_tax_code_selected' => 'outside EC',
-                        'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
+                        'code'                     => $tax_category['Exempt']['code'],
+                        'name'                     => $tax_category['Exempt']['name'],
+                        'rate'                     => $tax_category['Exempt']['rate'],
+                        'reason_tax_code_selected' => 'exempt VAT',
+                        'operations'               => '<div>'._('Exempt VAT').'</div>'
 
                     );
                 }
@@ -355,11 +358,11 @@ trait OrderTax {
                     )) {
 
                     return array(
-                        'code'                     => $tax_category['Excluded']['code'],
-                        'name'                     => $tax_category['Excluded']['name'],
-                        'rate'                     => $tax_category['Excluded']['rate'],
-                        'reason_tax_code_selected' => 'outside EC',
-                        'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
+                        'code'                     => $tax_category['Exempt']['code'],
+                        'name'                     => $tax_category['Exempt']['name'],
+                        'rate'                     => $tax_category['Exempt']['rate'],
+                        'reason_tax_code_selected' => 'exempt VAT',
+                        'operations'               => '<div>'._('Exempt VAT').'</div>'
 
                     );
                 }
@@ -508,9 +511,9 @@ trait OrderTax {
 
                     } else {
                         return array(
-                            'code'                     => $tax_category['Excluded']['code'],
-                            'name'                     => $tax_category['Excluded']['name'],
-                            'rate'                     => $tax_category['Excluded']['rate'],
+                            'code'                     => $tax_category['Outside']['code'],
+                            'name'                     => $tax_category['Outside']['name'],
+                            'rate'                     => $tax_category['Outside']['rate'],
                             'reason_tax_code_selected' => 'outside EC',
                             'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
 
