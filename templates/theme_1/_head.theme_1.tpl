@@ -114,7 +114,7 @@
     {/foreach}
 
     {if $with_forms==1}
-        <link rel="stylesheet" href="EcomB2B/css/forms.min.css" type="text/css"/>
+        <link rel="stylesheet" href="EcomB2B/assets/forms.min.css" type="text/css"/>
 
     {/if}
 
