@@ -68,6 +68,7 @@ class ES_indexer {
                 break;
             case 'Part':
                 $this->add_part();
+                break;
             case 'Page':
                 $this->add_webpage();
                 break;
