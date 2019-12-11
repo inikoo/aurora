@@ -536,7 +536,7 @@ class EmailCampaignType extends DB_Table {
 
         include_once 'class.EmailCampaign.php';
 
-        if ($this->get_estimated_recipients() > 0 or $this->data['Email Campaign Type Code'] == 'create_mailshot' or $this->data['Email Campaign Type Code'] == 'Marketing') {
+        if ($this->get_estimated_recipients() > 0 or $this->data['Email Campaign Type Code'] == 'create_mailshot' or $this->data['Email Campaign Type Code'] == 'Marketing' or $this->data['Email Campaign Type Code'] == 'Invite Full Mailshot') {
 
 
             $email_campaign_data = array(
