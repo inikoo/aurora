@@ -529,11 +529,11 @@
             {foreach from=$discounts.deals item=deal_data }
             <div class="discount_card" data-key="{$deal_data.key}" >
                 <div class="discount_icon" >{$deal_data.icon}</div>
-                <span contenteditable="true" class="discount_name">{$deal_data.name}</span>
+                <span  class="discount_name">{$deal_data.name}</span>
                 {if  $deal_data.until!=''}<small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label" contenteditable="true">{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}{/if}</small>
                 <br/>
-                <span contenteditable="true" class="discount_term">{$deal_data.term}</span>
-                <span contenteditable="true" class="discount_allowance">{$deal_data.allowance}</span>
+                <span class="discount_term">{$deal_data.term}</span>
+                <span  class="discount_allowance">{$deal_data.allowance}</span>
             </div>
             {/foreach}<div style="clear:both"></div>
             </div>

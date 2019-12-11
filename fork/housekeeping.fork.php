@@ -16,7 +16,7 @@ function fork_housekeeping($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor, $session,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor, $session, $ES_hosts) = $_data;
 
 
     print $data['type']."\n";
@@ -91,9 +91,9 @@ function fork_housekeeping($job) {
 
             }
 
-            $webpage_label='';
-            $sql  = 'select `Webpage Code`, `Webpage Scope` ,`Webpage Scope Key`,`Webpage URL` ,`Page Key`  from `Page Store Dimension` where `Page Key`=? ';
-            $stmt = $db->prepare($sql);
+            $webpage_label = '';
+            $sql           = 'select `Webpage Code`, `Webpage Scope` ,`Webpage Scope Key`,`Webpage URL` ,`Page Key`  from `Page Store Dimension` where `Page Key`=? ';
+            $stmt          = $db->prepare($sql);
             $stmt->execute(
                 array($data['webpage_key'])
             );
@@ -581,7 +581,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             }
-
 
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
@@ -1872,8 +1871,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
             $socket->connect("tcp://localhost:5555");
 
-            $email_campaign = get_object('email_campaign', $data['mailshot_key']);
-            $email_campaign->editor=$data['editor'];
+            $email_campaign         = get_object('email_campaign', $data['mailshot_key']);
+            $email_campaign->editor = $data['editor'];
 
             if ($email_campaign->id) {
                 $email_campaign->socket = $socket;
@@ -1906,7 +1905,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $max_thread = 1;
                 if ($result = $db->query($sql)) {
                     foreach ($result as $row) {
-
 
 
                         $client        = new GearmanClient();
@@ -3246,8 +3244,45 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             );
 
 
-            $prospect->editor=$editor;
+            $prospect->editor = $editor;
             $prospect->opt_out($data['date']);
+            break;
+        case 'deal_campaign_changed':
+
+            /**
+             * @var  $deal_campaign \DealCampaign
+             */
+
+
+            $deal_campaign = get_object('DealCampaign', $data['deal_campaign_key']);
+            switch ($data['field']) {
+                case 'Deal Campaign Name':
+
+                    if ($deal_campaign->data['Deal Campaign Code'] == 'VL' or $deal_campaign->data['Deal Campaign Code'] == 'OR') {
+
+                        $sql  = "select  `Deal Key` from   `Deal Dimension`  WHERE `Deal Campaign Key`=?";
+                        $stmt = $db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $deal_campaign->id
+                            )
+                        );
+                        while ($row = $stmt->fetch()) {
+                            $deal = get_object('Deal', $row['Deal Key']);
+                            $deal->editor=$editor;
+                            $deal->update(
+                                array(
+                                    'Deal Name Label'=>$deal_campaign->get('Deal Campaign Name')
+                                )
+                            );
+                        }
+
+
+                    }
+                    break;
+            }
+
+
             break;
         default:
             break;

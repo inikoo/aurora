@@ -1766,7 +1766,7 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $prev_key   = $row['object_key'];
-                $prev_title = _("Offer").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $prev_title = _("Offer").' '.$row['object_name'];
 
             }
         } else {
@@ -1805,13 +1805,9 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $next_key   = $row['object_key'];
-                $next_title = _("Offer").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $next_title = _("Offer").' '.$row['object_name'];
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print 'X2:'.$sql;
-            exit;
         }
 
 
@@ -1866,40 +1862,81 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
                 'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code'))
             );
 
-            if ($prev_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/deal_component/'.$prev_key
-                );
+            if($data['_parent']->get('Code')=='OR'){
+                if ($prev_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/'.$prev_key
+                    );
 
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-left disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-left disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
 
+                }
+                $left_buttons[] = $up_button;
+
+
+                if ($next_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/'.$next_key
+                    );
+
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-right disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+            }else{
+                if ($prev_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/deal_component/'.$prev_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-left disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+                $left_buttons[] = $up_button;
+
+
+                if ($next_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/deal_component/'.$next_key
+                    );
+
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-right disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
             }
-            $left_buttons[] = $up_button;
 
 
-            if ($next_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/deal_component/'.$next_key
-                );
 
 
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-right disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
 
 
         } elseif ($data['parent'] == 'category') {
@@ -1963,8 +2000,7 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
     if ($data['parent'] == 'category') {
         $title = $data['_parent']->get('Code').': <span class="id"><span class="Deal_Component_Name_Label">'.$object->get('Name Label').'</span> </span>';
 
-    }
-    if ($data['parent'] == 'campaign') {
+    }elseif ($data['parent'] == 'campaign') {
 
         switch ($data['_parent']->get('Code')) {
             case 'OR':
@@ -2015,4 +2051,4 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
 }
 
 
-?>
+

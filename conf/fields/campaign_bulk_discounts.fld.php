@@ -26,7 +26,7 @@ if (isset($options['new']) and $options['new']) {
 
 $object_fields = array(
     array(
-        'label'      => _('Id'),
+        'label'      => _('Public labels'),
         'show_title' => true,
         'fields'     => array(
 
@@ -38,13 +38,11 @@ $object_fields = array(
                 'label'             => ucfirst($object->get_field_label('Deal Campaign Name')),
                 'invalid_msg'       => get_invalid_message('string'),
                 'required'          => true,
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
-
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
                 'type' => 'value'
             ),
 
+            /*
             array(
                 'id'              => 'Deal_Campaign_Description',
                 'edit'            => ($edit ? 'editor' : ''),
@@ -93,7 +91,7 @@ $object_fields = array(
                 'type'            => 'value'
             ),
 
-
+*/
 
 
 
@@ -105,6 +103,3 @@ $object_fields = array(
 );
 
 
-
-
-?>

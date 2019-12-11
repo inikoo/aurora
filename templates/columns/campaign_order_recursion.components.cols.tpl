@@ -46,16 +46,6 @@ cell: Backgrid.HtmlCell.extend({
 },
 
 
-{
-name: "public_description",
-label: "{t}Public description{/t}",
-sortType: "toggle",
-editable: false,
-cell: Backgrid.HtmlCell.extend({
-
-}),
-
-},
 
 
 

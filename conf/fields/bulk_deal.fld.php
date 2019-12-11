@@ -94,6 +94,17 @@ $object_fields = array(
 
             array(
                 'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Deal_Campaign_Name',
+                'value'           => $deal->get('Deal Campaign Name'),
+                'formatted_value' => $deal->get('Campaign Name'),
+                'label'           => _('Name').' <i class="warning fa fa-exclamation-triangle padding_left_10" title="'._('This label will be present in all other families').'"></i>',
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => true,
+                'type'            => 'value'
+            ),
+
+            array(
+                'edit'            => ($edit ? 'string' : ''),
                 'id'              => 'Deal_Term_Label',
                 'value'           => $deal->get('Deal Term Label'),
                 'formatted_value' => $deal->get('Term Label'),
@@ -189,4 +200,4 @@ if (!$new) {
 
 }
 
-?>
+

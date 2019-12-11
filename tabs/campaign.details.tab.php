@@ -10,6 +10,9 @@
 include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
+/**
+ * @var $campaign \DealCampaign
+ */
 $campaign = $state['_object'];
 
 $object_fields = get_object_fields($campaign, $db, $user, $smarty, array('store'=>$state['store'],'store_key'=>$campaign->get('Store Key')));
@@ -19,4 +22,3 @@ $smarty->assign('state', $state);
 
 $html = $smarty->fetch('edit_object.tpl');
 
-?>

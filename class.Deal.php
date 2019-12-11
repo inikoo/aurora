@@ -257,36 +257,32 @@ class Deal extends DB_Table {
             case 'Product Amount Ordered':
 
 
+                $store = get_object('Store', $this->get('Store Key'));
 
-                $store=get_object('Store',$this->get('Store Key'));
+                if ($this->data['Deal Trigger'] == 'Customer') {
 
-                if($this->data['Deal Trigger']=='Customer'){
+                    $customer = $this->get('Trigger Object');
 
-                    $customer=$this->get('Trigger Object');
-
-                    $terms='C'.$customer->get('Formatted ID');
-
-
-                    $terms_data=json_decode($this->data['Deal Terms'],true);
+                    $terms = 'C'.$customer->get('Formatted ID');
 
 
+                    $terms_data = json_decode($this->data['Deal Terms'], true);
 
 
+                } else {
 
-                }else{
-
-                    $terms='';
+                    $terms = '';
                 }
 
 
-                $asset=get_object($terms_data['object'],$terms_data['key']);
+                $asset = get_object($terms_data['object'], $terms_data['key']);
 
-                $terms.=' '.$asset->get('Code');
+                $terms .= ' '.$asset->get('Code');
 
-                if($terms_data['amount']==0){
+                if ($terms_data['amount'] == 0) {
 
-                }else{
-                    $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
+                } else {
+                    $terms .= ' +'.money($terms_data['amount'], $store->get('Store Currency Code'));
                 }
 
 
@@ -294,35 +290,32 @@ class Deal extends DB_Table {
 
             case 'Category Amount Ordered':
 
-                $store=get_object('Store',$this->get('Store Key'));
+                $store = get_object('Store', $this->get('Store Key'));
 
-                if($this->data['Deal Trigger']=='Customer'){
+                if ($this->data['Deal Trigger'] == 'Customer') {
 
-                    $customer=$this->get('Trigger Object');
+                    $customer = $this->get('Trigger Object');
 
-                    $terms='C'.$customer->get('Formatted ID');
-
-
+                    $terms = 'C'.$customer->get('Formatted ID');
 
 
-                }else{
-                    $terms='';
+                } else {
+                    $terms = '';
 
                 }
 
 
+                $terms_data = json_decode($this->data['Deal Terms'], true);
 
-                $terms_data=json_decode($this->data['Deal Terms'],true);
 
+                $asset = get_object($terms_data['object'], $terms_data['key']);
 
-                $asset=get_object($terms_data['object'],$terms_data['key']);
+                $terms .= ' '.$asset->get('Code');
 
-                $terms.=' '.$asset->get('Code');
+                if ($terms_data['amount'] == 0) {
 
-                if($terms_data['amount']==0){
-
-                }else{
-                    $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
+                } else {
+                    $terms .= ' +'.money($terms_data['amount'], $store->get('Store Currency Code'));
                 }
 
                 break;
@@ -330,29 +323,27 @@ class Deal extends DB_Table {
             case 'Amount':
 
 
-                if($this->data['Deal Trigger']=='Customers'){
+                if ($this->data['Deal Trigger'] == 'Customers') {
 
-                    $customer=$this->get('Trigger Object');
+                    $customer = $this->get('Trigger Object');
 
-                    $terms=$customer->get('Formatted ID');
+                    $terms = $customer->get('Formatted ID');
 
 
-                }else{
-                    $terms='';
+                } else {
+                    $terms = '';
                 }
 
                 $deal_terms_data = preg_split('/\;/', $this->get('Deal Terms'));
 
 
-
                 if (is_array($deal_terms_data) and count($deal_terms_data) == 2) {
 
-                    $amount       = $deal_terms_data[0];
-
+                    $amount = $deal_terms_data[0];
 
 
                     if ($amount == 0) {
-                        $terms.=' <span title="'._('All orders').'">&#8704; <i class="fal fa-shopping-cart"></i></span>';
+                        $terms .= ' <span title="'._('All orders').'">&#8704; <i class="fal fa-shopping-cart"></i></span>';
                     } else {
 
                         $store = get_object('Store', $this->data['Deal Store Key']);
@@ -362,9 +353,6 @@ class Deal extends DB_Table {
                 } else {
                     $terms .= 'Error';
                 }
-
-
-
 
 
                 break;
@@ -509,6 +497,15 @@ class Deal extends DB_Table {
         }
 
         switch ($key) {
+
+            case 'Campaign Name':
+                $deal_campaign = get_object('DealCampaign', $this->data['Deal Campaign Key']);
+
+                return $deal_campaign->get('Name');
+            case 'Deal Campaign Name':
+                $deal_campaign = get_object('DealCampaign', $this->data['Deal Campaign Key']);
+
+                return $deal_campaign->get('Deal Campaign Name');
             case 'Status Icon':
                 switch ($this->data['Deal Status']) {
                     case 'Waiting':
@@ -878,6 +875,26 @@ class Deal extends DB_Table {
 
 
         switch ($field) {
+            case 'Deal Campaign Name':
+                $deal_campaign         = get_object('DealCampaign', $this->data['Deal Campaign Key']);
+                $deal_campaign->editor = $this->editor;
+                $deal_campaign->update(
+                    array(
+                        'Deal Campaign Name' => $value
+                    ), $options
+                );
+
+
+                $this->update_field('Deal Name Label', $value, $options);
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Deal_Name_Label' => $value,
+                    )
+                );
+
+                break;
 
             case 'Deal Component Allowance Label':
                 //used for bulk discounts campaign
@@ -923,6 +940,7 @@ class Deal extends DB_Table {
                 break;
 
             case 'Deal Term Label':
+            case 'Deal Name Label':
                 $this->update_field($field, $value, $options);
 
 
@@ -998,10 +1016,6 @@ class Deal extends DB_Table {
                 if ($row = $result->fetch()) {
                     $products = preg_split('/,/', $row['products']);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
         }
@@ -1014,10 +1028,6 @@ class Deal extends DB_Table {
                 foreach ($result as $row) {
                     $webpage_keys[$row['Page Key']] = $row['Page Key'];
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
         }
@@ -1052,10 +1062,6 @@ class Deal extends DB_Table {
             $cache_id = $data[0].'|'.$data[1];
             $smarty_web->clearCache(null, $cache_id);
         }
-
-
-        //print_r($webpage_keys);
-        //  print_r($products);
 
 
     }
@@ -1103,20 +1109,6 @@ class Deal extends DB_Table {
 
 
     }
-
-    function finish() {
-
-        if ($this->data['Deal Status'] == 'Finish') {
-            $this->error = true;
-            $this->msg   = 'Deal already finished';
-
-            return;
-        }
-
-        $this->update_expiration_date(gmdate('Y-m-d H:i:s'));
-
-    }
-
 
     function update_expiration_date($value, $options = '') {
 
@@ -1177,6 +1169,19 @@ class Deal extends DB_Table {
 
     }
 
+    function finish() {
+
+        if ($this->data['Deal Status'] == 'Finish') {
+            $this->error = true;
+            $this->msg   = 'Deal already finished';
+
+            return;
+        }
+
+        $this->update_expiration_date(gmdate('Y-m-d H:i:s'));
+
+    }
+
     function update_allowance_label() {
 
 
@@ -1223,8 +1228,6 @@ class Deal extends DB_Table {
                 $data['Deal Component '.$hereditary_field] = $this->data['Deal '.$hereditary_field];
             }
         }
-
-
 
 
         $deal_component = new DealComponent('find create', $data);
@@ -1356,7 +1359,7 @@ class Deal extends DB_Table {
         $sql = sprintf("DELETE FROM `Deal Dimension` WHERE `Deal Key`=%d ", $this->id);
         $this->db->exec($sql);
 
-        $campaign         = get_object('DealCampaign',$this->data['Deal Campaign Key']);
+        $campaign         = get_object('DealCampaign', $this->data['Deal Campaign Key']);
         $campaign->editor = $this->editor;
 
         $campaign->update_number_of_deals();

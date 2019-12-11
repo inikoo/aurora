@@ -26,7 +26,7 @@ if (isset($options['new']) and $options['new']) {
 
 $object_fields = array(
     array(
-        'label'      => _('Id'),
+        'label'      => _('Public labels'),
         'show_title' => true,
         'fields'     => array(
 
@@ -44,6 +44,19 @@ $object_fields = array(
 
                 'type' => 'value'
             ),
+
+            array(
+                'edit'              => ($edit ? 'string' : ''),
+                'id'                => 'Deal_Campaign_Deal_Term_Label',
+                'value'             => $object->get('Deal Campaign Deal Term Label'),
+                'label'             => _('Terms label'),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+
+                'type' => 'value'
+            ),
+
+            /*
 
             array(
                 'id'              => 'Deal_Campaign_Description',
@@ -93,7 +106,7 @@ $object_fields = array(
                 'type'            => 'value'
             ),
 
-
+*/
 
 
 

@@ -174,35 +174,27 @@ class Public_Webpage {
                 switch ($this->data['Webpage Scope']){
                     case 'Category Products':
                         $deals=array();
-                        $sql = sprintf(
-                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label` 
-FROM `Deal Component Dimension`  left join 
-`Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join 
-`Deal Campaign Dimension` Dcam on (`Deal Component Campaign Key`=Dcam.`Deal Campaign Key`)    
-WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
-                            $this->data['Webpage Scope Key']
+                        $sql ="SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label`  FROM `Deal Component Dimension`  left join  `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join  `Deal Campaign Dimension` Dcam on (`Deal Component Campaign Key`=Dcam.`Deal Campaign Key`)     WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=? AND `Deal Component Status`='Active'";
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $this->data['Webpage Scope Key']
+                            )
                         );
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-
-                                $deals[]=array(
-                                    'key'=>$row['Deal Component Key'],
-                                    'icon'=>$row['Deal Component Icon'],
-                                    'name'=>$row['Deal Name Label'],
-                                    'until'=>$row['Deal Component Expiration Date'],
-                                    'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' ')),
-                                    'term'=>$row['Deal Term Label'],
-                                    'allowance'=>$row['Deal Component Allowance Label']
-                                );
-
-
+                        while ($row = $stmt->fetch()) {
+                            $deals[]=array(
+                                'key'=>$row['Deal Component Key'],
+                                'icon'=>$row['Deal Component Icon'],
+                                'name'=>$row['Deal Name Label'],
+                                'until'=>$row['Deal Component Expiration Date'],
+                                'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' ')),
+                                'term'=>$row['Deal Term Label'],
+                                'allowance'=>$row['Deal Component Allowance Label']
+                            );
                             }
-                        } else {
-                            print "$sql\n";
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
-                        }
+
+
+
 
                         return array(
                             'show'=>(count($deals)==0?false:true),
@@ -216,16 +208,17 @@ WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category
 
                         $categories=array();
 
-                        $sql=sprintf('select `Category Key` from `Category Bridge` where   `Subject`="Product"   and `Subject Key`=%d ',$this->data['Webpage Scope Key']);
-                        if ($result=$this->db->query($sql)) {
-                        		foreach ($result as $row) {
-                                    $categories[$row['Category Key']]=$row['Category Key'];
-                        		}
-                        }else {
-                        		print_r($error_info=$this->db->errorInfo());
-                        		print "$sql\n";
-                        		exit;
+                        $sql="select `Category Key` from `Category Bridge` where   `Subject`='Product'   and `Subject Key`=? ";
+
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array($this->data['Webpage Scope Key'])
+                        );
+                        while ($row = $stmt->fetch()) {
+                            $categories[$row['Category Key']]=$row['Category Key'];
+
                         }
+
 
 
 
@@ -253,9 +246,6 @@ FROM `Deal Component Dimension`   left join
 
 
                                 }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                exit;
                             }
 
                         }

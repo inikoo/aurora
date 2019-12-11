@@ -5199,7 +5199,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            } elseif ($state['section'] == 'customer') {
+            }
+            elseif ($state['section'] == 'customer') {
 
 
                 if ($state['parent'] == 'campaign') {
@@ -5249,7 +5250,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                 }
 
-            } elseif ($state['section'] == 'website') {
+            }
+            elseif ($state['section'] == 'website') {
 
                 $branch[]               = array(
                     'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
@@ -5464,13 +5466,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $branch[] = array(
                         'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
                         'icon'      => 'tags',
-                        'reference' => 'marketing/'.$state['store']->id
+                        'reference' => 'offers/'.$state['store']->id
                     );
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
                         'icon'      => 'tags',
-                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
                     );
 
                 } elseif ($state['parent'] == 'category') {
@@ -5630,16 +5632,35 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $branch[] = array(
                         'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
                         'icon'      => 'tags',
-                        'reference' => 'marketing/'.$state['store']->id
+                        'reference' => 'offers/'.$state['store']->id
                     );
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
                         'icon'      => 'tags',
-                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
                     );
 
-                } elseif ($state['parent'] == 'category') {
+
+                    if($state['_parent']->get('Code')=='OR') {
+                        $branch[] = array(
+                            'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Deal Component Allowance Target Label').'</span>',
+                            'icon'      => 'tag',
+                            'reference' => ''
+                        );
+                    }else{
+                        $branch[] = array(
+                            'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Name Label').'</span>',
+                            'icon'      => 'tag',
+                            'reference' => ''
+                        );
+                    }
+
+
+
+
+                }
+                elseif ($state['parent'] == 'category') {
 
 
                     $category = $state['_parent'];
@@ -5692,11 +5713,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 }
 
-                $branch[] = array(
-                    'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Name Label').'</span>',
-                    'icon'      => 'tag',
-                    'reference' => ''
-                );
+
+
+
             } else {
                 //print 'section not found: '.$state['section'];
             }

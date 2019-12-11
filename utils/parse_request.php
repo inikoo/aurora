@@ -2926,23 +2926,15 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $key    = $view_path[1];
 
                                 if (isset($view_path[2])) {
-                                    if ($view_path[2] == 'deal_component') {
+                                    if (is_numeric($view_path[2])) {
 
                                         $parent     = 'campaign';
                                         $parent_key = $view_path[1];
                                         $object     = 'deal_component';
                                         $section    = 'deal_component';
                                         $extra      = $view_path[0];
-                                        $key        = 0;
-                                        if (isset($view_path[3])) {
-                                            if (is_numeric($view_path[3])) {
+                                        $key        = $view_path[2];
 
-                                                $key = $view_path[3];
-
-
-                                            }
-
-                                        }
 
                                     }
 

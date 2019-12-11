@@ -232,12 +232,19 @@ class DealComponent extends DB_Table {
 
     }
 
-    function get($key = '', $arg = false) {
+    function get($key = '') {
 
 
         switch ($key) {
 
+            case 'Campaign Name':
+                $deal_campaign = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
 
+                return $deal_campaign->get('Name');
+            case 'Deal Campaign Name':
+                $deal_campaign = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
+
+                return $deal_campaign->get('Deal Campaign Name');
             case 'Deal Name Label':
             case 'Name Label':
             case 'Deal Term Label':
@@ -247,11 +254,9 @@ class DealComponent extends DB_Table {
                     $this->deal = get_object('Deal', $this->get('Deal Key'));
                 }
 
-                // print_r($this->deal);
-                // exit;
+
                 return $this->deal->get($key);
 
-                break;
 
 
             case 'Deal Component Allowance Percentage':
@@ -266,7 +271,7 @@ class DealComponent extends DB_Table {
                 }
 
 
-                break;
+
 
             case 'Status Icon':
                 switch ($this->data['Deal Component Status']) {
@@ -296,7 +301,7 @@ class DealComponent extends DB_Table {
 
                 return $status;
 
-                break;
+
             case 'Status':
                 switch ($this->data['Deal Component Status']) {
                     case 'Waiting':
@@ -323,12 +328,12 @@ class DealComponent extends DB_Table {
             case 'Allowance':
 
                 return $this->get_formatted_allowances();
-                break;
+
 
             case('Description'):
             case('Deal Description'):
                 return $this->get_formatted_terms().' <i class="far fa-arrow-right"></i> '.$this->get_formatted_allowances();
-                break;
+
 
             case 'Used Orders':
             case 'Used Customers':
@@ -341,7 +346,7 @@ class DealComponent extends DB_Table {
             case 'Number History Records':
             case 'Number Active Components':
                 return number($this->data['Deal Component '.$key]);
-                break;
+
             case 'Begin Date':
             case 'Expiration Date':
 
@@ -350,7 +355,7 @@ class DealComponent extends DB_Table {
                 } else {
                     return strftime("%a, %e %h %Y", strtotime($this->data['Deal Component '.$key]." +00:00"));
                 }
-                break;
+
 
             case 'Duration':
                 $duration = '';
@@ -554,7 +559,7 @@ class DealComponent extends DB_Table {
             default:
                 $allowance = '?';
 
-        };
+        }
 
         //  print $allowance."\n";
 
@@ -605,7 +610,7 @@ class DealComponent extends DB_Table {
             case 'Amount AND Order Number':
                 $store = get_object('Store', $this->data['Deal Component Store Key']);
 
-                $deal_terms_data = preg_split('/\;/', $this->get('Deal Component Terms'));
+                $deal_terms_data = preg_split('/;/', $this->get('Deal Component Terms'));
 
                 if (is_array($deal_terms_data) and count($deal_terms_data) == 3) {
 
@@ -660,7 +665,7 @@ class DealComponent extends DB_Table {
 
 
 
-                $amount_data = preg_split('/\;/', $_terms['amount']);
+                $amount_data = preg_split('/;/', $_terms['amount']);
 
                 if(is_array($amount_data)){
 
@@ -676,7 +681,7 @@ class DealComponent extends DB_Table {
 
 
                     }else{
-                        print_r($amount_data);
+                        $amount=0;
 
                     }
 
@@ -705,6 +710,28 @@ class DealComponent extends DB_Table {
 
         switch ($field) {
 
+            case 'Deal Campaign Name':
+                $deal_campaign         = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
+                $deal_campaign->editor = $this->editor;
+                $deal_campaign->update(
+                    array(
+                        'Deal Campaign Name' => $value
+                    ), $options
+                );
+
+
+                $this->update_field('Deal Name Label', $value, $options);
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Deal_Name_Label' => $value,
+                        'Deal_Campaign_Name'=>$value,
+                        'Deal_Component_Name_Label'=>$value
+                    )
+                );
+
+                break;
 
             case 'Deal Name Label':
             case 'Deal Term Label':
@@ -714,9 +741,8 @@ class DealComponent extends DB_Table {
                 }
 
                 $this->deal->editor = $this->editor;
-                // print_r($this->deal);
-                // exit;
-                return $this->deal->update_field_switcher($field, $value, $options);
+
+                $this->deal->update_field_switcher($field, $value, $options);
 
                 break;
 

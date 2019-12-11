@@ -46,6 +46,27 @@ $object_fields[] =    array(
         'show_title' => true,
         'fields'     => array(
 
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Deal_Campaign_Name',
+                'value'           => $object->get('Deal Campaign Name'),
+                'formatted_value' => $object->get('Campaign Name'),
+                'label'           => _('Name').' <i class="warning fa fa-exclamation-triangle padding_left_10" title="'._('This label will be present in all other families').'"></i>',
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => true,
+                'type'            => 'value'
+            ),
+
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Deal_Term_Label',
+                'value'           => $object->get('Deal Term Label'),
+                'formatted_value' => $object->get('Term Label'),
+                'label'           => _('Terms label').' <i class="warning fa fa-exclamation-triangle padding_left_10" title="'._('This label will be present in all other families').'"></i>',
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => true,
+                'type'            => 'value'
+            ),
 
 
             array(
