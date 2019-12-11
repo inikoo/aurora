@@ -297,7 +297,7 @@ class PartLocation extends DB_Table {
         }
 
 
-
+        $old_qty =0;
 
         $sql = "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')."? AND `Part SKU`=? AND `Location Key`=?";
 
