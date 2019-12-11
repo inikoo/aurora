@@ -49,16 +49,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     case 'AbandonedCart':
                         include 'fields/mailshot.abandoned_cart.fld.php';
                         break;
+                    case 'Invite Full Mailshot':
+                        include 'fields/mailshot.prospects_invite.fld.php';
+                        break;
                     case 'Marketing':
-
-
-                        //     if ($options['type'] == 'mailing_list') {
-                        //         include 'fields/mailshot.mailing_list.fld.php';
-                        //     } else {
                         include 'fields/mailshot.marketing.fld.php';
-                        //     }
-
-
                         break;
                     default:
                         include 'fields/mailshot.fld.php';
@@ -713,7 +708,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Email Campaign Type':
-
 
             switch ($object->get('Email Campaign Type Code')) {
                 case 'OOS Notification':

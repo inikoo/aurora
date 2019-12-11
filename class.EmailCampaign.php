@@ -312,22 +312,30 @@ class EmailCampaign extends DB_Table {
 
                 return $formatted_value;
                 break;
+            case 'Email Campaign Cool Down Days':
+                return ($this->metadata('Cool_Down_Days')==''?180:$this->metadata('Cool_Down_Days'));
+            case 'Cool Down Days':
+                return (is_numeric($this->metadata('Cool_Down_Days')) ? number($this->metadata('Cool_Down_Days')) : 180);
 
+            case 'Email Campaign Max Number Emails':
+                return $this->metadata('Max_Number_Emails');
+            case 'Max Number Emails':
+                return (is_numeric($this->metadata('Max_Number_Emails')) ? number($this->metadata('Max_Number_Emails')) : '');
             case 'Abandoned Cart Days Inactive in Basket':
                 $metadata = $this->get('Metadata');
 
                 return number((isset($metadata['Days Inactive in Basket']) ? $metadata['Days Inactive in Basket'] : 0));
-                break;
+
             case 'Email Campaign Abandoned Cart Days Inactive in Basket':
                 $metadata = $this->get('Metadata');
 
                 return (isset($metadata['Days Inactive in Basket']) ? $metadata['Days Inactive in Basket'] : '');
-                break;
+
             case 'Email Campaign Abandoned Cart Days Last Updated':
                 $metadata = $this->get('Metadata');
 
                 return (isset($metadata['Days Last Updated']) ? $metadata['Days Last Updated'] : '');
-                break;
+
             case 'Abandoned Cart Days Last Updated':
                 $metadata = $this->get('Metadata');
 
@@ -475,6 +483,10 @@ class EmailCampaign extends DB_Table {
         }
 
         return false;
+    }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
     function update_estimated_recipients() {
@@ -656,6 +668,12 @@ class EmailCampaign extends DB_Table {
                     $sql =
                         "select count(*)  as num from `Prospect Dimension` where `Prospect Store Key`=? and `Prospect Main Plain Email`!='' and  ( `Prospect Status`='NoContacted'  or  ( `Prospect Status`='Contacted' and  `Prospect Last Contacted Date`<= CURRENT_DATE - INTERVAL ? DAY   )  )  ";
 
+
+
+
+
+
+
                     $stmt = $this->db->prepare($sql);
                     $stmt->execute(
                         array(
@@ -665,6 +683,12 @@ class EmailCampaign extends DB_Table {
                     );
                     if ($row = $stmt->fetch()) {
                         $estimated_recipients = $row['num'];
+
+                        if(is_numeric($this->metadata('Max_Number_Emails'))  and $this->metadata('Max_Number_Emails')>=0 ){
+                            $estimated_recipients=min($estimated_recipients,$this->metadata('Max_Number_Emails'));
+                        }
+
+
                     }
 
 
@@ -679,7 +703,6 @@ class EmailCampaign extends DB_Table {
         }
 
     }
-
 
     function delete() {
 
@@ -762,11 +785,11 @@ class EmailCampaign extends DB_Table {
 
     }
 
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
         switch ($field) {
+
 
             case 'Email Campaign State':
 
@@ -782,6 +805,42 @@ class EmailCampaign extends DB_Table {
             case 'Metadata':
 
                 $this->update_field('Email Campaign '.$field, $value, $options);
+                break;
+            case 'Email Campaign Max Number Emails':
+                $metadata = $this->get('Metadata');
+                if ($metadata == '') {
+                    $metadata = array();
+                }
+
+                $metadata['Max_Number_Emails'] = $value;
+                $this->fast_update(array('Email Campaign Metadata' => json_encode($metadata)));
+                $this->metadata = ($this->data['Email Campaign Metadata'] == '' ? array() : json_decode($this->data['Email Campaign Metadata'], true));
+                $this->update_estimated_recipients();
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Email_Campaign_Number_Estimated_Emails' => $this->get('Email Campaign Number Estimated Emails'),
+                        'Number_Estimated_Emails'                => $this->get('Number Estimated Emails'),
+                    ),
+
+                );
+                break;
+            case 'Email Campaign Cool Down Days':
+                $metadata = $this->get('Metadata');
+                if ($metadata == '') {
+                    $metadata = array();
+                }
+
+                $metadata['Cool_Down_Days'] = $value;
+                $this->fast_update(array('Email Campaign Metadata' => json_encode($metadata)));
+                $this->metadata = ($this->data['Email Campaign Metadata'] == '' ? array() : json_decode($this->data['Email Campaign Metadata'], true));
+                $this->update_estimated_recipients();
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Email_Campaign_Number_Estimated_Emails' => $this->get('Email Campaign Number Estimated Emails'),
+                        'Number_Estimated_Emails'                => $this->get('Number Estimated Emails'),
+                    ),
+
+                );
                 break;
 
             case 'Email Campaign Abandoned Cart Days Inactive in Basket':
@@ -880,7 +939,6 @@ class EmailCampaign extends DB_Table {
 
         }
     }
-
 
     function update_state($value) {
 
@@ -1182,7 +1240,6 @@ class EmailCampaign extends DB_Table {
 
     }
 
-
     function get_field_label($field) {
 
         switch ($field) {
@@ -1195,6 +1252,12 @@ class EmailCampaign extends DB_Table {
                 break;
             case 'Email Campaign Abandoned Cart Days Last Updated':
                 $label = sprintf(_('Last updated %s days ago'), '<em>n</em>');
+                break;
+            case 'Email Campaign Max Number Emails':
+                $label = _('Max number of emails');
+                break;
+            case 'Email Campaign Cool Down Days':
+                $label = _('Days since last contact');
                 break;
             default:
                 $label = $field;
@@ -1494,6 +1557,10 @@ class EmailCampaign extends DB_Table {
                     $this->data['Email Campaign Store Key'], (empty($metadata['Cool_Down_Days']) ? 180 : $metadata['Cool_Down_Days'])
                 );
 
+                if(is_numeric($this->metadata('Max_Number_Emails'))  and $this->metadata('Max_Number_Emails')>=0 ){
+                    $sql.=sprintf(' limit %d',$this->metadata('Max_Number_Emails'));
+                    }
+
                 return $sql;
 
             case 'Marketing':
@@ -1526,7 +1593,6 @@ class EmailCampaign extends DB_Table {
 
         }
     }
-
 
     function update_sent_emails_totals() {
 
@@ -1631,10 +1697,6 @@ class EmailCampaign extends DB_Table {
             if ($row = $result->fetch()) {
                 $unsubscribed = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1657,11 +1719,6 @@ class EmailCampaign extends DB_Table {
         );
 
 
-    }
-
-
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
 

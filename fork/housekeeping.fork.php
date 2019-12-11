@@ -3246,6 +3246,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $prospect->editor = $editor;
             $prospect->opt_out($data['date']);
+
+
+
+
+
             break;
         case 'deal_campaign_changed':
 

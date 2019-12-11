@@ -133,6 +133,23 @@ if (isset($is_homepage)) {
                 include_once __DIR__.'/utils/new_fork.php';
 
 
+                $email_tracking = get_object('Email_Tracking', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
+                $email_tracking->fast_update(
+                    array(
+                        'Email Tracking Unsubscribed' => 'Yes'
+                    )
+                );
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'                    => 'update_sent_emails_data',
+                    'email_template_key'      => $email_tracking->get('Email Tracking Email Template Key'),
+                    'email_template_type_key' => $email_tracking->get('Email Tracking Email Template Type Key'),
+                    'email_mailshot_key'      => $email_tracking->get('Email Tracking Email Mailshot Key'),
+
+                ), DNS_ACCOUNT_CODE
+                );
+
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(

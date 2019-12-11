@@ -42,7 +42,7 @@ if ($email_campaign->get('Email Campaign Type') == 'Marketing') {
     $html = $smarty->fetch(  ($email_campaign->get('State Index')<20?'new_object.tpl':'edit_object.tpl')  );
 
 
-} else {
+}else {
 
     $object_fields = get_object_fields(
         $email_campaign, $db, $user, $smarty, array(
