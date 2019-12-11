@@ -175,8 +175,8 @@ class PartLocation extends DB_Table {
 
         }
 
-        $this->part     = get_object('Part',$this->part_sku);
-        $this->location = get_object('Location',$this->location_key);
+        $this->part     = get_object('Part', $this->part_sku);
+        $this->location = get_object('Location', $this->location_key);
 
 
     }
@@ -297,31 +297,26 @@ class PartLocation extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')."%s AND `Part SKU`=%d AND `Location Key`=%d",
-            prepare_mysql($date), $this->part_sku, $this->location_key
+
+
+        $sql = "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')."? AND `Part SKU`=? AND `Location Key`=?";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $date,
+                $this->part_sku,
+                $this->location_key
+            )
         );
-
-
-        //print $sql;
-        //exit;
-
-        $old_qty = 0;
-        // $old_value = 0;
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                //$old_qty   = round($row['stock'], 6);
+        if ($row = $stmt->fetch()) {
+            if ($row['stock'] != '') {
                 $old_qty = $row['stock'];
-                //$old_value = $row['value'];
-
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
+
+
 
 
         $qty_change = $qty - $old_qty;
@@ -561,7 +556,6 @@ class PartLocation extends DB_Table {
         $stock = $this->get_stock();
 
 
-
         $value = $stock * $this->part->get('Part Cost in Warehouse');
 
         $this->data['Quantity On Hand']    = $stock;
@@ -648,8 +642,6 @@ class PartLocation extends DB_Table {
         );
 
 
-
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
@@ -669,78 +661,6 @@ class PartLocation extends DB_Table {
 
 
     }
-
-
-    function get_value_per_sko($date = '') {
-
-
-        if ($date=='') {
-            $date = gmdate('Y-m-d H:i:s');
-        }
-
-        $account = get_object('Account', 1);
-
-
-        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
-
-            $sql = sprintf(
-                "SELECT `Running Cost per SKO` AS sko_value from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and   `Running Cost per SKO`  is not null order by `Date` desc  ", prepare_mysql($date), $this->part_sku,
-                $this->location_key
-            );
-
-            //            print $sql;
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-
-                    $value_per_sko = $row['sko_value'];
-
-                    //$value_per_sko = $row['Running Cost per SKO'];
-                } else {
-                    $value_per_sko = $this->part->get('Part Cost');
-                    // $value_per_sko = $this->part->get('Part Cost');
-
-                }
-
-
-            }
-
-            return $value_per_sko;
-
-
-        } else {
-
-
-            $sql = sprintf(
-                'select  (`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko ,`ITF POTF Costing Done POTF Key` from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
-where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0    and  ITF.`Part SKU`=%d  and `Date`<=%s order by `Date` desc  limit 1 ', $this->part_sku, prepare_mysql($date)
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                    if ($row['ITF POTF Costing Done POTF Key'] > 0) {
-                        $value_per_sko = $row['value_per_sko'];
-
-                    } else {
-                        $value_per_sko = $this->part->get('Part Cost');
-                    }
-
-                } else {
-                    $value_per_sko = $this->part->get('Part Cost');
-                }
-
-            }
-
-            return $value_per_sko;
-
-        }
-
-
-    }
-
 
     function get($key = '', $args = false) {
 
@@ -1163,7 +1083,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
-
     function add_stock($data, $date) {
 
         $stock_transfer_data = array(
@@ -1537,7 +1456,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
-
     function get_history_datetime_intervals() {
         $sql = sprintf(
             "SELECT  `Inventory Transaction Type`,(`Date`) AS Date FROM `Inventory Transaction Fact` WHERE  `Part SKU`=%d AND  `Location Key`=%d AND `Inventory Transaction Type` IN ('Associate','Disassociate')  ORDER BY `Date` ,`Inventory Transaction Key` ",
@@ -1586,13 +1504,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             global $session;
 
 
-
-            if($date==gmdate('Y-m-d')){
+            if ($date == gmdate('Y-m-d')) {
                 $cost_per_sko = $this->part->get('Part Cost in Warehouse');
-            }else{
+            } else {
                 $cost_per_sko = $this->get_value_per_sko($date.' 23:59:59');
             }
-
 
 
             $stock = $this->get_stock($date.' 23:59:59');
@@ -1607,8 +1523,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $lost = $this->get_lost($date);
 
             list($amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other) = $this->get_amount_deltas($date);
-
-
 
 
             //print "$cost_per_sko $stock $value";
@@ -1704,33 +1618,31 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
                 $sold, $in, $lost,
 
-                prepare_mysql($location_type), $sales_value,  $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko
+                prepare_mysql($location_type), $sales_value, $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko
 
 
             );
             $this->db->exec($sql);
 
             return array(
-                'stock'=>$stock,
-                'stock_value'=>$value,
-
+                'stock'       => $stock,
+                'stock_value' => $value,
 
 
             );
 
-        }
-        else {
+        } else {
 
             $sql = sprintf(
                 "DELETE FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND `Date`=%s", $this->part_sku, $this->location_key, prepare_mysql($date)
             );
             $this->db->exec($sql);
+
             //print "$sql\n";
 
             return array(
-                'stock'=>0,
-                'stock_value'=>0,
-
+                'stock'       => 0,
+                'stock_value' => 0,
 
 
             );
@@ -1830,7 +1742,75 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
+    function get_value_per_sko($date = '') {
 
+
+        if ($date == '') {
+            $date = gmdate('Y-m-d H:i:s');
+        }
+
+        $account = get_object('Account', 1);
+
+
+        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
+
+            $sql = sprintf(
+                "SELECT `Running Cost per SKO` AS sko_value from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and   `Running Cost per SKO`  is not null order by `Date` desc  ", prepare_mysql($date), $this->part_sku,
+                $this->location_key
+            );
+
+            //            print $sql;
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $value_per_sko = $row['sko_value'];
+
+                    //$value_per_sko = $row['Running Cost per SKO'];
+                } else {
+                    $value_per_sko = $this->part->get('Part Cost');
+                    // $value_per_sko = $this->part->get('Part Cost');
+
+                }
+
+
+            }
+
+            return $value_per_sko;
+
+
+        } else {
+
+
+            $sql = sprintf(
+                'select  (`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko ,`ITF POTF Costing Done POTF Key` from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
+where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0    and  ITF.`Part SKU`=%d  and `Date`<=%s order by `Date` desc  limit 1 ', $this->part_sku, prepare_mysql($date)
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    if ($row['ITF POTF Costing Done POTF Key'] > 0) {
+                        $value_per_sko = $row['value_per_sko'];
+
+                    } else {
+                        $value_per_sko = $this->part->get('Part Cost');
+                    }
+
+                } else {
+                    $value_per_sko = $this->part->get('Part Cost');
+                }
+
+            }
+
+            return $value_per_sko;
+
+        }
+
+
+    }
 
     function get_sales($date) {
 
@@ -1907,8 +1887,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         $end   = $date.' 23:59:59';
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s   AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Section`='Lost'   ",
-            prepare_mysql($start), prepare_mysql($end), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s   AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Section`='Lost'   ", prepare_mysql($start),
+            prepare_mysql($end), $this->part_sku, $this->location_key
         );
 
 
@@ -1943,8 +1923,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         }
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` in ('Found','Restock')   ",
-            prepare_mysql($start), prepare_mysql($end), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` in ('Found','Restock')   ", prepare_mysql($start),
+            prepare_mysql($end), $this->part_sku, $this->location_key
         );
 
 
@@ -1970,8 +1950,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         }
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Section`='Out' ",
-            prepare_mysql($start), prepare_mysql($end), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Section`='Out' ", prepare_mysql($start), prepare_mysql($end),
+            $this->part_sku, $this->location_key
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1982,7 +1962,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
         }
 
-        $amount_out_other=$all_out-$amount_out_sales;
+        $amount_out_other = $all_out - $amount_out_sales;
 
         return array(
             $amount_in_po,
@@ -1992,8 +1972,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         );
 
     }
-
-
 
 
 }
