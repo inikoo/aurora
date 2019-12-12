@@ -469,6 +469,14 @@ class Customer extends Subject {
 
                 }
 
+            case('Recargo Equivalencia'):
+
+                if(($this->data['Customer '.$key])=='Yes'){
+                    return _('Yes');
+                }else{
+                    return _('No');
+                }
+
 
             case('Lost Date'):
             case('Last Order Date'):

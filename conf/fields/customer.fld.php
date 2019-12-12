@@ -31,6 +31,11 @@ $options_delivery_address_link = array(
 );
 
 
+$options_yes_no = array(
+    'Yes' => _('Yes'),
+    'No'  => _('No')
+);
+
 $options_sales_representative = array();
 
 $sql = sprintf(
@@ -132,6 +137,16 @@ if ($new) {
                     'label'           => ucfirst(
                         $object->get_field_label('Customer Tax Number Valid')
                     ),
+                ),
+                array(
+                    'id'              => 'Customer_Recargo_Equivalencia',
+                    'edit'            => ($edit ? 'option' : ''),
+                    'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
+                    'options'         => $options_yes_no,
+                    'value'           => 'No',
+                    'formatted_value' => _('No'),
+                    'label'           => _('Recargo de equivalencia'),
+                    'type'            => ''
                 ),
 
             )
@@ -427,7 +442,17 @@ if ($new) {
                 'label'           => ucfirst(
                     $object->get_field_label('Customer Tax Number Valid')
                 ),
-            )
+            ),
+            array(
+                'id'              => 'Customer_Recargo_Equivalencia',
+                'edit'            => ($edit ? 'option' : ''),
+                'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
+                'options'         => $options_yes_no,
+                'value'           => $object->get('Customer Recargo Equivalencia'),
+                'formatted_value' => $object->get('Recargo Equivalencia'),
+                'label'           => _('Recargo de equivalencia'),
+                'type'            => ''
+            ),
 
 
         )

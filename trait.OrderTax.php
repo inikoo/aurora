@@ -375,7 +375,7 @@ trait OrderTax {
                                                                               )
                 )) {
 
-                    if ($customer->data['Recargo Equivalencia'] == 'Yes') {
+                    if ($customer->data['Customer Recargo Equivalencia'] == 'Yes') {
 
                         return array(
                             'code'                     => $tax_category['IVA+RE']['code'],
@@ -407,7 +407,7 @@ trait OrderTax {
                                                                              )
                 )) {
 
-                    if ($customer->data['Recargo Equivalencia'] == 'Yes') {
+                    if ($customer->data['Customer Recargo Equivalencia'] == 'Yes') {
 
                         return array(
                             'code'                     => $tax_category['IVA+RE']['code'],
