@@ -1490,6 +1490,9 @@ function prospects($_data, $db, $user) {
                 case 'Invoiced':
                     $status = _('Invoiced');
                     break;
+                case 'Bounced':
+                    $status = _('Bounced');
+                    break;
                 default:
                     $status = $data['Prospect Status'];
                     break;

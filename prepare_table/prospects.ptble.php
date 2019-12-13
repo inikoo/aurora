@@ -50,7 +50,7 @@ switch ($parameters['elements_type']) {
         $_elements = preg_replace('/^\,/', '', $_elements);
         if ($_elements == '') {
             $where .= ' and false';
-        } elseif ($count_elements < 5) {
+        } elseif ($count_elements < 6) {
             $where .= ' and `Prospect Status` in ('.$_elements.')';
         }
         break;
@@ -112,7 +112,3 @@ $sql_totals = "select count(Distinct P.`Prospect Key`) as num from $table  $wher
 $fields     = ' `Prospect Key`,`Prospect Name`,`Prospect Location`,`Prospect Main Plain Email`,`Prospect Main Plain Telephone`,`Prospect Main Contact Name`,`Prospect Status`,
  `Prospect First Contacted Date`,`Prospect Store Key`,`Prospect Company Name`,`Prospect Contact Address Formatted`,`Prospect Main XHTML Telephone`,`Prospect Main XHTML Mobile`
  '
-
-
-//print "$sql_totals\n";
-?>

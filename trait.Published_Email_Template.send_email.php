@@ -473,6 +473,9 @@ trait Send_Email {
 
         }else{
             if($recipient->get_object_name()=='Prospect'){
+                /**
+                 * @var $recipient \Prospect
+                 */
                 $recipient->mailshot_sent($email_tracking->id,$subject);
             }
         }

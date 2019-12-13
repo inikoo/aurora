@@ -3612,6 +3612,7 @@ function get_prospects_elements($db, $data) {
 
         'status' => array(
             'Contacted'     => 0,
+            'Bounced'     => 0,
             'NoContacted'   => 0,
             'NotInterested' => 0,
             'Registered'    => 0,

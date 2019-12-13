@@ -103,6 +103,10 @@ $elements_options = array(
                     'label'    => _('To be contacted'),
                     'selected' => true
                 ),
+                'Bounced'   => array(
+                    'label'    => _('Bounced'),
+                    'selected' => true
+                ),
                 'Contacted'     => array(
                     'label'    => _('Contacted'),
                     'selected' => true

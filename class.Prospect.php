@@ -643,46 +643,6 @@ class Prospect extends Subject {
         }
     }
 
-
-    function mailshot_sent($tracking_key,$subject){
-
-        $history_data = array(
-            'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
-                    '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $tracking_key, $subject
-                ),
-            'History Details'  => '',
-            'Action'           => 'edited'
-        );
-
-
-        $this->add_subject_history(
-            $history_data, true, 'No', 'Emails', 'Prospect', $this->id
-        );
-
-
-        if ($this->data['Prospect Status'] == 'NoContacted') {
-            $this->fast_update(
-                array(
-                    'Prospect Status'               => 'Contacted',
-                    'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
-                    'Prospect Last Contacted Date'  => gmdate('Y-m-d H:i:s'),
-
-                )
-            );
-
-
-        } else {
-            $this->fast_update(
-                array(
-                    'Prospect Last Contacted Date' => gmdate('Y-m-d H:i:s'),
-                )
-            );
-        }
-
-
-    }
-
-
     function send_invitation($email_template_key) {
         $email_template_type = get_object('Email_Template_Type', 'Invite Mailshot|'.$this->get('Prospect Store Key'), 'code_store');
 
@@ -881,7 +841,7 @@ class Prospect extends Subject {
             case 'NotInterested':
 
 
-                if ($this->data['Prospect Status'] == 'Contacted' or $this->data['Prospect Status'] == 'NoContacted') {
+                if ($this->data['Prospect Status'] == 'Contacted' or $this->data['Prospect Status'] == 'NoContacted' or $this->data['Prospect Status'] == 'Bounced') {
 
                     $this->fast_update(
                         array(
@@ -925,6 +885,34 @@ class Prospect extends Subject {
 
                 }
                 break;
+            case 'Bounced':
+
+
+                if ($this->data['Prospect Status'] == 'Contacted' or $this->data['Prospect Status'] == 'NoContacted') {
+
+                    $this->fast_update(
+                        array(
+                            'Prospect Status'    => 'Bounced',
+                            'Prospect Lost Date' => gmdate('Y-m-d H:i:s')
+                        )
+                    );
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Email bounced'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+
+                }
+                break;
+
+
             case 'Contacted':
             case 'NoContacted':
 
@@ -940,6 +928,41 @@ class Prospect extends Subject {
 
                     $history_data = array(
                         'History Abstract' => _('Not interested status removed'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'Status_Label'   => $this->get('Status Label'),
+                            'Contacted_Date' => $this->get('First Contacted Date'),
+                            'Lost_Date'      => $this->get('Lost Date'),
+
+                        ),
+                        'show'       => array('not_interested_button'),
+                        'hide'       => array(
+                            'contacted_date_tr',
+                            'fail_date_tr',
+                            'activate_prospect_field_operation_tr'
+                        )
+                    );
+                } elseif ($this->data['Prospect Status'] == 'Bounced') {
+
+                    $this->fast_update(
+                        array(
+                            'Prospect Status'    => $value,
+                            'Prospect Lost Date' => ''
+                        )
+                    );
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Bounced status removed'),
                         'History Details'  => '',
                         'Action'           => 'edited'
                     );
@@ -1012,6 +1035,44 @@ class Prospect extends Subject {
 
 
         }
+
+    }
+
+    function mailshot_sent($tracking_key, $subject) {
+
+        $history_data = array(
+            'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
+                    '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $tracking_key, $subject
+                ),
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Emails', 'Prospect', $this->id
+        );
+
+
+        if ($this->data['Prospect Status'] == 'NoContacted') {
+            $this->fast_update(
+                array(
+                    'Prospect Status'               => 'Contacted',
+                    'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+                    'Prospect Last Contacted Date'  => gmdate('Y-m-d H:i:s'),
+
+                )
+            );
+
+
+        } else {
+            $this->fast_update(
+                array(
+                    'Prospect Last Contacted Date' => gmdate('Y-m-d H:i:s'),
+                )
+            );
+        }
+
 
     }
 

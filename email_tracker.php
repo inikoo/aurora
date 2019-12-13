@@ -277,8 +277,6 @@ if ($validator->isValid($sns)) {
                 $event_key = $db->lastInsertId();
 
 
-
-
                 $email_tracking = get_object('email_tracking', $row['Email Tracking Key']);
                 $email_tracking->update_state($event_type);
 
@@ -316,64 +314,67 @@ if ($validator->isValid($sns)) {
                         }
 
 
-                        $sql = sprintf(
-                            'select `Customer Key` from `Customer Dimension` where `Customer Main Plain Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email'))
-                        );
-
-
                         $unsubscribe_note = sprintf('<span>%s</span>', parse_email_status_code($bounce_type.' Bounce', $bounce_status_code));
 
                         if ($bounce_note != '') {
                             $unsubscribe_note .= ' <span class="discreet italic">('.$bounce_note.')</span>';
                         }
 
-                        if ($result2 = $db->query($sql)) {
-                            foreach ($result2 as $row2) {
-                                $customer         = get_object('Customer', $row2['Customer Key']);
-                                $customer->editor = $editor;
 
-                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 100)) {
+                        $sql   = "select `Customer Key` from `Customer Dimension` where `Customer Main Plain Email`=?  ";
+                        $stmt2 = $db->prepare($sql);
+                        $stmt2->execute(
+                            array(
+                                $email_tracking->get('Email Tracking Email')
+                            )
+                        );
+                        while ($row2 = $stmt2->fetch()) {
+                            $customer         = get_object('Customer', $row2['Customer Key']);
+                            $customer->editor = $editor;
 
-                                    if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
+                            if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 100)) {
 
-
-                                        $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email soft bounced several times').', '.$unsubscribe_note);
-
-                                    }
-
-                                    $customer->fast_update(array('Customer Email State' => 'Error'));
-                                    //print "Customer x ".$customer->get('Store Key')."  ".$customer->id."\n";
-                                    //exit;
-                                } else {
-                                    $customer->fast_update(array('Customer Email State' => 'Warning'));
-
-                                    $history_data = array(
-                                        'History Abstract' => _('Email soft bounced').', '.$unsubscribe_note,
-                                        'History Details'  => '',
-                                        'Action'           => 'edited'
-                                    );
-
-                                    $customer->add_subject_history(
-                                        $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
-                                    );
-                                    //print "Customer ".$customer->get('Store Key')."  ".$customer->id."\n";
-                                    //exit;
-
+                                if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
+                                    $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email soft bounced several times').', '.$unsubscribe_note);
                                 }
-
-
+                                $customer->fast_update(array('Customer Email State' => 'Error'));
+                            } else {
+                                $customer->fast_update(array('Customer Email State' => 'Warning'));
+                                $history_data = array(
+                                    'History Abstract' => _('Email soft bounced').', '.$unsubscribe_note,
+                                    'History Details'  => '',
+                                    'Action'           => 'edited'
+                                );
+                                $customer->add_subject_history(
+                                    $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+                                );
                             }
-                        } else {
-                            print_r($error_info = $db->errorInfo());
-                            print "$sql\n";
-                            exit;
+
                         }
 
 
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        print "$sql\n";
-                        exit;
+                        $sql   = "select `Prospect Key` from `Prospect Dimension` where `Prospect Main Plain Email`=?  ";
+                        $stmt2 = $db->prepare($sql);
+                        $stmt2->execute(
+                            array(
+                                $email_tracking->get('Email Tracking Email')
+                            )
+                        );
+                        while ($row2 = $stmt2->fetch()) {
+
+
+                            if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count >= 3)) {
+                                $prospect         = get_object('Prospect', $row2['Prospect Key']);
+                                $prospect->editor = $editor;
+
+                                $prospect->update_status('Bounced');
+
+
+                            }
+
+                        }
+
+
                     }
 
 
@@ -388,14 +389,16 @@ if ($validator->isValid($sns)) {
                         $sql = "insert into `Email Spam Dimension` (`Email Spam Sender`,`Email Spam Recipient`,`Email Spam Tracking Event Key`,`Email Spam Date`) values (?,?,?,?) ";
 
 
-                        $stmt= $db->prepare($sql);
-                        $stmt->execute(array(
-                                           $_spam_recipients['emailAddress'],
-                                           $message['mail']['source'],
-                                           $event_key,
-                                           gmdate('Y-m-d H:i:s')
+                        $stmt = $db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $_spam_recipients['emailAddress'],
+                                $message['mail']['source'],
+                                $event_key,
+                                gmdate('Y-m-d H:i:s')
 
-                                       ));
+                            )
+                        );
 
 
                     }
@@ -407,7 +410,6 @@ if ($validator->isValid($sns)) {
 
 
                 if ($email_tracking->get('Email Tracking Email Template Type Key') > 0) {
-
 
 
                     $sql = "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
@@ -560,8 +562,6 @@ if ($validator->isValid($sns)) {
                     );
 
 
-
-
                 }
 
 
@@ -576,9 +576,6 @@ if ($validator->isValid($sns)) {
                         json_encode($message)
                     ]
                 );
-
-
-
 
 
             }
