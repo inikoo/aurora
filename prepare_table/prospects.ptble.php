@@ -65,7 +65,13 @@ $wheref     = '';
 
 if (($parameters['f_field'] == 'name') and $f_value != '') {
     $wheref = sprintf(
-        ' and `Prospect Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Prospect Name`  like "%s%%"  ', addslashes($f_value)
+    );
+
+
+}elseif (($parameters['f_field'] == 'email') and $f_value != '') {
+    $wheref = sprintf(
+        ' and `Prospect Main Plain Email` like "%s%%" ', addslashes($f_value)
     );
 
 

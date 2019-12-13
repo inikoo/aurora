@@ -32,21 +32,14 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
     );
 
     $table_filters = array(
-        'name'         => array(
-            'label' => _('Name'),
-            'title' => _('Prospect name')
-        ),
+
         'email'        => array(
             'label' => _('Email'),
             'title' => _('Prospect email')
         ),
-        'company_name' => array(
-            'label' => _('Company name'),
-            'title' => _('Company name')
-        ),
-        'contact_name' => array(
-            'label' => _('Contact name'),
-            'title' => _('Contact name')
+        'name'         => array(
+            'label' => _('Name'),
+            'title' => _('Prospect name')
         )
 
     );
@@ -59,11 +52,6 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
 
 
     include_once 'conf/export_edit_template_fields.php';
-
-  //  $edit_fields = $export_edit_template_fields['prospect'];
-
-
-
     $edit_table_dialog = array(
         'new_item'         => array(
             'icon'      => 'plus',
@@ -93,15 +81,7 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
         'id'    => 'edit_dialog'
     );
 
-
-
     $smarty->assign('table_buttons', $table_buttons);
-
-
- //   $smarty->assign('edit_fields', $edit_fields);
-
-
-
     $smarty->assign('table_buttons', $table_buttons);
 
 
