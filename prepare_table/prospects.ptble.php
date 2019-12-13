@@ -111,4 +111,4 @@ if ($order == 'name') {
 $sql_totals = "select count(Distinct P.`Prospect Key`) as num from $table  $where ";
 $fields     = ' `Prospect Key`,`Prospect Name`,`Prospect Location`,`Prospect Main Plain Email`,`Prospect Main Plain Telephone`,`Prospect Main Contact Name`,`Prospect Status`,
  `Prospect First Contacted Date`,`Prospect Store Key`,`Prospect Company Name`,`Prospect Contact Address Formatted`,`Prospect Main XHTML Telephone`,`Prospect Main XHTML Mobile`
- '
+ ';
