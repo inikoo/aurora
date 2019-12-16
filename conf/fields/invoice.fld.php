@@ -145,7 +145,7 @@ $object_fields = array(
             ),
             array(
                 'id'              => 'Invoice_Recargo_Equivalencia',
-                'edit'            => ($edit ? 'option' : ''),
+                'edit'            => ($can_supervisor_accounting ? 'option' : ''),
                 'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
                 'options'         => $options_yes_no,
                 'value'           => $object->get('Invoice Recargo Equivalencia'),

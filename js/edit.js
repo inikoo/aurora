@@ -1206,7 +1206,14 @@ function post_save_actions(field, data) {
 
     switch (field) {
 
+        case 'Invoice_Recargo_Equivalencia':
+        case 'Invoice_Tax_Number':
+        case 'Invoice_Address':
 
+            change_view(state.request, {
+                reload_showcase: 1
+            })
+            break;
         case 'Prospect_Customer_Key':
             change_view(state.request, {
                 reload_showcase: 1

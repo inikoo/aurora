@@ -155,28 +155,28 @@ class Order extends DB_Table {
 
 
                 $this->update_tax_number($value);
-                $this->order_totals_changed_post_operation();
+                $this->post_operation_order_totals_changed();
                 break;
             case('Order Tax Number Valid'):
                 if ($this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_tax_number_valid($value);
-                $this->order_totals_changed_post_operation();
+                $this->post_operation_order_totals_changed();
                 break;
             case 'Order Invoice Address':
                 if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_address('Invoice', json_decode($value, true));
-                $this->order_totals_changed_post_operation();
+                $this->post_operation_order_totals_changed();
                 break;
             case 'Order Delivery Address':
                 if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_address('Delivery', json_decode($value, true));
-                $this->order_totals_changed_post_operation();
+                $this->post_operation_order_totals_changed();
                 break;
 
             case('Order State'):
@@ -204,14 +204,15 @@ class Order extends DB_Table {
             case 'Order Recargo Equivalencia':
 
                 if (!($value == 'Yes' or $value == 'No')) {
-                    $this->error=true;
-                    $this->msg='invalid value';
+                    $this->error = true;
+                    $this->msg   = 'invalid value';
+
                     return;
                 }
 
                 $this->fast_update_json_field('Order Metadata', 'RE', $value);
                 $this->update_tax();
-                $this->order_totals_changed_post_operation();
+                $this->post_operation_order_totals_changed();
                 break;
             default:
                 $base_data = $this->base_data();
@@ -933,17 +934,17 @@ class Order extends DB_Table {
                 break;
 
             case 'Recargo Equivalencia':
-                if($this->metadata('RE')=='Yes'){
+                if ($this->metadata('RE') == 'Yes') {
                     return _('Yes');
-                }else{
+                } else {
                     return _('No');
                 }
 
                 break;
             case 'Order Recargo Equivalencia':
-                if($this->metadata('RE')=='Yes'){
+                if ($this->metadata('RE') == 'Yes') {
                     return 'Yes';
-                }else{
+                } else {
                     return 'No';
                 }
 
@@ -999,7 +1000,7 @@ class Order extends DB_Table {
 
     }
 
-    function order_totals_changed_post_operation() {
+    function post_operation_order_totals_changed() {
 
 
         $this->update_metadata = array(
@@ -2226,6 +2227,7 @@ class Order extends DB_Table {
             'Invoice To Pay Amount'   => $this->data['Order To Pay Amount'],
             'Invoice Total Amount'    => $this->data['Order Total Amount'],
             'Invoice Currency'        => $this->data['Order Currency'],
+            'Recargo Equivalencia'    => $this->metadata('RE')
 
 
         );
@@ -3108,7 +3110,7 @@ class Order extends DB_Table {
             'Invoice To Pay Amount'                => 0,
             'Invoice Total Amount'                 => 0,
             'Invoice Currency'                     => $this->data['Order Currency'],
-
+            'Recargo Equivalencia'                 => $this->metadata('RE')
 
         );
 

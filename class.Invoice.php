@@ -139,6 +139,13 @@ class Invoice extends DB_Table {
 
         $account = get_object('Account', 1);
 
+        if(isset($invoice_data['Recargo Equivalencia']) ){
+            if( $invoice_data['Recargo Equivalencia']=='Yes'){
+                $recargo_equivalencia=$invoice_data['Recargo Equivalencia'];
+            }
+            unset($invoice_data['Recargo Equivalencia']);
+        }
+
 
         $this->editor = $invoice_data['editor'];
 
@@ -180,7 +187,10 @@ class Invoice extends DB_Table {
             $this->get_data('id', $this->id);
 
 
-            //  print_r($transactions);
+
+            if(isset($recargo_equivalencia)){
+                $this->fast_update_json_field('Invoice Metadata', 'RE','Yes');
+            }
 
             $feedback = array();
 
@@ -1046,6 +1056,8 @@ class Invoice extends DB_Table {
                 return $number_onptf;
                 break;
             case 'Recargo Equivalencia':
+
+
                 if ($this->metadata('RE') == 'Yes') {
                     return _('Yes');
                 } else {
@@ -1116,8 +1128,7 @@ class Invoice extends DB_Table {
     }
 
     function metadata($key) {
-        return '';
-        //return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
     function update_payments_totals() {
@@ -1305,6 +1316,14 @@ class Invoice extends DB_Table {
 
         unset($invoice_data['editor']);
 
+        if(isset($invoice_data['Recargo Equivalencia']) ){
+            if( $invoice_data['Recargo Equivalencia']=='Yes'){
+                $recargo_equivalencia=$invoice_data['Recargo Equivalencia'];
+            }
+            unset($invoice_data['Recargo Equivalencia']);
+        }
+
+
         foreach ($invoice_data as $key => $value) {
             if (array_key_exists($key, $invoice_data)) {
                 $base_data[$key] = _trim($value);
@@ -1338,6 +1357,12 @@ class Invoice extends DB_Table {
 
 
             $this->get_data('id', $this->id);
+
+            if(isset($recargo_equivalencia)){
+                $this->fast_update_json_field('Invoice Metadata', 'RE','Yes');
+            }
+
+
 
 
             $sql = sprintf(
@@ -1639,6 +1664,9 @@ class Invoice extends DB_Table {
                 break;
             case 'Invoice Recargo Equivalencia':
 
+
+
+
                 if (!($value == 'Yes' or $value == 'No')) {
                     $this->error = true;
                     $this->msg   = 'invalid value';
@@ -1646,17 +1674,22 @@ class Invoice extends DB_Table {
                     return;
                 }
 
+                $this->fast_update_json_field('Invoice Metadata', 'RE', $value);
+
+
                 $order         = get_object('Order', $this->data['Invoice Order Key']);
                 $order->editor = $this->editor;
 
                 $order_old_formatted_value = $order->get('Recargo Equivalencia');
                 $order->fast_update_json_field('Order Metadata', 'RE', $value);
                 $order->update_tax(false, $this->id);
+                $this->update_tax_data();
 
                 if ($order_old_formatted_value != $order->get('Recargo Equivalencia')) {
                     $this->add_changelog_record('Order Recargo Equivalencia', $order_old_formatted_value, $order->get('Recargo Equivalencia'), '', 'Order', $order->id);
                 }
 
+                $this->post_operation_invoice_totals_changed();
 
                 break;
             case('Invoice Tax Number'):
@@ -1740,9 +1773,7 @@ class Invoice extends DB_Table {
                 $this->update_tax_data();
 
                 break;
-
-
-            case 'Invoice Public ID':
+                case 'Invoice Public ID':
                 $this->update_field($field, $value, $options);
 
 
@@ -1762,7 +1793,9 @@ class Invoice extends DB_Table {
                 $this->update_field('Invoice File As', $file_as, $options);
 
                 break;
-            default:
+
+
+                default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
                     if ($value != $this->data[$field]) {
@@ -2534,6 +2567,29 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         }
 
         return $label;
+
+    }
+
+    function post_operation_invoice_totals_changed() {
+
+        //todo finish this
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Items_Gross_Amount' => $this->get('Items Gross Amount'),
+                'Items_Discount_Amount' => $this->get('Items Discount Amount'),
+                'Items_Net_Amount' => $this->get('Items Net Amount'),
+                'Net_Amount_Off' => $this->get('Net Amount Off'),
+
+
+                'Total_Tax_Adjust_Amount' => $this->get('Total Tax Adjust Amount'),
+                'Total_Amount' => $this->get('Total Amount'),
+                'Corporate_Currency_Total_Amount' => $this->get('Corporate Currency Total Amount'),
+
+            )
+        );
+
+
 
     }
 

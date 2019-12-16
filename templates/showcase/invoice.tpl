@@ -41,22 +41,22 @@
             {if $invoice->get('Invoice Items Discount Amount')!=0 }
                 <tr>
                     <td class="aright">{t}Items Gross{/t}</td>
-                    <td class="aright">{$invoice->get('Items Gross Amount')}</td>
+                    <td class="Items_Gross_Amount aright">{$invoice->get('Items Gross Amount')}</td>
                 </tr>
                 <tr>
                     <td class="aright">{t}Discounts{/t}</td>
-                    <td class="aright">-{$invoice->get('Items Discount Amount')}</td>
+                    <td class="Items_Discount_Amount aright">-{$invoice->get('Items Discount Amount')}</td>
                 </tr>
             {/if}
             <tr>
                 <td class="aright">{t}Items Net{/t}</td>
-                <td class="aright">{$invoice->get('Items Net Amount')}</td>
+                <td class="Items_Net_Amount aright">{$invoice->get('Items Net Amount')}</td>
             </tr>
 
             {if $invoice->get('Invoice Net Amount Off')!=0 }
                 <tr>
                     <td class="aright">{t}Amount Off{/t}</td>
-                    <td class="aright">{$invoice->get('Net Amount Off')}</td>
+                    <td class="Net_Amount_Off aright">{$invoice->get('Net Amount Off')}</td>
                 </tr>
             {/if}
 
@@ -105,18 +105,18 @@
             {if $invoice->get('Invoice Total Tax Adjust Amount')!=0}
                 <tr style="color:red">
                     <td class="aright">{t}Adjust Tax{/t}</td>
-                    <td class="aright">{$invoice->get('Total Tax Adjust Amount')}</td>
+                    <td class="Total_Tax_Adjust_Amount aright">{$invoice->get('Total Tax Adjust Amount')}</td>
                 </tr>
             {/if}
             <tr class="top-strong-border {if $account->get('Account Currency')==$invoice->get('Invoice Currency')}bottom-strong-border{/if}">
                 <td class="aright">{t}Total{/t}</td>
-                <td class="aright"><b>{$invoice->get('Total Amount')}</b></td>
+                <td class="aright"><b class="Total_Amount">{$invoice->get('Total Amount')}</b></td>
             </tr>
             <tr style="{if $account->get('Account Currency')==$invoice->get('Invoice Currency')}display:none{/if}"
                 class="exchange bottom-strong-border">
                 <td class="aright">{$account->get('Account Currency')}
                     /{$invoice->get('Invoice Currency')} {(1/$invoice->get('Invoice Currency Exchange'))|string_format:"%.3f"}</td>
-                <td class="aright">{$invoice->get('Corporate Currency Total Amount')}</td>
+                <td class="Corporate_Currency_Total_Amount aright">{$invoice->get('Corporate Currency Total Amount')}</td>
             </tr>
 
 
