@@ -129,12 +129,17 @@
                     <td class="width_20">
                         <i  data-stop="0" onclick="stop_export(this)" class="stop_export fa button fa-hand-paper error hide" title="{t}Stop{/t}"></i>
                     </td>
-                    <td class="export_button link"  data-type="excel" onclick="get_editable_data(this)"
 
-                        data-data='{ "parent_code":"{$edit_table_dialog.spreadsheet_edit.parent_code}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}","object":"{$edit_table_dialog.spreadsheet_edit.object}" }'
+                    {if  isset($edit_table_dialog.spreadsheet_edit)}
+                        <td class="export_button link"  data-type="excel" onclick="get_editable_data(this)"
+
+                            data-data='{ "parent_code":"{$edit_table_dialog.spreadsheet_edit.parent_code}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}","object":"{$edit_table_dialog.spreadsheet_edit.object}" }'><i class="fa fa-file-excel fa-fw" ></i><span class="excel">Excel</span><span class="csv hide">CSV</span
+                        </td>
+                    {else}
+                        <td></td>
+                    {/if}
 
 
-                    ><i class="fa fa-file-excel fa-fw" ></i><span class="excel">Excel</span><span class="csv hide">CSV</span</td>
                 </tr>
 
                 <tr>
