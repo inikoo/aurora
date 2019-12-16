@@ -1154,6 +1154,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
     $search_placeholder = _('Search payments');
 
 
+
     if ($data['parent']) {
 
         switch ($data['parent']) {
@@ -1175,6 +1176,8 @@ function get_payment_navigation($data, $user, $smarty, $db) {
             case 'payment_service_provider':
                 $tab = 'payment_service_provider.payments';
                 break;
+            default:
+                return false;
         }
 
 

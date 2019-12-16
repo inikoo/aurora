@@ -2427,8 +2427,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
                 case ('payment'):
-                    require_once 'navigation/accounting.nav.php';
-                    return get_payment_navigation($data, $smarty, $user, $db);
+                    return get_order_payment_navigation($data, $smarty, $user, $db);
 
                 case ('mailshot'):
                     return get_abandoned_card_email_navigation($data, $smarty, $user, $db, $account);

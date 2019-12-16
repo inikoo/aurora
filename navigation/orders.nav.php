@@ -2149,9 +2149,8 @@ function get_pick_aid_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_order_payment_navigation($data, $smarty, $user, $db, $account) {
+function get_order_payment_navigation($data, $smarty, $user, $db) {
 
-    global $user, $smarty;
 
     $object        = $data['_object'];
     $left_buttons  = array();
@@ -2264,10 +2263,7 @@ function get_order_payment_navigation($data, $smarty, $user, $db, $account) {
 
                 }
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
+        } 
 
         if ($data['parent'] == 'order') {
             $order     = new Order($data['parent_key']);
