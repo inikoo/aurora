@@ -345,7 +345,8 @@
             class="table_button square_button right {if isset($button.class)}{$button.class}{/if}"
         {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick=
         "change_view(state.request + '&tab={$button.change_tab}')"{/if}
-        {if isset($button.title)}title="{$button.title}"{/if}>
+        {if isset($button.title)}title="{$button.title}"{/if}
+        >
 
         {if $button.icon=='edit_add'}
         <span id="show_edit_table_dialog_button" class="fa-stack" onclick="show_edit_table_dialog()" ><i class="fa fa-plus fa-stack-1x " style="font-size:70%; margin-right:-50%;margin-left:-25%;margin-top:-10%"></i><i class="fa fa-pencil fa-stack-1x " style="margin-right:0%;margin-left:0%;"></i></span>

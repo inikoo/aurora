@@ -2263,7 +2263,7 @@ function get_order_payment_navigation($data, $smarty, $user, $db) {
 
                 }
             }
-        } 
+        }
 
         if ($data['parent'] == 'order') {
             $order     = new Order($data['parent_key']);
