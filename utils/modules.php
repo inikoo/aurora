@@ -5596,18 +5596,7 @@ $modules = array(
                     ),
                 )
             ),
-            'main_category.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'main_category.new' => array(
-                        'label' => _(
-                            'New category'
-                        )
-                    ),
 
-                )
-
-            ),
             'category'          => array(
                 'type'           => 'object',
                 'title'          => _('Category (Part)'),

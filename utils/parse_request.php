@@ -3749,10 +3749,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
                                     }
-                                } elseif ($view_path[1] == 'new') {
-
-                                    $section = 'main_category.new';
-
                                 }
                             } else {
                                 //error

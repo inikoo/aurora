@@ -10,9 +10,10 @@
 */
 
 
-if($account->get('Account Warehouses')==0){
+if ($account->get('Account Warehouses') == 0) {
 
-    $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
+    $html = '<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'), '<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
+
     return;
 }
 
@@ -24,8 +25,7 @@ $tipo    = 'part_families';
 $default = $user->get_tab_defaults($tab);
 
 
-
-$table_views = array(
+$table_views   = array(
     'overview'    => array('label' => _('Overview')),
     'performance' => array('label' => _('Performance')),
 
@@ -55,12 +55,28 @@ $parameters = array(
     'subject'    => 'part',
 );
 
-$table_buttons   = array();
+$table_buttons = array();
+
+
+$sql = "select `Category Key` from `Category Dimension`";
+
 $table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New category'),
-    'reference' => "inventory/category/new"
+    'icon'              => 'plus',
+    'title'             => _('New category'),
+    'id'                => 'new_record',
+    'inline_new_object' => array(
+        'field_id'    => 'Category_Code',
+        'field_label' => _('Add category').':',
+        'field_edit'  => 'string',
+        'object'      => 'Category',
+        'parent'      => 'Category',
+        'parent_key'  => $account->get('Account Part Family Category Key'),
+        'placeholder' => _("Category's code")
+    )
+
 );
+
+$smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign('table_buttons', $table_buttons);
 
