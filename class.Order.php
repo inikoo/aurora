@@ -46,6 +46,7 @@ class Order extends DB_Table {
 
         $this->deleted_otfs = array();
         $this->new_otfs     = array();
+        $this->metadata        = array();
 
 
         $this->table_name      = 'Order';

@@ -28,7 +28,10 @@ class Public_Order extends DBW_Table {
 
 
     var $amount_off_allowance_data = false;
-
+    /**
+     * @var array
+     */
+    public $metadata;
 
     function __construct($arg1 = false, $arg2 = false) {
 
@@ -36,6 +39,7 @@ class Public_Order extends DBW_Table {
         $this->db       = $db;
         $this->id       = false;
         $this->exchange = 1;
+        $this->metadata        = array();
 
 
         $this->deleted_otfs = array();
@@ -72,6 +76,10 @@ class Public_Order extends DBW_Table {
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id            = $this->data['Order Key'];
                 $this->currency_code = $this->data['Order Currency'];
+                $this->metadata = json_decode($this->data['Order Metadata'], true);
+
+
+
             }
         } else {
 
@@ -602,6 +610,11 @@ class Public_Order extends DBW_Table {
 
 
     }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
 
 
 }

@@ -86,6 +86,7 @@ $object_fields = array(
 
         )
     ),
+    //100017 53 17
     array(
         'label'      => _('Customer'),
         'show_title' => true,
