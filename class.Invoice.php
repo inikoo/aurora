@@ -1084,6 +1084,22 @@ class Invoice extends DB_Table {
 
                 return $number_onptf;
                 break;
+            case 'Recargo Equivalencia':
+                if($this->metadata('RE')=='Yes'){
+                    return _('Yes');
+                }else{
+                    return _('No');
+                }
+
+                break;
+            case 'Invoice Recargo Equivalencia':
+                if($this->metadata('RE')=='Yes'){
+                    return 'Yes';
+                }else{
+                    return 'No';
+                }
+
+                break;
 
         }
 
@@ -1725,14 +1741,35 @@ class Invoice extends DB_Table {
                 );
 
                 break;
-            case
-            ('Invoice Registration Number'):
+            case 'Invoice Registration Number':
             case('Invoice Customer Name'):
 
                 $this->update_field($field, $value, $options);
                 $order         = get_object('Order', $this->data['Invoice Order Key']);
                 $order->editor = $this->editor;
                 $order->update(array(preg_replace('/^Invoice /', 'Order ', $field) => $value), $options);
+
+
+                break;
+            case 'Invoice Recargo Equivalencia':
+
+                if (!($value == 'Yes' or $value == 'No')) {
+                    $this->error=true;
+                    $this->msg='invalid value';
+                    return;
+                }
+
+                $order         = get_object('Order', $this->data['Invoice Order Key']);
+                $order->editor = $this->editor;
+
+                $order_old_formatted_value = $order->get('Recargo Equivalencia');
+                $order->fast_update_json_field('Order Metadata', 'RE', $value);
+                $order->update_tax(false, $this->id);
+
+                if ($order_old_formatted_value != $order->get('Recargo Equivalencia')) {
+                    $this->add_changelog_record('Order Recargo Equivalencia', $order_old_formatted_value, $order->get('Recargo Equivalencia'), '', 'Order', $order->id);
+                }
+
 
 
                 break;

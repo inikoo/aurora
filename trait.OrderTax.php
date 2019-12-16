@@ -281,7 +281,8 @@ trait OrderTax {
         include_once 'utils/geography_functions.php';
 
         $store    = get_object('store', $this->data['Order Store Key']);
-        $customer = get_object('Customer', $this->data['Order Customer Key']);
+
+
 
 
         switch ($store->data['Store Tax Country Code']) {
@@ -375,7 +376,9 @@ trait OrderTax {
                                                                               )
                 )) {
 
-                    if ($customer->data['Customer Recargo Equivalencia'] == 'Yes') {
+
+
+                    if ($this->metadata('RE') == 'Yes') {
 
                         return array(
                             'code'                     => $tax_category['IVA+RE']['code'],
@@ -407,7 +410,7 @@ trait OrderTax {
                                                                              )
                 )) {
 
-                    if ($customer->data['Customer Recargo Equivalencia'] == 'Yes') {
+                    if ($this->metadata('RE') == 'Yes') {
 
                         return array(
                             'code'                     => $tax_category['IVA+RE']['code'],

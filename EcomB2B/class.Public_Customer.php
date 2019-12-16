@@ -1087,6 +1087,8 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
+        $order_data['Recargo Equivalencia']          = $this->get('Customer Recargo Equivalencia');
+
 
         include_once 'class.Public_Order.php';
         $order = new Public_Order('new', $order_data);

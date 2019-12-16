@@ -22,6 +22,10 @@ $options_valid_tax_number = array(
     'Auto'    => _('Check online'),
 );
 
+$options_yes_no = array(
+    'Yes' => _('Yes'),
+    'No'  => _('No')
+);
 
 $new = false;
 
@@ -138,6 +142,16 @@ $object_fields = array(
                 'value'           => $object->get('Invoice Tax Number Valid'),
                 'formatted_value' => $object->get('Tax Number Valid'),
                 'label'           => ucfirst($object->get_field_label('Invoice Tax Number Valid')),
+            ),
+            array(
+                'id'              => 'Invoice_Recargo_Equivalencia',
+                'edit'            => ($edit ? 'option' : ''),
+                'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
+                'options'         => $options_yes_no,
+                'value'           => $object->get('Invoice Recargo Equivalencia'),
+                'formatted_value' => $object->get('Recargo Equivalencia'),
+                'label'           => _('Recargo de equivalencia').' <i class="fa fa-registered recargo_equivalencia"></i>',
+                'type'            => ''
             ),
 
         ),

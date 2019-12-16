@@ -20,7 +20,7 @@ class PurchaseOrder extends DB_Table {
             if (preg_match(
                 '/new|create/i', $arg1
             )) {
-                $this->create_order($arg2);
+                $this->create($arg2);
 
                 return;
             }
@@ -39,7 +39,7 @@ class PurchaseOrder extends DB_Table {
     }
 
 
-    function create_order($data) {
+    function create($data) {
 
 
         global $account;

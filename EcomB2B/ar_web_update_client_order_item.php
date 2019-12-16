@@ -82,7 +82,7 @@ function update_client_order_item($_data, $website, $customer_key, $editor, $db)
             'editor' => $editor
         );
 
-        $order = $customer_client->create_order($order_data);
+        $order = $customer_client->create_customer_client_order($order_data);
         $order->fast_update(array('Order Website Key' => $website->id));
 
     }else{

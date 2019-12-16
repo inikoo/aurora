@@ -12,7 +12,6 @@
 
 include_once 'utils/static_data.php';
 
-
 $customer = get_object('Customer', $object->get('Order Customer Key'));
 $store    = get_object('Store', $object->get('Order Store Key'));
 
@@ -23,6 +22,10 @@ $options_valid_tax_number = array(
     'Auto'    => _('Check online'),
 );
 
+$options_yes_no = array(
+    'Yes' => _('Yes'),
+    'No'  => _('No')
+);
 
 $countries = get_countries($db);
 
@@ -122,6 +125,17 @@ $object_fields = array(
         'class'      => $invoicing_fields_class,
         'fields'     => array(
 
+
+            array(
+                'id'              => 'Order_Recargo_Equivalencia',
+                'edit'            => ($edit ? 'option' : ''),
+                'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
+                'options'         => $options_yes_no,
+                'value'           => $object->get('Order Recargo Equivalencia'),
+                'formatted_value' => $object->get('Recargo Equivalencia'),
+                'label'           => _('Recargo de equivalencia').' <i class="fa fa-registered recargo_equivalencia"></i>',
+                'type'            => ''
+            ),
 
             array(
                 'id'              => 'Order_Tax_Number',

@@ -166,13 +166,12 @@ class Customer extends Subject {
         unset($raw_data['editor']);
 
 
+        if ($raw_data['Customer Company Name'] == '' and $raw_data['Customer Main Contact Name'] == '') {
+            $this->error = true;
+            $this->msg   = _('Customer company name or contact name required');
 
-        if($raw_data['Customer Company Name']=='' and $raw_data['Customer Main Contact Name']==''){
-            $this->error=true;
-            $this->msg=_('Customer company name or contact name required');
             return false;
         }
-
 
 
         $raw_data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
@@ -448,7 +447,7 @@ class Customer extends Subject {
 
 
                     }
-                }else{
+                } else {
                     return '';
                 }
 
@@ -471,9 +470,9 @@ class Customer extends Subject {
 
             case('Recargo Equivalencia'):
 
-                if(($this->data['Customer '.$key])=='Yes'){
+                if (($this->data['Customer '.$key]) == 'Yes') {
                     return _('Yes');
-                }else{
+                } else {
                     return _('No');
                 }
 
@@ -485,7 +484,7 @@ class Customer extends Subject {
             case('Tax Number Validation Date'):
                 if ($this->data['Customer '.$key] == '') {
                     return '';
-                }else {
+                } else {
 
                     return '<span title="'.strftime(
                             "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer '.$key]." +00:00")
@@ -938,7 +937,7 @@ class Customer extends Subject {
 
     function create_order($options = '{}') {
 
-        global $account;
+        $account = get_object('Account', 1);
 
 
         $order_data = array(
@@ -1023,6 +1022,7 @@ class Customer extends Subject {
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
+        $order_data['Recargo Equivalencia'] = $this->get('Customer Recargo Equivalencia');
 
         $order = new Order('new', $order_data);
 
@@ -1079,6 +1079,7 @@ class Customer extends Subject {
 
         if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
             $this->index_elastic_search(get_ES_hosts());
+
             return;
         }
 
@@ -1182,14 +1183,19 @@ class Customer extends Subject {
                 $this->update_field($field, $value, $options);
 
 
-                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket') AND `Order Customer Key`=%d ", $this->id);
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $order         = get_object('Order', $row['Order Key']);
-                        $order->editor = $this->editor;
-                        $order->update(array('Order Registration Number' => $value), $options);
-                    }
+                $sql  = "SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket') AND `Order Customer Key`=? ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    $order         = get_object('Order', $row['Order Key']);
+                    $order->editor = $this->editor;
+                    $order->update(array('Order Registration Number' => $value), $options);
                 }
+
 
                 if ($value == '') {
                     $this->update_metadata['hide'] = array('Customer_Registration_Number_display');
@@ -1207,7 +1213,6 @@ class Customer extends Subject {
                     foreach ($result as $row) {
                         $order         = get_object('Order', $row['Order Key']);
                         $order->editor = $this->editor;
-
                         $order->update_tax_number($value);
                     }
                 }
@@ -1478,6 +1483,33 @@ class Customer extends Subject {
 
                 $store = get_object('Store', $this->data['Customer Store Key']);
                 $store->update_customers_email_marketing_data();
+
+                break;
+            case('Customer Recargo Equivalencia'):
+
+                $this->update_field($field, $value, $options);
+
+                $sql  = "SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket') AND `Order Customer Key`=? ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    $order         = get_object('Order', $row['Order Key']);
+                    $order->editor = $this->editor;
+                    $order->update(array('Order Recargo Equivalencia' => $value), $options);
+                }
+
+                $this->update_metadata = array(
+                    ($this->data['Customer Recargo Equivalencia'] == 'Yes' ? 'show' : 'hide') => array(
+                        'recargo_equivalencia_tag'
+
+                    )
+                );
+
+
 
                 break;
 
@@ -2625,7 +2657,6 @@ class Customer extends Subject {
     }
 
     public function update_portfolio() {
-
 
 
         $products = 0;
@@ -4054,8 +4085,6 @@ class Customer extends Subject {
 
         return false;
     }
-
-
 
 
 }

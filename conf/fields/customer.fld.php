@@ -145,7 +145,7 @@ if ($new) {
                     'options'         => $options_yes_no,
                     'value'           => 'No',
                     'formatted_value' => _('No'),
-                    'label'           => _('Recargo de equivalencia'),
+                    'label'           => _('Recargo de equivalencia').' <i class="fa fa-registered recargo_equivalencia"></i>',
                     'type'            => ''
                 ),
 
@@ -450,7 +450,7 @@ if ($new) {
                 'options'         => $options_yes_no,
                 'value'           => $object->get('Customer Recargo Equivalencia'),
                 'formatted_value' => $object->get('Recargo Equivalencia'),
-                'label'           => _('Recargo de equivalencia'),
+                'label'           => _('Recargo de equivalencia').' <i class="fa fa-registered recargo_equivalencia"></i>',
                 'type'            => ''
             ),
 

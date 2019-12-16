@@ -54,7 +54,7 @@ class Order extends DB_Table {
 
         $this->status_names = array(0 => 'new');
         if (preg_match('/new/i', $arg1)) {
-            $this->create_order($arg2);
+            $this->create($arg2);
 
             return;
         }
@@ -201,7 +201,18 @@ class Order extends DB_Table {
                 $this->new_value = html_entity_decode($this->new_value);
                 break;
 
+            case 'Order Recargo Equivalencia':
 
+                if (!($value == 'Yes' or $value == 'No')) {
+                    $this->error=true;
+                    $this->msg='invalid value';
+                    return;
+                }
+
+                $this->fast_update_json_field('Order Metadata', 'RE', $value);
+                $this->update_tax();
+                $this->order_totals_changed_post_operation();
+                break;
             default:
                 $base_data = $this->base_data();
 
@@ -285,7 +296,7 @@ class Order extends DB_Table {
                                 break;
                             default:
                                 $why_tax_formatted = '';
-                                $tax_description   = $this->metadata('tax_name').$why_tax_formatted.$this->data['Order Tax Code'];
+                                $tax_description   = $this->metadata('tax_name').$why_tax_formatted;
 
                         }
 
@@ -919,6 +930,23 @@ class Order extends DB_Table {
                             break;
                     }
                 }
+                break;
+
+            case 'Recargo Equivalencia':
+                if($this->metadata('RE')=='Yes'){
+                    return _('Yes');
+                }else{
+                    return _('No');
+                }
+
+                break;
+            case 'Order Recargo Equivalencia':
+                if($this->metadata('RE')=='Yes'){
+                    return 'Yes';
+                }else{
+                    return 'No';
+                }
+
                 break;
 
 
@@ -2142,7 +2170,7 @@ class Order extends DB_Table {
             'Invoice Customer Key' => $this->data['Order Customer Key'],
             'Invoice Tax Code'     => $this->data['Order Tax Code'],
 
-            'Invoice Metadata'                      => $this->data['Order Original Metadata'],
+            'Invoice Metadata'                      => '{}',
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
@@ -3032,7 +3060,7 @@ class Order extends DB_Table {
             'Invoice Customer Key' => $this->data['Order Customer Key'],
             'Invoice Tax Code'     => $this->data['Order Tax Code'],
 
-            'Invoice Metadata'                      => $this->data['Order Original Metadata'],
+            'Invoice Metadata'                      => '{}',
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],

@@ -45,7 +45,7 @@ class Public_Order extends DBW_Table {
 
 
         if (preg_match('/new/i', $arg1)) {
-            $this->create_order($arg2);
+            $this->create($arg2);
 
             return;
         }

@@ -16,7 +16,7 @@
         </div>
         <div class="data_container" >
             <div class="data_field" style="min-width: 270px;">
-                <i title="{t}Company name{/t}" class="fa fa-fw  fa-building"></i><span class="Company_Name_Formatted">{$customer->get('Company Name Formatted')}</span>
+                <i title="{t}Company name{/t}" class="fa fa-fw  fa-building"></i><span class="Company_Name_Formatted">{$customer->get('Company Name Formatted')}</span> <i class="{if $customer->get('Customer Recargo Equivalencia')!='Yes'}hide{/if} recargo_equivalencia_tag fa fa-registered recargo_equivalencia"></i>
             </div>
 
             <div class="data_field Customer_Tax_Number_display {if !$customer->get('Customer Tax Number')}hide{/if}" style="min-width: 270px;">

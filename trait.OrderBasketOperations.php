@@ -13,17 +13,28 @@
 trait OrderBasketOperations {
 
 
-    function create_order($data) {
+    function create($data) {
 
         $account=get_object('Account',1);
 
 
         $this->editor           = $data['editor'];
         $this->public_id_format = $data['public_id_format'];
-
-
         unset($data['editor']);
         unset($data['public_id_format']);
+
+
+
+
+        if(isset($data['Recargo Equivalencia']) ){
+            if( $data['Recargo Equivalencia']=='Yes'){
+                $recargo_equivalencia=$data['Recargo Equivalencia'];
+            }
+            unset($data['Recargo Equivalencia']);
+        }
+
+
+
 
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
@@ -83,12 +94,6 @@ trait OrderBasketOperations {
         }
 
 
-        // if (array_key_exists('Order Sales Representative Keys', $data)) {
-        //     $this->data['Order Sales Representative Keys'] = $data['Order Sales Representative Keys'];
-        // } else {
-        //     $this->data['Order Sales Representative Keys'] = array($this->editor['User Key']);
-        // }
-
 
         $this->data['Order Customer Message'] = '';
 
@@ -143,7 +148,6 @@ trait OrderBasketOperations {
 
         $this->db->exec($sql);
 
-
         $public_id = $this->db->lastInsertId();
 
         $this->data['Order Public ID'] = sprintf($this->public_id_format, $public_id);
@@ -162,7 +166,6 @@ trait OrderBasketOperations {
         }
 
 
-        //calculate the order total
         $this->data['Order Items Gross Amount']    = 0;
         $this->data['Order Items Discount Amount'] = 0;
 
@@ -188,28 +191,14 @@ trait OrderBasketOperations {
 
             $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_name);
             $this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);
-
-            /*
-
-            if (count($this->data['Order Sales Representative Keys']) == 0) {
-                $sql = sprintf(
-                    "INSERT INTO `Order Sales Representative Bridge` VALUES (%d,0,1)", $this->id
-                );
-                $this->db->exec($sql);
-            } else {
-                $share = 1 / count($this->data['Order Sales Representative Keys']);
-                foreach (
-                    $this->data['Order Sales Representative Keys'] as $sale_rep_key
-                ) {
-                    $sql = sprintf(
-                        "INSERT INTO `Order Sales Representative Bridge` VALUES (%d,%d,%f)", $this->id, $sale_rep_key, $share
-                    );
-                    $this->db->exec($sql);
-                }
-            }
-*/
-
             $this->get_data('id', $this->id);
+
+            if(isset($recargo_equivalencia)){
+                $this->fast_update_json_field('Order Metadata', 'RE','Yes');
+                $this->update_tax();
+            }
+
+
 
 
 
@@ -219,7 +208,6 @@ trait OrderBasketOperations {
                 $this->update_shipping();
 
             }
-
 
             $this->update_totals();
 
