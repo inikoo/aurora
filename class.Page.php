@@ -487,17 +487,14 @@ class Page extends DB_Table {
             case 'Webpage Browser Title':
             case 'Browser Title':
 
-                $website      = get_object('Website', $this->get('Webpage Website Key'));
-                $title_format = $website->get('Website Settings Browser Title Format');
-
-                $placeholders = array(
-                    '[Webpage]' => $this->data['Webpage Name'],
-                    '[Website]' => $website->get('Webpage Name')
-                );
-
-                return strtr($title_format, $placeholders);
+                return $this->get_browser_title();
 
 
+            case 'Webpage Children Browser Title Format':
+            case 'Children Browser Title Format':
+                return $this->properties('children_browser_title_format');
+
+                break;
             default:
                 if (isset($this->data[$key])) {
                     return $this->data[$key];
@@ -519,6 +516,100 @@ class Page extends DB_Table {
     }
 
 
+    function get_browser_title() {
+
+        $title_format = '';
+        switch ($this->data['Webpage Scope']) {
+            case 'Category Products':
+
+
+                $category = get_object('Category', $this->data['Webpage Scope Key']);
+
+
+                if ($category->get('Product Category Department Category Key')) {
+                    $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
+                    $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                    if ($parent_webpage->get('Webpage State') == 'Online') {
+                        $title_format = $parent_webpage->get('Webpage Children Browser Title Format');
+
+                    }
+
+                }
+
+                break;
+            case 'Product':
+                $product = get_object('Product', $this->data['Webpage Scope Key']);
+
+                if ($product->get('Product Family Category Key')) {
+                    $parent         = get_object('Category', $product->get('Product Family Category Key'));
+                    $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                    if ($parent_webpage->get('Webpage State') == 'Online') {
+
+                        $title_format       = $parent_webpage->get('Webpage Children Browser Title Format');
+                        $parent_webpage_key = $parent_webpage->id;
+
+                    }
+
+                }
+
+                if ($title_format == '' and $parent_webpage_key) {
+
+
+                    if ($parent->get('Product Category Department Category Key')) {
+                        $grandparent         = get_object('Category', $parent->get('Product Category Department Category Key'));
+                        $grandparent_webpage = get_object('Webpage', $grandparent->get('Product Category Webpage Key'));
+                        if ($grandparent_webpage->get('Webpage State') == 'Online') {
+                            $title_format = $grandparent_webpage->get('Webpage Children Browser Title Format');
+
+                        }
+
+                    }
+
+                }
+
+
+                break;
+        }
+
+
+        if ($title_format == '') {
+            $website      = get_object('Website', $this->get('Webpage Website Key'));
+            $title_format = $website->get('Website Settings Browser Title Format');
+
+        }
+
+        if ($title_format == '') {
+            return $this->data['Webpage Name'];
+        } else {
+
+            if (!isset($website)) {
+                $website = get_object('Website', $this->get('Webpage Website Key'));
+
+            }
+
+            $placeholders = array(
+                '[Webpage]' => $this->data['Webpage Name'],
+                '[webpage]' => $this->data['Webpage Name'],
+                '[Child]'   => $this->data['Webpage Name'],
+                '[child]'   => $this->data['Webpage Name'],
+                '[]'        => $this->data['Webpage Name'],
+                '[W]'       => $this->data['Webpage Name'],
+                '[w]'       => $this->data['Webpage Name'],
+                '[Website]' => $website->get('Webpage Name'),
+                '[website]' => $website->get('Webpage Name')
+            );
+
+            return strtr($title_format, $placeholders);
+        }
+
+
+    }
+
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
     function refresh_cache() {
 
 
@@ -528,7 +619,7 @@ class Page extends DB_Table {
         $smarty_web = new Smarty();
 
 
-        if(!$this->fork) {
+        if (!$this->fork) {
             $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
@@ -566,7 +657,6 @@ class Page extends DB_Table {
 
     }
 
-
     function unpublish() {
 
         $this->update_state('Offline');
@@ -575,7 +665,7 @@ class Page extends DB_Table {
         $smarty_web = new Smarty();
 
 
-        if(!$this->fork) {
+        if (!$this->fork) {
             $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
@@ -741,7 +831,7 @@ class Page extends DB_Table {
 
         $smarty_web = new Smarty();
 
-        if(!$this->fork) {
+        if (!$this->fork) {
             $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
@@ -968,8 +1058,23 @@ class Page extends DB_Table {
                 $this->fast_update_json_field('Webpage Properties', preg_replace('/\s/', '_', $field), $value);
 
                 break;
+            case 'Children Browser Title Format':
+                $this->fast_update_json_field('Webpage Properties', 'children_browser_title_format', $value);
 
 
+                $account = get_object('Account', 1);
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'        => 'refresh_cache_webpage_category_children',
+                    'webpage_key' => $this->id,
+                ), $account->get('Account Code'), $this->db
+                );
+
+
+
+
+                break;
             case('Webpage Code'):
 
                 $this->update_field($field, $value, $options);
@@ -1162,6 +1267,62 @@ class Page extends DB_Table {
 
         }
 
+
+    }
+
+    function get_category_children_webpage_keys() {
+
+        $webpage_keys = array();
+
+        switch ($this->get('Webpage Scope')) {
+            case 'Category Products':
+
+
+                $sql  = "select `Product Webpage Key` from `Category Bridge` left join `Product Dimension` on (`Subject Key`=`Product ID`) where `Category Key`=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->data['Webpage Scope Key']
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    if ($row['Product Webpage Key'] > 0) {
+                        $webpage_keys[$row['Product Webpage Key']] = $row['Product Webpage Key'];
+                    }
+
+                }
+                break;
+
+            case 'Category Categories':
+
+
+                $sql  = "select `Product Category Webpage Key`,C.`Product Category Key` from `Category Bridge` B left join `Product Category Dimension` C on (`Subject Key`=C.`Product Category Key`) where B.`Category Key`=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->data['Webpage Scope Key']
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    if ($row['Product Category Webpage Key'] > 0) {
+                        $webpage_keys[$row['Product Category Webpage Key']] = $row['Product Category Webpage Key'];
+                    }
+
+                    $_webpage = get_object('Webpage', $row['Product Category Webpage Key']);
+
+                    if ($_webpage->get('Webpage Scope') == 'Category Products') {
+                        $webpage_keys = array_merge($webpage_keys, $_webpage->get_category_children_webpage_keys());
+
+                    }
+
+
+                }
+                break;
+
+
+        }
+
+        return $webpage_keys;
 
     }
 
@@ -1564,19 +1725,11 @@ class Page extends DB_Table {
                                     if ($row3 = $result3->fetch()) {
                                         $prev_key = $row3['Website Webpage Scope Scope Key'];
                                     }
-                                } else {
-                                    print_r($error_info = $this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
                                 }
 
                             }
 
 
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
 
 
@@ -1599,25 +1752,13 @@ class Page extends DB_Table {
                                     if ($row3 = $result3->fetch()) {
                                         $next_key = $row3['Website Webpage Scope Scope Key'];
                                     }
-                                } else {
-                                    print_r($error_info = $this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
                                 }
 
                             }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 if ($prev_key) {
@@ -1686,9 +1827,8 @@ class Page extends DB_Table {
                 if ($product->get('Product Family Category Key')) {
                     $parent         = get_object('Category', $product->get('Product Family Category Key'));
                     $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
-                    if ($parent_webpage->get('Webpage State') == 'Offline') {
-                        $parent_webpage_key = 0;
-                    } else {
+                    if ($parent_webpage->get('Webpage State') == 'Online') {
+
                         $parent_webpage_key = $parent_webpage->id;
                     }
 
@@ -1941,7 +2081,7 @@ class Page extends DB_Table {
                         $next_key = $row2['Page Key'];
 
                     } else {
-                        $next_key=0;
+                        $next_key = 0;
                     }
                 }
 
@@ -1980,7 +2120,7 @@ class Page extends DB_Table {
                         $prev_key = $row2['Page Key'];
 
                     } else {
-                        $prev_key=0;
+                        $prev_key = 0;
                     }
                 }
 
@@ -1997,7 +2137,7 @@ class Page extends DB_Table {
                         'icon'        => 'folder-open',
                         'key'         => $prev_category_webpage->id
                     );
-                    $navigation['prev'] = $prev;
+                    $navigation['prev']    = $prev;
                 }
 
 
@@ -2013,11 +2153,8 @@ class Page extends DB_Table {
                         'icon'        => 'folder-open',
                         'key'         => $next_category_webpage->id
                     );
-                    $navigation['next'] = $next;
+                    $navigation['next']    = $next;
                 }
-
-
-
 
 
                 break;
@@ -2464,16 +2601,12 @@ class Page extends DB_Table {
                 );
 
 
-
-
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
-                        $category=get_object('Category',$row['Category Key']);
+                        $category = get_object('Category', $row['Category Key']);
 
                         $image_key = $category->data['Category Main Image Key'];
-
-
 
 
                         if ($block['auto'] == true) {
@@ -2484,21 +2617,20 @@ class Page extends DB_Table {
                                 $image_src = '/art/nopic.png';
 
                             }
-                        }else{
+                        } else {
 
 
-
-                            if($content_data['blocks'][$block_key]['items'][$item_key]['image_src']=='/art/nopic.png' ){
+                            if ($content_data['blocks'][$block_key]['items'][$item_key]['image_src'] == '/art/nopic.png') {
                                 $image_src = '/wi.php?id='.$image_key;
-                            }else{
-                                $image_src=$content_data['blocks'][$block_key]['items'][$item_key]['image_src'];
+                            } else {
+                                $image_src = $content_data['blocks'][$block_key]['items'][$item_key]['image_src'];
                             }
 
                         }
 
 
                         if ($image_src != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
-                            $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = $image_src;
+                            $content_data['blocks'][$block_key]['items'][$item_key]['image_src']            = $image_src;
                             $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
                             $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
                         }
@@ -2534,10 +2666,10 @@ class Page extends DB_Table {
 
                             if ($block['auto'] == true) {
                                 $content_data['blocks'][$block_key]['items'][$item_key]['header_text'] = $product->get('Name');
-                            }else{
+                            } else {
 
-                                if($content_data['blocks'][$block_key]['items'][$item_key]['image_src']!='/art/nopic.png' ){
-                                    $image_src =$content_data['blocks'][$block_key]['items'][$item_key]['image_src'];
+                                if ($content_data['blocks'][$block_key]['items'][$item_key]['image_src'] != '/art/nopic.png') {
+                                    $image_src = $content_data['blocks'][$block_key]['items'][$item_key]['image_src'];
                                 }
 
                             }
@@ -2549,7 +2681,6 @@ class Page extends DB_Table {
                                 $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
                                 $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
                             }
-
 
 
                             $content_data['blocks'][$block_key]['items'][$item_key]['link']         = $product->webpage->get('URL');
@@ -3371,7 +3502,6 @@ class Page extends DB_Table {
 
     }
 
-
     function get_field_label($field) {
 
 
@@ -3416,7 +3546,6 @@ class Page extends DB_Table {
 
         $this->reindex_items();
         $this->update_navigation();
-
 
 
     }
@@ -3618,7 +3747,7 @@ class Page extends DB_Table {
 
 
                     if ($old_screenshot_image_key != $image->id) {
-                        $sql  = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+                        $sql  = "select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`='Webpage' and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ";
                         $stmt = $this->db->prepare($sql);
                         $stmt->execute(
                             array(
@@ -3646,11 +3775,7 @@ class Page extends DB_Table {
 
     }
 
-    function properties($key) {
-        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
-    }
-
-    function get_upstream_webpage_keys(){
+    function get_upstream_webpage_keys() {
         $webpage_keys = array();
 
         $sql = sprintf(
@@ -3659,15 +3784,16 @@ class Page extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                if($row['Website Webpage Scope Webpage Key']){
+                if ($row['Website Webpage Scope Webpage Key']) {
                     $webpage_keys[$row['Website Webpage Scope Webpage Key']] = $row['Website Webpage Scope Webpage Key'];
                 }
             }
         }
+
         return $webpage_keys;
     }
 
-    function get_downstream_webpage_keys(){
+    function get_downstream_webpage_keys() {
         $webpage_keys = array();
 
         $sql = sprintf(
@@ -3676,11 +3802,12 @@ class Page extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                if($row['Website Webpage Scope Webpage Key']){
+                if ($row['Website Webpage Scope Webpage Key']) {
                     $webpage_keys[$row['Website Webpage Scope Scope Webpage Key']] = $row['Website Webpage Scope Scope Webpage Key'];
                 }
             }
         }
+
         return $webpage_keys;
     }
 

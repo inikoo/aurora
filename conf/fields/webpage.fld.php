@@ -104,12 +104,23 @@ if (in_array(
     $object_fields[] =
 
         array(
-            'label' => _('Webpage state'),
+            'label' => '',
             'class' => 'operations',
 
             'show_title' => true,
             'fields'     => array(
 
+
+                array(
+                    'id'        => 'reindex_webpage',
+                    'render'    => ($website->get('Website Status') != 'Active' ? false : true),
+
+                    'class'     => 'operation',
+                    'value'     => '',
+                    'label'     => '<span data-data=\'{ "object": "old_page", "key":"'.$object->id.'"}\' style="margin:10px 0px;padding:10px;border:1px solid #ccc" onClick="reindex_object(this)" class="delete_object button">'._("Reindex").' <i class="fa fa-sync-alt padding_left_5  "></i></span>',
+                    'reference' => '',
+                    'type'      => 'operation'
+                ),
 
                 array(
                     'id'        => 'launch_webpage',
@@ -122,16 +133,7 @@ if (in_array(
                     'type'      => 'operation'
                 ),
 
-                array(
-                    'id'        => 'unpublish_webpage',
-                    'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Online' ? true : false),
-                    'class'     => 'operation',
-                    'value'     => '',
-                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page")
-                        .' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
-                    'reference' => '',
-                    'type'      => 'operation'
-                ),
+
                 array(
                     'id'        => 'republish_webpage',
                     'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Offline' ? true : false),
@@ -180,7 +182,7 @@ if (in_array(
 }
 
 $object_fields[] = array(
-    'label'      => _('Ids'),
+    'label'      => _('Id'),
     'show_title' => true,
     'fields'     => array(
 
@@ -191,24 +193,80 @@ $object_fields[] = array(
             'edit'              => ($edit ? 'string' : ''),
             'value'             => htmlspecialchars($object->get('Webpage Code')),
             'formatted_value'   => $object->get('Code'),
-            'label'             => _('Code').' <span class="small">(<i class="fa fa-exclamation-triangle warning padding_right_5  '.($new ? 'hide' : '').' " title="'._('URL will change').'"></i>URL)</span>',
+            'label'             => _('Code').' <span class="small">( <i class="fa fa-exclamation-triangle warning padding_right_5  '.($new ? 'hide' : '').' " title="'._('URL will change').'"></i>URL )</span>',
             'required'          => true,
             'type'              => 'value',
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
 
         ),
+
+
+
+
+
+    )
+);
+
+
+
+if($object->get('Webpage Scope')=='Category Categories'){
+    $children_format_label=_("Department's family/products format");
+
+}elseif($object->get('Webpage Scope')=='Category Products'){
+    $children_format_label=_("Family products format");
+
+}else{
+    $children_format_label=_('Children format');
+}
+
+
+
+$object_fields[] = array(
+    'label'      => _('Browser title').' <span style="font-weight: lighter" class="small padding_left_10 Webpage_Browser_Title">'.$object->get_browser_title().'</span>',
+    'show_title' => true,
+    'fields'     => array(
+
+
+
+
         array(
             'id'   => 'Webpage_Name',
             'edit' => ($edit ? 'string' : ''),
 
             'value'           => htmlspecialchars($object->get('Webpage Name')),
             'formatted_value' => $object->get('Webpage Name'),
-            'label'           => _('Name').' <span class="small">(Links/Browser title)</span>',
+            'label'           => _('Name').' <span class="small">('._('Links/Browser title').')</span>',
             'required'        => true,
             'type'            => 'value',
 
 
         ),
+
+        array(
+            'id'   => 'Children_Browser_Title_Format',
+            'edit' => ($edit ? 'string' : ''),
+            'render'            => (($object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products')?true:false),
+
+            'value'           => htmlspecialchars($object->get('Webpage Children Browser Title Format')),
+            'formatted_value' => $object->get('Children Browser Title Format'),
+            'label'           => '<i class="fa fa-level-down padding_right_5	"></i>'.$children_format_label,
+            'required'        => true,
+            'type'            => 'value',
+
+
+        ),
+
+
+    )
+);
+
+
+$object_fields[] = array(
+    'label'      => _('Description'),
+
+    'show_title' => true,
+    'fields'     => array(
+
 
 
 
@@ -439,11 +497,15 @@ $operations = array(
     'fields'     => array(
 
 
+
+
         array(
-            'id'        => 'reindex_webpage',
+            'id'        => 'unpublish_webpage',
+            'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Online' ? true : false),
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<span data-data=\'{ "object": "old_page", "key":"'.$object->id.'"}\' style="margin-left:41px" onClick="reindex_object(this)" class="delete_object button">'._("Reindex").' <i class="fa fa-indent  "></i></span>',
+            'label'     => ' <span style="margin-left:40px" webpage_key="'.$object->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page")
+                .' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),

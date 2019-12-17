@@ -2970,20 +2970,24 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-    function get_children_keys() {
-        $sql = sprintf(
-            "SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d ", $this->id
-        );
-
+    /**
+     * @return array
+     */
+    public function get_children_keys() {
 
         $children_keys = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $children_keys[$row['Category Key']] = $row['Category Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+
+        $sql = "SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $children_keys[$row['Category Key']] = $row['Category Key'];
+
         }
 
 
@@ -3310,10 +3314,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     function update_webpages($change_type) {
 
 
-
         if ($this->data['Category Scope'] == 'Product') {
 
-
+            /**
+             * @var $webpage \Page
+             */
             $webpage = get_object('Webpage', $this->get('Product Category Webpage Key'));
             $webpage->reindex();
 

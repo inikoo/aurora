@@ -3225,7 +3225,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer->update_portfolio();
             break;
         case 'unsubscribe_prospect':
-            print_r($data);
             /**
              * @var $prospect \Prospect
              */
@@ -3246,9 +3245,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $prospect->editor = $editor;
             $prospect->opt_out($data['date']);
-
-
-
 
 
             break;
@@ -3273,11 +3269,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                             )
                         );
                         while ($row = $stmt->fetch()) {
-                            $deal = get_object('Deal', $row['Deal Key']);
-                            $deal->editor=$editor;
+                            $deal         = get_object('Deal', $row['Deal Key']);
+                            $deal->editor = $editor;
                             $deal->update(
                                 array(
-                                    'Deal Name Label'=>$deal_campaign->get('Deal Campaign Name')
+                                    'Deal Name Label' => $deal_campaign->get('Deal Campaign Name')
                                 )
                             );
                         }
@@ -3286,9 +3282,20 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     }
                     break;
             }
-
-
             break;
+        case 'refresh_cache_webpage_category_children':
+            /**
+             * @var $webpage \Page
+             */
+
+            $webpage = get_object('Webpage', $data['webpage_key']);
+            foreach ($webpage->get_category_children_webpage_keys() as $child_webpage_key) {
+                $_webpage = get_object('Webpage', $child_webpage_key);
+                $_webpage->refresh_cache();
+            }
+            break;
+
+
         default:
             break;
 
