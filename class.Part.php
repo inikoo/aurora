@@ -28,6 +28,7 @@ class Part extends Asset {
     function __construct($arg1, $arg2 = false, $arg3 = false, $_db = false) {
 
 
+
         if (!$_db) {
             global $db;
             $this->db = $db;
