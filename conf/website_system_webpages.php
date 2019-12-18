@@ -254,6 +254,38 @@ function website_system_webpages_config($website_type) {
                                 'redirect'   => 'welcome',
                                 'send_email' => 1,
 
+                            ),
+                            'fields'=>array(
+                                array(
+                                    'field'=>'telephone',
+                                    'render'=>false,
+                                    'required'=>false
+                                ),
+                                array(
+                                    'field'=>'mobile',
+                                    'render'=>true,
+                                    'required'=>false
+                                ),
+                                 array(
+                                     'field'=>'name',
+                                     'render'=>true,
+                                     'required'=>false
+                                 ),
+                                array(
+                                    'field'=>'company',
+                                    'render'=>true,
+                                    'required'=>false
+                                ),
+                                array(
+                                    'field'=>'tex_number',
+                                    'render'=>true,
+                                    'required'=>false
+                                ),
+                                array(
+                                    'field'=>'registration_number',
+                                    'render'=>true,
+                                    'required'=>false
+                                )
                             )
 
 
