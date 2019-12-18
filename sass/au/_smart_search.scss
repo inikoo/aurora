@@ -1,0 +1,49 @@
+/*
+
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created:  18 December 2019  23:56::28  +0800, Kuala Lumpur, Malaysia
+
+ Copyright (c) 2019, Inikoo
+
+ Version 3.0
+*/
+
+.smart_search_input{
+
+  background-color:#fff;
+
+  ::placeholder {
+    color:rgb(149, 133, 163);
+    opacity: .7;
+  }
+
+
+
+  label{
+    padding-left: 5px;
+    padding-right: 5px;
+    opacity: .4;
+  }
+
+  form{
+    flex-grow:1
+  }
+  input{
+    border:none;
+    width: 100%
+  }
+
+  button{
+    border:none;
+    color:rgb(149, 133, 163);
+    opacity: .8;
+    padding: 0px;
+  }
+
+ .options{
+   padding-right: 5px;
+   opacity: .8;
+ }
+
+}

@@ -307,7 +307,7 @@ $modules = array(
         'parent_type' => 'key',
         'sections'    => array(
             'dashboard' => array(
-                'type'      => 'navigation',
+                'type'      => 'left_button',
                 'label'     => _('Dashboard'),
                 'title'     => _("Customer's dashboard"),
                 'icon'      => 'tachometer',
@@ -2662,8 +2662,10 @@ $modules = array(
 
             ),
             'analytics'   => array(
-                'type'      => 'navigation',
+                'type'      => 'left_button',
                 'label'     => _('Analytics'),
+                'title'     => _('Analytics'),
+
                 'icon'      => 'analytics',
                 'reference' => 'website/%d/analytics',
 
@@ -2724,8 +2726,9 @@ $modules = array(
 
 
             'workshop' => array(
-                'type'      => 'navigation',
+                'type'      => 'right_button',
                 'label'     => _('Workshop'),
+                'title'     => _('Workshop'),
                 'icon'      => 'drafting-compass',
                 'reference' => 'website/%d/workshop',
 
@@ -2752,8 +2755,9 @@ $modules = array(
 
 
             'settings' => array(
-                'type'      => 'navigation',
-                'label'     => _('Settings'),
+                'type'      => 'right_button',
+
+                'title'     => _('Settings'),
                 'icon'      => 'sliders-h',
                 'reference' => 'website/%d/settings',
 
@@ -2962,7 +2966,7 @@ $modules = array(
 			),
 */
             'store' => array(
-                'type'      => 'navigation',
+                'type'      => 'left_button',
                 'label'     => _('Dashboard'),
                 'title'     => _('Dashboard'),
                 'icon'      => 'tachometer-alt',
@@ -3101,9 +3105,9 @@ $modules = array(
 
 
             'settings' => array(
-                'type'  => 'navigation',
+                'type'  => 'right_button',
                 'label' => _('Settings'),
-
+                'title' => _('Settings'),
                 'icon'           => 'sliders-h',
                 'reference'      => 'store/%d/settings',
                 'subtabs_parent' => array(
@@ -4515,8 +4519,8 @@ $modules = array(
 
             'dashboard' => array(
 
-                'type'      => 'navigation',
-                'label'     => _('Dashboard'),
+                'type'      => 'left_button',
+                'title'     => _('Dashboard'),
                 'icon'      => 'tachometer-alt',
                 'reference' => 'suppliers/dashboard',
                 'tabs'      => array('suppliers.dashboard' => array())
@@ -4572,7 +4576,7 @@ $modules = array(
 
 
                 ),
-                'label'          => _("Supplier's products"),
+                'label'          => _("Products"),
                 'title'          => _("Supplier's products"),
                 'icon'           => 'hand-receiving',
                 'reference'      => 'suppliers/supplier_parts',
@@ -4624,13 +4628,22 @@ $modules = array(
 
             'orders'     => array(
                 'type'      => 'navigation',
-                'label'     => _('Purchase orders'),
+                'label'     => _('Purchase orders / Deliveries'),
                 'icon'      => 'clipboard',
                 'reference' => 'suppliers/orders',
                 'tabs'      => array(
-                    'suppliers.orders' => array()
-                )
+                    'suppliers.orders' => array(
+                        'label'=>_('Purchase Orders')
+                    ),
+                    'suppliers.deliveries' => array(
+                        'label'=>_('Deliveries')
+                    )
+                    )
+
             ),
+
+
+            /*
             'deliveries' => array(
                 'type'      => 'navigation',
                 'label'     => _('Deliveries'),
@@ -4640,11 +4653,11 @@ $modules = array(
                     'suppliers.deliveries' => array()
                 )
             ),
-
+*/
 
             'settings' => array(
 
-                'type'      => 'navigation',
+                'type'      => 'right_button',
                 'label'     => '',
                 'title'     => _('Settings'),
                 'icon'      => 'sliders-h',
@@ -5476,7 +5489,7 @@ $modules = array(
         'sections' => array(
 
             'dashboard' => array(
-                'type'      => 'navigation',
+                'type'      => 'left_button',
                 'title'     => _('Inventory dashboard'),
                 'label'     => _('Dashboard'),
                 'icon'      => 'tachometer',
@@ -6049,8 +6062,8 @@ $modules = array(
 
 
             'dashboard'      => array(
-                'type'      => 'navigation',
-                'label'     => _('Dashboard'),
+                'type'      => 'left_button',
+                'title'     => _('Dashboard'),
                 'icon'      => 'tachometer',
                 'reference' => 'warehouse/%d/dashboard',
                 'tabs'      => array(
@@ -8724,21 +8737,20 @@ $modules = array(
 function get_sections($module, $parent_key = false) {
     global $modules;
 
-    $sections = array();
+    $sections = array(
+        'left_button'  => array(),
+        'navigation'   => array(),
+        'right_button' => array(),
+    );
 
 
     foreach ($modules[$module]['sections'] as $key => $value) {
 
-        if ($value['type'] == 'navigation') {
-
-
-
-
+        if ($value['type'] == 'navigation' or $value['type'] == 'left_button'  or $value['type'] == 'right_button') {
             if ($parent_key) {
                 $value['reference'] = sprintf($value['reference'], $parent_key);
             }
-
-            $sections[$key] = $value;
+            $sections[$value['type']][$key] = $value;
         }
     }
 

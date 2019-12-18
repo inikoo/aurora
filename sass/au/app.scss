@@ -43,10 +43,13 @@ $height_calendar_th: 20px;
 
 $left_menu_width: 200px;
 $grid_section_width: 1460px;
+$main_app_width: 1260px;
+
+
 
 $font_title: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
 $font_text: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
-$height_address_bar: 28px;
+$height_address_bar: 26px;
 $height_header: 30px;
 @mixin placeholder {
   &::-webkit-input-placeholder {
@@ -236,7 +239,7 @@ a {
 
 input {
   position: relative;
-  bottom: 2px;
+  //bottom: 2px;
 
   padding: 4px 6px;
   font-weight: normal;
@@ -436,7 +439,7 @@ input {
   float: left;
 
 
-  width: 1260px;
+  width: $main_app_width;
   border-right: 1px solid #ccc;
   #navigation {
     margin-top: $height_short_row;
@@ -445,7 +448,7 @@ input {
       font-size: 14px;
       background: #f7f7f7;
       color: #333;
-      padding-left: 6px;
+
       padding-right: 0;
       text-align: left;
       height: $height_address_bar;
@@ -1167,6 +1170,7 @@ right connector from last child*/
 @import 'datepicker';
 @import 'nice-select';
 @import 'offers.scss';
+@import 'smart_search.scss';
 
 
 .adr {
