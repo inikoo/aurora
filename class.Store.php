@@ -4678,7 +4678,7 @@ class Store extends DB_Table {
 
 
     function update_sitting_time_in_warehouse() {
-        $sql = "SELECT count(*) as num  ,TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock')  and `Delivery Note Store Key`=? ";
+        $sql = "SELECT count(*) as num  ,avg(TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) )as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock')  and `Delivery Note Store Key`=? ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -4702,7 +4702,7 @@ class Store extends DB_Table {
 
 
         $sql =
-            "select  count(*) as num  ,TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`) as diff from   `Delivery Note Dimension` left join `Order Dimension` on (`Delivery Note Order Key`=`Order Key`) where `Delivery Note State`='Dispatched' and `Delivery Note Type`='Order' and `Delivery Note Date Dispatched`>=? and `Delivery Note Store Key`=?  ";
+            "select  count(*) as num  ,avg(TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`) )as diff from   `Delivery Note Dimension` left join `Order Dimension` on (`Delivery Note Order Key`=`Order Key`) where `Delivery Note State`='Dispatched' and `Delivery Note Type`='Order' and `Delivery Note Date Dispatched`>=? and `Delivery Note Store Key`=?  ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(

@@ -883,7 +883,7 @@ class Account extends DB_Table {
     }
 
     function update_sitting_time_in_warehouse() {
-        $sql = "SELECT count(*) as num  ,TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock') ";
+        $sql = "SELECT count(*) as num  ,avg(TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) )as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock') ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -903,7 +903,7 @@ class Account extends DB_Table {
 
 
         $sql =
-            "select  count(*) as num  ,TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`) as diff from   `Delivery Note Dimension` left join `Order Dimension` on (`Delivery Note Order Key`=`Order Key`) where `Delivery Note State`='Dispatched' and `Delivery Note Type`='Order' and `Delivery Note Date Dispatched`>=?  ";
+            "select  count(*) as num  ,avg(TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`)) as diff from   `Delivery Note Dimension` left join `Order Dimension` on (`Delivery Note Order Key`=`Order Key`) where `Delivery Note State`='Dispatched' and `Delivery Note Type`='Order' and `Delivery Note Date Dispatched`>=?  ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -915,6 +915,7 @@ class Account extends DB_Table {
             $this->fast_update_json_field('Account Properties', 'dispatch_time_samples_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), $row['num'], 'Account Data');
             $this->fast_update_json_field('Account Properties', 'dispatch_time_avg_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), $row['diff'], 'Account Data');
         }
+
 
 
     }
