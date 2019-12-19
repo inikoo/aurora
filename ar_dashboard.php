@@ -24,9 +24,6 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
-
-
-
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
@@ -82,7 +79,7 @@ switch ($tipo) {
     case 'dispatching_times':
         $data = prepare_values(
             $_REQUEST, array(
-                         'parent'   => array('type' => 'string'),
+                         'parent' => array('type' => 'string'),
 
 
                      )
@@ -111,7 +108,6 @@ function pending_orders($data, $db, $user, $account) {
     );
 
 
-
     if ($data['parent'] != '') {
         include_once 'class.Store.php';
 
@@ -125,7 +121,6 @@ function pending_orders($data, $db, $user, $account) {
         $object->load_acc_data();
         $title = $object->get('Code');
     }
-
 
 
     $pending_orders_data = array(
@@ -147,8 +142,8 @@ function pending_orders($data, $db, $user, $account) {
             'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Process Paid Amount') : $object->get('Orders In Process Paid Amount'))
         ),
 
-        'Orders_In_Warehouse_No_Alerts_Number' => array('value' => $object->get('Orders In Warehouse No Alerts Number')),
-        'Orders_In_Warehouse_No_Alerts_Amount' => array(
+        'Orders_In_Warehouse_No_Alerts_Number'   => array('value' => $object->get('Orders In Warehouse No Alerts Number')),
+        'Orders_In_Warehouse_No_Alerts_Amount'   => array(
             'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse No Alerts Amount Minify') : $object->get('Orders In Warehouse No Alerts Amount Minify')),
             'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Warehouse No Alerts Amount') : $object->get('Orders In Warehouse No Alerts Amount'))
 
@@ -180,8 +175,7 @@ function pending_orders($data, $db, $user, $account) {
     );
 
 
-
-  //  print_r($pending_orders_data);
+    //  print_r($pending_orders_data);
 
     $response = array(
         'state' => 200,
@@ -192,7 +186,6 @@ function pending_orders($data, $db, $user, $account) {
     echo json_encode($response);
 
 }
-
 
 
 function customers($data, $db, $user, $account) {
@@ -221,18 +214,17 @@ function customers($data, $db, $user, $account) {
 
 
     $customers_data = array(
-        'Contacts' => array('value' => $object->get('Contacts')),
-        'New_Contacts' => array('value' => $object->get('New Contacts')),
-        'Contacts_With_Orders' => array('value' => $object->get('Contacts With Orders')),
-        'Active_Contacts' => array('value' => $object->get('Active Contacts')),
-        'Losing_Contacts' => array('value' => $object->get('Losing Contacts')),
-        'Lost_Contacts' => array('value' => $object->get('Lost Contacts')),
-        'Percentage_Active_Contacts' => array('value' => $object->get('Percentage Active Contacts')),
-        'Percentage_Contacts_With_Order' => array('value' => $object->get('Percentage Contacts With Orders')),
+        'Contacts'                            => array('value' => $object->get('Contacts')),
+        'New_Contacts'                        => array('value' => $object->get('New Contacts')),
+        'Contacts_With_Orders'                => array('value' => $object->get('Contacts With Orders')),
+        'Active_Contacts'                     => array('value' => $object->get('Active Contacts')),
+        'Losing_Contacts'                     => array('value' => $object->get('Losing Contacts')),
+        'Lost_Contacts'                       => array('value' => $object->get('Lost Contacts')),
+        'Percentage_Active_Contacts'          => array('value' => $object->get('Percentage Active Contacts')),
+        'Percentage_Contacts_With_Order'      => array('value' => $object->get('Percentage Contacts With Orders')),
         'Percentage_New_Contacts_With_Orders' => array('value' => $object->get('Percentage New Contacts With Orders')),
 
         'New_Contacts_With_Orders' => array('value' => $object->get('New Contacts With Orders')),
-
 
 
     );
@@ -247,7 +239,6 @@ function customers($data, $db, $user, $account) {
     echo json_encode($response);
 
 }
-
 
 
 function sales_overview($_data, $db, $user, $account) {
@@ -333,8 +324,7 @@ function sales_overview($_data, $db, $user, $account) {
             "select concat('cat',C.`Category Key`) record_key, `Category Code`, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where  `Category Branch Type`='Head'  order by C.`Category Store Key` ,`Category Function Order`";
 
 
-    }
-    else {
+    } else {
         $request = 'invoices';
         $fields  = "
 			`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
@@ -362,7 +352,7 @@ function sales_overview($_data, $db, $user, $account) {
     }
 
 
-//print $sql;
+    //print $sql;
 
 
     $sum_invoices = 0;
@@ -397,35 +387,34 @@ function sales_overview($_data, $db, $user, $account) {
         foreach ($result as $row) {
 
 
-            $sum_invoices += $row['invoices'];
-            $sum_refunds += $row['refunds'];
-            $sum_replacements += $row['replacements'];
+            $sum_invoices       += $row['invoices'];
+            $sum_refunds        += $row['refunds'];
+            $sum_replacements   += $row['replacements'];
             $sum_delivery_notes += $row['delivery_notes'];
-            $sum_dc_sales += $row['dc_sales'];
+            $sum_dc_sales       += $row['dc_sales'];
 
 
+            // print " $sum_dc_sales ";
 
-           // print " $sum_dc_sales ";
-
-            $sum_refunds_1yb += $row['refunds_1yb'];
-            $sum_replacements_1yb += $row['replacements_1yb'];
+            $sum_refunds_1yb        += $row['refunds_1yb'];
+            $sum_replacements_1yb   += $row['replacements_1yb'];
             $sum_delivery_notes_1yb += $row['delivery_notes_1yb'];
-            $sum_invoices_1yb += $row['invoices_1yb'];
-            $sum_dc_sales_1yb += $row['dc_sales_1yb'];
+            $sum_invoices_1yb       += $row['invoices_1yb'];
+            $sum_dc_sales_1yb       += $row['dc_sales_1yb'];
 
 
-            $sum_in_basket += $row['Store Orders In Basket Number'];
-            $sum_in_basket_amount += $row['Store Orders In Basket Amount'];
-            $sum_in_process_paid += $row['Store Orders In Process Paid Number'];
-            $sum_in_process_amount_paid += $row['Store Orders In Process Paid Amount'];
-            $sum_in_process_not_paid += $row['Store Orders In Process Not Paid Number'];
+            $sum_in_basket                  += $row['Store Orders In Basket Number'];
+            $sum_in_basket_amount           += $row['Store Orders In Basket Amount'];
+            $sum_in_process_paid            += $row['Store Orders In Process Paid Number'];
+            $sum_in_process_amount_paid     += $row['Store Orders In Process Paid Amount'];
+            $sum_in_process_not_paid        += $row['Store Orders In Process Not Paid Number'];
             $sum_in_process_amount_not_paid += $row['Store Orders In Process Not Paid Amount'];
-            $sum_in_warehouse += $row['Store Orders In Warehouse Number'];
-            $sum_in_warehouse_amount += $row['Store Orders In Warehouse Amount'];
-            $sum_in_warehouse += $row['Store Orders Packed Number'];
-            $sum_in_warehouse_amount += $row['Store Orders Packed Amount'];
-            $sum_in_dispatch_area += $row['Store Orders Dispatch Approved Number'];
-            $sum_in_dispatch_area_amount += $row['Store Orders Dispatch Approved Amount'];
+            $sum_in_warehouse               += $row['Store Orders In Warehouse Number'];
+            $sum_in_warehouse_amount        += $row['Store Orders In Warehouse Amount'];
+            $sum_in_warehouse               += $row['Store Orders Packed Number'];
+            $sum_in_warehouse_amount        += $row['Store Orders Packed Amount'];
+            $sum_in_dispatch_area           += $row['Store Orders Dispatch Approved Number'];
+            $sum_in_dispatch_area_amount    += $row['Store Orders Dispatch Approved Amount'];
 
 
             if ($_data['currency'] == 'store') {
@@ -476,8 +465,7 @@ function sales_overview($_data, $db, $user, $account) {
                 );
 
 
-            }
-            else {
+            } else {
                 $data['orders_overview_sales_'.$row['record_key']]       = array(
                     'value' => money(
                         $row['dc_sales'], $account->get('Account Currency')
@@ -541,16 +529,14 @@ function sales_overview($_data, $db, $user, $account) {
                 );
 
 
-                if($row['Category Code']=='VIPs'){
+                if ($row['Category Code'] == 'VIPs') {
 
 
+                    $data['representatives_link_'.$row['record_key']] = array(
 
-                    $data['representatives_link_'.$row['record_key']]  = array(
-
-                        'value'        => '<i onclick="change_view(\'report/sales_representatives\', { parameters:{ period:\''.$_data['period'].'\'}} )"  class="far button fa-chart-line fa-fw"></i>',
+                        'value' => '<i onclick="change_view(\'report/sales_representatives\', { parameters:{ period:\''.$_data['period'].'\'}} )"  class="far button fa-chart-line fa-fw"></i>',
                     );
                 }
-
 
 
             } else {
@@ -809,7 +795,7 @@ function kpi($data, $db, $user, $account) {
 
     $response = array(
         'state' => 200,
-        'kpi' => $kpi_data,
+        'kpi'   => $kpi_data,
     );
 
     echo json_encode($response);
@@ -820,11 +806,11 @@ function kpi($data, $db, $user, $account) {
 function dispatching_times($data, $account) {
 
 
-    $_data=array(
-        'formatted_sitting_time_avg'=>array('value'=>'-'),
-        'sitting_time_samples'=>array('value'=>'0'),
-        'formatted_dispatch_time_avg'=>array('value'=>'-'),
-        'dispatch_time_samples'=>array('value'=>'0')
+    $_data = array(
+        'formatted_sitting_time_avg'  => array('value' => '-'),
+        'sitting_time_samples'        => array('value' => '0'),
+        'formatted_dispatch_time_avg' => array('value' => '-'),
+        'dispatch_time_samples'       => array('value' => '0')
     );
 
     if ($data['parent'] != '') {
@@ -836,18 +822,31 @@ function dispatching_times($data, $account) {
         $object->load_acc_data();
     }
 
-   $_data['formatted_sitting_time_avg']['value']=$object->get('formatted_sitting_time_avg');
-    $_data['formatted_sitting_time_avg']['title']=_('Average sitting time').': '.$object->get('formatted_bis_sitting_time_avg');
-    $_data['sitting_time_samples']['value']=$object->get('sitting_time_samples');
+    $_data['formatted_sitting_time_avg']['value'] = $object->get('formatted_sitting_time_avg');
+    $_data['formatted_sitting_time_avg']['title'] = _('Average sitting time').': '.$object->get('formatted_bis_sitting_time_avg');
+    $_data['sitting_time_samples']['value']       = $object->get('sitting_time_samples');
 
-    $_data['formatted_dispatch_time_avg']['value']=$object->get('formatted_dispatch_time_avg','1 Month');
-    $_data['formatted_dispatch_time_avg']['title']=_('Average dispatch time (last 30 days)').': '.$object->get('formatted_bis_dispatch_time_avg','1 Month');
-    $_data['dispatch_time_samples']['value']=$object->get('dispatch_time_samples','1 Month');
+    $_data['formatted_dispatch_time_avg']['value'] = $object->get('formatted_dispatch_time_avg', '1 Month');
+    $_data['formatted_dispatch_time_avg']['title'] = _('Average dispatch time (last 30 days)').': '.$object->get('formatted_bis_dispatch_time_avg', '1 Month');
+    $_data['dispatch_time_samples']['value']       = $object->get('dispatch_time_samples', '1 Month');
+
+
+    $_data['percentage_dispatch_time_day_0']['value']       = $object->get('percentage_dispatch_time_histogram',[0,'1 Month']);
+    $_data['dispatch_time_day_0']['value']       = $object->get('dispatch_time_histogram',[0,'1 Month']);
+
+    $_data['percentage_dispatch_time_day_1']['value']       = $object->get('percentage_dispatch_time_histogram',[1,'1 Month']);
+    $_data['dispatch_time_day_1']['value']       = $object->get('dispatch_time_histogram',[1,'1 Month']);
+
+    $_data['percentage_dispatch_time_day_2']['value']       = $object->get('percentage_dispatch_time_histogram',[2,'1 Month']);
+    $_data['dispatch_time_day_2']['value']       = $object->get('dispatch_time_histogram',[2,'1 Month']);
+
+    $_data['percentage_dispatch_time_day_3']['value']       = $object->get('percentage_dispatch_time_histogram',[3,'1 Month']);
+    $_data['dispatch_time_day_3']['value']       = $object->get('dispatch_time_histogram',[3,'1 Month']);
 
 
     $response = array(
         'state' => 200,
-        'data' => $_data,
+        'data'  => $_data,
     );
 
     echo json_encode($response);

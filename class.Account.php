@@ -531,6 +531,37 @@ class Account extends DB_Table {
                 $dispatch_time_average = $this->get(preg_replace('/formatted_bis_/', '', $key), $args);
 
                 return seconds_to_string($dispatch_time_average);
+            case 'dispatch_time_histogram':
+
+                $key = preg_replace('/percentage_/', '', $key);
+
+                if (is_array($args)) {
+                    $key .= '_'.strtolower(preg_replace('/\s/', '_', $args[1]));
+                }
+
+
+                $histogram= $this->properties($key);
+
+
+                if($histogram!=''){
+                    $histogram=json_decode($histogram,true);
+
+
+
+                    if(isset($histogram[$args[0]])){
+                        return $histogram[$args[0]];
+
+                    }
+                }
+                return 0;
+
+
+            case 'percentage_dispatch_time_histogram':
+                return percentage(
+                    $this->get('dispatch_time_histogram',$args),
+                    $this->get('dispatch_time_samples',$args[1])
+                );
+
             default:
 
 
@@ -916,6 +947,20 @@ class Account extends DB_Table {
             $this->fast_update_json_field('Account Properties', 'dispatch_time_avg_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), $row['diff'], 'Account Data');
         }
 
+        $sql = "select count(*) as num ,floor(TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`)/3600/24)  days from   `Delivery Note Dimension` left join `Order Dimension` on (`Delivery Note Order Key`=`Order Key`) where `Delivery Note State`='Dispatched' 
+                       and `Delivery Note Type`='Order' and `Delivery Note Date Dispatched`>=?  group by floor(TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`)/3600/24) ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $interval_data[1]
+            )
+        );
+        $waiting_time_histogram=array();
+        while ($row = $stmt->fetch()) {
+            $waiting_time_histogram[$row['days']]=$row['num'];
+        }
+        $this->fast_update_json_field('Account Properties', 'dispatch_time_histogram_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), json_encode($waiting_time_histogram), 'Account Data');
 
 
     }
