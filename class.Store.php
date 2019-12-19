@@ -4713,7 +4713,7 @@ class Store extends DB_Table {
 
 
     function update_sitting_time_in_warehouse() {
-        $sql = "SELECT count(*) as num  ,avg(TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) )as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock')  and `Delivery Note Store Key`=? ";
+        $sql = "SELECT count(*) as num  ,avg(TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) )as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock')  and `Delivery Note Store Key`=? and  `Delivery Note Date Created` is not null and `Delivery Note Date Created`!='0000-00-00 00:00:00'";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
