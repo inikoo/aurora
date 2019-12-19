@@ -16,6 +16,7 @@ class Account extends DB_Table {
      * @var \PDO
      */
     public $db;
+    private $properties;
 
     function __construct($_db = false) {
 
@@ -28,7 +29,7 @@ class Account extends DB_Table {
 
 
         $this->table_name = 'Account';
-
+        $this->properties = array();
 
         $this->get_data();
     }
@@ -57,7 +58,25 @@ class Account extends DB_Table {
 
     function load_acc_data() {
 
-        $sql = sprintf("SELECT * FROM `Account Data`  WHERE `Account Key`=%d", $this->id);
+        $sql = "SELECT * FROM `Account Data`  WHERE `Account Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            foreach ($row as $key => $value) {
+                if ($key == 'Account Properties') {
+                    $this->properties = json_decode($value, true);
+                } else {
+                    $this->data[$key] = $value;
+                }
+
+            }
+        }
+
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -65,9 +84,6 @@ class Account extends DB_Table {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -220,7 +236,8 @@ class Account extends DB_Table {
         }
     }
 
-    function get($key, $data = false) {
+    function get($key, $args = false) {
+
 
         if (!$this->id) {
             return;
@@ -486,14 +503,34 @@ class Account extends DB_Table {
                 break;
             case 'Pretty Valid From':
                 return strftime("%a %e %b %Y", strtotime($this->data['Account Valid From'].' +0:00'));
-                break;
+
             case 'Timezone':
                 include_once 'utils/timezones.php';
 
                 return get_normalized_timezones_formatted_label($this->data['Account Timezone']);
+            case 'dispatch_time_avg':
+            case 'dispatch_time_samples':
+            case 'sitting_time_avg':
+            case 'sitting_time_samples':
 
+                if ($args != '') {
+                    $key .= '_'.strtolower(preg_replace('/\s/', '_', $args));
+                }
+
+
+                return $this->properties($key);
                 break;
+            case 'formatted_dispatch_time_avg':
+            case 'formatted_sitting_time_avg':
+                $dispatch_time_average = $this->get(preg_replace('/formatted_/', '', $key), $args);
 
+                return seconds_to_natural_string($dispatch_time_average);
+            case 'formatted_bis_dispatch_time_avg':
+            case 'formatted_bis_sitting_time_avg':
+
+                $dispatch_time_average = $this->get(preg_replace('/formatted_bis_/', '', $key), $args);
+
+                return seconds_to_string($dispatch_time_average);
             default:
 
 
@@ -611,6 +648,10 @@ class Account extends DB_Table {
         }
 
         return '';
+    }
+
+    public function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
     function update_stores_data() {
@@ -838,6 +879,43 @@ class Account extends DB_Table {
         $this->fast_update(
             array('Account Warehouses' => $number_stores)
         );
+
+    }
+
+    function update_sitting_time_in_warehouse() {
+        $sql = "SELECT count(*) as num  ,TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock') ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            $this->fast_update_json_field('Account Properties', 'sitting_time_samples', $row['num'], 'Account Data');
+            $this->fast_update_json_field('Account Properties', 'sitting_time_avg', $row['diff'], 'Account Data');
+        }
+
+
+    }
+
+    function update_dispatching_time_data($interval) {
+
+        include_once 'utils/date_functions.php';
+
+        $interval_data = calculate_interval_dates($this->db, $interval);
+
+
+        $sql =
+            "select  count(*) as num  ,TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`) as diff from   `Delivery Note Dimension` left join `Order Dimension` on (`Delivery Note Order Key`=`Order Key`) where `Delivery Note State`='Dispatched' and `Delivery Note Type`='Order' and `Delivery Note Date Dispatched`>=?  ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $interval_data[1]
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $this->fast_update_json_field('Account Properties', 'dispatch_time_samples_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), $row['num'], 'Account Data');
+            $this->fast_update_json_field('Account Properties', 'dispatch_time_avg_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), $row['diff'], 'Account Data');
+        }
+
 
     }
 
@@ -1675,7 +1753,6 @@ class Account extends DB_Table {
 
     }
 
-
     function update_inventory_dispatched_data($interval, $this_year = true, $last_year = true) {
 
 
@@ -1990,7 +2067,6 @@ class Account extends DB_Table {
 
     }
 
-
     function update_previous_quarters_data() {
 
 
@@ -2206,7 +2282,6 @@ class Account extends DB_Table {
         }
 
     }
-
 
     function update_orders() {
 
@@ -2589,7 +2664,6 @@ class Account extends DB_Table {
         );
         $this->fast_update($data_to_update, 'Account Data');
     }
-
 
     function update_orders_cancelled() {
 

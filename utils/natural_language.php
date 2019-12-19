@@ -1,10 +1,10 @@
 <?php
 
-function seconds_to_natural_string($seconds, $short = false) {
+function seconds_to_natural_string($seconds, $short = false,$round=0) {
 
 
 
-    if ($seconds == 0) {
+    if ($seconds == 0 or $seconds=='') {
         return '';
     }
 
@@ -63,7 +63,7 @@ function seconds_to_natural_string($seconds, $short = false) {
 
 
             return sprintf(
-                "%d %s", $days, ngettext("day", "days", intval($days))
+                "%s %s", number($seconds / 86400,$round), ngettext("day", "days", intval($days))
             );
 
         }
@@ -113,6 +113,9 @@ function seconds_to_natural_string($seconds, $short = false) {
 
 function seconds_to_string($seconds, $until = 'seconds', $short = false) {
 
+    if($seconds==''){
+        $seconds=0;
+    }
 
     $units = array(
         "weeks"   => 604800,

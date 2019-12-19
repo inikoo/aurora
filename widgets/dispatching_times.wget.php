@@ -3,9 +3,9 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 20 November 2016 at 12:31:50 GMT+8, Cyberjaya, Malaysia
+ Created:  19 December 2019  14:27::00  +0800, Kuala Lumpur, Malaysia
 
- Copyright (c) 2016, Inikoo
+ Copyright (c) 2019, Inikoo
 
  Version 3.0
 */
@@ -21,19 +21,19 @@
  *
  * @return mixed
  */
-function get_dashboard_pending_orders($db, $account, $user, $smarty, $parent, $currency, $display_device_version = 'desktop') {
+function get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, $currency, $display_device_version = 'desktop') {
 
     include_once 'utils/date_functions.php';
-
     include_once 'utils/prepare_smarty_for_dashboard.php';
 
     $smarty=prepare_smarty_for_dashboard($db, $account, $user, $smarty, $parent, $currency);
 
     if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/pending_orders.mobile.dbard.tpl');
+        return $smarty->fetch('dashboard/dispatching_times.mobile.dbard.tpl');
     } else {
-        return $smarty->fetch('dashboard/pending_orders.dbard.tpl');
+        return $smarty->fetch('dashboard/dispatching_times.dbard.tpl');
     }
 }
+
 
 

@@ -806,7 +806,6 @@ abstract class DB_Table extends stdClass {
             "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
 
-
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $value);
         $stmt->bindParam(2, $this->id);

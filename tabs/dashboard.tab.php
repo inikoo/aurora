@@ -118,6 +118,29 @@ foreach ($user->get_dashboard_items() as $item) {
 
         $html .= get_dashboard_kpis($db, $account, $user, $smarty, $period, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
 
+    }elseif ($item == 'dispatching_times') {
+
+
+        $period = '1y';
+
+        include_once 'widgets/dispatching_times.wget.php';
+
+        if (isset($_SESSION['dashboard_state']['pending_orders']['parent'])) {
+            $parent = $_SESSION['dashboard_state']['pending_orders']['parent'];
+        } else {
+            $parent = '';
+        }
+
+        if (isset($_SESSION['dashboard_state']['pending_orders']['currency'])) {
+            $currency = $_SESSION['dashboard_state']['pending_orders']['currency'];
+        } else {
+            $currency = 'account';
+        }
+
+
+        $html .= get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, $currency, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
+
+
     }
 
 }

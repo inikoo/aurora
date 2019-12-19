@@ -538,9 +538,9 @@ class Store extends DB_Table {
         return false;
     }
 
-    function get($key = '') {
+    function get($key = '', $args = '') {
 
-        global $account;
+        $account = get_object('Account', 1);
 
         if (!$this->id) {
             return '';
@@ -862,6 +862,55 @@ class Store extends DB_Table {
 
 
                 break;
+            case 'dispatch_time_avg':
+            case 'dispatch_time_samples':
+            case 'sitting_time_avg':
+            case 'sitting_time_samples':
+
+                if ($args != '') {
+                    $key .= '_'.strtolower(preg_replace('/\s/', '_', $args));
+                }
+
+
+                return $this->properties($key);
+                break;
+            case 'formatted_dispatch_time_avg':
+            case 'formatted_sitting_time_avg':
+
+                $_key = preg_replace('/formatted_/', '', $key);
+
+                $_sample_key = preg_replace('/_avg/', '_samples', $_key);
+                if ($args != '') {
+                    $_sample_key .= '_'.strtolower(preg_replace('/\s/', '_', $args));
+                }
+
+                if ($this->properties($_sample_key) > 0) {
+                    $dispatch_time_average = $this->get($_key, $args);
+
+                    return seconds_to_natural_string($dispatch_time_average, false, 1);
+
+                } else {
+                    return '-';
+                }
+
+
+            case 'formatted_bis_dispatch_time_avg':
+            case 'formatted_bis_sitting_time_avg':
+            $_key = preg_replace('/formatted_bis_/', '', $key);
+
+            $_sample_key = preg_replace('/_avg/', '_samples', $_key);
+            if ($args != '') {
+                $_sample_key .= '_'.strtolower(preg_replace('/\s/', '_', $args));
+            }
+
+            if ($this->properties($_sample_key) > 0) {
+                $dispatch_time_average = $this->get($_key, $args);
+
+                return seconds_to_string($dispatch_time_average);
+            }else{
+                return '-';
+            }
+
 
         }
 
@@ -1034,6 +1083,10 @@ class Store extends DB_Table {
 
     function settings($key) {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
     function create_timeseries($data, $fork_key = 0) {
@@ -1406,10 +1459,6 @@ class Store extends DB_Table {
 
         $this->update(array('Store Active Deal Campaigns' => $campaigns), 'no_history');
 
-    }
-
-    function properties($key) {
-        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
     function get_notification_recipients($type) {
@@ -4625,6 +4674,49 @@ class Store extends DB_Table {
 
     function update_purges_data() {
         // todo: make stats for purges
+    }
+
+
+    function update_sitting_time_in_warehouse() {
+        $sql = "SELECT count(*) as num  ,TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock')  and `Delivery Note Store Key`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $this->fast_update_json_field('Store Properties', 'sitting_time_samples', $row['num']);
+            $this->fast_update_json_field('Store Properties', 'sitting_time_avg', $row['diff']);
+        }
+
+
+    }
+
+    function update_dispatching_time_data($interval) {
+
+        include_once 'utils/date_functions.php';
+
+        $interval_data = calculate_interval_dates($this->db, $interval);
+
+
+        $sql =
+            "select  count(*) as num  ,TIMESTAMPDIFF(SECOND,`Order Submitted by Customer Date`,`Delivery Note Date Dispatched`) as diff from   `Delivery Note Dimension` left join `Order Dimension` on (`Delivery Note Order Key`=`Order Key`) where `Delivery Note State`='Dispatched' and `Delivery Note Type`='Order' and `Delivery Note Date Dispatched`>=? and `Delivery Note Store Key`=?  ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $interval_data[1],
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $this->fast_update_json_field('Store Properties', 'dispatch_time_samples_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), $row['num']);
+            $this->fast_update_json_field('Store Properties', 'dispatch_time_avg_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), $row['diff']);
+        }
+
+
     }
 
 

@@ -79,7 +79,16 @@ switch ($tipo) {
         );
         customers($data, $db, $user, $account);
         break;
+    case 'dispatching_times':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'   => array('type' => 'string'),
 
+
+                     )
+        );
+        dispatching_times($data, $account);
+        break;
 
     default:
         $response = array(
@@ -808,4 +817,41 @@ function kpi($data, $db, $user, $account) {
 }
 
 
-?>
+function dispatching_times($data, $account) {
+
+
+    $_data=array(
+        'formatted_sitting_time_avg'=>array('value'=>'-'),
+        'sitting_time_samples'=>array('value'=>'0'),
+        'formatted_dispatch_time_avg'=>array('value'=>'-'),
+        'dispatch_time_samples'=>array('value'=>'0')
+    );
+
+    if ($data['parent'] != '') {
+        $object = get_object('Store', $data['parent']);
+        $object->load_acc_data();
+
+    } else {
+        $object = $account;
+        $object->load_acc_data();
+    }
+
+   $_data['formatted_sitting_time_avg']['value']=$object->get('formatted_sitting_time_avg');
+    $_data['formatted_sitting_time_avg']['title']=_('Average sitting time').': '.$object->get('formatted_bis_sitting_time_avg');
+    $_data['sitting_time_samples']['value']=$object->get('sitting_time_samples');
+
+    $_data['formatted_dispatch_time_avg']['value']=$object->get('formatted_dispatch_time_avg','1 Month');
+    $_data['formatted_dispatch_time_avg']['title']=_('Average dispatch time (last 30 days)').': '.$object->get('formatted_bis_dispatch_time_avg','1 Month');
+    $_data['dispatch_time_samples']['value']=$object->get('dispatch_time_samples','1 Month');
+
+
+    $response = array(
+        'state' => 200,
+        'data' => $_data,
+    );
+
+    echo json_encode($response);
+
+}
+
+
