@@ -3294,8 +3294,37 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $_webpage->refresh_cache();
             }
             break;
+        case 'order_replacements_updated':
+
+            $order=get_object('Order',$data['order_key']);
+
+            $store = get_object('Store', $order->get('Store Key'));
+            $store->update_orders_in_warehouse_data();
+            $account->update_orders_in_warehouse_data();
 
 
+            if ($data['update_in_warehouse']) {
+                $store->update_orders_in_warehouse_data();
+                $account->update_orders_in_warehouse_data();
+
+            }
+            if ($data['update_packed']) {
+                $store->update_orders_packed_data();
+                $account->update_orders_packed_data();
+
+            }
+            if ($data['update_approved']) {
+                $store->update_orders_approved_data();
+                $account->update_orders_approved_data();
+
+            }
+            if ($data['update_dispatched_today']) {
+                $store->update_orders_dispatched_today();
+                $account->update_orders_dispatched_today();
+
+            }
+
+            break;
         default:
             break;
 

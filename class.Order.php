@@ -46,7 +46,7 @@ class Order extends DB_Table {
 
         $this->deleted_otfs = array();
         $this->new_otfs     = array();
-        $this->metadata        = array();
+        $this->metadata     = array();
 
 
         $this->table_name      = 'Order';
@@ -3274,7 +3274,7 @@ class Order extends DB_Table {
 
     }
 
-    function update_number_replacements() {
+    function update_number_replacements($update_parents=true) {
 
         $old_in_warehouse_no_alerts   = $this->get('Order Replacements In Warehouse without Alerts');
         $old_in_warehouse_with_alerts = $this->get('Order Replacements In Warehouse with Alerts');
@@ -3290,102 +3290,91 @@ class Order extends DB_Table {
         $dispatched_today         = 0;
 
 
-        // if($this->id){
+        $sql = "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=?  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') group by `Delivery Note State` ";
 
-
-        $sql = sprintf(
-            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') group by `Delivery Note State` ", $this->id
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            if ($row['num'] > 0) {
+                switch ($row['Delivery Note State']) {
+                    case 'Ready to be Picked':
+                    case 'Picker Assigned':
+                    case 'Picking':
+                    case 'Picked':
+                    case 'Packing':
+                    case 'Packed':
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
-
-                if ($row['num'] > 0) {
-                    switch ($row['Delivery Note State']) {
-                        case 'Ready to be Picked':
-                        case 'Picker Assigned':
-                        case 'Picking':
-                        case 'Picked':
-                        case 'Packing':
-                        case 'Packed':
-
-                            $in_warehouse += $row['num'];
+                        $in_warehouse += $row['num'];
 
 
-                            break;
+                        break;
 
-                        case 'Packed Done':
-                            $packed_done += $row['num'];
-                            break;
-                        case 'Approved':
-                            $approved += $row['num'];
-                            break;
+                    case 'Packed Done':
+                        $packed_done += $row['num'];
+                        break;
+                    case 'Approved':
+                        $approved += $row['num'];
+                        break;
 
-                    }
                 }
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
-        $sql = sprintf(
-            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ",
-            $this->id
+
+        $sql ="SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=?  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ";
+
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            if ($row['num'] > 0) {
+                switch ($row['Delivery Note State']) {
+                    case 'Ready to be Picked':
+                    case 'Picker Assigned':
+                    case 'Picking':
+                    case 'Picked':
+                    case 'Packing':
+                    case 'Packed':
+                        $in_warehouse_with_alerts += $row['num'];
+                        break;
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                if ($row['num'] > 0) {
-                    switch ($row['Delivery Note State']) {
-                        case 'Ready to be Picked':
-                        case 'Picker Assigned':
-                        case 'Picking':
-                        case 'Picked':
-                        case 'Packing':
-                        case 'Packed':
-                            $in_warehouse_with_alerts += $row['num'];
-                            break;
-
-                    }
                 }
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+
+
+
 
 
         $in_warehouse_no_alerts = $in_warehouse - $in_warehouse_with_alerts;
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Delivery Note Dimension` 
-            WHERE  `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
+        $sql = "SELECT count(*) AS num FROM `Delivery Note Dimension` 
+            WHERE  `Delivery Note Order Key`=?  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=? ";
 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id,
+                gmdate('Y-m-d 00:00:00')
+            )
         );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                if ($row['num'] > 0) {
-                    $dispatched_today = $row['num'];
-                }
-
+        if ($row = $stmt->fetch()) {
+            if ($row['num'] > 0) {
+                $dispatched_today = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+
 
 
         $this->fast_update(
@@ -3400,34 +3389,57 @@ class Order extends DB_Table {
             )
         );
 
-        $store = get_object('Store', $this->get('Store Key'));
-        $store->update_orders_in_warehouse_data();
-        $account = get_object('Account', 1);
-        $account->update_orders_in_warehouse_data();
 
 
-        if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
-            $store->update_orders_in_warehouse_data();
-            $account->update_orders_in_warehouse_data();
 
-        }
-        if ($old_packed_done != $packed_done) {
-            $store->update_orders_packed_data();
-            $account->update_orders_packed_data();
+     if($update_parents) {
 
-        }
-        if ($old_approved != $approved) {
-            $store->update_orders_approved_data();
-            $account->update_orders_approved_data();
+         $account=get_object('Account',1);
 
-        }
-        if ($old_dispatched_today != $dispatched_today) {
-            $store->update_orders_dispatched_today();
-            $account->update_orders_dispatched_today();
-
-        }
+         require_once 'utils/new_fork.php';
 
 
+         if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
+             $update_in_warehouse=true;
+         }else{
+             $update_in_warehouse=false;
+         }
+
+         if ($old_packed_done != $packed_done) {
+             $update_packed=true;
+         }else{
+             $update_packed=false;
+         }
+
+         if ($old_approved != $approved) {
+             $update_approved=true;
+         }else{
+             $update_approved=false;
+         }
+
+         if ($old_dispatched_today != $dispatched_today) {
+             $update_dispatched_today=true;
+         }else{
+             $update_dispatched_today=false;
+         }
+
+         new_housekeeping_fork(
+             'au_housekeeping', array(
+             'type'         => 'order_replacements_updated',
+             'order_key'    => $this->id,
+             'update_in_warehouse'=>$update_in_warehouse,
+             'update_packed'=>$update_packed,
+             'update_approved'=>$update_approved,
+             'update_dispatched_today'=>$update_dispatched_today,
+         ), $account->get('Account Code'), $this->db
+         );
+
+
+
+
+
+
+     }
     }
 
     function create_return($transactions) {
