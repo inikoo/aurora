@@ -125,20 +125,16 @@ foreach ($user->get_dashboard_items() as $item) {
 
         include_once 'widgets/dispatching_times.wget.php';
 
-        if (isset($_SESSION['dashboard_state']['pending_orders']['parent'])) {
-            $parent = $_SESSION['dashboard_state']['pending_orders']['parent'];
+        if (isset($_SESSION['dashboard_state']['dispatching_times']['parent'])) {
+            $parent = $_SESSION['dashboard_state']['dispatching_times']['parent'];
         } else {
             $parent = '';
         }
 
-        if (isset($_SESSION['dashboard_state']['pending_orders']['currency'])) {
-            $currency = $_SESSION['dashboard_state']['pending_orders']['currency'];
-        } else {
-            $currency = 'account';
-        }
 
 
-        $html .= get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, $currency, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
+
+        $html .= get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
 
 
     }

@@ -805,6 +805,10 @@ function kpi($data, $db, $user, $account) {
 
 function dispatching_times($data, $account) {
 
+    $_SESSION['dashboard_state']['dispatching_times'] = array(
+        'parent'   => $data['parent'],
+
+    );
 
     $_data = array(
         'formatted_sitting_time_avg'  => array('value' => '-'),

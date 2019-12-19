@@ -21,12 +21,12 @@
  *
  * @return mixed
  */
-function get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, $currency, $display_device_version = 'desktop') {
+function get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, $display_device_version = 'desktop') {
 
     include_once 'utils/date_functions.php';
     include_once 'utils/prepare_smarty_for_dashboard.php';
 
-    $smarty=prepare_smarty_for_dashboard($db, $account, $user, $smarty, $parent, $currency);
+    $smarty=prepare_smarty_for_dashboard($db, $account, $user, $smarty, $parent, '');
 
     if ($display_device_version == 'mobile') {
         return $smarty->fetch('dashboard/dispatching_times.mobile.dbard.tpl');
