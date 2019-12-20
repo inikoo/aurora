@@ -1687,6 +1687,9 @@ class DeliveryNote extends DB_Table {
 
                 if ($this->data['Delivery Note Type'] == 'Order') {
                     $order->update(array('Order State' => 'un_dispatch'));
+                }else{
+                    $order->update_number_replacements();
+
                 }
 
                 $note = _('Delivery note un dispatched');
@@ -1702,6 +1705,7 @@ class DeliveryNote extends DB_Table {
                 );
 
                 $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
 
 
                 new_housekeeping_fork(
@@ -1760,6 +1764,12 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
+                }
+
+
+                if ($this->data['Delivery Note Type'] == 'Replacement') {
+                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->update_number_replacements();
                 }
 
 
