@@ -153,7 +153,7 @@ module.exports = function (grunt) {
 
                     'js/email_campaign.common.js',
                     'js/new_marketing_mailshot.js',
-                    'js/inline_editing.js',
+                    'js/inline_editing.js','js/dashboard.js',
                     'js/supplier.order.js', 'js/supplier.delivery.js','js/supplier.delivery.costing.js',
                     'js/part_locations.edit.js', 'js/part_locations.edit_locations.js', 'js/part_locations.stock_check.js', 'js/part_locations.move_stock.js', 'js/fast_track_packing.js', 'js/sticky_notes.js', 'js/picking_and_packing.js', 'js/app.js', 'js/real_time.js', 'js/customers.js', 'js/customer_orders.js', 'js/customer_client.js', 'js/customer_client_orders.js',
                     'js/add_item_to_order.js','js/upload.js'

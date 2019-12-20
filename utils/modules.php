@@ -2138,6 +2138,8 @@ $modules = array(
         'sections'    => array(
 
 
+
+
             'pending_delivery_notes' => array(
 
                 'type'      => 'navigation',
@@ -2153,19 +2155,18 @@ $modules = array(
                 )
 
             ),
-            /*
-                        'group_by_store' => array(
-                            'type'      => 'navigation',
-                            'label'     => _('Group by store'),
-                            'icon'      => 'compress',
-                            'reference' => 'delivery_notes/all/by_store',
-                            'tabs'      => array(
-                                'delivery_notes_group_by_store' => array()
-                            )
 
-                        ),
+            'group_by_store' => array(
+                'type'      => 'navigation',
+                'label'     => _('Group by store'),
+                'icon'      => 'compress',
+                'reference' => 'delivery_notes/all/by_store',
+                'tabs'      => array(
+                    'delivery_notes_group_by_store' => array()
+                )
 
-            */
+            ),
+
             'delivery_notes'         => array(
                 'type'      => 'navigation',
                 'label'     => _('Delivery notes').' ('._('All').')',

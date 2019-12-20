@@ -119,6 +119,8 @@ if (isset($parameters['elements'])) {
         case('dispatch'):
             $_elements            = '';
             $num_elements_checked = 0;
+
+
             foreach ($elements['dispatch']['items'] as $_key => $_value) {
                 if ($_value['selected']) {
                     $num_elements_checked++;
@@ -131,7 +133,7 @@ if (isset($parameters['elements'])) {
                         $_elements .= ",'Packing','Packed','Packed Done'";
                     } elseif ($_key == 'Done') {
                         $_elements .= ",'Approved'";
-                    } elseif ($_key == 'Send') {
+                    } elseif ($_key == 'Sent') {
                         $_elements .= ",'Dispatched'";
                     } elseif ($_key == 'Returned') {
                         $_elements .= ",'Cancelled','Cancelled to Restock'";
@@ -147,6 +149,9 @@ if (isset($parameters['elements'])) {
                 $_elements = preg_replace('/^,/', '', $_elements);
                 $where     .= ' and `Delivery Note State` in ('.$_elements.')';
             }
+
+
+
             break;
 
         case('type'):

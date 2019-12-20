@@ -453,6 +453,10 @@ switch ($tab) {
         );
         get_customer_active_portfolio_elements($db, $data['parameters']);
         break;
+    case 'delivery_notes':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_delivery_notes_elements($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -463,6 +467,87 @@ switch ($tab) {
         break;
 }
 
+function get_delivery_notes_elements($db, $data,$user) {
+
+    $elements_numbers = array(
+        'type' => array(
+            'Ready'  => 0,
+            'Picking'  => 0,
+            'Packing'  => 0,
+            'Packed' => 0,
+            'Done'=>0,
+            'Sent'  => 0,
+            'Returned'   => 0,
+        ),
+    );
+
+
+    if ($data['parent'] == 'store') {
+        if (is_numeric($data['parent_key']) and in_array(
+                $data['parent_key'], $user->stores
+            )) {
+            $where = sprintf(
+                ' where  `Delivery Note Store Key`=%d ', $data['parent_key']
+            );
+
+        } else {
+            $where = sprintf(' where  false');
+        }
+
+
+    }else{
+        $where='';
+    }
+
+
+
+    $sql  = "select count(*) as number,`Delivery Note State` as element from `Delivery Note Dimension` $where group by `Delivery Note State` ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($data['parent_key'])
+    );
+    while ($row = $stmt->fetch()) {
+
+
+        if ($row['element'] == 'Picking' or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned') {
+            $row['element'] = 'Picking';
+        }
+        if ($row['element'] == 'Ready to be Picked') {
+            $row['element'] = 'Ready';
+        }
+
+        if ($row['element'] == 'Packing' or $row['element'] == 'Packed' or $row['element'] == 'Packed Done') {
+            $row['element'] = 'Packing';
+        }
+
+        if ($row['element'] == 'Cancelled' or $row['element'] == 'Cancelled to Restock') {
+            $row['element'] = 'Returned';
+        }
+
+        if ($row['element'] == 'Dispatched') {
+            $row['element'] = 'Sent';
+        }
+
+        if ($row['element'] == 'Approved') {
+            $row['element'] = 'Done';
+        }
+
+
+        $elements_numbers['type'][$row['element']] += $row['number'];
+
+    }
+
+    foreach ($elements_numbers['type'] as $key => $value) {
+        $elements_numbers['type'][$key] = number($value);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+}
 /**
  * @param $db \PDO
  * @param $data

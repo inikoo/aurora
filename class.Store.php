@@ -4722,6 +4722,7 @@ class Store extends DB_Table {
             )
         );
         while ($row = $stmt->fetch()) {
+
             $this->fast_update_json_field('Store Properties', 'sitting_time_samples', $row['num']);
             $this->fast_update_json_field('Store Properties', 'sitting_time_avg', $row['diff']);
         }

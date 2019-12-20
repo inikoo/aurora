@@ -160,10 +160,6 @@ class DeliveryNote extends DB_Table {
                     );
                     $this->db->exec($sql);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -183,10 +179,6 @@ class DeliveryNote extends DB_Table {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -200,6 +192,8 @@ class DeliveryNote extends DB_Table {
 
 
             $this->update_totals();
+
+
 
 
         } else {
@@ -947,7 +941,6 @@ class DeliveryNote extends DB_Table {
                 }
             }
 
-            $account = get_object('Account', 1);
 
 
             require_once 'utils/new_fork.php';
@@ -961,7 +954,7 @@ class DeliveryNote extends DB_Table {
                 'parent_key' => $this->id,
                 'store_key'  => $this->get('Store Key'),
                 'editor'     => $this->editor
-            ), $account->get('Account Code'), $this->db
+            ), DNS_ACCOUNT_CODE, $this->db
             );
 
 
@@ -2484,10 +2477,6 @@ class DeliveryNote extends DB_Table {
             foreach ($result as $row) {
                 $parts_to_update_stock[] = $row['Part SKU'].'_'.$row['Location Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2554,8 +2543,15 @@ class DeliveryNote extends DB_Table {
         }
 
         $customer->update_last_dispatched_order_key();
-
         $order->update_number_replacements();
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'       => 'update_delivery_note_warehouse_state',
+           'store_key'=>$this->get('Delivery Note Store Key')
+        ),DNS_ACCOUNT_CODE, $this->db
+        );
+
 
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;

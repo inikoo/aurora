@@ -991,7 +991,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $payment_service_provider->update_payments_data();
 
 
-            $account = get_object('Account', '');
             $store   = get_object('Store', $payment->get('Payment Store Key'));
 
             $customer->update_payments();
@@ -1007,7 +1006,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             // remove after migration
             $store   = get_object('Store', $data['store_key']);
-            $account = get_object('Account', '');
             $store->update_orders_in_basket_data();
             $account->update_orders_in_basket_data();
 
@@ -1046,7 +1044,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $order = get_object('Order', $data['order_key']);
 
 
-            $account = get_object('Account', '');
             $store   = get_object('Store', $order->get('Store Key'));
 
 
@@ -1171,7 +1168,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
         case 'order_state_changed':
             $order   = get_object('Order', $data['order_key']);
-            $account = get_object('Account', '');
             $store   = get_object('Store', $order->get('Store Key'));
 
 
@@ -1187,7 +1183,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $order    = get_object('Order', $data['subject_key']);
             $customer = get_object('Customer', $order->get('Order Customer Key'));
             $store    = get_object('Store', $order->get('Order Store Key'));
-            $account  = get_object('Account', '');
 
 
             $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
@@ -1215,7 +1210,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $order    = get_object('Order', $data['order_key']);
             $customer = get_object('Customer', $order->get('Order Customer Key'));
             $store    = get_object('Store', $order->get('Order Store Key'));
-            $account  = get_object('Account', '');
 
             $sql = sprintf("SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`='Charges' AND   `Order Key`=%d  ", $order->id);
 
@@ -1519,6 +1513,19 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
         case 'delivery_note_created':
 
+            $store = get_object('Store',$data['store_key']);
+            $store->load_acc_data();
+            $account->load_acc_data();
+
+            $account->update_dispatching_time_data('1m');
+            $account->update_sitting_time_in_warehouse();
+
+            $store->update_dispatching_time_data('1m');
+            $store->update_sitting_time_in_warehouse();
+
+            $store->update_orders();
+            $account->update_orders();
+
 
             $sql = sprintf(
                 'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ', $data['delivery_note_key']
@@ -1531,22 +1538,31 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     $part->update_stock_in_paid_orders();
                     // print $part->get('Reference')."\n";
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
+
+
+
+
             break;
 
         case 'replacement_created':
             $order   = get_object('Order', $data['order_key']);
-            $account = get_object('Account', '');
             $store   = get_object('Store', $order->get('Store Key'));
+            $store->load_acc_data();
 
-            // todo review if other operations has to be done
 
             $store->update_orders();
             $account->update_orders();
 
+
+            $account->load_acc_data();
+            $account->update_dispatching_time_data('1m');
+            $account->update_sitting_time_in_warehouse();
+
+            $store = get_object('Store',$data['store_key']);
+            $store->load_acc_data();
+            $store->update_dispatching_time_data('1m');
+            $store->update_sitting_time_in_warehouse();
 
             break;
 
@@ -1689,7 +1705,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $delivery_note = get_object('Delivery_Note', $data['delivery_note_key']);
 
 
-            $account = get_object('Account', '');
             $store   = get_object('Store', $order->get('Store Key'));
 
 
@@ -2203,6 +2218,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'delivery_note_cancelled':
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
+            $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+            $store->load_acc_data();
 
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
@@ -2399,6 +2416,15 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             }
+
+
+            $account->load_acc_data();
+            $account->update_dispatching_time_data('1m');
+            $account->update_sitting_time_in_warehouse();
+            $account->update_orders();
+            $store->update_orders();
+            $store->update_dispatching_time_data('1m');
+            $store->update_sitting_time_in_warehouse();
 
 
             break;
@@ -2826,7 +2852,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $smarty_web = new Smarty();
 
 
-            $account = get_object('Account', 1);
             $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
 
 
@@ -2920,9 +2945,20 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'delivery_note_dispatched':
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
+            $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+            $store->load_acc_data();
 
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
+
+            $account->load_acc_data();
+            $account->update_dispatching_time_data('1m');
+            $account->update_sitting_time_in_warehouse();
+            $account->update_orders();
+            $store->update_orders();
+            $store->update_dispatching_time_data('1m');
+            $store->update_sitting_time_in_warehouse();
+
 
             break;
         case 'delivery_note_un_dispatched':
@@ -2931,7 +2967,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
-
+            $store->load_acc_data();
 
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
@@ -2973,6 +3009,14 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             }
+
+            $account->load_acc_data();
+            $account->update_dispatching_time_data('1m');
+            $account->update_sitting_time_in_warehouse();
+            $account->update_orders();
+            $store->update_orders();
+            $store->update_dispatching_time_data('1m');
+            $store->update_sitting_time_in_warehouse();
 
             break;
 
@@ -3323,6 +3367,20 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $account->update_orders_dispatched_today();
 
             }
+
+            break;
+
+        case 'update_delivery_note_warehouse_state':
+            $account->load_acc_data();
+            $account->update_dispatching_time_data('1m');
+            $account->update_sitting_time_in_warehouse();
+            $account->update_orders();
+
+            $store = get_object('Store',$data['store_key']);
+            $store->load_acc_data();
+            $store->update_orders();
+            $store->update_dispatching_time_data('1m');
+            $store->update_sitting_time_in_warehouse();
 
             break;
         default:

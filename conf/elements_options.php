@@ -537,16 +537,16 @@ $elements_options = array(
                     'label'    => _('Picking'),
                     'selected' => true
                 ),
-                'Packed'   => array(
-                    'label'    => _('Packed'),
+                'Packing'   => array(
+                    'label'    => _('Packing'),
                     'selected' => true
                 ),
                 'Done'     => array(
                     'label'    => _('Closed'),
                     'selected' => true
                 ),
-                'Send'     => array(
-                    'label'    => _('Send'),
+                'Sent'     => array(
+                    'label'    => _('Sent'),
                     'selected' => true
                 ),
                 'Returned' => array(
