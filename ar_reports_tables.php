@@ -849,19 +849,19 @@ function intrastat_totals($db, $user, $account) {
         $where .= " and  I.`Invoice Key`>0  ";
 
     } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
-        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT','EU') ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
-        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT','EU') ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
         $where .= " and  I.`Invoice Key` is null  ";
 
     } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
-        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT','EU') )  ) ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
-        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT','EU')    ) ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
         $where .= " and false ";
@@ -1077,19 +1077,19 @@ function intrastat_orders_totals($db, $user, $account) {
         $where .= " and  I.`Invoice Key`>0  ";
 
     } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
-        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT','EU') ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
-        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT','EU') ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
         $where .= " and  I.`Invoice Key` is null  ";
 
     } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
-        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT','EU') )  ) ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
-        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT','EU')    ) ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
         $where .= " and false ";
@@ -1117,10 +1117,6 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
             $sum_products = $row['products'];
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
     $totals   = array(
@@ -1193,19 +1189,19 @@ function intrastat_products_totals($db, $user, $account) {
         $where .= " and  I.`Invoice Key`>0  ";
 
     } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
-        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT','EU') ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
-        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT','EU') ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
         $where .= " and  I.`Invoice Key` is null  ";
 
     } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
-        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT','EU') )  ) ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
-        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT','EU')    ) ";
 
     } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
         $where .= " and false ";
@@ -1357,9 +1353,6 @@ function intrastat_orders($_data, $db, $user, $account) {
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 

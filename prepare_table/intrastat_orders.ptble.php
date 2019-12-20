@@ -56,19 +56,19 @@ if($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $pa
     $where .= " and  I.`Invoice Key`>0  ";
 
 }elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==0 ){
-    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT','EU') ";
 
 }elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==0 ){
-    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT','EU') ";
 
 }elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==1 ){
     $where .= " and  I.`Invoice Key` is null  ";
 
 }elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==1 ){
-    $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+    $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT','EU') )  ) ";
 
 }elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==1 ){
-    $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+    $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT','EU')    ) ";
 
 }elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==0 ){
     $where .= " and false ";
