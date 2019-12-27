@@ -9,6 +9,7 @@
 
 */
 
+use Elasticsearch\ClientBuilder;
 
 function search_suppliers($db, $account, $user, $data) {
 
@@ -1849,11 +1850,98 @@ function search_products($db, $account, $user, $data) {
 }
 
 
-function search_customers($db, $account, $user, $data) {
+function search_customers( $data) {
 
 
-    $max_results = 10;
-    $queries     = trim($data['query']);
+    $query=trim($data['query']);
+
+    if($query==''){
+        $response = array(
+            'state'          => 200,
+            'number_results' => 0,
+            'results'        => array(),
+            'query'=>''
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    $max_results = 16;
+
+    $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+
+    $params = [
+        'index' => strtolower('au_'.$_SESSION['account']),
+
+        'body' =>
+
+          [
+                "query" => [
+                    "bool" => [
+                        "must"   => [
+                            [
+                                "multi_match" => [
+                                    "query"  => $data['query'],
+                                    "fields" => [
+                                        "rt",
+                                        "rt._2gram",
+                                        "rt._3gram"
+                                    ]
+                                ]
+                            ]
+                        ],
+                        "filter" => [
+                            [
+                                "term" => [
+                                    "module" => "customers"
+                                ]
+                            ]
+                        ],
+                        "should" => [
+                            [
+                                "rank_feature" => [
+                                    "field" => "weight"
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                '_source'=>['icon_classes','label_1','label_2','label_3','label_4','url'],
+                'size'=>$max_results
+            ]
+
+
+
+
+    ];
+
+
+
+
+
+    $result = $client->search($params);
+
+
+
+
+
+  //  print_r($result);
+
+
+    $response = array(
+        'state'          => 200,
+        'number_results' => $result['hits']['total']['value'],
+        'results'        => $result['hits']['hits'],
+        'query'=>$query,
+        'class'=>'customers'
+
+    );
+    echo json_encode($response);
+    exit;
+
+    $queries = trim($data['query']);
 
     if ($queries == '') {
         $response = array(

@@ -52,8 +52,16 @@ class ES_indexer {
         $this->primary      = array();
         $this->secondary    = array();
         $this->alias        = array();
-        $this->weight       = 1;
+        $this->weight       = 50;
         $this->status       = '';
+        $this->real_time    = array();
+        $this->module       = '';
+        $this->scopes        = array();
+        $this->icon_classes='';
+        $this->label_1='';
+        $this->label_2='';
+        $this->label_3='';
+        $this->label_4='';
 
     }
 
@@ -77,15 +85,63 @@ class ES_indexer {
 
     private function add_customer() {
 
+        $this->module='customers';
+
         $this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
         $this->url   = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
+
+        $this->real_time[] = $this->object->id;
+        $this->real_time[] = $this->object->get('Name');
+        $this->real_time[] = $this->object->get('Customer Tax Number');
+        $this->real_time[] = $this->object->get('Customer Main Plain Email');
+        $this->real_time[] = $this->object->get('Contact');
+
+        $this->label_1=$this->object->get_formatted_id('',6);
+        $this->label_2=$this->object->get('Name');
+        $this->label_3=$this->object->get('Customer Main Plain Email');
+        $this->label_4=$this->object->get('Location');
+
+
+        if(in_array($this->object->get('Customer Contact Address Country 2 Alpha Code'),array('GB','IM','JE','GG','GI','CA')) ){
+            $this->real_time[] = $this->object->get('Customer Contact Address Postal Code');
+            $this->label_4.=' '.$this->object->get('Customer Contact Address Postal Code');
+        }
+
+        $this->real_time[] = $this->object->get('Contact');
 
 
         $this->status = $this->object->get('Customer Type by Activity');
 
-        $this->primary[] = 'C'.$this->object->get_formatted_id();
 
-        $this->primary[] = $this->object->get_formatted_id();
+        //'Rejected','ToApprove','Active','Losing','Lost'
+        switch ($this->object->get('Customer Type by Activity')){
+            case 'Rejected':
+                $this->icon_classes='fal fa-user-times error';
+
+                $this->weight=10;
+                break;
+            case 'ToApprove':
+                $this->icon_classes='fal fa-user purple';
+
+                $this->weight=70;
+                break;
+            case 'Active':
+                $this->icon_classes='fa fa-user valid';
+                $this->weight=70;
+                break;
+            case 'Losing':
+                $this->icon_classes='far fa-user discreet';
+                $this->weight=40;
+                break;
+            case 'Lost':
+                $this->icon_classes='fal fa-user very_discreet';
+                $this->weight=30;
+                break;
+                }
+
+
+
+
         $this->primary[] = $this->object->id;
 
         $this->primary[] = $this->object->get('Name');
@@ -236,7 +292,9 @@ class ES_indexer {
             'index' => strtolower('au_'.$this->account_code),
             'id'    => $prefix.$this->object->id,
             'body'  => array(
+                'rt'           => $this->flatten($this->real_time),
                 'url'          => $this->url,
+                'module'          => $this->module,
                 'object'       => $object,
                 'status'       => $this->status,
                 'weight'       => $this->weight,
@@ -244,7 +302,12 @@ class ES_indexer {
                 'primary'      => $this->flatten($this->primary),
                 'secondary'    => $this->flatten($this->secondary),
                 'alias'        => $this->flatten($this->alias),
-                'store_key'    => $store_key
+                'store_key'    => $store_key,
+                'icon_classes' => $this->icon_classes,
+                'label_1' => $this->label_1,
+                'label_2' => $this->label_2,
+                'label_3' => $this->label_3,
+                'label_4' => $this->label_4,
             )
         ];
 

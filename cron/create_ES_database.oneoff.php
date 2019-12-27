@@ -27,44 +27,76 @@ $params = [
 
         'mappings' => array(
 
-                'properties' => array(
-                    'url'       => array(
-                        'type' => 'keyword',
-                        'index' => false
-                    ),
-                    'object'       => array(
-                        'type' => 'keyword',
-                        'index' => false
-                    ),
-                    'status'       => array(
-                        'type' => 'keyword',
-                        'index' => false
+            'properties' => array(
+                'rt' => array(
+                    'type'=> 'search_as_you_type'
+                ),
 
-                    ),
-                    'weight'       => array(
-                        'type' => 'byte',
+                'url'          => array(
+                    'type'  => 'keyword',
+                    'index' => false
+                ),
+                'object'       => array(
+                    'type'  => 'keyword',
+                    'index' => false
+                ),
+                'module'       => array(
+                    'type'  => 'keyword',
 
-                    ),
-                    'result_label'       => array(
-                        'type' => 'text',
-                        'index' => false
-                    ),
-                    'primary' => array(
-                        'type' => 'text'
-                    ),
-                    'secondary' => array(
-                        'type' => 'text'
-                    ),
-                    'alias' => array(
-                        'type' => 'text'
-                    ),
-                    'store_key'       => array(
-                        'type' => 'short',
+                ),
+                'status'       => array(
+                    'type'  => 'keyword',
+                    'index' => false
 
-                    ),
-                )
+                ),
+
+                'result_label' => array(
+                    'type'  => 'text',
+                    'index' => false
+                ),
+                'icon_classes' => array(
+                    'type'  => 'text',
+                    'index' => false
+                ),
+                'label_1' => array(
+                    'type'  => 'text',
+                    'index' => false
+                ),
+                'label_2' => array(
+                    'type'  => 'text',
+                    'index' => false
+                ),
+                'label_3' => array(
+                    'type'  => 'text',
+                    'index' => false
+                ),
+                'label_4' => array(
+                    'type'  => 'text',
+                    'index' => false
+                ),
+
+                'primary'      => array(
+                    'type' => 'text'
+                ),
+                'secondary'    => array(
+                    'type' => 'text'
+                ),
+                'alias'        => array(
+                    'type' => 'text'
+                ),
+                'store_key'    => array(
+                    'type' => 'short',
+
+                ),
+                'weight'       => array(
+                    'type'  => 'rank_feature',
+                ),
+                'scopes'       => array(
+                    'type'  => 'rank_features',
+                ),
             )
-        
+        )
+
     ),
 
 ];

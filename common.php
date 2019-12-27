@@ -68,6 +68,7 @@ $session        = new Session($sessionStorage);
 $session->start();
 
 $session->set('account', $account->get('Code'));
+$_SESSION['account']= $account->get('Code');
 
 if ($session->get('timezone') == '' or !date_default_timezone_set($session->get('timezone'))) {
     if ($account->get('Account Timezone') or !date_default_timezone_set($account->get('Account Timezone'))) {

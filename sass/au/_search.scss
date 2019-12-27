@@ -1,3 +1,44 @@
+
+.smart_search_result{
+  position: absolute;background-color: white;width: 800px;border:1px solid #ccc;right: 0px;top:26px;padding: 2px 4px;z-index: 2000;color: #333;
+
+  .search_result_title{
+    width: 100%;border-bottom: 1px solid #eee;color:grey;
+  }
+
+  .results{
+    width: 100%;
+    td{padding: 1px 10px;border-bottom: 1px solid #e0e0e0}
+
+    .icon{
+      width: 30px;
+    }
+
+    .icon{
+      width: 30px;
+    }
+    .col_1{
+      width: 20%;
+    }
+    .col_2{
+      width: 25%;
+    }
+    .col_3{
+      width: 25%;
+    }
+
+    .customers  .col_1{
+      width: auto;
+      max-width: 80px;
+    }
+
+
+  }
+
+}
+
+
+
 #search_form {
   float: right;
   border-left: 1px solid #aaa;

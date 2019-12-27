@@ -921,10 +921,10 @@ abstract class DB_Table extends stdClass {
         return $history_key;
     }
 
-    function get_formatted_id($prefix = '') {
+    function get_formatted_id($prefix = '',$zero_fill=4) {
 
 
-        return sprintf("%s%04d", $prefix, $this->id);
+        return sprintf("%s%0".$zero_fill."d", $prefix, $this->id);
     }
 
     function get_update_metadata() {

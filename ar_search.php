@@ -9,6 +9,9 @@
 
 */
 
+
+
+
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
@@ -54,7 +57,7 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'stores';
                 }
-                search_customers($db, $account,$user, $data);
+                search_customers( $data);
             } elseif ($data['state']['module'] == 'orders') {
                 if ($data['state']['current_store']) {
                     $data['scope']     = 'store';
