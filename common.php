@@ -63,6 +63,8 @@ if ($account->get('Account State') != 'Active') {
 require_once 'utils/modules.php';
 
 
+
+
 $sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
 $session        = new Session($sessionStorage);
 $session->start();
@@ -168,6 +170,9 @@ if ($user->id) {
         case 'Agent':
             break;
     }
+
+    $modules=get_modules($user);
+
 } else {
     $locale = $account->get('Locale').'.UTF-8';
 }

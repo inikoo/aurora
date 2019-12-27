@@ -68,8 +68,8 @@ $session        = new Session($sessionStorage);
 $session->start();
 $session->set('account', $account->get('Code'));
 
-require_once 'utils/modules.php';
-
+//require_once 'utils/modules.php';
+$modules=array();
 
 require_once 'utils/ar_common.php';
 

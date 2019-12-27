@@ -82,6 +82,14 @@ if ($user->can_view('stores')) {
         );
     }
 
+    $nav_menu[] = array(
+        '<i class="button far fa-bullhorn fa-fw"></i>',
+        _('Mailshots'),
+        'mailshots',
+        'mailshots',
+        'module',
+        ''
+    );
 
     $nav_menu[] = array(
         '<i class="button far fa-globe fa-fw"></i>',
