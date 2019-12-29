@@ -21,6 +21,7 @@
     "phpoffice/phpspreadsheet": "^1.9",
     "rbdwllr/reallysimplejwt": "^2.1",
     "elasticsearch/elasticsearch": "^7.4",
-    "giggsey/libphonenumber-for-php": "^8.11"
+    "giggsey/libphonenumber-for-php": "^8.11",
+    "ext-zlib": "*"
   }
 }

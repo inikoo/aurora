@@ -249,6 +249,29 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                 break;
 
+            case 'mailroom':
+                /*
+                if (!$user->can_view('mailroom')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+*/
+                $module = 'mailroom';
+
+
+                if ($view_path[0] == 'all') {
+                    $module  = 'mailroom_server';
+                    $section = 'notifications';
+                    if (isset($view_path[1])) {
+                        if ($view_path[1] == 'notifications') {
+                            $section = 'notifications';
+                        }
+                    }
+
+                }
+
+                break;
             case 'charge':
                 if (!$user->can_view('stores')) {
                     $module  = 'utils';

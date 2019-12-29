@@ -14,7 +14,10 @@ require 'common.php';
 
 require 'vendor/autoload.php';
 
+update_prospects_index($db);
+
 update_customers_index($db);
+exit;
 update_webpages_index($db);
 update_parts_index($db);
 update_orders_index($db);
@@ -132,6 +135,35 @@ function update_customers_index($db) {
 
 }
 
+/**
+ * @param $db \PDO
+ */
+function update_prospects_index($db) {
+    $object_name='Prospects';
+    $hosts     = get_ES_hosts();
+    $print_est = true;
+
+    $total = get_total_objects($db, $object_name);
+    $lap_time0 = date('U');
+    $contador  = 0;
+
+
+    $sql = "select `Prospect Key` from `Prospect Dimension` order by `Prospect Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+
+        $object = get_object('Prospect', $row['Prospect Key']);
+        $object->index_elastic_search($hosts);
+
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+
+    }
+
+}
 
 
 
@@ -151,6 +183,9 @@ function get_total_objects($db, $object_name) {
     switch ($object_name) {
         case 'Customers':
             $sql = "select count(*) as num from `Customer Dimension`";
+            break;
+        case 'Prospects':
+            $sql = "select count(*) as num from `Prospect Dimension`";
             break;
         case 'Orders':
             $sql = "select count(*) as num from `Order Dimension`";

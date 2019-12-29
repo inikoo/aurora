@@ -10,19 +10,19 @@
  Version 3.0
 */
 
-function get_mailshots_server_module() {
+function get_mailroom_server_module() {
     return array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
-        'section'     => 'mailshots',
+        'section'     => 'mailroom',
         'sections'    => array(
 
-            'email_communications' => array(
+            'notifications' => array(
                 'type'      => 'navigation',
                 'label'     => _('Notifications.').' ('._('All stores').')',
                 'icon'      => '',
-                'reference' => 'customers/all/email_communications',
+                'reference' => 'mailroom/all/notifications',
                 'tabs'      => array(
                     'mailshots' => array()
                 )

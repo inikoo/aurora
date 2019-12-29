@@ -18,13 +18,17 @@ require 'vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/_all
+//curl -X DELETE 'http://localhost:9200/_all';
 
 
 $params = [
     'index' => strtolower('au_'.$account->get('Code')),
     'body'  => array(
-
+        'settings'=>array(
+            'analysis'=>array(
+                'analyzer'=>'icu_analyzer'
+            )
+        ),
         'mappings' => array(
 
             'properties' => array(

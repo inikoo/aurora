@@ -127,6 +127,18 @@ html, body, textarea,button {
 
   }
 
+  .green {
+    color: #13D13D;
+
+  }
+  .yellow {
+    color: #FCBE07
+
+  }
+  .red {
+    color: #F25056;
+
+  }
 
   input.error {
     color: $color_error;
@@ -1631,4 +1643,26 @@ h2.dashboard{
 
 .recargo_equivalencia{
   color:#F67D23;
+}
+
+.opacity_90{
+  opacity: .9;
+}
+.opacity_80{
+  opacity: .8;
+}
+.opacity_70{
+  opacity: .7;
+}
+.opacity_60{
+  opacity: .6;
+}
+.opacity_50{
+  opacity: .5;
+}
+.opacity_40{
+  opacity: .4;
+}
+.opacity_30{
+  opacity: .3;
 }

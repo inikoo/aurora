@@ -27,28 +27,7 @@ function get_customers_module() {
                 )
             ),
 
-            'prospects' => array(
-                'type'      => 'navigation',
-                'label'     => _('Prospects'),
-                'title'     => _('Prospects'),
-                'icon'      => 'user-friends',
-                'reference' => 'prospects/%d',
-                'tabs'      => array(
 
-                    'prospects'                 => array(
-                        'label' => _('Prospects')
-                    ),
-                    'prospects.mailshots'       => array(
-                        'label' => _('Mailshots')
-                    ),
-                    'prospects.email_templates' => array(
-                        'label' => _('Email templates')
-                    ),
-
-                )
-
-
-            ),
 
             'upload' => array(
                 'type' => 'object',
@@ -64,7 +43,7 @@ function get_customers_module() {
             'customers' => array(
                 'type'      => 'navigation',
                 'label'     => _('Customers'),
-                'icon'      => 'users',
+                'icon'      => 'user',
                 'reference' => 'customers/%d',
                 'tabs'      => array(
                     'customers' => array()
@@ -419,36 +398,6 @@ function get_customers_module() {
                 )
             ),
 
-            'prospects.email_template' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'prospects.template.details'  => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'prospects.template.workshop' => array(
-                        'label' => _('Workshop'),
-                        'icon'  => 'wrench'
-                    ),
-
-
-                )
-
-            ),
-
-
-            'prospects.template.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'prospects.template.new' => array(
-                        'label' => _(
-                            'New invitation template'
-                        )
-                    ),
-
-                )
-
-            ),
 
 
             'poll_query' => array(
@@ -509,7 +458,6 @@ function get_customers_module() {
 
                 )
             ),
-
             'poll_query_option.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -520,7 +468,6 @@ function get_customers_module() {
                 )
 
             ),
-
             'deleted_customer_poll_query_option' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -532,7 +479,6 @@ function get_customers_module() {
 
                 )
             ),
-
             'deleted_customer' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -543,44 +489,6 @@ function get_customers_module() {
 
 
                 )
-            ),
-
-            'prospect' => array(
-                'type'      => 'object',
-                'label'     => _('Prospect'),
-                'title'     => _('Prospect'),
-                'icon'      => 'user-plus',
-                'reference' => 'prospect/%d',
-
-                'tabs' => array(
-                    'prospect.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-
-                    'prospect.history' => array(
-                        'label' => _('Communications, history, notes'),
-                        'icon'  => 'comment'
-                    ),
-
-                    'prospect.sent_emails' => array(
-                        'label' => _('Sent emails'),
-                        'icon'  => 'paper-plane'
-                    ),
-
-                )
-            ),
-
-
-            'prospect.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'prospect.new' => array(
-                        'label' => _('New prospect')
-                    ),
-
-                )
-
             ),
 
             'email_tracking'         => array(
@@ -609,7 +517,6 @@ function get_customers_module() {
                 )
 
             ),
-
             'product' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -663,6 +570,92 @@ function get_customers_module() {
                         ),
                         'icon'          => 'box',
                         'class'         => 'right icon_only'
+                    ),
+
+                )
+
+            ),
+
+            'prospects' => array(
+                'type'      => 'navigation',
+                'label'     => _('Prospects'),
+                'title'     => _('Prospects'),
+                'icon'      => 'user-alien',
+                'reference' => 'prospects/%d',
+                'tabs'      => array(
+
+                    'prospects'                 => array(
+                        'label' => _('Prospects')
+                    ),
+                    'prospects.mailshots'       => array(
+                        'label' => _('Mailshots')
+                    ),
+                    'prospects.email_templates' => array(
+                        'label' => _('Email templates')
+                    ),
+
+                )
+
+
+            ),
+            'prospect' => array(
+                'type'      => 'object',
+                'label'     => _('Prospect'),
+                'title'     => _('Prospect'),
+                'icon'      => 'user-plus',
+                'reference' => 'prospect/%d',
+
+                'tabs' => array(
+                    'prospect.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+                    'prospect.history' => array(
+                        'label' => _('Communications, history, notes'),
+                        'icon'  => 'comment'
+                    ),
+
+                    'prospect.sent_emails' => array(
+                        'label' => _('Sent emails'),
+                        'icon'  => 'paper-plane'
+                    ),
+
+                )
+            ),
+            'prospect.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'prospect.new' => array(
+                        'label' => _('New prospect')
+                    ),
+
+                )
+
+            ),
+            'prospects.email_template' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'prospects.template.details'  => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'prospects.template.workshop' => array(
+                        'label' => _('Workshop'),
+                        'icon'  => 'wrench'
+                    ),
+
+
+                )
+
+            ),
+            'prospects.template.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'prospects.template.new' => array(
+                        'label' => _(
+                            'New invitation template'
+                        )
                     ),
 
                 )

@@ -187,6 +187,13 @@ function change_menu_view(module) {
                 change_view('stores')
             }
             break;
+        case 'mailroom':
+            if (state.current_store) {
+                change_view('mailroom/' + state.current_store)
+            } else {
+                change_view('mailroom/all')
+            }
+            break;
         case 'websites':
             if (state.current_website) {
                 change_view('website/' + state.current_website)

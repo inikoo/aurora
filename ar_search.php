@@ -57,7 +57,7 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'stores';
                 }
-                search_customers( $data);
+                search_customers( $data,$user);
             } elseif ($data['state']['module'] == 'orders') {
                 if ($data['state']['current_store']) {
                     $data['scope']     = 'store';

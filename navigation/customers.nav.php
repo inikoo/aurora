@@ -908,56 +908,6 @@ function get_customers_server_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_email_communications_server_navigation($data, $smarty, $user, $db) {
-
-
-    require_once 'class.Store.php';
-
-    $branch = array(
-        array(
-            'label'     => '',
-            'icon'      => 'home',
-            'reference' => ''
-        )
-    );
-
-
-    $left_buttons = array();
-
-    $title = _('Customer notifications');
-
-
-    $right_buttons = array();
-    $sections      = get_sections('customers_server');
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-    $_content = array(
-        'branch'         => $branch,
-        'sections_class' => '',
-        'sections'       => $sections,
-
-        'left_buttons'  => $left_buttons,
-        'right_buttons' => $right_buttons,
-        'title'         => $title,
-        'search'        => array(
-            'show'        => true,
-            'placeholder' => _(
-                'Search customers all stores'
-            )
-        )
-
-    );
-    $smarty->assign('content', $_content);
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
 
 function get_customer_navigation($data, $smarty, $user, $db) {
 

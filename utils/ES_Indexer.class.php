@@ -56,12 +56,12 @@ class ES_indexer {
         $this->status       = '';
         $this->real_time    = array();
         $this->module       = '';
-        $this->scopes        = array();
-        $this->icon_classes='';
-        $this->label_1='';
-        $this->label_2='';
-        $this->label_3='';
-        $this->label_4='';
+        $this->scopes       = array();
+        $this->icon_classes = '';
+        $this->label_1      = '';
+        $this->label_2      = '';
+        $this->label_3      = '';
+        $this->label_4      = '';
 
     }
 
@@ -70,6 +70,9 @@ class ES_indexer {
         switch ($this->object->get_object_name()) {
             case 'Customer':
                 $this->add_customer();
+                break;
+            case 'Prospect':
+                $this->add_prospect();
                 break;
             case 'Order':
                 $this->add_order();
@@ -85,7 +88,10 @@ class ES_indexer {
 
     private function add_customer() {
 
-        $this->module='customers';
+        $this->module = 'customers';
+        $this->scopes=array(
+            'customers'=>100
+        );
 
         $this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
         $this->url   = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
@@ -94,52 +100,57 @@ class ES_indexer {
         $this->real_time[] = $this->object->get('Name');
         $this->real_time[] = $this->object->get('Customer Tax Number');
         $this->real_time[] = $this->object->get('Customer Main Plain Email');
-        $this->real_time[] = $this->object->get('Contact');
+        $this->real_time[] = $this->object->get('Customer Main Contact Name');
 
-        $this->label_1=$this->object->get_formatted_id('',6);
-        $this->label_2=$this->object->get('Name');
-        $this->label_3=$this->object->get('Customer Main Plain Email');
-        $this->label_4=$this->object->get('Location');
+        $this->label_1 = $this->object->get_formatted_id('', 6);
+        $this->label_2 = $this->object->get('Name');
+        $this->label_3 = $this->object->get('Customer Main Plain Email');
+        $this->label_4 = $this->object->get('Location');
 
 
-        if(in_array($this->object->get('Customer Contact Address Country 2 Alpha Code'),array('GB','IM','JE','GG','GI','CA')) ){
+        if (in_array(
+            $this->object->get('Customer Contact Address Country 2 Alpha Code'), array(
+                                                                                   'GB',
+                                                                                   'IM',
+                                                                                   'JE',
+                                                                                   'GG',
+                                                                                   'GI',
+                                                                                   'CA'
+                                                                               )
+        )) {
             $this->real_time[] = $this->object->get('Customer Contact Address Postal Code');
-            $this->label_4.=' '.$this->object->get('Customer Contact Address Postal Code');
+            $this->label_4     .= ' '.$this->object->get('Customer Contact Address Postal Code');
         }
-
-        $this->real_time[] = $this->object->get('Contact');
 
 
         $this->status = $this->object->get('Customer Type by Activity');
 
 
         //'Rejected','ToApprove','Active','Losing','Lost'
-        switch ($this->object->get('Customer Type by Activity')){
+        switch ($this->object->get('Customer Type by Activity')) {
             case 'Rejected':
-                $this->icon_classes='fal fa-user-times error';
+                $this->icon_classes = 'far fa-user-times error';
 
-                $this->weight=10;
+                $this->weight = 10;
                 break;
             case 'ToApprove':
-                $this->icon_classes='fal fa-user purple';
+                $this->icon_classes = 'far fa-user | fa fa-circle-notch purple opacity_50';
 
-                $this->weight=70;
+                $this->weight = 70;
                 break;
             case 'Active':
-                $this->icon_classes='fa fa-user valid';
-                $this->weight=70;
+                $this->icon_classes = 'far fa-user| fa fa-circle green opacity_50';
+                $this->weight       = 70;
                 break;
             case 'Losing':
-                $this->icon_classes='far fa-user discreet';
-                $this->weight=40;
+                $this->icon_classes = 'far fa-user | fa fa-circle yellow opacity_50';
+                $this->weight       = 40;
                 break;
             case 'Lost':
-                $this->icon_classes='fal fa-user very_discreet';
-                $this->weight=30;
+                $this->icon_classes = 'far fa-user | fa fa-circle red opacity_50';
+                $this->weight       = 30;
                 break;
-                }
-
-
+        }
 
 
         $this->primary[] = $this->object->id;
@@ -294,7 +305,7 @@ class ES_indexer {
             'body'  => array(
                 'rt'           => $this->flatten($this->real_time),
                 'url'          => $this->url,
-                'module'          => $this->module,
+                'module'       => $this->module,
                 'object'       => $object,
                 'status'       => $this->status,
                 'weight'       => $this->weight,
@@ -304,12 +315,17 @@ class ES_indexer {
                 'alias'        => $this->flatten($this->alias),
                 'store_key'    => $store_key,
                 'icon_classes' => $this->icon_classes,
-                'label_1' => $this->label_1,
-                'label_2' => $this->label_2,
-                'label_3' => $this->label_3,
-                'label_4' => $this->label_4,
+                'label_1'      => $this->label_1,
+                'label_2'      => $this->label_2,
+                'label_3'      => $this->label_3,
+                'label_4'      => $this->label_4,
+
             )
         ];
+
+        if(count( $this->scopes)>0){
+            $params['body']['scopes']=$this->scopes;
+        }
 
 
         $this->client->index($params);
@@ -326,6 +342,116 @@ class ES_indexer {
         $string = preg_replace('/\n/', ' ', $string);
 
         return $string;
+
+    }
+
+    private function add_prospect() {
+
+        $this->module = 'customers';
+        $this->scopes=array(
+            'prospects'=>100,
+            'customers'=>10
+        );
+
+        $this->label = $this->object->get('Name').' '.$this->object->get('Location');
+        $this->url   = sprintf('prospects/%d/%d', $this->object->get('Prospect Store Key'), $this->object->id);
+
+        $this->real_time[] = $this->object->get('Name');
+        $this->real_time[] = $this->object->get('Prospect Tax Number');
+        $this->real_time[] = $this->object->get('Prospect Main Plain Email');
+        $this->real_time[] = $this->object->get('Prospect Main Contact Name');
+
+        $this->label_1 = '';
+        $this->label_2 = $this->object->get('Name');
+        $this->label_3 = $this->object->get('Prospect Main Plain Email');
+        $this->label_4 = $this->object->get('Location');
+
+
+        if (in_array(
+            $this->object->get('Prospect Contact Address Country 2 Alpha Code'), array(
+                                                                                   'GB',
+                                                                                   'IM',
+                                                                                   'JE',
+                                                                                   'GG',
+                                                                                   'GI',
+                                                                                   'CA'
+                                                                               )
+        )) {
+            $this->real_time[] = $this->object->get('Prospect Contact Address Postal Code');
+            $this->label_4     .= ' '.$this->object->get('Customer Contact Address Postal Code');
+        }
+
+        $this->status = $this->object->get('Prospect Status');
+
+
+        //''NoContacted','Contacted','NotInterested','Registered','Invoiced','Bounced'
+        switch ($this->object->get('Prospect Status')) {
+            case 'NoContacted':
+                $this->icon_classes = 'fal fa-user-alien discreet |  fa fa-circle-notch purple opacity_50';
+
+                $this->weight = 25;
+                break;
+            case 'Contacted':
+                $this->icon_classes = 'fal fa-user-alien discreet|  fa fa-circle purple opacity_50';
+
+                $this->weight = 20;
+                break;
+            case 'NotInterested':
+                $this->icon_classes = 'fal fa-user-alien discreet|fa  fa-circle red opacity_50 ';
+                $this->weight       = 20;
+                break;
+            case 'Registered':
+                $this->icon_classes = 'fal fa-user-alien discreet| fa  fa-circle green opacity_50';
+                $this->weight       = 10;
+                break;
+            case 'Invoiced':
+                $this->icon_classes = 'fal fa-user-alien discreet | fa  fa-circle green opacity_50';
+                $this->weight       = 10;
+                break;
+            case 'Bounced':
+                $this->icon_classes = 'fal fa-user-alien discreet| fa  fa-exclamation-circle red opacity_50';
+                $this->weight       = 15;
+                break;
+        }
+
+
+        $this->primary[] = $this->object->id;
+
+        $this->primary[] = $this->object->get('Name');
+        $this->primary[] = $this->object->get('Main Contact Name');
+        $this->primary[] = $this->object->get('Prospect Main Plain Email');
+
+
+        list($address_tokens, $address_aux) = $this->tokenize_address('Contact');
+        $this->primary = array_merge($this->primary, $address_tokens);
+        $this->alias   = array_merge($this->alias, $address_aux);
+
+
+        list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Mobile'), $this->object->get('Prospect Contact Address Country 2 Alpha Code'));
+        $this->primary = array_merge($this->primary, $tel_tokens);
+        $this->alias   = array_merge($this->alias, $tel_aux);
+
+        list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Telephone'), $this->object->get('Prospect Contact Address Country 2 Alpha Code'));
+        $this->primary   = array_merge($this->primary, $tel_tokens);
+        $this->alias     = array_merge($this->alias, $tel_aux);
+        $this->primary[] = $this->object->get('Sticky Note');
+        $this->secondary = array_diff($this->secondary, $this->primary);
+
+        $sql  = "select `History Details`,`History Abstract` from `Prospect History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`) where    B.`Prospect Key`=? and `Type`='Notes'  ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->object->id
+            )
+        );
+
+        while ($row = $stmt->fetch()) {
+            $this->secondary[] = $row['History Details'];
+            $this->secondary[] = $row['History Abstract'];
+        }
+
+        $this->remove_duplicated_tokens();
+        $this->add_index('cp', 'Prospect', $this->object->get('Prospect Store Key'));
 
     }
 

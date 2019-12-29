@@ -232,7 +232,8 @@ $user_groups = array(
             'CV',
             'CE',
             'SV',
-            'PV'
+            'PV',
+            'MRV'
 
         ),
         'Stores_Scope'     => true,
@@ -256,6 +257,8 @@ $user_groups = array(
             'PV',
             'OV',
             'OE',
+
+            'MRV'
 
 
         ),
@@ -281,7 +284,8 @@ $user_groups = array(
             'WV',
             'SS',
             'MS',
-            'WS'
+            'WS',
+            'MRV'
 
         ),
         'Stores_Scope'     => true,
@@ -303,6 +307,7 @@ $user_groups = array(
             'ME',
             'WE',
             'WV',
+            'MV'
 
 
         ),
@@ -350,6 +355,7 @@ $user_groups = array(
         )
 
     ),
+
     27 => array(
         'Key'    => 27,
         'Name'   => _('Inventory'),
@@ -386,6 +392,31 @@ $user_groups = array(
         )
 
     ),
+    29 => array(
+        'Key'    => 29,
+        'Name'   => _('Mailroom'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'MRV',
+            'MRE',
 
+
+        )
+
+    ),
+    30 => array(
+        'Key'    => 30,
+        'Name'   => _('Mailroom supervisor'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'MRV',
+            'MRE',
+            'MRS'
+
+        )
+
+    ),
 
 );

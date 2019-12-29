@@ -2139,6 +2139,19 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_website_new_navigation($data, $smarty);
             }
             break;
+        case ('mailroom_server'):
+            require_once 'navigation/mailroom.nav.php';
+            switch ($data['section']) {
+                case 'notifications':
+                    return get_notifications_server_navigation(
+                        $data, $smarty
+                    );
+
+
+
+
+            }
+            break;
         case ('customers'):
             require_once 'navigation/customers.nav.php';
 
@@ -2322,10 +2335,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db
                     );
 
-                case('email_communications'):
-                    return get_email_communications_server_navigation(
-                        $data, $smarty, $user, $db
-                    );
+
 
             }
 

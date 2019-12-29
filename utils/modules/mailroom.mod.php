@@ -10,9 +10,9 @@
  Version 3.0
 */
 
-function get_mailshots_module() {
+function get_mailroom_module() {
     return array(
-        'section'     => 'mailshots',
+        'section'     => 'mailroom',
         'parent'      => 'store',
         'parent_type' => 'key',
         'sections'    => array(

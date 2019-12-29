@@ -245,7 +245,26 @@
             </span>
             <span data-group_id="9" class=" button permission_store_scope permission_type {if 9|in_array:$user_groups}{else}discreet_on_hover{/if}">
             <i class="far {if 9|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
-            <span title="{t}Create, edit products, send newsletters and marketing emails, create and edit webpages{/t}" class="padding_right_10">{t}Worker{/t}</span>
+            <span title="{t}Create, edit products, create and edit webpages{/t}" class="padding_right_10">{t}Worker{/t}</span>
+            </span>
+
+
+        </td>
+
+    </tr>
+    <tr>
+        <td class="icons"><i class="far fa-fw fa-mail-bulk"></i></td>
+
+        <td class="label">{t}Mailroom (Notifications & Mailshots){/t} </td>
+
+        <td>
+             <span data-group_id="30" class=" button permission_store_scope permission_type {if 30|in_array:$user_groups}{else}discreet_on_hover{/if}">
+            <i class="far {if 30|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
+            <span title="{t}Worker permissions plus notifications management{/t}" class="padding_right_10">{t}Supervisor{/t}</span>
+            </span>
+            <span data-group_id="29" class=" button permission_store_scope permission_type {if 29|in_array:$user_groups}{else}discreet_on_hover{/if}">
+            <i class="far {if 29|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
+            <span title="{t}Edit notifications, send newsletters and marketing emails{/t}" class="padding_right_10">{t}Worker{/t}</span>
             </span>
 
 
@@ -254,8 +273,7 @@
     </tr>
 
     <tr class="permission_stores
-    {if 18|in_array:$user_groups or 9|in_array:$user_groups or 16|in_array:$user_groups or 2|in_array:$user_groups   }{else}invisible{/if}
-">
+    {if 18|in_array:$user_groups or 9|in_array:$user_groups or 16|in_array:$user_groups or 2|in_array:$user_groups   }{else}invisible{/if}">
         <td colspan="3" style="padding-top: 0px;;padding-bottom: 0px">
             <div style="margin: 5px 0px">
                 {foreach from=$stores item=store}

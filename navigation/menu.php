@@ -56,7 +56,27 @@ if ($user->can_view('customers')) {
 
 }
 
+
+if ($user->can_view('mailroom')) {
+
+
+    $nav_menu[] = array(
+        '<i class="button far fa-mail-bulk fa-fw"></i>',
+        _('Mailroom'),
+        'mailroom',
+        'mailroom',
+        'module',
+        ''
+    );
+
+
+
+
+
+}
+
 if ($user->can_view('stores')) {
+
 
 
 
@@ -82,14 +102,6 @@ if ($user->can_view('stores')) {
         );
     }
 
-    $nav_menu[] = array(
-        '<i class="button far fa-bullhorn fa-fw"></i>',
-        _('Mailshots'),
-        'mailshots',
-        'mailshots',
-        'module',
-        ''
-    );
 
     $nav_menu[] = array(
         '<i class="button far fa-globe fa-fw"></i>',

@@ -51,6 +51,20 @@ $user_rights = array(
     ),
 
 
+
+    'MRV' => array(
+        'Right Type' => 'View',
+        'Right Name' => 'mailroom'
+    ),
+    'MRE' => array(
+        'Right Type' => 'Edit',
+        'Right Name' => 'mailroom'
+    ),
+    'MRS' => array(
+        'Right Type' => 'Supervisor',
+        'Right Name' => 'mailroom'
+    ),
+
     'CS' => array(
         'Right Type' => 'Supervisor',
         'Right Name' => 'customers'

@@ -43,8 +43,8 @@ function get_modules($user) {
             $modules['orders_server'] = get_orders_server_module();
             $modules['orders']        = get_orders_module();
 
-            $modules['mailshots_server'] = get_mailshots_server_module();
-            $modules['mailshots']        = get_mailshots_module();
+            $modules['mailroom_server'] = get_mailroom_server_module();
+            $modules['mailroom']        = get_mailroom_module();
 
             $modules['delivery_notes_server'] = get_delivery_notes_server_module();
             $modules['delivery_notes']        = get_delivery_notes_module();
