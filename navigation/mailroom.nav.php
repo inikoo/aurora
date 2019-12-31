@@ -972,8 +972,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
             $next_title = $_tmp2;
         }
 
-       print_r($data);
-        exit;
+
         switch ($data['parent']) {
 
             case 'email_campaign_type':
@@ -983,7 +982,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 } elseif ($data['_parent']->get('Email Campaign Type Scope') == 'Customer Notification') {
                     $parent_section = 'notifications';
                 } else {
-                    $parent_section = 'notifications';
+                    $parent_section = 'staff_notifications';
 
                 }
 
