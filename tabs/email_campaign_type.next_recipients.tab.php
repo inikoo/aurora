@@ -17,7 +17,7 @@ $parameters = array(
 );
 
 
-$ar_file = 'ar_mailshots_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 
 
 

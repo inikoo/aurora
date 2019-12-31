@@ -9,9 +9,6 @@
 
 */
 
-//
-
-//$where=" where  `Email Campaign Type Code` in ('GR Reminder','AbandonedCart','OOS Notification','Registration','Password Reminder','Order Confirmation','Delivery Confirmation','Invite','Invite Mailshot') ";
 
 
 switch ($parameters['parent']) {
@@ -63,4 +60,4 @@ $fields =
 $sql_totals = "select count(*) as num from $table $where ";
 
 
-?>
+

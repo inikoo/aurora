@@ -18,6 +18,17 @@ function get_mailroom_server_module() {
         'section'     => 'mailroom',
         'sections'    => array(
 
+            'group_by_store' => array(
+                'type'      => 'navigation',
+                'label'     => _('Group by store'),
+                'icon'      => 'compress',
+                'reference' => 'mailroom/all/by_store',
+                'tabs'      => array(
+                    'mailroom_group_by_store' => array()
+                )
+
+            ),
+        /*
             'notifications' => array(
                 'type'      => 'navigation',
                 'label'     => _('Notifications.').' ('._('All stores').')',
@@ -27,7 +38,7 @@ function get_mailroom_server_module() {
                     'mailshots' => array()
                 )
             ),
-
+*/
         )
 
     );;

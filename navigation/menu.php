@@ -70,15 +70,9 @@ if ($user->can_view('mailroom')) {
     );
 
 
-
-
-
 }
 
 if ($user->can_view('stores')) {
-
-
-
 
 
     if ($user->get('User Hooked Store Key')) {
@@ -111,7 +105,6 @@ if ($user->can_view('stores')) {
         'module',
         ''
     );
-
 
 
 }
@@ -179,9 +172,7 @@ if ($user->can_view('orders')) {
 }
 
 
-
 if ($user->can_view('locations')) {
-
 
 
     if ($user->get('User Hooked Warehouse Key')) {
@@ -328,7 +319,7 @@ if ($user->can_view('staff')) {
 }
 
 
-if ($user->can_view('sales_reports') or  $user->can_view('customers_reports') or  $user->can_view('suppliers_reports') or  $user->can_view('inventory_reports') or   $user->can_view('kpis_reports') or   $user->can_view('users_reports')   ) {
+if ($user->can_view('sales_reports') or $user->can_view('customers_reports') or $user->can_view('suppliers_reports') or $user->can_view('inventory_reports') or $user->can_view('kpis_reports') or $user->can_view('users_reports')) {
     $nav_menu[] = array(
         '<i class="button far fa-chart-line fa-fw"></i>',
         _('Reports'),
@@ -445,40 +436,32 @@ if ($user->can_view('account')) {
 $current_item = $data['module'];
 if ($current_item == 'customers_server') {
     $current_item = 'customers';
-}
-if ($current_item == 'dashboard') {
+} elseif ($current_item == 'dashboard') {
     $current_item = '_dashboard';
-}
-if ($current_item == 'marketing_server') {
+} elseif ($current_item == 'marketing_server') {
     $current_item = 'marketing';
-}
-if ($current_item == 'products_server') {
+} elseif ($current_item == 'products_server') {
     $current_item = 'products';
-}
-if ($current_item == 'orders_server') {
+} elseif ($current_item == 'orders_server') {
     $current_item = 'orders';
-}
-if ($current_item == 'accounting_server') {
+} elseif ($current_item == 'accounting_server') {
     $current_item = 'accounting';
-}
-if ($current_item == 'invoices_server') {
+} elseif ($current_item == 'invoices_server') {
     $current_item = 'invoices';
-}
-if ($current_item == 'delivery_notes_server') {
+} elseif ($current_item == 'delivery_notes_server') {
     $current_item = 'delivery_notes';
-}
-if ($current_item == 'inventory_server') {
+} elseif ($current_item == 'inventory_server') {
     $current_item = 'inventory';
-}
-if ($current_item == 'warehouses_server') {
+} elseif ($current_item == 'warehouses_server') {
     $current_item = 'warehouses';
-}
-if ($current_item == 'production_server') {
+} elseif ($current_item == 'production_server') {
     $current_item = 'production';
-}
-
-if ($current_item == 'accounting_server') {
+} elseif ($current_item == 'accounting_server') {
     $current_item = 'payments';
+}elseif ($current_item == 'mailroom_server') {
+    $current_item = 'mailroom';
+}elseif ($current_item == 'websites_server') {
+    $current_item = 'websites';
 }
 
 if ($data['object'] == 'order') {

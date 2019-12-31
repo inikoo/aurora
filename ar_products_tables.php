@@ -88,9 +88,7 @@ switch ($tipo) {
     case 'customers':
         customers(get_table_parameters(), $db, $user);
         break;
-    case 'user_notifications':
-        user_notifications(get_table_parameters(), $db, $user);
-        break;
+
     case 'category_correlations':
         category_sales_correlations(get_table_parameters(), $db, $user);
         break;
@@ -1980,128 +1978,6 @@ function back_to_stock_notification_request_customers($_data, $db, $user) {
     echo json_encode($response);
 }
 
-
-function user_notifications($_data, $db, $user) {
-
-    $rtext_label = 'operational email';
-
-
-    include_once 'prepare_table/init.php';
-
-
-    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-    //print $sql;
-
-    $adata = array();
-
-
-    foreach ($db->query($sql) as $data) {
-
-
-        switch ($data['Email Campaign Type Code']) {
-            case 'New Order':
-                $_type = _('New order');
-                break;
-            case 'New Customer':
-                $_type = _('New registration');
-
-                break;
-            case 'Invoice Deleted':
-                $_type = _('Invoice deleted');
-
-                break;
-            case 'Delivery Note Undispatched':
-                $_type = _('Delivery note undispatched');
-
-                break;
-
-            default:
-                $_type = $data['Email Campaign Type Code'];
-
-
-        }
-
-
-        $type = sprintf('<span class="link" onClick="change_view(\'store/%d/notifications/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $_type);
-
-
-        $adata[] = array(
-            'id' => (integer)$data['Email Campaign Type Key'],
-
-            '_type'       => $_type,
-            'type'        => $type,
-            'subscribers' => number($data['Email Campaign Type Subscribers']),
-            'sent'        => number($data['Email Campaign Type Sent']),
-
-            'hard_bounces' => sprintf(
-                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Hard Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Hard Bounces']),
-                percentage($data['Email Campaign Type Hard Bounces'], $data['Email Campaign Type Sent'])
-            ),
-            'soft_bounces' => sprintf(
-                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Soft Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Soft Bounces']),
-                percentage($data['Email Campaign Type Soft Bounces'], $data['Email Campaign Type Sent'])
-            ),
-
-            'bounces' => sprintf(
-                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Bounces']),
-                percentage($data['Email Campaign Type Bounces'], $data['Email Campaign Type Sent'])
-            ),
-
-            'delivered' => ($data['Email Campaign Type Sent'] == 0 ? '<span class="super_discreet">'._('NA').'</span>' : number($data['Email Campaign Type Delivered'])),
-
-            'open'    => sprintf(
-                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ''), number($data['Email Campaign Type Open']), percentage($data['Email Campaign Type Open'], $data['Email Campaign Type Delivered'])
-            ),
-            'clicked' => sprintf(
-                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ''), number($data['Email Campaign Type Clicked']), percentage($data['Email Campaign Type Clicked'], $data['Email Campaign Type Delivered'])
-            ),
-            'spam'    => sprintf(
-                '<span class="%s " title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Spams'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Spams']),
-                percentage($data['Email Campaign Type Spams'], $data['Email Campaign Type Delivered'])
-            ),
-
-
-        );
-
-    }
-
-    if ($_order == 'type') {
-
-
-        $type = array();
-        foreach ($adata as $key => $row) {
-            $type[$key] = $row['_type'];
-        }
-
-
-        if ($_dir == 'desc') {
-            array_multisort($type, SORT_DESC, $adata);
-
-        } else {
-            array_multisort($type, SORT_ASC, $adata);
-
-        }
-
-
-    }
-
-    // print_r($_order);
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 
 function category_sales_correlations($_data, $db, $user) {

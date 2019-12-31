@@ -18,7 +18,7 @@ $parameters = array(
 
 
 $tab     = 'mailshot.sent_emails';
-$ar_file = 'ar_mailshots_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'sent_emails';
 
 $smarty->assign('mailshot_type', $state['_object']->get('Email Campaign Type'));

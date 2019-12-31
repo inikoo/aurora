@@ -16,26 +16,34 @@ function get_mailroom_module() {
         'parent'      => 'store',
         'parent_type' => 'key',
         'sections'    => array(
+
+            'marketing' => array(
+                'type'  => 'navigation',
+                'label' => _('Marketing'),
+
+                'icon'      => 'bullhorn',
+                'reference' => 'mailroom/%d',
+                'tabs'      => array(
+                    'marketing_emails' => array(
+                        'label' => _('Marketing emails'),
+                        'icon'  => 'tags',
+                    ),
+
+
+                )
+
+            ),
+
             'customer_notifications' => array(
                 'type'      => 'navigation',
-                'label'     => _('Notifications'),
-                'icon'      => 'paper-plane',
-                'reference' => 'customers/%s/notifications',
+                'label'     => _('Customers notifications'),
+                'icon'      => 'user',
+                'reference' => 'mailroom/%s/notifications',
 
 
                 'tabs' => array(
 
-                    /*
-                    'email_campaigns.newsletters' => array(
-                        'label' => _('Newsletters'),
-                        'icon'  => 'newspaper'
-                    ),
-                    'email_campaigns.mailshots'   => array(
-                        'label' => _('Marketing mailshots'),
-                        'icon'  => 'bullhorn'
-                    ),
 
-  */
                     'customer_notifications' => array(
                         'label' => _('Operations'),
                         'icon'  => 'handshake-alt',
@@ -44,29 +52,52 @@ function get_mailroom_module() {
                     ),
 
 
-                    /*
-                    'contacts'       => array(
-                        'label' => _('Contacts')
-                    ),
-                    'customers'      => array(
-                        'label' => _('Customers')
-                    ),
-                    'orders'         => array(
-                        'label' => _('Orders')
-                    ),
-                    'data_integrity' => array(
-                        'label' => _('Data Integrity')
-                    ),
-
-                    'correlations'   => array(
-                        'label' => _('Correlations')
-                    ),
-                    */
 
                 )
             ),
 
+            'user_notifications' => array(
+                'type'      => 'navigation',
+                'label'     => _('Staff notifications'),
+                'icon'      => 'bell',
+                'reference' => 'mailroom/%s/staff_notifications',
 
+
+                'tabs' => array(
+
+
+                    'user_notifications' => array(
+                        'label' => _('Notifications'),
+                        'icon'  => 'bell',
+
+
+                    ),
+
+
+
+                )
+            ),
+/*
+            'store.notifications'    => array(
+                'label'   => _('Notifications'),
+                'icon'    => 'bell',
+                'subtabs' => array(
+
+                    'user_notifications' => array(
+                        'label' => _('Notifications by type'),
+                        'icon'  => 'bell-school',
+                    ),
+
+                    'store.notifications_recipients' => array(
+                        'label' => _('Recipients'),
+                        'icon'  => 'ear ',
+                    ),
+
+
+                ),
+            ),
+
+*/
             'email_campaign_type' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -107,6 +138,14 @@ function get_mailroom_module() {
 
             'mailshot' => array(
                 'type' => 'object',
+                'subtabs_parent' => array(
+                    'mailshot.workshop.templates'              => 'mailshot.workshop',
+                    'mailshot.workshop.previous_mailshots'     => 'mailshot.workshop',
+                    'mailshot.workshop.other_stores_mailshots' => 'mailshot.workshop',
+                    'mailshot.workshop.composer'               => 'mailshot.workshop',
+                    'mailshot.workshop.composer_text'          => 'mailshot.workshop',
+
+                ),
                 'tabs' => array(
                     'mailshot.details'       => array(
                         'label' => _('Settings'),
@@ -125,7 +164,34 @@ function get_mailroom_module() {
 
                     'mailshot.workshop' => array(
                         'label' => _('Workshop'),
-                        'icon'  => 'wrench'
+                        'icon'  => 'wrench',
+                        'subtabs' => array(
+
+                            'mailshot.workshop.composer'      => array(
+                                'label'   => _('HTML email composer'),
+                                'icon_v2' => 'fab fa-html5'
+                            ),
+                            'mailshot.workshop.composer_text' => array(
+                                'label' => _('Plain text version'),
+                                'icon'  => 'align-left'
+                            ),
+
+                            'mailshot.workshop.templates' => array(
+                                'label' => _('Templates'),
+                                'icon'  => 'clone'
+                            ),
+
+                            'mailshot.workshop.previous_mailshots'     => array(
+                                'label' => _('Previous mailshots'),
+                                'icon'  => 'history'
+                            ),
+                            'mailshot.workshop.other_stores_mailshots' => array(
+                                'label' => _('Other stores mailshots'),
+                                'icon'  => 'repeat-1'
+                            ),
+
+
+                        )
                     ),
 
                     'mailshot.published_email' => array(
@@ -158,6 +224,24 @@ function get_mailroom_module() {
 
                 )
 
+            ),
+
+            'email_tracking' => array(
+                'type'  => 'object',
+                'title' => _("Email tracking"),
+
+                'tabs' => array(
+                    'email_tracking.email' => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope',
+                    ),
+
+                    'email_tracking.events' => array(
+                        'label' => _('Tracking'),
+                        'icon'  => 'stopwatch'
+                    ),
+
+                )
             ),
 
         )

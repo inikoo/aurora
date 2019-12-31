@@ -19,8 +19,7 @@ var websocket_connected = false;
 var websocket_connected_connecting = false;
 
 
-$(document).ready(function () {
-
+$(function () {
 
     state = {
         module: '', section: '', parent: '', parent_key: '', object: '', key: ''
@@ -54,7 +53,6 @@ $(document).ready(function () {
         }
 
     }, 60000);
-
 
 
 })
@@ -300,7 +298,7 @@ function change_view(_request, metadata) {
         request_data.tab = metadata.tab
     } else if (metadata.subtab != undefined) {
         request_data.subtab = metadata.subtab
-    }
+    }selected
 
 
     $.ajax({
@@ -335,20 +333,15 @@ function change_view(_request, metadata) {
 
                 if (typeof (data.logout_label) != "undefined" && data.logout_label !== null) {
                     $('#logout_label').html(data.logout_label);
-
-
                 }
 
 
                 if (typeof (data.view_position) != "undefined" && data.view_position !== null) {
-
                     $('#view_position').html(data.view_position);
                 }
 
 
                 if (typeof (data.object_showcase) != "undefined" && data.object_showcase !== null) {
-
-
                     if (data.object_showcase == '_') {
                         $('#object_showcase').addClass('hide').html('')
                     } else {
@@ -356,8 +349,6 @@ function change_view(_request, metadata) {
                         $('#object_showcase').removeClass('hide')
                         $('#object_showcase').html(data.object_showcase);
                     }
-                } else {
-                    //  $('#object_showcase').addClass('hide')
                 }
 
 

@@ -3147,7 +3147,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             if (!$parent->error) {
 
                 $new_object_html   = '';
-                $redirect          = 'marketing/'.$object->get('Store Key').'/emails/'.$object->get('Email Campaign Email Template Type Key').'/mailshot/'.$object->id;
+                $redirect          = 'mailroom/'.$object->get('Store Key').'/marketing/'.$object->get('Email Campaign Email Template Type Key').'/mailshot/'.$object->id;
                 $redirect_metadata = array('tab' => 'mailshot.workshop');
 
                 $updated_data = array();

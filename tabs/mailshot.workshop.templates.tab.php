@@ -9,11 +9,14 @@
 
 */
 
+/**
+ * @var $mailshot \EmailCampaign
+ */
+$mailshot=$state['_object'];
 
-$email_template=get_object('EmailTemplate',$state['_object']->get('Email Campaign Email Template Key'));
-$email_template_type=get_object('EmailTemplateType',$state['_object']->get('Email Campaign Email Template Type Key'));
+$email_template=get_object('EmailTemplate',$mailshot->get('Email Campaign Email Template Key'));
+$email_template_type=get_object('EmailTemplateType',$mailshot->get('Email Campaign Email Template Type Key'));
 
-//$control_blueprint_template = 'control.email_campaign_type.blueprints.tpl';
 
 
 $tab     = 'mailshot.email_blueprints';
@@ -30,10 +33,9 @@ $table_filters = array(
 
 $parameters = array(
     'parent'     => 'Mailshot',
-    'parent_key' => $state['_object']->id,
+    'parent_key' => $mailshot->id,
     'email_template_type_code'=>$email_template_type->get('Email Campaign Type Code'),
-
-    'email_template_type_key'=>$state['_object']->get('Email Campaign Email Template Type Key'),
+    'email_template_type_key'=>$mailshot->get('Email Campaign Email Template Type Key'),
     'redirect' => base64_url_encode('mailshot.workshop'),
 );
 
@@ -41,11 +43,9 @@ $parameters = array(
 
 
 $smarty->assign('scope', 'Mailshot');
-$smarty->assign('scope_key', $state['_object']->id);
+$smarty->assign('scope_key', $mailshot->id);
 
-$smarty->assign('role', $state['_object']->get('Email Campaign Type'));
-
-//$smarty->assign('blueprints_redirect', 'mailshot.workshop');
+$smarty->assign('role', $mailshot->get('Email Campaign Type'));
 $smarty->assign('email_template_redirect', '&tab=mailshot.workshop');
 $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');
 
@@ -54,4 +54,3 @@ $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');
 include 'utils/get_table_html.php';
 
 
-?>

@@ -1624,7 +1624,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         case 'invoice':
         case 'refund':
             include_once 'showcase/invoice.show.php';
-            $html         = get_invoice_showcase($data, $smarty, $user, $db,$account);
+            $html         = get_invoice_showcase($data, $smarty, $user, $db, $account);
             $title        = $data['_object']->get('Public ID');
             $web_location = '<i class="fal fa-fw fa-file-invoice-dollar"></i> '.$title;
 
@@ -2110,29 +2110,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('shipping_option.new'):
                     return get_shipping_option_new_navigation($data, $smarty, $user, $db, $account);
 
-                case 'email_campaign_type':
 
 
-                    if ($data['_object']->get('Email Campaign Type Scope') == 'User Notification') {
-                        return get_user_notification_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
-
-                    } else {
-                        return get_marketing_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
-
-                    }
-
-                case ('mailshot'):
-                    return get_mailshot_navigation($data, $smarty, $user, $db, $account);
-
-                case ('email_tracking'):
-                    return get_email_tracking_navigation($data, $smarty, $user, $db, $account, $account);
 
                 case 'shipping_zone_schema':
                     return get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $account, $account);
 
 
-                case ('mailshot.new'):
-                    return get_mailshot_new_navigation($data, $smarty, $user, $db, $account);
+
                 case ('settings'):
                     return get_settings_navigation($data, $smarty);
                 case 'website.new':
@@ -2142,19 +2127,64 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('mailroom_server'):
             require_once 'navigation/mailroom.nav.php';
             switch ($data['section']) {
+                /*
                 case 'notifications':
                     return get_notifications_server_navigation(
                         $data, $smarty
                     );
+                break;
+                */
+                case 'group_by_store':
+                    return get_group_by_store_server_navigation(
+                        $data, $smarty
+                    );
+                    break;
 
 
+            }
+            break;
+        case ('mailroom'):
+            require_once 'navigation/mailroom.nav.php';
+            switch ($data['section']) {
 
+                case 'customer_notifications':
+                    return get_subject_notifications_navigation(
+                        'customers',$data, $smarty, $user, $db
+                    );
+                case 'user_notifications':
+                    return get_subject_notifications_navigation(
+                        'staff',$data, $smarty, $user, $db
+                    );
+
+                case 'marketing':
+                    return get_subject_notifications_navigation(
+                        'marketing',$data, $smarty, $user, $db
+                    );
+
+                case 'email_campaign_type':
+
+                    if ($data['_object']->get('Email Campaign Type Scope') == 'User Notification') {
+                        return get_user_notification_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
+
+                    }elseif ($data['_object']->get('Email Campaign Type Scope') == 'Customer Notification') {
+                    return get_customer_notification_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
+
+                } else {
+                        return get_marketing_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
+
+                    }
+                case ('mailshot'):
+                    return get_mailshot_navigation($data, $smarty, $user, $db, $account);
+
+                case ('email_tracking'):
+                    return get_email_tracking_navigation($data, $smarty, $user, $db, $account, $account);
+                case ('mailshot.new'):
+                    return get_mailshot_new_navigation($data, $smarty);
 
             }
             break;
         case ('customers'):
             require_once 'navigation/customers.nav.php';
-
 
 
             switch ($data['section']) {
@@ -2334,7 +2364,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_customers_server_navigation(
                         $data, $smarty, $user, $db
                     );
-
 
 
             }
@@ -3853,6 +3882,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
                     } else {
                         $data['tab']         = 'mailshot.workshop';
+
+
                         $_content['subtabs'] = $modules[$data['module']]['sections'][$data['section']] ['tabs']['mailshot.workshop']['subtabs'];
 
 
@@ -5208,8 +5239,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            }
-            elseif ($state['section'] == 'customer') {
+            } elseif ($state['section'] == 'customer') {
 
 
                 if ($state['parent'] == 'campaign') {
@@ -5259,8 +5289,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                 }
 
-            }
-            elseif ($state['section'] == 'website') {
+            } elseif ($state['section'] == 'website') {
 
                 $branch[]               = array(
                     'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
@@ -5651,13 +5680,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
 
-                    if($state['_parent']->get('Code')=='OR') {
+                    if ($state['_parent']->get('Code') == 'OR') {
                         $branch[] = array(
                             'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Deal Component Allowance Target Label').'</span>',
                             'icon'      => 'tag',
                             'reference' => ''
                         );
-                    }else{
+                    } else {
                         $branch[] = array(
                             'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Name Label').'</span>',
                             'icon'      => 'tag',
@@ -5666,10 +5695,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     }
 
 
-
-
-                }
-                elseif ($state['parent'] == 'category') {
+                } elseif ($state['parent'] == 'category') {
 
 
                     $category = $state['_parent'];
@@ -5721,8 +5747,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     }
 
                 }
-
-
 
 
             } else {
@@ -6318,6 +6342,20 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             }
             break;
+
+        case 'mailroom_server':
+
+
+            $branch[] = array(
+                'label'     => _('Mailroom').' ('._('All stores').')',
+                'icon'      => 'mail-bulk',
+                'reference' => ''
+            );
+
+
+            break;
+
+
         case 'suppliers':
             if ($state['section'] == 'dashboard') {
                 $branch[] = array(
@@ -7595,188 +7633,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             break;
 
-
-        /*
-        case 'invoices':
-            $branch[] = array(
-                'label'     => '',
-                'icon'      => 'bars',
-                'reference' => 'receipts'
-            );
-
-            switch ($state['section']) {
-
-
-
-                case 'payments':
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label' => _('Payments').' ('._(
-                                    'All stores'
-                                ).')',
-                            'icon'  => '',
-                            'url'   => 'invoices/payments/all'
-                        );
-                    }
-                    break;
-
-                case 'invoice':
-
-                    if ($state['parent'] == 'customer') {
-
-                        $customer = new Customer($state['parent_key']);
-                        if ($customer->id) {
-                            if ($user->get_number_stores() > 1) {
-
-
-                                $branch[] = array(
-                                    'label'     => _(
-                                        'Customers (All stores)'
-                                    ),
-                                    'icon'      => '',
-                                    'reference' => 'customers/all'
-                                );
-
-                            }
-
-                            $store = new Store(
-                                $customer->data['Customer Store Key']
-                            );
-
-
-                            $branch[] = array(
-                                'label'     => _(
-                                        'Customers'
-                                    ).' '.$store->data['Store Code'],
-                                'icon'      => 'users',
-                                'reference' => 'customers/'.$store->id
-                            );
-                            $branch[] = array(
-                                'label'     => _(
-                                        'Customer'
-                                    ).' '.$customer->get_formatted_id(),
-                                'icon'      => 'user',
-                                'reference' => 'customer/'.$customer->id
-                            );
-                        }
-
-
-                    } else {
-                        $store = new Store(
-                            $state['_object']->data['Invoice Store Key']
-                        );
-
-                        if ($user->get_number_stores() > 1) {
-                            $branch[] = array(
-                                'label'     => '('._('All stores').')',
-                                'icon'      => '',
-                                'reference' => 'invoices/all'
-                            );
-                        }
-                        $branch[] = array(
-                            'label'     => _('Invoices').' '.$store->data['Store Code'],
-                            'icon'      => '',
-                            'reference' => 'invoices/'.$store->id
-                        );
-
-
-                    }
-                    $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
-                        'reference' => ''
-                    );
-
-                    break;
-
-                case 'delivery_note':
-
-                    $store = new Store(
-                        $state['_object']->data['Delivery Note Store Key']
-                    );
-
-
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label'     => '('._('All stores').')',
-                            'icon'      => '',
-                            'reference' => 'invoices/all'
-                        );
-                    }
-                    $branch[] = array(
-                        'label'     => _('Invoices').' '.$store->data['Store Code'],
-                        'icon'      => '',
-                        'reference' => 'invoices/'.$store->id
-                    );
-
-                    $parent   = new Invoice($state['parent_key']);
-                    $branch[] = array(
-                        'label'     => $parent->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
-                        'reference' => 'invoices/'.$store->id.'/'.$state['parent_key']
-                    );
-
-
-                    $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Delivery Note ID'
-                        ),
-                        'icon'      => 'truck fa-flip-horizontal',
-                        'reference' => ''
-                    );
-                    break;
-
-
-                case 'order':
-
-                    $store = new Store(
-                        $state['_object']->data['Order Store Key']
-                    );
-
-
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label'     => '('._('All stores').')',
-                            'icon'      => '',
-                            'reference' => 'invoices/all'
-                        );
-                    }
-                    $branch[] = array(
-                        'label'     => _('Invoices').' '.$store->data['Store Code'],
-                        'icon'      => '',
-                        'reference' => 'invoices/'.$store->id
-                    );
-
-                    $parent   = new Invoice($state['parent_key']);
-                    $branch[] = array(
-                        'label'     => $parent->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
-                        'reference' => 'invoices/'.$store->id.'/'.$state['parent_key']
-                    );
-
-
-                    $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Order Public ID'
-                        ),
-                        'icon'      => 'shopping-cart',
-                        'reference' => ''
-                    );
-                    break;
-
-
-            }
-
-
-            break;
-
-        */
 
         case 'help':
             switch ($state['section']) {

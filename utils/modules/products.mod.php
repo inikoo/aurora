@@ -111,7 +111,107 @@ function get_products_module() {
                 )
 
             ),
+            'category'          => array(
+                'type'           => 'object',
+                'subtabs_parent' => array(
+                    'category.product.sales.plot'     => 'category.sales',
+                    'category.product.sales.history'  => 'category.sales',
+                    'category.product.sales.calendar' => 'category.sales',
+                    'category.product.sales.info'     => 'category.sales',
 
+                    'category.customers'         => 'category.customers',
+                    'category.customers.favored' => 'category.customers',
+
+                ),
+                'tabs'           => array(
+                    'category.details'    => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'category.categories' => array(
+                        'label' => _(
+                            'Subcategories'
+                        )
+                    ),
+
+                    'category.sales' => array(
+                        'label'   => _('Sales'),
+                        'icon'    => 'money-bill-alt',
+                        'subtabs' => array(
+                            'category.product.sales.plot'     => array(
+                                'label' => _(
+                                    'Plot'
+                                )
+                            ),
+                            'category.product.sales.history'  => array(
+                                'label' => _(
+                                    'Sales history'
+                                )
+                            ),
+                            'category.product.sales.calendar' => array(
+                                'label' => _(
+                                    'Calendar'
+                                )
+                            ),
+                            'category.product.sales.info'     => array(
+                                'label' => _('Info'),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
+                            ),
+
+                        )
+
+                    ),
+
+                    'category.subjects'        => array('label' => ''),
+                    'category.customers'       => array(
+                        'label' => _('Customers'),
+                        // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
+                        'icon'  => 'user'
+                    ),
+                    'category.deal_components' => array(
+                        'label' => _('Offers'),
+                        'icon'  => 'tags'
+                    ),
+
+
+                    'category.mailshots' => array(
+                        'label' => _('Mailshots'),
+                        'icon'  => 'bullhorn'
+                    ),
+
+                    'category.sales_correlation' => array(
+                        'title' => _('Sales correlations'),
+                        'label' => _('Correlations'),
+                        'icon'  => 'project-diagram',
+                    ),
+
+
+                    'category.history' => array(
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
+                    ),
+                    'category.images'  => array(
+                        'title'         => _('Images'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Images'
+                        ),
+                        'icon'          => 'camera-retro',
+                        'class'         => 'right icon_only'
+                    ),
+
+
+                )
+
+            ),
 
             'website.new' => array(
                 'type' => 'new_object',
@@ -145,22 +245,7 @@ function get_products_module() {
 
             ),
 
-            'marketing' => array(
-                'type'  => 'navigation',
-                'label' => _('Marketing'),
 
-                'icon'      => 'bullhorn',
-                'reference' => 'marketing/%d/emails',
-                'tabs'      => array(
-                    'marketing_emails' => array(
-                        'label' => _('Marketing emails'),
-                        'icon'  => 'tags',
-                    ),
-
-
-                )
-
-            ),
 
 
             'settings' => array(
@@ -174,7 +259,7 @@ function get_products_module() {
 
                     'store.current_shipping_zones'   => 'store.shipping_zones',
                     'store.shipping_zones_schemas'   => 'store.shipping_zones',
-                    'user_notifications'             => 'store.notifications',
+
                     'store.notifications_recipients' => 'store.notifications',
 
 
@@ -212,24 +297,7 @@ function get_products_module() {
                         ),
                     ),
 
-                    'store.notifications'    => array(
-                        'label'   => _('Notifications'),
-                        'icon'    => 'bell',
-                        'subtabs' => array(
 
-                            'user_notifications' => array(
-                                'label' => _('Notifications by type'),
-                                'icon'  => 'bell-school',
-                            ),
-
-                            'store.notifications_recipients' => array(
-                                'label' => _('Recipients'),
-                                'icon'  => 'ear ',
-                            ),
-
-
-                        ),
-                    ),
                     'localization.materials' => array(
                         'label' => _('Localization (Materials/Ingredients)'),
                         'icon'  => 'language',
@@ -247,7 +315,7 @@ function get_products_module() {
 
             ),
 
-
+/*
             'email_campaign_type' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -284,8 +352,6 @@ function get_products_module() {
 
                 )
             ),
-
-
             'mailshot' => array(
                 'type'           => 'object',
                 'title'          => _("Mailshot"),
@@ -366,7 +432,6 @@ function get_products_module() {
 
                 )
             ),
-
             'mailshot.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -396,7 +461,7 @@ function get_products_module() {
 
                 )
             ),
-
+*/
             'vouchers' => array(
                 'type'  => 'object',
                 'title' => _("Vouchers"),
@@ -691,107 +756,7 @@ function get_products_module() {
             ),
 
 
-            'category'          => array(
-                'type'           => 'object',
-                'subtabs_parent' => array(
-                    'category.product.sales.plot'     => 'category.sales',
-                    'category.product.sales.history'  => 'category.sales',
-                    'category.product.sales.calendar' => 'category.sales',
-                    'category.product.sales.info'     => 'category.sales',
 
-                    'category.customers'         => 'category.customers',
-                    'category.customers.favored' => 'category.customers',
-
-                ),
-                'tabs'           => array(
-                    'category.details'    => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'category.categories' => array(
-                        'label' => _(
-                            'Subcategories'
-                        )
-                    ),
-
-                    'category.sales' => array(
-                        'label'   => _('Sales'),
-                        'icon'    => 'money-bill-alt',
-                        'subtabs' => array(
-                            'category.product.sales.plot'     => array(
-                                'label' => _(
-                                    'Plot'
-                                )
-                            ),
-                            'category.product.sales.history'  => array(
-                                'label' => _(
-                                    'Sales history'
-                                )
-                            ),
-                            'category.product.sales.calendar' => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
-                            'category.product.sales.info'     => array(
-                                'label' => _('Info'),
-                                'icon'  => 'info',
-                                'class' => 'right icon_only'
-                            ),
-
-                        )
-
-                    ),
-
-                    'category.subjects'        => array('label' => ''),
-                    'category.customers'       => array(
-                        'label' => _('Customers'),
-                        // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
-                        'icon'  => 'user'
-                    ),
-                    'category.deal_components' => array(
-                        'label' => _('Offers'),
-                        'icon'  => 'tags'
-                    ),
-
-
-                    'category.mailshots' => array(
-                        'label' => _('Mailshots'),
-                        'icon'  => 'bullhorn'
-                    ),
-
-                    'category.sales_correlation' => array(
-                        'title' => _('Sales correlations'),
-                        'label' => _('Correlations'),
-                        'icon'  => 'project-diagram',
-                    ),
-
-
-                    'category.history' => array(
-                        'title'         => _('History/Notes'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number History Records'
-                        ),
-                        'icon'          => 'road',
-                        'class'         => 'right icon_only'
-                    ),
-                    'category.images'  => array(
-                        'title'         => _('Images'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Images'
-                        ),
-                        'icon'          => 'camera-retro',
-                        'class'         => 'right icon_only'
-                    ),
-
-
-                )
-
-            ),
             'main_category.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -930,7 +895,6 @@ function get_products_module() {
 
                 )
             ),
-
 
             'charge' => array(
                 'type' => 'object',

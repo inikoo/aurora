@@ -174,43 +174,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     $section = 'shipping_zone.new';
                                 }
 
-                            } elseif ($view_path[1] == 'notifications') {
-
-
-                                if (isset($view_path[2])) {
-
-                                    $section    = 'user_notifications';
-                                    $parent     = 'store';
-                                    $parent_key = $key;
-                                    if (is_numeric($view_path[2])) {
-                                        $section = 'email_campaign_type';
-                                        $object  = 'email_campaign_type';
-                                        $key     = $view_path[2];
-
-                                        if (isset($view_path[3])) {
-                                            if ($view_path[3] == 'tracking') {
-
-
-                                                $section = 'email_tracking';
-
-                                                $parent     = 'email_campaign_type';
-                                                $parent_key = $key;
-
-                                                if (is_numeric($view_path[4])) {
-                                                    $section = 'email_tracking';
-                                                    $object  = 'email_tracking';
-                                                    $key     = $view_path[4];
-
-
-                                                }
-
-                                            }
-                                        }
-
-
-                                    }
-                                }
-
                             }
 
                         }
@@ -250,26 +213,231 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 break;
 
             case 'mailroom':
-                /*
+
                 if (!$user->can_view('mailroom')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
                 }
-*/
+
                 $module = 'mailroom';
 
 
                 if ($view_path[0] == 'all') {
                     $module  = 'mailroom_server';
                     $section = 'notifications';
+                    $section = 'group_by_store';
+
+                    if (isset($view_path[1])) {
+                        if ($view_path[1] == 'dashboard') {
+                            $section = 'dashboard';
+                        }
+                    }
+
+                }elseif(is_numeric($view_path[0])){
+                    $module  = 'mailroom';
+                    $parent='store';
+                    $parent_key=$view_path[0];
+                    $section = 'marketing';
                     if (isset($view_path[1])) {
                         if ($view_path[1] == 'notifications') {
-                            $section = 'notifications';
+                            $section = 'customer_notifications';
+
+                            if (isset($view_path[2])) {
+                                if (is_numeric($view_path[2])) {
+                                    $section = 'email_campaign_type';
+                                    $object  = 'email_campaign_type';
+                                    $key     = $view_path[2];
+
+                                    if (isset($view_path[3])) {
+                                        if ($view_path[3] == 'tracking') {
+
+
+                                            $section = 'email_tracking';
+
+                                            $parent     = 'email_campaign_type';
+                                            $parent_key = $key;
+
+                                            if (is_numeric($view_path[4])) {
+                                                $section = 'email_tracking';
+                                                $object  = 'email_tracking';
+                                                $key     = $view_path[4];
+
+
+                                            }
+
+                                        } elseif ($view_path[3] == 'mailshot') {
+
+
+                                            $section = 'mailshot';
+
+                                            $parent     = 'email_campaign_type';
+                                            $parent_key = $key;
+
+                                            if (is_numeric($view_path[4])) {
+                                                $section = 'mailshot';
+                                                $object  = 'mailshot';
+                                                $key     = $view_path[4];
+
+
+                                            }
+
+
+                                            if (isset($view_path[5])) {
+                                                if ($view_path[5] == 'tracking') {
+
+
+                                                    $section = 'email_tracking';
+
+                                                    $parent     = 'mailshot';
+                                                    $parent_key = $key;
+
+                                                    if (is_numeric($view_path[6])) {
+                                                        $section = 'email_tracking';
+                                                        $object  = 'email_tracking';
+                                                        $key     = $view_path[6];
+
+
+                                                    }
+                                                }
+                                            }
+
+                                            //===
+
+
+                                        }
+                                    }
+
+
+                                }
+                            }
+                        }
+                        elseif ($view_path[1] == 'marketing') {
+                            $section = 'marketing';
+                            if (isset($view_path[2])) {
+                                if(is_numeric($view_path[2])){
+                                    $section = 'email_campaign_type';
+                                    $object  = 'email_campaign_type';
+                                    $key = $view_path[2];
+
+                                    if (isset($view_path[3])) {
+                                        if ($view_path[3] == 'mailshot') {
+
+
+                                            $section = 'mailshot';
+
+                                            $parent     = 'email_campaign_type';
+                                            $parent_key = $key;
+
+
+                                            if (isset($view_path[4])) {
+                                                if (is_numeric($view_path[4])) {
+
+                                                    $section = 'mailshot';
+                                                    $object  = 'mailshot';
+                                                    $key     = $view_path[4];
+
+                                                    if (isset($view_path[5])) {
+
+
+                                                        if ($view_path[5] == 'tracking') {
+
+
+                                                            $section = 'email_tracking';
+
+                                                            $parent     = 'mailshot';
+                                                            $parent_key = $key;
+
+                                                            if (is_numeric($view_path[6])) {
+                                                                $section = 'email_tracking';
+                                                                $object  = 'email_tracking';
+                                                                $key     = $view_path[6];
+
+
+                                                            }
+
+                                                        }
+
+
+                                                    }
+
+
+                                                } elseif ($view_path[4] == 'new') {
+                                                    $object  = 'mailshot';
+                                                    $section = 'mailshot.new';
+                                                    $key     = 0;
+                                                }
+
+                                            }
+                                        }
+                                        elseif ($view_path[3] == 'tracking') {
+
+
+                                            $section = 'email_tracking';
+
+                                            $parent     = 'email_campaign_type';
+                                            $parent_key = $key;
+
+                                            if (is_numeric($view_path[4])) {
+                                                exit;
+                                                $section = 'email_tracking';
+                                                $object  = 'email_tracking';
+                                                $key     = $view_path[4];
+
+
+                                            }
+
+                                        }
+
+
+                                    }
+                                }
+                            }
+
+                        }
+                        elseif ($view_path[1] == 'staff_notifications') {
+
+
+
+                                $section    = 'user_notifications';
+
+
+                                if(isset($view_path[2])){
+
+                                if (is_numeric($view_path[2])) {
+                                    $section = 'email_campaign_type';
+                                    $object  = 'email_campaign_type';
+                                    $key     = $view_path[2];
+
+                                    if (isset($view_path[3])) {
+                                        if ($view_path[3] == 'tracking') {
+
+
+                                            $section = 'email_tracking';
+
+                                            $parent     = 'email_campaign_type';
+                                            $parent_key = $key;
+
+                                            if (is_numeric($view_path[4])) {
+                                                $section = 'email_tracking';
+                                                $object  = 'email_tracking';
+                                                $key     = $view_path[4];
+
+
+                                            }
+
+                                        }
+                                    }
+
+                                }
+                                }
+
+
                         }
                     }
 
                 }
+
 
                 break;
             case 'charge':
@@ -2023,78 +2191,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
                         } elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 
-                        } elseif ($view_path[0] == 'notifications') {
-                            $section = 'customer_notifications';
-
-                            if (isset($view_path[1])) {
-                                if (is_numeric($view_path[1])) {
-                                    $section = 'email_campaign_type';
-                                    $object  = 'email_campaign_type';
-                                    $key     = $view_path[1];
-
-                                    if (isset($view_path[2])) {
-                                        if ($view_path[2] == 'tracking') {
-
-
-                                            $section = 'email_tracking';
-
-                                            $parent     = 'email_campaign_type';
-                                            $parent_key = $key;
-
-                                            if (is_numeric($view_path[3])) {
-                                                $section = 'email_tracking';
-                                                $object  = 'email_tracking';
-                                                $key     = $view_path[3];
-
-
-                                            }
-
-                                        } elseif ($view_path[2] == 'mailshot') {
-
-
-                                            $section = 'mailshot';
-
-                                            $parent     = 'email_campaign_type';
-                                            $parent_key = $key;
-
-                                            if (is_numeric($view_path[3])) {
-                                                $section = 'mailshot';
-                                                $object  = 'mailshot';
-                                                $key     = $view_path[3];
-
-
-                                            }
-
-
-                                            if (isset($view_path[4])) {
-                                                if ($view_path[4] == 'tracking') {
-
-
-                                                    $section = 'email_tracking';
-
-                                                    $parent     = 'mailshot';
-                                                    $parent_key = $key;
-
-                                                    if (is_numeric($view_path[5])) {
-                                                        $section = 'email_tracking';
-                                                        $object  = 'email_tracking';
-                                                        $key     = $view_path[5];
-
-
-                                                    }
-                                                }
-                                            }
-
-                                            //===
-
-
-                                        }
-                                    }
-
-
-                                }
-                            }
-
                         } elseif ($view_path[0] == 'email_campaign_type') {
 
 
@@ -3012,124 +3108,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
                 break;
-            case 'marketing':
 
-
-                if (!$user->can_view('marketing')) {
-                    $module  = 'utils';
-                    $section = 'forbidden';
-                    break;
-                }
-
-
-                if (isset($view_path[0])) {
-                    if (is_numeric($view_path[0])) {
-
-
-                        if (isset($view_path[1])) {
-
-                            $parent     = 'store';
-                            $parent_key = $view_path[0];
-
-
-                            if ($view_path[1] == 'emails') {
-                                $module  = 'products';
-                                $section = 'marketing';
-                                if (isset($view_path[2])) {
-                                    if (is_numeric($view_path[2])) {
-
-                                        $section = 'email_campaign_type';
-                                        $object  = 'email_campaign_type';
-
-                                        $key = $view_path[2];
-
-
-                                        if (isset($view_path[3])) {
-                                            if ($view_path[3] == 'mailshot') {
-
-
-                                                $section = 'mailshot';
-
-                                                $parent     = 'email_campaign_type';
-                                                $parent_key = $key;
-
-
-                                                if (isset($view_path[4])) {
-                                                    if (is_numeric($view_path[4])) {
-
-                                                        $section = 'mailshot';
-                                                        $object  = 'mailshot';
-                                                        $key     = $view_path[4];
-
-                                                        if (isset($view_path[5])) {
-
-
-                                                            if ($view_path[5] == 'tracking') {
-
-
-                                                                $section = 'email_tracking';
-
-                                                                $parent     = 'mailshot';
-                                                                $parent_key = $key;
-
-                                                                if (is_numeric($view_path[6])) {
-                                                                    $section = 'email_tracking';
-                                                                    $object  = 'email_tracking';
-                                                                    $key     = $view_path[6];
-
-
-                                                                }
-
-                                                            }
-
-
-                                                        }
-
-
-                                                    } elseif ($view_path[4] == 'new') {
-                                                        $object  = 'mailshot';
-                                                        $section = 'mailshot.new';
-                                                        $key     = 0;
-                                                    }
-
-                                                }
-                                            } elseif ($view_path[3] == 'tracking') {
-
-
-                                                $section = 'email_tracking';
-
-                                                $parent     = 'email_campaign_type';
-                                                $parent_key = $key;
-
-                                                if (is_numeric($view_path[4])) {
-                                                    $section = 'email_tracking';
-                                                    $object  = 'email_tracking';
-                                                    $key     = $view_path[4];
-
-
-                                                }
-
-                                            }
-
-
-                                        }
-
-
-                                    }
-
-                                }
-                            }
-
-
-                        }
-
-
-                    }
-
-                }
-
-
-                break;
 
             case 'deals':
                 $module = 'products';

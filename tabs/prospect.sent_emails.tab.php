@@ -18,7 +18,7 @@ $parameters = array(
 
 
 $tab     = 'prospect.sent_emails';
-$ar_file = 'ar_mailshots_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'subject_sent_emails';
 
 

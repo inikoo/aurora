@@ -11,7 +11,7 @@
 
 
 $tab     = 'marketing_emails';
-$ar_file = 'ar_marketing_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'marketing_emails';
 
 $default = $user->get_tab_defaults($tab);
@@ -33,4 +33,4 @@ $parameters = array(
 include('utils/get_table_html.php');
 
 
-?>
+

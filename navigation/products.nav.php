@@ -3144,54 +3144,6 @@ function get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $accoun
 
 }
 
-
-function get_mailshot_new_navigation($data, $smarty, $user, $db, $account) {
-
-    $left_buttons = array();
-
-
-    switch ($data['parent']) {
-        case 'email_campaign_type':
-            $title                            = _('New mailshot');
-            $sections                         = get_sections('products', $data['_parent']->get('Store Key'));
-            $left_buttons[]                   = array(
-                'icon'      => 'arrow-up',
-                'title'     => _('Store').': '.$data['store']->get('Code'),
-                'reference' => 'marketing/'.$data['store']->id.'/emails/'.$data['_parent']->id,
-                'parent'    => ''
-            );
-            $sections['marketing']['selected'] = true;
-            break;
-        default:
-            exit('error in products.nav.php');
-            break;
-    }
-
-
-    $right_buttons = array();
-
-
-    $_content = array(
-        'sections_class' => '',
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search products')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-
-}
-
 /**
  * @param $data
  * @param $smarty \Smarty

@@ -48,7 +48,7 @@
             <i class="far fa-search"></i>
         </label>
         <form >
-            <input placeholder="Search" />
+            <input placeholder="{if !empty($_content.search.placeholder)}{$_content.search.placeholder}{else}{t}Search{/t}{/if}" />
         </form>
         <div class="options">
         <span class="close_search ">

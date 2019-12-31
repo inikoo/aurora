@@ -11,7 +11,7 @@
 
 
 $tab     = 'customer_notifications';
-$ar_file = 'ar_customers_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'customer_notifications';
 
 $default = $user->get_tab_defaults($tab);
