@@ -1,5 +1,4 @@
 <?php
-
 /*
 
  About:
@@ -11,14 +10,27 @@
  Version 2.0
 */
 
-
+/**
+ * Class Public_Payment_Account
+ */
 class Public_Payment_Account {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
 
-    function __construct($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false, $_db = false) {
 
-        global $db;
-        $this->db            = $db;
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
+
+
+
         $this->table_name    = 'Payment Account';
         $this->ignore_fields = array('Payment Account Key');
 
@@ -109,7 +121,6 @@ class Public_Payment_Account {
 
                 return $_tmp;
 
-                break;
 
             case 'Block Data':
 
@@ -117,8 +128,9 @@ class Public_Payment_Account {
                 if ($this->data['Payment Account Block'] == 'Paypal') {
 
 
-                    //$key=md5('83edh3847203942,'.CKEY);
-
+                    /**
+                     * @var $arg \Public_Order
+                     */
 
 
                     $key = 'xx';
@@ -205,25 +217,6 @@ class Public_Payment_Account {
                     return $_data;
 
 
-                    // require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
-
-
-                    /*
-
-                    Braintree_Configuration::environment('production');
-                    Braintree_Configuration::merchantId($this->data['Payment Account ID']);
-                    Braintree_Configuration::publicKey($this->data['Payment Account Login']);
-                    Braintree_Configuration::privateKey($this->data['Payment Account Password']);
-
-
-                    try {
-                        return Braintree_ClientToken::generate();
-                    } catch (Exception $e) {
-
-                        return 'error';
-
-                    }
-*/
 
                 }
 
@@ -245,48 +238,6 @@ class Public_Payment_Account {
     }
 
 
-    function in_website($website_key) {
-        $is_in_website = false;
-        $sql           = sprintf(
-            "SELECT count(*) AS num FROM `Payment Account Store Bridge` WHERE `Website Key`=%d AND `Payment Account Key`=%d ", $website_key, $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $is_in_website = true;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $is_in_website;
-    }
-
-
-    function is_active_in_website($website_key) {
-        $is_active_in_website = false;
-        $sql                  = sprintf(
-            "SELECT count(*) AS num FROM `Payment Account Store Bridge` WHERE `Website Key`=%d AND `Payment Account Key`=%d AND `Status`='Active'  ", $website_key, $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $is_active_in_website = true;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $is_active_in_website;
-    }
 
 
     function get_settings() {
