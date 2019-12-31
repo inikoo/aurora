@@ -299,20 +299,26 @@ class ES_indexer {
     }
 
     private function add_index($prefix, $object, $store_key = '') {
+
+
+
+
+
         $params = [
-            'index' => strtolower('au_'.$this->account_code),
+            'index' => strtolower('au_q_'.$this->account_code),
             'id'    => $prefix.$this->object->id,
             'body'  => array(
                 'rt'           => $this->flatten($this->real_time),
                 'url'          => $this->url,
                 'module'       => $this->module,
-                'object'       => $object,
-                'status'       => $this->status,
+                //'object'       => $object,
+                //'status'       => $this->status,
                 'weight'       => $this->weight,
-                'result_label' => $this->label,
-                'primary'      => $this->flatten($this->primary),
-                'secondary'    => $this->flatten($this->secondary),
-                'alias'        => $this->flatten($this->alias),
+                //'result_label' => $this->label,
+                //'primary'      => $this->flatten($this->primary),
+                //'secondary'    => $this->flatten($this->secondary),
+                //'alias'        => $this->flatten($this->alias),
+
                 'store_key'    => $store_key,
                 'icon_classes' => $this->icon_classes,
                 'label_1'      => $this->label_1,

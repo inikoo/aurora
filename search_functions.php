@@ -9,7 +9,6 @@
 
 */
 
-use Elasticsearch\ClientBuilder;
 
 function search_suppliers($db, $account, $user, $data) {
 
@@ -1850,145 +1849,10 @@ function search_products($db, $account, $user, $data) {
 }
 
 
-function search_customers($data,$user) {
-
-    if($data['scope']=='stores'){
-        $stores=$user->stores;
-
-    }else{
-        $stores=array($data['scope_key']);
-    }
+function search_customers_old($data,$user) {
 
 
-
-    switch ($data['state']['section']) {
-        case 'prospects':
-        case 'prospect':
-        case 'prospect.new':
-        case 'prospects.email_template':
-        case 'prospects.template.new':
-            $scopes = array(
-                'prospects' => 10
-            );
-            break;
-        default:
-            $scopes = array(
-                'customers' => 10
-            );
-    }
-
-
-    $query = trim($data['query']);
-
-    if ($query == '' or count($stores)==0) {
-        $response = array(
-            'state'          => 200,
-            'number_results' => 0,
-            'results'        => array(),
-            'query'          => ''
-
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-    $max_results = 16;
-
-
-    $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
-
-
-    $params = [
-        'index' => strtolower('au_'.$_SESSION['account']),
-
-        'body'    =>
-
-            [
-                "query" => [
-                    "bool" => [
-                        "must"   => [
-                            [
-                                "multi_match" => [
-                                    "query"  => $data['query'],
-
-                                    "type"=>      "bool_prefix",
-
-                                    "fields" => [
-                                        "rt",
-                                        "rt._2gram",
-                                        "rt._3gram"
-                                    ]
-                                ]
-                            ]
-                        ],
-                        "filter" => [
-                            [
-                                "term" => [
-                                    "module" => "customers"
-                                ]
-                            ]
-                        ],
-                        "should" => [
-                            [
-                                "rank_feature" => [
-                                    "field" => "weight"
-                                ]
-                            ]
-
-                        ]
-                    ]
-                ]
-            ],
-        '_source' => [
-            'icon_classes',
-            'label_1',
-            'label_2',
-            'label_3',
-            'label_4',
-            'url'
-        ],
-        'size'    => $max_results
-
-
-    ];
-
-
-
-    foreach ($scopes as $scope => $boost) {
-        $params['body']['query']['bool']['should'][] = array(
-            "rank_feature" => [
-                "field" => "scopes.".$scope,
-                "boost" => $boost
-            ]
-        );
-    }
-
-    foreach ($stores as $store) {
-        $params['body']['query']['bool']['filter'][] = array(
-            "term" => [
-                "store_key" => $store
-            ]
-        );
-    }
-
-
-
-    $result = $client->search($params);
-
-
-
-
-    $response = array(
-        'state'          => 200,
-        'number_results' => $result['hits']['total']['value'],
-        'results'        => $result['hits']['hits'],
-        'query'          => $query,
-        'class'          => 'customers'
-
-    );
-    echo json_encode($response);
-    exit;
-
+    
     $queries = trim($data['query']);
 
     if ($queries == '') {
@@ -2406,6 +2270,7 @@ function search_customers($data,$user) {
     );
 
     echo json_encode($response);
+
 
 }
 

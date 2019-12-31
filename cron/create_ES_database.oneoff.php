@@ -22,7 +22,7 @@ $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
 
 $params = [
-    'index' => strtolower('au_'.$account->get('Code')),
+    'index' => strtolower('au_q_'.$account->get('Code')),
     'body'  => array(
         'settings'=>array(
             'analysis'=>array(
@@ -40,15 +40,13 @@ $params = [
                     'type'  => 'keyword',
                     'index' => false
                 ),
+                /*
                 'object'       => array(
                     'type'  => 'keyword',
                     'index' => false
                 ),
-                'module'       => array(
-                    'type'  => 'keyword',
 
-                ),
-                'status'       => array(
+                   'status'       => array(
                     'type'  => 'keyword',
                     'index' => false
 
@@ -58,6 +56,22 @@ $params = [
                     'type'  => 'text',
                     'index' => false
                 ),
+                  'primary'      => array(
+                    'type' => 'text'
+                ),
+                'secondary'    => array(
+                    'type' => 'text'
+                ),
+                'alias'        => array(
+                    'type' => 'text'
+                ),
+                */
+                'module'       => array(
+                    'type'  => 'keyword',
+
+                ),
+
+
                 'icon_classes' => array(
                     'type'  => 'text',
                     'index' => false
@@ -79,15 +93,7 @@ $params = [
                     'index' => false
                 ),
 
-                'primary'      => array(
-                    'type' => 'text'
-                ),
-                'secondary'    => array(
-                    'type' => 'text'
-                ),
-                'alias'        => array(
-                    'type' => 'text'
-                ),
+
                 'store_key'    => array(
                     'type' => 'short',
 
