@@ -28,6 +28,7 @@
   "dependencies": {
     "select2": "^4.0.10",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.25"
+    "moment-timezone": "^0.5.25",
+    "braintree-web": "3.56.0"
   }
 }
