@@ -192,6 +192,13 @@ function change_menu_view(module) {
                 change_view('mailroom/all')
             }
             break;
+        case 'offers':
+            if (state.current_store) {
+                change_view('offers/' + state.current_store)
+            } else {
+                change_view('offers/all')
+            }
+            break;
         case 'websites':
             if (state.current_website) {
                 change_view('website/' + state.current_website)
@@ -298,7 +305,7 @@ function change_view(_request, metadata) {
         request_data.tab = metadata.tab
     } else if (metadata.subtab != undefined) {
         request_data.subtab = metadata.subtab
-    }selected
+    }
 
 
     $.ajax({

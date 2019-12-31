@@ -88,7 +88,7 @@ if ($user->can_view('stores')) {
     } else {
         $nav_menu[] = array(
             '<i class="button far fa-store-alt fa-fw"></i>',
-            _('Stores'),
+            _('Products'),
             'stores',
             'products',
             'module',
@@ -96,6 +96,14 @@ if ($user->can_view('stores')) {
         );
     }
 
+    $nav_menu[] = array(
+        '<i class="button far fa-badge-percent fa-fw"></i>',
+        _('Offers'),
+        'offers',
+        'offers',
+        'module',
+        ''
+    );
 
     $nav_menu[] = array(
         '<i class="button far fa-globe fa-fw"></i>',
