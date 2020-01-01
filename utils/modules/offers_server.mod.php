@@ -22,9 +22,9 @@ function get_offers_server_module() {
                 'type'      => 'navigation',
                 'label'     => _('Group by store'),
                 'icon'      => 'compress',
-                'reference' => 'mailroom/all/by_store',
+                'reference' => 'offers/by_store',
                 'tabs'      => array(
-                    'mailroom_group_by_store' => array()
+                    'offers_group_by_store' => array()
                 )
 
 

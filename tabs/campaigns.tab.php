@@ -41,12 +41,12 @@ $parameters = array(
 $table_buttons   = array();
 
 
-
+/*
 $smarty->assign('title', _("Offer's categories").' <span class=\'id\'>'.$state['_parent']->get('Code').'</span>');
-$smarty->assign('view_position', ' <span onclick=\"change_view(\'stores\')\">'._('Stores').'</span>  <i class=\"fa fa-angle-double-right separator\"></i>  <i class=\"fal fa-bullhorn\"></i> '._('Campaigns').' <span class=\'id\'>'.$state['_parent']->get('Code').'</span>');
-
+$smarty->assign('view_position', '  <i class=\"fal fa-badge-percent\"></i> <span onclick=\"change_view(\'stores\')\">'._('Offers').' ('._('All stores').')</span>  <i class=\"fa fa-angle-double-right separator\"></i>  <i class=\"fal fa-badge-percent\"></i> '._('Campaigns').' <span class=\'id\'>'.$state['_parent']->get('Code').'</span>');
+*/
 
 include 'utils/get_table_html.php';
 
 
-?>
+

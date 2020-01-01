@@ -10,6 +10,13 @@
 */
 
 
+if($account->get('Account Stores')==0){
+
+    $html='<div style="padding:20px">'.sprintf(_('There are not stores, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
+    return;
+}
+
+
 $tab     = 'mailroom_group_by_store';
 $ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'mailroom_group_by_store';

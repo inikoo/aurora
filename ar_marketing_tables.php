@@ -37,10 +37,10 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
-switch ($tipo) {
+switch ($tipo){
 
-    case 'marketing_server':
-        marketing_server(get_table_parameters(), $db, $user);
+    case 'offers_group_by_store':
+        offers_group_by_store(get_table_parameters(), $db, $user);
         break;
     case 'campaigns':
         campaigns(get_table_parameters(), $db, $user);
@@ -90,7 +90,7 @@ switch ($tipo) {
 }
 
 
-function marketing_server($_data, $db, $user) {
+function offers_group_by_store($_data, $db, $user) {
 
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
@@ -98,28 +98,37 @@ function marketing_server($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    // print $sql;
-
+    $total_campaigns=0;
+    $total_deals=0;
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-
+            $total_campaigns+=$data['campaigns'];
+            $total_deals+=$data['deals'];
             $adata[] = array(
                 'id' => (integer)$data['Store Key'],
 
-                'code'      => sprintf('<span class="link" onClick="change_view(\'marketing/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
-                'name'      => $data['Store Name'],
-                'campaigns' => sprintf('<span class="link" >%s</span>', $data['campaigns']),
-                'deals'     => sprintf('<span class="link" onClick="change_view(\'deals/%d\')">%s</span>', $data['Store Key'], $data['deals']),
+                'code'      => sprintf('<span class="link" onClick="change_view(\'offers/%d/categories\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'      => sprintf('<span class="link" onClick="change_view(\'offers/%d/categories\')">%s</span>', $data['Store Key'], $data['Store Name']),
+                'campaigns' => sprintf('<span class="" >%s</span>', $data['campaigns']),
+                'deals'     => sprintf('<span class="link" onClick="change_view(\'offers/%d\')" >%s</span>',  $data['Store Key'] ,$data['deals']),
             );
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
+
+    $adata[] = array(
+        'store_key' => '',
+        'name'      => '',
+        'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
+
+
+        'campaigns'      => number($total_campaigns),
+        'deals' => number($total_deals),
+
+    );
 
     $response = array(
         'resultset' => array(

@@ -194,9 +194,9 @@ function change_menu_view(module) {
             break;
         case 'offers':
             if (state.current_store) {
-                change_view('offers/' + state.current_store)
+                change_view('offers/' + state.current_store+'/categories')
             } else {
-                change_view('offers/all')
+                change_view('offers/by_store')
             }
             break;
         case 'websites':

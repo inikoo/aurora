@@ -10,6 +10,55 @@
  Version 3.0
 */
 
+/**
+ * @param $smarty
+ *
+ * @return mixed
+ */
+function get_offers_group_by_store_navigation( $smarty) {
+
+
+    $branch = array(
+        array(
+            'label'     => '',
+            'icon'      => 'home',
+            'reference' => ''
+        )
+    );
+
+
+    $left_buttons = array();
+
+    $title = _("Offers").' ('._('All stores').')';
+
+
+    $right_buttons                          = array();
+    $sections                               = get_sections('offers_server');
+    $sections['group_by_store']['selected'] = true;
+
+
+    $_content = array(
+        'branch'         => $branch,
+        'sections_class' => '',
+        'sections'       => $sections,
+
+        'left_buttons'  => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title'         => $title,
+        'search'        => array(
+            'show'        => true,
+            'placeholder' => _('Search offers')
+        )
+
+    );
+    $smarty->assign('content', $_content);
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 function get_new_deal_navigation($data, $smarty, $user, $db) {
 
@@ -18,7 +67,7 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
     $right_buttons = array();
 
 
-    $sections      = get_sections('products', $data['store']->id);
+    $sections      = get_sections('offers', $data['store']->id);
 
 
     $sections['offers']['selected'] = true;
@@ -67,7 +116,7 @@ function get_new_deal_component_navigation($data, $smarty, $user, $db) {
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('products', $data['parent_key']);
+    $sections      = get_sections('offers', $data['parent_key']);
 
 
     $sections['offers']['selected'] = true;
@@ -122,7 +171,7 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('products', $data['parent_key']);
+    $sections      = get_sections('offers', $data['parent_key']);
 
 
     $sections['marketing']['selected'] = true;
@@ -149,13 +198,12 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
     return $html;
 
 }
-
-function get_offers_navigation($data, $smarty, $user, $db) {
+function get_campaigns_navigation($data, $smarty) {
 
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('products', $data['parent_key']);
+    $sections      = get_sections('offers', $data['parent_key']);
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -168,7 +216,41 @@ function get_offers_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _('Campaigns & offers').' <span class="id">'.$data['_parent']->get('Code').'</span>',
+        'title'          => _("Offers categories").' <span class="id">'.$data['_parent']->get('Code').'</span>',
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search offers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_offers_navigation($data, $smarty) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections('offers', $data['parent_key']);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Offers').' <span class="id">'.$data['_parent']->get('Code').'</span>',
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search offers')
@@ -301,11 +383,8 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _(
-                        "Offer's categories"
-                    ).' '.$data['store']->get('Code'),
-                'reference' => 'offers/'.$data['store']->id,
-                'metadata'  => '{tab:\'campaigns\'}'
+                'title'     => _("Offer's categories").' '.$data['store']->get('Code'),
+                'reference' => 'offers/'.$data['store']->id.'/categories',
             );
 
             if ($prev_key) {
@@ -352,7 +431,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
     }
 
-    $sections = get_sections('products', $data['store']->id);
+    $sections = get_sections('offers', $data['store']->id);
 
     if (isset($sections[$_section])) {
 
@@ -698,7 +777,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
     }
 
-    $sections = get_sections('products', $data['store']->id);
+    $sections = get_sections('offers', $data['store']->id);
 
 
     if (isset($sections[$_section])) {
@@ -1069,7 +1148,7 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
 
     }
 
-    $sections = get_sections('products', $data['store']->id);
+    $sections = get_sections('offers', $data['store']->id);
 
 
     if (isset($sections[$_section])) {

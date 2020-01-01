@@ -60,7 +60,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
     if ($count_view_path > 0) {
         $root            = array_shift($view_path);
         $count_view_path = count($view_path);
-        switch ($root) {
+        switch ($root){
             case 'index.php':
             case 'dashboard':
                 $module  = 'dashboard';
@@ -2992,7 +2992,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                     break;
                 }
 
-                $module = 'products';
+                $module = 'offers';
 
 
                 if (isset($view_path[0])) {
@@ -3004,7 +3004,16 @@ function parse_request($_data, $db, $modules, $account, $user) {
                         $section = 'offers';
 
                         if (isset($view_path[1])) {
-                            if ($view_path[1] == 'vo') {
+                            if ($view_path[1] == 'categories') {
+
+                                $section = 'campaigns';
+
+
+
+
+
+
+                            }elseif ($view_path[1] == 'vo') {
 
                                 $section = 'vouchers';
 
@@ -3099,9 +3108,9 @@ function parse_request($_data, $db, $modules, $account, $user) {
                         }
 
 
-                    } elseif ($view_path[0] == 'all') {
+                    } elseif ($view_path[0] == 'by_store') {
                         $module  = 'offers_server';
-                        $section = 'offers';
+                        $section = 'group_by_store';
                     }
 
                 }

@@ -17,6 +17,25 @@ function get_offers_module() {
         'section'  => 'offers',
         'sections' => array(
 
+
+            'campaigns' => array(
+                'type'  => 'navigation',
+                'label' => _('Categories'),
+                'title' => _("Offer's categories"),
+
+                'icon'      => 'sitemap',
+                'reference' => 'offers/%d/categories',
+                'tabs'      => array(
+                    'campaigns' => array(
+                        'label' => _("Offer's categories"),
+                        'icon'  => 'tags',
+                    ),
+
+
+                )
+
+            ),
+
             'offers' => array(
                 'type'  => 'navigation',
                 'label' => _('Offers'),
@@ -24,10 +43,7 @@ function get_offers_module() {
                 'icon'      => 'tags',
                 'reference' => 'offers/%d',
                 'tabs'      => array(
-                    'campaigns' => array(
-                        'label' => _("Offer's categories"),
-                        'icon'  => 'tags',
-                    ),
+
                     'deals'     => array(
                         'label' => _('Offers'),
                         'icon'  => 'tag'
@@ -36,6 +52,7 @@ function get_offers_module() {
                 )
 
             ),
+
 
 
 

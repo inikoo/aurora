@@ -46,6 +46,9 @@ function get_modules($user) {
             $modules['mailroom_server'] = get_mailroom_server_module();
             $modules['mailroom']        = get_mailroom_module();
 
+            $modules['offers_server'] = get_offers_server_module();
+            $modules['offers']        = get_offers_module();
+
             $modules['delivery_notes_server'] = get_delivery_notes_server_module();
             $modules['delivery_notes']        = get_delivery_notes_module();
 
@@ -83,7 +86,7 @@ function get_modules($user) {
                 include $filename;
             }
 
-            $modules['dashboard']           = get_dashboard_module();
+            $modules['dashboard'] = get_dashboard_module();
 
             $modules['agent_profile']           = get_agent_profile_module();
             $modules['agent_suppliers']         = get_agent_suppliers_module();
@@ -97,7 +100,6 @@ function get_modules($user) {
 
 
 }
-
 
 
 function get_sections($module, $parent_key = false) {

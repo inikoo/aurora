@@ -1035,7 +1035,7 @@ function sent_emails($_data, $db, $user) {
 }
 
 
-function user_notification_sent_emails($_data, $db, $user) {
+function user_notification_sent_emails($_data, $db, $user){
 
     $rtext_label = 'email';
     include_once 'prepare_table/init.php';

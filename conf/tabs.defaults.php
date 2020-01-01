@@ -1158,6 +1158,17 @@ $tab_defaults = array(
     'f_field'     => 'code',
     'percentages' => 0
 ),
+    'offers_group_by_store'         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'percentages' => 0
+    ),
+
+
 
     'delivery_notes_group_by_store' => array(
         'view'        => 'overview',
@@ -1769,15 +1780,7 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
-    'marketing_server'  => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-        'f_period'    => 'ytd',
-    ),
+
     'suppliers'         => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',
