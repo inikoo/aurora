@@ -13,14 +13,15 @@
 require 'common.php';
 
 require 'vendor/autoload.php';
-
+update_orders_index($db);
+exit;
 update_prospects_index($db);
 
 update_customers_index($db);
-exit;
+
 update_webpages_index($db);
 update_parts_index($db);
-update_orders_index($db);
+
 
 /**
  * @param $db \PDO

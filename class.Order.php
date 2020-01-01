@@ -456,7 +456,38 @@ class Order extends DB_Table {
                         return 0;
 
                 }
+            case ('Icon'):
 
+
+                switch ($this->data['Order State']) {
+                    case 'InBasket':
+                        return 'fal fa-shopping-basket';
+
+
+                    case 'InProcess':
+                        return 'fal fa-clock yellow';
+
+                    case 'InWarehouse':
+                        return 'fal fa-warehouse';
+
+
+                    case 'PackedDone':
+                        return 'fal fa-box';
+
+                    case 'Approved':
+                        return 'fal fa-box-usd';
+
+                    case 'Dispatched':
+                        return 'fas fa-paper-plane green';
+
+                    case 'Cancelled':
+                        return 'fal fa-minus-circle red';
+
+
+                    default:
+                        return 'fal fa-shopping-cart';
+
+                }
 
             case('DC Total Amount'):
                 $account = get_object('Account', 1);

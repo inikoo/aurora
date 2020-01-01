@@ -50,50 +50,41 @@ if ($user->get('User Type') == 'Agent') {
 } else {
     if ($data['state']['module'] == 'customers' or $data['state']['module'] == 'customers_server') {
 
-        $module = 'customers';
 
+        check_for_store_permissions($stores);
 
-        if (count($stores) == 0) {
-            $response = array(
-                'state'          => 200,
-                'number_results' => 0,
-                'results'        => array(),
-                'query'          => ''
-
+        if (in_array(
+            $data['state']['section'], array(
+            'prospects',
+            'prospect',
+            'prospect.new',
+            'prospects.email_template',
+            'prospects.template.new'
+        )
+        )) {
+            $scopes = array(
+                'prospects' => 10
             );
-            echo json_encode($response);
-            exit;
+        } else {
+            $scopes = array(
+                'customers' => 10
+            );
         }
 
 
-        switch ($data['state']['section']) {
-            case 'prospects':
-            case 'prospect':
-            case 'prospect.new':
-            case 'prospects.email_template':
-            case 'prospects.template.new':
-                $scopes = array(
-                    'prospects' => 10
-                );
-                break;
-            default:
-                $scopes = array(
-                    'customers' => 10
-                );
-        }
-        echo json_encode(search_ES(trim($data['query']), $module, $scopes, $stores));
+        echo json_encode(search_ES(trim($data['query']), 'customers', $scopes, $stores));
         exit;
 
 
-    } elseif ($data['state']['module'] == 'orders') {
-        if ($data['state']['current_store']) {
-            $data['scope']     = 'store';
-            $data['scope_key'] = $data['state']['current_store'];
-        } else {
-            $data['scope'] = 'stores';
-        }
-        search_orders($db, $account, $user, $data);
+    } elseif ($data['state']['module'] == 'orders' or $data['state']['module'] == 'orders_server') {
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES(trim($data['query']), 'orders', array(), $stores));
+        exit;
+
     } elseif ($data['state']['module'] == 'products') {
+
+
         if ($data['state']['current_store']) {
             $data['scope']     = 'store';
             $data['scope_key'] = $data['state']['current_store'];
@@ -151,18 +142,15 @@ if ($user->get('User Type') == 'Agent') {
         $data['scope'] = 'stores';
 
         search_delivery_notes($db, $account, $user, $data);
-    } elseif ($data['state']['module'] == 'orders_server') {
-        $data['scope'] = 'stores';
-        search_orders($db, $account, $user, $data);
-    } elseif ($data['state']['module'] == 'accounting_server') {
+    }  elseif ($data['state']['module'] == 'accounting_server') {
         if (in_array(
             $data['state']['section'], array(
-            'deleted_invoice',
-            'deleted_invoices_server',
-            'invoices',
-            'invoice',
-            'category'
-        )
+                                         'deleted_invoice',
+                                         'deleted_invoices_server',
+                                         'invoices',
+                                         'invoice',
+                                         'category'
+                                     )
         )) {
 
 
@@ -178,12 +166,12 @@ if ($user->get('User Type') == 'Agent') {
         $data['scope_key'] = $data['state']['current_store'];
         if (in_array(
             $data['state']['section'], array(
-            'deleted_invoice',
-            'deleted_invoices',
-            'invoices',
-            'invoice',
-            'category'
-        )
+                                         'deleted_invoice',
+                                         'deleted_invoices',
+                                         'invoices',
+                                         'invoice',
+                                         'category'
+                                     )
         )) {
             search_invoices($db, $account, $user, $data);
         } else {
@@ -202,6 +190,19 @@ if ($user->get('User Type') == 'Agent') {
     }
 }
 
+function check_for_store_permissions($stores) {
+    if (count($stores) == 0) {
+        $response = array(
+            'state'          => 200,
+            'number_results' => 0,
+            'results'        => array(),
+            'query'          => ''
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+}
 
 function search_ES($query, $module, $scopes, $stores) {
 

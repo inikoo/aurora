@@ -298,44 +298,6 @@ class ES_indexer {
         $this->alias     = array_diff($this->alias, $this->secondary);
     }
 
-    private function add_index($prefix, $object, $store_key = '') {
-
-
-
-
-
-        $params = [
-            'index' => strtolower('au_q_'.$this->account_code),
-            'id'    => $prefix.$this->object->id,
-            'body'  => array(
-                'rt'           => $this->flatten($this->real_time),
-                'url'          => $this->url,
-                'module'       => $this->module,
-                //'object'       => $object,
-                //'status'       => $this->status,
-                'weight'       => $this->weight,
-                //'result_label' => $this->label,
-                //'primary'      => $this->flatten($this->primary),
-                //'secondary'    => $this->flatten($this->secondary),
-                //'alias'        => $this->flatten($this->alias),
-
-                'store_key'    => $store_key,
-                'icon_classes' => $this->icon_classes,
-                'label_1'      => $this->label_1,
-                'label_2'      => $this->label_2,
-                'label_3'      => $this->label_3,
-                'label_4'      => $this->label_4,
-
-            )
-        ];
-
-        if(count( $this->scopes)>0){
-            $params['body']['scopes']=$this->scopes;
-        }
-
-
-        $this->client->index($params);
-    }
 
     private function flatten($array) {
         if (count($array) == 0) {
@@ -359,7 +321,7 @@ class ES_indexer {
             'customers'=>10
         );
 
-        $this->label = $this->object->get('Name').' '.$this->object->get('Location');
+       // $this->label = $this->object->get('Name').' '.$this->object->get('Location');
         $this->url   = sprintf('prospects/%d/%d', $this->object->get('Prospect Store Key'), $this->object->id);
 
         $this->real_time[] = $this->object->get('Name');
@@ -463,16 +425,137 @@ class ES_indexer {
 
     private function add_order() {
 
-        $amount = "(".$this->object->get('Total Amount');
+
+
+        $this->module = 'orders';
+
+
+        $this->real_time[] = $this->object->get('Order Public ID');
+        $number_only_id=trim(preg_replace('/[^0-9]/',' ',$this->object->get('Order Public ID')));
+        $this->real_time[] =  $number_only_id;
+        $this->real_time[] =  (int) $number_only_id;
+
+
+
+
+        $this->real_time[] = $this->object->get('Order Customer Purchase Order ID');
+
+//'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
+
+        $sql =  "select `Delivery Note ID` ,`Delivery Note Key`,`Delivery Note Type`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`!='Cancelled' ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->object->id
+            )
+        );
+
+        $delivery_notes='';
+        while ($row = $stmt->fetch()) {
+
+            if($row['Delivery Note ID']==$this->object->get('Public ID')){
+                continue;
+            }
+
+
+            if($row['Delivery Note State']=='Dispatched'){
+                $icon='fal fa-truck';
+            }else{
+                $icon='fal fa-clipboard-list-check';
+            }
+
+
+            $this->real_time[] = $row['Delivery Note ID'];
+
+            $number_only_id=trim(preg_replace('/[^0-9]/',' ',$row['Delivery Note ID']));
+            $this->real_time[] =  $number_only_id;
+            $this->real_time[] =  (int) $number_only_id;
+
+            $delivery_notes.=', <span class="'.( in_array($row['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))?'error':'').'"><i class="'.$icon.'"></i> '.$row['Delivery Note ID'].'</span>';
+
+        }
+        $delivery_notes=preg_replace('/^\, /','',$delivery_notes);
+
+
+        $invoices='';
+        $sql =  "select `Invoice Public ID`,`Invoice Key`,`Invoice Type`  from `Invoice Dimension` where `Invoice Order Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->object->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+
+            if($row['Invoice Public ID']==$this->object->get('Public ID')){
+                continue;
+            }
+
+            $this->real_time[] = $row['Invoice Public ID'];
+            $number_only_id=trim(preg_replace('/[^0-9]/',' ',$row['Invoice Public ID']));
+            $this->real_time[] =  $number_only_id;
+            $this->real_time[] =  (int) $number_only_id;
+
+            $invoices.=', <span class="'.($row['Invoice Type']=='Refund'?'error':'').'"><i class="fal fa-file-invoice"></i> '.$row['Invoice Public ID'].'</span>';
+
+        }
+        $invoices=preg_replace('/^\, /','',$invoices);
+
+        if($invoices!='' and $delivery_notes!=''){
+                $invoices='<span class="padding_right_10 ">'.$invoices.'</span>';
+        }
+
+        $this->icon_classes = $this->object->get('Icon');
+        $this->label_1 = $this->object->get('Public ID');
+        $this->label_2 = $this->object->get('Order Customer Name');
+        $this->label_3 = $this->object->get('Total Amount');
+        $this->label_4 = trim($invoices.' '.$delivery_notes);
+
+
+        switch ($this->object->get('Order State')) {
+            case 'InBasket':
+                $this->weight = 25;
+
+
+            case 'InProcess':
+                $this->weight = 80;
+
+            case 'InWarehouse':
+                $this->weight = 40;
+
+
+            case 'PackedDone':
+                $this->weight = 80;
+
+            case 'Approved':
+                $this->weight = 100;
+
+            case 'Dispatched':
+                $this->weight = 50;
+
+            case 'Cancelled':
+                $this->weight = 10;
+
+            default:
+                $this->weight = 50;
+        }
+
+
+
+
+        $this->url   = sprintf('orders/%d/%d', $this->object->get('Order Store Key'), $this->object->id);
+
+
+        /*
+
+           $amount = "(".$this->object->get('Total Amount');
         if ($this->object->get('Order Currency Exchange') != 1) {
             $amount .= ', '.$this->object->get('DC Total Amount');
         }
         $amount .= ') ';
-
         $this->status = $this->object->get('Order State');
 
         $this->label = $this->object->get('Public ID')." $amount".$this->object->get('State');
-        $this->url   = sprintf('orders/%d/%d', $this->object->get('Order Store Key'), $this->object->id);
 
         $this->primary[] = $this->object->get('Public ID');
 
@@ -490,6 +573,8 @@ class ES_indexer {
         $this->alias     = array_merge($this->alias, $address_aux);
 
         $this->remove_duplicated_tokens();
+        */
+
         $this->add_index('o', 'Order', $this->object->get('Order Store Key'));
 
     }
@@ -584,6 +669,44 @@ class ES_indexer {
             $tokens,
             $aux
         );
+    }
+    private function add_index($prefix, $object, $store_key = '') {
+
+
+
+
+
+        $params = [
+            'index' => strtolower('au_q_'.$this->account_code),
+            'id'    => $prefix.$this->object->id,
+            'body'  => array(
+                'rt'           => $this->flatten($this->real_time),
+                'url'          => $this->url,
+                'module'       => $this->module,
+                //'object'       => $object,
+                //'status'       => $this->status,
+                'weight'       => $this->weight,
+                //'result_label' => $this->label,
+                //'primary'      => $this->flatten($this->primary),
+                //'secondary'    => $this->flatten($this->secondary),
+                //'alias'        => $this->flatten($this->alias),
+
+                'store_key'    => $store_key,
+                'icon_classes' => $this->icon_classes,
+                'label_1'      => $this->label_1,
+                'label_2'      => $this->label_2,
+                'label_3'      => $this->label_3,
+                'label_4'      => $this->label_4,
+
+            )
+        ];
+
+        if(count( $this->scopes)>0){
+            $params['body']['scopes']=$this->scopes;
+        }
+
+
+        $this->client->index($params);
     }
 
 
