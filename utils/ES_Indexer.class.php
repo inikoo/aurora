@@ -43,6 +43,58 @@ class ES_indexer {
      * @var  string
      */
     var $status;
+    /**
+     * @var  array
+     */
+    var $real_time;
+    /**
+     * @var string
+     */
+    private $url;
+    /**
+     * @var string
+     */
+    private $module;
+    /**
+     * @var array
+     */
+    private $scopes;
+    /**
+     * @var string
+     */
+    private $icon_classes;
+    /**
+     * @var string
+     */
+    private $label_1;
+    /**
+     * @var string
+     */
+    private $label_3;
+    /**
+     * @var string
+     */
+    private $label_2;
+    /**
+     * @var string
+     */
+    private $label_4;
+    /**
+     * @var array
+     */
+    private $primary;
+    /**
+     * @var array
+     */
+    private $secondary;
+    /**
+     * @var array
+     */
+    private $alias;
+    /**
+     * @var string
+     */
+    private $label;
 
     function __construct($hosts, $account_code, $object, $db) {
         $this->client       = ClientBuilder::create()->setHosts($hosts)->build();
@@ -80,6 +132,9 @@ class ES_indexer {
             case 'Part':
                 $this->add_part();
                 break;
+            case 'Product':
+                $this->add_product();
+                break;
             case 'Page':
                 $this->add_webpage();
                 break;
@@ -89,11 +144,11 @@ class ES_indexer {
     private function add_customer() {
 
         $this->module = 'customers';
-        $this->scopes=array(
-            'customers'=>100
+        $this->scopes = array(
+            'customers' => 100
         );
 
-        $this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
+        //$this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
         $this->url   = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
 
         $this->real_time[] = $this->object->id;
@@ -205,7 +260,7 @@ class ES_indexer {
         }
 
         $this->remove_duplicated_tokens();
-        $this->add_index('c', 'Customer', $this->object->get('Customer Store Key'));
+        $this->add_index('c', $this->object->get('Customer Store Key'));
 
     }
 
@@ -298,6 +353,41 @@ class ES_indexer {
         $this->alias     = array_diff($this->alias, $this->secondary);
     }
 
+    private function add_index($prefix,$store_key = '') {
+
+
+        $params = [
+            'index' => strtolower('au_q_'.$this->account_code),
+            'id'    => $prefix.$this->object->id,
+            'body'  => array(
+                'rt'     => $this->flatten($this->real_time),
+                'url'    => $this->url,
+                'module' => $this->module,
+                //'object'       => $object,
+                //'status'       => $this->status,
+                'weight' => $this->weight,
+                //'result_label' => $this->label,
+                //'primary'      => $this->flatten($this->primary),
+                //'secondary'    => $this->flatten($this->secondary),
+                //'alias'        => $this->flatten($this->alias),
+
+                'store_key'    => $store_key,
+                'store_label'=>$this->get_store_code($store_key),
+                'icon_classes' => $this->icon_classes,
+                'label_1'      => $this->label_1,
+                'label_2'      => $this->label_2,
+                'label_3'      => $this->label_3,
+                'label_4'      => $this->label_4,
+
+            )
+        ];
+
+        if (count($this->scopes) > 0) {
+            $params['body']['scopes'] = $this->scopes;
+        }
+
+        $this->client->index($params);
+    }
 
     private function flatten($array) {
         if (count($array) == 0) {
@@ -316,13 +406,13 @@ class ES_indexer {
     private function add_prospect() {
 
         $this->module = 'customers';
-        $this->scopes=array(
-            'prospects'=>100,
-            'customers'=>10
+        $this->scopes = array(
+            'prospects' => 100,
+            'customers' => 10
         );
 
-       // $this->label = $this->object->get('Name').' '.$this->object->get('Location');
-        $this->url   = sprintf('prospects/%d/%d', $this->object->get('Prospect Store Key'), $this->object->id);
+        // $this->label = $this->object->get('Name').' '.$this->object->get('Location');
+        $this->url = sprintf('prospects/%d/%d', $this->object->get('Prospect Store Key'), $this->object->id);
 
         $this->real_time[] = $this->object->get('Name');
         $this->real_time[] = $this->object->get('Prospect Tax Number');
@@ -419,30 +509,27 @@ class ES_indexer {
         }
 
         $this->remove_duplicated_tokens();
-        $this->add_index('cp', 'Prospect', $this->object->get('Prospect Store Key'));
+        $this->add_index('cp', $this->object->get('Prospect Store Key'));
 
     }
 
     private function add_order() {
 
 
-
         $this->module = 'orders';
 
 
         $this->real_time[] = $this->object->get('Order Public ID');
-        $number_only_id=trim(preg_replace('/[^0-9]/',' ',$this->object->get('Order Public ID')));
-        $this->real_time[] =  $number_only_id;
-        $this->real_time[] =  (int) $number_only_id;
-
-
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Order Public ID')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
 
 
         $this->real_time[] = $this->object->get('Order Customer Purchase Order ID');
 
-//'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
+        //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
 
-        $sql =  "select `Delivery Note ID` ,`Delivery Note Key`,`Delivery Note Type`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`!='Cancelled' ";
+        $sql  = "select `Delivery Note ID` ,`Delivery Note Key`,`Delivery Note Type`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`!='Cancelled' ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -450,36 +537,42 @@ class ES_indexer {
             )
         );
 
-        $delivery_notes='';
+        $delivery_notes = '';
         while ($row = $stmt->fetch()) {
 
-            if($row['Delivery Note ID']==$this->object->get('Public ID')){
+            if ($row['Delivery Note ID'] == $this->object->get('Public ID')) {
                 continue;
             }
 
 
-            if($row['Delivery Note State']=='Dispatched'){
-                $icon='fal fa-truck';
-            }else{
-                $icon='fal fa-clipboard-list-check';
+            if ($row['Delivery Note State'] == 'Dispatched') {
+                $icon = 'fal fa-truck';
+            } else {
+                $icon = 'fal fa-clipboard-list-check';
             }
 
 
             $this->real_time[] = $row['Delivery Note ID'];
 
-            $number_only_id=trim(preg_replace('/[^0-9]/',' ',$row['Delivery Note ID']));
-            $this->real_time[] =  $number_only_id;
-            $this->real_time[] =  (int) $number_only_id;
+            $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $row['Delivery Note ID']));
+            $this->real_time[] = $number_only_id;
+            $this->real_time[] = (int)$number_only_id;
 
-            $delivery_notes.=', <span class="'.( in_array($row['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))?'error':'').'"><i class="'.$icon.'"></i> '.$row['Delivery Note ID'].'</span>';
+            $delivery_notes .= ', <span class="'.(in_array(
+                    $row['Delivery Note Type'], array(
+                    'Replacement & Shortages',
+                    'Replacement',
+                    'Shortages'
+                )
+                ) ? 'error' : '').'"><i class="'.$icon.'"></i> '.$row['Delivery Note ID'].'</span>';
 
         }
-        $delivery_notes=preg_replace('/^\, /','',$delivery_notes);
+        $delivery_notes = preg_replace('/^, /', '', $delivery_notes);
 
 
-        $invoices='';
-        $sql =  "select `Invoice Public ID`,`Invoice Key`,`Invoice Type`  from `Invoice Dimension` where `Invoice Order Key`=?";
-        $stmt = $this->db->prepare($sql);
+        $invoices = '';
+        $sql      = "select `Invoice Public ID`,`Invoice Key`,`Invoice Type`  from `Invoice Dimension` where `Invoice Order Key`=?";
+        $stmt     = $this->db->prepare($sql);
         $stmt->execute(
             array(
                 $this->object->id
@@ -487,63 +580,64 @@ class ES_indexer {
         );
         while ($row = $stmt->fetch()) {
 
-            if($row['Invoice Public ID']==$this->object->get('Public ID')){
+            if ($row['Invoice Public ID'] == $this->object->get('Public ID')) {
                 continue;
             }
 
             $this->real_time[] = $row['Invoice Public ID'];
-            $number_only_id=trim(preg_replace('/[^0-9]/',' ',$row['Invoice Public ID']));
-            $this->real_time[] =  $number_only_id;
-            $this->real_time[] =  (int) $number_only_id;
+            $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $row['Invoice Public ID']));
+            $this->real_time[] = $number_only_id;
+            $this->real_time[] = (int)$number_only_id;
 
-            $invoices.=', <span class="'.($row['Invoice Type']=='Refund'?'error':'').'"><i class="fal fa-file-invoice"></i> '.$row['Invoice Public ID'].'</span>';
+            $invoices .= ', <span class="'.($row['Invoice Type'] == 'Refund' ? 'error' : '').'"><i class="fal fa-file-invoice"></i> '.$row['Invoice Public ID'].'</span>';
 
         }
-        $invoices=preg_replace('/^\, /','',$invoices);
+        $invoices = preg_replace('/^, /', '', $invoices);
 
-        if($invoices!='' and $delivery_notes!=''){
-                $invoices='<span class="padding_right_10 ">'.$invoices.'</span>';
+        if ($invoices != '' and $delivery_notes != '') {
+            $invoices = '<span class="padding_right_10 ">'.$invoices.'</span>';
         }
 
         $this->icon_classes = $this->object->get('Icon');
-        $this->label_1 = $this->object->get('Public ID');
-        $this->label_2 = $this->object->get('Order Customer Name');
-        $this->label_3 = $this->object->get('Total Amount');
-        $this->label_4 = trim($invoices.' '.$delivery_notes);
+        $this->label_1      = $this->object->get('Public ID');
+        $this->label_2      = $this->object->get('Order Customer Name');
+        $this->label_3      = $this->object->get('Total Amount');
+        $this->label_4      = trim($invoices.' '.$delivery_notes);
 
 
         switch ($this->object->get('Order State')) {
             case 'InBasket':
                 $this->weight = 25;
+break;
 
-
+            case 'PackedDone':
             case 'InProcess':
                 $this->weight = 80;
+                break;
 
             case 'InWarehouse':
                 $this->weight = 40;
 
-
-            case 'PackedDone':
-                $this->weight = 80;
+                break;
 
             case 'Approved':
                 $this->weight = 100;
+                break;
 
             case 'Dispatched':
                 $this->weight = 50;
+                break;
 
             case 'Cancelled':
                 $this->weight = 10;
+                break;
 
             default:
                 $this->weight = 50;
         }
 
 
-
-
-        $this->url   = sprintf('orders/%d/%d', $this->object->get('Order Store Key'), $this->object->id);
+        $this->url = sprintf('orders/%d/%d', $this->object->get('Order Store Key'), $this->object->id);
 
 
         /*
@@ -575,7 +669,7 @@ class ES_indexer {
         $this->remove_duplicated_tokens();
         */
 
-        $this->add_index('o', 'Order', $this->object->get('Order Store Key'));
+        $this->add_index('o', $this->object->get('Order Store Key'));
 
     }
 
@@ -594,7 +688,101 @@ class ES_indexer {
 
 
         $this->remove_duplicated_tokens();
-        $this->add_index('sko', 'Part');
+        $this->add_index('sko');
+
+    }
+
+    private function add_product() {
+
+
+        $this->module = 'products';
+
+
+        $this->real_time[] = $this->object->get('Product Code');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+
+
+        $this->real_time[] = $this->object->get('Product Name');
+
+
+        $this->label_1 = $this->object->get('Code');
+        $this->label_2 = ($this->object->get('Units Per Case') != 1 ? $this->object->get('Units Per Case').'x ' : '').$this->object->get('Name');
+        $this->label_3 = $this->object->get('Price');
+
+        //'InProcess','Active','Suspended','Discontinuing','Discontinued'
+        switch ($this->object->get('Product Status')) {
+            case 'Discontinuing':
+                $this->icon_classes = 'fa fa-cube warning';
+                break;
+            case 'Discontinued':
+                $this->icon_classes = 'fa fa-cube very_discreet';
+                break;
+            case 'Suspended':
+                $this->icon_classes = 'fa fa-cube error';
+                break;
+            default:
+                $this->icon_classes = 'fa fa-cube';
+                break;
+        }
+
+        //'Online Force Out of Stock','Online Auto','Offline','Online Force For Sale'
+        switch ($this->object->get('Product Web Configuration')) {
+            case 'Online Force Out of Stock':
+                $this->icon_classes .= '|fa fa-stop red';
+                break;
+
+            case 'Online Force For Sale':
+                $this->icon_classes .= '|fa fa-stop';
+
+                switch ($this->object->get('Product Availability State')) {
+                    case 'OnDemand':
+                    case 'Normal':
+                    case 'Excess':
+                        $this->icon_classes .= ' green';
+                        break;
+                    case 'VeryLow':
+                    case 'Error':
+                    case 'OutofStock':
+                    case 'Low':
+                        $this->icon_classes .= ' yellow';
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+            case 'Online Auto':
+                $this->icon_classes .= '|fa fa-circle';
+
+                switch ($this->object->get('Product Availability State')) {
+                    case 'OnDemand':
+                    case 'Normal':
+                    case 'Excess':
+                        $this->icon_classes .= ' green';
+                        break;
+                    case 'VeryLow':
+                    case 'Low':
+                        $this->icon_classes .= ' yellow';
+                        break;
+                    case 'Error':
+                    case 'OutofStock':
+                        $this->icon_classes .= ' red';
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+
+        }
+
+
+        $this->url = sprintf('products/%d/%d', $this->object->get('Product Store Key'), $this->object->id);
+
+
+        $this->add_index('p', $this->object->get('Product Store Key'));
 
     }
 
@@ -641,7 +829,7 @@ class ES_indexer {
         }
 
         $this->remove_duplicated_tokens();
-        $this->add_index('w', 'Webpage', $this->object->get('Webpage Store Key'));
+        $this->add_index('w', $this->object->get('Webpage Store Key'));
 
     }
 
@@ -659,7 +847,7 @@ class ES_indexer {
 
 
         $tokens[] = $url;
-        $url      = preg_replace('/^https?\:\/\//', '', $url);
+        $url      = preg_replace('/^https?:\/\//', '', $url);
 
         $aux[] = $url;
         $url   = preg_replace('/^www\./', '', $url);
@@ -670,45 +858,27 @@ class ES_indexer {
             $aux
         );
     }
-    private function add_index($prefix, $object, $store_key = '') {
 
+    private function get_store_code($store_key) {
 
-
-
-
-        $params = [
-            'index' => strtolower('au_q_'.$this->account_code),
-            'id'    => $prefix.$this->object->id,
-            'body'  => array(
-                'rt'           => $this->flatten($this->real_time),
-                'url'          => $this->url,
-                'module'       => $this->module,
-                //'object'       => $object,
-                //'status'       => $this->status,
-                'weight'       => $this->weight,
-                //'result_label' => $this->label,
-                //'primary'      => $this->flatten($this->primary),
-                //'secondary'    => $this->flatten($this->secondary),
-                //'alias'        => $this->flatten($this->alias),
-
-                'store_key'    => $store_key,
-                'icon_classes' => $this->icon_classes,
-                'label_1'      => $this->label_1,
-                'label_2'      => $this->label_2,
-                'label_3'      => $this->label_3,
-                'label_4'      => $this->label_4,
-
-            )
-        ];
-
-        if(count( $this->scopes)>0){
-            $params['body']['scopes']=$this->scopes;
+        if(!is_numeric($store_key)){
+            return '';
         }
 
+        $sql  = "select `Store Code` from `Store Dimension` where `Store Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $store_key
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            return $row['Store Code'];
+        } else {
+            return '';
+        }
 
-        $this->client->index($params);
     }
-
 
 }
 

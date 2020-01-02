@@ -13,7 +13,9 @@
 require 'common.php';
 
 require 'vendor/autoload.php';
-update_orders_index($db);
+
+update_products_index($db);
+
 exit;
 update_prospects_index($db);
 
@@ -21,6 +23,7 @@ update_customers_index($db);
 
 update_webpages_index($db);
 update_parts_index($db);
+update_orders_index($db);
 
 
 /**
@@ -49,6 +52,34 @@ function update_webpages_index($db) {
         }
     }
 }
+
+/**
+ * @param $db \PDO
+ */
+function update_products_index($db) {
+
+    $object_name='Products';
+    $hosts     = get_ES_hosts();
+    $print_est = true;
+
+    $total = get_total_objects($db, $object_name);
+    $lap_time0 = date('U');
+    $contador  = 0;
+
+
+    $sql = "select `Product ID` from `Product Dimension`  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Product', $row['Product ID']);
+        $object->index_elastic_search($hosts);
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+}
+
 
 /**
  * @param $db \PDO
@@ -196,6 +227,9 @@ function get_total_objects($db, $object_name) {
             break;
         case 'Webpages':
             $sql = "select count(*) as num from `Page Store Dimension`";
+            break;
+        case 'Products':
+            $sql = "select count(*) as num from `Product Dimension`";
             break;
         default:
             return $total_objects;

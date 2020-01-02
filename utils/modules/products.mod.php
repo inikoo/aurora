@@ -225,25 +225,6 @@ function get_products_module() {
             ),
 
 
-            'offers' => array(
-                'type'  => 'navigation',
-                'label' => _('Offers'),
-
-                'icon'      => 'tags',
-                'reference' => 'offers/%d',
-                'tabs'      => array(
-                    'campaigns' => array(
-                        'label' => _("Offer's categories"),
-                        'icon'  => 'tags',
-                    ),
-                    'deals'     => array(
-                        'label' => _('Offers'),
-                        'icon'  => 'tag'
-                    ),
-
-                )
-
-            ),
 
 
 

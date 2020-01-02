@@ -82,17 +82,12 @@ if ($user->get('User Type') == 'Agent') {
         echo json_encode(search_ES(trim($data['query']), 'orders', array(), $stores));
         exit;
 
-    } elseif ($data['state']['module'] == 'products') {
+    } elseif ($data['state']['module'] == 'products' or $data['state']['module'] == 'products_server') {
 
 
-        if ($data['state']['current_store']) {
-            $data['scope']     = 'store';
-            $data['scope_key'] = $data['state']['current_store'];
-        } else {
-            $data['scope'] = 'stores';
-        }
-
-        search_products($db, $account, $user, $data);
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES(trim($data['query']), 'products', array(), $stores));
+        exit;
 
 
     } elseif ($data['state']['module'] == 'websites') {
@@ -107,12 +102,7 @@ if ($user->get('User Type') == 'Agent') {
 
         search_webpages($db, $account, $user, $data);
 
-    } elseif ($data['state']['module'] == 'products_server') {
-
-        $data['scope'] = 'stores';
-
-        search_products($db, $account, $user, $data);
-    } elseif ($data['state']['module'] == 'inventory') {
+    }  elseif ($data['state']['module'] == 'inventory') {
         if ($data['state']['current_warehouse']) {
             $data['scope']     = 'warehouse';
             $data['scope_key'] = $data['state']['current_warehouse'];

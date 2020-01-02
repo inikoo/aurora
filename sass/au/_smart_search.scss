@@ -117,16 +117,33 @@
       width: 25%;
     }
 
-
-    .customers  .icon{
-      width: 50px;
+    .customers{
+      icon{
+        width: 50px;
+      }
+      .col_1{
+        width: auto;
+        max-width: 80px;
+      }
     }
 
-    .customers  .col_1{
-      width: auto;
-      max-width: 80px;
-    }
+    .products{
+      .icon{
+        width: 70px;
+      }
+      .col_1{
+        width: auto;
 
+      }
+      .col_2{
+        width: auto;
+      }
+      .col_3{
+        display: none;
+      }
+
+
+    }
 
   }
 

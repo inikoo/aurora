@@ -93,7 +93,10 @@ $params = [
                     'index' => false
                 ),
 
-
+                'store_label' => array(
+                    'type'  => 'text',
+                    'index' => false
+                ),
                 'store_key'    => array(
                     'type' => 'short',
 
