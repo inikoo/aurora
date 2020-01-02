@@ -126,23 +126,7 @@ class Category extends DB_Table {
 
                 // print_r($sql);
 
-            } elseif ($this->data['Category Scope'] == 'Location') {
-
-
-                $this->subject_table_name = 'Location Category';
-                $sql                      = sprintf(
-                    "SELECT * FROM `Location Category Dimension` WHERE `Part Location Key`=%d", $this->id
-                );
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row = $result2->fetch()) {
-                        $this->data = array_merge($this->data, $row);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-            } elseif ($this->data['Category Scope'] == 'Product') {
+            }  elseif ($this->data['Category Scope'] == 'Product') {
 
 
                 $this->subject_table_name = 'Product Category';

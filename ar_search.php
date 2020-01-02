@@ -90,6 +90,10 @@ if ($user->get('User Type') == 'Agent') {
         exit;
 
 
+    } elseif ($data['state']['module'] == 'inventory') {
+
+        echo json_encode(search_ES(trim($data['query']), 'inventory', array(), array()));
+        exit;
     } elseif ($data['state']['module'] == 'websites') {
 
 
@@ -102,15 +106,7 @@ if ($user->get('User Type') == 'Agent') {
 
         search_webpages($db, $account, $user, $data);
 
-    }  elseif ($data['state']['module'] == 'inventory') {
-        if ($data['state']['current_warehouse']) {
-            $data['scope']     = 'warehouse';
-            $data['scope_key'] = $data['state']['current_warehouse'];
-        } else {
-            $data['scope'] = 'warehouses';
-        }
-        search_inventory($db, $account, $user, $data);
-    } elseif ($data['state']['module'] == 'hr') {
+    }  elseif ($data['state']['module'] == 'hr') {
         search_hr($db, $account, $user, $data);
 
     } elseif ($data['state']['module'] == 'suppliers') {
@@ -194,7 +190,7 @@ function check_for_store_permissions($stores) {
     }
 }
 
-function search_ES($query, $module, $scopes, $stores) {
+function search_ES($query, $module, $scopes=array(), $stores=array()) {
 
 
     $max_results = 16;

@@ -61,8 +61,8 @@ function get_inventory_module() {
             ),
 
             'feedback'        => array(
-                'type'      => 'navigation',
-                'label'     => _('Issues'),
+                'type'      => 'right_button',
+                'title'     => _('Issues'),
                 'icon'      => 'poop',
                 'reference' => 'inventory/feedback',
                 'tabs'      => array(
@@ -83,8 +83,8 @@ function get_inventory_module() {
                 )
             ),
             'barcodes'        => array(
-                'type'      => 'navigation',
-                'label'     => _('Retail barcodes'),
+                'type'      => 'right_button',
+                'title'     => _('Retail barcodes'),
                 'icon'      => 'barcode',
                 'reference' => 'inventory/barcodes',
                 'tabs'      => array(

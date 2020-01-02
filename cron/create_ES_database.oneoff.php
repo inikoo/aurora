@@ -115,6 +115,54 @@ $params = [
 ];
 
 $response = $client->indices()->create($params);
-print_r($response);
+
+
+
+$params = [
+    'index' => strtolower('au_aq_'.$account->get('Code')),
+    'body'  => array(
+        'settings'=>array(
+            'analysis'=>array(
+                'analyzer'=>'icu_analyzer'
+            )
+        ),
+        'mappings' => array(
+
+            'properties' => array(
+                'date' => array(
+                    'type'=> 'date'
+                ),
+
+                'query' => array(
+                    'type'=> 'text'
+                ),
+
+                'module'          => array(
+                    'type'  => 'keyword',
+
+                ),
+
+                'section'       => array(
+                    'type'  => 'keyword',
+                ),
+                'user'       => array(
+                    'type'  => 'keyword',
+                ),
+
+
+                'store' => array(
+                    'type'  => 'keyword',
+
+                ),
+
+
+            )
+        )
+
+    ),
+
+];
+
+$response = $client->indices()->create($params);
 
 

@@ -95,6 +95,18 @@ class ES_indexer {
      * @var string
      */
     private $label;
+    /**
+     * @var string
+     */
+    private $operation;
+    /**
+     * @var string
+     */
+    private $prefix;
+    /**
+     * @var string
+     */
+    private $store_key;
 
     function __construct($hosts, $account_code, $object, $db) {
         $this->client       = ClientBuilder::create()->setHosts($hosts)->build();
@@ -115,41 +127,75 @@ class ES_indexer {
         $this->label_3      = '';
         $this->label_4      = '';
 
+        $this->prefix    = '';
+        $this->store_key = '';
+
+
     }
 
-    public function add_object() {
+
+    public function prepare_object() {
 
         switch ($this->object->get_object_name()) {
             case 'Customer':
-                $this->add_customer();
+                $this->prefix='c';
+                $this->prepare_customer();
                 break;
             case 'Prospect':
-                $this->add_prospect();
+                $this->prefix='cp';
+                $this->prepare_prospect();
                 break;
             case 'Order':
-                $this->add_order();
+                $this->prefix='o';
+                $this->prepare_order();
                 break;
             case 'Part':
-                $this->add_part();
+                $this->prefix='sko';
+                $this->prepare_part();
                 break;
             case 'Product':
-                $this->add_product();
+                $this->prefix='p';
+                $this->prepare_product();
                 break;
+            case 'Category':
+                switch ($this->object->get('Category Scope')) {
+                    case 'Product':
+
+                        if ($this->object->get('Category Branch Type') == 'Head') {
+                            $this->prefix='cat_p';
+                            $this->prepare_product_category();
+                        }
+                        break;
+                    case 'Part':
+                        if ($this->object->get('Category Branch Type') == 'Head') {
+                            $this->prefix='cat_sko';
+                            $this->prepare_part_category();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+
             case 'Page':
-                $this->add_webpage();
+                $this->prefix='wp';
+                $this->prepare_webpage();
                 break;
         }
     }
 
-    private function add_customer() {
+    private function prepare_customer() {
 
         $this->module = 'customers';
+        $this->store_key=$this->object->get('Store Key');
+
         $this->scopes = array(
             'customers' => 100
         );
 
         //$this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
-        $this->url   = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
+        $this->url = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
 
         $this->real_time[] = $this->object->id;
         $this->real_time[] = $this->object->get('Name');
@@ -208,6 +254,7 @@ class ES_indexer {
         }
 
 
+        /*
         $this->primary[] = $this->object->id;
 
         $this->primary[] = $this->object->get('Name');
@@ -260,7 +307,10 @@ class ES_indexer {
         }
 
         $this->remove_duplicated_tokens();
-        $this->add_index('c', $this->object->get('Customer Store Key'));
+        */
+
+
+
 
     }
 
@@ -351,43 +401,54 @@ class ES_indexer {
         $this->secondary = array_diff($this->secondary, $this->primary);
         $this->alias     = array_diff($this->alias, $this->primary);
         $this->alias     = array_diff($this->alias, $this->secondary);
+
     }
 
-    private function add_index($prefix,$store_key = '') {
 
 
-        $params = [
+    public function get_index_header(){
+        return [
             'index' => strtolower('au_q_'.$this->account_code),
-            'id'    => $prefix.$this->object->id,
-            'body'  => array(
-                'rt'     => $this->flatten($this->real_time),
-                'url'    => $this->url,
-                'module' => $this->module,
-                //'object'       => $object,
-                //'status'       => $this->status,
-                'weight' => $this->weight,
-                //'result_label' => $this->label,
-                //'primary'      => $this->flatten($this->primary),
-                //'secondary'    => $this->flatten($this->secondary),
-                //'alias'        => $this->flatten($this->alias),
-
-                'store_key'    => $store_key,
-                'store_label'=>$this->get_store_code($store_key),
-                'icon_classes' => $this->icon_classes,
-                'label_1'      => $this->label_1,
-                'label_2'      => $this->label_2,
-                'label_3'      => $this->label_3,
-                'label_4'      => $this->label_4,
-
-            )
+            'id'    => $this->prefix.$this->object->id,
         ];
+    }
+    public function get_index_body(){
+        $body= array(
+            'rt'     => $this->flatten($this->real_time),
+            'url'    => $this->url,
+            'module' => $this->module,
+            'weight' => $this->weight,
+            'store_key'    => $this->store_key,
+            'store_label'  => $this->get_store_code($this->store_key),
+            'icon_classes' => $this->icon_classes,
+            'label_1'      => $this->label_1,
+            'label_2'      => $this->label_2,
+            'label_3'      => $this->label_3,
+            'label_4'      => $this->label_4,
+            //'object'       => $object,
+            //'status'       => $this->status,
+            //'result_label' => $this->label,
+            //'primary'      => $this->flatten($this->primary),
+            //'secondary'    => $this->flatten($this->secondary),
+            //'alias'        => $this->flatten($this->alias),
+
+        );
 
         if (count($this->scopes) > 0) {
-            $params['body']['scopes'] = $this->scopes;
+            $body['scopes'] = $this->scopes;
         }
+        return $body;
 
-        $this->client->index($params);
     }
+
+    public function add_index() {
+        $params=$this->get_index_header();
+        $params['body']=$this->get_index_body();
+        $this->client->index($params);
+
+
+    }
+
 
     private function flatten($array) {
         if (count($array) == 0) {
@@ -403,9 +464,32 @@ class ES_indexer {
 
     }
 
-    private function add_prospect() {
+    private function get_store_code($store_key) {
+
+        if (!is_numeric($store_key)) {
+            return '';
+        }
+
+        $sql  = "select `Store Code` from `Store Dimension` where `Store Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $store_key
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            return $row['Store Code'];
+        } else {
+            return '';
+        }
+
+    }
+
+    private function prepare_prospect() {
 
         $this->module = 'customers';
+        $this->store_key=$this->object->get('Store Key');
+
         $this->scopes = array(
             'prospects' => 100,
             'customers' => 10
@@ -472,7 +556,7 @@ class ES_indexer {
                 break;
         }
 
-
+/*
         $this->primary[] = $this->object->id;
 
         $this->primary[] = $this->object->get('Name');
@@ -509,14 +593,15 @@ class ES_indexer {
         }
 
         $this->remove_duplicated_tokens();
-        $this->add_index('cp', $this->object->get('Prospect Store Key'));
+*/
 
     }
 
-    private function add_order() {
+    private function prepare_order() {
 
 
         $this->module = 'orders';
+        $this->store_key=$this->object->get('Store Key');
 
 
         $this->real_time[] = $this->object->get('Order Public ID');
@@ -560,10 +645,10 @@ class ES_indexer {
 
             $delivery_notes .= ', <span class="'.(in_array(
                     $row['Delivery Note Type'], array(
-                    'Replacement & Shortages',
-                    'Replacement',
-                    'Shortages'
-                )
+                                                  'Replacement & Shortages',
+                                                  'Replacement',
+                                                  'Shortages'
+                                              )
                 ) ? 'error' : '').'"><i class="'.$icon.'"></i> '.$row['Delivery Note ID'].'</span>';
 
         }
@@ -608,7 +693,7 @@ class ES_indexer {
         switch ($this->object->get('Order State')) {
             case 'InBasket':
                 $this->weight = 25;
-break;
+                break;
 
             case 'PackedDone':
             case 'InProcess':
@@ -669,41 +754,76 @@ break;
         $this->remove_duplicated_tokens();
         */
 
-        $this->add_index('o', $this->object->get('Order Store Key'));
 
     }
 
-    private function add_part() {
+    private function prepare_part() {
 
-
-        $this->label  = $this->object->get('Part Reference').', '.$this->object->get('Part Package Description');
+        $this->module = 'inventory';
         $this->url    = sprintf('part/%d', $this->object->id);
-        $this->status = $this->object->get('Part Status');
 
+        $this->real_time[] = $this->object->get('Part Reference');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $this->object->get('Part Package Description');
+        $this->real_time[] = $this->object->get('Part SKO Barcode');
+        $this->real_time[] = strip_tags($this->object->get('Materials'));
+
+
+        $this->label_1 = $this->object->get('Reference');
+        $this->label_2 = $this->object->get('Part Package Description');
+        $this->label_3 = $this->object->get('Package Weight');
+
+
+        switch ($this->object->get('Part Status')) {
+            case 'Discontinuing':
+                $this->weight       = 50;
+                $this->icon_classes = 'fal fa-box warning';
+                break;
+            case 'Not In Use':
+                $this->weight       = 5;
+                $this->icon_classes = 'fal fa-box very_discreet red';
+                break;
+            case 'In Use':
+                $this->weight       = 40;
+                $this->icon_classes = 'fal fa-box';
+                break;
+            case 'In Process':
+                $this->weight       = 40;
+                $this->icon_classes = 'fal fa-box discreet';
+                break;
+            default:
+                $this->icon_classes = 'fal fa-question-circle';
+
+
+        }
+
+
+        /*
+        $this->label  = $this->object->get('Part Reference').', '.$this->object->get('Part Package Description');
+        $this->status = $this->object->get('Part Status');
         $this->primary[] = $this->object->get('Part Reference');
         $this->primary[] = $this->object->get('Part Package Description');
         $this->primary[] = $this->object->get('Part SKO Barcode');
-
         $this->secondary[] = strip_tags($this->object->get('Materials'));
-
-
         $this->remove_duplicated_tokens();
-        $this->add_index('sko');
+        */
+
 
     }
 
-    private function add_product() {
+    private function prepare_product() {
 
 
         $this->module = 'products';
+        $this->store_key=$this->object->get('Store Key');
 
 
         $this->real_time[] = $this->object->get('Product Code');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
         $this->real_time[] = $number_only_id;
         $this->real_time[] = (int)$number_only_id;
-
-
         $this->real_time[] = $this->object->get('Product Name');
 
 
@@ -714,15 +834,19 @@ break;
         //'InProcess','Active','Suspended','Discontinuing','Discontinued'
         switch ($this->object->get('Product Status')) {
             case 'Discontinuing':
+                $this->weight       = 50;
                 $this->icon_classes = 'fa fa-cube warning';
                 break;
             case 'Discontinued':
+                $this->weight       = 5;
                 $this->icon_classes = 'fa fa-cube very_discreet';
                 break;
             case 'Suspended':
+                $this->weight       = 40;
                 $this->icon_classes = 'fa fa-cube error';
                 break;
             default:
+                $this->weight       = 60;
                 $this->icon_classes = 'fa fa-cube';
                 break;
         }
@@ -782,12 +906,118 @@ break;
         $this->url = sprintf('products/%d/%d', $this->object->get('Product Store Key'), $this->object->id);
 
 
-        $this->add_index('p', $this->object->get('Product Store Key'));
 
     }
 
-    private function add_webpage() {
+    private function prepare_product_category() {
+        $this->module = 'products';
 
+        $store             = get_object('Store', $this->object->get('Store Key'));
+        $this->module      = 'products';
+        $this->store_key=$store->id;
+
+        $this->real_time[] = $this->object->get('Category Code');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $this->object->get('Category Label');
+        $this->label_1     = $this->object->get('Code');
+        $this->label_2     = $this->object->get('Label');
+
+        if ($this->object->get('Category Root Key') == $store->get('Store Family Category Key') or $this->object->get('Category Root Key') == $store->get('Store Department Category Key')) {
+            $this->icon_classes = 'fa yellow_main ';
+        } else {
+            $this->icon_classes = 'far discreet ';
+        }
+
+        if ($this->object->get('Category Subject') == 'Product') {
+            $this->icon_classes .= 'fa-folder-open';
+        } else {
+            $this->icon_classes .= 'fa-folder-tree';
+        }
+
+        switch ($this->object->get('Product Category Status')) {
+            case 'In Process':
+                $this->weight = 80;
+                break;
+
+            case 'Active':
+                $this->weight = 70;
+                break;
+            case 'Suspended':
+                $this->weight       = 30;
+                $this->icon_classes .= ' very_discreet red';
+
+                break;
+            case 'Discontinued':
+                $this->weight       = 10;
+                $this->icon_classes .= ' very_discreet warning';
+                break;
+            case 'Discontinuing':
+                $this->weight       = 60;
+                $this->icon_classes .= ' warning';
+                break;
+
+        }
+
+
+        $this->url = sprintf('products/%d/category/%d', $this->object->get('Store Key'), $this->object->id);
+
+
+
+    }
+
+    private function prepare_part_category() {
+
+        $this->module = 'inventory';
+
+        $this->real_time[] = $this->object->get('Category Code');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $this->object->get('Category Label');
+        $this->label_1     = $this->object->get('Code');
+        if ($this->object->get('Code') != $this->object->get('Label')) {
+            $this->label_2 = $this->object->get('Label');
+        }
+
+
+        $this->icon_classes = 'fal  fa-boxes';
+
+
+        switch ($this->object->get('Part Category Status')) {
+            case 'InProcess':
+                $this->weight       = 80;
+                $this->icon_classes .= '| fal fa-seeding very_discreet ';
+
+                break;
+
+            case 'InUse':
+                $this->weight = 70;
+                break;
+
+            case 'NotInUse':
+                $this->weight       = 10;
+                $this->icon_classes .= ' very_discreet error';
+                break;
+            case 'Discontinuing':
+                $this->weight       = 60;
+                $this->icon_classes .= ' warning';
+                break;
+
+        }
+
+
+        $this->url = sprintf('category/%d', $this->object->id);
+
+
+
+    }
+
+    private function prepare_webpage() {
+
+
+        $this->store_key=$this->object->get('Store Key');
 
         $this->label  = $this->object->get('Webpage Code').', '.$this->object->get('URL');
         $this->url    = sprintf('webpages/%d/%d', $this->object->get('Webpage Website Key'), $this->object->id);
@@ -829,7 +1059,6 @@ break;
         }
 
         $this->remove_duplicated_tokens();
-        $this->add_index('w', $this->object->get('Webpage Store Key'));
 
     }
 
@@ -857,27 +1086,6 @@ break;
             $tokens,
             $aux
         );
-    }
-
-    private function get_store_code($store_key) {
-
-        if(!is_numeric($store_key)){
-            return '';
-        }
-
-        $sql  = "select `Store Code` from `Store Dimension` where `Store Key`=?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $store_key
-            )
-        );
-        if ($row = $stmt->fetch()) {
-            return $row['Store Code'];
-        } else {
-            return '';
-        }
-
     }
 
 }

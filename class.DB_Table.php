@@ -83,18 +83,6 @@ abstract class DB_Table extends stdClass {
         }
     }
 
-
-    /**
-     * @param        $user \User
-     * @param string $field
-     *
-     * @return bool
-     */
-    public function can_edit_field($user,$field=''){
-        return true;
-    }
-
-
     protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -161,11 +149,7 @@ abstract class DB_Table extends stdClass {
         $value = _trim($value);
 
 
-
-
         $formatted_field = preg_replace('/^'.$this->table_name.' /', '', $field);
-
-
 
 
         //$old_value=_('Unknown');
@@ -175,7 +159,7 @@ abstract class DB_Table extends stdClass {
             $key_field = "Page Key";
         }
 
-        if ($table_name == 'Page' ) {
+        if ($table_name == 'Page') {
             $extra_data = $this->store_base_data();
 
 
@@ -252,15 +236,12 @@ abstract class DB_Table extends stdClass {
                 ) and !$this->new and $save_history) {
 
 
-
-
-                if($formatted_field=='Tax Number'){
-                    $formatted_field='Tax Number Formatted';
+                if ($formatted_field == 'Tax Number') {
+                    $formatted_field = 'Tax Number Formatted';
                 }
 
 
                 $new_formatted_value = $this->get($formatted_field);
-
 
 
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
@@ -316,8 +297,6 @@ abstract class DB_Table extends stdClass {
     function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
 
 
-
-
         $editor_data = $this->get_editor_data();
         if ($this->no_history) {
             return;
@@ -351,8 +330,6 @@ abstract class DB_Table extends stdClass {
         } else {
             $data['User Key'] = $editor_data['User Key'];
         }
-
-
 
 
         if ($data['Subject'] == '' and isset($this->editor['Subject']) and isset($this->editor['Subject Key']) and isset($this->editor['Author Name'])) {
@@ -531,7 +508,6 @@ abstract class DB_Table extends stdClass {
         }
 
 
-
         $sql =
             "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -685,8 +661,6 @@ abstract class DB_Table extends stdClass {
     public function fast_update($data, $table_full_name = false, $options = '') {
 
 
-
-
         if ($options == 'no_null') {
             $null_if_empty = false;
 
@@ -714,7 +688,7 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
-        }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
+        } elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
             $key_field = 'Part Category Key';
 
         } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
@@ -726,10 +700,7 @@ abstract class DB_Table extends stdClass {
         }
 
 
-
         foreach ($data as $field => $value) {
-
-
 
 
             $sql = sprintf(
@@ -762,7 +733,15 @@ abstract class DB_Table extends stdClass {
 
     }
 
-
+    /**
+     * @param        $user \User
+     * @param string $field
+     *
+     * @return bool
+     */
+    public function can_edit_field($user, $field = '') {
+        return true;
+    }
 
     public function fast_update_json_field($field, $key, $value, $table_full_name = '') {
 
@@ -772,8 +751,8 @@ abstract class DB_Table extends stdClass {
         }
 
         //todo fix after fix Page Store Dimension
-        if($this->table_name=='Page'){
-            $table_full_name='Page Store Dimension';
+        if ($this->table_name == 'Page') {
+            $table_full_name = 'Page Store Dimension';
         }
 
 
@@ -790,7 +769,7 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
-        }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
+        } elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
             $key_field = 'Product Category Key';
 
         } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
@@ -813,7 +792,6 @@ abstract class DB_Table extends stdClass {
         $stmt->execute();
 
 
-
         $this->get_data('id', $this->id);
 
 
@@ -828,8 +806,8 @@ abstract class DB_Table extends stdClass {
 
 
         //todo fix after fix Page Store Dimension
-        if($this->table_name=='Page'){
-            $table_full_name='Page Store Dimension';
+        if ($this->table_name == 'Page') {
+            $table_full_name = 'Page Store Dimension';
         }
 
 
@@ -846,7 +824,7 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
-        }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
+        } elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
             $key_field = 'Product Category Key';
 
         } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
@@ -921,7 +899,7 @@ abstract class DB_Table extends stdClass {
         return $history_key;
     }
 
-    function get_formatted_id($prefix = '',$zero_fill=4) {
+    function get_formatted_id($prefix = '', $zero_fill = 4) {
 
 
         return sprintf("%s%0".$zero_fill."d", $prefix, $this->id);
@@ -962,11 +940,19 @@ abstract class DB_Table extends stdClass {
         }
     }
 
-    function index_elastic_search($hosts){
+    function index_elastic_search($hosts, $bulk = false) {
         include_once 'utils/ES_Indexer.class.php';
-        $account=get_object('Account',1);
-        $indexer=new ES_indexer($hosts,$account->get('Code'),$this,$this->db);
-        $indexer->add_object();
+        $account = get_object('Account', 1);
+        $indexer = new ES_indexer($hosts, $account->get('Code'), $this, $this->db);
+
+        $indexer->prepare_object();
+        if (!$bulk) {
+
+
+            $indexer->add_index();
+        }
+
+        return $indexer;
 
 
     }
