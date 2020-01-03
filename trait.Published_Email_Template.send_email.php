@@ -376,7 +376,6 @@ trait Send_Email {
                                                                                'OOS Notification',
                                                                                'Invite',
                                                                                'Invite Mailshot',
-                                                                               'Invite Full Mailshot',
                                                                                'GR Reminder',
                                                                                'Registration',
                                                                            )
