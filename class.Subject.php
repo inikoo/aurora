@@ -591,7 +591,11 @@ class Subject extends DB_Table {
                     $this->update_field($this->table_name.' Name', $value, 'no_history');
                 }
 
-                if ($old_value == $this->get('Contact Address Organization')) {
+
+
+
+
+                if ( $this->get('Contact Address Country 2 Alpha Code')!='' and  $old_value == $this->get('Contact Address Organization')) {
                     $this->update_field(
                         $this->table_name.' Contact Address Organization', $value, 'no_history'
                     );
@@ -682,7 +686,7 @@ class Subject extends DB_Table {
                 }
 
 
-                if ($old_value == $this->get('Contact Address Recipient')) {
+                if ($this->get('Contact Address Country 2 Alpha Code')!='' and $old_value == $this->get('Contact Address Recipient')) {
                     $this->update_field($this->table_name.' Contact Address Recipient', $value, 'no_history');
                     $this->update_address_formatted_fields('Contact');
 
