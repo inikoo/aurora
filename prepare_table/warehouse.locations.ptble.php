@@ -22,11 +22,6 @@ switch ($parameters['parent']) {
             ' where `Location Warehouse Area Key`=%d', $parameters['parent_key']
         );
         break;
-    case('shelf'):
-        $where = sprintf(
-            ' where `Location Shelf Key`=%d', $parameters['parent_key']
-        );
-        break;
     default:
         exit ('parent not found '.$parameters['parent']);
 }

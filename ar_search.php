@@ -97,20 +97,33 @@ if ($user->get('User Type') == 'Agent') {
     } elseif ($data['state']['module'] == 'websites') {
 
 
-        if ($data['state']['current_website']) {
-            $data['scope']     = 'website';
-            $data['scope_key'] = $data['state']['current_website'];
-        } else {
-            $data['scope'] = 'websites';
-        }
-
-        search_webpages($db, $account, $user, $data);
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES(trim($data['query']), 'websites', array(), $stores));
+        exit;
 
     }  elseif ($data['state']['module'] == 'hr') {
         search_hr($db, $account, $user, $data);
 
     } elseif ($data['state']['module'] == 'suppliers') {
-        search_suppliers($db, $account, $user, $data);
+
+        if (in_array(
+            $data['state']['section'], array(
+                                         'agents',
+                                         'agent',
+                                         'agents.new'
+                                     )
+        )) {
+            $scopes = array(
+                'agents' => 10
+            );
+        } else {
+            $scopes = array(
+                'suppliers' => 10
+            );
+        }
+
+        echo json_encode(search_ES(trim($data['query']), 'suppliers'));
+        exit;
 
     } elseif ($data['state']['module'] == 'production') {
         search_production($db, $account, $user, $data);
@@ -166,13 +179,9 @@ if ($user->get('User Type') == 'Agent') {
 
 
     } elseif ($data['state']['module'] == 'warehouses') {
-        if ($data['state']['current_warehouse']) {
-            $data['scope']     = 'warehouse';
-            $data['scope_key'] = $data['state']['current_warehouse'];
-        } else {
-            $data['scope'] = 'warehouses';
-        }
-        search_locations($db, $account, $user, $data);
+
+        echo json_encode(search_ES(trim($data['query']), 'warehouse'));
+        exit;
     }
 }
 

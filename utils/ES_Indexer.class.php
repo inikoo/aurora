@@ -138,23 +138,27 @@ class ES_indexer {
 
         switch ($this->object->get_object_name()) {
             case 'Customer':
-                $this->prefix='c';
+                $this->prefix = 'c';
                 $this->prepare_customer();
                 break;
             case 'Prospect':
-                $this->prefix='cp';
+                $this->prefix = 'cp';
                 $this->prepare_prospect();
                 break;
             case 'Order':
-                $this->prefix='o';
+                $this->prefix = 'o';
                 $this->prepare_order();
                 break;
             case 'Part':
-                $this->prefix='sko';
+                $this->prefix = 'sko';
                 $this->prepare_part();
                 break;
+            case 'Location':
+                $this->prefix = 'loc';
+                $this->prepare_location();
+                break;
             case 'Product':
-                $this->prefix='p';
+                $this->prefix = 'p';
                 $this->prepare_product();
                 break;
             case 'Category':
@@ -162,13 +166,13 @@ class ES_indexer {
                     case 'Product':
 
                         if ($this->object->get('Category Branch Type') == 'Head') {
-                            $this->prefix='cat_p';
+                            $this->prefix = 'cat_p';
                             $this->prepare_product_category();
                         }
                         break;
                     case 'Part':
                         if ($this->object->get('Category Branch Type') == 'Head') {
-                            $this->prefix='cat_sko';
+                            $this->prefix = 'cat_sko';
                             $this->prepare_part_category();
                         }
                         break;
@@ -179,16 +183,28 @@ class ES_indexer {
                 break;
 
             case 'Page':
-                $this->prefix='wp';
+                $this->prefix = 'wp';
                 $this->prepare_webpage();
+                break;
+            case 'Supplier':
+                $this->prefix = 'sup';
+                $this->prepare_supplier();
+                break;
+            case 'Agent':
+                $this->prefix = 'ag';
+                $this->prepare_agent();
+                break;
+            case 'Supplier Part':
+                $this->prefix = 'sp';
+                $this->prepare_supplier_part();
                 break;
         }
     }
 
     private function prepare_customer() {
 
-        $this->module = 'customers';
-        $this->store_key=$this->object->get('Store Key');
+        $this->module    = 'customers';
+        $this->store_key = $this->object->get('Store Key');
 
         $this->scopes = array(
             'customers' => 100
@@ -310,185 +326,12 @@ class ES_indexer {
         */
 
 
-
-
-    }
-
-    private function tokenize_address($type) {
-
-        include_once 'class.Country.php';
-
-
-        $tokens = array();
-        $aux    = array();
-
-        $tokens[] = $this->object->get($type.' Address Recipient');
-        $tokens[] = $this->object->get($type.' Address Organization');
-        $tokens[] = $this->object->get($type.' Address Line 1');
-        $tokens[] = $this->object->get($type.' Address Line 2');
-        $tokens[] = $this->object->get($type.' Address Sorting Code');
-        $tokens[] = $this->object->get($type.' Address Postal Code');
-        $tokens[] = preg_replace('/\s+/', '', $this->object->get($type.' Address Sorting Code'));
-        $tokens[] = preg_replace('/\s+/', '', $this->object->get($type.' Address Postal Code'));
-
-        $tokens[] = $this->object->get($type.' Address Recipient');
-        $tokens[] = $this->object->get($type.' Address Dependent Locality');
-        $tokens[] = $this->object->get($type.' Address Locality');
-        $tokens[] = $this->object->get($type.' Address Administrative Area');
-
-        $country  = new Country('2alpha', $this->object->get($type.' Address Country 2 Alpha Code'), $this->db);
-        $tokens[] = $country->get('Country Name');
-        $tokens[] = $country->get('Country Local Name');
-        $tokens[] = $country->get('Country Official Name');
-
-        foreach ($country->get_alias() as $county_alias) {
-            $aux[] = $county_alias;
-            if (strlen($county_alias) < 5) {
-                $aux[] = preg_replace('/\s+/', '', $county_alias);
-            }
-
-        }
-
-        return array(
-            $tokens,
-            $aux
-        );
-    }
-
-    private function tokenize_telephone_number($number, $country) {
-
-        $tokens = array();
-        $aux    = array();
-        if ($number == '') {
-            return array(
-                $tokens,
-                $aux
-            );
-        }
-
-        $phoneUtil = PhoneNumberUtil::getInstance();
-        try {
-            $_number = $phoneUtil->parse($number, $country);
-
-            $tokens[] = preg_replace('/[^0-9]/', '', $phoneUtil->format($_number, PhoneNumberFormat::E164));
-            $tokens[] = preg_replace('/[^0-9]/', '', $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL));
-
-
-            $aux[] = $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL);
-            $aux[] = $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL);
-
-            $aux[] = $phoneUtil->format($_number, PhoneNumberFormat::E164);
-
-            $aux[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::E164));
-            $aux[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL));
-            $aux[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL));
-
-        } catch (NumberParseException $e) {
-            return array(
-                $tokens,
-                $aux
-            );
-        }
-
-        return array(
-            $tokens,
-            $aux
-        );
-
-    }
-
-    private function remove_duplicated_tokens() {
-        $this->secondary = array_diff($this->secondary, $this->primary);
-        $this->alias     = array_diff($this->alias, $this->primary);
-        $this->alias     = array_diff($this->alias, $this->secondary);
-
-    }
-
-
-
-    public function get_index_header(){
-        return [
-            'index' => strtolower('au_q_'.$this->account_code),
-            'id'    => $this->prefix.$this->object->id,
-        ];
-    }
-    public function get_index_body(){
-        $body= array(
-            'rt'     => $this->flatten($this->real_time),
-            'url'    => $this->url,
-            'module' => $this->module,
-            'weight' => $this->weight,
-            'store_key'    => $this->store_key,
-            'store_label'  => $this->get_store_code($this->store_key),
-            'icon_classes' => $this->icon_classes,
-            'label_1'      => $this->label_1,
-            'label_2'      => $this->label_2,
-            'label_3'      => $this->label_3,
-            'label_4'      => $this->label_4,
-            //'object'       => $object,
-            //'status'       => $this->status,
-            //'result_label' => $this->label,
-            //'primary'      => $this->flatten($this->primary),
-            //'secondary'    => $this->flatten($this->secondary),
-            //'alias'        => $this->flatten($this->alias),
-
-        );
-
-        if (count($this->scopes) > 0) {
-            $body['scopes'] = $this->scopes;
-        }
-        return $body;
-
-    }
-
-    public function add_index() {
-        $params=$this->get_index_header();
-        $params['body']=$this->get_index_body();
-        $this->client->index($params);
-
-
-    }
-
-
-    private function flatten($array) {
-        if (count($array) == 0) {
-            return '';
-        }
-
-        $string = join(' ', array_unique($array));
-
-        $string = preg_replace('/\s\s+/', ' ', $string);
-        $string = preg_replace('/\n/', ' ', $string);
-
-        return $string;
-
-    }
-
-    private function get_store_code($store_key) {
-
-        if (!is_numeric($store_key)) {
-            return '';
-        }
-
-        $sql  = "select `Store Code` from `Store Dimension` where `Store Key`=?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $store_key
-            )
-        );
-        if ($row = $stmt->fetch()) {
-            return $row['Store Code'];
-        } else {
-            return '';
-        }
-
     }
 
     private function prepare_prospect() {
 
-        $this->module = 'customers';
-        $this->store_key=$this->object->get('Store Key');
+        $this->module    = 'customers';
+        $this->store_key = $this->object->get('Store Key');
 
         $this->scopes = array(
             'prospects' => 100,
@@ -556,52 +399,52 @@ class ES_indexer {
                 break;
         }
 
-/*
-        $this->primary[] = $this->object->id;
+        /*
+                $this->primary[] = $this->object->id;
 
-        $this->primary[] = $this->object->get('Name');
-        $this->primary[] = $this->object->get('Main Contact Name');
-        $this->primary[] = $this->object->get('Prospect Main Plain Email');
-
-
-        list($address_tokens, $address_aux) = $this->tokenize_address('Contact');
-        $this->primary = array_merge($this->primary, $address_tokens);
-        $this->alias   = array_merge($this->alias, $address_aux);
+                $this->primary[] = $this->object->get('Name');
+                $this->primary[] = $this->object->get('Main Contact Name');
+                $this->primary[] = $this->object->get('Prospect Main Plain Email');
 
 
-        list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Mobile'), $this->object->get('Prospect Contact Address Country 2 Alpha Code'));
-        $this->primary = array_merge($this->primary, $tel_tokens);
-        $this->alias   = array_merge($this->alias, $tel_aux);
+                list($address_tokens, $address_aux) = $this->tokenize_address('Contact');
+                $this->primary = array_merge($this->primary, $address_tokens);
+                $this->alias   = array_merge($this->alias, $address_aux);
 
-        list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Telephone'), $this->object->get('Prospect Contact Address Country 2 Alpha Code'));
-        $this->primary   = array_merge($this->primary, $tel_tokens);
-        $this->alias     = array_merge($this->alias, $tel_aux);
-        $this->primary[] = $this->object->get('Sticky Note');
-        $this->secondary = array_diff($this->secondary, $this->primary);
 
-        $sql  = "select `History Details`,`History Abstract` from `Prospect History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`) where    B.`Prospect Key`=? and `Type`='Notes'  ";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $this->object->id
-            )
-        );
+                list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Mobile'), $this->object->get('Prospect Contact Address Country 2 Alpha Code'));
+                $this->primary = array_merge($this->primary, $tel_tokens);
+                $this->alias   = array_merge($this->alias, $tel_aux);
 
-        while ($row = $stmt->fetch()) {
-            $this->secondary[] = $row['History Details'];
-            $this->secondary[] = $row['History Abstract'];
-        }
+                list($tel_tokens, $tel_aux) = $this->tokenize_telephone_number($this->object->get('Main XHTML Telephone'), $this->object->get('Prospect Contact Address Country 2 Alpha Code'));
+                $this->primary   = array_merge($this->primary, $tel_tokens);
+                $this->alias     = array_merge($this->alias, $tel_aux);
+                $this->primary[] = $this->object->get('Sticky Note');
+                $this->secondary = array_diff($this->secondary, $this->primary);
 
-        $this->remove_duplicated_tokens();
-*/
+                $sql  = "select `History Details`,`History Abstract` from `Prospect History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`) where    B.`Prospect Key`=? and `Type`='Notes'  ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->object->id
+                    )
+                );
+
+                while ($row = $stmt->fetch()) {
+                    $this->secondary[] = $row['History Details'];
+                    $this->secondary[] = $row['History Abstract'];
+                }
+
+                $this->remove_duplicated_tokens();
+        */
 
     }
 
     private function prepare_order() {
 
 
-        $this->module = 'orders';
-        $this->store_key=$this->object->get('Store Key');
+        $this->module    = 'orders';
+        $this->store_key = $this->object->get('Store Key');
 
 
         $this->real_time[] = $this->object->get('Order Public ID');
@@ -813,11 +656,114 @@ class ES_indexer {
 
     }
 
+    private function prepare_supplier_part() {
+
+        if($this->object->get('Supplier Part Production')=='Yes'){
+            $this->module    = 'production';
+            $this->scopes = array(
+                'parts' => 100
+            );
+        }else{
+            $this->module    = 'suppliers';
+            $this->scopes = array(
+                'supplier_parts' => 100
+            );
+        }
+
+
+
+
+
+
+        $this->url    = sprintf('supplier/%d/part/%d', $this->object->get('Supplier Part Supplier Key'),$this->object->id);
+
+        $this->real_time[] = $this->object->get('Supplier Part Reference');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Supplier Part Reference')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $this->object->get('Supplier Part Description');
+
+        $this->real_time[] = $this->object->part->get('Part Reference');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->part->get('Part Reference')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $this->object->part->get('Part Package Description');
+        $this->real_time[] = $this->object->part->get('Part SKO Barcode');
+        $this->real_time[] = strip_tags($this->object->part->get('Materials'));
+        
+
+
+        $this->label_1 = '<span class="padding_right_5">'.$this->object->get('Reference').'</span>';
+
+
+
+        $this->label_2 = $this->object->get('Supplier Part Description');
+
+        $supplier = get_object('Supplier', $this->object->get('Supplier Part Supplier Key'));
+        $this->label_3 = $supplier->get('Supplier Code');
+        if($supplier->get('Supplier Type')=='Agent'){
+            $this->label_3 .=' <i class="fal small discreet fa-user-secret"></i>';
+        }
+
+
+
+        switch ($this->object->get('Supplier Part Status')) {
+            case 'Available':
+                $this->weight       = 50;
+                $this->icon_classes = 'fa fa-hand-receiving success';
+                break;
+            case 'NoAvailable':
+                $this->weight       = 30;
+                $this->icon_classes = 'fa fa-hand-receiving warning';
+                break;
+            case 'Discontinued':
+                $this->weight       = 5;
+                $this->icon_classes = 'fal fa-hand-receiving error';
+                break;
+        }
+
+        $this->label_1  .= '<span class="small">';
+
+        switch ($this->object->part->get('Part Status')) {
+            case 'Discontinuing':
+                $this->weight       = $this->weight-5;
+                $this->label_1  .= ' <i class="small fal fa-box warning"></i>';
+                break;
+            case 'Not In Use':
+                $this->weight       = $this->weight-10;
+
+                $this->label_1 .= ' <i class="small fal fa-box very_discreet red"></i>';
+                break;
+            case 'In Use':
+                $this->weight       = 40;
+                $this->label_1  .= '<i class="small fal fa-box\"></i>';
+                break;
+            case 'In Process':
+                $this->weight       = 40;
+                $this->label_1 .= ' <i class="small fal fa-box discreet"></i>';
+                break;
+            default:
+                $this->label_1 .= ' <i class="small fal fa-question-circle"></i>';
+
+
+        }
+
+        if($this->object->get('Reference')!=$this->object->part->get('Part Reference')){
+            $this->label_1 .= ' '.$this->object->part->get('Part Reference');
+
+        }
+        $this->label_1  .= '</span>';
+
+
+
+
+    }
+
     private function prepare_product() {
 
 
-        $this->module = 'products';
-        $this->store_key=$this->object->get('Store Key');
+        $this->module    = 'products';
+        $this->store_key = $this->object->get('Store Key');
 
 
         $this->real_time[] = $this->object->get('Product Code');
@@ -906,15 +852,14 @@ class ES_indexer {
         $this->url = sprintf('products/%d/%d', $this->object->get('Product Store Key'), $this->object->id);
 
 
-
     }
 
     private function prepare_product_category() {
         $this->module = 'products';
 
-        $store             = get_object('Store', $this->object->get('Store Key'));
-        $this->module      = 'products';
-        $this->store_key=$store->id;
+        $store           = get_object('Store', $this->object->get('Store Key'));
+        $this->module    = 'products';
+        $this->store_key = $store->id;
 
         $this->real_time[] = $this->object->get('Category Code');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
@@ -964,7 +909,6 @@ class ES_indexer {
         $this->url = sprintf('products/%d/category/%d', $this->object->get('Store Key'), $this->object->id);
 
 
-
     }
 
     private function prepare_part_category() {
@@ -972,7 +916,7 @@ class ES_indexer {
         $this->module = 'inventory';
 
         $this->real_time[] = $this->object->get('Category Code');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
         $this->real_time[] = $number_only_id;
         $this->real_time[] = (int)$number_only_id;
         $this->real_time[] = $this->object->get('Category Label');
@@ -1011,18 +955,119 @@ class ES_indexer {
         $this->url = sprintf('category/%d', $this->object->id);
 
 
+    }
+
+    private function prepare_location() {
+
+        $this->module = 'warehouse';
+
+        $this->real_time[] = $this->object->get('Code');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+
+        $this->label_1     = $this->object->get('Code');
+        $this->label_2     = $this->object->get('Warehouse Area Code');
+
+        $this->icon_classes = 'fal  fa-pallet';
+        $this->weight       = 60;
+        $this->url = sprintf('locations/%d/%d',  $this->object->get('Location Warehouse Key'),$this->object->id);
+
 
     }
 
     private function prepare_webpage() {
 
+        $this->module = 'websites';
 
-        $this->store_key=$this->object->get('Store Key');
+        $this->scopes = array(
+            'webpages' => 100
+        );
+        $this->store_key = $this->object->get('Store Key');
 
+
+        $this->url = sprintf('website/%d/webpage/%d', $this->object->get('Webpage Website Key'), $this->object->id);
+
+
+        $this->real_time[] = $this->object->get('Webpage Code');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Webpage Code')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+
+        $this->label_1     = strtolower($this->object->get('Code'));
+        $this->label_2     = $this->object->get('Webpage Name');
+
+
+        switch ($this->object->get('Webpage State')) {
+            case 'InProcess':
+                $this->weight=30;
+                $this->icon_classes = 'discreet ';
+                break;
+            case 'Online':
+                $this->weight=60;
+                $this->icon_classes = 'success ';
+                break;
+            case 'Offline':
+                $this->weight=10;
+                $this->icon_classes = 'error ';
+                break;
+            case 'Ready':
+                $this->weight=50;
+                $this->icon_classes = 'discreet ';
+                break;
+        }
+
+        switch ($this->object->get('Webpage Scope')) {
+            case 'Category Categories':
+                $category           = get_object('Category', $this->object->get('Webpage Scope Key'));
+                $this->real_time[]  = $category->get('Code');
+                $number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
+                $this->real_time[]  = $number_only_id;
+                $this->real_time[]  = (int)$number_only_id;
+                $this->real_time[]  = $category->get('Label');
+                $this->icon_classes .= 'far fa-browser| fal fa-folder-tree';
+                break;
+            case 'Category Products':
+                $category           = get_object('Category', $this->object->get('Webpage Scope Key'));
+                $this->real_time[]  = $category->get('Code');
+                $number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
+                $this->real_time[]  = $number_only_id;
+                $this->real_time[]  = (int)$number_only_id;
+                $this->real_time[]  = $category->get('Label');
+                $this->icon_classes .= 'far fa-browser| fal fa-folder-open';
+                break;
+            case 'Product':
+                $product           = get_object('Product', $this->object->get('Webpage Scope Key'));
+                $this->real_time[]  = $product->get('Code');
+                $number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $product->get('Code')));
+                $this->real_time[]  = $number_only_id;
+                $this->real_time[]  = (int)$number_only_id;
+                $this->real_time[]  = $product->get('Name');
+                $this->icon_classes .= ' far fa-browser| fal fa-cube';
+                break;
+
+            default:
+                $this->icon_classes .= ' far fa-browser';
+                break;
+        }
+        switch ($this->object->get('Webpage State')) {
+            case 'InProcess':
+                $this->weight=30;
+                break;
+            case 'Online':
+                $this->weight=60;
+                break;
+            case 'Offline':
+                $this->weight=10;
+                break;
+            case 'Ready':
+                $this->weight=50;
+                break;
+        }
+
+        /*
         $this->label  = $this->object->get('Webpage Code').', '.$this->object->get('URL');
-        $this->url    = sprintf('webpages/%d/%d', $this->object->get('Webpage Website Key'), $this->object->id);
         $this->status = $this->object->get('Webpage State');
-
         $this->primary[] = $this->object->get('Webpage Code');
 
 
@@ -1059,6 +1104,251 @@ class ES_indexer {
         }
 
         $this->remove_duplicated_tokens();
+        */
+
+    }
+
+    private function prepare_supplier() {
+
+        if($this->object->get('Supplier Production')=='Yes'){
+            $this->module    = 'production';
+        }else{
+            $this->module    = 'suppliers';
+            $this->scopes = array(
+                'suppliers' => 100
+            );
+        }
+
+
+
+
+        $this->url = sprintf('supplier/%d', $this->object->id);
+
+        $this->real_time[] = $this->object->get('Supplier Code');
+        $this->real_time[] = $this->object->get('Supplier Name');
+        $this->real_time[] = $this->object->get('Supplier Nickname');
+        $this->real_time[] = $this->object->get('Supplier Main Contact Name');
+        $this->real_time[] = $this->object->get('Supplier Main Plain Email');
+        $this->real_time[] = $this->object->get('Supplier Website');
+
+        $this->label_1 =$this->object->get('Supplier Code');
+        $this->label_2 = $this->object->get('Name');
+        $this->label_3 = $this->object->get('Location');
+
+
+        switch ($this->object->get('Supplier Type')){
+            case 'Free':
+                $this->icon_classes = 'far fa-hand-holding-box ';
+                $this->weight=50;
+                break;
+            case 'Agent':
+                $this->icon_classes = 'far fa-hand-holding-box| fal fa-user-agent small  discreet ';
+                $this->weight=50;
+                break;
+            case 'Archived':
+                $this->icon_classes = 'far fa-hand-holding-box error super_discreet ';
+                $this->weight=20;
+                break;
+        }
+
+
+
+
+
+
+
+    }
+
+    private function prepare_agent() {
+
+        $this->module    = 'suppliers';
+
+        $this->scopes = array(
+            'agents' => 100
+        );
+
+        $this->url = sprintf('agent/%d', $this->object->id);
+
+        $this->real_time[] = $this->object->get('Agent Code');
+        $this->real_time[] = $this->object->get('Agent Name');
+        $this->real_time[] = $this->object->get('Agent Nickname');
+        $this->real_time[] = $this->object->get('Agent Main Contact Name');
+        $this->real_time[] = $this->object->get('Agent Main Plain Email');
+        $this->real_time[] = $this->object->get('Agent Website');
+
+        $this->label_1 =$this->object->get('Agent Code');
+        $this->label_2 = $this->object->get('Name');
+        $this->label_3 = $this->object->get('Location');
+        $this->icon_classes = 'far fa-user-secret';
+    }
+
+    public function add_index() {
+        $params         = $this->get_index_header();
+        $params['body'] = $this->get_index_body();
+        $this->client->index($params);
+
+
+    }
+
+    public function get_index_header() {
+        return [
+            'index' => strtolower('au_q_'.$this->account_code),
+            'id'    => $this->prefix.$this->object->id,
+        ];
+    }
+
+    public function get_index_body() {
+        $body = array(
+            'rt'           => $this->flatten($this->real_time),
+            'url'          => $this->url,
+            'module'       => $this->module,
+            'weight'       => $this->weight,
+            'store_key'    => $this->store_key,
+            'store_label'  => $this->get_store_code($this->store_key),
+            'icon_classes' => $this->icon_classes,
+            'label_1'      => $this->label_1,
+            'label_2'      => $this->label_2,
+            'label_3'      => $this->label_3,
+            'label_4'      => $this->label_4,
+            //'object'       => $object,
+            //'status'       => $this->status,
+            //'result_label' => $this->label,
+            //'primary'      => $this->flatten($this->primary),
+            //'secondary'    => $this->flatten($this->secondary),
+            //'alias'        => $this->flatten($this->alias),
+
+        );
+
+        if (count($this->scopes) > 0) {
+            $body['scopes'] = $this->scopes;
+        }
+
+        return $body;
+
+    }
+
+    private function flatten($array) {
+        if (count($array) == 0) {
+            return '';
+        }
+
+        $string = join(' ', array_unique($array));
+
+        $string = preg_replace('/\s\s+/', ' ', $string);
+        $string = preg_replace('/\n/', ' ', $string);
+
+        return $string;
+
+    }
+
+    private function get_store_code($store_key) {
+
+        if (!is_numeric($store_key)) {
+            return '';
+        }
+
+        $sql  = "select `Store Code` from `Store Dimension` where `Store Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $store_key
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            return $row['Store Code'];
+        } else {
+            return '';
+        }
+
+    }
+
+    private function tokenize_address($type) {
+
+        include_once 'class.Country.php';
+
+
+        $tokens = array();
+        $aux    = array();
+
+        $tokens[] = $this->object->get($type.' Address Recipient');
+        $tokens[] = $this->object->get($type.' Address Organization');
+        $tokens[] = $this->object->get($type.' Address Line 1');
+        $tokens[] = $this->object->get($type.' Address Line 2');
+        $tokens[] = $this->object->get($type.' Address Sorting Code');
+        $tokens[] = $this->object->get($type.' Address Postal Code');
+        $tokens[] = preg_replace('/\s+/', '', $this->object->get($type.' Address Sorting Code'));
+        $tokens[] = preg_replace('/\s+/', '', $this->object->get($type.' Address Postal Code'));
+
+        $tokens[] = $this->object->get($type.' Address Recipient');
+        $tokens[] = $this->object->get($type.' Address Dependent Locality');
+        $tokens[] = $this->object->get($type.' Address Locality');
+        $tokens[] = $this->object->get($type.' Address Administrative Area');
+
+        $country  = new Country('2alpha', $this->object->get($type.' Address Country 2 Alpha Code'), $this->db);
+        $tokens[] = $country->get('Country Name');
+        $tokens[] = $country->get('Country Local Name');
+        $tokens[] = $country->get('Country Official Name');
+
+        foreach ($country->get_alias() as $county_alias) {
+            $aux[] = $county_alias;
+            if (strlen($county_alias) < 5) {
+                $aux[] = preg_replace('/\s+/', '', $county_alias);
+            }
+
+        }
+
+        return array(
+            $tokens,
+            $aux
+        );
+    }
+
+    private function tokenize_telephone_number($number, $country) {
+
+        $tokens = array();
+        $aux    = array();
+        if ($number == '') {
+            return array(
+                $tokens,
+                $aux
+            );
+        }
+
+        $phoneUtil = PhoneNumberUtil::getInstance();
+        try {
+            $_number = $phoneUtil->parse($number, $country);
+
+            $tokens[] = preg_replace('/[^0-9]/', '', $phoneUtil->format($_number, PhoneNumberFormat::E164));
+            $tokens[] = preg_replace('/[^0-9]/', '', $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL));
+
+
+            $aux[] = $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL);
+            $aux[] = $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL);
+
+            $aux[] = $phoneUtil->format($_number, PhoneNumberFormat::E164);
+
+            $aux[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::E164));
+            $aux[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::NATIONAL));
+            $aux[] = preg_replace('/\s+/', '', $phoneUtil->format($_number, PhoneNumberFormat::INTERNATIONAL));
+
+        } catch (NumberParseException $e) {
+            return array(
+                $tokens,
+                $aux
+            );
+        }
+
+        return array(
+            $tokens,
+            $aux
+        );
+
+    }
+
+    private function remove_duplicated_tokens() {
+        $this->secondary = array_diff($this->secondary, $this->primary);
+        $this->alias     = array_diff($this->alias, $this->primary);
+        $this->alias     = array_diff($this->alias, $this->secondary);
 
     }
 

@@ -22,6 +22,15 @@ $global_counter=0;
 
 $client       = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
+update_suppliers_index($db);
+update_agents_index($db);
+update_supplier_products_index($db);
+
+
+
+/*
+update_webpages_index($db);
+
 update_parts_index($db);
 
 update_categories_index($db);
@@ -31,14 +40,16 @@ update_prospects_index($db);
 
 update_customers_index($db);
 update_orders_index($db);
+update_locations_index($db);
 
 
 /*
 
-update_webpages_index($db);
+
 
 */
 if (!empty($params['body'])) {
+
     $responses = $client->bulk($params);
 }
 
@@ -63,7 +74,6 @@ function process_indexing($indexer){
 
     // Every 1000 documents stop and send the bulk request
     if ($global_counter % 1000 == 0) {
-
         $responses = $client->bulk($params);
         $params = ['body' => []];
         unset($responses);
@@ -122,6 +132,7 @@ function update_webpages_index($db) {
     while ($row = $stmt->fetch()) {
         $object = get_object('Webpage', $row['Page Key']);
         process_indexing($object->index_elastic_search($hosts, true));
+
         $contador++;
         if ($print_est) {
             print_lap_times($object_name, $contador, $total, $lap_time0);
@@ -191,7 +202,121 @@ function update_parts_index($db) {
     print "\n";
 }
 
+/**
+ * @param $db \PDO
+ */
+function update_locations_index($db) {
 
+    $object_name = 'Locations';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+
+    $sql  = "select `Location Key` from `Location Dimension` order by `Location Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Location', $row['Location Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+/**
+ * @param $db \PDO
+ */
+function update_suppliers_index($db) {
+
+    $object_name = 'Suppliers';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+
+    $sql  = "select `Supplier Key` from `Supplier Dimension` order by `Supplier Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Supplier', $row['Supplier Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+
+/**
+ * @param $db \PDO
+ */
+function update_agents_index($db) {
+
+    $object_name = 'Agents';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+
+    $sql  = "select `Agent Key` from `Agent Dimension` order by `Agent Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Agent', $row['Agent Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+
+
+
+/**
+ * @param $db \PDO
+ */
+function update_supplier_products_index($db) {
+
+    $object_name = 'Supplier Parts';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+
+    $sql  = "select `Supplier Part Key` from `Supplier Part Dimension` order by `Supplier Part Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Supplier Part', $row['Supplier Part Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
 /**
  * @param $db \PDO
  */
@@ -320,6 +445,18 @@ function get_total_objects($db, $object_name) {
             break;
         case 'Categories':
             $sql = "select count(*) as num from `Category Dimension`";
+            break;
+        case 'Locations':
+            $sql = "select count(*) as num from `Location Dimension`";
+            break;
+        case 'Suppliers':
+            $sql = "select count(*) as num from `Supplier Dimension`";
+            break;
+        case 'Agents':
+            $sql = "select count(*) as num from `Agent Dimension`";
+            break;
+        case 'Supplier Parts':
+            $sql = "select count(*) as num from `Supplier Part Dimension`";
             break;
         default:
             return $total_objects;
