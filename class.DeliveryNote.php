@@ -2491,7 +2491,7 @@ class DeliveryNote extends DB_Table {
 
 
         $sql = sprintf(
-            "DELETE FROM  `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d  AND `Inventory Transaction Type`='Order In Process'  ", $this->id
+            "DELETE FROM  `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d   ", $this->id
         );
         $this->db->exec($sql);
 

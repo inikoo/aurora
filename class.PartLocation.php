@@ -565,25 +565,12 @@ class PartLocation extends DB_Table {
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Quantity In Process`=%f,`Stock Value`=%f WHERE `Part SKU`=%d AND `Location Key`=%d", $stock, 0, $value, $this->part_sku, $this->location_key
         );
-        // print "$sql\n";
+
 
 
         $this->db->exec($sql);
 
-        /*
-                $sql = "SELECT * FROM `Part Location Dimension` WHERE `Part SKU`=2426";
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        print_r($row);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-        */
 
-        // print "XXX---------------------\n";
         if (!$dont_update_part_stock) {
             $this->part->update_stock();
         }
@@ -611,7 +598,6 @@ class PartLocation extends DB_Table {
 
             $account = get_object('Account', 1);
 
-            // print "diff: $old_stock -> $stock , $old_value -> $value\n";
 
             new_housekeeping_fork(
                 'au_housekeeping', array(
