@@ -22,13 +22,16 @@ $global_counter=0;
 
 $client       = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
+update_staff_index($db);
+
+/*
 update_suppliers_index($db);
 update_agents_index($db);
 update_supplier_products_index($db);
 
 
 
-/*
+
 update_webpages_index($db);
 
 update_parts_index($db);
@@ -49,7 +52,6 @@ update_locations_index($db);
 
 */
 if (!empty($params['body'])) {
-
     $responses = $client->bulk($params);
 }
 
@@ -80,6 +82,35 @@ function process_indexing($indexer){
     }
 }
 
+/**
+ * @param $db \PDO
+ */
+function update_staff_index($db) {
+
+
+
+    $object_name = 'Staff';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+
+    $sql  = "select `Staff Key` from `Staff Dimension`  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Staff', $row['Staff Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
 
 /**
  * @param $db \PDO
@@ -457,6 +488,9 @@ function get_total_objects($db, $object_name) {
             break;
         case 'Supplier Parts':
             $sql = "select count(*) as num from `Supplier Part Dimension`";
+            break;
+        case 'Staff':
+            $sql = "select count(*) as num from `Staff Dimension`";
             break;
         default:
             return $total_objects;

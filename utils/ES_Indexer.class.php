@@ -198,6 +198,14 @@ class ES_indexer {
                 $this->prefix = 'sp';
                 $this->prepare_supplier_part();
                 break;
+            case 'Staff':
+                $this->prefix = 's';
+                $this->prepare_staff();
+                break;
+            case 'User':
+                $this->prefix = 'u';
+                $this->prepare_user();
+                break;
         }
     }
 
@@ -1156,6 +1164,58 @@ class ES_indexer {
 
 
 
+
+    }
+
+
+    private function prepare_staff() {
+
+        $this->module    = 'hr';
+
+
+
+
+        $this->real_time[] = $this->object->get('Staff ID');
+        $this->real_time[] = $this->object->get('Staff Alias');
+        $this->real_time[] = $this->object->get('Staff Name');
+        $this->real_time[] = $this->object->get('Staff Official ID');
+        $this->real_time[] = $this->object->get('Staff Email');
+
+
+//'Employee','Volunteer','Contractor','TemporalWorker','WorkExperience'
+
+        if($this->object->get('Staff Type')=='Contractor'){
+            $this->scopes = array(
+                'contractor' => 100
+            );
+            $this->icon_classes = 'far fa-hand-spock';
+            $this->url = sprintf('/contractor//%d', $this->object->id);
+
+        }else{
+            $this->scopes = array(
+                'staff' => 100
+            );
+            $this->icon_classes = 'far fa-hand-rock';
+            $this->url = sprintf('/employee//%d', $this->object->id);
+
+        }
+
+
+
+        if( $this->object->get('Staff Currently Working')=='Yes'){
+            $this->label_1 =$this->object->get('Staff Alias');
+
+            $this->label_2 = $this->object->get('Name');
+
+            $this->weight=60;
+        }else{
+            $this->label_1 = '<span class="strikethrough discreet">'.$this->object->get('Alias').'</span>';
+
+            $this->label_2 = '<span class="strikethrough discreet">'.$this->object->get('Name').'</span>';
+
+            $this->weight=10;
+            $this->icon_classes .=' very_discreet';
+        }
 
     }
 

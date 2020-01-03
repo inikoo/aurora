@@ -102,7 +102,8 @@ if ($user->get('User Type') == 'Agent') {
         exit;
 
     }  elseif ($data['state']['module'] == 'hr') {
-        search_hr($db, $account, $user, $data);
+        echo json_encode(search_ES(trim($data['query']), 'hr'));
+        exit;
 
     } elseif ($data['state']['module'] == 'suppliers') {
 
