@@ -1958,31 +1958,35 @@ class User extends DB_Table {
 
 
         foreach ($rights as $right) {
-            $right_data = $user_rights[$right];
+
+            if (isset($user_rights[$right])) {
 
 
-            if ($right_data['Right Type'] == 'View') {
-                $this->rights_allow['View'][$right_data['Right Name']] = 1;
+                $right_data = $user_rights[$right];
 
-                $this->rights[$right_data['Right Name']]['View'] = 'View';
-            }
-            if ($right_data['Right Type'] == 'Delete') {
-                $this->rights_allow['Delete'][$right_data['Right Name']] = 1;
-                $this->rights[$right_data['Right Name']]['Delete']       = 'Delete';
-            }
-            if ($right_data['Right Type'] == 'Edit') {
-                $this->rights_allow['Edit'][$right_data['Right Name']] = 1;
-                $this->rights[$right_data['Right Name']]['Edit']       = 'Edit';
-            }
-            if ($right_data['Right Type'] == 'Create') {
-                $this->rights_allow['Create'][$right_data['Right Name']] = 1;
-                $this->rights[$right_data['Right Name']]['Create']       = 'Create';
-            }
-            if ($right_data['Right Type'] == 'Supervisor') {
-                $this->rights_allow['Supervisor'][$right_data['Right Name']] = 1;
-                $this->rights[$right_data['Right Name']]['Supervisor']       = 'Supervisor';
-            }
 
+                if ($right_data['Right Type'] == 'View') {
+                    $this->rights_allow['View'][$right_data['Right Name']] = 1;
+
+                    $this->rights[$right_data['Right Name']]['View'] = 'View';
+                }
+                if ($right_data['Right Type'] == 'Delete') {
+                    $this->rights_allow['Delete'][$right_data['Right Name']] = 1;
+                    $this->rights[$right_data['Right Name']]['Delete']       = 'Delete';
+                }
+                if ($right_data['Right Type'] == 'Edit') {
+                    $this->rights_allow['Edit'][$right_data['Right Name']] = 1;
+                    $this->rights[$right_data['Right Name']]['Edit']       = 'Edit';
+                }
+                if ($right_data['Right Type'] == 'Create') {
+                    $this->rights_allow['Create'][$right_data['Right Name']] = 1;
+                    $this->rights[$right_data['Right Name']]['Create']       = 'Create';
+                }
+                if ($right_data['Right Type'] == 'Supervisor') {
+                    $this->rights_allow['Supervisor'][$right_data['Right Name']] = 1;
+                    $this->rights[$right_data['Right Name']]['Supervisor']       = 'Supervisor';
+                }
+            }
 
         }
         //print_r($this->groups_key_array);
@@ -2118,8 +2122,6 @@ class User extends DB_Table {
             $dashboard_items[] = 'sales_overview';
 
         }
-
-
 
 
         return $dashboard_items;

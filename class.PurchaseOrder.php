@@ -1063,6 +1063,8 @@ class PurchaseOrder extends DB_Table {
             array($this->id)
         );
         while ($row = $stmt->fetch()) {
+
+
             $_index = $this->get_purchase_order_item_state_index($row['Purchase Order Transaction State']);
 
             if ($_index > 0) {
@@ -1656,7 +1658,9 @@ class PurchaseOrder extends DB_Table {
             $old_state = $row['Purchase Order Transaction State'];
 
             $purchase_orders_units_cancelled = $row['Purchase Order Submitted Cancelled Units'];
-            //hack, whrn POTF is split into SOTF you will need to get that from there instead
+            if($purchase_orders_units_cancelled==''){
+                $purchase_orders_units_cancelled=0;
+            }
             if ($row['Supplier Delivery Key'] > 0) {
                 $submitted_delivery_units = $row['Purchase Order Submitted Units'];
 
@@ -2362,13 +2366,13 @@ class PurchaseOrder extends DB_Table {
                     $history_data = array(
                         'History Abstract' => _('Purchase order cancelled'),
                         'History Details'  => '',
-                        'Action'           => 'created'
+                        'Action'           => 'edited'
                     );
                     $this->add_subject_history(
                         $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                     );
 
-                    $sql  = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Submitted Cancelled Units`=`Purchase Order Submitted Units`-`Supplier Delivery Units`  WHERE `Purchase Order Key`=? ";
+                    $sql  = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Submitted Cancelled Units`=ifnull(`Purchase Order Submitted Units`,0)-ifnull(`Supplier Delivery Units`,0)  WHERE `Purchase Order Key`=? ";
                     $stmt = $this->db->prepare($sql);
                     $stmt->execute(
                         array(
