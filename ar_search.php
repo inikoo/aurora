@@ -55,12 +55,12 @@ if ($user->get('User Type') == 'Agent') {
 
         if (in_array(
             $data['state']['section'], array(
-            'prospects',
-            'prospect',
-            'prospect.new',
-            'prospects.email_template',
-            'prospects.template.new'
-        )
+                                         'prospects',
+                                         'prospect',
+                                         'prospect.new',
+                                         'prospects.email_template',
+                                         'prospects.template.new'
+                                     )
         )) {
             $scopes = array(
                 'prospects' => 10
@@ -101,8 +101,12 @@ if ($user->get('User Type') == 'Agent') {
         echo json_encode(search_ES(trim($data['query']), 'websites', array(), $stores));
         exit;
 
-    }  elseif ($data['state']['module'] == 'hr') {
+    } elseif ($data['state']['module'] == 'hr') {
         echo json_encode(search_ES(trim($data['query']), 'hr'));
+        exit;
+
+    } elseif ($data['state']['module'] == 'users') {
+        echo json_encode(search_ES(trim($data['query']), 'users'));
         exit;
 
     } elseif ($data['state']['module'] == 'suppliers') {
@@ -142,42 +146,53 @@ if ($user->get('User Type') == 'Agent') {
         $data['scope'] = 'stores';
 
         search_delivery_notes($db, $account, $user, $data);
-    }  elseif ($data['state']['module'] == 'accounting_server') {
+    } elseif ($data['state']['module'] == 'accounting' or data['state']['module'] == 'accounting_server') {
+
+
         if (in_array(
             $data['state']['section'], array(
-                                         'deleted_invoice',
-                                         'deleted_invoices_server',
+
                                          'invoices',
                                          'invoice',
                                          'category'
                                      )
         )) {
-
-
-            $data['scope'] = 'stores';
-            search_invoices($db, $account, $user, $data);
-        } else {
-            $data['scope'] = 'stores';
-            search_payments($db, $account, $user, $data);
-        }
-    } elseif ($data['state']['module'] == 'accounting') {
-
-        $data['scope']     = 'store';
-        $data['scope_key'] = $data['state']['current_store'];
-        if (in_array(
+            $scopes = array(
+                'invoices' => 10
+            );
+        } elseif (in_array(
             $data['state']['section'], array(
                                          'deleted_invoice',
                                          'deleted_invoices',
-                                         'invoices',
-                                         'invoice',
-                                         'category'
+                                         'deleted_invoices_server',
+
                                      )
         )) {
-            search_invoices($db, $account, $user, $data);
-        } else {
-            search_payments($db, $account, $user, $data);
-        }
+            $scopes = array(
+                'deleted_invoices' => 10,
 
+            );
+        } elseif (in_array(
+            $data['state']['section'], array(
+                                         'payments',
+                                         'credits',
+                                         'payment_account',
+                                         'payment'
+
+                                     )
+        )) {
+            $scopes = array(
+                'payments' => 10
+            );
+        } else {
+            $scopes = array(
+                'invoices'         => 10,
+                'payments'         => 7,
+                'deleted_invoices' => 2
+            );
+        }
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES(trim($data['query']), 'accounting', $scopes, $stores));
 
     } elseif ($data['state']['module'] == 'warehouses') {
 
@@ -200,7 +215,7 @@ function check_for_store_permissions($stores) {
     }
 }
 
-function search_ES($query, $module, $scopes=array(), $stores=array()) {
+function search_ES($query, $module, $scopes = array(), $stores = array()) {
 
 
     $max_results = 16;
@@ -280,6 +295,8 @@ function search_ES($query, $module, $scopes=array(), $stores=array()) {
             ]
         );
     }
+
+
 
 
     $result = $client->search($params);

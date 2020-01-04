@@ -1054,7 +1054,7 @@ class Invoice extends DB_Table {
                 }
 
                 return $number_onptf;
-                break;
+
             case 'Recargo Equivalencia':
 
 
@@ -1064,15 +1064,21 @@ class Invoice extends DB_Table {
                     return _('No');
                 }
 
-                break;
+
             case 'Invoice Recargo Equivalencia':
                 if ($this->metadata('RE') == 'Yes') {
                     return 'Yes';
                 } else {
                     return 'No';
                 }
+            case 'Icon':
+                if ($this->get('Invoice Type') == 'Invoice') {
+                    return 'fal fa-file-invoice';
+                } else {
+                    return 'fal error fa-file-invoice';
+                }
 
-                break;
+
 
         }
 

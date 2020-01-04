@@ -10,25 +10,16 @@
  Version 3.0
 */
 
-function get_payment_showcase($data, $smarty, $user, $db) {
+/**
+ * @param $data
+ * @param $smarty \Smarty
+ *
+ * @return mixed
+ * @throws \SmartyException
+ */
+function get_payment_showcase($data, $smarty){
 
-
-    $payment = $data['_object'];
-
-    if($payment->id==1){
-        exit;
-    }
-
-
-
-    $smarty->assign('payment', $payment);
-
-
-
+    $smarty->assign('payment', $data['_object']);
     return $smarty->fetch('showcase/payment.tpl');
 
-
 }
-
-
-?>

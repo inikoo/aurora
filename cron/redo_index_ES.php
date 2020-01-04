@@ -11,6 +11,8 @@
 */
 
 require 'common.php';
+require_once 'utils/natural_language.php';
+require_once 'class.Invoice.php';
 
 require 'vendor/autoload.php';
 use Elasticsearch\ClientBuilder;
@@ -22,9 +24,18 @@ $global_counter=0;
 
 $client       = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-update_staff_index($db);
+update_deleted_invoices_index($db);
+update_payments_index($db);
+update_invoices_index($db);
+//update_delivery_notes_index($db);
+
+//update_lists_index($db);
 
 /*
+
+
+update_users_index($db);
+update_staff_index($db);
 update_suppliers_index($db);
 update_agents_index($db);
 update_supplier_products_index($db);
@@ -442,6 +453,164 @@ function update_prospects_index($db) {
 }
 
 
+/**
+ * @param $db \PDO
+ */
+function update_users_index($db) {
+    $object_name = 'Users';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+    $sql  = "select `User Key` from `User Dimension` order by `User Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('User', $row['User Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+/**
+ * @param $db \PDO
+ */
+function update_deleted_invoices_index($db) {
+    $object_name = 'Deleted_Invoices';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+    $sql  = "select `Invoice Deleted Key` from `Invoice Deleted Dimension` order by `Invoice Deleted Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object =new Invoice('deleted',  $row['Invoice Deleted Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+/**
+ * @param $db \PDO
+ */
+function update_invoices_index($db) {
+    $object_name = 'Invoices';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+    $sql  = "select `Invoice Key` from `Invoice Dimension` order by `Invoice Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Invoice', $row['Invoice Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+/**
+ * @param $db \PDO
+ */
+function update_delivery_notes_index($db) {
+    $object_name = 'Delivery Notes';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+    $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` order by `Delivery Note Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Delivery Note', $row['Delivery Note Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+
+/**
+ * @param $db \PDO
+ */
+function update_payments_index($db) {
+    $object_name = 'Payments';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+    $sql  = "select `Payment Key` from `Payment Dimension` order by `Payment Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Payment', $row['Payment Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+
+/**
+ * @param $db \PDO
+ */
+function update_lists_index($db) {
+    $object_name = 'Lists';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+    $sql  = "select `List Key` from `List Dimension` order by `List Key` desc ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('List', $row['List Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
 function print_lap_times($label = '', $contador, $total, $lap_time0) {
     $lap_time1 = microtime_float();
     print $label.'  '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
@@ -491,6 +660,25 @@ function get_total_objects($db, $object_name) {
             break;
         case 'Staff':
             $sql = "select count(*) as num from `Staff Dimension`";
+            break;
+
+        case 'Users':
+            $sql = "select count(*) as num from `User Dimension`";
+            break;
+        case 'Invoices':
+            $sql = "select count(*) as num from `Invoice Dimension`";
+            break;
+        case 'Deleted_Invoices':
+            $sql = "select count(*) as num from `Invoice Deleted Dimension`";
+            break;
+        case 'Delivery Notes':
+            $sql = "select count(*) as num from `Delivery Note Dimension`";
+            break;
+        case 'Payments':
+            $sql = "select count(*) as num from `Payment Dimension`";
+            break;
+        case 'Lists':
+            $sql = "select count(*) as num from `List Dimension`";
             break;
         default:
             return $total_objects;

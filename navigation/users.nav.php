@@ -464,20 +464,20 @@ function get_user_navigation($data, $smarty, $user, $db, $account) {
     switch ($object->get('User Type')) {
         case 'Staff':
             $parent_reference = 'employee/'.$object->get('User Parent Key');
-            $parent_icon = '<i style="font-size:80%;padding-left:10px" class="fa fa-hand-rock" aria-hidden="true"></i>';
+            $parent_icon = '<i style="font-size:80%;padding-left:10px" class="fal fa-user-headset" aria-hidden="true"></i>';
             $sections['staff']['selected'] = true;
 
             break;
         case 'Contractor':
             $parent_reference = 'contractor/'.$object->get('User Parent Key');
             $parent_icon
-                              = '<i style="font-size:80%;padding-left:10px" class="fa fa-hand-spock" aria-hidden="true"></i>';
+                              = '<i style="font-size:80%;padding-left:10px" class="fal   fa-user-hard-hat" aria-hidden="true"></i>';
             $sections['contractors']['selected'] = true;
 
             break;
         case 'Supplier':
             $parent_reference = 'supplier/'.$object->get('User Parent Key');
-            $parent_icon = '<i style="font-size:80%;padding-left:10px" class="fa fa-ship" aria-hidden="true"></i>';
+            $parent_icon = '<i style="font-size:80%;padding-left:10px" class="fa fa-hand-holding-box " aria-hidden="true"></i>';
             $sections['suppliers']['selected'] = true;
 
             break;

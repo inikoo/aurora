@@ -18,7 +18,7 @@ function get_hr_module() {
                 'type'      => 'navigation',
                 'label'     => _('Employees'),
                 'title'     => _("Employees"),
-                'icon'      => 'hand-rock',
+                'icon'      => 'user-headset',
                 'reference' => 'hr',
 
 
@@ -31,9 +31,7 @@ function get_hr_module() {
 
                 'tabs' => array(
                     'employees'         => array(
-                        'label' => _(
-                            'Employees'
-                        )
+                        'label' => _('Employees')
                     ),
                     'deleted.employees' => array(
                         'label' => _('Deleted employees'),
@@ -54,7 +52,7 @@ function get_hr_module() {
             'contractors'      => array(
                 'type'      => 'navigation',
                 'label'     => _('Contractors'),
-                'icon'      => 'hand-spock',
+                'icon'      => 'user-hard-hat',
                 'reference' => 'hr/contractors',
                 'tabs'      => array(
                     'contractors'         => array('label' => _('Contractors')),

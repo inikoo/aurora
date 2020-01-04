@@ -206,6 +206,22 @@ class ES_indexer {
                 $this->prefix = 'u';
                 $this->prepare_user();
                 break;
+            case 'Invoice':
+                $this->prefix = 'i';
+                $this->prepare_invoice();
+                break;
+            case 'Delivery Note':
+                $this->prefix = 'dn';
+                $this->prepare_delivery_note();
+                break;
+            case 'Payment':
+                $this->prefix = 'pay';
+                $this->prepare_payment();
+                break;
+            case 'List':
+                $this->prefix = 'li';
+                $this->prepare_list();
+                break;
         }
     }
 
@@ -664,105 +680,25 @@ class ES_indexer {
 
     }
 
-    private function prepare_supplier_part() {
+    private function prepare_location() {
 
-        if($this->object->get('Supplier Part Production')=='Yes'){
-            $this->module    = 'production';
-            $this->scopes = array(
-                'parts' => 100
-            );
-        }else{
-            $this->module    = 'suppliers';
-            $this->scopes = array(
-                'supplier_parts' => 100
-            );
-        }
+        $this->module = 'warehouse';
 
+        $this->scopes = array(
+            'locations' => 100
+        );
 
-
-
-
-
-        $this->url    = sprintf('supplier/%d/part/%d', $this->object->get('Supplier Part Supplier Key'),$this->object->id);
-
-        $this->real_time[] = $this->object->get('Supplier Part Reference');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Supplier Part Reference')));
+        $this->real_time[] = $this->object->get('Code');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
         $this->real_time[] = $number_only_id;
         $this->real_time[] = (int)$number_only_id;
-        $this->real_time[] = $this->object->get('Supplier Part Description');
 
-        $this->real_time[] = $this->object->part->get('Part Reference');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->part->get('Part Reference')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
-        $this->real_time[] = $this->object->part->get('Part Package Description');
-        $this->real_time[] = $this->object->part->get('Part SKO Barcode');
-        $this->real_time[] = strip_tags($this->object->part->get('Materials'));
-        
+        $this->label_1 = $this->object->get('Code');
+        $this->label_2 = $this->object->get('Warehouse Area Code');
 
-
-        $this->label_1 = '<span class="padding_right_5">'.$this->object->get('Reference').'</span>';
-
-
-
-        $this->label_2 = $this->object->get('Supplier Part Description');
-
-        $supplier = get_object('Supplier', $this->object->get('Supplier Part Supplier Key'));
-        $this->label_3 = $supplier->get('Supplier Code');
-        if($supplier->get('Supplier Type')=='Agent'){
-            $this->label_3 .=' <i class="fal small discreet fa-user-secret"></i>';
-        }
-
-
-
-        switch ($this->object->get('Supplier Part Status')) {
-            case 'Available':
-                $this->weight       = 50;
-                $this->icon_classes = 'fa fa-hand-receiving success';
-                break;
-            case 'NoAvailable':
-                $this->weight       = 30;
-                $this->icon_classes = 'fa fa-hand-receiving warning';
-                break;
-            case 'Discontinued':
-                $this->weight       = 5;
-                $this->icon_classes = 'fal fa-hand-receiving error';
-                break;
-        }
-
-        $this->label_1  .= '<span class="small">';
-
-        switch ($this->object->part->get('Part Status')) {
-            case 'Discontinuing':
-                $this->weight       = $this->weight-5;
-                $this->label_1  .= ' <i class="small fal fa-box warning"></i>';
-                break;
-            case 'Not In Use':
-                $this->weight       = $this->weight-10;
-
-                $this->label_1 .= ' <i class="small fal fa-box very_discreet red"></i>';
-                break;
-            case 'In Use':
-                $this->weight       = 40;
-                $this->label_1  .= '<i class="small fal fa-box\"></i>';
-                break;
-            case 'In Process':
-                $this->weight       = 40;
-                $this->label_1 .= ' <i class="small fal fa-box discreet"></i>';
-                break;
-            default:
-                $this->label_1 .= ' <i class="small fal fa-question-circle"></i>';
-
-
-        }
-
-        if($this->object->get('Reference')!=$this->object->part->get('Part Reference')){
-            $this->label_1 .= ' '.$this->object->part->get('Part Reference');
-
-        }
-        $this->label_1  .= '</span>';
-
-
+        $this->icon_classes = 'fal  fa-pallet';
+        $this->weight       = 60;
+        $this->url          = sprintf('locations/%d/%d', $this->object->get('Location Warehouse Key'), $this->object->id);
 
 
     }
@@ -773,6 +709,9 @@ class ES_indexer {
         $this->module    = 'products';
         $this->store_key = $this->object->get('Store Key');
 
+        $this->scopes = array(
+            'products' => 100
+        );
 
         $this->real_time[] = $this->object->get('Product Code');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
@@ -965,30 +904,11 @@ class ES_indexer {
 
     }
 
-    private function prepare_location() {
-
-        $this->module = 'warehouse';
-
-        $this->real_time[] = $this->object->get('Code');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
-
-        $this->label_1     = $this->object->get('Code');
-        $this->label_2     = $this->object->get('Warehouse Area Code');
-
-        $this->icon_classes = 'fal  fa-pallet';
-        $this->weight       = 60;
-        $this->url = sprintf('locations/%d/%d',  $this->object->get('Location Warehouse Key'),$this->object->id);
-
-
-    }
-
     private function prepare_webpage() {
 
         $this->module = 'websites';
 
-        $this->scopes = array(
+        $this->scopes    = array(
             'webpages' => 100
         );
         $this->store_key = $this->object->get('Store Key');
@@ -1002,25 +922,25 @@ class ES_indexer {
         $this->real_time[] = $number_only_id;
         $this->real_time[] = (int)$number_only_id;
 
-        $this->label_1     = strtolower($this->object->get('Code'));
-        $this->label_2     = $this->object->get('Webpage Name');
+        $this->label_1 = strtolower($this->object->get('Code'));
+        $this->label_2 = $this->object->get('Webpage Name');
 
 
         switch ($this->object->get('Webpage State')) {
             case 'InProcess':
-                $this->weight=30;
+                $this->weight       = 30;
                 $this->icon_classes = 'discreet ';
                 break;
             case 'Online':
-                $this->weight=60;
+                $this->weight       = 60;
                 $this->icon_classes = 'success ';
                 break;
             case 'Offline':
-                $this->weight=10;
+                $this->weight       = 10;
                 $this->icon_classes = 'error ';
                 break;
             case 'Ready':
-                $this->weight=50;
+                $this->weight       = 50;
                 $this->icon_classes = 'discreet ';
                 break;
         }
@@ -1045,7 +965,7 @@ class ES_indexer {
                 $this->icon_classes .= 'far fa-browser| fal fa-folder-open';
                 break;
             case 'Product':
-                $product           = get_object('Product', $this->object->get('Webpage Scope Key'));
+                $product            = get_object('Product', $this->object->get('Webpage Scope Key'));
                 $this->real_time[]  = $product->get('Code');
                 $number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $product->get('Code')));
                 $this->real_time[]  = $number_only_id;
@@ -1060,16 +980,16 @@ class ES_indexer {
         }
         switch ($this->object->get('Webpage State')) {
             case 'InProcess':
-                $this->weight=30;
+                $this->weight = 30;
                 break;
             case 'Online':
-                $this->weight=60;
+                $this->weight = 60;
                 break;
             case 'Offline':
-                $this->weight=10;
+                $this->weight = 10;
                 break;
             case 'Ready':
-                $this->weight=50;
+                $this->weight = 50;
                 break;
         }
 
@@ -1118,16 +1038,14 @@ class ES_indexer {
 
     private function prepare_supplier() {
 
-        if($this->object->get('Supplier Production')=='Yes'){
-            $this->module    = 'production';
-        }else{
-            $this->module    = 'suppliers';
+        if ($this->object->get('Supplier Production') == 'Yes') {
+            $this->module = 'production';
+        } else {
+            $this->module = 'suppliers';
             $this->scopes = array(
                 'suppliers' => 100
             );
         }
-
-
 
 
         $this->url = sprintf('supplier/%d', $this->object->id);
@@ -1139,89 +1057,32 @@ class ES_indexer {
         $this->real_time[] = $this->object->get('Supplier Main Plain Email');
         $this->real_time[] = $this->object->get('Supplier Website');
 
-        $this->label_1 =$this->object->get('Supplier Code');
+        $this->label_1 = $this->object->get('Supplier Code');
         $this->label_2 = $this->object->get('Name');
         $this->label_3 = $this->object->get('Location');
 
 
-        switch ($this->object->get('Supplier Type')){
+        switch ($this->object->get('Supplier Type')) {
             case 'Free':
                 $this->icon_classes = 'far fa-hand-holding-box ';
-                $this->weight=50;
+                $this->weight       = 50;
                 break;
             case 'Agent':
                 $this->icon_classes = 'far fa-hand-holding-box| fal fa-user-agent small  discreet ';
-                $this->weight=50;
+                $this->weight       = 50;
                 break;
             case 'Archived':
                 $this->icon_classes = 'far fa-hand-holding-box error super_discreet ';
-                $this->weight=20;
+                $this->weight       = 20;
                 break;
         }
 
-
-
-
-
-
-
-    }
-
-
-    private function prepare_staff() {
-
-        $this->module    = 'hr';
-
-
-
-
-        $this->real_time[] = $this->object->get('Staff ID');
-        $this->real_time[] = $this->object->get('Staff Alias');
-        $this->real_time[] = $this->object->get('Staff Name');
-        $this->real_time[] = $this->object->get('Staff Official ID');
-        $this->real_time[] = $this->object->get('Staff Email');
-
-
-//'Employee','Volunteer','Contractor','TemporalWorker','WorkExperience'
-
-        if($this->object->get('Staff Type')=='Contractor'){
-            $this->scopes = array(
-                'contractor' => 100
-            );
-            $this->icon_classes = 'far fa-hand-spock';
-            $this->url = sprintf('/contractor//%d', $this->object->id);
-
-        }else{
-            $this->scopes = array(
-                'staff' => 100
-            );
-            $this->icon_classes = 'far fa-hand-rock';
-            $this->url = sprintf('/employee//%d', $this->object->id);
-
-        }
-
-
-
-        if( $this->object->get('Staff Currently Working')=='Yes'){
-            $this->label_1 =$this->object->get('Staff Alias');
-
-            $this->label_2 = $this->object->get('Name');
-
-            $this->weight=60;
-        }else{
-            $this->label_1 = '<span class="strikethrough discreet">'.$this->object->get('Alias').'</span>';
-
-            $this->label_2 = '<span class="strikethrough discreet">'.$this->object->get('Name').'</span>';
-
-            $this->weight=10;
-            $this->icon_classes .=' very_discreet';
-        }
 
     }
 
     private function prepare_agent() {
 
-        $this->module    = 'suppliers';
+        $this->module = 'suppliers';
 
         $this->scopes = array(
             'agents' => 100
@@ -1236,10 +1097,314 @@ class ES_indexer {
         $this->real_time[] = $this->object->get('Agent Main Plain Email');
         $this->real_time[] = $this->object->get('Agent Website');
 
-        $this->label_1 =$this->object->get('Agent Code');
-        $this->label_2 = $this->object->get('Name');
-        $this->label_3 = $this->object->get('Location');
+        $this->label_1      = $this->object->get('Agent Code');
+        $this->label_2      = $this->object->get('Name');
+        $this->label_3      = $this->object->get('Location');
         $this->icon_classes = 'far fa-user-secret';
+    }
+
+    private function prepare_supplier_part() {
+
+        if ($this->object->get('Supplier Part Production') == 'Yes') {
+            $this->module = 'production';
+            $this->scopes = array(
+                'parts' => 100
+            );
+        } else {
+            $this->module = 'suppliers';
+            $this->scopes = array(
+                'supplier_parts' => 100
+            );
+        }
+
+
+        $this->url = sprintf('supplier/%d/part/%d', $this->object->get('Supplier Part Supplier Key'), $this->object->id);
+
+        $this->real_time[] = $this->object->get('Supplier Part Reference');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Supplier Part Reference')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $this->object->get('Supplier Part Description');
+
+        $this->real_time[] = $this->object->part->get('Part Reference');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->part->get('Part Reference')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $this->object->part->get('Part Package Description');
+        $this->real_time[] = $this->object->part->get('Part SKO Barcode');
+        $this->real_time[] = strip_tags($this->object->part->get('Materials'));
+
+
+        $this->label_1 = '<span class="padding_right_5">'.$this->object->get('Reference').'</span>';
+
+
+        $this->label_2 = $this->object->get('Supplier Part Description');
+
+        $supplier      = get_object('Supplier', $this->object->get('Supplier Part Supplier Key'));
+        $this->label_3 = $supplier->get('Supplier Code');
+        if ($supplier->get('Supplier Type') == 'Agent') {
+            $this->label_3 .= ' <i class="fal small discreet fa-user-secret"></i>';
+        }
+
+
+        switch ($this->object->get('Supplier Part Status')) {
+            case 'Available':
+                $this->weight       = 50;
+                $this->icon_classes = 'fa fa-hand-receiving success';
+                break;
+            case 'NoAvailable':
+                $this->weight       = 30;
+                $this->icon_classes = 'fa fa-hand-receiving warning';
+                break;
+            case 'Discontinued':
+                $this->weight       = 5;
+                $this->icon_classes = 'fal fa-hand-receiving error';
+                break;
+        }
+
+        $this->label_1 .= '<span class="small">';
+
+        switch ($this->object->part->get('Part Status')) {
+            case 'Discontinuing':
+                $this->weight  = $this->weight - 5;
+                $this->label_1 .= ' <i class="small fal fa-box warning"></i>';
+                break;
+            case 'Not In Use':
+                $this->weight = $this->weight - 10;
+
+                $this->label_1 .= ' <i class="small fal fa-box very_discreet red"></i>';
+                break;
+            case 'In Use':
+                $this->weight  = 40;
+                $this->label_1 .= '<i class="small fal fa-box\"></i>';
+                break;
+            case 'In Process':
+                $this->weight  = 40;
+                $this->label_1 .= ' <i class="small fal fa-box discreet"></i>';
+                break;
+            default:
+                $this->label_1 .= ' <i class="small fal fa-question-circle"></i>';
+
+
+        }
+
+        if ($this->object->get('Reference') != $this->object->part->get('Part Reference')) {
+            $this->label_1 .= ' '.$this->object->part->get('Part Reference');
+
+        }
+        $this->label_1 .= '</span>';
+
+
+    }
+
+    private function prepare_staff() {
+
+        $this->module = 'hr';
+
+
+        $this->real_time[] = $this->object->get('Staff ID');
+        $this->real_time[] = $this->object->get('Staff Alias');
+        $this->real_time[] = $this->object->get('Staff Name');
+        $this->real_time[] = $this->object->get('Staff Official ID');
+        $this->real_time[] = $this->object->get('Staff Email');
+
+
+        //'Employee','Volunteer','Contractor','TemporalWorker','WorkExperience'
+
+        if ($this->object->get('Staff Type') == 'Contractor') {
+            $this->scopes       = array(
+                'contractor' => 100
+            );
+            $this->icon_classes = 'far fa-hand-spock';
+            $this->url          = sprintf('/contractor//%d', $this->object->id);
+
+        } else {
+            $this->scopes       = array(
+                'staff' => 100
+            );
+            $this->icon_classes = 'far fa-hand-rock';
+            $this->url          = sprintf('/employee//%d', $this->object->id);
+
+        }
+
+
+        if ($this->object->get('Staff Currently Working') == 'Yes') {
+            $this->label_1 = $this->object->get('Staff Alias');
+
+            $this->label_2 = $this->object->get('Name');
+
+            $this->weight = 60;
+        } else {
+            $this->label_1 = '<span class="strikethrough discreet">'.$this->object->get('Alias').'</span>';
+
+            $this->label_2 = '<span class="strikethrough discreet">'.$this->object->get('Name').'</span>';
+
+            $this->weight       = 10;
+            $this->icon_classes .= ' very_discreet';
+        }
+
+    }
+
+    private function prepare_user() {
+
+        $this->module = 'users';
+
+
+        $this->real_time[] = $this->object->get('User Handle');
+
+
+        $staff = get_object('Staff', $this->object->get_staff_key());
+
+        $this->real_time[] = $staff->get('Staff ID');
+        $this->real_time[] = $staff->get('Staff Alias');
+        $this->real_time[] = $staff->get('Staff Name');
+        $this->real_time[] = $staff->get('Staff Email');
+
+
+        //'Employee','Volunteer','Contractor','TemporalWorker','WorkExperience'
+
+
+        $this->icon_classes = 'fal fa-id-badge';
+        $this->url          = sprintf('/users//%d', $this->object->id);
+
+
+        switch ($this->object->get('User Type')) {
+            case 'Staff':
+                $this->label_2 = '<i class="fal fa-user-headset padding_right_10"></i>';
+                break;
+            case 'Supplier':
+                $this->label_2 = '<i class="fal  fa-hand-holding-box padding_right_10"></i>';
+                break;
+            case 'Administrator':
+                $this->label_2 = '<i class="fal fa-user-cog padding_right_10"></i>';
+                break;
+            case 'Warehouse':
+                $this->label_2 = '<i class="fal fa-warehouse padding_right_10"></i>';
+                break;
+            case 'Contractor':
+                $this->label_2 = '<i class="fal fa-user-hard-hat padding_right_10"></i>';
+                break;
+            case 'Agent':
+                $this->label_2 = '<i class="fal fa-user-secret padding_right_10"></i>';
+                break;
+        }
+
+        if ($this->object->get('User Active') == 'Yes') {
+            $this->label_1 = $this->object->get('User Handle');
+
+            $this->label_2 .= $this->object->get('User Alias');
+
+            $this->weight = 60;
+        } else {
+            $this->label_1 = '<span class="strikethrough discreet">'.$this->object->get('User Handle').'</span>';
+
+            $this->label_2 .= '<span class="strikethrough discreet">'.$this->object->get('User Alias').'</span>';
+
+            $this->weight       = 10;
+            $this->icon_classes .= ' very_discreet';
+        }
+
+
+    }
+
+    private function prepare_invoice() {
+
+
+        $this->module    = 'accounting';
+        $this->store_key = $this->object->get('Store Key');
+
+
+
+
+
+
+        $this->real_time[] = $this->object->get('Public ID');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Public ID')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+
+
+        $order             = get_object('Order', $this->object->get('Invoice Order Key'));
+        $this->real_time[] = $order->get('Order Public ID');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $order->get('Order Public ID')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $order->get('Order Customer Purchase Order ID');
+
+
+        if( $this->object->deleted ){
+            $this->scopes = array(
+                'deleted_invoices' => 100
+            );
+            $this->icon_classes =$this->object->get('Icon').'| fa fa-trash-bin';
+            $this->weight = 10;
+            $this->label_1 =  '<span class="strikethrough discreet">'.$this->object->get('Public ID').'</span>';
+            $this->label_2 =  '<span class="strikethrough discreet">'.$this->object->get('Customer Name').'</span>';
+            $this->label_3 =  '<span class="strikethrough discreet">'.$this->object->get('Total Amount').'</span>';
+
+        }else{
+            $this->icon_classes =$this->object->get('Icon');
+            $this->weight = 60;
+            $this->scopes = array(
+                'invoices' => 100
+            );
+            $this->label_1 = $this->object->get('Public ID');
+            $this->label_2 = $this->object->get('Customer Name');
+            $this->label_3 = $this->object->get('Total Amount');
+        }
+
+
+
+
+
+
+
+        if ($order->get('Order ID') != $this->object->get('Public ID')) {
+            $this->label_4 = '<i class="fal fa-shopping-cart padding_right_5"></i>'.$order->get('Public ID');
+        }
+
+        $this->url = sprintf('invoices/%d/%d', $this->object->get('Invoice Store Key'), $this->object->id);
+
+    }
+
+    private function prepare_payment() {
+
+
+        $this->module    = 'accounting';
+        $this->store_key = $this->object->get('Store Key');
+
+        $this->scopes = array(
+            'payments' => 100
+        );
+
+        $this->real_time[] = $this->object->get('Payment Transaction ID');
+        $this->icon_classes =$this->object->get('Icon');
+        $this->label_1 = $this->object->get('Payment Transaction ID');
+        $this->label_3 = $this->object->get('Transaction Amount');
+
+        $this->label_4          = '';
+        $orders_public_id = array();
+        foreach ($this->object->get_orders('objects') as $order) {
+
+            $this->label_4             .= ', <span><i class="padding_right_5 '.$order->get('Icon').'"></i> '.$order->get('Public ID').'</span>';
+            $orders_public_id[] = $order->get('Public ID');
+
+
+
+            foreach ($this->object->get_invoices('objects') as $invoice) {
+
+                if (!in_array($invoice->get('Public ID'), $orders_public_id)) {
+                    $this->label_4  .= ', <span><i class="padding_right_5 '.$invoice->get('Icon').'"></i> '.$invoice->get('Public ID').'</span>';
+
+                }
+            }
+
+        }
+        $this->label_4  = preg_replace('/^, /', '',  $this->label_4 );
+
+
+        $this->url = sprintf('payments/%d/%d', $this->object->get('Payment Store Key'), $this->object->id);
+
     }
 
     public function add_index() {

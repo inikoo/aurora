@@ -1893,7 +1893,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'payment':
             include_once 'showcase/payment.show.php';
-            $html = get_payment_showcase($data, $smarty, $user, $db);
+            $html = get_payment_showcase($data, $smarty);
             break;
         case 'purge':
             include_once 'showcase/purge.show.php';
