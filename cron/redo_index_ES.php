@@ -24,15 +24,15 @@ $global_counter=0;
 
 $client       = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-update_deleted_invoices_index($db);
-update_payments_index($db);
-update_invoices_index($db);
-//update_delivery_notes_index($db);
+
+update_delivery_notes_index($db);
 
 //update_lists_index($db);
 
 /*
-
+update_deleted_invoices_index($db);
+update_payments_index($db);
+update_invoices_index($db);
 
 update_users_index($db);
 update_staff_index($db);

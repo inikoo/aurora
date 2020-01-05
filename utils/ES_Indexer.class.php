@@ -1313,11 +1313,6 @@ class ES_indexer {
         $this->module    = 'accounting';
         $this->store_key = $this->object->get('Store Key');
 
-
-
-
-
-
         $this->real_time[] = $this->object->get('Public ID');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Public ID')));
         $this->real_time[] = $number_only_id;
@@ -1332,31 +1327,26 @@ class ES_indexer {
         $this->real_time[] = $order->get('Order Customer Purchase Order ID');
 
 
-        if( $this->object->deleted ){
-            $this->scopes = array(
+        if ($this->object->deleted) {
+            $this->scopes       = array(
                 'deleted_invoices' => 100
             );
-            $this->icon_classes =$this->object->get('Icon').'| fa fa-trash-bin';
-            $this->weight = 10;
-            $this->label_1 =  '<span class="strikethrough discreet">'.$this->object->get('Public ID').'</span>';
-            $this->label_2 =  '<span class="strikethrough discreet">'.$this->object->get('Customer Name').'</span>';
-            $this->label_3 =  '<span class="strikethrough discreet">'.$this->object->get('Total Amount').'</span>';
+            $this->icon_classes = $this->object->get('Icon').'| fa fa-trash-bin';
+            $this->weight       = 10;
+            $this->label_1      = '<span class="strikethrough discreet">'.$this->object->get('Public ID').'</span>';
+            $this->label_2      = '<span class="strikethrough discreet">'.$this->object->get('Customer Name').'</span>';
+            $this->label_3      = '<span class="strikethrough discreet">'.$this->object->get('Total Amount').'</span>';
 
-        }else{
-            $this->icon_classes =$this->object->get('Icon');
-            $this->weight = 60;
-            $this->scopes = array(
+        } else {
+            $this->icon_classes = $this->object->get('Icon');
+            $this->weight       = 60;
+            $this->scopes       = array(
                 'invoices' => 100
             );
-            $this->label_1 = $this->object->get('Public ID');
-            $this->label_2 = $this->object->get('Customer Name');
-            $this->label_3 = $this->object->get('Total Amount');
+            $this->label_1      = $this->object->get('Public ID');
+            $this->label_2      = $this->object->get('Customer Name');
+            $this->label_3      = $this->object->get('Total Amount');
         }
-
-
-
-
-
 
 
         if ($order->get('Order ID') != $this->object->get('Public ID')) {
@@ -1364,6 +1354,44 @@ class ES_indexer {
         }
 
         $this->url = sprintf('invoices/%d/%d', $this->object->get('Invoice Store Key'), $this->object->id);
+
+    }
+
+    private function prepare_delivery_note() {
+
+
+        $this->module    = 'delivering';
+        $this->store_key = $this->object->get('Store Key');
+
+        $this->real_time[] = $this->object->get('ID');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('ID')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+
+
+        $order             = get_object('Order', $this->object->get('Order Key'));
+        $this->real_time[] = $order->get('Order Public ID');
+        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $order->get('Order Public ID')));
+        $this->real_time[] = $number_only_id;
+        $this->real_time[] = (int)$number_only_id;
+        $this->real_time[] = $order->get('Order Customer Purchase Order ID');
+
+
+        $this->icon_classes = $this->object->get('Icon');
+        $this->weight       = 60;
+        $this->scopes       = array(
+            'delivery_notes' => 100
+        );
+        $this->label_1      = $this->object->get('ID');
+        $this->label_2      = $this->object->get('Customer Name');
+        $this->label_3      = $this->object->get('Weight');
+
+
+        if ($order->get('Order ID') != $this->object->get('ID')) {
+            $this->label_4 = '<i class="fal fa-shopping-cart padding_right_5"></i>'.$order->get('Public ID');
+        }
+
+        $this->url = sprintf('delivery_notes/%d/%d', $this->object->get('Store Key'), $this->object->id);
 
     }
 
@@ -1377,30 +1405,29 @@ class ES_indexer {
             'payments' => 100
         );
 
-        $this->real_time[] = $this->object->get('Payment Transaction ID');
-        $this->icon_classes =$this->object->get('Icon');
-        $this->label_1 = $this->object->get('Payment Transaction ID');
-        $this->label_3 = $this->object->get('Transaction Amount');
+        $this->real_time[]  = $this->object->get('Payment Transaction ID');
+        $this->icon_classes = $this->object->get('Icon');
+        $this->label_1      = $this->object->get('Payment Transaction ID');
+        $this->label_3      = $this->object->get('Transaction Amount');
 
-        $this->label_4          = '';
+        $this->label_4    = '';
         $orders_public_id = array();
         foreach ($this->object->get_orders('objects') as $order) {
 
-            $this->label_4             .= ', <span><i class="padding_right_5 '.$order->get('Icon').'"></i> '.$order->get('Public ID').'</span>';
+            $this->label_4      .= ', <span><i class="padding_right_5 '.$order->get('Icon').'"></i> '.$order->get('Public ID').'</span>';
             $orders_public_id[] = $order->get('Public ID');
-
 
 
             foreach ($this->object->get_invoices('objects') as $invoice) {
 
                 if (!in_array($invoice->get('Public ID'), $orders_public_id)) {
-                    $this->label_4  .= ', <span><i class="padding_right_5 '.$invoice->get('Icon').'"></i> '.$invoice->get('Public ID').'</span>';
+                    $this->label_4 .= ', <span><i class="padding_right_5 '.$invoice->get('Icon').'"></i> '.$invoice->get('Public ID').'</span>';
 
                 }
             }
 
         }
-        $this->label_4  = preg_replace('/^, /', '',  $this->label_4 );
+        $this->label_4 = preg_replace('/^, /', '', $this->label_4);
 
 
         $this->url = sprintf('payments/%d/%d', $this->object->get('Payment Store Key'), $this->object->id);

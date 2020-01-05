@@ -133,20 +133,11 @@ if ($user->get('User Type') == 'Agent') {
     } elseif ($data['state']['module'] == 'production') {
         search_production($db, $account, $user, $data);
 
-    } elseif ($data['state']['module'] == 'delivery_notes') {
-        if ($data['state']['current_store']) {
-            $data['scope']     = 'store';
-            $data['scope_key'] = $data['state']['current_store'];
-        } else {
-            $data['scope'] = 'stores';
-        }
-        search_delivery_notes($db, $account, $user, $data);
-    } elseif ($data['state']['module'] == 'delivery_notes_server') {
-
-        $data['scope'] = 'stores';
-
-        search_delivery_notes($db, $account, $user, $data);
-    } elseif ($data['state']['module'] == 'accounting' or data['state']['module'] == 'accounting_server') {
+    } elseif ($data['state']['module'] == 'delivery_notes' or  $data['state']['module'] == 'delivery_notes_server') {
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES(trim($data['query']), 'delivering', array(), $stores));
+        exit;
+  } elseif ($data['state']['module'] == 'accounting' or data['state']['module'] == 'accounting_server') {
 
 
         if (in_array(
@@ -295,7 +286,6 @@ function search_ES($query, $module, $scopes = array(), $stores = array()) {
             ]
         );
     }
-
 
 
 

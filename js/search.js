@@ -41,14 +41,18 @@ function search(search_field, timeout) {
                 const icon_classes = data.results[result_key]._source.icon_classes;
                 let col_0 = $('<td>').addClass('icon');
 
-                $.each(icon_classes.split(/\|/), function (index, value) {
+                if(icon_classes!=''){
+                    $.each(icon_classes.split(/\|/), function (index, value) {
 
-                    let icon = $('<i>').addClass(value);
-                    if (index > 0) {
-                        icon.addClass('padding_left_5 small')
-                    }
-                    col_0.append(icon)
-                });
+                        let icon = $('<i>').addClass(value);
+                        if (index > 0) {
+                            icon.addClass('padding_left_5 small')
+                        }
+                        col_0.append(icon)
+                    });
+                }
+
+
 
 
                 let col_1 = $('<td>').addClass('col_1').html(data.results[result_key]._source.label_1);

@@ -312,6 +312,28 @@ class DeliveryNote extends DB_Table {
         switch ($key) {
 
 
+            case 'Icon':
+
+                if ($this->data['Delivery Note State'] == 'Dispatched') {
+                    $icon = 'fal fa-truck';
+                } else {
+                    $icon = 'fal fa-clipboard-list-check';
+                }
+
+
+                if (in_array(
+                    $this->data['Delivery Note Type'], array(
+                                                         'Replacement & Shortages',
+                                                         'Replacement',
+                                                         'Shortages'
+                                                     )
+                )) {
+                    $icon .= ' errir';
+                }
+                
+                return $icon;
+                break;
+
             case 'State Index':
 
 
@@ -715,7 +737,7 @@ class DeliveryNote extends DB_Table {
                     case('Small Parcel'):
                         $parcel_type = sprintf('<i class="fal fa-hand-holding-box" title="%s" aria-hidden="true"></i>\'', ngettext('small parcel', 'small parcels', $this->data['Delivery Note Number Parcels']));
                         break;
-                        default:
+                    default:
                         $parcel_type = $this->data['Delivery Note Parcel Type'];
                 }
 
@@ -2371,9 +2393,9 @@ class DeliveryNote extends DB_Table {
 
 
                     } else {
-                        $updating_picking = false;
-                        $picked           = $row['Picked'];
-                        $transaction_value=0;
+                        $updating_picking  = false;
+                        $picked            = $row['Picked'];
+                        $transaction_value = 0;
                     }
 
                     $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
@@ -2684,7 +2706,7 @@ class DeliveryNote extends DB_Table {
                 'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
                 'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
 
-                'Items_Cost'          => $this->get('Items Cost')
+                'Items_Cost' => $this->get('Items Cost')
 
 
             ),
