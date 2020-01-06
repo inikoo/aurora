@@ -32,9 +32,7 @@ function get_help_navigation($data) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 }
 
 

@@ -107,9 +107,7 @@ function get_customers_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -289,9 +287,7 @@ function get_customers_list_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -390,9 +386,7 @@ function get_customers_categories_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -458,9 +452,7 @@ function get_customers_category_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -556,9 +548,7 @@ function get_customers_lists_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -654,9 +644,7 @@ function get_customers_dashboard_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -751,9 +739,7 @@ function get_customers_insights_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -805,9 +791,7 @@ function get_customers_server_navigation($data, $smarty, $user, $db) {
     $smarty->assign('content', $_content);
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1249,9 +1233,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1297,9 +1279,7 @@ function get_deleted_customer_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1345,9 +1325,7 @@ function get_new_customer_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1394,9 +1372,7 @@ function get_new_list_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1446,9 +1422,7 @@ function get_customers_new_poll_query_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1643,9 +1617,7 @@ function get_customers_poll_query_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1692,9 +1664,7 @@ function get_customers_new_poll_query_option_navigation($data, $smarty, $user, $
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1741,9 +1711,7 @@ function get_customers_deleted_poll_query_option_navigation($data, $smarty, $use
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1938,9 +1906,7 @@ function get_customers_poll_query_option_navigation($data, $smarty, $user, $db) 
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2037,9 +2003,7 @@ function get_prospects_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2241,9 +2205,7 @@ function get_prospect_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2290,9 +2252,7 @@ function get_new_prospect_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2339,9 +2299,7 @@ function get_new_prospect_compose_email_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2711,9 +2669,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2760,9 +2716,7 @@ function get_prospects_new_template_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2960,9 +2914,7 @@ function get_prospects_email_template_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -3173,9 +3125,7 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -3356,9 +3306,7 @@ function get_mailshot_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -3413,9 +3361,7 @@ function get_new_customer_client_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -3595,9 +3541,7 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -3652,9 +3596,7 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 

@@ -54,9 +54,7 @@ function get_offers_group_by_store_navigation( $smarty) {
     $smarty->assign('content', $_content);
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -104,9 +102,7 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -159,9 +155,7 @@ function get_new_deal_component_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -193,9 +187,7 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 function get_campaigns_navigation($data, $smarty) {
@@ -225,9 +217,7 @@ function get_campaigns_navigation($data, $smarty) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -259,9 +249,7 @@ function get_offers_navigation($data, $smarty) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -458,9 +446,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -803,9 +789,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1201,9 +1185,7 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 

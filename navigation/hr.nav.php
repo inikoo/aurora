@@ -46,9 +46,7 @@ function get_employees_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -80,9 +78,7 @@ function get_overtimes_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -114,9 +110,7 @@ function get_history_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -148,9 +142,7 @@ function get_contractors_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -182,9 +174,7 @@ function get_organization_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -402,9 +392,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -451,9 +439,7 @@ function get_new_employee_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -654,9 +640,7 @@ function get_contractor_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -703,9 +687,7 @@ function get_new_contractor_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -980,9 +962,7 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1036,9 +1016,7 @@ function get_new_employee_attachment_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1092,9 +1070,7 @@ function get_new_employee_user_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1145,9 +1121,7 @@ function get_new_contractor_user_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1202,9 +1176,7 @@ function get_employee_attachment_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1437,9 +1409,7 @@ function get_timesheets_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1658,9 +1628,7 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1853,9 +1821,7 @@ function get_deleted_employee_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2048,9 +2014,7 @@ function get_deleted_contractor_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2256,9 +2220,7 @@ function get_position_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2290,9 +2252,7 @@ function get_clocking_machines_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2339,9 +2299,7 @@ function get_new_clocking_machine_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -2537,9 +2495,7 @@ function get_clocking_machine_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 

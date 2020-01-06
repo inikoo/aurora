@@ -1,0 +1,106 @@
+
+.app_theme_red #top_bar,
+.app_theme_red #app_left_menu li,
+.app_theme_red .dashboard table .main_title,
+.app_theme_red .dashboard table .main_title .widget_types .widget.selected,
+.app_theme_red .dashboard table .main_title .widget_types .widget.selected:hover {
+  background: #611919; }
+.app_theme_red #app_left_menu, .app_theme_red #app_left_menu #top_info, .app_theme_red #app_left_menu li:hover {
+  background: #8a3d3d; }
+
+
+
+.app_theme_green #top_bar,
+.app_theme_green #app_left_menu li,
+.app_theme_green .dashboard table .main_title,
+.app_theme_green .dashboard table .main_title .widget_types .widget.selected,
+.app_theme_green .dashboard table .main_title .widget_types .widget.selected:hover {
+  background: #035003; }
+.app_theme_green #app_left_menu, .app_theme_green #app_left_menu #top_info, .app_theme_green #app_left_menu li:hover {
+  background: #356f55; }
+
+
+
+.app_theme_green{
+
+  .dashboard table .main_title{
+    background: #454d66;
+    .widget {
+      &.selected, &.selected:hover {
+        background: #454d66;
+
+
+      }
+    }
+  }
+
+  #top_bar{
+    background: #454d66;
+  }
+
+
+  #notifications {
+    background-image: url('../art/leaves.png');
+
+
+    .top_buttons{
+      background: #009975;
+
+    }
+
+    .side_content_icon {
+      color: #58b368;
+      &:hover{
+        background: #009975;
+        color: #58b368;
+      }
+      &.selected{
+        color: white;
+      }
+    }
+
+    .side_content {
+      .top {
+        background: rgba(255,255,255,.9);
+        color: #454d66;
+        border-bottom:1px solid #454d66;
+      }
+
+      .navigation {
+        border-color: #58b368;
+
+        color: #454d66;
+      }
+
+      .content {
+
+        background: rgba(255,255,255,.7);
+        border-color: #58b368;
+        color: #454d66;
+
+      }
+
+
+      .think {
+        color: #0f3c4b;
+      }
+
+    }
+
+
+  }
+
+
+
+}
+
+
+.app_theme_blue #top_bar,
+.app_theme_blue #app_left_menu li,
+.app_theme_blue .dashboard table .main_title,
+.app_theme_blue .dashboard table .main_title .widget_types .widget.selected,
+.app_theme_blue .dashboard table .main_title .widget_types .widget.selected:hover {
+  background: #0d1875; }
+.app_theme_blue #app_left_menu, .app_theme_blue #app_left_menu #top_info, .app_theme_blue #app_left_menu li:hover {
+  background: #424fbd; }
+

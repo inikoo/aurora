@@ -72,12 +72,12 @@ function change_browser_history_state(request) {
 
     if (old_state_request != request) {
 
-        console.log(old_state_request + ' -> ' + request)
+       // console.log(old_state_request + ' -> ' + request)
 
 
         if (!$('#is_devel').val()) {
 
-            var _tmp = $('#account_name');
+            const _tmp = $('body');
             ga('set', 'contentGroup1', state.module.replace("_", " ").capitalize());
             ga('set', 'contentGroup2', state.section.replace("_", " ").capitalize());
             ga('set', 'contentGroup3', _tmp.data('user_handle').capitalize() + ' ' + _tmp.data('account_code'));
@@ -316,12 +316,18 @@ function change_view(_request, metadata) {
 
                 state = data.app_state;
 
+                console.log(data.nav[0])
 
-                if (typeof (data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-                    $('#navigation').html(data.navigation);
+                if (typeof (data.nav[1]) != "undefined" && data.nav[1] !== null && data.nav[1] != '') {
+                    $('#top_menu').html(data.nav[1]);
                 }
-                if (typeof (data.web_navigation) != "undefined" && data.web_navigation !== null && data.web_navigation != '') {
-                    $('#web_navigation').html(data.web_navigation);
+                if (typeof (data.nav[2]) != "undefined" && data.nav[2] !== null && data.nav[2] != '') {
+                    $('#au_header').html(data.nav[2]);
+                }
+
+
+                if (typeof (data.nav[3]) != "undefined" && data.nav[3] !== null && data.nav[3] != '') {
+                    $('#web_navigation').html(data.nav[3]);
                 } else {
                     $('#web_navigation').html('')
                 }

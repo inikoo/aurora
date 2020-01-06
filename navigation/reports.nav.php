@@ -36,9 +36,7 @@ function get_lost_stock_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -67,9 +65,7 @@ function get_stock_given_free_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -99,9 +95,7 @@ function get_sales_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -141,9 +135,7 @@ function get_report_orders_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -183,9 +175,7 @@ function get_report_orders_components_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -215,9 +205,7 @@ function get_report_delivery_notes_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -257,9 +245,7 @@ function get_pickers_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -298,9 +284,7 @@ function get_packers_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -331,9 +315,7 @@ function get_reports_navigation($user, $smarty, $data) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -387,9 +369,7 @@ function get_performance_navigation($user, $smarty, $data) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -421,9 +401,7 @@ function get_ec_sales_list_navigation($user, $smarty, $data) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -461,9 +439,7 @@ function get_georegion_taxcategory_navigation($user, $smarty, $data) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -528,9 +504,7 @@ function get_invoices_georegion_taxcategory_navigation($user, $smarty, $data, $t
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -560,9 +534,7 @@ function get_intrastat_imports_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -592,9 +564,7 @@ function get_intrastat_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -637,9 +607,7 @@ function get_intrastat_products_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -682,9 +650,7 @@ function get_intrastat_orders_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -724,9 +690,7 @@ function get_sales_representatives_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -776,9 +740,7 @@ function get_sales_representative_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -818,9 +780,7 @@ function get_prospect_agents_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -870,9 +830,7 @@ function get_prospect_agent_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1074,9 +1032,7 @@ function get_prospect_agent_email_tracking_navigation($data, $smarty, $user, $db
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1120,9 +1076,7 @@ function get_intrastat_parts_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1165,9 +1119,7 @@ function get_intrastat_deliveries_navigation($user, $smarty, $data) {
         )
     );
     $smarty->assign('_content', $_content);
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1334,8 +1286,6 @@ function get_picker_packer_navigation($data, $db, $user, $smarty) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }

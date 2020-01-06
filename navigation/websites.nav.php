@@ -45,9 +45,7 @@ function get_websites_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -246,9 +244,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -700,12 +696,14 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-
-
     return array(
-        $smarty->fetch('navigation.tpl'),
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
         ($webpage_navigation?$smarty->fetch('webpage_navigation.tpl'):'')
     );
+
+
 
 }
 
@@ -958,9 +956,7 @@ function get_user_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 
 }
@@ -1080,9 +1076,7 @@ function get_webpages_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1292,9 +1286,7 @@ function get_webpage_type_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1326,9 +1318,7 @@ function get_no_website_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1365,9 +1355,7 @@ function get_deleted_webpage_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1413,9 +1401,7 @@ function get_new_webpage_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 
 }

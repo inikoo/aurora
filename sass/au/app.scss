@@ -209,10 +209,7 @@ html, body, textarea,button {
 
 }
 
-.timezone_info{
-  float:right;padding-right: 30px;opacity: .6;
-  .abbreviation{opacity: .4}
-}
+
 
 .unselectable{
   @include unselectable;
@@ -298,7 +295,9 @@ input {
 }
 
 #top_bar {
-  padding: 3px 20px 0;
+  font-family: Ubuntu,"Lucida Grande","Lucida Sans Unicode",Verdana,Arial,sans-serif;
+  font-weight: 300;
+  padding: 3px 0px 0;
   position: fixed;
   left: 0;
   top: 0;
@@ -308,10 +307,19 @@ input {
   font-size: 11px;
   color: #fff;
   z-index: 1000;
+
+  display: flex;
+
+
   a {
     color: #fff;
   }
+
+  & > div {flex-grow: 1}
+
   #view_position {
+    margin-top:1px;
+    margin-left: 10px;
     color: #eee;
     .fa,.fas {
       opacity: .6;
@@ -334,6 +342,13 @@ input {
     .id {
       color: #FFF
     }
+
+  }
+
+  #profile_section{
+    margin-right: 10px;
+    text-align: right;
+    font-size: 12.9px;color: #ccc;
 
   }
 }
@@ -457,94 +472,9 @@ input {
 
   width: $main_app_width;
   border-right: 1px solid #ccc;
-  #navigation {
-    margin-top: $height_short_row;
-    height: $height_header+$height_address_bar;
-    #address_bar {
-      font-size: 14px;
-      background: #f7f7f7;
-      color: #333;
-
-      padding-right: 0;
-      text-align: left;
-      height: $height_address_bar;
-      line-height: $height_address_bar;
-      border-bottom: 1px solid #ccc;
-      a {
-        color: #333;
-      }
-      #section_links {
-        font-family: $font_title;
-      }
-      .section {
-        @include unselectable;
-        text-align: center;
-        cursor: pointer;
-        background-color: $header_background_color;
-        color: #333;
-        padding: 0 30px;
-        .fa,.far,.fas,.fab,.fal {
-          margin-right: 5px;
-          color: #999;
-        }
-        &:hover, &.selected {
-          background-color: #edf3f8;
-          color: #000;
-        }
-        &:hover, &.selected > .fa,.far,.fas,.fab,.fal {
-          color: #666;
-        }
 
 
-        &.icon_only {
-          padding: 0 10px 0 15px;
-          width:40px;
-        }
-
-        &.left {
-          float: left;
-        }
-
-      }
-      .right {
-        float: right;
-        border-left: 1px solid #ccc;
-      }
-      .left {
-        float: left;
-        border-right: 1px solid #ccc;
-      }
-      .only_icons .section {
-        padding: 0 2px;
-        width: 22px;
-      }
-      .only_icons .section_label {
-        display: none;
-      }
-    }
-    #header {
-      text-align: left;
-      padding: 0;
-      background: $header_background_color;
-      height: $height_header;
-      line-height: $height_header;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #ccc;
-
-      .title {
-        float: left;
-        padding-left: 10px;
-      }
-      .skip {
-        float: right;
-        padding-right: 20px;
-        padding-left: 20px;
-        border-left: 1px solid #ccc;
-        color: $color_warning
-      }
-
-    }
-  }
+  @import 'top_navigation';
 
 }
 
@@ -1269,7 +1199,6 @@ right connector from last child*/
 }
 
 
-@import 'media_screen_small';
 
 
 iframe {
@@ -1442,172 +1371,6 @@ h2.dashboard{
   }
 }
 
-.app_theme_red #top_bar,
-.app_theme_red #app_leftmenu li,
-.app_theme_red .dashboard table .main_title,
-.app_theme_red .dashboard table .main_title .widget_types .widget.selected,
-.app_theme_red .dashboard table .main_title .widget_types .widget.selected:hover {
-  background: #611919; }
-.app_theme_red #app_leftmenu, .app_theme_red #app_leftmenu #top_info, .app_theme_red #app_leftmenu li:hover {
-  background: #8a3d3d; }
-
-
-/*
-.app_theme_green #top_bar,
-.app_theme_green #app_leftmenu li,
-.app_theme_green .dashboard table .main_title,
-.app_theme_green .dashboard table .main_title .widget_types .widget.selected,
-.app_theme_green .dashboard table .main_title .widget_types .widget.selected:hover {
-  background: #035003; }
-.app_theme_green #app_leftmenu, .app_theme_green #app_leftmenu #top_info, .app_theme_green #app_leftmenu li:hover {
-  background: #356f55; }
-*/
-
-
-.app_theme_green{
-
-  .dashboard table .main_title{
-    background: #454d66;
-    .widget {
-      &.selected, &.selected:hover {
-        background: #454d66;
-
-
-      }
-    }
-  }
-
-  #top_bar{
-    background: #454d66;
-  }
-  #app_leftmenu{
-    xbackground-image: url("../art/congruent_pentagon.png");
-    xbackground-size: contain;
-    background:#73bf80;
-   // background: rgba(0, 153, 117,.5);
-    #top_info{
-      background: #009975;
-      border-color: rgba(88,179,104,.5);
-
-      color: white;
-
-      #hello_user {
-        color: white;
-        &.link:hover {
-          color: white;
-        }
-      }
-
-      #aurora_logo {
-        border-color: rgba(88,179,104,.7);
-
-      }
-    }
-    #account_name {
-      background:  #009975;
-      color: white;
-
-      &.link:hover {
-        color: whitesmoke;
-      }
-    }
-    li{
-      background: rgba(88, 179, 104,.8);
-      color:#454d66;
-      border-color: #4daa5e;
-
-      i{
-        opacity: .9;
-      }
-
-      &.selected{
-        color:#833c76;
-        opacity: 1;
-&:hover{
-  color:#833c76;
-}
-
-      }
-
-      &:hover{
-        background: rgba(88,179,104,.5);
-        i{
-          opacity: .9;
-        }
-      }
-
-      &:last-of-type, &.last {
-        border-color: #4daa5e;
-      }
-
-    }
-  }
-
-  #notifications {
-    background-image: url('../art/leaves.png');
-
-
-    .top_buttons{
-      background: #009975;
-
-    }
-
-    .side_content_icon {
-      color: #58b368;
-      &:hover{
-        background: #009975;
-        color: #58b368;
-      }
-      &.selected{
-        color: white;
-      }
-    }
-
-    .side_content {
-      .top {
-        background: rgba(255,255,255,.9);
-        color: #454d66;
-        border-bottom:1px solid #454d66;
-      }
-
-      .navigation {
-        border-color: #58b368;
-
-        color: #454d66;
-      }
-
-      .content {
-
-        background: rgba(255,255,255,.7);
-        border-color: #58b368;
-        color: #454d66;
-
-      }
-
-
-      .think {
-        color: #0f3c4b;
-      }
-
-    }
-
-
-  }
-
-
-
-}
-
-
-.app_theme_blue #top_bar,
-.app_theme_blue #app_leftmenu li,
-.app_theme_blue .dashboard table .main_title,
-.app_theme_blue .dashboard table .main_title .widget_types .widget.selected,
-.app_theme_blue .dashboard table .main_title .widget_types .widget.selected:hover {
-  background: #0d1875; }
-.app_theme_blue #app_leftmenu, .app_theme_blue #app_leftmenu #top_info, .app_theme_blue #app_leftmenu li:hover {
-  background: #424fbd; }
-
 
 .warning_block{
 
@@ -1638,12 +1401,30 @@ h2.dashboard{
 }
 
 .aurora_version{
-  opacity:0.5;text-align: center;position: absolute;bottom: 40px;width: 100%;font-size: small;
+  text-align: center;position: absolute;bottom: 40px;width: 100%;font-size: small;
+
+  .aurora{
+    background: -webkit-linear-gradient(#FDD017, #D4A017);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: Ubuntu,"Lucida Grande","Lucida Sans Unicode",Verdana,Arial,sans-serif;
+  }
+  img{
+    width: 20px;
+  }
+
+  .small {
+    display: none;font-size: 11px
+  }
+
+  .timezone_info{
+    text-align:center;opacity: .8;margin-bottom: 10px;font-size: 12px;
+    .abbreviation{opacity: .7}
+  }
 }
 
-.aurora_version.small {
-  display: none;font-size: 11px
-}
+
+
 
 .recargo_equivalencia{
   color:#F67D23;
@@ -1670,3 +1451,7 @@ h2.dashboard{
 .opacity_30{
   opacity: .3;
 }
+
+@import 'media_screen_small';
+
+@import 'themes.scss';

@@ -860,17 +860,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     ) {
 
 
-        $_navigation = get_navigation($user, $smarty, $state, $db, $account);
+        $response['nav']  = get_navigation($user, $smarty, $state, $db, $account);
 
 
-        if (is_array($_navigation)) {
-            $response['navigation']     = $_navigation[0];
-            $response['web_navigation'] = $_navigation[1];
-        } else {
-            $response['navigation']     = $_navigation;
-            $response['web_navigation'] = '';
-
-        }
 
 
     }

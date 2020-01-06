@@ -40,9 +40,7 @@ function get_new_api_key_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 }
 
 function get_users_navigation($data, $smarty, $user, $db, $account) {
@@ -66,9 +64,7 @@ function get_users_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 }
 
 function get_staff_navigation($data, $smarty, $user, $db, $account) {
@@ -104,9 +100,7 @@ function get_staff_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -145,9 +139,7 @@ function get_contractors_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -186,9 +178,7 @@ function get_suppliers_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -227,9 +217,7 @@ function get_agents_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -513,9 +501,7 @@ function get_user_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -704,9 +690,7 @@ function get_deleted_user_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -944,9 +928,7 @@ function get_api_key_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1182,9 +1164,7 @@ function get_deleted_api_key_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1207,9 +1187,7 @@ function get_profile_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 }
 
 function get_profile_new_api_key_navigation($data, $smarty, $user, $db, $account) {
@@ -1231,9 +1209,7 @@ function get_profile_new_api_key_navigation($data, $smarty, $user, $db, $account
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 }
 
 

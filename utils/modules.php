@@ -106,9 +106,7 @@ function get_sections($module, $parent_key = false) {
     global $modules;
 
     $sections = array(
-        'left_button'  => array(),
-        'navigation'   => array(),
-        'right_button' => array(),
+
     );
 
 
@@ -118,7 +116,7 @@ function get_sections($module, $parent_key = false) {
             if ($parent_key) {
                 $value['reference'] = sprintf($value['reference'], $parent_key);
             }
-            $sections[$value['type']][$key] = $value;
+            $sections[$key] = $value;
         }
     }
 

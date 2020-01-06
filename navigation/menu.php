@@ -17,17 +17,6 @@ $current_section = $data['section'];
 $nav_menu = array();
 
 
-if ($user->get('Type') != 'Administrator') {
-
-    $nav_menu[] = array(
-        '<i class="button far fa-tachometer-alt fa-fw"></i>',
-        _('Dashboard'),
-        '/dashboard',
-        '_dashboard',
-        'module',
-        ''
-    );
-}
 
 if ($user->can_view('customers')) {
 
@@ -379,15 +368,7 @@ if ($user->get('User Type') == 'Agent') {
         ''
     );
 
-    $nav_menu[] = array(
-        '<i class="button far fa-user fa-fw"></i>',
-        _('My profile'),
-        'profile',
-        'agent_profile',
-        'module',
-        'jump'
 
-    );
 
 
 } elseif ($user->get('User Type') == 'Supplier') {
@@ -399,14 +380,7 @@ if ($user->get('User Type') == 'Agent') {
 } else {
 
 
-    $nav_menu[] = array(
-        '<i class="button fa fa-user-circle fa-fw"></i>',
-        _('My profile'),
-        '/profile',
-        'profile',
-        'module',
-        'jump'
-    );
+
     $prev_index = count($nav_menu) - 2;
 
     if (isset($nav_menu[$prev_index])) {
@@ -428,14 +402,6 @@ if ($user->can_view('account')) {
     );
 
 
-    $nav_menu[] = array(
-        '<i class="button far fa-toolbox fa-fw"></i>',
-        _('Organization'),
-        '/account',
-        'account',
-        'module',
-        ''
-    );
 
 
 }
