@@ -38,6 +38,8 @@ if (!in_array(
              'unit_EL30',
              'unit_30UP',
              'unit_EP40sp',
+             'unit_5x15',
+             'unit_6x18',
 
 
          )
@@ -126,10 +128,20 @@ if ($object_name == 'product') {
 
         $title=sprintf(_('%s unit'),$object->get('Code'));
 
+    }elseif($type=='unit_5x15' or  $type=='unit_6x18' ){
+
+        $w = 210;
+        $h = 297;
+
+        $title=sprintf(_('%s unit'),$object->get('Code'));
+
+
     }else{
         $title=sprintf(_('%s unit'),$object->get('Code'));
 
     }
+
+
 
 
 }elseif ($object_name == 'supplier_part') {

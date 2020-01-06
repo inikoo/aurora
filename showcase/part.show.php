@@ -68,7 +68,15 @@ function get_part_showcase($data, $smarty, $user, $db) {
          array(
              'code'        => 'EP40sp',
              'description' => 'EP40sp L(5x8) '._('No bleed, with padding')
-         )
+         ),
+        array(
+            'code'        => '5x15',
+            'description' => '5x15 '._('No bleed')
+        ),
+        array(
+            'code'        => '6x18',
+            'description' => '6x18  '._('No bleed')
+        ),
 
 
 
