@@ -1356,7 +1356,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            } elseif ($data['fields_data']['Deal Type Percentage Off']) {
+                            }
+                            elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
                                 if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
@@ -1411,7 +1412,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            } elseif ($data['fields_data']['Deal Type Get Item Free']) {
+                            }
+                            elseif ($data['fields_data']['Deal Type Get Item Free']) {
 
                                 if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
                                     $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
@@ -1429,7 +1431,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     exit;
                                 }
 
-                            } elseif ($data['fields_data']['Deal Type Amount Off']) {
+                            }
+                            elseif ($data['fields_data']['Deal Type Amount Off']) {
 
                                 if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
                                     $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
@@ -1445,7 +1448,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($result);
                                     exit;
                                 }
-                            } else {
+                            }
+                            else {
                                 $response = array(
                                     'state' => 400,
                                     'resp'  => 'Error no allowance type'
@@ -1517,7 +1521,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            } elseif ($data['fields_data']['Deal Type Percentage Off']) {
+                            }
+                            elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
                                 if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
@@ -1565,7 +1570,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            } elseif ($data['fields_data']['Deal Type Get Item Free']) {
+                            }
+                            elseif ($data['fields_data']['Deal Type Get Item Free']) {
 
 
                                 list($success, $result) = parse_deal_not_ordered_free_item($data, $deal_new_data, $store);
@@ -1653,6 +1659,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     );
                                     break;
                                 case 'Deal Type Buy n get n free':
+                                case 'Deal_Type_Buy_n_get_n_free':
                                     $deal_new_data['Deal Allowance Label'] = sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']);
 
 
@@ -1761,7 +1768,14 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     );
 
                                     break;
+                                default:
 
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'Error unknown allowance type :'.$data['fields_data']['Allowance Type']
+                                    );
+                                    echo json_encode($response);
+                                    exit;
                             }
 
 
