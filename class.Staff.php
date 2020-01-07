@@ -1992,6 +1992,7 @@ class Staff extends DB_Table {
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+                include_once 'class.Attachment.php';
                 $sql = sprintf(
                     "DELETE FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=%d", $row['Attachment Bridge Key']
                 );
