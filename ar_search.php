@@ -65,6 +65,17 @@ if ($user->get('User Type') == 'Agent') {
             $scopes = array(
                 'prospects' => 10
             );
+        }elseif (in_array(
+            $data['state']['section'], array(
+                                         'lists',
+                                         'list',
+                                         'list.new',
+
+                                     )
+        )) {
+            $scopes = array(
+                'lists' => 10
+            );
         } else {
             $scopes = array(
                 'customers' => 10
@@ -72,41 +83,49 @@ if ($user->get('User Type') == 'Agent') {
         }
 
 
-        echo json_encode(search_ES(trim($data['query']), 'customers', $scopes, $stores));
+        echo json_encode(search_ES(trim($data['query']), ['customers'], $scopes, $stores));
         exit;
 
 
     } elseif ($data['state']['module'] == 'orders' or $data['state']['module'] == 'orders_server') {
 
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), 'orders', array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), ['orders'], array(), $stores));
         exit;
 
     } elseif ($data['state']['module'] == 'products' or $data['state']['module'] == 'products_server') {
 
 
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), 'products', array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), ['products'], array(), $stores));
+        exit;
+
+
+    }elseif ($data['state']['module'] == 'offers' or $data['state']['module'] == ' offers_server') {
+
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES(trim($data['query']), ['offers'], array(), $stores));
         exit;
 
 
     } elseif ($data['state']['module'] == 'inventory') {
 
-        echo json_encode(search_ES(trim($data['query']), 'inventory', array(), array()));
+        echo json_encode(search_ES(trim($data['query']), ['inventory'], array(), array()));
         exit;
     } elseif ($data['state']['module'] == 'websites') {
 
 
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), 'websites', array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), ['websites'], array(), $stores));
         exit;
 
     } elseif ($data['state']['module'] == 'hr') {
-        echo json_encode(search_ES(trim($data['query']), 'hr'));
+        echo json_encode(search_ES(trim($data['query']), ['hr']));
         exit;
 
     } elseif ($data['state']['module'] == 'users') {
-        echo json_encode(search_ES(trim($data['query']), 'users'));
+        echo json_encode(search_ES(trim($data['query']), ['users']));
         exit;
 
     } elseif ($data['state']['module'] == 'suppliers') {
@@ -127,17 +146,17 @@ if ($user->get('User Type') == 'Agent') {
             );
         }
 
-        echo json_encode(search_ES(trim($data['query']), 'suppliers'));
+        echo json_encode(search_ES(trim($data['query']), ['suppliers']));
         exit;
 
     } elseif ($data['state']['module'] == 'production') {
         search_production($db, $account, $user, $data);
 
-    } elseif ($data['state']['module'] == 'delivery_notes' or  $data['state']['module'] == 'delivery_notes_server') {
+    } elseif ($data['state']['module'] == 'delivery_notes' or $data['state']['module'] == 'delivery_notes_server') {
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), 'delivering', array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), ['delivering'], array(), $stores));
         exit;
-  } elseif ($data['state']['module'] == 'accounting' or data['state']['module'] == 'accounting_server') {
+    } elseif ($data['state']['module'] == 'accounting' or $data['state']['module'] == 'accounting_server') {
 
 
         if (in_array(
@@ -183,11 +202,14 @@ if ($user->get('User Type') == 'Agent') {
             );
         }
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), 'accounting', $scopes, $stores));
+        echo json_encode(search_ES(trim($data['query']), ['accounting'], $scopes, $stores));
 
     } elseif ($data['state']['module'] == 'warehouses') {
 
-        echo json_encode(search_ES(trim($data['query']), 'warehouse'));
+        echo json_encode(search_ES(trim($data['query']), ['warehouse']));
+        exit;
+    }elseif ($data['state']['module'] == 'dashboard'){
+        echo json_encode(search_ES(trim($data['query']), '',array(),$stores));
         exit;
     }
 }
@@ -206,7 +228,7 @@ function check_for_store_permissions($stores) {
     }
 }
 
-function search_ES($query, $module, $scopes = array(), $stores = array()) {
+function search_ES($query, $modules, $scopes = [], $stores = array()) {
 
 
     $max_results = 16;
@@ -238,13 +260,7 @@ function search_ES($query, $module, $scopes = array(), $stores = array()) {
                                 ]
                             ]
                         ],
-                        "filter" => [
-                            [
-                                "term" => [
-                                    "module" => $module
-                                ]
-                            ]
-                        ],
+
                         "should" => [
                             [
                                 "rank_feature" => [
@@ -269,6 +285,14 @@ function search_ES($query, $module, $scopes = array(), $stores = array()) {
 
     ];
 
+    if($modules!=='' ){
+
+        $params['body']['query']['bool']['filter'][] = array(
+            "terms" => [
+                "module" =>$modules
+            ]
+        );
+    }
 
     foreach ($scopes as $scope => $boost) {
         $params['body']['query']['bool']['should'][] = array(
@@ -279,14 +303,13 @@ function search_ES($query, $module, $scopes = array(), $stores = array()) {
         );
     }
 
-    foreach ($stores as $store) {
+    if(count($stores)>0){
         $params['body']['query']['bool']['filter'][] = array(
-            "term" => [
-                "store_key" => $store
+            "terms" => [
+                "store_key" => $stores
             ]
         );
     }
-
 
 
     $result = $client->search($params);
@@ -297,7 +320,7 @@ function search_ES($query, $module, $scopes = array(), $stores = array()) {
         'number_results' => $result['hits']['total']['value'],
         'results'        => $result['hits']['hits'],
         'query'          => $query,
-        'class'          => $module
+        'class'          => (is_array($modules)?array_pop($modules):'dashboard')
 
     );
 

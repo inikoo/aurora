@@ -713,10 +713,6 @@ class Deal extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1254,10 +1250,6 @@ class Deal extends DB_Table {
             if ($row = $result->fetch()) {
                 $active_number = $row['number'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $sql = sprintf(

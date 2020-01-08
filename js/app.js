@@ -401,6 +401,15 @@ function change_view(_request, metadata) {
 
                 change_browser_history_state(data.app_state.request)
                 show_side_content($('#notifications').data('current_side_view'))
+
+                if(typeof data.current_store_code === 'undefined'  || data.current_store_code==''){
+                    $('.current_store_label').addClass('invisible')
+
+                }else{
+                    $('.current_store_label').removeClass('invisible').find('span').html(data.current_store_code)
+                }
+
+
             } else {
                 swal({
                     title: "Error A123"

@@ -957,6 +957,16 @@ abstract class DB_Table extends stdClass {
 
     }
 
+     function cache_object($redis, $account_code) {
+
+        $redis_key     = 'Au_Cached_obj'.$account_code.'.'.$this->get_object_name().'.'.$this->id;
+        $data_to_cache = json_encode($this->data);
+        $redis->set($redis_key, $data_to_cache);
+
+        return $data_to_cache;
+
+    }
+
 
 }
 

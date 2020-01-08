@@ -17,30 +17,17 @@ $current_section = $data['section'];
 $nav_menu = array();
 
 
-
 if ($user->can_view('customers')) {
 
 
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button far fa-users fa-fw"></i>',
-            _('Customers'),
-            'customers/'.$user->get('User Hooked Store Key').'/dashboard',
-            'customers',
-            'module',
-            ''
-        );
-
-    } else {
-        $nav_menu[] = array(
-            '<i class="button far fa-users fa-fw"></i>',
-            _('Customers'),
-            'customers/all',
-            'customers',
-            'module',
-            ''
-        );
-    }
+    $nav_menu[] = array(
+        '<i class="button far fa-users fa-fw"></i>',
+        _('Customers'),
+        'customers/all',
+        'customers',
+        'module',
+        ''
+    );
 
 
 }
@@ -64,26 +51,15 @@ if ($user->can_view('mailroom')) {
 if ($user->can_view('stores')) {
 
 
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button far fa-store-alt fa-fw"></i>',
-            _('Products'),
-            'store/'.$user->get('User Hooked Store Key'),
-            'products',
-            'module',
-            ''
-        );
+    $nav_menu[] = array(
+        '<i class="button far fa-store-alt fa-fw"></i>',
+        _('Products'),
+        'stores',
+        'products',
+        'module',
+        ''
+    );
 
-    } else {
-        $nav_menu[] = array(
-            '<i class="button far fa-store-alt fa-fw"></i>',
-            _('Products'),
-            'stores',
-            'products',
-            'module',
-            ''
-        );
-    }
 
     $nav_menu[] = array(
         '<i class="button far fa-badge-percent fa-fw"></i>',
@@ -109,25 +85,15 @@ if ($user->can_view('stores')) {
 
 if ($user->can_view('orders')) {
 
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button far fa-shopping-cart fa-fw"></i>',
-            _('Orders'),
-            'orders/'.$user->get('User Hooked Store Key').'/dashboard',
-            'orders',
-            'module',
-            ''
-        );
-    } else {
-        $nav_menu[] = array(
-            '<i class="button far fa-shopping-cart fa-fw"></i>',
-            _('Orders'),
-            'orders/all/dashboard',
-            'orders',
-            'module',
-            ''
-        );
-    }
+
+    $nav_menu[] = array(
+        '<i class="button far fa-shopping-cart fa-fw"></i>',
+        _('Orders'),
+        'orders/all/dashboard',
+        'orders',
+        'module',
+        ''
+    );
 
 
     $nav_menu[] = array(
@@ -144,45 +110,26 @@ if ($user->can_view('orders')) {
 
 if ($user->can_view('orders')) {
 
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button fal fa-abacus fa-fw"></i>',
-            _('Accounting'),
-            'accounting/'.$user->get('User Hooked Store Key'),
-            'accounting',
-            'module',
-            ''
-        );
-    } else {
+
+    $nav_menu[] = array(
+        '<i class="button fal fa-abacus fa-fw"></i>',
+        _('Accounting'),
+        'invoices/per_store',
+        'accounting',
+        'module',
+        ''
+    );
 
 
-        $nav_menu[] = array(
-            '<i class="button fal fa-abacus fa-fw"></i>',
-            _('Accounting'),
-            'invoices/per_store',
-            'accounting',
-            'module',
-            ''
-        );
-
-    }
 }
+
+$store_blocks = count($nav_menu);
 
 
 if ($user->can_view('locations')) {
 
 
-    if ($user->get('User Hooked Warehouse Key')) {
-
-        $nav_menu[] = array(
-            '<i class="button far fa-warehouse-alt fa-fw"></i>',
-            _('Warehouse'),
-            'warehouse/'.$user->get('User Hooked Warehouse Key').'/dashboard',
-            'warehouses',
-            'module',
-            ''
-        );
-    } elseif ($account->get('Account Warehouses') == 1) {
+    if ($account->get('Account Warehouses') == 1) {
 
 
         $sql  = 'SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`=?';
@@ -255,16 +202,7 @@ if ($user->can_view('suppliers')) {
 if ($user->can_view('production') and $account->get('Account Manufacturers') > 0) {
 
 
-    if ($user->get('User Hooked Production Key')) {
-        $nav_menu[] = array(
-            '<i class="button far fa-industry fa-fw"></i>',
-            _('Production'),
-            'production/'.$user->get('User Hooked Production Key'),
-            'production',
-            'module',
-            ''
-        );
-    } elseif ($account->get('Account Manufacturers') == 1) {
+    if ($account->get('Account Manufacturers') == 1) {
 
 
         $sql = 'SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!=?';
@@ -369,8 +307,6 @@ if ($user->get('User Type') == 'Agent') {
     );
 
 
-
-
 } elseif ($user->get('User Type') == 'Supplier') {
 
 
@@ -380,11 +316,13 @@ if ($user->get('User Type') == 'Agent') {
 } else {
 
 
+    if (isset($nav_menu[$store_blocks])) {
+        $nav_menu[$store_blocks][5] = $nav_menu[$store_blocks][5].' jump';
+    }
 
-    $prev_index = count($nav_menu) - 2;
-
-    if (isset($nav_menu[$prev_index])) {
-        $nav_menu[$prev_index][5] = $nav_menu[$prev_index][5].' last';
+    $last_block = count($nav_menu);
+    if (isset($nav_menu[$last_block])) {
+        $nav_menu[$last_block][5] = $nav_menu[$last_block][5].' last';
     }
 }
 
@@ -400,8 +338,6 @@ if ($user->can_view('account')) {
         'module',
         ''
     );
-
-
 
 
 }
@@ -432,9 +368,9 @@ if ($current_item == 'customers_server') {
     $current_item = 'production';
 } elseif ($current_item == 'accounting_server') {
     $current_item = 'payments';
-}elseif ($current_item == 'mailroom_server') {
+} elseif ($current_item == 'mailroom_server') {
     $current_item = 'mailroom';
-}elseif ($current_item == 'websites_server') {
+} elseif ($current_item == 'websites_server') {
     $current_item = 'websites';
 }
 

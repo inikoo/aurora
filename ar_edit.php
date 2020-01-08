@@ -113,7 +113,7 @@ switch ($tipo) {
                      )
         );
 
-        edit_field($account, $db, $editor, $data, $smarty, $user);
+        edit_field($account, $db, $redis,$editor, $data, $smarty, $user);
         break;
     case 'object_operation':
 
@@ -319,7 +319,7 @@ switch ($tipo) {
  *
  * @throws \SmartyException
  */
-function edit_field($account, $db, $editor, $data, $smarty, $user) {
+function edit_field($account, $db, $redis,$editor, $data, $smarty, $user) {
 
 
     $object = get_object($data['object'], $data['key']);
@@ -448,7 +448,13 @@ function edit_field($account, $db, $editor, $data, $smarty, $user) {
     }
 
 
-    //print_r($data['metadata']);
+    if ($data['object']=='Store' or  $data['object']=='Account'){
+        $object->cache_object($redis, 'DNS_ACCOUNT_CODE');
+    }
+
+
+
+        //print_r($data['metadata']);
 
     if (isset($data['metadata'])) {
         if (isset($data['metadata']['extra_fields'])) {

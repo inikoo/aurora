@@ -150,10 +150,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     $state['current_website']    = $session->get('current_website');
-    $state['current_store']      = $session->get('current_website');
+    $state['current_store']      = $session->get('current_store');
     $state['current_warehouse']  = $session->get('current_warehouse');
     $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
-
 
     $store      = '';
     $website    = '';
@@ -798,7 +797,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     // }
     //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
 
-
+   // print 'x1x'.$state['current_store'];
     $state['store']      = $store;
     $state['website']    = $website;
     $state['warehouse']  = $warehouse;
@@ -814,7 +813,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     //    $state['current_production'] = $production->id;
     //}
 
-
     $sql = sprintf(
         'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']),
         prepare_mysql($state['section']), prepare_mysql(
@@ -825,12 +823,25 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $db->exec($sql);
 
     //$_SESSION['request'] = $state['request'];
+    $response = array('app_state' => array());
+
 
 
     if (isset($state['current_store'])) {
         $session->set('current_store', $state['current_store']);
 
+        if($state['current_store']) {
+            $store_data = get_cached_object_data($redis, DNS_ACCOUNT_CODE, 'Store', $state['current_store']);
+            $response['current_store_code']=$store_data['code'];
+        }
+
+        $user->fast_update_json_field('User Settings', 'current_store',  $state['current_store']);
+
     }
+
+
+
+
 
     // todo implement correctly if multi-warehouses ever done, special care has to be done when visiting warehouses servers becuse current_warehouse will be set to null, and if then jump to a invengtory/part it may be still null causing avok
     //if (isset($state['current_warehouse'])) {$session->set('current_warehouse', $state['current_warehouse']);}
@@ -839,7 +850,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     //if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
 
-    $response = array('app_state' => array());
+
 
     list($state, $response['view_position']) = get_view_position(
         $db, $state, $user, $smarty, $account

@@ -1,27 +1,36 @@
 
-.term{
-  color:#9068be
+.term {
+  color: #9068be
 }
 
-.allowance{
-  color:#686bbe;
+.allowance {
+  color: #686bbe;
 }
 
-  .offer_text_banner{
-        border:1px solid #ccc;padding:10px 20px;margin-bottom: 20px;line-height: 170%;
-        
-        .name{
-          color:#9068be;
-           font-weight: bold;
-        }
+.offer_text_banner {
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  line-height: 170%;
 
-    .term{
-      color:#9068be
-    }
+  &.no_border{
+    border:none;
+    padding:0px;
+    margin-bottom: auto;
+    line-height: normal;
+  }
+  .name {
+    color: #9068be;
+    font-weight: bold;
+  }
 
-    .allowance{
-      color:#686bbe;
-    }
+  .term {
+    color: #9068be
+  }
 
-        
-    }
+  .allowance {
+    color: #686bbe;
+  }
+
+
+}

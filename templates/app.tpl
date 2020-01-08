@@ -138,7 +138,8 @@
 
             <div class="current_store_label invisible" style="color:#ddd;font-size: 12px;height: 20px;line-height: 20px;margin-top:4px;text-align: center">
 
-                <i class="fal fa-store-alt"></i> <span class=""></span>
+                <i class="fal fa-store-alt margin_right_5"></i>
+                <span></span>
             </div>
 
 

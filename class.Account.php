@@ -2914,5 +2914,25 @@ class Account extends DB_Table {
         }
     }
 
+    function cache_object($redis, $account_code) {
+
+        $redis_key     = 'Au_Cached_obj'.$account_code.'.Account.'.$this->id;
+        $data_to_cache = json_encode(
+            [
+                'code' => $this->data['Account Code'],
+                'name' => $this->data['Account Name'],
+                'currency' => $this->data['Account Currency'],
+                'part_cat_key' => $this->data['Account Part Family Category Key'],
+                'locale' => $this->data['Account Locale'],
+                'timezone' => $this->data['Account Timezone'],
+
+            ]
+        );
+        $redis->set($redis_key, $data_to_cache);
+
+        return $data_to_cache;
+
+    }
+
 }
 

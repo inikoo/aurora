@@ -1291,10 +1291,9 @@ class User extends DB_Table {
 
                 break;
 
-
+            case('current_store'):
             case('theme'):
                 $this->fast_update_json_field('User Settings', $field, $value);
-
                 break;
 
 

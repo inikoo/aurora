@@ -225,10 +225,19 @@ class SubjectList extends DB_Table {
                     return _('Dynamic');
                 }
 
-                break;
+
+            case 'Icon':
+
+                if ($this->data['List Type'] == 'Static') {
+                    return 'fal fa-icicles';
+                } else {
+                    return 'fal fa-tornado';
+                }
+
+
             case 'Creation Date':
                 return strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['List Creation Date'].' +0:00'));
-                break;
+
             default:
 
                 if (array_key_exists($key, $this->data)) {

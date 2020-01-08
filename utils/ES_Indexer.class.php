@@ -222,6 +222,22 @@ class ES_indexer {
                 $this->prefix = 'li';
                 $this->prepare_list();
                 break;
+            case 'Deal':
+                $this->prefix = 'd';
+                $this->prepare_deal();
+                break;
+            case 'Deal Component':
+                $this->prefix = 'dc';
+                $this->prepare_deal_component();
+                break;
+            case 'Deal Campaign':
+                $this->prefix = 'dcc';
+                $this->prepare_deal_campaign();
+                break;
+            case 'Mailshot':
+                $this->prefix = 'm';
+                $this->prepare_mailshoot();
+                break;
         }
     }
 
@@ -1434,6 +1450,154 @@ class ES_indexer {
 
     }
 
+    private function prepare_list() {
+
+        $this->module    = 'customers';
+        $this->store_key = $this->object->get('Store Key');
+
+        $this->scopes = array(
+            'lists' => 100
+        );
+
+        $this->real_time[] = $this->object->get('List Name');
+
+        $this->label_1      = $this->object->get('Name');
+        $this->icon_classes = 'fal  fa-list|'.$this->object->get('Icon');
+        $this->weight       = 20;
+        $this->url          = sprintf('customers/list/%d', $this->object->id);
+
+
+    }
+
+    private function prepare_deal() {
+
+
+        $this->module    = 'offers';
+        $this->store_key = $this->object->get('Store Key');
+
+        $this->scopes = array(
+            'deal' => 100
+        );
+
+
+        if ($this->object->get('Deal Number Components') == 1) {
+            $this->real_time[] = $this->object->get('Deal Name');
+            $this->real_time[] = $this->object->get('Deal Name Label');
+            $this->real_time[] = $this->object->get('Deal Term Label');
+            $this->real_time[] = $this->object->get('Deal Allowance Label');
+
+
+            $deal_campaign = get_object('Deal Campaign', $this->object->get('Deal Campaign Key'));
+
+
+            if (preg_match('/class=\"fa.?\s(.*)\"/', $deal_campaign->get('Icon'), $icon_match)) {
+                $this->icon_classes = 'small discreet fal '.$icon_match[1].'|';
+
+            } else {
+                $this->icon_classes = 'small discreet fal tags invisible|';
+            }
+            $this->icon_classes .= 'fal fa-tag';
+
+
+            if (preg_match('/class=\"(.*)\"/', $this->object->get('Status Icon'), $icon_match)) {
+                $this->icon_classes .= '|  '.$icon_match[1];
+
+            }
+
+            switch ($this->object->get('Deal Status')) {
+                case 'Active':
+                    $this->weight = 60;
+                    break;
+                case 'Suspended':
+                    $this->weight = 50;
+                    break;
+                case 'Finish':
+                    $this->weight = 5;
+                    break;
+                case 'Waiting':
+                    $this->weight = 60;
+                    break;
+                default:
+                    break;
+            }
+
+
+            $this->label_1 =
+                '<span class="offer_text_banner no_border small"><span class="name">'.$this->object->get('Name').'</span> <span class="term">'.$this->object->get('Deal Term Label').'</span> <span class="allowance">'.$this->object->get('Deal Allowance Label').'</span>';
+            $this->label_2 = $this->object->get('Deal Term Allowances Label');
+            $this->label_3 = $deal_campaign->get('Icon');
+            $this->url     = sprintf('deals/%d/%d', $this->object->get('Store Key'), $this->object->id);
+
+        }
+
+
+    }
+
+    private function prepare_deal_component() {
+
+
+        $this->module    = 'offers';
+        $this->store_key = $this->object->get('Store Key');
+
+        $this->scopes = array(
+            'deal' => 100
+        );
+
+        $deal = get_object('Deal', $this->object->get('Deal Component Deal Key'));
+
+        $deal_campaign = get_object('Deal Campaign', $this->object->get('Deal Component Campaign Key'));
+
+
+        $this->real_time[] = $deal->get('Deal Name');
+        $this->real_time[] = $deal->get('Deal Name Label');
+        $this->real_time[] = $deal->get('Deal Term Label');
+        $this->real_time[] = $deal->get('Deal Allowance Label');
+        $this->real_time[] = $deal->get('Deal Allowance Label');
+        $this->real_time[] = strip_tags($this->object->get('Deal Component Term Allowances Label'));
+        $this->real_time[] = $this->object->get('Deal Component Allowance Target Label');
+
+
+        if (preg_match('/class=\"fa.?\s(.*)\"/', $deal_campaign->get('Icon'), $icon_match)) {
+            $this->icon_classes = 'small discreet fal '.$icon_match[1].'|';
+        } else {
+            $this->icon_classes = 'small discreet fal tags invisible|';
+        }
+        $this->icon_classes .= 'fal fa-tags';
+
+
+        if (preg_match('/class=\"(.*)\"/', $this->object->get('Status Icon'), $icon_match)) {
+            $this->icon_classes .= '|  '.$icon_match[1];
+
+        }
+
+        switch ($this->object->get('Deal Component Status')) {
+            case 'Active':
+                $this->weight = 60;
+                break;
+            case 'Suspended':
+                $this->weight = 50;
+                break;
+            case 'Finish':
+                $this->weight = 5;
+                break;
+            case 'Waiting':
+                $this->weight = 60;
+                break;
+            default:
+                break;
+        }
+
+
+        $this->label_1 =
+            '<span class="offer_text_banner no_border small"><span class="name">'.$this->object->get('Name').'</span> <span class="term">'.$this->object->get('Deal Term Label').'</span> <span class="allowance">'.$this->object->get('Deal Component Allowance Label')
+            .'</span>';
+        $this->label_2 = $this->object->get('Deal Component Term Allowances Label');
+        $this->label_3 = $deal_campaign->get('Icon');
+        $this->url     = sprintf('offers/%d/%s/%d', $this->object->get('Store Key'), strtolower($deal_campaign->get('Code')), $this->object->id);
+
+
+    }
+
     public function add_index() {
         $params         = $this->get_index_header();
         $params['body'] = $this->get_index_body();
@@ -1511,6 +1675,32 @@ class ES_indexer {
         } else {
             return '';
         }
+
+    }
+
+    private function prepare_deal_campaign() {
+
+
+        $this->module    = 'offers';
+        $this->store_key = $this->object->get('Store Key');
+
+        $this->scopes = array(
+            'deal_campaign' => 100
+        );
+
+
+        $this->real_time[] = $this->object->get('Deal Campaign Code');
+        $this->real_time[] = $this->object->get('Deal Campaign Name');
+
+
+        if (preg_match('/class=\"fa.?\s(.*)\"/', $this->object->get('Icon'), $icon_match)) {
+            $this->icon_classes = ' fal '.$icon_match[1];
+
+        }
+        $this->weight =50;
+        $this->label_1 = $this->object->get('Deal Campaign Name');
+        $this->url     = sprintf('offers/%d/%s/', $this->object->get('Store Key'), strtolower($this->object->get('Code')), $this->object->id);
+
 
     }
 

@@ -3120,7 +3120,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
             case 'deals':
-                $module = 'products';
+                $module = 'offers';
 
 
                 if (isset($view_path[0])) {
@@ -3149,7 +3149,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 break;
 
             case 'deal':
-                $module = 'products';
+                $module = 'offers';
 
 
                 if (isset($view_path[0])) {

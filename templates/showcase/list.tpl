@@ -18,7 +18,7 @@
             <table border=0>
                 <tr class="top">
                     <td class="label">{t}Type{/t}</td>
-                    <td class="aright"> {$list->get('Type')}</td>
+                    <td class="aright"> {$list->get('Type')} <i class="{$list->get('Icon')}"></i></td>
                 </tr>
 
                 <tr>

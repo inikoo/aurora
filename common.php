@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 require_once 'keyring/key.php';
 include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
+require_once 'utils/cached_objects.php';
+
 require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
@@ -172,6 +174,15 @@ if ($user->id) {
     }
 
     $modules=get_modules($user);
+
+    if($user->settings('current_store') and in_array($user->settings('current_store'),$user->stores) ){
+
+
+
+        $session->set('current_store', $user->settings('current_store'));
+
+    }
+
 
 } else {
     $locale = $account->get('Locale').'.UTF-8';
