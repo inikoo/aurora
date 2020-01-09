@@ -849,7 +849,7 @@ class Website extends DB_Table {
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
-        $smarty_web->clearCache(null, $this->id);
+        $smarty_web->clearAllCache();
 
 
     }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "392ca41b49159c238d2491fdb8d596f5",
+    "content-hash": "48254d56a82ff9be0b58dbbaadc64296",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -61,26 +61,26 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.130.2",
+            "version": "3.132.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "35289d9dd5184dd1106e49f99ef5074a84635b5c"
+                "reference": "b12a8adb23793baa2b69f8078d05ee59e816f1ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/35289d9dd5184dd1106e49f99ef5074a84635b5c",
-                "reference": "35289d9dd5184dd1106e49f99ef5074a84635b5c",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/b12a8adb23793baa2b69f8078d05ee59e816f1ec",
+                "reference": "b12a8adb23793baa2b69f8078d05ee59e816f1ec",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-pcre": "*",
                 "ext-simplexml": "*",
-                "guzzlehttp/guzzle": "^5.3.3|^6.2.1",
-                "guzzlehttp/promises": "~1.0",
+                "guzzlehttp/guzzle": "^5.3.3|^6.2.1|^7.0",
+                "guzzlehttp/promises": "^1.0",
                 "guzzlehttp/psr7": "^1.4.1",
-                "mtdowling/jmespath.php": "~2.2",
+                "mtdowling/jmespath.php": "^2.5",
                 "php": ">=5.5"
             },
             "require-dev": {
@@ -141,7 +141,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-12-23T19:12:28+00:00"
+            "time": "2020-01-08T19:14:13+00:00"
         },
         {
             "name": "braintree/braintree_php",
@@ -1582,23 +1582,25 @@
         },
         {
             "name": "mtdowling/jmespath.php",
-            "version": "2.4.0",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jmespath/jmespath.php.git",
-                "reference": "adcc9531682cf87dfda21e1fd5d0e7a41d292fac"
+                "reference": "52168cb9472de06979613d365c7f1ab8798be895"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/adcc9531682cf87dfda21e1fd5d0e7a41d292fac",
-                "reference": "adcc9531682cf87dfda21e1fd5d0e7a41d292fac",
+                "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/52168cb9472de06979613d365c7f1ab8798be895",
+                "reference": "52168cb9472de06979613d365c7f1ab8798be895",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": ">=5.4.0",
+                "symfony/polyfill-mbstring": "^1.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "composer/xdebug-handler": "^1.2",
+                "phpunit/phpunit": "^4.8.36|^7.5.15"
             },
             "bin": [
                 "bin/jp.php"
@@ -1606,7 +1608,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1633,7 +1635,7 @@
                 "json",
                 "jsonpath"
             ],
-            "time": "2016-12-03T22:08:25+00:00"
+            "time": "2019-12-30T18:03:34+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1846,82 +1848,17 @@
             "time": "2019-11-18T08:58:18+00:00"
         },
         {
-            "name": "php-http/curl-client",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/curl-client.git",
-                "reference": "9e79355af46d72e10da50be20b66f74b26143441"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/curl-client/zipball/9e79355af46d72e10da50be20b66f74b26143441",
-                "reference": "9e79355af46d72e10da50be20b66f74b26143441",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": "^7.1",
-                "php-http/discovery": "^1.6",
-                "php-http/httplug": "^2.0",
-                "php-http/message": "^1.2",
-                "psr/http-client": "^1.0",
-                "psr/http-factory": "^1.0",
-                "symfony/options-resolver": "^3.4 || ^4.0 || ^5.0"
-            },
-            "provide": {
-                "php-http/async-client-implementation": "1.0",
-                "php-http/client-implementation": "1.0",
-                "psr/http-client-implementation": "1.0"
-            },
-            "require-dev": {
-                "guzzlehttp/psr7": "^1.0",
-                "php-http/client-integration-tests": "^2.0",
-                "phpunit/phpunit": "^7.5",
-                "zendframework/zend-diactoros": "^2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Client\\Curl\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Михаил Красильников",
-                    "email": "m.krasilnikov@yandex.ru"
-                }
-            ],
-            "description": "PSR-18 and HTTPlug Async client with cURL",
-            "homepage": "http://php-http.org",
-            "keywords": [
-                "curl",
-                "http",
-                "psr-18"
-            ],
-            "time": "2019-12-27T11:02:07+00:00"
-        },
-        {
             "name": "php-http/discovery",
-            "version": "1.7.3",
+            "version": "1.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/discovery.git",
-                "reference": "2e0ad94833ec8473280454590a9011a0cd2dfc56"
+                "reference": "82dbef649ccffd8e4f22e1953c3a5265992b83c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/discovery/zipball/2e0ad94833ec8473280454590a9011a0cd2dfc56",
-                "reference": "2e0ad94833ec8473280454590a9011a0cd2dfc56",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/82dbef649ccffd8e4f22e1953c3a5265992b83c0",
+                "reference": "82dbef649ccffd8e4f22e1953c3a5265992b83c0",
                 "shasum": ""
             },
             "require": {
@@ -1973,7 +1910,70 @@
                 "message",
                 "psr7"
             ],
-            "time": "2019-12-27T19:51:10+00:00"
+            "time": "2020-01-03T11:25:47+00:00"
+        },
+        {
+            "name": "php-http/guzzle6-adapter",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/guzzle6-adapter.git",
+                "reference": "6074a4b1f4d5c21061b70bab3b8ad484282fe31f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/guzzle6-adapter/zipball/6074a4b1f4d5c21061b70bab3b8ad484282fe31f",
+                "reference": "6074a4b1f4d5c21061b70bab3b8ad484282fe31f",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0",
+                "php": "^7.1",
+                "php-http/httplug": "^2.0",
+                "psr/http-client": "^1.0"
+            },
+            "provide": {
+                "php-http/async-client-implementation": "1.0",
+                "php-http/client-implementation": "1.0",
+                "psr/http-client-implementation": "1.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "php-http/client-integration-tests": "^2.0",
+                "phpunit/phpunit": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Adapter\\Guzzle6\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                },
+                {
+                    "name": "David de Boer",
+                    "email": "david@ddeboer.nl"
+                }
+            ],
+            "description": "Guzzle 6 HTTP Adapter",
+            "homepage": "http://httplug.io",
+            "keywords": [
+                "Guzzle",
+                "http"
+            ],
+            "time": "2018-12-16T14:44:03+00:00"
         },
         {
             "name": "php-http/httplug",
@@ -2784,93 +2784,6 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
-            "name": "ramsey/uuid",
-            "version": "3.9.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ramsey/uuid.git",
-                "reference": "7779489a47d443f845271badbdcedfe4df8e06fb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/7779489a47d443f845271badbdcedfe4df8e06fb",
-                "reference": "7779489a47d443f845271badbdcedfe4df8e06fb",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "paragonie/random_compat": "^1 | ^2 | 9.99.99",
-                "php": "^5.4 | ^7 | ^8",
-                "symfony/polyfill-ctype": "^1.8"
-            },
-            "replace": {
-                "rhumsaa/uuid": "self.version"
-            },
-            "require-dev": {
-                "codeception/aspect-mock": "^1 | ^2",
-                "doctrine/annotations": "^1.2",
-                "goaop/framework": "1.0.0-alpha.2 | ^1 | ^2.1",
-                "jakub-onderka/php-parallel-lint": "^1",
-                "mockery/mockery": "^0.9.11 | ^1",
-                "moontoast/math": "^1.1",
-                "paragonie/random-lib": "^2",
-                "php-mock/php-mock-phpunit": "^0.3 | ^1.1",
-                "phpunit/phpunit": "^4.8 | ^5.4 | ^6.5",
-                "squizlabs/php_codesniffer": "^3.5"
-            },
-            "suggest": {
-                "ext-ctype": "Provides support for PHP Ctype functions",
-                "ext-libsodium": "Provides the PECL libsodium extension for use with the SodiumRandomGenerator",
-                "ext-openssl": "Provides the OpenSSL extension for use with the OpenSslGenerator",
-                "ext-uuid": "Provides the PECL UUID extension for use with the PeclUuidTimeGenerator and PeclUuidRandomGenerator",
-                "moontoast/math": "Provides support for converting UUID to 128-bit integer (in string form).",
-                "paragonie/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
-                "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid",
-                "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Ramsey\\Uuid\\": "src/"
-                },
-                "files": [
-                    "src/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ben Ramsey",
-                    "email": "ben@benramsey.com",
-                    "homepage": "https://benramsey.com"
-                },
-                {
-                    "name": "Marijn Huizendveld",
-                    "email": "marijn.huizendveld@gmail.com"
-                },
-                {
-                    "name": "Thibaud Fabre",
-                    "email": "thibaud@aztech.io"
-                }
-            ],
-            "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
-            "homepage": "https://github.com/ramsey/uuid",
-            "keywords": [
-                "guid",
-                "identifier",
-                "uuid"
-            ],
-            "time": "2019-12-17T08:18:51+00:00"
-        },
-        {
             "name": "rbdwllr/reallysimplejwt",
             "version": "2.1.0",
             "source": {
@@ -3075,22 +2988,22 @@
         },
         {
             "name": "sentry/sdk",
-            "version": "2.0.3",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php-sdk.git",
-                "reference": "91c36aec83e4c1c5801b64ef4927b78a5aa8ce7f"
+                "reference": "18921af9c2777517ef9fb480845c22a98554d6af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php-sdk/zipball/91c36aec83e4c1c5801b64ef4927b78a5aa8ce7f",
-                "reference": "91c36aec83e4c1c5801b64ef4927b78a5aa8ce7f",
+                "url": "https://api.github.com/repos/getsentry/sentry-php-sdk/zipball/18921af9c2777517ef9fb480845c22a98554d6af",
+                "reference": "18921af9c2777517ef9fb480845c22a98554d6af",
                 "shasum": ""
             },
             "require": {
                 "http-interop/http-factory-guzzle": "^1.0",
-                "php-http/curl-client": "^1.0|^2.0",
-                "sentry/sentry": "^2.0.1"
+                "php-http/guzzle6-adapter": "^1.1|^2.0",
+                "sentry/sentry": "^2.3"
             },
             "type": "metapackage",
             "notification-url": "https://packagist.org/downloads/",
@@ -3104,26 +3017,27 @@
                 }
             ],
             "description": "This is a metapackage shipping sentry/sentry with a recommended http client.",
-            "time": "2019-04-08T07:21:45+00:00"
+            "time": "2020-01-08T19:16:29+00:00"
         },
         {
             "name": "sentry/sentry",
-            "version": "2.2.6",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "c9b253229b95f8e5bbf6a3661a170a0be0f80563"
+                "reference": "335bd24c4a817efdb7c3ec83ca42321a7761df6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/c9b253229b95f8e5bbf6a3661a170a0be0f80563",
-                "reference": "c9b253229b95f8e5bbf6a3661a170a0be0f80563",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/335bd24c4a817efdb7c3ec83ca42321a7761df6a",
+                "reference": "335bd24c4a817efdb7c3ec83ca42321a7761df6a",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "guzzlehttp/promises": "^1.3",
+                "guzzlehttp/psr7": "^1.6",
                 "jean85/pretty-package-versions": "^1.2",
                 "php": "^7.1",
                 "php-http/async-client-implementation": "^1.0",
@@ -3132,9 +3046,8 @@
                 "php-http/httplug": "^1.1|^2.0",
                 "php-http/message": "^1.5",
                 "psr/http-message-implementation": "^1.0",
-                "ramsey/uuid": "^3.3",
                 "symfony/options-resolver": "^2.7|^3.0|^4.0|^5.0",
-                "zendframework/zend-diactoros": "^1.7.1|^2.0"
+                "symfony/polyfill-uuid": "^1.13.1"
             },
             "conflict": {
                 "php-http/client-common": "1.8.0",
@@ -3143,7 +3056,7 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.13",
                 "monolog/monolog": "^1.3|^2.0",
-                "php-http/mock-client": "^1.0",
+                "php-http/mock-client": "^1.3",
                 "phpstan/extension-installer": "^1.0",
                 "phpstan/phpstan": "^0.11",
                 "phpstan/phpstan-phpunit": "^0.11",
@@ -3157,7 +3070,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -3189,7 +3102,7 @@
                 "logging",
                 "sentry"
             ],
-            "time": "2019-12-18T08:56:34+00:00"
+            "time": "2020-01-08T11:27:08+00:00"
         },
         {
             "name": "setasign/fpdi",
@@ -3455,64 +3368,6 @@
             "time": "2019-11-18T17:27:11+00:00"
         },
         {
-            "name": "symfony/polyfill-ctype",
-            "version": "v1.13.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
-                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "suggest": {
-                "ext-ctype": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.13-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Ctype\\": ""
-                },
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill for ctype functions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "ctype",
-                "polyfill",
-                "portable"
-            ],
-            "time": "2019-11-27T13:56:44+00:00"
-        },
-        {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.13.1",
             "source": {
@@ -3631,6 +3486,65 @@
             "time": "2019-11-27T13:56:44+00:00"
         },
         {
+            "name": "symfony/polyfill-uuid",
+            "version": "v1.13.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-uuid.git",
+                "reference": "7d4215b6944add5073f0ec313a21e1bc2520520d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-uuid/zipball/7d4215b6944add5073f0ec313a21e1bc2520520d",
+                "reference": "7d4215b6944add5073f0ec313a21e1bc2520520d",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": "~1.0|~2.0|~9.99",
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-uuid": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.13-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Uuid\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for uuid functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "uuid"
+            ],
+            "time": "2019-11-30T08:58:35+00:00"
+        },
+        {
             "name": "symfony/process",
             "version": "v5.0.2",
             "source": {
@@ -3678,73 +3592,6 @@
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
             "time": "2019-12-10T11:06:55+00:00"
-        },
-        {
-            "name": "zendframework/zend-diactoros",
-            "version": "2.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zendframework/zend-diactoros.git",
-                "reference": "de5847b068362a88684a55b0dbb40d85986cfa52"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-diactoros/zipball/de5847b068362a88684a55b0dbb40d85986cfa52",
-                "reference": "de5847b068362a88684a55b0dbb40d85986cfa52",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1",
-                "psr/http-factory": "^1.0",
-                "psr/http-message": "^1.0"
-            },
-            "provide": {
-                "psr/http-factory-implementation": "1.0",
-                "psr/http-message-implementation": "1.0"
-            },
-            "require-dev": {
-                "ext-curl": "*",
-                "ext-dom": "*",
-                "ext-libxml": "*",
-                "http-interop/http-factory-tests": "^0.5.0",
-                "php-http/psr7-integration-tests": "dev-master",
-                "phpunit/phpunit": "^7.0.2",
-                "zendframework/zend-coding-standard": "~1.0.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1.x-dev",
-                    "dev-develop": "2.2.x-dev",
-                    "dev-release-1.8": "1.8.x-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/functions/create_uploaded_file.php",
-                    "src/functions/marshal_headers_from_sapi.php",
-                    "src/functions/marshal_method_from_sapi.php",
-                    "src/functions/marshal_protocol_version_from_sapi.php",
-                    "src/functions/marshal_uri_from_sapi.php",
-                    "src/functions/normalize_server.php",
-                    "src/functions/normalize_uploaded_files.php",
-                    "src/functions/parse_cookie_header.php"
-                ],
-                "psr-4": {
-                    "Zend\\Diactoros\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "PSR HTTP Message implementations",
-            "keywords": [
-                "http",
-                "psr",
-                "psr-7"
-            ],
-            "time": "2019-11-13T19:16:13+00:00"
         }
     ],
     "packages-dev": [],
