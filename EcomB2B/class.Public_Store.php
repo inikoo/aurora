@@ -84,6 +84,8 @@ class Public_Store {
 
     function get_categories($type = 'families', $pages = '1-10', $output = 'data') {
 
+
+
         $categories = array();
 
 
@@ -96,7 +98,7 @@ class Public_Store {
                 switch ($type) {
                     case 'departments':
                         $sql = sprintf(
-                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Categories' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Categories' ) WHERE  `Webpage State`='Online' and  C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $this->get('Store Department Category Key'), $limit[0], $limit[1]
                         );
 
@@ -105,7 +107,7 @@ class Public_Store {
                         break;
                     case 'families':
                         $sql = sprintf(
-                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Products' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Products' ) WHERE   `Webpage State`='Online' and  C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $this->get('Store Family Category Key'), $limit[0], $limit[1]
                         );
 
@@ -117,7 +119,7 @@ class Public_Store {
 
 
                         $sql = sprintf(
-                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Categories' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Categories' ) WHERE   `Webpage State`='Online' and  C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $website->get('Website Alt Department Category Key'), $limit[0], $limit[1]
                         );
 
@@ -129,7 +131,7 @@ class Public_Store {
                         $website = new Public_Website($this->get('Store Website Key'));
 
                         $sql = sprintf(
-                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Products' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Products' ) WHERE   `Webpage State`='Online' and  C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $website->get('Website Alt Family Category Key'), $limit[0], $limit[1]
                         );
 

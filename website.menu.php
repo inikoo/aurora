@@ -84,4 +84,4 @@ if (file_exists('templates/'.$template)) {
     printf("template %s not found",$template);
 }
 
-?>
+
