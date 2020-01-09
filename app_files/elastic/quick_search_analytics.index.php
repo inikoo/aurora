@@ -42,6 +42,11 @@ $params = [
 
                 ),
 
+                'search_index' => array(
+                    'type'  => 'keyword',
+
+                ),
+
                 'account' => array(
                     'type'  => 'keyword',
 
@@ -68,7 +73,7 @@ $params = [
                 ),
 
 
-                'status' => array(
+                'action' => array(
                     'type'  => 'keyword',
 
                 ),
@@ -77,7 +82,14 @@ $params = [
                     'type'  => 'keyword',
 
                 ),
+                'click_pos' => array(
+                    'type'  => 'byte',
 
+                ),
+                'delta_time' => array(
+                    'type'  => 'half_float',
+
+                ),
 
 
             )

@@ -237,7 +237,7 @@
                             </div>
 
                         </div>
-                        <table class="results">
+                        <table class="search_results"  data-search_index="" data-search_mtime=""   >
 
                         </table>
                     </div>

@@ -9,16 +9,27 @@ function search(search_field, timeout) {
 
     const query = search_field.val();
     window.clearTimeout(search_field.data("timeout"));
+
+
+    const result_container = $('.smart_search_result');
+    const results = result_container.find('.search_results');
+
+
+    console.log(results)
+
+
     search_field.data("timeout", setTimeout(function () {
 
-        const request = '/ar_search.php?tipo=search&query=' + fixedEncodeURIComponent(query) + '&state=' + JSON.stringify(state);
+        const request = '/ar_search.php?tipo=search&query=' + fixedEncodeURIComponent(query)  + '&search_index=' + results.data('search_index')  + '&mtime=' +results.data('mtime')+ '&state=' + JSON.stringify(state);
+
+    console.log(request)
+
         $.getJSON(request, function (data) {
 
-            const result_container = $('.smart_search_result');
+
 
             if (data.query == '') {
-                result_container.addClass('hide');
-                $('.close_search').removeClass('show');
+               close_search();
                 return;
 
             } else {
@@ -29,7 +40,13 @@ function search(search_field, timeout) {
             }
 
             result_container.find('.num').html(data.number_results);
-            const results = result_container.find('.results');
+
+            if(results.data('search_index')=='') {
+                results.data('search_index', data.search_index)
+            }
+
+            results.data('mtime',data.mtime)
+
             results.empty();
 
 
@@ -82,7 +99,7 @@ function close_search(){
 
     const result_container = $('.smart_search_result');
     result_container.addClass('hide');
-    result_container.find('.results').empty();
+    result_container.find('.search_results').empty().data('search_index','').data('mtime','');
 }
 
 $(function () {
