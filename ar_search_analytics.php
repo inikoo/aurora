@@ -9,10 +9,13 @@
 
 */
 
+use Elasticsearch\ClientBuilder;
 
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 //include_once 'search_functions.php';
+
+$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
 
 $query_data = prepare_values(
@@ -21,7 +24,6 @@ $query_data = prepare_values(
                  'mtime'        => array('type' => 'string'),
                  'action'       => array('type' => 'string'),
                  'click_url'    => array('type' => 'string'),
-
                  'click_pos' => array('type' => 'string'),
 
              )
@@ -40,24 +42,19 @@ $params = [
     'body'  => [
         'doc' => [
             'action'     => $query_data['action'],
-            'delta_time' => $query_data['delta_time']
+            'delta_time' => $time_diff
         ]
     ]
 ];
 
 
-if ($query_data['delta_time'] != '') {
-    $params['body']['doc']['click_url'] = $query_data['delta_time'];
+if ($query_data['click_url'] != '') {
+    $params['body']['doc']['click_url'] = $query_data['click_url'];
     $params['body']['doc']['click_pos'] = $query_data['click_pos'];
 
 }
 
 $response = $client->update($params);
-
-
-return array(
-    'state' => 200,
-);
 
 
 

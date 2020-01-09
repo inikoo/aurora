@@ -266,7 +266,7 @@ function change_view_if_has_link_class(element, _request, metadata) {
 
 function change_view(_request, metadata) {
 
-    close_search()
+    close_search('move')
 
     $.urlParam = function (name, str) {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);

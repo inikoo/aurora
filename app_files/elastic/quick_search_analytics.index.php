@@ -20,7 +20,7 @@ $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
 //curl -X DELETE 'http://localhost:9200/au_q_analytics_es';
 //curl -X DELETE 'http://localhost:9200/au_q_analytics_aw';
-//curl -X DELETE 'http://localhost:9200/au_q_analytics_aweu';
+// curl -X DELETE 'http://localhost:9200/au_q_analytics_aweu'
 
 
 
@@ -91,7 +91,10 @@ $params = [
 
                 ),
 
+                'number_results' => array(
+                    'type'  => 'integer',
 
+                ),
             )
         )
 

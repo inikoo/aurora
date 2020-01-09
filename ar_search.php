@@ -369,7 +369,8 @@ function search_ES($query_data, $section, $user_code, $modules, $scopes = [], $s
             'user'         => $user_code,
             'search_index' => $query_data['search_index'],
             'action'       => $action,
-            'delta_time'   => $time_diff
+            'delta_time'   => $time_diff,
+            'number_results'=>$result['hits']['total']['value']
 
         ]
     ];
