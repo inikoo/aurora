@@ -94,7 +94,7 @@ class ES_indexer {
     /**
      * @var string
      */
-    private $label;
+    private $code;
     /**
      * @var string
      */
@@ -126,6 +126,8 @@ class ES_indexer {
         $this->label_2      = '';
         $this->label_3      = '';
         $this->label_4      = '';
+
+        $this->code    = '';
 
         $this->prefix    = '';
         $this->store_key = '';
@@ -234,9 +236,9 @@ class ES_indexer {
                 $this->prefix = 'dcc';
                 $this->prepare_deal_campaign();
                 break;
-            case 'Mailshot':
+            case 'Email Campaign':
                 $this->prefix = 'm';
-                $this->prepare_mailshoot();
+                $this->prepare_mailshot();
                 break;
         }
     }
@@ -486,6 +488,7 @@ class ES_indexer {
         $this->module    = 'orders';
         $this->store_key = $this->object->get('Store Key');
 
+        $this->code =  $this->object->get('Order Public ID');
 
         $this->real_time[] = $this->object->get('Order Public ID');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Order Public ID')));
@@ -645,6 +648,8 @@ class ES_indexer {
         $this->module = 'inventory';
         $this->url    = sprintf('part/%d', $this->object->id);
 
+        $this->code = $this->object->get('Part Reference');
+
         $this->real_time[] = $this->object->get('Part Reference');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
         $this->real_time[] = $number_only_id;
@@ -704,6 +709,8 @@ class ES_indexer {
             'locations' => 100
         );
 
+        $this->code =  $this->object->get('Code');
+
         $this->real_time[] = $this->object->get('Code');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
         $this->real_time[] = $number_only_id;
@@ -735,6 +742,7 @@ class ES_indexer {
         $this->real_time[] = (int)$number_only_id;
         $this->real_time[] = $this->object->get('Product Name');
 
+        $this->code = $this->object->get('Product Code');
 
         $this->label_1 = $this->object->get('Code');
         $this->label_2 = ($this->object->get('Units Per Case') != 1 ? $this->object->get('Units Per Case').'x ' : '').$this->object->get('Name');
@@ -824,6 +832,9 @@ class ES_indexer {
         $this->module    = 'products';
         $this->store_key = $store->id;
 
+        $this->code =  $this->object->get('Category Code');
+
+
         $this->real_time[] = $this->object->get('Category Code');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
         $this->real_time[] = $number_only_id;
@@ -878,6 +889,8 @@ class ES_indexer {
 
         $this->module = 'inventory';
 
+        $this->code =  $this->object->get('Category Code');
+
         $this->real_time[] = $this->object->get('Category Code');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
         $this->real_time[] = $number_only_id;
@@ -931,6 +944,8 @@ class ES_indexer {
 
 
         $this->url = sprintf('website/%d/webpage/%d', $this->object->get('Webpage Website Key'), $this->object->id);
+        $this->code =  $this->object->get('Webpage Code');
+
 
 
         $this->real_time[] = $this->object->get('Webpage Code');
@@ -1062,7 +1077,7 @@ class ES_indexer {
                 'suppliers' => 100
             );
         }
-
+        $this->code =  $this->object->get('Supplier Code');
 
         $this->url = sprintf('supplier/%d', $this->object->id);
 
@@ -1104,6 +1119,7 @@ class ES_indexer {
             'agents' => 100
         );
 
+        $this->code =  $this->object->get('Agent Code');
         $this->url = sprintf('agent/%d', $this->object->id);
 
         $this->real_time[] = $this->object->get('Agent Code');
@@ -1268,6 +1284,7 @@ class ES_indexer {
 
         $this->real_time[] = $this->object->get('User Handle');
 
+        $this->code =  $this->object->get('User Handle');
 
         $staff = get_object('Staff', $this->object->get_staff_key());
 
@@ -1329,6 +1346,9 @@ class ES_indexer {
         $this->module    = 'accounting';
         $this->store_key = $this->object->get('Store Key');
 
+
+        $this->code =  $this->object->get('Public ID');
+
         $this->real_time[] = $this->object->get('Public ID');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Public ID')));
         $this->real_time[] = $number_only_id;
@@ -1379,6 +1399,8 @@ class ES_indexer {
         $this->module    = 'delivering';
         $this->store_key = $this->object->get('Store Key');
 
+        $this->code =  $this->object->get('ID');
+
         $this->real_time[] = $this->object->get('ID');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('ID')));
         $this->real_time[] = $number_only_id;
@@ -1420,6 +1442,9 @@ class ES_indexer {
         $this->scopes = array(
             'payments' => 100
         );
+
+        $this->code =  $this->object->get('Payment Transaction ID');
+
 
         $this->real_time[]  = $this->object->get('Payment Transaction ID');
         $this->icon_classes = $this->object->get('Icon');
@@ -1598,10 +1623,88 @@ class ES_indexer {
 
     }
 
+    private function prepare_deal_campaign() {
+
+
+        $this->module    = 'offers';
+        $this->store_key = $this->object->get('Store Key');
+
+        $this->scopes = array(
+            'deal_campaign' => 100
+        );
+
+
+        $this->real_time[] = $this->object->get('Deal Campaign Code');
+        $this->real_time[] = $this->object->get('Deal Campaign Name');
+
+
+        if (preg_match('/class=\"fa.?\s(.*)\"/', $this->object->get('Icon'), $icon_match)) {
+            $this->icon_classes = ' fal '.$icon_match[1];
+
+        }
+        $this->weight =50;
+        $this->label_1 = $this->object->get('Deal Campaign Name');
+        $this->url     = sprintf('offers/%d/%s/', $this->object->get('Store Key'), strtolower($this->object->get('Code')), $this->object->id);
+
+
+    }
+
+    private function prepare_mailshot() {
+
+
+        if(in_array($this->object->get('Email Campaign Type'),['Newsletter','Marketing'])) {
+
+
+            $this->module    = 'mailroom';
+            $this->store_key = $this->object->get('Store Key');
+
+            $this->scopes = array(
+                'mailshot' => 100
+            );
+
+            $email_template = get_object('Email Template', $this->object->get('Email Campaign Email Template Key'));
+
+            $this->real_time[] = $email_template->get('Email Template Subject');
+            $this->real_time[] = $this->object->get('Email Campaign Name');
+
+
+            switch($this->object->get('Email Campaign Type')){
+                case 'Newsletter':
+                    $this->icon_classes='fal fa-newspaper|';
+                    break;
+                case 'Marketing':
+                    $this->icon_classes='fal fa-bullhorn |';
+                    break;
+            }
+            $this->icon_classes.=$this->object->get('State Icon');
+
+            $this->weight  = 50;
+            if( $this->object->get('Email Campaign Name')!= $email_template->get('Email Template Subject')){
+                $this->label_1 = $this->object->get('Email Campaign Name');
+
+            }
+            $this->label_2 = $email_template->get('Email Template Subject');
+            if($this->object->get('State Index')<=40){
+                $this->label_3 = date('Y-m-d', strtotime($this->object->get('Email Campaign Creation Date')));
+
+            }else{
+                $this->label_3 = date('Y-m-d', strtotime($this->object->get('Start Send Date')));
+
+            }
+
+            $this->url     = sprintf('mailroom/%d/marketing/%d/mailshot/%d', $this->object->get('Store Key'),$email_template->id, $this->object->id);
+        }
+
+    }
+
     public function add_index() {
         $params         = $this->get_index_header();
         $params['body'] = $this->get_index_body();
-        $this->client->index($params);
+
+        if(!empty($params['body']['module'])){
+            $this->client->index($params);
+
+        }
 
 
     }
@@ -1626,6 +1729,7 @@ class ES_indexer {
             'label_2'      => $this->label_2,
             'label_3'      => $this->label_3,
             'label_4'      => $this->label_4,
+
             //'object'       => $object,
             //'status'       => $this->status,
             //'result_label' => $this->label,
@@ -1635,6 +1739,10 @@ class ES_indexer {
 
         );
 
+        if($this->code!=''){
+            $body['code'] = $this->code;
+        }
+
         if (count($this->scopes) > 0) {
             $body['scopes'] = $this->scopes;
         }
@@ -1642,6 +1750,8 @@ class ES_indexer {
         return $body;
 
     }
+
+
 
     private function flatten($array) {
         if (count($array) == 0) {
@@ -1678,31 +1788,7 @@ class ES_indexer {
 
     }
 
-    private function prepare_deal_campaign() {
 
-
-        $this->module    = 'offers';
-        $this->store_key = $this->object->get('Store Key');
-
-        $this->scopes = array(
-            'deal_campaign' => 100
-        );
-
-
-        $this->real_time[] = $this->object->get('Deal Campaign Code');
-        $this->real_time[] = $this->object->get('Deal Campaign Name');
-
-
-        if (preg_match('/class=\"fa.?\s(.*)\"/', $this->object->get('Icon'), $icon_match)) {
-            $this->icon_classes = ' fal '.$icon_match[1];
-
-        }
-        $this->weight =50;
-        $this->label_1 = $this->object->get('Deal Campaign Name');
-        $this->url     = sprintf('offers/%d/%s/', $this->object->get('Store Key'), strtolower($this->object->get('Code')), $this->object->id);
-
-
-    }
 
     private function tokenize_address($type) {
 

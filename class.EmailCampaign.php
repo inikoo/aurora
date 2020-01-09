@@ -240,6 +240,41 @@ class EmailCampaign extends DB_Table {
                 }
 
                 break;
+            case ('State Icon'):
+
+                switch ($this->data['Email Campaign State']) {
+                    case 'InProcess':
+                        return 'fal fa-drafting-compass';
+                        break;
+                    case 'ComposingEmail':
+                        return 'fal fa-pen-nib';
+                        break;
+                    case 'Ready':
+                        return 'fal fa-clock';
+                        break;
+                    case 'Scheduled':
+                        return 'far fa-clock';
+                        break;
+                    case 'Sending':
+                        return 'fal fa-paper-plane very_discreet';
+                        break;
+                    case 'Stopped':
+                        return 'fa-pause';
+                        break;
+                    case 'Cancelled':
+                        return 'fa red fa-octagon';
+                        break;
+                    case 'Sent':
+                        return 'fal fa-paper-plane';
+                        break;
+
+
+                    default:
+                        return '';
+                        break;
+                }
+
+                break;
             case 'State':
                 //'InProcess','ComposingEmail','Ready','Sending','Complete'
                 switch ($this->data['Email Campaign State']) {

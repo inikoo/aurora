@@ -75,6 +75,15 @@ function search(search_field, timeout) {
     }, timeout));
 }
 
+function close_search(){
+    $('.smart_search_input input').val('');
+
+    $(' .smart_search_input  .close_search').removeClass('show');
+
+    const result_container = $('.smart_search_result');
+    result_container.addClass('hide');
+    result_container.find('.results').empty();
+}
 
 $(function () {
 
@@ -87,7 +96,6 @@ $(function () {
 
 
     $('#navigation  ').on('click', '.smart_search_result .search_result', function () {
-
         change_view($(this).data('url'))
 
 
@@ -96,14 +104,8 @@ $(function () {
 
     $('#navigation  ').on('click', ' .smart_search_input  .close_search', function () {
 
+        close_search()
 
-        $('.smart_search_input input').val('');
-
-        $(this).removeClass('show');
-
-        const result_container = $('.smart_search_result');
-        result_container.addClass('hide');
-        result_container.find('.results').empty();
 
 
     });

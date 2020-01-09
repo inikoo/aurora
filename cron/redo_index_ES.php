@@ -15,26 +15,30 @@ require_once 'utils/natural_language.php';
 require_once 'class.Invoice.php';
 
 require 'vendor/autoload.php';
+
 use Elasticsearch\ClientBuilder;
 
 print "\n";
 
-$params = ['body' => []];
-$global_counter=0;
+$params         = ['body' => []];
+$global_counter = 0;
 
-$client       = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+update_categories_index($db);
+
+update_products_index($db);
+
+update_mailshots_index($db);
 
 
-update_deal_campaigns_index($db);
 
-
-/*
 
 update_deals_index($db);
 update_deal_components_index($db);
 
-update_mailshots_index($db);
 
+update_deal_campaigns_index($db);
 
 update_lists_index($db);
 
@@ -53,14 +57,10 @@ update_agents_index($db);
 update_supplier_products_index($db);
 update_webpages_index($db);
 update_parts_index($db);
-update_categories_index($db);
-update_products_index($db);
 update_prospects_index($db);
 update_customers_index($db);
 update_orders_index($db);
 update_locations_index($db);
-
-*/
 
 
 
@@ -70,30 +70,39 @@ if (!empty($params['body'])) {
 }
 
 
-
-
-function process_indexing($indexer){
-    global $params,$client;
+function process_indexing($indexer) {
+    global $params, $client;
     global $global_counter;
-    $global_counter++;
 
 
-    $_index_data=$indexer->get_index_header();
-    $params['body'][] = [
-        'index' => [
-            '_index' => $_index_data['index'],
-            '_id'    =>  $_index_data['id']
-        ]
-    ];
 
-    //print_r($indexer->get_index_body());
+    $_index_data      = $indexer->get_index_header();
 
-    $params['body'][] = $indexer->get_index_body();
+    $_index_body=$indexer->get_index_body();
+
+    if(!empty($_index_body['module'])){
+        $global_counter++;
+        $params['body'][] = [
+            'index' => [
+                '_index' => $_index_data['index'],
+                '_id'    => $_index_data['id']
+            ]
+        ];
+
+
+        $params['body'][] =$_index_body;
+
+    }
+
+
+
 
     // Every 1000 documents stop and send the bulk request
-    if ($global_counter % 1000 == 0) {
+    if ($global_counter>0 && $global_counter % 1000 == 0) {
+       //print "** $global_counter  **\n";
+
         $responses = $client->bulk($params);
-        $params = ['body' => []];
+        $params    = ['body' => []];
         unset($responses);
     }
 }
@@ -101,8 +110,36 @@ function process_indexing($indexer){
 /**
  * @param $db \PDO
  */
-function update_deals_index($db) {
+function update_mailshots_index($db) {
 
+
+    $object_name = 'Email Campaigns';
+    $hosts       = get_ES_hosts();
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+
+    $sql  = "select `Email Campaign Key` from `Email Campaign Dimension` ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = get_object('Email Campaign', $row['Email Campaign Key']);
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
+/**
+ * @param $db \PDO
+ */
+function update_deals_index($db) {
 
 
     $object_name = 'Deals';
@@ -134,7 +171,6 @@ function update_deals_index($db) {
 function update_deal_campaigns_index($db) {
 
 
-
     $object_name = 'Deal Campaigns';
     $hosts       = get_ES_hosts();
     $print_est   = true;
@@ -162,7 +198,6 @@ function update_deal_campaigns_index($db) {
 function update_deal_components_index($db) {
 
 
-
     $object_name = 'Deal Components';
     $hosts       = get_ES_hosts();
     $print_est   = true;
@@ -177,9 +212,9 @@ function update_deal_components_index($db) {
     $stmt->execute();
     while ($row = $stmt->fetch()) {
 
-        $deal=get_object('Deal', $row['Deal Key']);
+        $deal = get_object('Deal', $row['Deal Key']);
 
-        foreach($deal->get_deal_components('objects','All') as $object){
+        foreach ($deal->get_deal_components('objects', 'All') as $object) {
             process_indexing($object->index_elastic_search($hosts, true));
 
         }
@@ -193,12 +228,10 @@ function update_deal_components_index($db) {
 }
 
 
-
 /**
  * @param $db \PDO
  */
 function update_staff_index($db) {
-
 
 
     $object_name = 'Staff';
@@ -228,7 +261,6 @@ function update_staff_index($db) {
  * @param $db \PDO
  */
 function update_categories_index($db) {
-
 
 
     $object_name = 'Categories';
@@ -292,7 +324,7 @@ function update_products_index($db) {
     $object_name = 'Products';
     $hosts       = get_ES_hosts();
     $print_est   = true;
-    $total     = get_total_objects($db, $object_name);
+    $total       = get_total_objects($db, $object_name);
 
     $lap_time0 = microtime_float();
     $contador  = 0;
@@ -317,7 +349,6 @@ function update_products_index($db) {
  * @param $db \PDO
  */
 function update_parts_index($db) {
-
 
 
     $object_name = 'Parts';
@@ -431,8 +462,6 @@ function update_agents_index($db) {
 }
 
 
-
-
 /**
  * @param $db \PDO
  */
@@ -460,6 +489,7 @@ function update_supplier_products_index($db) {
     }
     print "\n";
 }
+
 /**
  * @param $db \PDO
  */
@@ -596,7 +626,7 @@ function update_deleted_invoices_index($db) {
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
-        $object =new Invoice('deleted',  $row['Invoice Deleted Key']);
+        $object = new Invoice('deleted', $row['Invoice Deleted Key']);
         process_indexing($object->index_elastic_search($hosts, true));
         $contador++;
         if ($print_est) {
@@ -716,7 +746,7 @@ function print_lap_times($label = '', $contador, $total, $lap_time0) {
     $lap_time1 = microtime_float();
     print $label.'  '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
             "%.4f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 60
-        )."m  ($contador/$total)  t: ".sprintf("%.2f", $lap_time1 - $lap_time0 )."s  \r";
+        )."m  ($contador/$total)  t: ".sprintf("%.2f", $lap_time1 - $lap_time0)."s  \r";
 
 }
 
@@ -762,7 +792,7 @@ function get_total_objects($db, $object_name) {
         case 'Staff':
             $sql = "select count(*) as num from `Staff Dimension`";
             break;
-            case 'Users':
+        case 'Users':
             $sql = "select count(*) as num from `User Dimension`";
             break;
         case 'Invoices':
@@ -788,6 +818,9 @@ function get_total_objects($db, $object_name) {
             break;
         case 'Deal Campaigns':
             $sql = "select count(*) as num from `Deal Campaign Dimension`";
+            break;
+        case 'Email Campaigns':
+            $sql = "select count(*) as num from `Email Campaign Dimension`";
             break;
         default:
             return $total_objects;

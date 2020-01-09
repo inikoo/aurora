@@ -65,7 +65,7 @@ if ($user->get('User Type') == 'Agent') {
             $scopes = array(
                 'prospects' => 10
             );
-        }elseif (in_array(
+        } elseif (in_array(
             $data['state']['section'], array(
                                          'lists',
                                          'list',
@@ -83,49 +83,57 @@ if ($user->get('User Type') == 'Agent') {
         }
 
 
-        echo json_encode(search_ES(trim($data['query']), ['customers'], $scopes, $stores));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['customers'], $scopes, $stores));
         exit;
 
 
     } elseif ($data['state']['module'] == 'orders' or $data['state']['module'] == 'orders_server') {
 
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), ['orders'], array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['orders'], array(), $stores));
         exit;
 
     } elseif ($data['state']['module'] == 'products' or $data['state']['module'] == 'products_server') {
 
 
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), ['products'], array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['products'], array(), $stores));
         exit;
 
 
-    }elseif ($data['state']['module'] == 'offers' or $data['state']['module'] == ' offers_server') {
+    } elseif ($data['state']['module'] == 'mailroom' or $data['state']['module'] == 'mailroom_server') {
 
 
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), ['offers'], array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['mailroom'], array(), $stores));
+        exit;
+
+
+    } elseif ($data['state']['module'] == 'offers' or $data['state']['module'] == ' offers_server') {
+
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['offers'], array(), $stores));
         exit;
 
 
     } elseif ($data['state']['module'] == 'inventory') {
 
-        echo json_encode(search_ES(trim($data['query']), ['inventory'], array(), array()));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['inventory'], array(), array()));
         exit;
     } elseif ($data['state']['module'] == 'websites') {
 
 
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), ['websites'], array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['websites'], array(), $stores));
         exit;
 
     } elseif ($data['state']['module'] == 'hr') {
-        echo json_encode(search_ES(trim($data['query']), ['hr']));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['hr']));
         exit;
 
     } elseif ($data['state']['module'] == 'users') {
-        echo json_encode(search_ES(trim($data['query']), ['users']));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['users']));
         exit;
 
     } elseif ($data['state']['module'] == 'suppliers') {
@@ -146,7 +154,7 @@ if ($user->get('User Type') == 'Agent') {
             );
         }
 
-        echo json_encode(search_ES(trim($data['query']), ['suppliers']));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['suppliers']));
         exit;
 
     } elseif ($data['state']['module'] == 'production') {
@@ -154,7 +162,7 @@ if ($user->get('User Type') == 'Agent') {
 
     } elseif ($data['state']['module'] == 'delivery_notes' or $data['state']['module'] == 'delivery_notes_server') {
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), ['delivering'], array(), $stores));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['delivering'], array(), $stores));
         exit;
     } elseif ($data['state']['module'] == 'accounting' or $data['state']['module'] == 'accounting_server') {
 
@@ -202,14 +210,14 @@ if ($user->get('User Type') == 'Agent') {
             );
         }
         check_for_store_permissions($stores);
-        echo json_encode(search_ES(trim($data['query']), ['accounting'], $scopes, $stores));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['accounting'], $scopes, $stores));
 
     } elseif ($data['state']['module'] == 'warehouses') {
 
-        echo json_encode(search_ES(trim($data['query']), ['warehouse']));
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), ['warehouse']));
         exit;
-    }elseif ($data['state']['module'] == 'dashboard'){
-        echo json_encode(search_ES(trim($data['query']), '',array(),$stores));
+    } elseif ($data['state']['module'] == 'dashboard') {
+        echo json_encode(search_ES(trim($data['query']), $data['state']['section'], $user->get('Handle'), '', array(), $stores));
         exit;
     }
 }
@@ -228,7 +236,7 @@ function check_for_store_permissions($stores) {
     }
 }
 
-function search_ES($query, $modules, $scopes = [], $stores = array()) {
+function search_ES($query, $section, $user_code, $modules, $scopes = [], $stores = array()) {
 
 
     $max_results = 16;
@@ -245,7 +253,7 @@ function search_ES($query, $modules, $scopes = [], $stores = array()) {
             [
                 "query" => [
                     "bool" => [
-                        "must"   => [
+                        "must" => [
                             [
                                 "multi_match" => [
                                     "query" => $query,
@@ -266,6 +274,11 @@ function search_ES($query, $modules, $scopes = [], $stores = array()) {
                                 "rank_feature" => [
                                     "field" => "weight"
                                 ]
+                            ],
+                            [
+                                'match' => [
+                                    'code' => $query
+                                ]
                             ]
 
                         ]
@@ -285,11 +298,11 @@ function search_ES($query, $modules, $scopes = [], $stores = array()) {
 
     ];
 
-    if($modules!=='' ){
+    if ($modules !== '') {
 
         $params['body']['query']['bool']['filter'][] = array(
             "terms" => [
-                "module" =>$modules
+                "module" => $modules
             ]
         );
     }
@@ -303,7 +316,7 @@ function search_ES($query, $modules, $scopes = [], $stores = array()) {
         );
     }
 
-    if(count($stores)>0){
+    if (count($stores) > 0) {
         $params['body']['query']['bool']['filter'][] = array(
             "terms" => [
                 "store_key" => $stores
@@ -314,13 +327,33 @@ function search_ES($query, $modules, $scopes = [], $stores = array()) {
 
     $result = $client->search($params);
 
+    $now = DateTime::createFromFormat('U.u', microtime(true));
+
+
+    $analytics_params = [
+        'index' => strtolower('au_q_analytics_'.DNS_ACCOUNT_CODE),
+        'body'  => [
+            'date'    => $now->format("Y-d-m\TH:i:s.u"),
+            'account' => DNS_ACCOUNT_CODE,
+            'stores'  => join($stores),
+            'query'   => $query,
+            'modules' => (is_array($modules) ? array_pop($modules) : ''),
+            'section' => $section,
+            'user'    => $user_code,
+
+        ]
+    ];
+
+    print_r($analytics_params);
+
+    $client->index($analytics_params);
 
     return array(
         'state'          => 200,
         'number_results' => $result['hits']['total']['value'],
         'results'        => $result['hits']['hits'],
         'query'          => $query,
-        'class'          => (is_array($modules)?array_pop($modules):'dashboard')
+        'class'          => (is_array($modules) ? array_pop($modules) : 'dashboard')
 
     );
 

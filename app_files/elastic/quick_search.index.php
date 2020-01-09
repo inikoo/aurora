@@ -10,19 +10,21 @@
  Version 3.0
 */
 
-require 'common.php';
+require '../keyring/dns.php';
 
 use Elasticsearch\ClientBuilder;
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/_all';
+//curl -X DELETE 'http://localhost:9200/au_q_es';
+//curl -X DELETE 'http://localhost:9200/au_q_aw';
+//curl -X DELETE 'http://localhost:9200/au_q_aweu';
 
 
 $params = [
-    'index' => strtolower('au_q_'.$account->get('Code')),
+    'index' => strtolower('au_q_'.DNS_ACCOUNT_CODE),
     'body'  => array(
         'settings'=>array(
             'analysis'=>array(
@@ -66,6 +68,9 @@ $params = [
                     'type' => 'text'
                 ),
                 */
+                'code'        => array(
+                    'type' => 'keyword'
+                ),
                 'module'       => array(
                     'type'  => 'keyword',
 
@@ -115,54 +120,4 @@ $params = [
 ];
 
 $response = $client->indices()->create($params);
-
-
-
-$params = [
-    'index' => strtolower('au_aq_'.$account->get('Code')),
-    'body'  => array(
-        'settings'=>array(
-            'analysis'=>array(
-                'analyzer'=>'icu_analyzer'
-            )
-        ),
-        'mappings' => array(
-
-            'properties' => array(
-                'date' => array(
-                    'type'=> 'date'
-                ),
-
-                'query' => array(
-                    'type'=> 'text'
-                ),
-
-                'module'          => array(
-                    'type'  => 'keyword',
-
-                ),
-
-                'section'       => array(
-                    'type'  => 'keyword',
-                ),
-                'user'       => array(
-                    'type'  => 'keyword',
-                ),
-
-
-                'store' => array(
-                    'type'  => 'keyword',
-
-                ),
-
-
-            )
-        )
-
-    ),
-
-];
-
-$response = $client->indices()->create($params);
-
 
