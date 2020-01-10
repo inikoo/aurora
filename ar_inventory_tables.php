@@ -1833,7 +1833,7 @@ function product_families($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            // print_r($data);
+            //print_r($data);
 
             if ($data['category_data'] == '') {
 
