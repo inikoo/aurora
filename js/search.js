@@ -68,12 +68,15 @@ function search(search_field, timeout) {
                 }
 
 
+
+                let col_store = $('<td>').addClass('col_store').html(data.results[result_key]._source.store_label);
+
                 let col_1 = $('<td>').addClass('col_1').html(data.results[result_key]._source.label_1);
                 let col_2 = $('<td>').addClass('col_2').html(data.results[result_key]._source.label_2);
                 let col_3 = $('<td>').addClass('col_3').html(data.results[result_key]._source.label_3);
                 let col_4 = $('<td>').addClass('col_4').html(data.results[result_key]._source.label_4);
 
-                let row = $('<tr>').addClass('button search_result').data('search_index', data.search_index).data('mtime', data.mtime).data('position', pos).data('url', data.results[result_key]._source.url).append(col_0).append(col_1).append(col_2).append(col_3).append(col_4);
+                let row = $('<tr>').addClass('button search_result').data('search_index', data.search_index).data('mtime', data.mtime).data('position', pos).data('url', data.results[result_key]._source.url).append(col_store).append(col_0).append(col_1).append(col_2).append(col_3).append(col_4);
                 // row.append($('<td>').append((data.results[result_key]._source.label_1)))
 
                 tbody.append(row)

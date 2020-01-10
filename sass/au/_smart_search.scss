@@ -103,9 +103,19 @@
     }
 
     .icon{
-      width: 30px;
+      width: 70px;
     }
 
+.col_store{
+  width: 30px;
+display: none;
+}
+
+    .server{
+      .col_store{
+        display: table-cell	;
+      }
+    }
 
     .col_1{
       width: 20%;
@@ -139,6 +149,9 @@
         width: auto;
       }
       .col_3{
+        width: auto;
+      }
+      .col_4{
         display: none;
       }
 
