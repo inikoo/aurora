@@ -154,10 +154,14 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $state['current_warehouse']  = $session->get('current_warehouse');
     $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
 
+
     $store      = '';
     $website    = '';
     $warehouse  = '';
     $production = '';
+
+
+
 
     if (!empty($state['store_key'])) {
         $store = get_object('Store', $state['store_key']);
@@ -296,14 +300,12 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             //print_r($state);
             $_parent = get_object($state['parent'], $state['parent_key']);
 
-            if (in_array(
-                $state['module'], array(
-                                    'customers_server',
-                                    'orders_server'
-                                )
-            )) {
+
+            if(preg_match('/_server/',$state['module'])){
                 $state['current_store'] = '';
             }
+
+
             if (in_array($state['module'], array('warehouses_server'))) {
                 $state['current_warehouse'] = '';
             }
@@ -362,7 +364,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
     $state['_parent'] = $_parent;
-
 
     if ($state['object'] != '') {
 
@@ -562,6 +563,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             }
         }
         //  print_r($state);
+
+       // $state['current_store'];
 
         if (empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))) {
             $store = get_object('Store', $state['_parent']->get('Store Key'));
@@ -771,7 +774,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         );
     }
 
-
     if ($state['module'] == 'hr') {
         if (!$user->can_view('staff')) {
             $state = array(
@@ -812,7 +814,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     //if (is_object($production) and $production->id) {
     //    $state['current_production'] = $production->id;
     //}
-
     $sql = sprintf(
         'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']),
         prepare_mysql($state['section']), prepare_mysql(
@@ -824,7 +825,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     //$_SESSION['request'] = $state['request'];
     $response = array('app_state' => array());
-
 
 
     if (isset($state['current_store'])) {
