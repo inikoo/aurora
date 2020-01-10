@@ -318,21 +318,23 @@ function change_view(_request, metadata) {
 
                 state = data.app_state;
 
-                console.log(data.nav[0])
+                if(data.nav !='undefined' &&  data.nav !== null){
+                    if (typeof (data.nav[1]) != "undefined" && data.nav[1] !== null && data.nav[1] != '') {
+                        $('#top_menu').html(data.nav[1]);
+                    }
+                    if (typeof (data.nav[2]) != "undefined" && data.nav[2] !== null && data.nav[2] != '') {
+                        $('#au_header').html(data.nav[2]);
+                    }
 
-                if (typeof (data.nav[1]) != "undefined" && data.nav[1] !== null && data.nav[1] != '') {
-                    $('#top_menu').html(data.nav[1]);
-                }
-                if (typeof (data.nav[2]) != "undefined" && data.nav[2] !== null && data.nav[2] != '') {
-                    $('#au_header').html(data.nav[2]);
+
+                    if (typeof (data.nav[3]) != "undefined" && data.nav[3] !== null && data.nav[3] != '') {
+                        $('#web_navigation').html(data.nav[3]);
+                    } else {
+                        $('#web_navigation').html('')
+                    }
                 }
 
 
-                if (typeof (data.nav[3]) != "undefined" && data.nav[3] !== null && data.nav[3] != '') {
-                    $('#web_navigation').html(data.nav[3]);
-                } else {
-                    $('#web_navigation').html('')
-                }
 
                 if (typeof (data.tabs) != "undefined" && data.tabs !== null) {
                     $('#tabs').html(data.tabs);

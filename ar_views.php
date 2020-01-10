@@ -1366,6 +1366,10 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $response['app_state'] = $state;
 
 
+    if(!isset($response['nav'])){
+        $response['nav']=['','','',''];
+    }
+
     $encoded = json_encode($response);
 
     if ($encoded == '') {
