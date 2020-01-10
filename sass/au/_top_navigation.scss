@@ -9,8 +9,8 @@
 
     padding-right: 0;
 
-    height: $height_address_bar;
-    line-height: $height_address_bar;
+    height: 28px;
+    line-height: 28px;
 
 
     #top_menu {
@@ -67,70 +67,6 @@
     }
 
 
-    #top_menux {
-
-      text-align: left;
-      a {
-        color: #333;
-      }
-
-      #section_links {
-        font-family: $font_title;
-      }
-
-      .section {
-        @include unselectable;
-        text-align: center;
-        cursor: pointer;
-        background-color: $header_background_color;
-        color: #333;
-        padding: 0 30px;
-
-        .fa, .far, .fas, .fab, .fal {
-          margin-right: 5px;
-          color: #999;
-        }
-
-        &:hover, &.selected {
-          background-color: #edf3f8;
-          color: #000;
-        }
-
-        &:hover, &.selected > .fa, .far, .fas, .fab, .fal {
-          color: #666;
-        }
-
-
-        &.icon_only {
-          padding: 0 10px 0 15px;
-          width: 40px;
-        }
-
-        &.left {
-          float: left;
-        }
-
-      }
-
-      .right {
-        float: right;
-        border-left: 1px solid #ccc;
-      }
-
-      .left {
-        float: left;
-        border-right: 1px solid #ccc;
-      }
-
-      .only_icons .section {
-        padding: 0 2px;
-        width: 22px;
-      }
-
-      .only_icons .section_label {
-        display: none;
-      }
-    }
   }
   #au_header {
     text-align: left;

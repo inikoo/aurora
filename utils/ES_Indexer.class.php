@@ -674,7 +674,7 @@ class ES_indexer {
                 $this->icon_classes = 'fal fa-box very_discreet red';
                 break;
             case 'In Use':
-                $this->weight       = 80;
+                $this->weight       = 70;
                 $this->icon_classes = 'fal fa-box';
                 break;
             case 'In Process':
@@ -861,7 +861,7 @@ class ES_indexer {
                 break;
 
             case 'Active':
-                $this->weight = 70;
+                $this->weight = 85;
                 break;
             case 'Suspended':
                 $this->weight       = 30;
@@ -913,7 +913,7 @@ class ES_indexer {
                 break;
 
             case 'InUse':
-                $this->weight = 70;
+                $this->weight = 85;
                 break;
 
             case 'NotInUse':

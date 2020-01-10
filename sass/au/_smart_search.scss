@@ -12,6 +12,8 @@
 .smart_search_input{
 
   background-color:#fff;width:500px;display:flex;
+  font-size: 17px;
+  border-bottom:1px solid #ccc;
 
   ::placeholder {
     color:rgb(149, 133, 163);
@@ -24,6 +26,7 @@
     padding-left: 5px;
     padding-right: 5px;
     opacity: .4;
+    margin-left:5px;margin-right: 5px
   }
 
   form{
@@ -32,6 +35,7 @@
   input{
     border:none;
     width: 100%;
+    padding:0px 0px 0px 0px;
     @include placeholder {
       color: #aaa;
       font-style: italic;
@@ -118,13 +122,23 @@ display: none;
     }
 
     .col_1{
-      width: 20%;
+      width: auto;
     }
     .col_2{
-      width: 25%;
+      width: auto;
     }
     .col_3{
-      width: 25%;
+      width: auto;
+    }
+
+    .col_3{
+      width: auto;
+    }
+
+    inventory{
+      .col_4{
+        display: none;
+      }
     }
 
     .customers{
