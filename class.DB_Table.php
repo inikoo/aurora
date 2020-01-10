@@ -940,6 +940,17 @@ abstract class DB_Table extends stdClass {
         }
     }
 
+    function fork_index_elastic_search($type='create_elastic_index_object'){
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'       => $type,
+            'object'     => $this->get_object_name(),
+            'object_key' => $this->id
+        ), DNS_ACCOUNT_CODE, $this->db
+        );
+    }
+
     function index_elastic_search($hosts, $bulk = false) {
         include_once 'utils/ES_Indexer.class.php';
         $account = get_object('Account', 1);
@@ -954,6 +965,19 @@ abstract class DB_Table extends stdClass {
 
         return $indexer;
 
+
+    }
+
+    function fork_subject_index_elastic_search(){
+        //todo
+        return false;
+    }
+
+    function delete_index_elastic_search($hosts) {
+        include_once 'utils/ES_Indexer.class.php';
+        $account = get_object('Account', 1);
+        $indexer = new ES_indexer($hosts, $account->get('Code'), $this, $this->db);
+        $indexer->delete_index();
 
     }
 

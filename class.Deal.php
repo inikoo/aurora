@@ -174,6 +174,8 @@ class Deal extends DB_Table {
             $store = get_object('Store', $this->data['Deal Store Key']);
             $store->update_deals_data();
 
+            $this->fork_index_elastic_search();
+
         } else {
             print "Error can not create deal  $sql\n";
             exit;
@@ -202,7 +204,7 @@ class Deal extends DB_Table {
 
 
             }
-
+            $this->fork_index_elastic_search();
             return;
         }
 
@@ -230,7 +232,7 @@ class Deal extends DB_Table {
             );
 
         }
-
+        $this->fork_index_elastic_search();
 
     }
 
@@ -245,6 +247,7 @@ class Deal extends DB_Table {
 
 
         );
+        $this->fork_index_elastic_search();
     }
 
     function get_formatted_terms() {
@@ -890,6 +893,7 @@ class Deal extends DB_Table {
                     )
                 );
 
+
                 break;
 
             case 'Deal Component Allowance Label':
@@ -941,7 +945,7 @@ class Deal extends DB_Table {
 
 
                 $this->update_websites();
-
+            $this->fork_index_elastic_search();
 
                 break;
             case('Deal Begin Date'):
@@ -953,6 +957,10 @@ class Deal extends DB_Table {
             case 'Deal Status':
 
                 $this->update_status($value);
+                break;
+            case 'Deal Name':
+                $this->update_field($field, $value, $options);
+                $this->fork_index_elastic_search();
                 break;
             default:
                 $base_data = $this->base_data();
@@ -1143,25 +1151,12 @@ class Deal extends DB_Table {
 
     function update_status($value = '') {
 
-
         if ($value == 'Suspended') {
-
-
             $this->update_field('Deal Status', $value);
-
-
         } else {
-
-
             $this->update_status_from_dates($force = true);
-
-
         }
-
-
-        //foreach ($this->get_deal_components('objects', 'all') as $component) {
-        //  $component->update(array('Deal Component Status' => $value), 'no_history');
-        //}
+        $this->fork_index_elastic_search();
 
     }
 
@@ -1178,7 +1173,7 @@ class Deal extends DB_Table {
 
     }
 
-    function update_allowance_label() {
+    public function update_allowance_label() {
 
 
         $deal_component_keys = $this->get_deal_components('keys', 'Active');
@@ -1355,6 +1350,8 @@ class Deal extends DB_Table {
         $campaign->editor = $this->editor;
 
         $campaign->update_number_of_deals();
+        $this->fork_index_elastic_search('delete_elastic_index_object');
+
 
 
     }

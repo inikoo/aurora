@@ -179,8 +179,7 @@ class DealCampaign extends DB_Table {
             );
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
-            //$this->update_status_from_dates();
-
+            $this->fork_index_elastic_search();
 
             return $this;
         } else {
@@ -283,7 +282,7 @@ class DealCampaign extends DB_Table {
                 $this->db->exec($sql);
                 $sql = sprintf('UPDATE `Deal Component Dimension` SET `Deal Component Icon`=%s WHERE `Deal Component Campaign Key`=%d  ', prepare_mysql($value), $this->id);
                 $this->db->exec($sql);
-
+                $this->fork_index_elastic_search();
 
                 break;
 
@@ -292,7 +291,7 @@ class DealCampaign extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
-                $account = get_object('Account', 1);
+
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
                     'au_housekeeping', array(
@@ -300,14 +299,17 @@ class DealCampaign extends DB_Table {
                     'field'=>$field,
                     'deal_campaign_key' => $this->id,
                     'editor'      => $this->editor
-                ), $account->get('Account Code'), $this->db
+                ), DNS_ACCOUNT_CODE, $this->db
                 );
 
 
 
-
+                $this->fork_index_elastic_search();
                 break;
-
+            case 'Deal Campaign Code':
+                $this->update_field($field, $value, $options);
+                $this->fork_index_elastic_search();
+                break;
             default:
 
 
@@ -855,7 +857,7 @@ class DealCampaign extends DB_Table {
             "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
         );
         $this->db->exec($sql);
-
+        $this->fork_index_elastic_search('delete_elastic_index_object');
 
     }
 

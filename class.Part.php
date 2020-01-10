@@ -276,7 +276,7 @@ class Part extends Asset {
             $this->validate_barcode();
             $this->update_weight_status();
 
-            $this->index_elastic_search(get_ES_hosts());
+            $this->fork_index_elastic_search();
 
 
         } else {
@@ -1981,7 +1981,7 @@ class Part extends Asset {
                 }
 
                 $this->update_field($field, $value, $options);
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_index_elastic_search();
                 break;
 
             case 'Part Reference':
@@ -2014,7 +2014,7 @@ class Part extends Asset {
                     exit;
                 }
                 $this->update_field($field, $value, $options);
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_index_elastic_search();
 
                 break;
             case 'Part Unit Price':
@@ -2306,7 +2306,7 @@ class Part extends Asset {
                     }
 
                 }
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_index_elastic_search();
 
                 $this->updated = $updated;
                 break;
@@ -2585,7 +2585,7 @@ class Part extends Asset {
                     }
                 }
 
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_index_elastic_search();
                 break;
 
 
@@ -2711,7 +2711,7 @@ class Part extends Asset {
 
 
                 $this->update_status($value, $options);
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_index_elastic_search();
                 break;
 
             case 'Part Symbol':
@@ -3120,6 +3120,9 @@ class Part extends Asset {
                 'editor'   => $this->editor
             ), $account->get('Account Code')
             );
+            
+            $this->fork_index_elastic_search();
+            
         }
 
 
@@ -4315,10 +4318,9 @@ class Part extends Asset {
                 );
                 $supplier_part->delete();
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
+        
+        $this->fork_index_elastic_search('delete_elastic_index_object');
 
 
     }

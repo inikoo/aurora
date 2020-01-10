@@ -30,8 +30,7 @@ class Order extends DB_Table {
 
 
     var $amount_off_allowance_data = false;
-    var $ghost_order = false;
-    var $update_stock = true;
+
     var $skip_update_after_individual_transaction = false;
 
     /** @var PDO */
@@ -196,6 +195,14 @@ class Order extends DB_Table {
                     $this->update_metadata['show'] = array('Order_Customer_Purchase_Order_ID_container');
                 }
 
+                $this->fork_index_elastic_search();
+                foreach($this->get_invoices('objects') as $invoice){
+                    $invoice->fork_index_elastic_search();
+                }
+                foreach($this->get_deliveries('objects') as $delivery_motes){
+                    $delivery_motes->fork_index_elastic_search();
+                }
+
                 break;
             case('Sticky Note'):
                 $this->update_field('Order '.$field, $value, 'no_null');
@@ -215,7 +222,19 @@ class Order extends DB_Table {
                 $this->update_tax();
                 $this->post_operation_order_totals_changed();
                 break;
-            default:
+
+
+            case 'Order Public ID':
+            case 'Order Customer Name':
+                $this->update_field($field, $value, $options);
+                foreach($this->get_invoices('objects') as $invoice){
+                    $invoice->fork_index_elastic_search();
+                }
+                foreach($this->get_deliveries('objects') as $delivery_motes){
+                    $delivery_motes->fork_index_elastic_search();
+                }
+                break;
+                default:
                 $base_data = $this->base_data();
 
 
@@ -1984,6 +2003,10 @@ class Order extends DB_Table {
             );
         }
 
+        if($old_value!=$this->get('Order State')){
+    $this->fork_index_elastic_search();
+
+}
 
     }
 
@@ -2149,6 +2172,7 @@ class Order extends DB_Table {
 
         }
 
+        $this->fork_index_elastic_search();
 
         return true;
 

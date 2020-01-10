@@ -32,8 +32,6 @@ update_products_index($db);
 update_mailshots_index($db);
 
 
-
-
 update_deals_index($db);
 update_deal_components_index($db);
 
@@ -43,7 +41,6 @@ update_deal_campaigns_index($db);
 update_lists_index($db);
 
 update_delivery_notes_index($db);
-
 
 
 update_deleted_invoices_index($db);
@@ -63,8 +60,6 @@ update_orders_index($db);
 update_locations_index($db);
 
 
-
-
 if (!empty($params['body'])) {
     $responses = $client->bulk($params);
 }
@@ -75,12 +70,11 @@ function process_indexing($indexer) {
     global $global_counter;
 
 
+    $_index_data = $indexer->get_index_header();
 
-    $_index_data      = $indexer->get_index_header();
+    $_index_body = $indexer->get_index_body();
 
-    $_index_body=$indexer->get_index_body();
-
-    if(!empty($_index_body['module'])){
+    if (!empty($_index_body['module'])) {
         $global_counter++;
         $params['body'][] = [
             'index' => [
@@ -90,16 +84,14 @@ function process_indexing($indexer) {
         ];
 
 
-        $params['body'][] =$_index_body;
+        $params['body'][] = $_index_body;
 
     }
 
 
-
-
     // Every 1000 documents stop and send the bulk request
-    if ($global_counter>0 && $global_counter % 1000 == 0) {
-       //print "** $global_counter  **\n";
+    if ($global_counter > 0 && $global_counter % 1000 == 0) {
+        //print "** $global_counter  **\n";
 
         $responses = $client->bulk($params);
         $params    = ['body' => []];

@@ -1697,6 +1697,17 @@ class ES_indexer {
 
     }
 
+    public function delete_index() {
+
+        $params = [
+            'index' => strtolower('au_q_'.$this->account_code),
+            'id'    => $this->prefix.$this->object->id,
+        ];
+
+        return  $this->client->delete($params);
+
+    }
+
     public function add_index() {
         $params         = $this->get_index_header();
         $params['body'] = $this->get_index_body();

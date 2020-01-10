@@ -778,6 +778,9 @@ class DealComponent extends DB_Table {
 
                 $this->update_websites();
 
+                /**
+                 * @var $deal \Deal
+                 */
                 $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
 

@@ -239,7 +239,7 @@ class Customer extends Subject {
             );
 
             $this->new = true;
-
+            $this->fork_index_elastic_search();
 
         } else {
             $this->error = true;
@@ -1078,7 +1078,7 @@ class Customer extends Subject {
         }
 
         if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
-            $this->index_elastic_search(get_ES_hosts());
+
 
             return;
         }
@@ -1094,17 +1094,14 @@ class Customer extends Subject {
                 $sql = sprintf("update `Order Dimension` set `Order Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
 
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_subject_index_elastic_search();
                 break;
             case 'Customer Delivery Sticky Note':
-
                 $this->update_field($field, $value);
-
-
                 $sql = sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
-
-
+                $this->fork_subject_index_elastic_search();
+                //todo maybe we need to change index form orers too
                 break;
             case 'Customer Web Login Password':
 
@@ -1131,6 +1128,10 @@ class Customer extends Subject {
 
 
                 $this->update_address('Contact', json_decode($value, true), $options);
+
+
+                    $this->fork_index_elastic_search();
+
 
                 break;
 
@@ -1231,7 +1232,7 @@ class Customer extends Subject {
 
                 }
 
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_index_elastic_search();
                 break;
 
             case('Customer Tax Number Valid'):
@@ -1278,16 +1279,15 @@ class Customer extends Subject {
 
             case('Customer Sticky Note'):
                 $this->update_field_switcher('Sticky Note', $value);
-                $this->index_elastic_search(get_ES_hosts());
-                break;
+                $this->fork_subject_index_elastic_search();                break;
             case('Sticky Note'):
                 $this->update_field('Customer '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_subject_index_elastic_search();
                 break;
             case('Note'):
                 $this->add_note($value);
-                $this->index_elastic_search(get_ES_hosts());
+                $this->fork_subject_index_elastic_search();
                 break;
             case('Attach'):
                 $this->add_attach($value);
@@ -2000,6 +2000,8 @@ class Customer extends Subject {
             $this->add_subject_history(
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
+
+            $this->fork_index_elastic_search();
 
 
         }
@@ -2783,7 +2785,6 @@ class Customer extends Subject {
 
     function delete($note = '') {
 
-        global $account;
 
 
         $this->deleted = false;
@@ -2866,9 +2867,10 @@ class Customer extends Subject {
             'customer_key' => $this->id,
             'website_user' => $this->get('Customer Website User Key'),
             'editor'       => $this->editor
-        ), $account->get('Account Code'), $this->db
+        ),  DNS_ACCOUNT_CODE, $this->db
         );
 
+        $this->fork_index_elastic_search('delete_elastic_index_object');
 
         $this->deleted = true;
     }

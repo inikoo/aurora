@@ -704,11 +704,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'deal_created':
 
-
             $deal     = get_object('Deal', $data['deal_key']);
             $campaign = get_object('Campaign', $deal->get('Deal Campaign Key'));
-
-
             if ($deal->get('Deal Status') == 'Active' and !$deal->get('Deal Voucher Key')) {
 
 
@@ -825,8 +822,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             }
-
-
             $campaign->update_number_of_deals();
 
 
@@ -1112,7 +1107,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     )
                 )
             );
-            $order->index_elastic_search($ES_hosts);
+
 
             break;
         case 'update_charges_data':
@@ -1177,7 +1172,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $store->update_orders();
             $account->update_orders();
-            $order->index_elastic_search($ES_hosts);
+
 
             break;
 
@@ -1205,7 +1200,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store->update_orders();
 
             $account->update_orders();
-            $order->index_elastic_search($ES_hosts);
+
 
             break;
 
@@ -1249,10 +1244,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     $deals[$row['Deal Key']]              = $row['Deal Key'];
                     $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -1266,7 +1257,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $campaign->update_usage();
             }
 
-            $order->index_elastic_search($ES_hosts);
+
             break;
         case 'website_launched':
 
@@ -1374,7 +1365,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     }
                 }
             }
-            $customer->index_elastic_search($ES_hosts);
+
 
             break;
         case 'customer_client_created':
@@ -1681,7 +1672,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             }
 
-            $order->index_elastic_search($ES_hosts);
+
             break;
 
         case 'order_dispatched':
@@ -1741,7 +1732,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $account->update_inventory_dispatched_data('ytd');
             $account->update_inventory_dispatched_data('qtd');
             $account->update_inventory_dispatched_data('all');
-            $order->index_elastic_search($ES_hosts);
+
             break;
         case 'invoice_created':
 
@@ -1926,10 +1917,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                     }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -2004,10 +1991,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -2103,12 +2086,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
-
             foreach ($part_categories as $part_category_key) {
                 $category = get_object('Category', $part_category_key);
                 if ($category->get('Category Branch Type') != 'Root') {
@@ -2577,10 +2555,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                     }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
             }
 
@@ -2589,15 +2563,15 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'update_active_parts_commercial_value':
 
-            $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  where `Part Status` ="In Use" ORDER BY `Part SKU` desc');
+            $sql = "SELECT `Part SKU` FROM `Part Dimension`  where `Part Status` ='In Use' ORDER BY `Part SKU` desc";
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    $part = get_object('Part', $row['Part SKU']);
-                    $part->update_commercial_value();
-                }
-
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            while ($row = $stmt->fetch()) {
+                $part = get_object('Part', $row['Part SKU']);
+                $part->update_commercial_value();
             }
+
 
             break;
 
@@ -2630,10 +2604,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -2858,7 +2828,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $redis->set($url_cache_key, $webpage->id);
 
             }
-            $webpage->index_elastic_search($ES_hosts);
+
 
             break;
 
@@ -3294,8 +3264,20 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $_webpage->refresh_cache();
             }
             break;
+        case 'create_elastic_index_object':
+            $object = get_object($data['object'], $data['object_key']);
+            if ($object->id) {
+                $object->index_elastic_search($ES_hosts);
+            }
 
+            break;
+        case 'delete_elastic_index_object':
+            $object = get_object($data['object'], $data['object_key']);
+            if ($object->id) {
+                $object->delete_index_elastic_search($ES_hosts);
+            }
 
+            break;
         default:
             break;
 

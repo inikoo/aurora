@@ -17,7 +17,7 @@ class Agent extends SubjectSupplier {
     var $new = false;
     public $locale = 'en_GB';
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false,$_db = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
 
         if (!$_db) {
@@ -176,25 +176,28 @@ class Agent extends SubjectSupplier {
 
 
         if ($this->data['Agent Main Plain Mobile'] != '') {
-            list($this->data['Agent Main Plain Mobile'], $this->data['Agent Main XHTML Mobile'])
-                = $this->get_formatted_number(
+            list(
+                $this->data['Agent Main Plain Mobile'], $this->data['Agent Main XHTML Mobile']
+                ) = $this->get_formatted_number(
                 $this->data['Agent Main Plain Mobile']
             );
         }
         if ($this->data['Agent Main Plain Telephone'] != '') {
-            list($this->data['Agent Main Plain Telephone'], $this->data['Agent Main XHTML Telephone'])
-                = $this->get_formatted_number(
+            list(
+                $this->data['Agent Main Plain Telephone'], $this->data['Agent Main XHTML Telephone']
+                ) = $this->get_formatted_number(
                 $this->data['Agent Main Plain Telephone']
             );
         }
         if ($this->data['Agent Main Plain FAX'] != '') {
-            list($this->data['Agent Main Plain FAX'], $this->data['Agent Main XHTML FAX'])
-                = $this->get_formatted_number(
+            list(
+                $this->data['Agent Main Plain FAX'], $this->data['Agent Main XHTML FAX']
+                ) = $this->get_formatted_number(
                 $this->data['Agent Main Plain FAX']
             );
         }
 
-        $this->data['Agent Metadata'] = '{}';
+        $this->data['Agent Metadata']   = '{}';
         $this->data['Agent Valid From'] = gmdate('Y-m-d H:i:s');
 
 
@@ -205,12 +208,12 @@ class Agent extends SubjectSupplier {
 
             if (in_array(
                 $key, array(
-                    'Agent Average Delivery Days',
-                    'Agent Default Incoterm',
-                    'Agent Default Port of Export',
-                    'Agent Default Port of Import',
-                    'Agent Valid To'
-                )
+                        'Agent Average Delivery Days',
+                        'Agent Default Incoterm',
+                        'Agent Default Port of Export',
+                        'Agent Default Port of Import',
+                        'Agent Valid To'
+                    )
             )) {
                 $values .= ','.prepare_mysql($value, true);
 
@@ -250,6 +253,8 @@ class Agent extends SubjectSupplier {
             );
             $this->add_history($history_data);
             $this->new = true;
+            $this->fork_index_elastic_search();
+
 
         } else {
             // print "Error can not create agent $sql\n";
@@ -323,8 +328,7 @@ class Agent extends SubjectSupplier {
 
         if ($this->update_subject_field_switcher(
             $field, $value, $options, $metadata
-        )
-        ) {
+        )) {
             return;
         }
 
@@ -336,8 +340,12 @@ class Agent extends SubjectSupplier {
                 break;
             case 'Agent Contact Address':
 
-
+                $old_location = $this->get('Location');
                 $this->update_address('Contact', json_decode($value, true), $options);
+
+                if ($old_location != $this->get('Location')) {
+                    $this->fork_index_elastic_search();
+                }
 
                 break;
 
@@ -387,10 +395,17 @@ class Agent extends SubjectSupplier {
                             'Supplier Default Currency Code', $this->get('Agent Default Currency Code'), $options
                         );
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
+            case 'Agent Code':
+            case 'Agent Name':
+            case 'Agent Nickname':
+            case 'Agent Website':
+
+
+                $this->update_field($field, $value, $options);
+                $this->fork_index_elastic_search();
+                break;
+
 
             default:
 
@@ -719,13 +734,12 @@ class Agent extends SubjectSupplier {
 
         $part_skus = '';
         $sql       = sprintf(
-            'SELECT `Supplier Part Part SKU` FROM `Supplier Part Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  WHERE `Agent Supplier Agent Key`=%d ',
-            $this->id
+            'SELECT `Supplier Part Part SKU` FROM `Supplier Part Dimension` LEFT JOIN `Agent Supplier Bridge` ON (`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`)  WHERE `Agent Supplier Agent Key`=%d ', $this->id
         );
         $part_skus = '';
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                if( is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU']>0 ){
+                if (is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU'] > 0) {
                     $part_skus .= $row['Supplier Part Part SKU'].',';
 
                 }
@@ -744,10 +758,8 @@ class Agent extends SubjectSupplier {
     function create_delivery($data) {
 
 
-
-
         $delivery_data = array(
-            'Supplier Delivery Public ID'           =>  $this->get_next_delivery_public_id(),
+            'Supplier Delivery Public ID'           => $this->get_next_delivery_public_id(),
             'Supplier Delivery Parent'              => 'Agent',
             'Supplier Delivery Parent Key'          => $this->id,
             'Supplier Delivery Parent Name'         => $this->get('Name'),
@@ -757,11 +769,11 @@ class Agent extends SubjectSupplier {
             'Supplier Delivery Parent Telephone'    => $this->get('Preferred Contact Number Formatted Number'),
             'Supplier Delivery Parent Address'      => $this->get('Contact Address Formatted'),
 
-            'Supplier Delivery Currency Code'       => $this->get('Default Currency Code'),
-            'Supplier Delivery Incoterm'            => $this->get('Default Incoterm'),
-            'Supplier Delivery Port of Import'      => $this->get('Default Port of Import'),
-            'Supplier Delivery Port of Export'      => $this->get('Default Port of Export'),
-          //  'Supplier Delivery Purchase Order Key'  => $this->id,
+            'Supplier Delivery Currency Code'  => $this->get('Default Currency Code'),
+            'Supplier Delivery Incoterm'       => $this->get('Default Incoterm'),
+            'Supplier Delivery Port of Import' => $this->get('Default Port of Import'),
+            'Supplier Delivery Port of Export' => $this->get('Default Port of Export'),
+            //  'Supplier Delivery Purchase Order Key'  => $this->id,
 
             //'Supplier Delivery Warehouse Key'=>$warehouse->id,
             //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
@@ -779,10 +791,7 @@ class Agent extends SubjectSupplier {
             $this->error = true;
             $this->msg   = $delivery->msg;
 
-        } elseif ($delivery->new ) {
-
-
-
+        } elseif ($delivery->new) {
 
 
         }
@@ -798,9 +807,7 @@ class Agent extends SubjectSupplier {
 
         $line_number = 1;
         $sql         = sprintf(
-            "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`=%s  and `Supplier Delivery Parent Key`=%d ORDER BY REPLACE(`Supplier Delivery Public ID`,%s,'') DESC LIMIT 1",
-            prepare_mysql('Agent'),
-            $this->id,
+            "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`=%s  and `Supplier Delivery Parent Key`=%d ORDER BY REPLACE(`Supplier Delivery Public ID`,%s,'') DESC LIMIT 1", prepare_mysql('Agent'), $this->id,
             prepare_mysql($code)
         );
 
@@ -817,9 +824,6 @@ class Agent extends SubjectSupplier {
         return sprintf('%s%04d', $code, $line_number);
 
     }
-
-
-
 
 
 }
