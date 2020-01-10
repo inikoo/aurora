@@ -1723,7 +1723,7 @@ class ES_indexer {
         $params['body'] = $this->get_index_body();
 
         if(!empty($params['body']['module'])){
-            //$this->client->index($params);
+            $this->client->index($params);
 
         }
 
