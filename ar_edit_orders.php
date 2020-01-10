@@ -138,17 +138,7 @@ switch ($tipo) {
 
         break;
 
-    case 'pick_order_offline':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'items' => array('type' => 'json array'),
 
-                         'delivery_note_key' => array('type' => 'key'),
-
-                     )
-        );
-        pick_order_offline($data, $editor, $smarty, $db, $account);
-        break;
 
 
 
@@ -909,25 +899,6 @@ function set_hanging_charges_as_auto($data, $editor) {
 }
 
 
-function pick_order_offline($data, $editor, $smarty, $db, $account) {
-
-
-    $dn         = get_object('delivery_note', $data['delivery_note_key']);
-    $dn->editor = $editor;
-
-    $dn->consolidate($data['items']);
-
-
-    $response = array(
-        'state'           => 200,
-        'update_metadata' => $dn->get_update_metadata(),
-        'state_index'     => $dn->get('State Index')
-    );
-
-    echo json_encode($response);
-
-
-}
 
 function set_order_handler($type, $data, $editor, $smarty, $db) {
 

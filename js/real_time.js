@@ -29,9 +29,9 @@ function connect_websocket() {
         websocket_connected = true;
 
 
-        console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
+        console.log('real_time.'+$('body').data('account_code').toLowerCase())
 
-        ws_connection.subscribe('real_time.' + $('#account_name').data('account_code').toLowerCase(), function (topic, data) {
+        ws_connection.subscribe('real_time.' + $('body').data('account_code').toLowerCase(), function (topic, data) {
 
 
 
@@ -134,7 +134,7 @@ function connect_websocket() {
 
         });
 
-        ws_connection.subscribe('real_time.' + $('#account_name').data('account_code').toLowerCase() + '.' + $('#hello_user').data('user_key'), function (topic, _data) {
+        ws_connection.subscribe('real_time.' + $('body').data('account_code').toLowerCase() + '.' + $('body').data('user_key'), function (topic, _data) {
 
 
             for (var i in _data.progress_bar) {

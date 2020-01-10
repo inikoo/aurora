@@ -19,8 +19,7 @@ var websocket_connected = false;
 var websocket_connected_connecting = false;
 
 
-$(document).ready(function () {
-
+$(function () {
 
     state = {
         module: '', section: '', parent: '', parent_key: '', object: '', key: ''
@@ -56,7 +55,6 @@ $(document).ready(function () {
     }, 60000);
 
 
-
 })
 
 
@@ -74,12 +72,12 @@ function change_browser_history_state(request) {
 
     if (old_state_request != request) {
 
-        console.log(old_state_request + ' -> ' + request)
+       // console.log(old_state_request + ' -> ' + request)
 
 
         if (!$('#is_devel').val()) {
 
-            var _tmp = $('#account_name');
+            const _tmp = $('body');
             ga('set', 'contentGroup1', state.module.replace("_", " ").capitalize());
             ga('set', 'contentGroup2', state.section.replace("_", " ").capitalize());
             ga('set', 'contentGroup3', _tmp.data('user_handle').capitalize() + ' ' + _tmp.data('account_code'));
@@ -187,6 +185,20 @@ function change_menu_view(module) {
                 change_view('stores')
             }
             break;
+        case 'mailroom':
+            if (state.current_store) {
+                change_view('mailroom/' + state.current_store)
+            } else {
+                change_view('mailroom/all')
+            }
+            break;
+        case 'offers':
+            if (state.current_store) {
+                change_view('offers/' + state.current_store+'/categories')
+            } else {
+                change_view('offers/by_store')
+            }
+            break;
         case 'websites':
             if (state.current_website) {
                 change_view('website/' + state.current_website)
@@ -254,6 +266,8 @@ function change_view_if_has_link_class(element, _request, metadata) {
 
 function change_view(_request, metadata) {
 
+    close_search('move')
+
     $.urlParam = function (name, str) {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);
         if (results == null) {
@@ -304,12 +318,18 @@ function change_view(_request, metadata) {
 
                 state = data.app_state;
 
+                console.log(data.nav[0])
 
-                if (typeof (data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-                    $('#navigation').html(data.navigation);
+                if (typeof (data.nav[1]) != "undefined" && data.nav[1] !== null && data.nav[1] != '') {
+                    $('#top_menu').html(data.nav[1]);
                 }
-                if (typeof (data.web_navigation) != "undefined" && data.web_navigation !== null && data.web_navigation != '') {
-                    $('#web_navigation').html(data.web_navigation);
+                if (typeof (data.nav[2]) != "undefined" && data.nav[2] !== null && data.nav[2] != '') {
+                    $('#au_header').html(data.nav[2]);
+                }
+
+
+                if (typeof (data.nav[3]) != "undefined" && data.nav[3] !== null && data.nav[3] != '') {
+                    $('#web_navigation').html(data.nav[3]);
                 } else {
                     $('#web_navigation').html('')
                 }
@@ -328,20 +348,15 @@ function change_view(_request, metadata) {
 
                 if (typeof (data.logout_label) != "undefined" && data.logout_label !== null) {
                     $('#logout_label').html(data.logout_label);
-
-
                 }
 
 
                 if (typeof (data.view_position) != "undefined" && data.view_position !== null) {
-
                     $('#view_position').html(data.view_position);
                 }
 
 
                 if (typeof (data.object_showcase) != "undefined" && data.object_showcase !== null) {
-
-
                     if (data.object_showcase == '_') {
                         $('#object_showcase').addClass('hide').html('')
                     } else {
@@ -349,8 +364,6 @@ function change_view(_request, metadata) {
                         $('#object_showcase').removeClass('hide')
                         $('#object_showcase').html(data.object_showcase);
                     }
-                } else {
-                    //  $('#object_showcase').addClass('hide')
                 }
 
 
@@ -390,6 +403,15 @@ function change_view(_request, metadata) {
 
                 change_browser_history_state(data.app_state.request)
                 show_side_content($('#notifications').data('current_side_view'))
+
+                if(typeof data.current_store_code === 'undefined'  || data.current_store_code==''){
+                    $('.current_store_label').addClass('invisible')
+
+                }else{
+                    $('.current_store_label').removeClass('invisible').find('span').html(data.current_store_code)
+                }
+
+
             } else {
                 swal({
                     title: "Error A123"

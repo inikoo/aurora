@@ -1,5 +1,9 @@
 
-#app_leftmenu {
+#app_left_menu {
+
+
+
+
   margin-top: $height_short_row;
   position: fixed;
   float: left;
@@ -27,7 +31,7 @@
     color: $color_dark_font;
 
     &.jump {
-      margin-top: $height_short_row;
+      margin-top:10px;
     }
 
     &:last-of-type, &.last {
@@ -76,51 +80,55 @@
   }
 
   #top_info {
-    height: $height_row;
-    line-height: $height_row;
+
+    border-bottom: 1px solid #ccc;
+
+    font-family: Ubuntu,"Lucida Grande","Lucida Sans Unicode",Verdana,Arial,sans-serif;
+    background-color: #7A5AA6;color:white;
+    height: 30px;
+    line-height:30px;
+
+            // line-height: $height_row;
     border-bottom: 1px solid $color_dark_darker_font;
     padding: 0;
-    background-color: $color_dark;
+   // background-color: $color_dark;
     font-size: 11px;
     text-align: center;
+    div {
+      height: 100%;
+      float: left;
+      text-align: center;
+    }
+
+
   }
-  #top_info div {
-    height: 100%;
-    float: left;
-    text-align: center;
-  }
-  #hello_user {
-    width: 166px;
+  #account_name {
+   // color: $color_dark_brighter_font;
+    width: 155px;
     text-align: center;
     &.link:hover {
-      color: $color_highlight_over_dark;
+     // color: $color_highlight_over_dark;
     }
   }
   #aurora_logo {
-    width: $height_row;
-    border-right: 1px solid $color_dark_darker_font;
+    width: 45px;
+   // border-right: 1px solid white;
     padding: 0;
     vertical-align: middle;
     img {
       width: $height_row*.7;
       vertical-align: middle;
     }
+
   }
-  #hello_user {
-    color: $color_dark_brighter_font;
-  }
-  #account_name {
-    line-height: $height_row;
-    height: $height_row;
-    font-size: $height_row*.35;
-    color: $color_dark_brighter_font;
-    text-align: center;
-    font-family: $font_title;
-    font-weight: 300;
-    &.link:hover {
-      color: $color_highlight_over_dark;
+
+  #submit_ticket {
+
+    i{
+      display:none;
     }
   }
+
 
   #aurora_logo_small_screen {
     padding: 10px;
@@ -129,6 +137,11 @@
     img {
       width: 60%
     }
+  }
+
+  .bookmarks{
+    margin-top:5px;
+  display:none
   }
 
 }

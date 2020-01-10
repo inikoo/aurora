@@ -11,7 +11,7 @@
 
 
 $tab     = 'user_notifications';
-$ar_file = 'ar_products_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'user_notifications';
 
 $default = $user->get_tab_defaults($tab);
@@ -25,12 +25,12 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
 );
 
 
 include('utils/get_table_html.php');
 
 
-?>
+

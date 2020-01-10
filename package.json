@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/inikoo/aurora#readme",
   "devDependencies": {
-    "@fortawesome/fontawesome-pro": "^5.11.2",
+    "@fortawesome/fontawesome-pro": "^5.12.0",
     "grunt": "^1.0.4",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "^1.0.1",

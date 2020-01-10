@@ -370,6 +370,7 @@ class Subject extends DB_Table {
             case $this->table_name.' Main Plain Email':
 
                 $this->update_email($field, $value, $options);
+                $this->fork_index_elastic_search();
 
                 return true;
                 break;
@@ -657,14 +658,14 @@ class Subject extends DB_Table {
                     $this->other_fields_updated = array(
                         'Customer_Main_Contact_Name' => array(
                             'field'    => 'Customer_Main_Contact_Name',
-                            'render'=>true,
+                            'render'   => true,
                             'required' => ($value == '' ? true : false),
 
 
                         )
                     );
                 }
-
+                $this->fork_index_elastic_search();
                 return true;
 
             case $this->table_name.' Main Contact Name':
@@ -733,7 +734,7 @@ class Subject extends DB_Table {
                     $this->other_fields_updated = array(
                         'Customer_Company_Name' => array(
                             'field'    => 'Customer_Company_Name',
-                            'render'=>true,
+                            'render'   => true,
                             'required' => ($value == '' ? true : false),
 
 
@@ -752,6 +753,7 @@ class Subject extends DB_Table {
                     );
                 }
 
+                $this->fork_index_elastic_search();
 
                 return true;
 

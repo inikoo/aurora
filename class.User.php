@@ -18,7 +18,6 @@ class User extends DB_Table {
 
 
     private $groups_read = false;
-    private $rights_read = false;
 
 
     function __construct($a1 = 'id', $a2 = false, $a3 = false) {
@@ -166,10 +165,6 @@ class User extends DB_Table {
 
     }
 
-    function settings($key) {
-        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
-    }
-
     function get_deleted_data($tag) {
 
         $this->deleted = true;
@@ -190,7 +185,6 @@ class User extends DB_Table {
 
     function create($data) {
 
-        $account = get_object('Account', '');
 
         $this->new = false;
         $this->msg = _('Unknown Error').' (0)';
@@ -212,38 +206,31 @@ class User extends DB_Table {
         if ($base_data['User Handle'] == '') {
             $this->msg = _("Login can't be empty");
 
-            return;
+            return false;
         }
         if (strlen($base_data['User Handle']) < 4) {
             $this->msg   = _('Login too short');
             $this->error = true;
 
-            return;
+            return false;
         }
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS numh  FROM `User Dimension` WHERE `User Type`=%s AND `User Handle`=%s ", prepare_mysql($base_data['User Type']), prepare_mysql($base_data['User Handle'])
+        $sql = "SELECT count(*) AS num  FROM `User Dimension` WHERE `User Type`=? AND `User Handle`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $base_data['User Type'],
+                $base_data['User Handle']
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $this->error = true;
+            $this->msg   = _('Duplicate user login');
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['numh'] > 0) {
-                    $this->error = true;
-                    $this->msg   = _('Duplicate user login');
+            return false;
 
-                    return;
-                }
-            } else {
-                $this->error = true;
-                $this->msg   = _('Unknown error');
-
-                return;
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -257,7 +244,8 @@ class User extends DB_Table {
                 if ($row = $result->fetch()) {
                     $this->msg = _('Employee has already a user set up');
 
-                    return;
+                    return false;
+
                 }
             }
 
@@ -341,7 +329,7 @@ class User extends DB_Table {
                 $this->get_data('id', $this->id);
 
                 if (isset($data['User Permissions'])) {
-                    $this->update_permissions($data['User Permissions'], 'no_history');
+                    $this->update_permissions($data['User Permissions']);
                 }
 
             }
@@ -669,6 +657,10 @@ class User extends DB_Table {
 
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
+
     function get_groups() {
         $this->groups = array();
         $sql          = sprintf(
@@ -879,155 +871,6 @@ class User extends DB_Table {
         $this->update_rights();
     }
 
-    function update_rights() {
-
-        $rights = array();
-        include 'conf/user_groups.php';
-
-
-        foreach ($this->get_groups() as $group_key) {
-
-
-            if (isset($user_groups[$group_key])) {
-                $rights = array_merge($rights, $user_groups[$group_key]['Rights']);
-
-            } else {
-
-
-                $sql  = 'delete  FROM `User Group User Bridge`   WHERE `User Group Key`=:key';
-                $stmt = $this->db->prepare($sql);
-                $stmt->bindParam(':key', $group_key, PDO::PARAM_INT);
-                $stmt->execute();
-
-            }
-
-        }
-        $sql  = 'delete FROM `User Rights Bridge`  WHERE `User Key`=:user_key';
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':user_key', $this->id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if ($this->data['User Active'] == 'Yes') {
-            foreach ($rights as $right_code) {
-                $sql  = 'insert into `User Rights Bridge` (`User Key`,`Right Code`) values (:user_key,:right_code) ';
-                $stmt = $this->db->prepare($sql);
-                $stmt->bindParam(':user_key', $this->id, PDO::PARAM_INT);
-                $stmt->bindParam(':right_code', $right_code, PDO::PARAM_STR);
-
-                $stmt->execute();
-            }
-        }
-
-
-    }
-
-
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-        if (is_string($value)) {
-            $value = _trim($value);
-        }
-
-        switch ($field) {
-            case('Permissions'):
-                $this->update_permissions($value);
-
-                break;
-
-
-            case('theme'):
-                $this->fast_update_json_field('User Settings', $field, $value);
-
-                break;
-
-
-            case('User Active'):
-                $this->update_active($value);
-                break;
-            case('User Password'):
-                $this->update_password($value, $options);
-                break;
-            case('User PIN'):
-                $this->update_pin($value, $options);
-                break;
-
-
-            case('User Handle'):
-                $old_value = $this->get('Handle');
-                $this->update_field($field, $value, $options);
-                switch ($this->data['User Type']) {
-                    case 'Staff':
-
-                        $staff         = get_object('Staff', $this->data['User Parent Key']);
-                        $staff->editor = $this->editor;
-                        $staff->get_user_data();
-                        $new_value = $this->get('Handle');
-                        $staff->add_changelog_record(
-                            'Staff User Handle', $old_value, $new_value, '', $staff->table_name, $staff->id
-                        );
-
-                        break;
-                    default:
-                        return;
-                        break;
-                }
-
-
-                break;
-            case 'User Display Timezone':
-                $this->fast_update_json_field('User Settings', 'Timezone', $value);
-
-
-                $account = get_object('Account', '');
-
-                include_once 'utils/timezones.php';
-                date_default_timezone_set('UTC');
-                switch ($this->settings('Timezone')) {
-                    case 'Account':
-                        date_default_timezone_set($account->get('Account Timezone'));
-                        break;
-                    case 'Local':
-                        if (!date_default_timezone_set($session->get('local_timezone'))) {
-
-                            print 'cacacaca';
-                            date_default_timezone_set($account->get('Account Timezone'));
-
-                        }
-                        break;
-                    default:
-                        break;
-
-                }
-                $session->set('timezone', date_default_timezone_get());
-
-
-                $this->update_metadata = array(
-                    'class_html' => array(
-                        'timezone_info' => strftime('%z %Z'),
-
-                    )
-                );
-                break;
-            default:
-                $base_data = $this->base_data();
-                if (array_key_exists($field, $base_data)) {
-
-                    $this->update_field($field, $value, $options);
-                } elseif (array_key_exists(
-                    $field, $this->base_data('User Staff Settings Dimension')
-                )) {
-                    $this->update_table_field(
-                        $field, $value, $options, 'User', 'User Staff Settings Dimension', $this->id
-                    );
-                }
-
-
-        }
-
-    }
-
-
     function read_groups() {
 
         include 'conf/user_groups.php';
@@ -1144,28 +987,6 @@ class User extends DB_Table {
         return $changed;
     }
 
-
-    function has_scope($scope) {
-
-
-        $groups = $this->get_groups();
-        if (count($groups) > 0) {
-            include 'conf/user_groups.php';
-
-            foreach ($groups as $group_key) {
-                if (isset($user_groups[$group_key][$scope.'_Scope']) and $user_groups[$group_key][$scope.'_Scope']) {
-                    return true;
-                }
-            }
-
-
-        }
-
-        return false;
-
-
-    }
-
     function update_stores($stores) {
 
         $this->updated = false;
@@ -1279,7 +1100,6 @@ class User extends DB_Table {
         return $changed;
 
     }
-
 
     function update_warehouses($warehouses, $history = true) {
 
@@ -1413,6 +1233,206 @@ class User extends DB_Table {
         }
 
         return $changed;
+
+    }
+
+    function update_rights() {
+
+        $rights = array();
+        include 'conf/user_groups.php';
+
+
+        foreach ($this->get_groups() as $group_key) {
+
+
+            if (isset($user_groups[$group_key])) {
+                $rights = array_merge($rights, $user_groups[$group_key]['Rights']);
+
+            } else {
+
+
+                $sql  = 'delete  FROM `User Group User Bridge`   WHERE `User Group Key`=:key';
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(':key', $group_key, PDO::PARAM_INT);
+                $stmt->execute();
+
+            }
+
+        }
+        $sql  = 'delete FROM `User Rights Bridge`  WHERE `User Key`=:user_key';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':user_key', $this->id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($this->data['User Active'] == 'Yes') {
+            foreach ($rights as $right_code) {
+                $sql  = 'insert into `User Rights Bridge` (`User Key`,`Right Code`) values (:user_key,:right_code) ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(':user_key', $this->id, PDO::PARAM_INT);
+                $stmt->bindParam(':right_code', $right_code, PDO::PARAM_STR);
+
+                $stmt->execute();
+            }
+        }
+
+
+    }
+
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        if (is_string($value)) {
+            $value = _trim($value);
+        }
+
+        switch ($field) {
+            case('Permissions'):
+                $this->update_permissions($value);
+
+                break;
+
+            case('current_store'):
+            case('theme'):
+                $this->fast_update_json_field('User Settings', $field, $value);
+                break;
+
+
+            case('User Active'):
+                $this->update_active($value);
+                break;
+            case('User Password'):
+                $this->update_password($value, $options);
+                break;
+            case('User PIN'):
+                $this->update_pin($value, $options);
+                break;
+
+
+            case('User Handle'):
+                $old_value = $this->get('Handle');
+                $this->update_field($field, $value, $options);
+                switch ($this->data['User Type']) {
+                    case 'Staff':
+
+                        $staff         = get_object('Staff', $this->data['User Parent Key']);
+                        $staff->editor = $this->editor;
+                        $staff->get_user_data();
+                        $new_value = $this->get('Handle');
+                        $staff->add_changelog_record(
+                            'Staff User Handle', $old_value, $new_value, '', $staff->table_name, $staff->id
+                        );
+
+                        break;
+                    default:
+                        return;
+                        break;
+                }
+
+
+                break;
+            case 'User Display Timezone':
+                $this->fast_update_json_field('User Settings', 'Timezone', $value);
+
+
+                $account = get_object('Account', '');
+
+                include_once 'utils/timezones.php';
+                date_default_timezone_set('UTC');
+                switch ($this->settings('Timezone')) {
+                    case 'Account':
+                        date_default_timezone_set($account->get('Account Timezone'));
+                        break;
+                    case 'Local':
+                        if (!date_default_timezone_set($session->get('local_timezone'))) {
+
+                            print 'cacacaca';
+                            date_default_timezone_set($account->get('Account Timezone'));
+
+                        }
+                        break;
+                    default:
+                        break;
+
+                }
+                $session->set('timezone', date_default_timezone_get());
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'timezone_info' => strftime('%z %Z'),
+
+                    )
+                );
+                break;
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+
+                    $this->update_field($field, $value, $options);
+                } elseif (array_key_exists(
+                    $field, $this->base_data('User Staff Settings Dimension')
+                )) {
+                    $this->update_table_field(
+                        $field, $value, $options, 'User', 'User Staff Settings Dimension', $this->id
+                    );
+                }
+
+
+        }
+
+    }
+
+    function update_active($value) {
+        $this->updated = false;
+
+        $old_value = $this->get('Active');
+        if (!preg_match('/^(Yes|No)$/', $value)) {
+            $this->error = true;
+            $this->msg   = sprintf(_('Wrong value %s'), $value);
+
+            return;
+        }
+
+        $this->update_field('User Active', $value);
+
+
+        switch ($this->data['User Type']) {
+            case 'Staff':
+                $staff = get_object('Staff', $this->data['User Parent Key']);
+
+                $staff->editor = $this->editor;
+                $staff->get_user_data();
+                $new_value = $this->get('Active');
+                $staff->add_changelog_record(
+                    'Staff User Active', $old_value, $new_value, '', $staff->table_name, $staff->id
+                );
+
+                break;
+            default:
+                return;
+                break;
+        }
+
+        $this->update_rights();
+
+        $this->other_fields_updated = array(
+            'User_Password' => array(
+                'field'           => 'User_Password',
+                'render'          => ($this->get('User Active') == 'Yes' ? true : false),
+                'value'           => $this->get('User Password'),
+                'formatted_value' => $this->get('Password'),
+
+
+            ),
+            'User_PIN'      => array(
+                'field'           => 'User_PIN',
+                'render'          => ($this->get('User Active') == 'Yes' ? true : false),
+                'value'           => $this->get('User PIN'),
+                'formatted_value' => $this->get('PIN'),
+
+
+            )
+        );
 
     }
 
@@ -1560,61 +1580,6 @@ class User extends DB_Table {
 
         */
 
-
-    function update_active($value) {
-        $this->updated = false;
-
-        $old_value = $this->get('Active');
-        if (!preg_match('/^(Yes|No)$/', $value)) {
-            $this->error = true;
-            $this->msg   = sprintf(_('Wrong value %s'), $value);
-
-            return;
-        }
-
-        $this->update_field('User Active', $value);
-
-
-        switch ($this->data['User Type']) {
-            case 'Staff':
-                $staff = get_object('Staff', $this->data['User Parent Key']);
-
-                $staff->editor = $this->editor;
-                $staff->get_user_data();
-                $new_value = $this->get('Active');
-                $staff->add_changelog_record(
-                    'Staff User Active', $old_value, $new_value, '', $staff->table_name, $staff->id
-                );
-
-                break;
-            default:
-                return;
-                break;
-        }
-
-        $this->update_rights();
-
-        $this->other_fields_updated = array(
-            'User_Password' => array(
-                'field'           => 'User_Password',
-                'render'          => ($this->get('User Active') == 'Yes' ? true : false),
-                'value'           => $this->get('User Password'),
-                'formatted_value' => $this->get('Password'),
-
-
-            ),
-            'User_PIN'      => array(
-                'field'           => 'User_PIN',
-                'render'          => ($this->get('User Active') == 'Yes' ? true : false),
-                'value'           => $this->get('User PIN'),
-                'formatted_value' => $this->get('PIN'),
-
-
-            )
-        );
-
-    }
-
     function update_password($value, $options = '') {
 
         $this->update_field('User Password', $value, $options);
@@ -1653,6 +1618,27 @@ class User extends DB_Table {
                 return;
                 break;
         }
+
+
+    }
+
+    function has_scope($scope) {
+
+
+        $groups = $this->get_groups();
+        if (count($groups) > 0) {
+            include 'conf/user_groups.php';
+
+            foreach ($groups as $group_key) {
+                if (isset($user_groups[$group_key][$scope.'_Scope']) and $user_groups[$group_key][$scope.'_Scope']) {
+                    return true;
+                }
+            }
+
+
+        }
+
+        return false;
 
 
     }
@@ -1775,12 +1761,6 @@ class User extends DB_Table {
 
     }
 
-    function can_view($tag, $tag_key = false) {
-
-        return $this->can_do('View', $tag, $tag_key);
-
-    }
-
     function can_supervisor($tag, $tag_key = false) {
 
         return $this->can_do('Supervisor', $tag, $tag_key);
@@ -1853,7 +1833,7 @@ class User extends DB_Table {
 
 
     }
-
+//
     function read_stores() {
 
         $this->stores = array();
@@ -1940,7 +1920,6 @@ class User extends DB_Table {
             //print_r($rights);
         }
 
-        //print "****";
 
         $sql = sprintf(
             "SELECT group_concat(`Right Code`) AS rights FROM `User Rights Bridge` WHERE `User Key`=%d", $this->id
@@ -1989,6 +1968,8 @@ class User extends DB_Table {
             }
 
         }
+
+
         //print_r($this->groups_key_array);
         //print_r($this->rights_allow);
         //exit;
@@ -2026,7 +2007,6 @@ class User extends DB_Table {
 
         return $list;
     }
-
 
     function get_tab_defaults($tab) {
 
@@ -2128,6 +2108,13 @@ class User extends DB_Table {
 
 
     }
+
+    function can_view($tag, $tag_key = false) {
+
+        return $this->can_do('View', $tag, $tag_key);
+
+    }
+
 
 
 }

@@ -229,6 +229,8 @@ trait OrderBasketOperations {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
+            $this->fork_index_elastic_search();
+
 
         } else {
 

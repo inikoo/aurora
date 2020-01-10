@@ -611,6 +611,7 @@ if (!$new) {
         }
     */
 
+/*
     $operations = array(
         'label'      => _('Operations'),
         'show_title' => true,
@@ -632,6 +633,7 @@ if (!$new) {
     );
 
     $object_fields[] = $operations;
+    */
 } else {
     /*
         $object_fields[]=array(

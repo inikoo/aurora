@@ -12,14 +12,14 @@
 
 /**
  * @param $data
- * @param $smarty \Smarty
- * @param $user \User
- * @param $db \PDO
+ * @param $smarty  \Smarty
+ * @param $user    \User
+ * @param $db      \PDO
  * @param $account \Account
  *
  * @return string
  */
-function get_invoice_showcase($data, $smarty, $user, $db,$account) {
+function get_invoice_showcase($data, $smarty, $user, $db, $account) {
     require_once 'utils/geography_functions.php';
 
 
@@ -28,7 +28,7 @@ function get_invoice_showcase($data, $smarty, $user, $db,$account) {
     }
 
 
-$order=get_object('order', $data['_object']->get('Invoice Order Key'));
+    $order = get_object('order', $data['_object']->get('Invoice Order Key'));
 
 
     $smarty->assign('invoice', $data['_object']);
@@ -58,8 +58,7 @@ $order=get_object('order', $data['_object']->get('Invoice Order Key'));
     $tax_data = array();
     $sql      = sprintf(
         "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Tax Amount`  FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  AND `Tax Category Country Code`=%s  ",
-        $invoice->id,
-        prepare_mysql($account->get('Account Country Code'))
+        $invoice->id, prepare_mysql($account->get('Account Country Code'))
     );
 
     if (($data['_object']->get('Invoice Type') == 'Refund')) {
@@ -73,23 +72,22 @@ $order=get_object('order', $data['_object']->get('Invoice Order Key'));
 
             switch ($row['Tax Category Code']) {
                 case 'OUT':
-                    $tax_description= _('Outside the scope od VAT');
+                    $tax_description = _('Outside the scope od VAT');
                     break;
                 case 'EU':
-                    $tax_description= sprintf(_('EC with %s'),$invoice->get('Tax Number Formatted'));
+                    $tax_description = sprintf(_('EC with %s'), $invoice->get('Tax Number Formatted'));
                     break;
                 default:
 
 
-                    $tax_description= $row['Tax Category Name'];
+                    $tax_description = $row['Tax Category Name'];
 
 
             }
 
 
-
             $tax_data[] = array(
-                'name' =>$tax_description,
+                'name' => $tax_description,
 
                 'amount' => money(
                     $factor * $row['Tax Amount'], $invoice->data['Invoice Currency']

@@ -14,6 +14,8 @@ trait OrderCalculateTotals {
 
     function update_totals() {
 
+        $old_total = $this->get('Order Total Amount');
+
 
         $number_items                    = 0;
         $number_with_deals               = 0;
@@ -99,11 +101,7 @@ trait OrderCalculateTotals {
 
                 $replacement_costs = $row['replacements_cost'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
         $profit = $items_net_for_profit_calculation - $items_cost - $replacement_costs;
 
@@ -118,11 +116,7 @@ trait OrderCalculateTotals {
             if ($row = $result->fetch()) {
                 $number_with_problems = $row['number_with_problems'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
         //add items group by tax rate
 
@@ -151,10 +145,6 @@ trait OrderCalculateTotals {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         if ($this->data['Order Deal Amount Off'] != 0) {
@@ -182,10 +172,6 @@ trait OrderCalculateTotals {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -268,10 +254,6 @@ trait OrderCalculateTotals {
             if ($row = $result->fetch()) {
                 $payments = round($row['amount'], 2);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -346,6 +328,11 @@ trait OrderCalculateTotals {
 
         $this->update_payment_state();
         $this->update_order_estimated_weight();
+
+
+        if ($old_total != $this->get('Order Total Amount')) {
+            $this->fork_index_elastic_search();
+        }
 
     }
 

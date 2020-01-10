@@ -1,0 +1,157 @@
+#navigation {
+  margin-top: $height_short_row;
+  height: $height_header+$height_address_bar;
+
+  #address_bar {
+    font-size: 14px;
+    background: #f7f7f7;
+    color: #333;
+
+    padding-right: 0;
+
+    height: $height_address_bar;
+    line-height: $height_address_bar;
+
+
+    #top_menu {
+      flex-grow: 1;display: flex;
+      background-color: #fff;
+      border-bottom: 1px solid #ccc;
+
+      & > div {
+
+
+        flex-grow: 2;
+        text-align: center;
+        @include unselectable;
+        font-family: $font_title;
+        cursor: pointer;
+        color: #333;
+
+        i {
+          margin-right: 5px;
+          color: #999;
+        }
+
+        &.selected {
+          background-color: #fff;
+          color: #7a5aa6;
+          border-bottom: 1px solid #7a5aa6;
+
+          i{
+            color: #7a5aa6;
+          }
+
+
+        }
+        &:hover {
+          background-color: #fff;
+          color: #7a5aa6;
+          border-bottom: 1px solid #7a5aa670;
+        }
+
+
+        border-right: 1px solid #eee;
+
+      }
+      .aux{
+        flex-grow: 1;
+      }
+
+      .selected{
+        background-color: #ede3fa;
+      }
+
+
+
+    }
+
+
+    #top_menux {
+
+      text-align: left;
+      a {
+        color: #333;
+      }
+
+      #section_links {
+        font-family: $font_title;
+      }
+
+      .section {
+        @include unselectable;
+        text-align: center;
+        cursor: pointer;
+        background-color: $header_background_color;
+        color: #333;
+        padding: 0 30px;
+
+        .fa, .far, .fas, .fab, .fal {
+          margin-right: 5px;
+          color: #999;
+        }
+
+        &:hover, &.selected {
+          background-color: #edf3f8;
+          color: #000;
+        }
+
+        &:hover, &.selected > .fa, .far, .fas, .fab, .fal {
+          color: #666;
+        }
+
+
+        &.icon_only {
+          padding: 0 10px 0 15px;
+          width: 40px;
+        }
+
+        &.left {
+          float: left;
+        }
+
+      }
+
+      .right {
+        float: right;
+        border-left: 1px solid #ccc;
+      }
+
+      .left {
+        float: left;
+        border-right: 1px solid #ccc;
+      }
+
+      .only_icons .section {
+        padding: 0 2px;
+        width: 22px;
+      }
+
+      .only_icons .section_label {
+        display: none;
+      }
+    }
+  }
+  #au_header {
+    text-align: left;
+    padding: 0;
+    background: $header_background_color;
+    height: $height_header;
+    line-height: $height_header;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+
+    .title {
+      float: left;
+      padding-left: 10px;
+    }
+    .skip {
+      float: right;
+      padding-right: 20px;
+      padding-left: 20px;
+      border-left: 1px solid #ccc;
+      color: $color_warning
+    }
+
+  }
+}

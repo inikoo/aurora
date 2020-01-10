@@ -138,9 +138,6 @@ class Payment extends DB_Table {
 
     function get_orders($scope = 'keys') {
 
-
-
-
         $sql = sprintf(
             'SELECT `Payment Order Key` FROM `Payment Dimension` WHERE `Payment Key`=%d ', $this->id
         );
@@ -158,12 +155,31 @@ class Payment extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
         return $orders;
+    }
+
+    function get_invoices($scope = 'keys') {
+
+        $sql = sprintf(
+            'SELECT `Payment Invoice Key` FROM `Payment Dimension` WHERE `Payment Key`=%d ', $this->id
+        );
+
+        $invoices = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $orders[$row['Payment Invoice Key']] = get_object('Invoice', $row['Payment Invoice Key']);
+                } else {
+                    $orders[$row['Payment Invoice Key']] = $row['Payment Invoice Key'];
+                }
+
+
+            }
+        }
+        return $invoices;
     }
 
 
@@ -208,7 +224,6 @@ class Payment extends DB_Table {
                 break;
             case 'Method':
 
-                //'Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account'
                 switch ($this->data['Payment Method']) {
                     case 'Credit Card':
                         return _('Credit Card');
@@ -243,6 +258,39 @@ class Payment extends DB_Table {
                 }
 
                 break;
+            case 'Icon':
+                switch ($this->data['Payment Method']) {
+                    case 'Credit Card':
+                        return 'fal fa-credit-card';
+
+                    case 'Cash':
+                        return 'fal fa-money-bill-wave';
+
+                    case 'Paypal':
+                        return 'fab fa-cc-paypal';
+
+                    case 'Check':
+                        return 'fal fa-money-check-edit-alt';
+
+                    case 'Bank Transfer':
+                        return 'fal fa-money-check-alt';
+
+                    case 'Cash on Delivery':
+                        return 'fal fa-hands-usd';
+
+                    case 'Other':
+                    case 'Unknown':
+                    return 'fal fa-dollar-sign';
+
+                    case 'Account':
+                        return 'fal fa-piggy-bank';
+
+
+                    default:
+                        return 'fal fa-dollar-sign';
+
+                }
+
 
             case('Transaction Amount'):
                 return money($this->data['Payment '.$key], $this->data['Payment Currency Code']);

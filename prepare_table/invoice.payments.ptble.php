@@ -82,4 +82,4 @@ $fields
             = "`Payment Method`,`Payment Order Key`,`Store Key`,`Store Name`,`Store Code`,PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`";
 
 
-?>
+

@@ -18,7 +18,7 @@ $parameters = array(
 
 
 $tab     = 'email_campaign_type.mailshots';
-$ar_file = 'ar_mailshots_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'mailshots';
 
 
@@ -69,7 +69,7 @@ if ($state['_object']->get('Code') == 'Newsletter') {
     $table_buttons[] = array(
         'icon'      => 'plus',
         'title'     => _('New mailshot'),
-        'reference' => "marketing/".$state['parent_key']."/emails/".$state['key'].'/mailshot/new'
+        'reference' => "mailroom/".$state['parent_key']."/marketing/".$state['key'].'/mailshot/new'
 
     );
 

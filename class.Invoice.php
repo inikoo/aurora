@@ -139,9 +139,9 @@ class Invoice extends DB_Table {
 
         $account = get_object('Account', 1);
 
-        if(isset($invoice_data['Recargo Equivalencia']) ){
-            if( $invoice_data['Recargo Equivalencia']=='Yes'){
-                $recargo_equivalencia=$invoice_data['Recargo Equivalencia'];
+        if (isset($invoice_data['Recargo Equivalencia'])) {
+            if ($invoice_data['Recargo Equivalencia'] == 'Yes') {
+                $recargo_equivalencia = $invoice_data['Recargo Equivalencia'];
             }
             unset($invoice_data['Recargo Equivalencia']);
         }
@@ -187,9 +187,8 @@ class Invoice extends DB_Table {
             $this->get_data('id', $this->id);
 
 
-
-            if(isset($recargo_equivalencia)){
-                $this->fast_update_json_field('Invoice Metadata', 'RE','Yes');
+            if (isset($recargo_equivalencia)) {
+                $this->fast_update_json_field('Invoice Metadata', 'RE', 'Yes');
             }
 
             $feedback = array();
@@ -1054,7 +1053,7 @@ class Invoice extends DB_Table {
                 }
 
                 return $number_onptf;
-                break;
+
             case 'Recargo Equivalencia':
 
 
@@ -1064,15 +1063,20 @@ class Invoice extends DB_Table {
                     return _('No');
                 }
 
-                break;
+
             case 'Invoice Recargo Equivalencia':
                 if ($this->metadata('RE') == 'Yes') {
                     return 'Yes';
                 } else {
                     return 'No';
                 }
+            case 'Icon':
+                if ($this->get('Invoice Type') == 'Invoice') {
+                    return 'fal fa-file-invoice';
+                } else {
+                    return 'fal error fa-file-invoice';
+                }
 
-                break;
 
         }
 
@@ -1316,9 +1320,9 @@ class Invoice extends DB_Table {
 
         unset($invoice_data['editor']);
 
-        if(isset($invoice_data['Recargo Equivalencia']) ){
-            if( $invoice_data['Recargo Equivalencia']=='Yes'){
-                $recargo_equivalencia=$invoice_data['Recargo Equivalencia'];
+        if (isset($invoice_data['Recargo Equivalencia'])) {
+            if ($invoice_data['Recargo Equivalencia'] == 'Yes') {
+                $recargo_equivalencia = $invoice_data['Recargo Equivalencia'];
             }
             unset($invoice_data['Recargo Equivalencia']);
         }
@@ -1358,11 +1362,9 @@ class Invoice extends DB_Table {
 
             $this->get_data('id', $this->id);
 
-            if(isset($recargo_equivalencia)){
-                $this->fast_update_json_field('Invoice Metadata', 'RE','Yes');
+            if (isset($recargo_equivalencia)) {
+                $this->fast_update_json_field('Invoice Metadata', 'RE', 'Yes');
             }
-
-
 
 
             $sql = sprintf(
@@ -1548,6 +1550,8 @@ class Invoice extends DB_Table {
             ), $account->get('Account Code')
             );
 
+            $this->fork_index_elastic_search();
+
 
         }
 
@@ -1653,7 +1657,6 @@ class Invoice extends DB_Table {
 
                 break;
             case 'Invoice Registration Number':
-            case('Invoice Customer Name'):
 
                 $this->update_field($field, $value, $options);
                 $order         = get_object('Order', $this->data['Invoice Order Key']);
@@ -1662,9 +1665,16 @@ class Invoice extends DB_Table {
 
 
                 break;
+            case('Invoice Customer Name'):
+
+                $this->update_field($field, $value, $options);
+                $order         = get_object('Order', $this->data['Invoice Order Key']);
+                $order->editor = $this->editor;
+                $order->update(array(preg_replace('/^Invoice /', 'Order ', $field) => $value), $options);
+                $this->fork_index_elastic_search();
+
+                break;
             case 'Invoice Recargo Equivalencia':
-
-
 
 
                 if (!($value == 'Yes' or $value == 'No')) {
@@ -1773,7 +1783,7 @@ class Invoice extends DB_Table {
                 $this->update_tax_data();
 
                 break;
-                case 'Invoice Public ID':
+            case 'Invoice Public ID':
                 $this->update_field($field, $value, $options);
 
 
@@ -1791,11 +1801,14 @@ class Invoice extends DB_Table {
                 }
 
                 $this->update_field('Invoice File As', $file_as, $options);
+                $this->fork_index_elastic_search();
+                $order = get_object('Order', $this->data['Invoice Order Key']);
+                $order->fork_index_elastic_search();
 
                 break;
 
 
-                default:
+            default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
                     if ($value != $this->data[$field]) {
@@ -1805,72 +1818,10 @@ class Invoice extends DB_Table {
         }
     }
 
-    function update_tax_number($value) {
-
-        include_once 'utils/validate_tax_number.php';
-
-        $old_formatted_value = $this->get('Tax Number Formatted');
-        $this->update_field('Invoice Tax Number', $value, 'no_history');
-
-
-        if ($this->updated) {
-
-            if ($value == '') {
-
-                $this->fast_update(
-                    array(
-                        'Invoice Tax Number Valid'              => 'Unknown',
-                        'Invoice Tax Number Details Match'      => '',
-                        'Invoice Tax Number Validation Date'    => '',
-                        'Invoice Tax Number Validation Source'  => '',
-                        'Invoice Tax Number Validation Message' => ''
-                    )
-                );
-            } else {
-
-                $tax_validation_data = validate_tax_number($this->data['Invoice Tax Number'], $this->data['Invoice Address Country 2 Alpha Code']);
-
-                if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
-                    if (!($this->data['Invoice Tax Number Validation Source'] == '' and $this->data['Invoice Tax Number Valid'] == 'No')) {
-                        return;
-                    }
-                }
-
-                $this->fast_update(
-                    array(
-                        'Invoice Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
-                        'Invoice Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
-                        'Invoice Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
-                        'Invoice Tax Number Validation Source'  => 'Online',
-                        'Invoice Tax Number Validation Message' => 'B: '.$tax_validation_data['Tax Number Validation Message'],
-                    )
-                );
-            }
-
-
-            $this->new_value = $value;
-
-            $this->add_changelog_record('Invoice Tax Number', $old_formatted_value, $this->get('Tax Number Formatted'), '', 'Invoice', $this->id);
-
-
-        }
-
-        $this->other_fields_updated = array(
-            'Invoice_Tax_Number_Valid' => array(
-                'field'           => 'Invoice_Tax_Number_Valid',
-                'render'          => ($this->get('Invoice Tax Number') == '' ? false : true),
-                'value'           => $this->get('Invoice Tax Number Valid'),
-                'formatted_value' => $this->get('Tax Number Valid'),
-
-
-            )
-        );
-
-
-    }
-
     function update_tax_data() {
 
+
+        $old_invoice_total = $this->get('Invoice Total Amount');
 
         $data = array();
 
@@ -1956,6 +1907,96 @@ class Invoice extends DB_Table {
         );
 
         $this->update_payments_totals();
+
+        if ($old_invoice_total != $this->get('Invoice Total Amount')) {
+            $this->fork_index_elastic_search();
+        }
+
+
+    }
+
+    function post_operation_invoice_totals_changed() {
+
+        //todo finish this
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Items_Gross_Amount'    => $this->get('Items Gross Amount'),
+                'Items_Discount_Amount' => $this->get('Items Discount Amount'),
+                'Items_Net_Amount'      => $this->get('Items Net Amount'),
+                'Net_Amount_Off'        => $this->get('Net Amount Off'),
+
+
+                'Total_Tax_Adjust_Amount'         => $this->get('Total Tax Adjust Amount'),
+                'Total_Amount'                    => $this->get('Total Amount'),
+                'Corporate_Currency_Total_Amount' => $this->get('Corporate Currency Total Amount'),
+
+            )
+        );
+
+
+    }
+
+    function update_tax_number($value) {
+
+        include_once 'utils/validate_tax_number.php';
+
+        $old_formatted_value = $this->get('Tax Number Formatted');
+        $this->update_field('Invoice Tax Number', $value, 'no_history');
+
+
+        if ($this->updated) {
+
+            if ($value == '') {
+
+                $this->fast_update(
+                    array(
+                        'Invoice Tax Number Valid'              => 'Unknown',
+                        'Invoice Tax Number Details Match'      => '',
+                        'Invoice Tax Number Validation Date'    => '',
+                        'Invoice Tax Number Validation Source'  => '',
+                        'Invoice Tax Number Validation Message' => ''
+                    )
+                );
+            } else {
+
+                $tax_validation_data = validate_tax_number($this->data['Invoice Tax Number'], $this->data['Invoice Address Country 2 Alpha Code']);
+
+                if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
+                    if (!($this->data['Invoice Tax Number Validation Source'] == '' and $this->data['Invoice Tax Number Valid'] == 'No')) {
+                        return;
+                    }
+                }
+
+                $this->fast_update(
+                    array(
+                        'Invoice Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                        'Invoice Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                        'Invoice Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                        'Invoice Tax Number Validation Source'  => 'Online',
+                        'Invoice Tax Number Validation Message' => 'B: '.$tax_validation_data['Tax Number Validation Message'],
+                    )
+                );
+            }
+
+
+            $this->new_value = $value;
+
+            $this->add_changelog_record('Invoice Tax Number', $old_formatted_value, $this->get('Tax Number Formatted'), '', 'Invoice', $this->id);
+
+
+        }
+
+        $this->other_fields_updated = array(
+            'Invoice_Tax_Number_Valid' => array(
+                'field'           => 'Invoice_Tax_Number_Valid',
+                'render'          => ($this->get('Invoice Tax Number') == '' ? false : true),
+                'value'           => $this->get('Invoice Tax Number Valid'),
+                'formatted_value' => $this->get('Tax Number Valid'),
+
+
+            )
+        );
 
 
     }
@@ -2067,7 +2108,7 @@ class Invoice extends DB_Table {
             $this->update_address_formatted_fields();
 
 
-            if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
+            if (!preg_match('/no([ _])history|nohistory/i', $options)) {
 
 
                 $this->add_changelog_record(
@@ -2388,6 +2429,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             "DELETE FROM `Invoice Dimension`  WHERE  `Invoice Key`=%d", $this->id
         );
         $this->db->exec($sql);
+        $this->delete_index_elastic_search();
 
         $this->data['items'] = $items_data;
 
@@ -2411,6 +2453,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             )
         );
 
+        $this->fork_index_elastic_search();
 
         if (!$fix_mode) {
 
@@ -2429,6 +2472,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
                         )
                     );
+
                 }
                 if ($order->id) {
                     $order->update_state('Invoice Deleted', $options = '', $metadata = array('note' => $note));
@@ -2437,6 +2481,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
                 if ($order->id) {
                     $order->update_totals();
+                    $order->fork_index_elastic_search();
                 }
             }
         }
@@ -2567,29 +2612,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         }
 
         return $label;
-
-    }
-
-    function post_operation_invoice_totals_changed() {
-
-        //todo finish this
-
-        $this->update_metadata = array(
-            'class_html' => array(
-                'Items_Gross_Amount' => $this->get('Items Gross Amount'),
-                'Items_Discount_Amount' => $this->get('Items Discount Amount'),
-                'Items_Net_Amount' => $this->get('Items Net Amount'),
-                'Net_Amount_Off' => $this->get('Net Amount Off'),
-
-
-                'Total_Tax_Adjust_Amount' => $this->get('Total Tax Adjust Amount'),
-                'Total_Amount' => $this->get('Total Amount'),
-                'Corporate_Currency_Total_Amount' => $this->get('Corporate Currency Total Amount'),
-
-            )
-        );
-
-
 
     }
 

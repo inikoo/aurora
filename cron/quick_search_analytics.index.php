@@ -1,0 +1,1 @@
+../app_files/elastic/quick_search_analytics.index.php

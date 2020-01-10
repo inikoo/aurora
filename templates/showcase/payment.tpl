@@ -22,11 +22,7 @@
                     <td>{t}Amount{/t}:</td>
                     <td class="aright "><span class="Payment_Transaction_Amount">{$payment->get('Transaction Amount')}</span></td>
                 </tr>
-
-
                 {assign "orders" $payment->get_orders('objects')}
-
-
                 <tr >
                     <td>{if $orders|@count==1}{t}Order{/t}{else}{t}Orders{/t}{/if}:</td>
                     <td class="aright ">
@@ -35,14 +31,7 @@
                         {/foreach }
                     </td>
                 </tr>
-
-
             </table>
-
-
-
-
-
         </div>
     </div>
 

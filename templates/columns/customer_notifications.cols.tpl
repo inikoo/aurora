@@ -38,6 +38,7 @@ cell: Backgrid.HtmlCell.extend({
 {
 name: "mailshots",
 label: "{t}Mailshots{/t}",
+renderable:false,
 editable: false,
 defaultOrder:1,
 sortType: "toggle",

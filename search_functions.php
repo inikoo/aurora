@@ -1849,11 +1849,11 @@ function search_products($db, $account, $user, $data) {
 }
 
 
-function search_customers($db, $account, $user, $data) {
+function search_customers_old($data,$user) {
 
 
-    $max_results = 10;
-    $queries     = trim($data['query']);
+    
+    $queries = trim($data['query']);
 
     if ($queries == '') {
         $response = array(
@@ -2270,6 +2270,7 @@ function search_customers($db, $account, $user, $data) {
     );
 
     echo json_encode($response);
+
 
 }
 

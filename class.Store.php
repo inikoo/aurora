@@ -4415,6 +4415,17 @@ class Store extends DB_Table {
                 break;
 
             case('Store Code'):
+                if ($value == '') {
+                    $this->error = true;
+                    $this->msg   = _("Value can't be empty");
+                }
+                if (strlen($value)>3) {
+                    $this->error = true;
+                    $this->msg   = _("The max length of the code is 3 characters");
+                }
+                $this->update_field($field, $value, $options);
+
+                break;
             case('Store Name'):
 
                 if ($value == '') {
@@ -4711,6 +4722,27 @@ class Store extends DB_Table {
         // todo: make stats for purges
     }
 
+    function cache_object($redis, $account_code) {
+
+        $redis_key     = 'Au_Cached_obj'.$account_code.'.Store.'.$this->id;
+        $data_to_cache = json_encode(
+            [
+                'code'       => $this->data['Store Code'],
+                'name'       => $this->data['Store Name'],
+                'state'      => $this->data['Store State'],
+                'type'       => $this->data['Store Type'],
+                'locale'     => $this->data['Store Locale'],
+                'timezone'   => $this->data['Store Timezone'],
+                'currency'   => $this->data['Store Currency Code'],
+                'properties' => $this->properties,
+                'settings'   => $this->settings
+            ]
+        );
+        $redis->set($redis_key, $data_to_cache);
+
+        return $data_to_cache;
+
+    }
 
     function update_sitting_time_in_warehouse() {
         $sql = "SELECT count(*) as num  ,avg(TIMESTAMPDIFF(SECOND,`Delivery Note Date Created`,NOW()) )as diff   FROM `Delivery Note Dimension` WHERE `Delivery Note State`  not in ('Dispatched','Cancelled','Cancelled to Restock')  and `Delivery Note Store Key`=? ";

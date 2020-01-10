@@ -11,7 +11,7 @@
 
 
 $tab     = 'email_tracking.events';
-$ar_file = 'ar_mailshots_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'email_tracking_events';
 
 $default = $user->get_tab_defaults($tab);

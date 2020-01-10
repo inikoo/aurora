@@ -150,10 +150,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     $state['current_website']    = $session->get('current_website');
-    $state['current_store']      = $session->get('current_website');
+    $state['current_store']      = $session->get('current_store');
     $state['current_warehouse']  = $session->get('current_warehouse');
     $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
-
 
     $store      = '';
     $website    = '';
@@ -798,7 +797,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     // }
     //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
 
-
+   // print 'x1x'.$state['current_store'];
     $state['store']      = $store;
     $state['website']    = $website;
     $state['warehouse']  = $warehouse;
@@ -814,7 +813,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     //    $state['current_production'] = $production->id;
     //}
 
-
     $sql = sprintf(
         'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']),
         prepare_mysql($state['section']), prepare_mysql(
@@ -825,12 +823,25 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $db->exec($sql);
 
     //$_SESSION['request'] = $state['request'];
+    $response = array('app_state' => array());
+
 
 
     if (isset($state['current_store'])) {
         $session->set('current_store', $state['current_store']);
 
+        if($state['current_store']) {
+            $store_data = get_cached_object_data($redis, DNS_ACCOUNT_CODE, 'Store', $state['current_store']);
+            $response['current_store_code']=$store_data['code'];
+        }
+
+        $user->fast_update_json_field('User Settings', 'current_store',  $state['current_store']);
+
     }
+
+
+
+
 
     // todo implement correctly if multi-warehouses ever done, special care has to be done when visiting warehouses servers becuse current_warehouse will be set to null, and if then jump to a invengtory/part it may be still null causing avok
     //if (isset($state['current_warehouse'])) {$session->set('current_warehouse', $state['current_warehouse']);}
@@ -839,7 +850,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     //if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
 
-    $response = array('app_state' => array());
+
 
     list($state, $response['view_position']) = get_view_position(
         $db, $state, $user, $smarty, $account
@@ -860,17 +871,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     ) {
 
 
-        $_navigation = get_navigation($user, $smarty, $state, $db, $account);
+        $response['nav']  = get_navigation($user, $smarty, $state, $db, $account);
 
 
-        if (is_array($_navigation)) {
-            $response['navigation']     = $_navigation[0];
-            $response['web_navigation'] = $_navigation[1];
-        } else {
-            $response['navigation']     = $_navigation;
-            $response['web_navigation'] = '';
-
-        }
 
 
     }
@@ -1624,7 +1627,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         case 'invoice':
         case 'refund':
             include_once 'showcase/invoice.show.php';
-            $html         = get_invoice_showcase($data, $smarty, $user, $db,$account);
+            $html         = get_invoice_showcase($data, $smarty, $user, $db, $account);
             $title        = $data['_object']->get('Public ID');
             $web_location = '<i class="fal fa-fw fa-file-invoice-dollar"></i> '.$title;
 
@@ -1893,7 +1896,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'payment':
             include_once 'showcase/payment.show.php';
-            $html = get_payment_showcase($data, $smarty, $user, $db);
+            $html = get_payment_showcase($data, $smarty);
             break;
         case 'purge':
             include_once 'showcase/purge.show.php';
@@ -1939,7 +1942,6 @@ function get_menu($data, $user, $smarty, $db, $account) {
 
 function get_navigation($user, $smarty, $data, $db, $account) {
 
-
     switch ($data['module']) {
 
         case ('dashboard'):
@@ -1971,8 +1973,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             break;
         case ('products'):
             require_once 'navigation/products.nav.php';
-            require_once 'navigation/websites.nav.php';
-            require_once 'navigation/marketing.nav.php';
 
 
             switch ($data['section']) {
@@ -2040,51 +2040,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
 
-                case ('offers'):
-                    return get_marketing_navigation($data, $smarty, $user, $db, $account);
-                    break;
-
-                case ('marketing'):
-                    return get_marketing_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
 
 
-                case ('campaign'):
-                case ('campaign_order_recursion'):
-                case ('vouchers'):
-                    return get_campaign_navigation($data, $smarty, $user, $db, $account);
-
-                case ('campaign.new'):
-                    return get_new_campaign_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('deal.new'):
-                    return get_new_deal_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('deal_component.new'):
-                    return get_new_deal_component_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('deal'):
-                    return get_deal_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('deal_component'):
-                    return get_deal_component_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-
-                case ('mailshots'):
-                    return get_mailshots_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
 
                 case ('marketing_post'):
 
@@ -2110,38 +2067,77 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('shipping_option.new'):
                     return get_shipping_option_new_navigation($data, $smarty, $user, $db, $account);
 
-                case 'email_campaign_type':
-
-
-                    if ($data['_object']->get('Email Campaign Type Scope') == 'User Notification') {
-                        return get_user_notification_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
-
-                    } else {
-                        return get_marketing_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
-
-                    }
-
-                case ('mailshot'):
-                    return get_mailshot_navigation($data, $smarty, $user, $db, $account);
-
-                case ('email_tracking'):
-                    return get_email_tracking_navigation($data, $smarty, $user, $db, $account, $account);
 
                 case 'shipping_zone_schema':
                     return get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $account, $account);
 
 
-                case ('mailshot.new'):
-                    return get_mailshot_new_navigation($data, $smarty, $user, $db, $account);
                 case ('settings'):
                     return get_settings_navigation($data, $smarty);
                 case 'website.new':
                     return get_website_new_navigation($data, $smarty);
             }
             break;
+        case ('mailroom_server'):
+            require_once 'navigation/mailroom.nav.php';
+            switch ($data['section']) {
+                /*
+                case 'notifications':
+                    return get_notifications_server_navigation(
+                        $data, $smarty
+                    );
+                break;
+                */ case 'group_by_store':
+                return get_group_by_store_server_navigation(
+                    $data, $smarty
+                );
+                break;
+
+
+            }
+            break;
+        case ('mailroom'):
+            require_once 'navigation/mailroom.nav.php';
+            switch ($data['section']) {
+
+                case 'customer_notifications':
+                    return get_subject_notifications_navigation(
+                        'customers', $data, $smarty, $user, $db
+                    );
+                case 'user_notifications':
+                    return get_subject_notifications_navigation(
+                        'staff', $data, $smarty, $user, $db
+                    );
+
+                case 'marketing':
+                    return get_subject_notifications_navigation(
+                        'marketing', $data, $smarty, $user, $db
+                    );
+
+                case 'email_campaign_type':
+
+                    if ($data['_object']->get('Email Campaign Type Scope') == 'User Notification') {
+                        return get_user_notification_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
+
+                    } elseif ($data['_object']->get('Email Campaign Type Scope') == 'Customer Notification') {
+                        return get_customer_notification_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
+
+                    } else {
+                        return get_marketing_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
+
+                    }
+                case ('mailshot'):
+                    return get_mailshot_navigation($data, $smarty, $user, $db, $account);
+
+                case ('email_tracking'):
+                    return get_email_tracking_navigation($data, $smarty, $user, $db, $account, $account);
+                case ('mailshot.new'):
+                    return get_mailshot_new_navigation($data, $smarty);
+
+            }
+            break;
         case ('customers'):
             require_once 'navigation/customers.nav.php';
-
 
 
             switch ($data['section']) {
@@ -2322,10 +2318,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db
                     );
 
-                case('email_communications'):
-                    return get_email_communications_server_navigation(
-                        $data, $smarty, $user, $db
-                    );
 
             }
 
@@ -2536,20 +2528,58 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             }
             break;
-        case ('marketing_server'):
+        case ('offers_server'):
             require_once 'navigation/marketing.nav.php';
             switch ($data['section']) {
-                case ('marketing'):
+                case ('group_by_store'):
 
-                    return get_marketing_server_navigation(
-                        $data, $smarty, $user, $db, $account
+                    return get_offers_group_by_store_navigation(
+                        $smarty
                     );
 
             }
-
             break;
+        case 'offers':
+            require_once 'navigation/marketing.nav.php';
 
+            switch ($data['section']) {
+                case ('offers'):
+                    return get_offers_navigation($data, $smarty);
+                    break;
+                case ('campaigns'):
+                    return get_campaigns_navigation($data, $smarty);
+                    break;
+                case ('campaign'):
+                case ('campaign_order_recursion'):
+                case ('vouchers'):
+                    return get_campaign_navigation($data, $smarty, $user, $db, $account);
 
+                case ('campaign.new'):
+                    return get_new_campaign_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+
+                case ('deal.new'):
+                    return get_new_deal_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+
+                case ('deal_component.new'):
+                    return get_new_deal_component_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+
+                case ('deal'):
+                    return get_deal_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+
+                case ('deal_component'):
+                    return get_deal_component_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+            }
         case ('reports'):
 
             require_once 'navigation/reports.nav.php';
@@ -3842,7 +3872,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
                     } else {
-                        $data['tab']         = 'mailshot.workshop';
+                        $data['tab'] = 'mailshot.workshop';
+
+
                         $_content['subtabs'] = $modules[$data['module']]['sections'][$data['section']] ['tabs']['mailshot.workshop']['subtabs'];
 
 
@@ -4862,7 +4894,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             }
-            if ($state['section'] == 'settings') {
+            elseif ($state['section'] == 'settings') {
                 $branch[] = array(
                     'label'     => _('Settings store').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>',
                     'icon'      => 'sliders-h',
@@ -5198,8 +5230,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            }
-            elseif ($state['section'] == 'customer') {
+            } elseif ($state['section'] == 'customer') {
 
 
                 if ($state['parent'] == 'campaign') {
@@ -5249,8 +5280,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                 }
 
-            }
-            elseif ($state['section'] == 'website') {
+            } elseif ($state['section'] == 'website') {
 
                 $branch[]               = array(
                     'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Code').'</span>',
@@ -5348,133 +5378,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => '',
                     'reference' => '',
                 );
-            } elseif ($state['section'] == 'marketing') {
-
-                $branch[] = array(
-                    'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
-                    'icon'      => 'bullhorn',
-                    'reference' => ''
-                );
-            } elseif ($state['section'] == 'campaign_order_recursion') {
-                $branch[] = array(
-                    'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'offers/'.$state['store']->id
-                );
-
-                $branch[] = array(
-                    'label'     => '<span class="Deal_Campaign_Name">'.$state['_object']->get('Name').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => ''
-                );
-
-
-            } elseif ($state['section'] == 'vouchers') {
-                $branch[] = array(
-                    'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'offers/'.$state['store']->id
-                );
-
-                $branch[] = array(
-                    'label'     => '<span class="Deal_Campaign_Name">'.$state['_object']->get('Name').'</span>',
-                    'html_icon' => $state['_object']->get('Icon'),
-                    'reference' => ''
-                );
-
-
-            } elseif ($state['section'] == 'campaign') {
-                $branch[] = array(
-                    'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'offers/'.$state['store']->id
-                );
-
-                $branch[] = array(
-                    'label'     => '<span class="Deal_Campaign_Name">'.$state['_object']->get('Name').'</span>',
-                    'html_icon' => $state['_object']->get('Icon'),
-                    'reference' => ''
-                );
-
-
-            } elseif ($state['section'] == 'campaign.new') {
-                $branch[] = array(
-                    'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'bullhorn',
-                    'reference' => 'marketing/'.$state['store']->id
-                );
-
-                $branch[] = array(
-                    'label'     => _('New campaign'),
-                    'icon'      => '',
-                    'reference' => ''
-                );
-            } elseif ($state['section'] == 'deal.new') {
-
-
-                if ($state['parent'] == 'campaign') {
-
-                    include_once 'class.Store.php';
-                    $state['store'] = new Store($state['_parent']->get('Store Key'));
-
-                    $branch[] = array(
-                        'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                        'icon'      => 'tags',
-                        'reference' => 'offers/'.$state['store']->id
-                    );
-
-                    $branch[] = array(
-                        'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
-                        'html_icon' => $state['_parent']->get('Icon'),
-                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
-                    );
-
-
-                    switch ($state['_parent']->get('Code')) {
-                        case 'VO':
-                            $branch[] = array(
-                                'label'     => _('New voucher'),
-                                'icon'      => '',
-                                'reference' => ''
-                            );
-                            break;
-                        default:
-                            $branch[] = array(
-                                'label'     => _('New offer'),
-                                'icon'      => '',
-                                'reference' => ''
-                            );
-
-                    }
-
-
-                } else {
-
-                    $branch[] = array(
-                        'label'     => _('New offer'),
-                        'icon'      => '',
-                        'reference' => ''
-                    );
-
-                }
-
-
             } elseif ($state['section'] == 'deal') {
 
-                if ($state['parent'] == 'campaign') {
-                    $branch[] = array(
-                        'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                        'icon'      => 'tags',
-                        'reference' => 'offers/'.$state['store']->id
-                    );
 
-                    $branch[] = array(
-                        'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
-                        'icon'      => 'tags',
-                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
-                    );
-
-                } elseif ($state['parent'] == 'category') {
 
 
                     $category = $state['_parent'];
@@ -5525,7 +5431,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         }
                     }
 
-                }
+
 
                 $branch[] = array(
                     'label'     => '<span class="Deal_Name">'.$state['_object']->get('Name').'</span>',
@@ -5546,120 +5452,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            } elseif ($state['section'] == 'email_campaign_type') {
+            }
+            elseif ($state['section'] == 'deal_component') {
 
-
-                if ($state['_object']->get('Email Campaign Type Scope') == 'User Notification') {
-                    $branch[] = array(
-                        'label'     => _('Store').' <span class="Store_Code id">'.$state['store']->get('Store Code').'</span> <span class="italic">(<span style="padding:0 1px 0 1px">'._('Notifications')
-                            .' <i style="padding: 0px" class="fal fa-rectangle-wide"></i></span>)</span>',
-                        'icon'      => 'shopping-basket',
-                        'reference' => 'store/'.$state['store']->id,
-                        'metadata'  => '{tab:\'store.notifications\'}'
-                    );
-                    $branch[] = array(
-                        'label'     => '<span class="id">'.$state['_object']->get('Label').'</span>',
-                        'icon'      => 'bell',
-                        'reference' => ''
-                    );
-                } else {
-                    $branch[] = array(
-                        'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
-                        'icon'      => 'bullhorn',
-                        'reference' => 'marketing/'.$state['store']->id.'/emails',
-                    );
-                    $branch[] = array(
-                        'label'     => '<span class="id">'.$state['_object']->get('Label').'</span>',
-                        'icon'      => 'container-storage',
-                        'reference' => ''
-                    );
-                }
-
-
-            } elseif ($state['section'] == 'mailshot') {
-
-
-                $branch[] = array(
-                    'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
-                    'icon'      => 'bullhorn',
-                    'reference' => 'marketing/'.$state['store']->id.'/emails',
-                );
-                $branch[] = array(
-                    'label'     => '<span class="id">'.$state['_parent']->get('Label').'</span>',
-                    'icon'      => $state['_parent']->get('Icon'),
-                    'reference' => 'marketing/'.$state['store']->id.'/emails/'.$state['_parent']->id,
-                );
-                $branch[] = array(
-                    'label'     => '<span class="Email_Campaign_Name id">'.$state['_object']->get('Name').'</span>',
-                    'icon'      => 'container-storage',
-                    'reference' => ''
-                );
-
-
-            } elseif ($state['section'] == 'email_tracking') {
-
-
-                $email_template_type = get_object('EmailTemplateType', $state['_parent']->get('Email Campaign Email Template Type Key'));
-
-
-                $branch[] = array(
-                    'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
-                    'icon'      => 'bullhorn',
-                    'reference' => 'marketing/'.$state['store']->id.'/emails',
-                );
-                $branch[] = array(
-                    'label'     => '<span class="id">'.$email_template_type->get('Label').'</span>',
-                    'icon'      => $email_template_type->get('Icon'),
-                    'reference' => 'marketing/'.$state['store']->id.'/emails/'.$email_template_type->id,
-                );
-                $branch[] = array(
-                    'label'     => '<span class="Email_Campaign_Name id">'.$state['_parent']->get('Name').'</span>',
-                    'icon'      => 'container-storage',
-                    'reference' => 'marketing/'.$state['store']->id.'/emails/'.$email_template_type->id.'/mailshot/'.$state['_parent']->id,
-                );
-                $branch[] = array(
-                    'label'     => _('Tracking').': <span class="id">'.$state['_object']->get('Email Tracking Email').'</span>',
-                    'icon'      => '',
-                    'reference' => ''
-                );
-
-
-            } elseif ($state['section'] == 'deal_component') {
-
-
-                if ($state['parent'] == 'campaign') {
-                    $branch[] = array(
-                        'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                        'icon'      => 'tags',
-                        'reference' => 'offers/'.$state['store']->id
-                    );
-
-                    $branch[] = array(
-                        'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
-                        'icon'      => 'tags',
-                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
-                    );
-
-
-                    if($state['_parent']->get('Code')=='OR') {
-                        $branch[] = array(
-                            'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Deal Component Allowance Target Label').'</span>',
-                            'icon'      => 'tag',
-                            'reference' => ''
-                        );
-                    }else{
-                        $branch[] = array(
-                            'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Name Label').'</span>',
-                            'icon'      => 'tag',
-                            'reference' => ''
-                        );
-                    }
-
-
-
-
-                }
-                elseif ($state['parent'] == 'category') {
 
 
                     $category = $state['_parent'];
@@ -5710,15 +5505,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         }
                     }
 
-                }
 
 
 
-
-            } else {
-                //print 'section not found: '.$state['section'];
             }
-
 
             break;
         case 'customers_server':
@@ -5931,7 +5721,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         );
 
                         $branch[] = array(
-                            'label'     => _('Invitaion email'),
+                            'label'     => _('Invitation email'),
                             'icon'      => 'paper-plane',
                             'reference' => ''
                         );
@@ -5955,99 +5745,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'reference' => ''
                         );
 
-                    } elseif ($state['_parent']->get_object_name() == 'Email Campaign Type') {
-
-                        $branch[] = array(
-                            'label'     => _("Customer notifications").' '.$store->data['Store Code'],
-                            'icon'      => 'paper-plane',
-                            'reference' => 'customers/'.$store->id.'/notifications'
-                        );
-
-                        $branch[] = array(
-                            'label'     => $state['_parent']->get('Label'),
-                            'icon'      => $state['_parent']->get('Icon'),
-                            'reference' => 'email_campaign_type/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
-                        );
-
-                        $branch[] = array(
-                            'label'     => _('Tracking').': <span class="id">'.$state['_object']->get('Email Tracking Email').'</span>',
-                            'icon'      => '',
-                            'reference' => ''
-                        );
-
-                    } elseif ($state['_parent']->get_object_name() == 'Email Campaign') {
-
-
-                        $email_campaign_type = get_object('email_campaign_type', $state['_parent']->get('Email Campaign Email Template Type Key'));
-
-
-                        $branch[] = array(
-                            'label'     => _("Customer notifications").' '.$store->data['Store Code'],
-                            'icon'      => 'paper-plane',
-                            'reference' => 'customers/'.$store->id.'/notifications'
-                        );
-
-                        $branch[] = array(
-                            'label'     => $email_campaign_type->get('Label'),
-                            'icon'      => $email_campaign_type->get('Icon'),
-                            'reference' => 'customers/'.$state['_parent']->get('Store Key').'/notifications/'.$email_campaign_type->id
-                        );
-
-                        $branch[] = array(
-                            'label'     => $state['_parent']->get('Name'),
-                            'icon'      => 'container-storage',
-                            'reference' => 'customers/'.$state['_parent']->get('Store Key').'/notifications/'.$email_campaign_type->id.'/mailshot/'.$state['_parent']->id
-                        );
-
-                        $branch[] = array(
-                            'label'     => _('Tracking').': <span class="id">'.$state['_object']->get('Email Tracking Email').'</span>',
-                            'icon'      => '',
-                            'reference' => ''
-                        );
-
                     }
 
-
                     break;
-                case 'mailshot':
 
-
-                    $store = get_object('Store', $state['_parent']->get('Store Key'));
-
-
-                    if ($state['_parent']->get_object_name() == 'Email Campaign Type') {
-
-                        $branch[] = array(
-                            'label'     => _("Customer notifications").' '.$store->data['Store Code'],
-                            'icon'      => 'paper-plane',
-                            'reference' => 'customers/'.$store->id.'/notifications'
-                        );
-
-                        $branch[] = array(
-                            'label'     => $state['_parent']->get('Label'),
-                            'icon'      => $state['_parent']->get('Icon'),
-                            'reference' => 'customers/'.$state['_parent']->get('Store Key').'/notifications/'.$state['_parent']->id
-                        );
-
-                        if ($state['_object']->get('Email Campaign Type') == 'Newsletter') {
-                            $branch[] = array(
-                                'label'     => '<span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
-                                'icon'      => '',
-                                'reference' => ''
-                            );
-                        } else {
-                            $branch[] = array(
-                                'label'     => _('Mailshot').': <span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
-                                'icon'      => 'container-storage',
-                                'reference' => ''
-                            );
-                        }
-
-
-                    }
-
-
-                    break;
 
                 case 'prospect.compose_email':
 
@@ -6154,42 +5855,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'customers/'.$store->id.'/insights'
                     );
                     break;
-                case 'customer_notifications':
-                    $branch[] = array(
-                        'label'     => _("Customer notifications").' <span class="id">'.$store->data['Store Code'].'</span>',
-                        'icon'      => 'paper-plane',
-                        'reference' => 'customers/'.$store->id.'/notifications'
-                    );
-                    break;
-                case 'email_campaign_type':
-                    $branch[] = array(
-                        'label'     => _("Customer notifications").' '.$store->data['Store Code'],
-                        'icon'      => 'paper-plane',
-                        'reference' => 'customers/'.$store->id.'/notifications'
-                    );
 
-                    $branch[] = array(
-                        'label'     => $state['_object']->get('Label'),
-                        'icon'      => $state['_object']->get('Icon'),
-                        'reference' => ''
-                    );
 
-                    break;
-
-                case 'newsletter':
-                    $branch[] = array(
-                        'label'     => _("Customer notifications").' '.$store->data['Store Code'],
-                        'icon'      => 'envelope',
-                        'reference' => 'customers/'.$store->id.'/notifications'
-                    );
-
-                    $branch[] = array(
-                        'label'     => _("Newsletter").' <span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
-                        'icon'      => '',
-                        'reference' => 'customers/'.$store->id.'/notifications/'
-                    );
-
-                    break;
                 case 'poll_query.new':
                     $branch[] = array(
                         'label'     => _("Customer's insights").' '.$store->data['Store Code'],
@@ -6308,6 +5975,215 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             }
             break;
+
+        case 'mailroom_server':
+
+
+            $branch[] = array(
+                'label'     => _('Mailroom').' ('._('All stores').')',
+                'icon'      => 'mail-bulk',
+                'reference' => ''
+            );
+
+
+            break;
+        case 'mailroom':
+
+            $branch[] = array(
+                'label'     => _('Mailroom').' ('._('All stores').')',
+                'icon'      => 'mail-bulk',
+                'reference' => ''
+            );
+            switch ($state['section']) {
+
+                case 'marketing':
+                    $branch[] = array(
+                        'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
+                        'icon'      => 'bullhorn',
+                        'reference' => 'mailroom/'.$state['store']->id.'/marketing'
+                    );
+                    break;
+                case 'user_notifications':
+                    $branch[] = array(
+                        'label'     => _('Staff notifications').' '.$state['store']->get('Code'),
+                        'icon'      => 'bell',
+                        'reference' => 'mailroom/'.$state['store']->id.'/staff_notifications'
+                    );
+                    break;
+                case 'customer_notifications':
+                    $branch[] = array(
+                        'label'     => _('Customers notifications').' '.$state['store']->get('Code'),
+                        'icon'      => 'user',
+                        'reference' => 'mailroom/'.$state['store']->id.'/notifications'
+                    );
+                    break;
+                case 'email_campaign_type':
+
+                    if ($state['_object']->get('Email Campaign Type Scope') == 'User Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Staff notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'bell',
+                            'reference' => 'mailroom/'.$state['store']->id.'/staff_notifications'
+                        );
+                      
+                    }elseif ($state['_object']->get('Email Campaign Type Scope') == 'Customer Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Customers notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'user',
+                            'reference' => 'mailroom/'.$state['store']->id.'/notifications'
+                        );
+
+                    } else {
+                        $branch[] = array(
+                            'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
+                            'icon'      => 'bullhorn',
+                            'reference' => 'mailroom/'.$state['store']->id.'/marketing'
+                        );
+
+                    }
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$state['_object']->get('Label').'</span>',
+                        'icon'      => $state['_object']->get('Icon'),
+                        'reference' => ''
+                    );
+                    break;
+
+                case 'mailshot':
+
+                    if ($state['_parent']->get('Email Campaign Type Scope') == 'User Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Staff notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'bell',
+                            'reference' => 'mailroom/'.$state['store']->id.'/staff_notifications'
+                        );
+                        $_link='staff_notifications';
+                    }elseif ($state['_parent']->get('Email Campaign Type Scope') == 'Customer Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Customers notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'user',
+                            'reference' => 'mailroom/'.$state['store']->id.'/notifications'
+                        );
+                        $_link='notifications';
+                    } else {
+                        $branch[] = array(
+                            'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
+                            'icon'      => 'bullhorn',
+                            'reference' => 'mailroom/'.$state['store']->id.'/marketing'
+                        );
+                        $_link='marketing';
+                    }
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$state['_parent']->get('Label').'</span>',
+                        'icon'      => $state['_parent']->get('Icon'),
+                        'reference' => 'mailroom/'.$state['store']->id.'/'.$_link.'/'.$state['_parent']->id
+
+                    );
+
+                    $branch[] = array(
+                        'label'     => '<span class="Email_Campaign_Name id">'.$state['_object']->get('Name').'</span>',
+                        'icon'      => 'container-storage',
+                        'reference' => ''
+                    );
+                    
+                    break;
+                case 'mailshot.new':
+
+                    if ($state['_parent']->get('Email Campaign Type Scope') == 'User Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Staff notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'bell',
+                            'reference' => 'mailroom/'.$state['store']->id.'/staff_notifications'
+                        );
+                        $_link='staff_notifications';
+                    }elseif ($state['_parent']->get('Email Campaign Type Scope') == 'Customer Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Customers notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'user',
+                            'reference' => 'mailroom/'.$state['store']->id.'/notifications'
+                        );
+                        $_link='notifications';
+                    } else {
+                        $branch[] = array(
+                            'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
+                            'icon'      => 'bullhorn',
+                            'reference' => 'mailroom/'.$state['store']->id.'/marketing'
+                        );
+                        $_link='marketing';
+                    }
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$state['_parent']->get('Label').'</span>',
+                        'icon'      => $state['_parent']->get('Icon'),
+                        'reference' => 'mailroom/'.$state['store']->id.'/'.$_link.'/'.$state['_parent']->id
+
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('New mailshot'),
+                        'icon'      => 'container-storage',
+                        'reference' => ''
+                    );
+
+                    break;
+                case 'email_tracking':
+
+                    $email_campaign_type=get_object('EmailCampaignType',$state['_parent']->get('Email Campaign Email Template Type Key'));
+
+                    if ($email_campaign_type->get('Email Campaign Type Scope') == 'User Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Staff notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'bell',
+                            'reference' => 'mailroom/'.$state['store']->id.'/staff_notifications'
+                        );
+                        $_link='staff_notifications';
+                    }elseif ($email_campaign_type->get('Email Campaign Type Scope') == 'Customer Notification') {
+
+                        $branch[] = array(
+                            'label'     => _('Customers notifications').' '.$state['store']->get('Code'),
+                            'icon'      => 'user',
+                            'reference' => 'mailroom/'.$state['store']->id.'/notifications'
+                        );
+                        $_link='notifications';
+                    } else {
+                        $branch[] = array(
+                            'label'     => _('Marketing emails').' '.$state['store']->get('Code'),
+                            'icon'      => 'bullhorn',
+                            'reference' => 'mailroom/'.$state['store']->id.'/marketing'
+                        );
+                        $_link='marketing';
+
+                    }
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$email_campaign_type->get('Label').'</span>',
+                        'icon'      => $email_campaign_type->get('Icon'),
+                        'reference' => 'mailroom/'.$state['store']->id.'/'.$_link.'/'.$email_campaign_type->id
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => '<span class="Email_Campaign_Name id">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'container-storage',
+                        'reference' => 'mailroom/'.$state['store']->id.'/'.$_link.'/'.$email_campaign_type->id.'/mailshot/'.$state['_parent']->id
+
+                    );
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$state['_object']->get('Email Tracking Email').'</span>',
+                        'icon'      => 'paper-plane',
+                        'reference' => ''
+                    );
+                    break;
+                    
+            }
+
+
+            break;
+
         case 'suppliers':
             if ($state['section'] == 'dashboard') {
                 $branch[] = array(
@@ -7586,188 +7462,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             break;
 
 
-        /*
-        case 'invoices':
-            $branch[] = array(
-                'label'     => '',
-                'icon'      => 'bars',
-                'reference' => 'receipts'
-            );
-
-            switch ($state['section']) {
-
-
-
-                case 'payments':
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label' => _('Payments').' ('._(
-                                    'All stores'
-                                ).')',
-                            'icon'  => '',
-                            'url'   => 'invoices/payments/all'
-                        );
-                    }
-                    break;
-
-                case 'invoice':
-
-                    if ($state['parent'] == 'customer') {
-
-                        $customer = new Customer($state['parent_key']);
-                        if ($customer->id) {
-                            if ($user->get_number_stores() > 1) {
-
-
-                                $branch[] = array(
-                                    'label'     => _(
-                                        'Customers (All stores)'
-                                    ),
-                                    'icon'      => '',
-                                    'reference' => 'customers/all'
-                                );
-
-                            }
-
-                            $store = new Store(
-                                $customer->data['Customer Store Key']
-                            );
-
-
-                            $branch[] = array(
-                                'label'     => _(
-                                        'Customers'
-                                    ).' '.$store->data['Store Code'],
-                                'icon'      => 'users',
-                                'reference' => 'customers/'.$store->id
-                            );
-                            $branch[] = array(
-                                'label'     => _(
-                                        'Customer'
-                                    ).' '.$customer->get_formatted_id(),
-                                'icon'      => 'user',
-                                'reference' => 'customer/'.$customer->id
-                            );
-                        }
-
-
-                    } else {
-                        $store = new Store(
-                            $state['_object']->data['Invoice Store Key']
-                        );
-
-                        if ($user->get_number_stores() > 1) {
-                            $branch[] = array(
-                                'label'     => '('._('All stores').')',
-                                'icon'      => '',
-                                'reference' => 'invoices/all'
-                            );
-                        }
-                        $branch[] = array(
-                            'label'     => _('Invoices').' '.$store->data['Store Code'],
-                            'icon'      => '',
-                            'reference' => 'invoices/'.$store->id
-                        );
-
-
-                    }
-                    $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
-                        'reference' => ''
-                    );
-
-                    break;
-
-                case 'delivery_note':
-
-                    $store = new Store(
-                        $state['_object']->data['Delivery Note Store Key']
-                    );
-
-
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label'     => '('._('All stores').')',
-                            'icon'      => '',
-                            'reference' => 'invoices/all'
-                        );
-                    }
-                    $branch[] = array(
-                        'label'     => _('Invoices').' '.$store->data['Store Code'],
-                        'icon'      => '',
-                        'reference' => 'invoices/'.$store->id
-                    );
-
-                    $parent   = new Invoice($state['parent_key']);
-                    $branch[] = array(
-                        'label'     => $parent->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
-                        'reference' => 'invoices/'.$store->id.'/'.$state['parent_key']
-                    );
-
-
-                    $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Delivery Note ID'
-                        ),
-                        'icon'      => 'truck fa-flip-horizontal',
-                        'reference' => ''
-                    );
-                    break;
-
-
-                case 'order':
-
-                    $store = new Store(
-                        $state['_object']->data['Order Store Key']
-                    );
-
-
-                    if ($user->get_number_stores() > 1) {
-                        $branch[] = array(
-                            'label'     => '('._('All stores').')',
-                            'icon'      => '',
-                            'reference' => 'invoices/all'
-                        );
-                    }
-                    $branch[] = array(
-                        'label'     => _('Invoices').' '.$store->data['Store Code'],
-                        'icon'      => '',
-                        'reference' => 'invoices/'.$store->id
-                    );
-
-                    $parent   = new Invoice($state['parent_key']);
-                    $branch[] = array(
-                        'label'     => $parent->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
-                        'reference' => 'invoices/'.$store->id.'/'.$state['parent_key']
-                    );
-
-
-                    $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Order Public ID'
-                        ),
-                        'icon'      => 'shopping-cart',
-                        'reference' => ''
-                    );
-                    break;
-
-
-            }
-
-
-            break;
-
-        */
-
         case 'help':
             switch ($state['section']) {
                 case 'help':
@@ -8524,8 +8218,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             break;
-
-        case 'warehouses':
+            case 'warehouses':
 
 
             if ($user->get_number_warehouses() > 1 or $user->can_create('warehouses')) {
@@ -10918,41 +10611,59 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             break;
 
 
-        case 'marketing_server':
+        case 'offers_server':
             $branch[] = array(
-                'label'     => _('Marketing (All stores)'),
-                'icon'      => 'bullhorn',
+                'label'     => _('Offers').' ('._('All stores).'),
+                'icon'      => 'percentage',
                 'reference' => ''
             );
 
 
             break;
-        case 'marketing':
+        case 'offers':
             $state['current_store'] = $state['store']->id;
             $branch[]               = array(
                 'label'     => _('(All stores)'),
-                'icon'      => 'bullhorn',
-                'reference' => 'marketing/all'
+                'icon'      => 'badge-percent',
+                'reference' => 'offers/by_store'
             );
 
-            if ($state['section'] == 'deals') {
+
+
+
+            if ($state['section'] == 'campaigns') {
+
+                $branch[] = array(
+                    'label'     => _("Offers categories").' '.$state['store']->get('Code'),
+                    'icon'      => 'sitemap',
+                    'reference' => ''
+                );
+            }elseif ($state['section'] == 'offers') {
 
                 $branch[] = array(
                     'label'     => _('Offers').' '.$state['store']->get('Code'),
                     'icon'      => 'tag',
                     'reference' => ''
                 );
-            } elseif ($state['section'] == 'campaigns') {
+            }elseif ($state['section'] == 'vouchers') {
                 $branch[] = array(
-                    'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
+                    'label'     => _("Offers categories").' '.$state['store']->get('Code'),
+                    'icon'      => 'sitemap',
+                    'reference' => 'offers/'.$state['store']->id.'/categories'
+                );
+
+                $branch[] = array(
+                    'label'     => '<span class="Deal_Campaign_Name">'.$state['_object']->get('Name').'</span>',
+                    'html_icon' => $state['_object']->get('Icon'),
                     'reference' => ''
                 );
-            } elseif ($state['section'] == 'campaign') {
+
+
+            } elseif ($state['section'] == 'campaign_order_recursion') {
                 $branch[] = array(
-                    'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'campaigns/'.$state['store']->id
+                    'label'     => _("Offers categories").' '.$state['store']->get('Code'),
+                    'icon'      => 'sitemap',
+                    'reference' => 'offers/'.$state['store']->id.'/categories'
                 );
 
                 $branch[] = array(
@@ -10960,11 +10671,27 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => 'tags',
                     'reference' => ''
                 );
+
+
+            }  elseif ($state['section'] == 'campaign') {
+                $branch[] = array(
+                    'label'     => _("Offers categories").' '.$state['store']->get('Code'),
+                    'icon'      => 'sitemap',
+                    'reference' => 'offers/'.$state['store']->id.'/categories'
+                );
+
+                $branch[] = array(
+                    'label'     => '<span class="Deal_Campaign_Name">'.$state['_object']->get('Name').'</span>',
+                    'html_icon' => $state['_object']->get('Icon'),
+                    'reference' => ''
+                );
+
+
             } elseif ($state['section'] == 'campaign.new') {
                 $branch[] = array(
-                    'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tags',
-                    'reference' => 'campaigns/'.$state['store']->id
+                    'label'     => _("Offers categories").' '.$state['store']->get('Code'),
+                    'icon'      => 'sitemap',
+                    'reference' => 'offers/'.$state['store']->id.'/categories'
                 );
 
                 $branch[] = array(
@@ -10981,56 +10708,104 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $state['store'] = new Store($state['_parent']->get('Store Key'));
 
                     $branch[] = array(
-                        'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
                         'icon'      => 'tags',
-                        'reference' => 'campaigns/'.$state['store']->id
+                        'reference' => 'offers/'.$state['store']->id
                     );
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
-                        'icon'      => 'tags',
+                        'html_icon' => $state['_parent']->get('Icon'),
+                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
+                    );
+
+
+                    switch ($state['_parent']->get('Code')) {
+                        case 'VO':
+                            $branch[] = array(
+                                'label'     => _('New voucher'),
+                                'icon'      => '',
+                                'reference' => ''
+                            );
+                            break;
+                        default:
+                            $branch[] = array(
+                                'label'     => _('New offer'),
+                                'icon'      => '',
+                                'reference' => ''
+                            );
+
+                    }
+
+
+                } else {
+
+                    $branch[] = array(
+                        'label'     => _('New offer'),
+                        'icon'      => '',
                         'reference' => ''
                     );
 
                 }
 
 
-                $branch[] = array(
-                    'label'     => _('New offer'),
-                    'icon'      => '',
-                    'reference' => ''
-                );
             } elseif ($state['section'] == 'deal') {
 
-                if ($state['parent'] == 'campaign') {
+
                     $branch[] = array(
-                        'label'     => _('Campaigns').' <span class="Store_Code">'.$state['store']->get(
-                                'Code'
-                            ).'</span>',
+                        'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
                         'icon'      => 'tags',
-                        'reference' => 'campaigns/'.$state['store']->id
+                        'reference' => 'offers/'.$state['store']->id
                     );
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
                         'icon'      => 'tags',
-                        'reference' => ''
+                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
                     );
 
-                }
 
                 $branch[] = array(
                     'label'     => '<span class="Deal_Name">'.$state['_object']->get('Name').'</span>',
                     'icon'      => 'tag',
                     'reference' => ''
                 );
-            } elseif ($state['section'] == 'dashboard') {
+            }  elseif ($state['section'] == 'deal_component') {
+
+
                 $branch[] = array(
-                    'label'     => _('Marketing dashboard').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                    'icon'      => 'tachometer',
-                    'reference' => ''
+                    'label'     => _("Offers categories").' '.$state['store']->get('Code'),
+                    'icon'      => 'sitemap',
+                    'reference' => 'offers/'.$state['store']->id.'/categories'
                 );
+
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get('Name'),
+                       'html_icon'      => $state['_parent']->get('Icon'),
+                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
+                    );
+
+
+                    if ($state['_parent']->get('Code') == 'OR') {
+                        $branch[] = array(
+                            'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Deal Component Allowance Target Label').'</span>',
+                            'icon'      => 'tag',
+                            'reference' => ''
+                        );
+                    } else {
+                        $branch[] = array(
+                            'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Name Label').'</span>',
+                            'icon'      => 'tag',
+                            'reference' => ''
+                        );
+                    }
+
+
+
+
+
             }
+
             break;
 
 
@@ -11400,8 +11175,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             }
 
             break;
-
-        case 'agent_parts':
+            case 'agent_parts':
 
             switch ($state['section']) {
                 case 'parts':
@@ -11427,6 +11201,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
     );
     $smarty->assign('_content', $_content);
+
 
     $html = $smarty->fetch('view_position.tpl');
 

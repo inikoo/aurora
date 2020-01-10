@@ -10,7 +10,7 @@
 */
 
 $tab     = 'mailshot.workshop.previous_mailshots';
-$ar_file = 'ar_mailshots_tables.php';
+$ar_file = 'ar_mailroom_tables.php';
 $tipo    = 'previous_mailshots';
 
 

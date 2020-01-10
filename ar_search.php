@@ -9,168 +9,390 @@
 
 */
 
+
+use Elasticsearch\ClientBuilder;
+
+
 require_once 'common.php';
 require_once 'utils/ar_common.php';
-require_once 'utils/table_functions.php';
-require_once 'utils/text_functions.php';
-include_once 'search_functions.php';
+//include_once 'search_functions.php';
 
 
-if (!isset($_REQUEST['tipo'])) {
+$data = prepare_values(
+    $_REQUEST, array(
+                 'query'        => array('type' => 'string'),
+                 'search_index' => array('type' => 'string'),
+                 'mtime'        => array('type' => 'string'),
+                 'state'        => array('type' => 'json array')
+             )
+);
+
+
+if ($data['query'] == '') {
     $response = array(
-        'state' => 405,
-        'resp'  => 'Non acceptable request (t)'
+        'state'          => 200,
+        'number_results' => 0,
+        'results'        => array(),
+        'query'          => ''
+
     );
     echo json_encode($response);
     exit;
 }
 
-$tipo = $_REQUEST['tipo'];
-
-
-switch ($tipo) {
-    case 'search':
-
-
-
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'query' => array('type' => 'string'),
-                         'state' => array('type' => 'json array')
-                     )
-        );
-
-
-
-
-
-        if ($user->get('User Type') == 'Agent') {
-            agent_search($db, $account, $user, $data);
-        } else {
-            if ($data['state']['module'] == 'customers' or $data['state']['module'] == 'customers_server') {
-                if ($data['state']['current_store']) {
-                    $data['scope']     = 'store';
-                    $data['scope_key'] = $data['state']['current_store'];
-                } else {
-                    $data['scope'] = 'stores';
-                }
-                search_customers($db, $account,$user, $data);
-            } elseif ($data['state']['module'] == 'orders') {
-                if ($data['state']['current_store']) {
-                    $data['scope']     = 'store';
-                    $data['scope_key'] = $data['state']['current_store'];
-                } else {
-                    $data['scope'] = 'stores';
-                }
-                search_orders($db, $account,$user, $data);
-            } elseif ($data['state']['module'] == 'products') {
-                if ($data['state']['current_store']) {
-                    $data['scope']     = 'store';
-                    $data['scope_key'] = $data['state']['current_store'];
-                } else {
-                    $data['scope'] = 'stores';
-                }
-
-                search_products($db, $account, $user,$data);
-
-
-
-            } elseif ($data['state']['module'] == 'websites') {
-
-
-
-                if ($data['state']['current_website']) {
-                    $data['scope']     = 'website';
-                    $data['scope_key'] = $data['state']['current_website'];
-                } else {
-                    $data['scope'] = 'websites';
-                }
-
-                search_webpages($db, $account, $user, $data);
-
-            } elseif ($data['state']['module'] == 'products_server') {
-
-                $data['scope'] = 'stores';
-
-                search_products($db, $account, $user,$data);
-            } elseif ($data['state']['module'] == 'inventory') {
-                if ($data['state']['current_warehouse']) {
-                    $data['scope']     = 'warehouse';
-                    $data['scope_key'] = $data['state']['current_warehouse'];
-                } else {
-                    $data['scope'] = 'warehouses';
-                }
-                search_inventory($db, $account, $user,$data);
-            } elseif ($data['state']['module'] == 'hr') {
-                search_hr($db, $account, $user, $data);
-
-            } elseif ($data['state']['module'] == 'suppliers') {
-                search_suppliers($db, $account, $user, $data);
-
-            }elseif ($data['state']['module'] == 'production') {
-                search_production($db, $account, $user, $data);
-
-            } elseif ($data['state']['module'] == 'delivery_notes') {
-                if ($data['state']['current_store']) {
-                    $data['scope']     = 'store';
-                    $data['scope_key'] = $data['state']['current_store'];
-                } else {
-                    $data['scope'] = 'stores';
-                }
-                search_delivery_notes($db, $account, $user, $data);
-            } elseif ($data['state']['module'] == 'delivery_notes_server') {
-
-                $data['scope'] = 'stores';
-
-                search_delivery_notes($db, $account, $user, $data);
-            } elseif ($data['state']['module'] == 'orders_server') {
-                $data['scope'] = 'stores';
-                search_orders($db, $account, $user,$data);
-            } elseif ($data['state']['module'] == 'accounting_server') {
-                if (in_array($data['state']['section'], array('deleted_invoice','deleted_invoices_server','invoices','invoice','category'))) {
-
-
-                    $data['scope'] = 'stores';
-                    search_invoices($db, $account, $user, $data);
-                } else {
-                    $data['scope'] = 'stores';
-                    search_payments($db, $account,$user, $data);
-                }
-            } elseif ($data['state']['module'] == 'accounting') {
-
-                $data['scope']     = 'store';
-                $data['scope_key'] = $data['state']['current_store'];
-                if (in_array($data['state']['section'], array('deleted_invoice','deleted_invoices','invoices','invoice','category'))) {
-                    search_invoices($db, $account, $user, $data);
-                } else {
-                    search_payments($db, $account,$user, $data);
-                }
-
-
-
-            } elseif ($data['state']['module'] == 'warehouses') {
-                if ($data['state']['current_warehouse']) {
-                    $data['scope']     = 'warehouse';
-                    $data['scope_key'] = $data['state']['current_warehouse'];
-                } else {
-                    $data['scope'] = 'warehouses';
-                }
-                search_locations($db, $account, $user,$data);
-            }
-        }
-        break;
-
-
-    default:
-        $response = array(
-            'state' => 405,
-            'resp'  => 'Tab not found '.$tab
-        );
-        echo json_encode($response);
-        exit;
-        break;
+if ($data['state']['current_store']) {
+    $stores = array($data['state']['current_store']);
+} else {
+    $stores = $user->stores;
 }
 
 
+if ($user->get('User Type') == 'Agent') {
+    agent_search($db, $account, $user, $data);
+} else {
+    if ($data['state']['module'] == 'customers' or $data['state']['module'] == 'customers_server') {
 
+
+        check_for_store_permissions($stores);
+
+        if (in_array(
+            $data['state']['section'], array(
+                                         'prospects',
+                                         'prospect',
+                                         'prospect.new',
+                                         'prospects.email_template',
+                                         'prospects.template.new'
+                                     )
+        )) {
+            $scopes = array(
+                'prospects' => 10
+            );
+        } elseif (in_array(
+            $data['state']['section'], array(
+                                         'lists',
+                                         'list',
+                                         'list.new',
+
+                                     )
+        )) {
+            $scopes = array(
+                'lists' => 10
+            );
+        } else {
+            $scopes = array(
+                'customers' => 10
+            );
+        }
+
+
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['customers'], $scopes, $stores));
+        exit;
+
+
+    } elseif ($data['state']['module'] == 'orders' or $data['state']['module'] == 'orders_server') {
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['orders'], array(), $stores));
+        exit;
+
+    } elseif ($data['state']['module'] == 'products' or $data['state']['module'] == 'products_server') {
+
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['products'], array(), $stores));
+        exit;
+
+
+    } elseif ($data['state']['module'] == 'mailroom' or $data['state']['module'] == 'mailroom_server') {
+
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['mailroom'], array(), $stores));
+        exit;
+
+
+    } elseif ($data['state']['module'] == 'offers' or $data['state']['module'] == ' offers_server') {
+
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['offers'], array(), $stores));
+        exit;
+
+
+    } elseif ($data['state']['module'] == 'inventory') {
+
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['inventory'], array(), array()));
+        exit;
+    } elseif ($data['state']['module'] == 'websites') {
+
+
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['websites'], array(), $stores));
+        exit;
+
+    } elseif ($data['state']['module'] == 'hr') {
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['hr']));
+        exit;
+
+    } elseif ($data['state']['module'] == 'users') {
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['users']));
+        exit;
+
+    } elseif ($data['state']['module'] == 'suppliers') {
+
+        if (in_array(
+            $data['state']['section'], array(
+                                         'agents',
+                                         'agent',
+                                         'agents.new'
+                                     )
+        )) {
+            $scopes = array(
+                'agents' => 10
+            );
+        } else {
+            $scopes = array(
+                'suppliers' => 10
+            );
+        }
+
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['suppliers']));
+        exit;
+
+    } elseif ($data['state']['module'] == 'production') {
+        search_production($db, $account, $user, $data);
+
+    } elseif ($data['state']['module'] == 'delivery_notes' or $data['state']['module'] == 'delivery_notes_server') {
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['delivering'], array(), $stores));
+        exit;
+    } elseif ($data['state']['module'] == 'accounting' or $data['state']['module'] == 'accounting_server') {
+
+
+        if (in_array(
+            $data['state']['section'], array(
+
+                                         'invoices',
+                                         'invoice',
+                                         'category'
+                                     )
+        )) {
+            $scopes = array(
+                'invoices' => 10
+            );
+        } elseif (in_array(
+            $data['state']['section'], array(
+                                         'deleted_invoice',
+                                         'deleted_invoices',
+                                         'deleted_invoices_server',
+
+                                     )
+        )) {
+            $scopes = array(
+                'deleted_invoices' => 10,
+
+            );
+        } elseif (in_array(
+            $data['state']['section'], array(
+                                         'payments',
+                                         'credits',
+                                         'payment_account',
+                                         'payment'
+
+                                     )
+        )) {
+            $scopes = array(
+                'payments' => 10
+            );
+        } else {
+            $scopes = array(
+                'invoices'         => 10,
+                'payments'         => 7,
+                'deleted_invoices' => 2
+            );
+        }
+        check_for_store_permissions($stores);
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['accounting'], $scopes, $stores));
+
+    } elseif ($data['state']['module'] == 'warehouses') {
+
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), ['warehouse']));
+        exit;
+    } elseif ($data['state']['module'] == 'dashboard') {
+        echo json_encode(search_ES($data, $data['state']['section'], $user->get('Handle'), '', array(), $stores));
+        exit;
+    }
+}
+
+function check_for_store_permissions($stores) {
+    if (count($stores) == 0) {
+        $response = array(
+            'state'          => 200,
+            'number_results' => 0,
+            'results'        => array(),
+            'query'          => ''
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+}
+
+function search_ES($query_data, $section, $user_code, $modules, $scopes = [], $stores = array()) {
+
+
+    $query = trim($query_data['query']);
+
+    $max_results = 16;
+
+
+    $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+
+    $params = [
+        'index' => strtolower('au_q_'.$_SESSION['account']),
+
+        'body'    =>
+
+            [
+                "query" => [
+                    "bool" => [
+                        "must" => [
+                            [
+                                "multi_match" => [
+                                    "query" => $query,
+
+                                    "type" => "bool_prefix",
+
+                                    "fields" => [
+                                        "rt",
+                                        "rt._2gram",
+                                        "rt._3gram"
+                                    ]
+                                ]
+                            ]
+                        ],
+
+                        "should" => [
+                            [
+                                "rank_feature" => [
+                                    "field" => "weight"
+                                ]
+                            ],
+                            [
+                                'match' => [
+                                    'code' => $query
+                                ]
+                            ]
+
+                        ]
+                    ]
+                ]
+            ],
+        '_source' => [
+            'icon_classes',
+            'label_1',
+            'label_2',
+            'label_3',
+            'label_4',
+            'url'
+        ],
+        'size'    => $max_results
+
+
+    ];
+
+    if ($modules !== '') {
+
+        $params['body']['query']['bool']['filter'][] = array(
+            "terms" => [
+                "module" => $modules
+            ]
+        );
+    }
+
+    foreach ($scopes as $scope => $boost) {
+        $params['body']['query']['bool']['should'][] = array(
+            "rank_feature" => [
+                "field" => "scopes.".$scope,
+                "boost" => $boost
+            ]
+        );
+    }
+
+    if (count($stores) > 0) {
+        $params['body']['query']['bool']['filter'][] = array(
+            "terms" => [
+                "store_key" => $stores
+            ]
+        );
+    }
+
+    $now    = DateTime::createFromFormat('U.u', microtime(true));
+    $result = $client->search($params);
+
+
+    $mtime = $now->format("U.u");
+
+
+    if ($query_data['search_index'] == '') {
+        $action     = 'seed';
+        $time_diff = '';
+    } else {
+        $action = 'searching';
+        $time_diff =  $mtime-$query_data['mtime']  ;
+
+        /*
+        if ($time_diff < .400) {
+            $status = 'typing';
+
+        } else {
+            $status = 'searching';
+
+        }
+        */
+    }
+
+
+
+
+
+    $analytics_params = [
+        'index' => strtolower('au_q_analytics_'.DNS_ACCOUNT_CODE),
+        'body'  => [
+            'date'         => $now->format("Y-m-d\TH:i:s.u"),
+            'account'      => DNS_ACCOUNT_CODE,
+            'stores'       => join($stores),
+            'query'        => $query,
+            'modules'      => (is_array($modules) ? array_pop($modules) : ''),
+            'section'      => $section,
+            'user'         => $user_code,
+            'search_index' => $query_data['search_index'],
+            'action'       => $action,
+            'delta_time'   => $time_diff,
+            'number_results'=>$result['hits']['total']['value']
+
+        ]
+    ];
+
+
+    // print_r($analytics_params);
+
+    $analytics_index = $client->index($analytics_params);
+
+    // print_r($analytics_index);
+
+    return array(
+        'state'          => 200,
+        'number_results' => $result['hits']['total']['value'],
+        'results'        => $result['hits']['hits'],
+        'query'          => $query,
+        'class'          => (is_array($modules) ? array_pop($modules) : 'dashboard'),
+        'search_index'   => $analytics_index['_id'],
+        'mtime'          => $mtime
+
+    );
+
+
+}
 

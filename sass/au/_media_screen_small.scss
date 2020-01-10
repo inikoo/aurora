@@ -10,23 +10,66 @@
     margin-left: -$grid_section_width_small;
   }
 
-  #app_leftmenu {
+  #app_left_menu {
     width: 40px;
+
+
+
+
+    #account_name{
+      display: none
+    }
+
+    #aurora_logo {
+      width:40px
+    }
+
     li {
       padding: 3px 5px 3px 10px;
     }
 
-    .label, #top_info, #account_name {
+    .label {
       display: none
     }
+
+.current_store_label i{
+  display: none;
+}
+
+
     #aurora_logo_small_screen {
-      display: block
-    }
-    #aurora_logo_small_screen {
+      display: block;
       padding: 10px 0px;
+
       img {
         width: 60%
       }
+    }
+
+    .aurora_version {
+
+
+      .timezone_info, .aurora, .full {
+        display: none;
+      }
+
+      .small {
+        display: block;
+      }
+    }
+
+
+    #submit_ticket {
+      span {
+        display: none;
+      }
+
+      i {
+        display: block;
+      }
+    }
+    .bookmarks{
+      display: block;
     }
   }
 
@@ -34,15 +77,11 @@
     margin-left: 40px;
   }
 
-  #notifications {
 
-  }
 
-  .aurora_version.full {
+
+  .right_bookmarks{
     display: none;
-  }
-  .aurora_version.small {
-    display: block;
   }
 
 }

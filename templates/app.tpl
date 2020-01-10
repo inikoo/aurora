@@ -44,7 +44,10 @@
 
 
 </head>
-<body  data-labels='{
+<body
+        data-user_handle="{$user->get('Handle')}" data-account_code="{$account->get('Account Code')}"
+        data-user_key="{$user->id}"
+        data-labels='{
 "save":"{t}Save{/t}",
 "undo":"{t}Undo{/t}",
 "add":"{t}Add{/t}",
@@ -98,60 +101,151 @@
 
 
 <div id="top_bar" >
-    <div class="timezone_info">{$timezone_info}</div>
+
 
     <div id="view_position"></div>
+
+    <div id="profile_section" style="">
+
+        <span  class="button" style="margin-right: 15px" " onclick="change_view('profile')">
+            <i class="button fa fa-user-circle  " style="margin-right: 4px"></i>
+            {$user->get('User Alias')}
+        </span>
+
+        <span class="logout button" onclick="logout()"><i title="{t}Logout{/t}" class="small fa fa-sign-out fa-fw fa-flip-horizontal "></i><span id="logout_label" class="label"> {t}Logout{/t}</span>
+        </span>
+
+    </div>
 
 </div>
 <input type="hidden" id="_labels" data-labels='{ "error":"{t}Error{/t}"}'>
 
 <div class="grid">
     <section>
-        <div id="app_leftmenu">
-            <div id="top_info">
-                <div id="aurora_logo" class="link" onclick="help()">
-                    <img src="/art/aurora_log_v2_orange_small.png"/>
+        <div id="app_left_menu">
+            <div id="top_info" class="button"   onclick="change_view('dashboard')" >
+                <div id="aurora_logo">
+                <i class="fal fa-tachometer-alt" style="font-size: 18px;margin-top: 6px"></i>
                 </div>
-                <div id="hello_user" class="link" data-user_key="{$user->id}" onclick="change_view('profile')">
-                    {$user->get('User Alias')}
+                <div id="account_name" class=" Account_Name" style="text-align: left;">
+                    {$account->get('Account Name')}
                 </div>
+
+
             </div>
-            <div id="account_name" class="link Account_Name"
-                 data-user_handle="{$user->get('Handle')}" data-account_code="{$account->get('Account Code')}" onclick="change_view('account')">{$account->get('Account Name')}
+
+
+
+            <div class="current_store_label invisible" style="color:#ddd;font-size: 12px;height: 20px;line-height: 20px;margin-top:4px;text-align: center">
+
+                <i class="fal fa-store-alt margin_right_5"></i>
+                <span></span>
             </div>
-            <div id="aurora_logo_small_screen">
-                <img src="/art/aurora_log_v2_orange_small.png"/>
-            </div>
+
+
+
+
             <div id="menu"></div>
-            <ul style="margin-top:5px">
+            <ul  class="bookmarks"  >
+
+
+
+
+
+
+                {if  $user->can_view('account')  }
+                    <li onclick="change_view('/account')"><i class="fal fa-sliders-h-square fa-fw" ></i><span class="label"> </span>
+                    </li>
+                 {/if}
+
+
                 {if  $user->can_view('users_reports')  }
-                    <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span>
+                    <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8" title="{t}Fire{/t}" ></i>
                     </li>
                 {/if}
-                {*
-                <li title="{t}Share screen{/t}"><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
-                                                                                                                                                                                                class="label"> {t}Share screen{/t}</span></a>
-                </li>
-                 <li class="hide" title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
-                </li>
-                *}
 
-                <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;"><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
-                                                                                                                                                                             class="label"> {t}Help{/t}</span>
-                </li>
-            </ul>
-            <ul style="margin-top:20px">
-                <li onclick="logout()"><i title="{t}Logout{/t}" class="fa fa-sign-out fa-fw fa-flip-horizontal"></i><span id="logout_label" class="label"> {t}Logout{/t}</span>
-                </li>
 
             </ul>
 
-            <div class="aurora_version full"></div>
-            <div class="aurora_version small"></div>
+
+            <div class="aurora_version">
+            <div class="timezone_info">{$timezone_info}</div>
+
+
+                <img src="/art/aurora_log_v2_orange_small.png"/>
+                <div class="aurora">aurora</div>
+
+                <div class=" full"></div>
+            <div class=" small"></div>
+
+
+                <div id="submit_ticket"  style="margin-top: 10px"  onclick="FreshWidget.show(); return false;">
+                    <span class="button" onclick="show_side_content('help')"  >{t}Submit ticket{/t}</span>
+
+                    <i class=" far fa-headset" title="{t}Submit ticket{/t}"></i>
+                </div>
+
+
+            </div>
 
         </div>
         <div id="app_main">
-            <div id="navigation"></div>
+            <div id="navigation">
+                <div id="address_bar" style="display: flex;position: relative;">
+
+                    <div id="top_menu" style="">
+
+                    </div>
+
+                    <div class="smart_search_input" style="width: 500px;border-bottom:1px solid #ccc" >
+
+                        <label for="smart_search" aria-label="{t}Search{/t}" >
+                            <i class="far fa-search"></i>
+                        </label>
+                             <form>
+                            <input  style="position: relative;bottom: 2px"/>
+                             </form>
+                        <div class="options">
+        <span class="close_search ">
+                <button>
+                <i class="fal fa-fw fa-times"></i>
+                </button>
+            </span>
+                        </div>
+                        <div class="options hide">
+            <span>
+                <button ">
+                <i class="small fal fa-fw fa-sliders-h"></i>
+                </button>
+            </span>
+                        </div>
+
+
+                    </div>
+
+                    <div class="smart_search_result hide">
+                        <div class="search_result_title  small">
+                            <div class="result_info italic">{t}Lightweight results{/t} <span class="num"></span></div>
+
+
+                            <div class="options">
+            <span>
+                <button style="padding-right: 10px">
+                <i class="small save valid changed far fa-fw fa-search-plus"></i>
+                </button>
+            </span>
+                            </div>
+
+                        </div>
+                        <table class="search_results"  data-search_index="" data-search_mtime=""   >
+
+                        </table>
+                    </div>
+
+                </div>
+                <div id="au_header">
+                </div>
+            </div>
             <div id="web_navigation"></div>
             <div id="object_showcase"></div>
             <div id="tabs"></div>
@@ -170,6 +264,15 @@
             <div data-type="real_time_users" onclick="show_side_content('real_time_users')" class="real_time_users_button side_content_icon square_button {if $_side_block=='real_time_users'}selected{/if}" title="{t}Real time users{/t}">
                 <i class="fa fa-user-circle fa-fw  "></i>
             </div>
+
+            {if  $user->can_view('users_reports')  }
+            <div data-type="fire" onclick="change_view('/fire')"  title="{t}Fire{/t}"   style="float: right" class=" right_bookmarks side_content_icon square_button">
+            <i class="fa fa-fire fa-fw  " style="color:orange;" ></i>
+            </div>
+            {/if}
+
+
+
             <div style="clear:both"></div>
         </div>
 
