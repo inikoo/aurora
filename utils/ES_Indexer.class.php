@@ -755,7 +755,7 @@ class ES_indexer {
                 $this->icon_classes = 'fa fa-cube warning';
                 break;
             case 'Discontinued':
-                $this->weight       = 5;
+                $this->weight       = 1;
                 $this->icon_classes = 'fa fa-cube very_discreet';
                 break;
             case 'Suspended':
@@ -763,7 +763,7 @@ class ES_indexer {
                 $this->icon_classes = 'fa fa-cube error';
                 break;
             default:
-                $this->weight       = 60;
+                $this->weight       = 70;
                 $this->icon_classes = 'fa fa-cube';
                 break;
         }

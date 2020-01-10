@@ -839,6 +839,8 @@ class Product extends Asset {
 
             //  $store=new Store($this->get())
 
+            $this->fork_index_elastic_search();
+
 
         } else {
             $this->error = true;
@@ -1116,6 +1118,8 @@ class Product extends Asset {
 
     function update_status_from_parts() {
 
+        $old_status=$this->get('Product Status');
+
         $status = 'Active';
 
         $part_objects = $this->get_parts('objects');
@@ -1151,6 +1155,10 @@ class Product extends Asset {
         }
 
         $this->update_availability();
+
+        if( $old_status!=$this->get('Product Status')){
+            $this->fork_index_elastic_search();
+        }
 
 
     }
@@ -1188,6 +1196,8 @@ class Product extends Asset {
     }
 
     function update_availability($use_fork = true) {
+
+        $old_availability_state=$this->get('Product Availability State');
 
 
         $min_days_available = '';
@@ -1314,6 +1324,9 @@ class Product extends Asset {
             )
         );
 
+        if($old_availability_state!=$this->get('Product Availability State')){
+            $this->fork_index_elastic_search();
+        }
 
         $this->update_web_state($use_fork);
 
@@ -2090,6 +2103,8 @@ class Product extends Asset {
 
 
             $this->deleted = true;
+
+            $this->fork_index_elastic_search('delete_elastic_index_object');
         }
 
 
@@ -2301,6 +2316,7 @@ class Product extends Asset {
 
                 );
 
+                $this->fork_index_elastic_search();
 
                 break;
 
@@ -2336,6 +2352,7 @@ class Product extends Asset {
                     )
 
                 );
+                $this->fork_index_elastic_search();
 
                 break;
             case ('Product HTSUS Code'):
@@ -2604,6 +2621,8 @@ class Product extends Asset {
                 $this->update_historic_object();
                 $this->updated = $updated;
                 $this->update_webpages('code');
+
+                $this->fork_index_elastic_search();
                 break;
 
             case 'Product Name':
@@ -2621,7 +2640,7 @@ class Product extends Asset {
                 $this->update_webpages('name');
 
                 $this->updated = $updated;
-
+                $this->fork_index_elastic_search();
                 break;
             case 'Product Unit Label':
                 if ($value == '') {
@@ -2649,6 +2668,7 @@ class Product extends Asset {
 
                 );
                 $this->update_webpages('label');
+                $this->fork_index_elastic_search();
                 break;
             case 'Product Label in Family':
 
@@ -2658,6 +2678,7 @@ class Product extends Asset {
 
                 $this->update_field($field, $value, $options);
                 $this->update_webpages('label_in_family');
+                $this->fork_index_elastic_search();
                 break;
 
 
@@ -2701,6 +2722,7 @@ class Product extends Asset {
 
                 $this->updated = $updated;
                 $this->update_webpages('price');
+                $this->fork_index_elastic_search();
                 break;
 
 
@@ -2778,6 +2800,8 @@ class Product extends Asset {
 
                 $this->update_historic_object();
                 $this->updated = $updated;
+
+                $this->fork_index_elastic_search();
 
                 break;
 
