@@ -26,19 +26,32 @@ $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 $params = [
     'index' => strtolower('au_qsearch_'.DNS_ACCOUNT_CODE),
     'body'  => array(
-        'settings'=>array(
-            'analysis'=>array(
-                'analyzer'=>'icu_analyzer'
-            )
+        'settings' => array(
+            'analysis'   => array(
+                'analyzer' => 'icu_analyzer',
+                "normalizer" => [
+                    "my_normalizer" => [
+                        "type"        => "custom",
+                        "char_filter" => [],
+                        "filter"      => [
+                            "lowercase",
+                            "asciifolding"
+                        ]
+                    ]
+                ]
+            ),
+
+
+
         ),
         'mappings' => array(
 
             'properties' => array(
                 'rt' => array(
-                    'type'=> 'search_as_you_type'
+                    'type' => 'search_as_you_type'
                 ),
 
-                'url'          => array(
+                'url'    => array(
                     'type'  => 'keyword',
                     'index' => false
                 ),
@@ -68,11 +81,12 @@ $params = [
                     'type' => 'text'
                 ),
                 */
-                'code'        => array(
-                    'type' => 'keyword'
+                'code'   => array(
+                    'type'       => 'keyword',
+                    "normalizer" => "my_normalizer"
                 ),
-                'module'       => array(
-                    'type'  => 'keyword',
+                'module' => array(
+                    'type' => 'keyword',
 
                 ),
 
@@ -81,19 +95,19 @@ $params = [
                     'type'  => 'text',
                     'index' => false
                 ),
-                'label_1' => array(
+                'label_1'      => array(
                     'type'  => 'text',
                     'index' => false
                 ),
-                'label_2' => array(
+                'label_2'      => array(
                     'type'  => 'text',
                     'index' => false
                 ),
-                'label_3' => array(
+                'label_3'      => array(
                     'type'  => 'text',
                     'index' => false
                 ),
-                'label_4' => array(
+                'label_4'      => array(
                     'type'  => 'text',
                     'index' => false
                 ),
@@ -102,15 +116,15 @@ $params = [
                     'type'  => 'text',
                     'index' => false
                 ),
-                'store_key'    => array(
+                'store_key'   => array(
                     'type' => 'short',
 
                 ),
-                'weight'       => array(
-                    'type'  => 'rank_feature',
+                'weight'      => array(
+                    'type' => 'rank_feature',
                 ),
-                'scopes'       => array(
-                    'type'  => 'rank_features',
+                'scopes'      => array(
+                    'type' => 'rank_features',
                 ),
             )
         )

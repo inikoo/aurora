@@ -651,9 +651,12 @@ class ES_indexer {
         $this->code = $this->object->get('Part Reference');
 
         $this->real_time[] = $this->object->get('Part Reference');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+
+      //  $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
+      //  $this->real_time[] = $number_only_id;
+      //  $this->real_time[] = (int)$number_only_id;
+
+
         $this->real_time[] = $this->object->get('Part Package Description');
         $this->real_time[] = $this->object->get('Part SKO Barcode');
         $this->real_time[] = strip_tags($this->object->get('Materials'));
@@ -712,9 +715,9 @@ class ES_indexer {
         $this->code =  $this->object->get('Code');
 
         $this->real_time[] = $this->object->get('Code');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
+        //$this->real_time[] = $number_only_id;
+        //$this->real_time[] = (int)$number_only_id;
 
         $this->label_1 = $this->object->get('Code');
         $this->label_2 = $this->object->get('Warehouse Area Code');
@@ -737,9 +740,9 @@ class ES_indexer {
         );
 
         $this->real_time[] = $this->object->get('Product Code');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
+        //$this->real_time[] = $number_only_id;
+        //$this->real_time[] = (int)$number_only_id;
         $this->real_time[] = $this->object->get('Product Name');
 
         $this->code = $this->object->get('Product Code');
@@ -836,9 +839,9 @@ class ES_indexer {
 
 
         $this->real_time[] = $this->object->get('Category Code');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
+        //$this->real_time[] = $number_only_id;
+        //$this->real_time[] = (int)$number_only_id;
         $this->real_time[] = $this->object->get('Category Label');
         $this->label_1     = $this->object->get('Code');
         $this->label_2     = $this->object->get('Label');
@@ -892,9 +895,11 @@ class ES_indexer {
         $this->code =  $this->object->get('Category Code');
 
         $this->real_time[] = $this->object->get('Category Code');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+
+        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
+        //$this->real_time[] = $number_only_id;
+        //$this->real_time[] = (int)$number_only_id;
+
         $this->real_time[] = $this->object->get('Category Label');
         $this->label_1     = $this->object->get('Code');
         if ($this->object->get('Code') != $this->object->get('Label')) {
@@ -949,9 +954,9 @@ class ES_indexer {
 
 
         $this->real_time[] = $this->object->get('Webpage Code');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Webpage Code')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Webpage Code')));
+        //$this->real_time[] = $number_only_id;
+        //$this->real_time[] = (int)$number_only_id;
 
         $this->label_1 = strtolower($this->object->get('Code'));
         $this->label_2 = $this->object->get('Webpage Name');
@@ -980,27 +985,27 @@ class ES_indexer {
             case 'Category Categories':
                 $category           = get_object('Category', $this->object->get('Webpage Scope Key'));
                 $this->real_time[]  = $category->get('Code');
-                $number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
-                $this->real_time[]  = $number_only_id;
-                $this->real_time[]  = (int)$number_only_id;
+                //$number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
+                //$this->real_time[]  = $number_only_id;
+                //$this->real_time[]  = (int)$number_only_id;
                 $this->real_time[]  = $category->get('Label');
                 $this->icon_classes .= 'far fa-browser| fal fa-folder-tree';
                 break;
             case 'Category Products':
                 $category           = get_object('Category', $this->object->get('Webpage Scope Key'));
                 $this->real_time[]  = $category->get('Code');
-                $number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
-                $this->real_time[]  = $number_only_id;
-                $this->real_time[]  = (int)$number_only_id;
+                //$number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
+                //$this->real_time[]  = $number_only_id;
+                //$this->real_time[]  = (int)$number_only_id;
                 $this->real_time[]  = $category->get('Label');
                 $this->icon_classes .= 'far fa-browser| fal fa-folder-open';
                 break;
             case 'Product':
                 $product            = get_object('Product', $this->object->get('Webpage Scope Key'));
                 $this->real_time[]  = $product->get('Code');
-                $number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $product->get('Code')));
-                $this->real_time[]  = $number_only_id;
-                $this->real_time[]  = (int)$number_only_id;
+                //$number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $product->get('Code')));
+                //$this->real_time[]  = $number_only_id;
+                //$this->real_time[]  = (int)$number_only_id;
                 $this->real_time[]  = $product->get('Name');
                 $this->icon_classes .= ' far fa-browser| fal fa-cube';
                 break;
@@ -1153,15 +1158,15 @@ class ES_indexer {
         $this->url = sprintf('supplier/%d/part/%d', $this->object->get('Supplier Part Supplier Key'), $this->object->id);
 
         $this->real_time[] = $this->object->get('Supplier Part Reference');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Supplier Part Reference')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Supplier Part Reference')));
+        //$this->real_time[] = $number_only_id;
+        //$this->real_time[] = (int)$number_only_id;
         $this->real_time[] = $this->object->get('Supplier Part Description');
 
         $this->real_time[] = $this->object->part->get('Part Reference');
-        $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->part->get('Part Reference')));
-        $this->real_time[] = $number_only_id;
-        $this->real_time[] = (int)$number_only_id;
+        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->part->get('Part Reference')));
+        //$this->real_time[] = $number_only_id;
+        //$this->real_time[] = (int)$number_only_id;
         $this->real_time[] = $this->object->part->get('Part Package Description');
         $this->real_time[] = $this->object->part->get('Part SKO Barcode');
         $this->real_time[] = strip_tags($this->object->part->get('Materials'));
