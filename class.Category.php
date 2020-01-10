@@ -426,6 +426,9 @@ class Category extends DB_Table {
             }
 
 
+            $this->fork_index_elastic_search();
+
+
         }
 
 
@@ -1744,6 +1747,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         $this->add_history($history_data);
         $this->deleted = true;
 
+        $this->fork_index_elastic_search('delete_elastic_index_object');
+
     }
 
     function get_parent_keys() {
@@ -2289,6 +2294,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $descendant->editor = $this->editor;
                     $descendant->update_branch_tree();
                 }
+
+                $this->fork_index_elastic_search();
+
             } elseif ($field == 'Category Label') {
 
 
@@ -2304,7 +2312,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                 }
-
+                $this->fork_index_elastic_search();
 
             } elseif ($value != $this->data[$field]) {
 

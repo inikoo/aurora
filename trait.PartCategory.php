@@ -626,6 +626,7 @@ trait PartCategory {
                 ), 'Part Category Dimension'
             );
         }
+        $this->fork_index_elastic_search();
 
 
     }

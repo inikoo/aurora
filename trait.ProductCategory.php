@@ -711,6 +711,7 @@ trait ProductCategory {
             }
         }
 
+        $this->fork_index_elastic_search();
 
     }
 
