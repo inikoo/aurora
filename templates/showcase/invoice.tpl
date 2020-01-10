@@ -4,7 +4,9 @@
             <div class="data_field">
                 <i class="fa fa-fw  fa-user" title="{t}Customer name{/t}"  ></i> <span onclick="change_view('/customers/{$invoice->get('Invoice Store Key')}/{$invoice->get('Invoice Customer Key')}')" class="link Invoice_Customer_Name">{$invoice->get('Invoice Customer Name')}</span>
             </div>
-
+            <div class="data_field {if $invoice->get('Invoice Customer Name')==$invoice->get('Invoice Customer Contact Name')}hide{/if} " >
+                <i class="fa fa-fw  fa-male super_discreet" title="{t}Contact name{/t}"  ></i> <span  class=" Invoice_Customer_Contact_Name">{$invoice->get('Invoice Customer Contact Name')}</span>
+            </div>
             <div class="data_field ">
                 <i class="fal fa-fw fa-passport" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number_Formatted">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Tax Number Formatted')}{else}<span style="font-style: italic" class="super_discreet">No tax number provided</span>{/if}</span>
             </div>
