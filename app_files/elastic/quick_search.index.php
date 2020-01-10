@@ -18,13 +18,13 @@ require '../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_q_es';
-//curl -X DELETE 'http://localhost:9200/au_q_aw';
-//curl -X DELETE 'http://localhost:9200/au_q_aweu';
+//curl -X DELETE 'http://localhost:9200/au_qs_es';
+//curl -X DELETE 'http://localhost:9200/au_qs_aw';
+//curl -X DELETE 'http://localhost:9200/au_qs_aweu';
 
 
 $params = [
-    'index' => strtolower('au_q_'.DNS_ACCOUNT_CODE),
+    'index' => strtolower('au_qs_'.DNS_ACCOUNT_CODE),
     'body'  => array(
         'settings'=>array(
             'analysis'=>array(

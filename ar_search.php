@@ -250,7 +250,7 @@ function search_ES($query_data, $section, $user_code, $modules, $scopes = [], $s
 
 
     $params = [
-        'index' => strtolower('au_q_'.$_SESSION['account']),
+        'index' => strtolower('au_qs_'.$_SESSION['account']),
 
         'body'    =>
 
@@ -358,7 +358,7 @@ function search_ES($query_data, $section, $user_code, $modules, $scopes = [], $s
 
 
     $analytics_params = [
-        'index' => strtolower('au_q_analytics_'.DNS_ACCOUNT_CODE),
+        'index' => strtolower('au_qs_analytics_'.DNS_ACCOUNT_CODE),
         'body'  => [
             'date'         => $now->format("Y-m-d\TH:i:s.u"),
             'account'      => DNS_ACCOUNT_CODE,
