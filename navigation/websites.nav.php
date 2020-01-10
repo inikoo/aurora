@@ -699,7 +699,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     return array(
         $_content['search'],
         $smarty->fetch('top_menu.tpl'),
-        $smarty->fetch('au_header.tpl')
+        $smarty->fetch('au_header.tpl'),
         ($webpage_navigation?$smarty->fetch('webpage_navigation.tpl'):'')
     );
 
