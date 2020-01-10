@@ -31,8 +31,7 @@ $params = [
         'settings'=>array(
             'analysis'=>array(
                 'analyzer'=>'icu_analyzer'
-            ),
-            'index.routing.allocation.include.size'=> 'big'
+            )
         ),
         'mappings' => array(
 
