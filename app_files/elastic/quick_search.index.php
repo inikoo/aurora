@@ -18,19 +18,28 @@ require '../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_qsearch_es';
-//curl -X DELETE 'http://localhost:9200/au_qsearch_aw';
-//curl -X DELETE 'http://localhost:9200/au_qsearch_aweu';
+//curl -X DELETE 'http://localhost:9200/au_q_search_es';
+//curl -X DELETE 'http://localhost:9200/au_q_search_aw';
+//curl -X DELETE 'http://localhost:9200/au_q_search_aweu';
 
 
 $params = [
-    'index' => strtolower('au_qsearch_'.DNS_ACCOUNT_CODE),
+    'index' => strtolower('au_q_search_'.DNS_ACCOUNT_CODE),
     'body'  => array(
         'settings' => array(
             'analysis'   => array(
-                'analyzer' => 'icu_analyzer',
+                'analyzer' => [
+                    'icu_analyzer',
+                    'rt_code'=>[
+                        'tokenizer'=>'whitespace',
+                        "filter"      => [
+                            "lowercase",
+                            "asciifolding"
+                        ]
+                    ]
+                ],
                 "normalizer" => [
-                    "my_normalizer" => [
+                    "code_normalizer" => [
                         "type"        => "custom",
                         "char_filter" => [],
                         "filter"      => [
@@ -39,6 +48,7 @@ $params = [
                         ]
                     ]
                 ]
+
             ),
 
 
@@ -49,6 +59,11 @@ $params = [
             'properties' => array(
                 'rt' => array(
                     'type' => 'search_as_you_type'
+                ),
+                'rt_code' => array(
+                    'type' => 'search_as_you_type',
+                    "analyzer" => "rt_code"
+                   //   "tokenizer" => "rt_code_tokenizer"
                 ),
 
                 'url'    => array(
@@ -83,7 +98,7 @@ $params = [
                 */
                 'code'   => array(
                     'type'       => 'keyword',
-                    "normalizer" => "my_normalizer"
+                    "normalizer" => "code_normalizer"
                 ),
                 'module' => array(
                     'type' => 'keyword',

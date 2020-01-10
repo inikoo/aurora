@@ -24,6 +24,7 @@ $params         = ['body' => []];
 $global_counter = 0;
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+update_customers_index($db);
 
 update_categories_index($db);
 update_parts_index($db);
@@ -56,7 +57,6 @@ update_agents_index($db);
 update_supplier_products_index($db);
 update_webpages_index($db);
 update_prospects_index($db);
-update_customers_index($db);
 update_orders_index($db);
 update_locations_index($db);
 

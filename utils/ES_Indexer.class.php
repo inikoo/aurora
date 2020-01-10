@@ -651,8 +651,11 @@ class ES_indexer {
         $this->code = $this->object->get('Part Reference');
 
         $this->real_time[] = $this->object->get('Part Reference');
+        $this->real_time[] = preg_replace('/-/','_',$this->object->get('Part Reference'));
 
-      //  $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
+
+
+        //  $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
       //  $this->real_time[] = $number_only_id;
       //  $this->real_time[] = (int)$number_only_id;
 
@@ -740,6 +743,7 @@ class ES_indexer {
         );
 
         $this->real_time[] = $this->object->get('Product Code');
+        $this->real_time[] = preg_replace('/-/','_',$this->object->get('Product Code'));
         //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
         //$this->real_time[] = $number_only_id;
         //$this->real_time[] = (int)$number_only_id;
@@ -954,6 +958,7 @@ class ES_indexer {
 
 
         $this->real_time[] = $this->object->get('Webpage Code');
+        $this->real_time[] = preg_replace('/-/','_',$this->object->get('Webpage Code'));
         //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Webpage Code')));
         //$this->real_time[] = $number_only_id;
         //$this->real_time[] = (int)$number_only_id;
@@ -1705,7 +1710,7 @@ class ES_indexer {
     public function delete_index() {
 
         $params = [
-            'index' => strtolower('au_qsearch_'.$this->account_code),
+            'index' => strtolower('au_q_search_'.$this->account_code),
             'id'    => $this->prefix.$this->object->id,
         ];
 
@@ -1718,16 +1723,15 @@ class ES_indexer {
         $params['body'] = $this->get_index_body();
 
         if(!empty($params['body']['module'])){
-            $this->client->index($params);
+            //$this->client->index($params);
 
         }
-
 
     }
 
     public function get_index_header() {
         return [
-            'index' => strtolower('au_qsearch_'.$this->account_code),
+            'index' => strtolower('au_q_search_'.$this->account_code),
             'id'    => $this->prefix.$this->object->id,
         ];
     }
@@ -1735,6 +1739,7 @@ class ES_indexer {
     public function get_index_body() {
         $body = array(
             'rt'           => $this->flatten($this->real_time),
+
             'url'          => $this->url,
             'module'       => $this->module,
             'weight'       => $this->weight,
@@ -1757,6 +1762,8 @@ class ES_indexer {
 
         if($this->code!=''){
             $body['code'] = $this->code;
+            $body['rt_code'] = $this->code;
+
         }
 
         if (count($this->scopes) > 0) {

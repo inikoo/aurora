@@ -245,6 +245,9 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
     $query = trim($query_data['query']);
 
+
+
+
     $max_results = 16;
 
 
@@ -252,7 +255,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
 
     $params = [
-        'index' => strtolower('au_qsearch_'.$_SESSION['account']),
+        'index' => strtolower('au_q_search_'.$_SESSION['account']),
 
         'body'    =>
 
@@ -269,7 +272,10 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
                                     "fields" => [
                                         "rt",
                                         "rt._2gram",
-                                        "rt._3gram"
+                                        "rt._3gram",
+                                        "rt_code",
+                                        "rt_code._2gram",
+                                        "rt_code._3gram"
                                     ]
                                 ]
                             ]
@@ -284,6 +290,19 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
                             [
                                 'match' => [
                                     'code' => $query
+                                ]
+                            ],
+                            [
+                                "multi_match" => [
+                                    "query" => $query,
+
+                                    "type" => "bool_prefix",
+
+                                    "fields" => [
+                                        "rt_code",
+                                        "rt_code._2gram",
+                                        "rt_code._3gram"
+                                    ]
                                 ]
                             ]
 
@@ -360,7 +379,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
 
     $analytics_params = [
-        'index' => strtolower('au_qsearch_analytics_'.DNS_ACCOUNT_CODE),
+        'index' => strtolower('au_q_search_analytics_'.DNS_ACCOUNT_CODE),
         'body'  => [
             'date'           => $now->format("Y-m-d\TH:i:s.u"),
             'account'        => DNS_ACCOUNT_CODE,
