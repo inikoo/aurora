@@ -288,25 +288,25 @@ class ES_indexer {
         //'Rejected','ToApprove','Active','Losing','Lost'
         switch ($this->object->get('Customer Type by Activity')) {
             case 'Rejected':
-                $this->icon_classes = 'far fa-user-times error';
+                $this->icon_classes = 'far fa-fw fa-user-times error';
 
                 $this->weight = 10;
                 break;
             case 'ToApprove':
-                $this->icon_classes = 'far fa-user | fa fa-circle-notch purple opacity_50';
+                $this->icon_classes = 'far fa-fw fa-user | fa fa-fw fa-circle-notch purple opacity_50';
 
                 $this->weight = 70;
                 break;
             case 'Active':
-                $this->icon_classes = 'far fa-user| fa fa-circle green opacity_50';
+                $this->icon_classes = 'far fa-fw fa-user| fa fa-fw fa-circle green opacity_50';
                 $this->weight       = 70;
                 break;
             case 'Losing':
-                $this->icon_classes = 'far fa-user | fa fa-circle yellow opacity_50';
+                $this->icon_classes = 'far fa-fw fa-user | fa fa-fw fa-circle yellow opacity_50';
                 $this->weight       = 40;
                 break;
             case 'Lost':
-                $this->icon_classes = 'far fa-user | fa fa-circle red opacity_50';
+                $this->icon_classes = 'far fa-fw fa-user | fa fa-fw fa-circle red opacity_50';
                 $this->weight       = 30;
                 break;
         }
@@ -414,29 +414,29 @@ class ES_indexer {
         //''NoContacted','Contacted','NotInterested','Registered','Invoiced','Bounced'
         switch ($this->object->get('Prospect Status')) {
             case 'NoContacted':
-                $this->icon_classes = 'fal fa-user-alien discreet |  fa fa-circle-notch purple opacity_50';
+                $this->icon_classes = 'fal fa-fw fa-user-alien discreet |  fa fa-fw fa-circle-notch purple opacity_50';
 
                 $this->weight = 25;
                 break;
             case 'Contacted':
-                $this->icon_classes = 'fal fa-user-alien discreet|  fa fa-circle purple opacity_50';
+                $this->icon_classes = 'fal fa-fw fa-user-alien discreet|  fa fa-fw fa-circle purple opacity_50';
 
                 $this->weight = 20;
                 break;
             case 'NotInterested':
-                $this->icon_classes = 'fal fa-user-alien discreet|fa  fa-circle red opacity_50 ';
+                $this->icon_classes = 'fal fa-fw fa-user-alien discreet|fa  fa-fw fa-circle red opacity_50 ';
                 $this->weight       = 20;
                 break;
             case 'Registered':
-                $this->icon_classes = 'fal fa-user-alien discreet| fa  fa-circle green opacity_50';
+                $this->icon_classes = 'fal fa-fw fa-user-alien discreet| fa  fa-fw fa-circle green opacity_50';
                 $this->weight       = 10;
                 break;
             case 'Invoiced':
-                $this->icon_classes = 'fal fa-user-alien discreet | fa  fa-circle green opacity_50';
+                $this->icon_classes = 'fal fa-fw fa-user-alien discreet | fa  fa-fw fa-circle green opacity_50';
                 $this->weight       = 10;
                 break;
             case 'Bounced':
-                $this->icon_classes = 'fal fa-user-alien discreet| fa  fa-exclamation-circle red opacity_50';
+                $this->icon_classes = 'fal fa-fw fa-user-alien discreet| fa  fa-fw fa-exclamation-circle red opacity_50';
                 $this->weight       = 15;
                 break;
         }
@@ -517,9 +517,9 @@ class ES_indexer {
 
 
             if ($row['Delivery Note State'] == 'Dispatched') {
-                $icon = 'fal fa-truck';
+                $icon = 'fal fa-fw fa-truck';
             } else {
-                $icon = 'fal fa-clipboard-list-check';
+                $icon = 'fal fa-fw fa-clipboard-list-check';
             }
 
 
@@ -560,7 +560,7 @@ class ES_indexer {
             $this->real_time[] = $number_only_id;
             $this->real_time[] = (int)$number_only_id;
 
-            $invoices .= ', <span class="'.($row['Invoice Type'] == 'Refund' ? 'error' : '').'"><i class="fal fa-file-invoice"></i> '.$row['Invoice Public ID'].'</span>';
+            $invoices .= ', <span class="'.($row['Invoice Type'] == 'Refund' ? 'error' : '').'"><i class="fal fa-fw fa-file-invoice"></i> '.$row['Invoice Public ID'].'</span>';
 
         }
         $invoices = preg_replace('/^, /', '', $invoices);
@@ -673,22 +673,22 @@ class ES_indexer {
         switch ($this->object->get('Part Status')) {
             case 'Discontinuing':
                 $this->weight       = 50;
-                $this->icon_classes = 'fal fa-box warning';
+                $this->icon_classes = 'fal fa-fw fa-box warning';
                 break;
             case 'Not In Use':
                 $this->weight       = 1;
-                $this->icon_classes = 'fal fa-box very_discreet red';
+                $this->icon_classes = 'fal fa-fw fa-box very_discreet red';
                 break;
             case 'In Use':
                 $this->weight       = 70;
-                $this->icon_classes = 'fal fa-box';
+                $this->icon_classes = 'fal fa-fw fa-box';
                 break;
             case 'In Process':
                 $this->weight       = 40;
-                $this->icon_classes = 'fal fa-box discreet';
+                $this->icon_classes = 'fal fa-fw fa-box discreet';
                 break;
             default:
-                $this->icon_classes = 'fal fa-question-circle';
+                $this->icon_classes = 'fal fa-fw fa-question-circle';
 
 
         }
@@ -725,7 +725,7 @@ class ES_indexer {
         $this->label_1 = $this->object->get('Code');
         $this->label_2 = $this->object->get('Warehouse Area Code');
 
-        $this->icon_classes = 'fal  fa-pallet';
+        $this->icon_classes = 'fal  fa-fw fa-pallet';
         $this->weight       = 60;
         $this->url          = sprintf('locations/%d/%d', $this->object->get('Location Warehouse Key'), $this->object->id);
 
@@ -759,30 +759,30 @@ class ES_indexer {
         switch ($this->object->get('Product Status')) {
             case 'Discontinuing':
                 $this->weight       = 50;
-                $this->icon_classes = 'fa fa-cube warning';
+                $this->icon_classes = 'fa fa-fw fa-cube warning';
                 break;
             case 'Discontinued':
                 $this->weight       = 1;
-                $this->icon_classes = 'fa fa-cube very_discreet';
+                $this->icon_classes = 'fa fa-fw fa-cube very_discreet';
                 break;
             case 'Suspended':
                 $this->weight       = 40;
-                $this->icon_classes = 'fa fa-cube error';
+                $this->icon_classes = 'fa fa-fw fa-cube error';
                 break;
             default:
                 $this->weight       = 70;
-                $this->icon_classes = 'fa fa-cube';
+                $this->icon_classes = 'fa fa-fw fa-cube';
                 break;
         }
 
         //'Online Force Out of Stock','Online Auto','Offline','Online Force For Sale'
         switch ($this->object->get('Product Web Configuration')) {
             case 'Online Force Out of Stock':
-                $this->icon_classes .= '|fa fa-stop red';
+                $this->icon_classes .= '|fa fa-fw fa-stop red';
                 break;
 
             case 'Online Force For Sale':
-                $this->icon_classes .= '|fa fa-stop';
+                $this->icon_classes .= '|fa fa-fw fa-stop';
 
                 switch ($this->object->get('Product Availability State')) {
                     case 'OnDemand':
@@ -802,7 +802,7 @@ class ES_indexer {
 
                 break;
             case 'Online Auto':
-                $this->icon_classes .= '|fa fa-circle';
+                $this->icon_classes .= '|fa fa-fw fa-circle';
 
                 switch ($this->object->get('Product Availability State')) {
                     case 'OnDemand':
@@ -857,9 +857,9 @@ class ES_indexer {
         }
 
         if ($this->object->get('Category Subject') == 'Product') {
-            $this->icon_classes .= 'fa-folder-open';
+            $this->icon_classes .= 'fa-fw fa-folder-open';
         } else {
-            $this->icon_classes .= 'fa-folder-tree';
+            $this->icon_classes .= 'fa-fw fa-folder-tree';
         }
 
         switch ($this->object->get('Product Category Status')) {
@@ -911,13 +911,13 @@ class ES_indexer {
         }
 
 
-        $this->icon_classes = 'fal  fa-boxes';
+        $this->icon_classes = 'fal  fa-fw fa-boxes';
 
 
         switch ($this->object->get('Part Category Status')) {
             case 'InProcess':
                 $this->weight       = 80;
-                $this->icon_classes .= '| fal fa-seeding very_discreet ';
+                $this->icon_classes .= '| fal fa-fw fa-seeding very_discreet ';
 
                 break;
 
@@ -994,7 +994,7 @@ class ES_indexer {
                 //$this->real_time[]  = $number_only_id;
                 //$this->real_time[]  = (int)$number_only_id;
                 $this->real_time[]  = $category->get('Label');
-                $this->icon_classes .= 'far fa-browser| fal fa-folder-tree';
+                $this->icon_classes .= 'far fa-fw fa-browser| fal fa-fw fa-folder-tree';
                 break;
             case 'Category Products':
                 $category           = get_object('Category', $this->object->get('Webpage Scope Key'));
@@ -1003,7 +1003,7 @@ class ES_indexer {
                 //$this->real_time[]  = $number_only_id;
                 //$this->real_time[]  = (int)$number_only_id;
                 $this->real_time[]  = $category->get('Label');
-                $this->icon_classes .= 'far fa-browser| fal fa-folder-open';
+                $this->icon_classes .= 'far fa-fw fa-browser| fal fa-fw fa-folder-open';
                 break;
             case 'Product':
                 $product            = get_object('Product', $this->object->get('Webpage Scope Key'));
@@ -1012,11 +1012,11 @@ class ES_indexer {
                 //$this->real_time[]  = $number_only_id;
                 //$this->real_time[]  = (int)$number_only_id;
                 $this->real_time[]  = $product->get('Name');
-                $this->icon_classes .= ' far fa-browser| fal fa-cube';
+                $this->icon_classes .= ' far fa-fw fa-browser| fal fa-fw fa-cube';
                 break;
 
             default:
-                $this->icon_classes .= ' far fa-browser';
+                $this->icon_classes .= ' far fa-fw fa-browser';
                 break;
         }
         switch ($this->object->get('Webpage State')) {
@@ -1105,15 +1105,15 @@ class ES_indexer {
 
         switch ($this->object->get('Supplier Type')) {
             case 'Free':
-                $this->icon_classes = 'far fa-hand-holding-box ';
+                $this->icon_classes = 'far fa-fw fa-hand-holding-box ';
                 $this->weight       = 50;
                 break;
             case 'Agent':
-                $this->icon_classes = 'far fa-hand-holding-box| fal fa-user-agent small  discreet ';
+                $this->icon_classes = 'far fa-fw fa-hand-holding-box| fal fa-fw fa-user-agent small  discreet ';
                 $this->weight       = 50;
                 break;
             case 'Archived':
-                $this->icon_classes = 'far fa-hand-holding-box error super_discreet ';
+                $this->icon_classes = 'far fa-fw fa-hand-holding-box error super_discreet ';
                 $this->weight       = 20;
                 break;
         }
@@ -1142,7 +1142,7 @@ class ES_indexer {
         $this->label_1      = $this->object->get('Agent Code');
         $this->label_2      = $this->object->get('Name');
         $this->label_3      = $this->object->get('Location');
-        $this->icon_classes = 'far fa-user-secret';
+        $this->icon_classes = 'far fa-fw fa-user-secret';
     }
 
     private function prepare_supplier_part() {
@@ -1185,22 +1185,22 @@ class ES_indexer {
         $supplier      = get_object('Supplier', $this->object->get('Supplier Part Supplier Key'));
         $this->label_3 = $supplier->get('Supplier Code');
         if ($supplier->get('Supplier Type') == 'Agent') {
-            $this->label_3 .= ' <i class="fal small discreet fa-user-secret"></i>';
+            $this->label_3 .= ' <i class="fal small discreet fa-fw fa-user-secret"></i>';
         }
 
 
         switch ($this->object->get('Supplier Part Status')) {
             case 'Available':
                 $this->weight       = 50;
-                $this->icon_classes = 'fa fa-hand-receiving success';
+                $this->icon_classes = 'fa fa-fw fa-hand-receiving success';
                 break;
             case 'NoAvailable':
                 $this->weight       = 30;
-                $this->icon_classes = 'fa fa-hand-receiving warning';
+                $this->icon_classes = 'fa fa-fw fa-hand-receiving warning';
                 break;
             case 'Discontinued':
                 $this->weight       = 5;
-                $this->icon_classes = 'fal fa-hand-receiving error';
+                $this->icon_classes = 'fal fa-fw fa-hand-receiving error';
                 break;
         }
 
@@ -1209,23 +1209,23 @@ class ES_indexer {
         switch ($this->object->part->get('Part Status')) {
             case 'Discontinuing':
                 $this->weight  = $this->weight - 5;
-                $this->label_1 .= ' <i class="small fal fa-box warning"></i>';
+                $this->label_1 .= ' <i class="small fal fa-fw fa-box warning"></i>';
                 break;
             case 'Not In Use':
                 $this->weight = $this->weight - 10;
 
-                $this->label_1 .= ' <i class="small fal fa-box very_discreet red"></i>';
+                $this->label_1 .= ' <i class="small fal fa-fw fa-box very_discreet red"></i>';
                 break;
             case 'In Use':
                 $this->weight  = 40;
-                $this->label_1 .= '<i class="small fal fa-box\"></i>';
+                $this->label_1 .= '<i class="small fal fa-fw fa-box\"></i>';
                 break;
             case 'In Process':
                 $this->weight  = 40;
-                $this->label_1 .= ' <i class="small fal fa-box discreet"></i>';
+                $this->label_1 .= ' <i class="small fal fa-fw fa-box discreet"></i>';
                 break;
             default:
-                $this->label_1 .= ' <i class="small fal fa-question-circle"></i>';
+                $this->label_1 .= ' <i class="small fal fa-fw fa-question-circle"></i>';
 
 
         }
@@ -1257,14 +1257,14 @@ class ES_indexer {
             $this->scopes       = array(
                 'contractor' => 100
             );
-            $this->icon_classes = 'far fa-hand-spock';
+            $this->icon_classes = 'far fa-fw fa-hand-spock';
             $this->url          = sprintf('/contractor//%d', $this->object->id);
 
         } else {
             $this->scopes       = array(
                 'staff' => 100
             );
-            $this->icon_classes = 'far fa-hand-rock';
+            $this->icon_classes = 'far fa-fw fa-hand-rock';
             $this->url          = sprintf('/employee//%d', $this->object->id);
 
         }
@@ -1307,28 +1307,28 @@ class ES_indexer {
         //'Employee','Volunteer','Contractor','TemporalWorker','WorkExperience'
 
 
-        $this->icon_classes = 'fal fa-id-badge';
+        $this->icon_classes = 'fal fa-fw fa-id-badge';
         $this->url          = sprintf('/users//%d', $this->object->id);
 
 
         switch ($this->object->get('User Type')) {
             case 'Staff':
-                $this->label_2 = '<i class="fal fa-user-headset padding_right_10"></i>';
+                $this->label_2 = '<i class="fal fa-fw fa-user-headset padding_right_10"></i>';
                 break;
             case 'Supplier':
-                $this->label_2 = '<i class="fal  fa-hand-holding-box padding_right_10"></i>';
+                $this->label_2 = '<i class="fal  fa-fw fa-hand-holding-box padding_right_10"></i>';
                 break;
             case 'Administrator':
-                $this->label_2 = '<i class="fal fa-user-cog padding_right_10"></i>';
+                $this->label_2 = '<i class="fal fa-fw fa-user-cog padding_right_10"></i>';
                 break;
             case 'Warehouse':
-                $this->label_2 = '<i class="fal fa-warehouse padding_right_10"></i>';
+                $this->label_2 = '<i class="fal fa-fw fa-warehouse padding_right_10"></i>';
                 break;
             case 'Contractor':
-                $this->label_2 = '<i class="fal fa-user-hard-hat padding_right_10"></i>';
+                $this->label_2 = '<i class="fal fa-fw fa-user-hard-hat padding_right_10"></i>';
                 break;
             case 'Agent':
-                $this->label_2 = '<i class="fal fa-user-secret padding_right_10"></i>';
+                $this->label_2 = '<i class="fal fa-fw fa-user-secret padding_right_10"></i>';
                 break;
         }
 
@@ -1377,7 +1377,7 @@ class ES_indexer {
             $this->scopes       = array(
                 'deleted_invoices' => 100
             );
-            $this->icon_classes = $this->object->get('Icon').'| fa fa-trash-bin';
+            $this->icon_classes = $this->object->get('Icon').'| fa fa-fw fa-trash-bin';
             $this->weight       = 10;
             $this->label_1      = '<span class="strikethrough discreet">'.$this->object->get('Public ID').'</span>';
             $this->label_2      = '<span class="strikethrough discreet">'.$this->object->get('Customer Name').'</span>';
@@ -1396,7 +1396,7 @@ class ES_indexer {
 
 
         if ($order->get('Order ID') != $this->object->get('Public ID')) {
-            $this->label_4 = '<i class="fal fa-shopping-cart padding_right_5"></i>'.$order->get('Public ID');
+            $this->label_4 = '<i class="fal fa-fw fa-shopping-cart padding_right_5"></i>'.$order->get('Public ID');
         }
 
         $this->url = sprintf('invoices/%d/%d', $this->object->get('Invoice Store Key'), $this->object->id);
@@ -1436,7 +1436,7 @@ class ES_indexer {
 
 
         if ($order->get('Order ID') != $this->object->get('ID')) {
-            $this->label_4 = '<i class="fal fa-shopping-cart padding_right_5"></i>'.$order->get('Public ID');
+            $this->label_4 = '<i class="fal fa-fw fa-shopping-cart padding_right_5"></i>'.$order->get('Public ID');
         }
 
         $this->url = sprintf('delivery_notes/%d/%d', $this->object->get('Store Key'), $this->object->id);
@@ -1497,7 +1497,7 @@ class ES_indexer {
         $this->real_time[] = $this->object->get('List Name');
 
         $this->label_1      = $this->object->get('Name');
-        $this->icon_classes = 'fal  fa-list|'.$this->object->get('Icon');
+        $this->icon_classes = 'fal  fa-fw fa-list|'.$this->object->get('Icon');
         $this->weight       = 20;
         $this->url          = sprintf('customers/list/%d', $this->object->id);
 
@@ -1531,7 +1531,7 @@ class ES_indexer {
             } else {
                 $this->icon_classes = 'small discreet fal tags invisible|';
             }
-            $this->icon_classes .= 'fal fa-tag';
+            $this->icon_classes .= 'fal fa-fw fa-tag';
 
 
             if (preg_match('/class=\"(.*)\"/', $this->object->get('Status Icon'), $icon_match)) {
@@ -1597,7 +1597,7 @@ class ES_indexer {
         } else {
             $this->icon_classes = 'small discreet fal tags invisible|';
         }
-        $this->icon_classes .= 'fal fa-tags';
+        $this->icon_classes .= 'fal fa-fw fa-tags';
 
 
         if (preg_match('/class=\"(.*)\"/', $this->object->get('Status Icon'), $icon_match)) {
@@ -1680,10 +1680,10 @@ class ES_indexer {
 
             switch($this->object->get('Email Campaign Type')){
                 case 'Newsletter':
-                    $this->icon_classes='fal fa-newspaper|';
+                    $this->icon_classes='fal fa-fw fa-newspaper|';
                     break;
                 case 'Marketing':
-                    $this->icon_classes='fal fa-bullhorn |';
+                    $this->icon_classes='fal fa-fw fa-bullhorn |';
                     break;
             }
             $this->icon_classes.=$this->object->get('State Icon');
