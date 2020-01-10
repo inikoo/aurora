@@ -670,11 +670,11 @@ class ES_indexer {
                 $this->icon_classes = 'fal fa-box warning';
                 break;
             case 'Not In Use':
-                $this->weight       = 5;
+                $this->weight       = 1;
                 $this->icon_classes = 'fal fa-box very_discreet red';
                 break;
             case 'In Use':
-                $this->weight       = 40;
+                $this->weight       = 80;
                 $this->icon_classes = 'fal fa-box';
                 break;
             case 'In Process':
