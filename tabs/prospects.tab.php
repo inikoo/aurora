@@ -77,7 +77,11 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
     $table_buttons   = array();
 
 
-    $smarty->assign('table_buttons', $table_buttons);
+    $table_buttons[] = array(
+        'icon'  => 'edit_add',
+        'title' => _("Edit prospects"),
+        'id'    => 'edit_dialog'
+    );
     $smarty->assign('table_buttons', $table_buttons);
 
 
