@@ -18,15 +18,15 @@ require '../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_qs_analytics_es';
-//curl -X DELETE 'http://localhost:9200/au_qs_analytics_aw';
-// curl -X DELETE 'http://localhost:9200/au_qs_analytics_aweu'
+//curl -X DELETE 'http://localhost:9200/au_qsearch_analytics_es';
+//curl -X DELETE 'http://localhost:9200/au_qsearch_analytics_aw';
+// curl -X DELETE 'http://localhost:9200/au_qsearch_analytics_aweu'
 
 
 
 
 $params = [
-    'index' => strtolower('au_qs_analytics_'.DNS_ACCOUNT_CODE),
+    'index' => strtolower('au_qsearch_analytics_'.DNS_ACCOUNT_CODE),
     'body'  => array(
         'settings'=>array(
             'analysis'=>array(

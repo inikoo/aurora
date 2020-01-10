@@ -37,7 +37,7 @@ $time_diff = $mtime - $query_data['mtime'];
 
 
 $params = [
-    'index' => strtolower('au_qs_analytics_'.DNS_ACCOUNT_CODE),
+    'index' => strtolower('au_qsearch_analytics_'.DNS_ACCOUNT_CODE),
     'id'    => $query_data['search_index'],
     'body'  => [
         'doc' => [

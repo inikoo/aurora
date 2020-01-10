@@ -1700,7 +1700,7 @@ class ES_indexer {
     public function delete_index() {
 
         $params = [
-            'index' => strtolower('au_qs_'.$this->account_code),
+            'index' => strtolower('au_qsearch_'.$this->account_code),
             'id'    => $this->prefix.$this->object->id,
         ];
 
@@ -1713,7 +1713,7 @@ class ES_indexer {
         $params['body'] = $this->get_index_body();
 
         if(!empty($params['body']['module'])){
-            $this->client->index($params);
+           // $this->client->index($params);
 
         }
 
@@ -1722,7 +1722,7 @@ class ES_indexer {
 
     public function get_index_header() {
         return [
-            'index' => strtolower('au_qs_'.$this->account_code),
+            'index' => strtolower('au_qsearch_'.$this->account_code),
             'id'    => $this->prefix.$this->object->id,
         ];
     }
