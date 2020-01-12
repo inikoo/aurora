@@ -1777,6 +1777,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             }
+
+            $customer->index_elastic_search($ES_hosts,  false,  ['assets','assets_interval']);
             break;
 
         case 'update_warehouse_leakages':
@@ -2909,7 +2911,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
-
+            $customer->index_elastic_search($ES_hosts,  false,  ['assets','assets_interval']);
 
             break;
         case 'delivery_note_dispatched':

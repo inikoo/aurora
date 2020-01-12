@@ -107,12 +107,17 @@ class ES_indexer {
      * @var string
      */
     private $store_key;
+    /**
+     * @var array
+     */
+    private $indices;
 
-    function __construct($hosts, $account_code, $object, $db) {
+    function __construct($hosts, $account_code, $object, $db, $indices) {
         $this->client       = ClientBuilder::create()->setHosts($hosts)->build();
+        $this->indices      = $indices;
         $this->object       = $object;
         $this->db           = $db;
-        $this->account_code = $account_code;
+        $this->account_code = strtolower($account_code);
         $this->primary      = array();
         $this->secondary    = array();
         $this->alias        = array();
@@ -127,11 +132,12 @@ class ES_indexer {
         $this->label_3      = '';
         $this->label_4      = '';
 
-        $this->code    = '';
+        $this->code = '';
 
         $this->prefix    = '';
         $this->store_key = '';
 
+        $this->skip_add_index = false;
 
     }
 
@@ -140,7 +146,8 @@ class ES_indexer {
 
         switch ($this->object->get_object_name()) {
             case 'Customer':
-                $this->prefix = 'c';
+                $this->prefix            = 'c';
+                $this->object_index_name = 'customers';
                 $this->prepare_customer();
                 break;
             case 'Prospect':
@@ -170,15 +177,22 @@ class ES_indexer {
                         if ($this->object->get('Category Branch Type') == 'Head') {
                             $this->prefix = 'cat_p';
                             $this->prepare_product_category();
+                        } else {
+
+                            $this->skip_add_index = true;
                         }
                         break;
                     case 'Part':
+
                         if ($this->object->get('Category Branch Type') == 'Head') {
                             $this->prefix = 'cat_sko';
                             $this->prepare_part_category();
+                        } else {
+                            $this->skip_add_index = true;
                         }
                         break;
                     default:
+                        $this->skip_add_index = true;
                         break;
                 }
 
@@ -309,6 +323,75 @@ class ES_indexer {
                 $this->icon_classes = 'far fa-fw fa-user | fa fa-fw fa-circle red opacity_50';
                 $this->weight       = 30;
                 break;
+        }
+
+        if (in_array('favourites', $this->indices)) {
+            $this->object_data['favourites'] = [];
+
+            $sql  = "select P.`Product Code` from `Customer Favourite Product Fact` B left join `Product Dimension` P on (P.`Product ID`=`Customer Favourite Product Product ID`) where `Customer Favourite Product Customer Key`=?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->object->id
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $this->object_data['favourites'][] = $row['Product Code'];
+            }
+        }
+
+        $interval = array();
+        if (in_array('assets', $this->indices)) {
+            $interval[] = array(
+                'suffix'    => '',
+                'sql_where' => ''
+            );
+        }
+        if (in_array('assets_interval', $this->indices)) {
+            $interval[] = array(
+                'suffix'    => '_1y',
+                'sql_where' => ' and `Invoice Date`>DATE_SUB(NOW(),INTERVAL 1 YEAR) '
+            );
+            $interval[] = array(
+                'suffix'    => '_1q',
+                'sql_where' => ' and `Invoice Date`>DATE_SUB(NOW(),INTERVAL 1 Quarter)'
+            );
+        }
+
+        foreach ($interval as $period_data) {
+
+            $products    = [];
+            $families    = [];
+            $departments = [];
+            $sql         = "select P.`Product Code`,F.`Category Code` as fam ,D.`Category Code` as dept from `Order Transaction Fact` OTD 
+                        left join `Product Dimension` P on (OTD.`Product ID`=P.`Product ID`) 
+                        left join `Category Dimension` F on (OTD.`OTF Category Family Key`=F.`Category Key`) 
+                        left join `Category Dimension` D on (OTD.`OTF Category Department Key`=D.`Category Key`) 
+                        where `Customer Key`=? and  `Invoice Key` >0 ".$period_data['sql_where'];
+            $stmt        = $this->db->prepare($sql);
+            $stmt->execute([$this->object->id]);
+            while ($row = $stmt->fetch()) {
+                $products[] = $row['Product Code'];
+                if ($row['fam'] != '') {
+                    $families[] = $row['fam'];
+                }
+                if ($row['dept'] != '') {
+                    $departments[] = $row['dept'];
+                }
+
+            }
+
+
+            $this->object_data['products_bought'.$period_data['sql_where']] = array_keys(array_flip($products));
+
+            $this->object_data['families_bought'.$period_data['sql_where']] = array_keys(array_flip($families));
+
+            $this->object_data['departments_bought'.$period_data['sql_where']] = array_keys(array_flip($departments));
+
+
+            unset($products);
+            unset($families);
+            unset($departments);
         }
 
 
@@ -488,7 +571,7 @@ class ES_indexer {
         $this->module    = 'orders';
         $this->store_key = $this->object->get('Store Key');
 
-        $this->code =  $this->object->get('Order Public ID');
+        $this->code = $this->object->get('Order Public ID');
 
         $this->real_time[] = $this->object->get('Order Public ID');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Order Public ID')));
@@ -651,13 +734,12 @@ class ES_indexer {
         $this->code = $this->object->get('Part Reference');
 
         $this->real_time[] = $this->object->get('Part Reference');
-        $this->real_time[] = preg_replace('/-/','_',$this->object->get('Part Reference'));
-
+        $this->real_time[] = preg_replace('/-/', '_', $this->object->get('Part Reference'));
 
 
         //  $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
-      //  $this->real_time[] = $number_only_id;
-      //  $this->real_time[] = (int)$number_only_id;
+        //  $this->real_time[] = $number_only_id;
+        //  $this->real_time[] = (int)$number_only_id;
 
 
         $this->real_time[] = $this->object->get('Part Package Description');
@@ -715,7 +797,7 @@ class ES_indexer {
             'locations' => 100
         );
 
-        $this->code =  $this->object->get('Code');
+        $this->code = $this->object->get('Code');
 
         $this->real_time[] = $this->object->get('Code');
         //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
@@ -743,7 +825,7 @@ class ES_indexer {
         );
 
         $this->real_time[] = $this->object->get('Product Code');
-        $this->real_time[] = preg_replace('/-/','_',$this->object->get('Product Code'));
+        $this->real_time[] = preg_replace('/-/', '_', $this->object->get('Product Code'));
         //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Product Code')));
         //$this->real_time[] = $number_only_id;
         //$this->real_time[] = (int)$number_only_id;
@@ -839,7 +921,7 @@ class ES_indexer {
         $this->module    = 'products';
         $this->store_key = $store->id;
 
-        $this->code =  $this->object->get('Category Code');
+        $this->code = $this->object->get('Category Code');
 
 
         $this->real_time[] = $this->object->get('Category Code');
@@ -896,7 +978,7 @@ class ES_indexer {
 
         $this->module = 'inventory';
 
-        $this->code =  $this->object->get('Category Code');
+        $this->code = $this->object->get('Category Code');
 
         $this->real_time[] = $this->object->get('Category Code');
 
@@ -952,13 +1034,12 @@ class ES_indexer {
         $this->store_key = $this->object->get('Store Key');
 
 
-        $this->url = sprintf('website/%d/webpage/%d', $this->object->get('Webpage Website Key'), $this->object->id);
-        $this->code =  $this->object->get('Webpage Code');
-
+        $this->url  = sprintf('website/%d/webpage/%d', $this->object->get('Webpage Website Key'), $this->object->id);
+        $this->code = $this->object->get('Webpage Code');
 
 
         $this->real_time[] = $this->object->get('Webpage Code');
-        $this->real_time[] = preg_replace('/-/','_',$this->object->get('Webpage Code'));
+        $this->real_time[] = preg_replace('/-/', '_', $this->object->get('Webpage Code'));
         //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Webpage Code')));
         //$this->real_time[] = $number_only_id;
         //$this->real_time[] = (int)$number_only_id;
@@ -988,8 +1069,8 @@ class ES_indexer {
 
         switch ($this->object->get('Webpage Scope')) {
             case 'Category Categories':
-                $category           = get_object('Category', $this->object->get('Webpage Scope Key'));
-                $this->real_time[]  = $category->get('Code');
+                $category          = get_object('Category', $this->object->get('Webpage Scope Key'));
+                $this->real_time[] = $category->get('Code');
                 //$number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
                 //$this->real_time[]  = $number_only_id;
                 //$this->real_time[]  = (int)$number_only_id;
@@ -997,8 +1078,8 @@ class ES_indexer {
                 $this->icon_classes .= 'far fa-fw fa-browser| fal fa-fw fa-folder-tree';
                 break;
             case 'Category Products':
-                $category           = get_object('Category', $this->object->get('Webpage Scope Key'));
-                $this->real_time[]  = $category->get('Code');
+                $category          = get_object('Category', $this->object->get('Webpage Scope Key'));
+                $this->real_time[] = $category->get('Code');
                 //$number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $category->get('Code')));
                 //$this->real_time[]  = $number_only_id;
                 //$this->real_time[]  = (int)$number_only_id;
@@ -1006,8 +1087,8 @@ class ES_indexer {
                 $this->icon_classes .= 'far fa-fw fa-browser| fal fa-fw fa-folder-open';
                 break;
             case 'Product':
-                $product            = get_object('Product', $this->object->get('Webpage Scope Key'));
-                $this->real_time[]  = $product->get('Code');
+                $product           = get_object('Product', $this->object->get('Webpage Scope Key'));
+                $this->real_time[] = $product->get('Code');
                 //$number_only_id     = trim(preg_replace('/[^0-9]/', ' ', $product->get('Code')));
                 //$this->real_time[]  = $number_only_id;
                 //$this->real_time[]  = (int)$number_only_id;
@@ -1087,7 +1168,7 @@ class ES_indexer {
                 'suppliers' => 100
             );
         }
-        $this->code =  $this->object->get('Supplier Code');
+        $this->code = $this->object->get('Supplier Code');
 
         $this->url = sprintf('supplier/%d', $this->object->id);
 
@@ -1129,8 +1210,8 @@ class ES_indexer {
             'agents' => 100
         );
 
-        $this->code =  $this->object->get('Agent Code');
-        $this->url = sprintf('agent/%d', $this->object->id);
+        $this->code = $this->object->get('Agent Code');
+        $this->url  = sprintf('agent/%d', $this->object->id);
 
         $this->real_time[] = $this->object->get('Agent Code');
         $this->real_time[] = $this->object->get('Agent Name');
@@ -1294,7 +1375,7 @@ class ES_indexer {
 
         $this->real_time[] = $this->object->get('User Handle');
 
-        $this->code =  $this->object->get('User Handle');
+        $this->code = $this->object->get('User Handle');
 
         $staff = get_object('Staff', $this->object->get_staff_key());
 
@@ -1357,7 +1438,7 @@ class ES_indexer {
         $this->store_key = $this->object->get('Store Key');
 
 
-        $this->code =  $this->object->get('Public ID');
+        $this->code = $this->object->get('Public ID');
 
         $this->real_time[] = $this->object->get('Public ID');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Public ID')));
@@ -1409,7 +1490,7 @@ class ES_indexer {
         $this->module    = 'delivering';
         $this->store_key = $this->object->get('Store Key');
 
-        $this->code =  $this->object->get('ID');
+        $this->code = $this->object->get('ID');
 
         $this->real_time[] = $this->object->get('ID');
         $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('ID')));
@@ -1453,7 +1534,7 @@ class ES_indexer {
             'payments' => 100
         );
 
-        $this->code =  $this->object->get('Payment Transaction ID');
+        $this->code = $this->object->get('Payment Transaction ID');
 
 
         $this->real_time[]  = $this->object->get('Payment Transaction ID');
@@ -1563,6 +1644,8 @@ class ES_indexer {
             $this->label_3 = $deal_campaign->get('Icon');
             $this->url     = sprintf('deals/%d/%d', $this->object->get('Store Key'), $this->object->id);
 
+        } else {
+            $this->skip_add_index = true;
         }
 
 
@@ -1652,7 +1735,7 @@ class ES_indexer {
             $this->icon_classes = ' fal '.$icon_match[1];
 
         }
-        $this->weight =50;
+        $this->weight  = 50;
         $this->label_1 = $this->object->get('Deal Campaign Name');
         $this->url     = sprintf('offers/%d/%s/', $this->object->get('Store Key'), strtolower($this->object->get('Code')), $this->object->id);
 
@@ -1662,7 +1745,12 @@ class ES_indexer {
     private function prepare_mailshot() {
 
 
-        if(in_array($this->object->get('Email Campaign Type'),['Newsletter','Marketing'])) {
+        if (in_array(
+            $this->object->get('Email Campaign Type'), [
+                                                         'Newsletter',
+                                                         'Marketing'
+                                                     ]
+        )) {
 
 
             $this->module    = 'mailroom';
@@ -1678,103 +1766,193 @@ class ES_indexer {
             $this->real_time[] = $this->object->get('Email Campaign Name');
 
 
-            switch($this->object->get('Email Campaign Type')){
+            switch ($this->object->get('Email Campaign Type')) {
                 case 'Newsletter':
-                    $this->icon_classes='fal fa-fw fa-newspaper|';
+                    $this->icon_classes = 'fal fa-fw fa-newspaper|';
                     break;
                 case 'Marketing':
-                    $this->icon_classes='fal fa-fw fa-bullhorn |';
+                    $this->icon_classes = 'fal fa-fw fa-bullhorn |';
                     break;
             }
-            $this->icon_classes.=$this->object->get('State Icon');
+            $this->icon_classes .= $this->object->get('State Icon');
 
-            $this->weight  = 50;
-            if( $this->object->get('Email Campaign Name')!= $email_template->get('Email Template Subject')){
+            $this->weight = 50;
+            if ($this->object->get('Email Campaign Name') != $email_template->get('Email Template Subject')) {
                 $this->label_1 = $this->object->get('Email Campaign Name');
 
             }
             $this->label_2 = $email_template->get('Email Template Subject');
-            if($this->object->get('State Index')<=40){
+            if ($this->object->get('State Index') <= 40) {
                 $this->label_3 = date('Y-m-d', strtotime($this->object->get('Email Campaign Creation Date')));
 
-            }else{
+            } else {
                 $this->label_3 = date('Y-m-d', strtotime($this->object->get('Start Send Date')));
 
             }
 
-            $this->url     = sprintf('mailroom/%d/marketing/%d/mailshot/%d', $this->object->get('Store Key'),$email_template->id, $this->object->id);
+            $this->url = sprintf('mailroom/%d/marketing/%d/mailshot/%d', $this->object->get('Store Key'), $email_template->id, $this->object->id);
+        } else {
+            $this->skip_add_index = true;
         }
 
     }
 
     public function delete_index() {
 
-        $params = [
-            'index' => strtolower('au_q_search_'.$this->account_code),
-            'id'    => $this->prefix.$this->object->id,
-        ];
 
-        return  $this->client->delete($params);
+        $this->client->delete(
+            [
+                'index' => strtolower('au_q_search_'.$this->account_code),
+                'id'    => $this->prefix.$this->object->id,
+            ]
+        );
+        switch ($this->object->get_object_name()) {
+            case 'Customer':
+                $this->client->delete(
+                    [
+                        'index' => strtolower('au_customers_'.$this->account_code),
+                        'id'    => $this->object->id,
+                    ]
+                );
+                break;
+        }
+
 
     }
 
     public function add_index() {
-        $params         = $this->get_index_header();
-        $params['body'] = $this->get_index_body();
 
-        if(!empty($params['body']['module'])){
-            $this->client->index($params);
+        $params = ['body' => []];
 
+
+        if ($body = $this->get_index_body()) {
+
+            foreach ($this->get_index_header() as $key => $index_header) {
+
+
+                $params['body'][] = [
+                    'index' => [
+                        '_index' => $index_header['index'],
+                        '_id'    => $index_header['id']
+                    ]
+                ];
+
+                $params['body'][] = $body[$key];
+
+            }
+
+            if (count($params['body']) > 0) {
+                $this->client->bulk($params);
+            }
         }
 
-    }
-
-    public function get_index_header() {
-        return [
-            'index' => strtolower('au_q_search_'.$this->account_code),
-            'id'    => $this->prefix.$this->object->id,
-        ];
     }
 
     public function get_index_body() {
-        $body = array(
-            'rt'           => $this->flatten($this->real_time),
 
-            'url'          => $this->url,
-            'module'       => $this->module,
-            'weight'       => $this->weight,
-            'store_key'    => $this->store_key,
-            'store_label'  => $this->get_store_code($this->store_key),
-            'icon_classes' => $this->icon_classes,
-            'label_1'      => $this->label_1,
-            'label_2'      => $this->label_2,
-            'label_3'      => $this->label_3,
-            'label_4'      => $this->label_4,
 
-            //'object'       => $object,
-            //'status'       => $this->status,
-            //'result_label' => $this->label,
-            //'primary'      => $this->flatten($this->primary),
-            //'secondary'    => $this->flatten($this->secondary),
-            //'alias'        => $this->flatten($this->alias),
+        if ($this->skip_add_index) {
+            return false;
+        }
 
-        );
+        $index_body = [];
 
-        if($this->code!=''){
-            $body['code'] = $this->code;
-            $body['rt_code'] = $this->code;
+        foreach ($this->indices as $index_type) {
+
+
+            switch ($index_type) {
+                case 'quick':
+
+                    $body = array(
+                        'rt'           => $this->flatten($this->real_time),
+                        'url'          => $this->url,
+                        'module'       => $this->module,
+                        'weight'       => $this->weight,
+                        'store_key'    => $this->store_key,
+                        'store_label'  => $this->get_store_code($this->store_key),
+                        'icon_classes' => $this->icon_classes,
+                        'label_1'      => $this->label_1,
+                        'label_2'      => $this->label_2,
+                        'label_3'      => $this->label_3,
+                        'label_4'      => $this->label_4,
+                    );
+
+                    if ($this->code != '') {
+                        $body['code']    = $this->code;
+                        $body['rt_code'] = $this->code;
+
+                    }
+
+                    if (count($this->scopes) > 0) {
+                        $body['scopes'] = $this->scopes;
+                    }
+                    $body['tenant'] = $this->account_code;
+                    $index_body[]   = $body;
+
+                    switch ($this->object->get_object_name()) {
+                        case 'Customer':
+                            $body = array(
+                                'url'         => $this->url,
+                                'module'      => $this->module,
+                                'weight'      => $this->weight,
+                                'store_key'   => $this->store_key,
+                                'store_label' => $this->get_store_code($this->store_key),
+
+                            );
+
+                            if ($this->code != '') {
+                                $body['code'] = $this->code;
+                            }
+
+                            if (count($this->scopes) > 0) {
+                                $body['scopes'] = $this->scopes;
+                            }
+                            $body['tenant'] = $this->account_code;
+                            $index_body[]   = $body;
+                            break;
+                    }
+                    break;
+                case 'favourites':
+                    $index_body[] = array(
+                        'tenant'     => $this->account_code,
+                        'favourites' => $this->get_object_data('favourites')
+                    );
+                    break;
+                case 'assets':
+                    $body[]                     = array(
+                        'tenant' => $this->account_code,
+                    );
+                    $body['products_bought']    = $this->get_object_data('products_bought');
+                    $body['families_bought']    = $this->get_object_data('families_bought');
+                    $body['departments_bought'] = $this->get_object_data('departments_bought');
+
+                    $index_body[] = $body;
+                    break;
+                case 'assets_interval':
+                    $body[]                        = array(
+                        'tenant' => $this->account_code,
+                    );
+                    $body['products_bought_1y']    = $this->get_object_data('products_bought_1y');
+                    $body['products_bought_1q']    = $this->get_object_data('products_bought_1q');
+                    $body['families_bought_1y']    = $this->get_object_data('families_bought_1y');
+                    $body['families_bought_1q']    = $this->get_object_data('families_bought_1q');
+                    $body['departments_bought_1y'] = $this->get_object_data('departments_bought_1y');
+                    $body['departments_bought_1q'] = $this->get_object_data('departments_bought_1q');
+                    $index_body[]                  = $body;
+                    break;
+
+
+                default:
+                    break;
+            }
+
 
         }
 
-        if (count($this->scopes) > 0) {
-            $body['scopes'] = $this->scopes;
-        }
+        return $index_body;
 
-        return $body;
 
     }
-
-
 
     private function flatten($array) {
         if (count($array) == 0) {
@@ -1811,7 +1989,58 @@ class ES_indexer {
 
     }
 
+    function get_object_data($key) {
 
+
+        if (isset($this->object_data[$key])) {
+            return $this->object_data[$key];
+        } else {
+            return '';
+        }
+    }
+
+    public function get_index_header() {
+
+        if ($this->skip_add_index) {
+            return false;
+        }
+
+        $index_header = [];
+
+        foreach ($this->indices as $index_type) {
+
+            switch ($index_type) {
+                case 'quick':
+                    $index_header[] = [
+                        'index' => strtolower('au_q_search_'.$this->account_code),
+                        'id'    => $this->prefix.$this->object->id,
+                    ];
+                    switch ($this->object->get_object_name()) {
+                        case 'Customer':
+                            $index_header[] = [
+                                'index' => strtolower('au_customers_'.$this->account_code),
+                                'id'    => $this->object->id,
+                            ];
+                            break;
+                    }
+                    break;
+                case 'favourites':
+                case 'assets':
+                case 'assets_interval':
+                    $index_header[] = [
+                        'index' => strtolower('au_customers_'.$this->account_code),
+                        'id'    => $this->object->id,
+                    ];
+                    break;
+                default:
+                    break;
+            }
+
+
+        }
+
+        return $index_header;
+    }
 
     private function tokenize_address($type) {
 

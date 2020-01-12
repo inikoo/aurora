@@ -246,8 +246,6 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
     $query = trim($query_data['query']);
 
 
-
-
     $max_results = 16;
 
 
@@ -255,7 +253,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
 
     $params = [
-        'index' => strtolower('au_q_search_'.$_SESSION['account']),
+        'index' => strtolower('au_q_search_'.strtolower(DNS_ACCOUNT_CODE)),
 
         'body'    =>
 
@@ -353,8 +351,11 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
 
     $now    = DateTime::createFromFormat('U.u', microtime(true));
-    $result = $client->search($params);
 
+   // print_r($params);
+
+
+    $result = $client->search($params);
 
     $mtime = $now->format("U.u");
 
@@ -379,10 +380,10 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
 
     $analytics_params = [
-        'index' => strtolower('au_q_search_analytics_'.DNS_ACCOUNT_CODE),
+        'index' => strtolower('au_q_search_analytics_'.strtolower(DNS_ACCOUNT_CODE)),
         'body'  => [
             'date'           => $now->format("Y-m-d\TH:i:s.u"),
-            'account'        => DNS_ACCOUNT_CODE,
+            'tenant'         => strtolower(DNS_ACCOUNT_CODE),
             'stores'         => join($stores),
             'query'          => $query,
             'modules'        => (is_array($modules) ? $modules[0] : ''),
@@ -397,14 +398,11 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
     ];
 
 
-    // print_r($analytics_params);
 
     $analytics_index = $client->index($analytics_params);
 
 
-
-    $class  = (is_array($modules) ? $modules[0] : 'dashboard');
-
+    $class = (is_array($modules) ? $modules[0] : 'dashboard');
 
 
     if (preg_match('/_server/', $query_data['state']['module'])) {

@@ -10,32 +10,45 @@
  Version 3.0
 */
 
-require '../keyring/dns.php';
+require '../../keyring/dns.php';
 
 use Elasticsearch\ClientBuilder;
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_q_search_analytics_es';
-//curl -X DELETE 'http://localhost:9200/au_q_search_analytics_aw';
-// curl -X DELETE 'http://localhost:9200/au_q_search_analytics_aweu'
+//curl -X DELETE 'http://localhost:9200/au_q_search_analytics';
+
 
 
 
 
 $params = [
-    'index' => strtolower('au_q_search_analytics_'.DNS_ACCOUNT_CODE),
+    'index' => strtolower('au_q_search_analytics'),
     'body'  => array(
         'settings'=>array(
             'analysis'=>array(
-                'analyzer'=>'icu_analyzer'
+                'analyzer'=>'icu_analyzer',
+                "normalizer" => [
+                    "code_normalizer" => [
+                        "type"        => "custom",
+                        "char_filter" => [],
+                        "filter"      => [
+                            "lowercase",
+                            "asciifolding"
+                        ]
+                    ]
+                ]
             )
         ),
         'mappings' => array(
 
             'properties' => array(
+                'tenant'  => [
+                    'type'       => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ],
                 'date' => array(
                     'type'=> 'date',
                     "format"=> "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
@@ -47,10 +60,7 @@ $params = [
 
                 ),
 
-                'account' => array(
-                    'type'  => 'keyword',
 
-                ),
 
                 'stores' => array(
                     'type'  => 'keyword',

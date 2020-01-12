@@ -57,6 +57,12 @@ switch ($tipo) {
 
 }
 
+/**
+ * @param $data
+ * @param $customer \Public_Customer
+ * @param $editor
+ * @param $db \PDO
+ */
 function update_favourite($data, $customer, $editor, $db) {
 
 
@@ -83,14 +89,13 @@ function update_favourite($data, $customer, $editor, $db) {
             prepare_mysql(gmdate('Y-m-d H:i:s')), $product->data['Product Store Key']
 
         );
-
-        // print $sql;
         $db->exec($sql);
-
         $favourite_key = $db->lastInsertId();
         $pid           = $product->id;
 
     }
+
+    $customer->fork_index_elastic_search('create_elastic_index_object',['favourites']);
 
     $response = array(
         'state'         => 200,

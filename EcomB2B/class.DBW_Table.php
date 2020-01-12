@@ -648,37 +648,29 @@ abstract class DBW_Table extends stdClass {
 
     }
 
-    function fork_index_elastic_search($type='create_elastic_index_object'){
+
+
+    function fork_index_elastic_search($type = 'create_elastic_index_object', $indices = ['quick']) {
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'       => $type,
             'object'     => $this->get_object_name(),
-            'object_key' => $this->id
+            'object_key' => $this->id,
+            'indices'    => $indices
         ), DNS_ACCOUNT_CODE, $this->db
         );
     }
 
-    function index_elastic_search($hosts, $bulk = false) {
+    function index_elastic_search($hosts, $bulk = false, $indices = ['quick']) {
         include_once 'utils/ES_Indexer.class.php';
         $account = get_object('Account', 1);
-        $indexer = new ES_indexer($hosts, $account->get('Code'), $this, $this->db);
-
+        $indexer = new ES_indexer($hosts, $account->get('Code'), $this, $this->db,$indices);
         $indexer->prepare_object();
         if (!$bulk) {
-
-
             $indexer->add_index();
         }
-
         return $indexer;
-
-
-    }
-
-    function fork_subject_index_elastic_search(){
-        //todo
-        return false;
     }
 
     function delete_index_elastic_search($hosts) {

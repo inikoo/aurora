@@ -2209,15 +2209,6 @@ class Invoice extends DB_Table {
 
         $order->editor = $this->editor;
 
-        /*
-        if ($order->get('Order State') == 'Dispatched' and !$is_refund) {
-            $this->error = true;
-            $this->msg   = 'invoice cant be deleted';
-
-            return;
-
-        }
-*/
 
         $products             = array();
         $dates                = array();
@@ -2511,6 +2502,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         );
 
 
+        // here we update elastic customer.assets index
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'         => 'invoice_deleted',

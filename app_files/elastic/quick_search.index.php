@@ -10,11 +10,11 @@
  Version 3.0
 */
 
-require '../keyring/dns.php';
+require '../../keyring/dns.php';
 
 use Elasticsearch\ClientBuilder;
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
@@ -24,15 +24,15 @@ $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
 
 $params = [
-    'index' => strtolower('au_q_search_'.DNS_ACCOUNT_CODE),
+    'index' => strtolower('au_q_search'),
     'body'  => array(
         'settings' => array(
-            'analysis'   => array(
-                'analyzer' => [
+            'analysis' => array(
+                'analyzer'   => [
                     'icu_analyzer',
-                    'rt_code'=>[
-                        'tokenizer'=>'whitespace',
-                        "filter"      => [
+                    'rt_code' => [
+                        'tokenizer' => 'whitespace',
+                        "filter"    => [
                             "lowercase",
                             "asciifolding"
                         ]
@@ -52,50 +52,27 @@ $params = [
             ),
 
 
-
         ),
         'mappings' => array(
 
             'properties' => array(
-                'rt' => array(
+                'tenant'  => [
+                    'type'       => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ],
+                'rt'      => array(
                     'type' => 'search_as_you_type'
                 ),
                 'rt_code' => array(
-                    'type' => 'search_as_you_type',
+                    'type'     => 'search_as_you_type',
                     "analyzer" => "rt_code"
-                   //   "tokenizer" => "rt_code_tokenizer"
                 ),
 
-                'url'    => array(
-                    'type'  => 'keyword',
-                    'index' => false
-                ),
-                /*
-                'object'       => array(
+                'url' => array(
                     'type'  => 'keyword',
                     'index' => false
                 ),
 
-                   'status'       => array(
-                    'type'  => 'keyword',
-                    'index' => false
-
-                ),
-
-                'result_label' => array(
-                    'type'  => 'text',
-                    'index' => false
-                ),
-                  'primary'      => array(
-                    'type' => 'text'
-                ),
-                'secondary'    => array(
-                    'type' => 'text'
-                ),
-                'alias'        => array(
-                    'type' => 'text'
-                ),
-                */
                 'code'   => array(
                     'type'       => 'keyword',
                     "normalizer" => "code_normalizer"
@@ -104,8 +81,6 @@ $params = [
                     'type' => 'keyword',
 
                 ),
-
-
                 'icon_classes' => array(
                     'type'  => 'text',
                     'index' => false

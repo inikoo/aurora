@@ -18,51 +18,123 @@ require 'vendor/autoload.php';
 
 use Elasticsearch\ClientBuilder;
 
-print "\n";
+
 
 $params         = ['body' => []];
 $global_counter = 0;
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
-update_customers_index($db);
-
-update_categories_index($db);
-update_parts_index($db);
 
 
-update_products_index($db);
+array_shift($argv);
+if (count($argv) > 0) {
+    $objects = $argv;
+} else {
+    $objects = [
+        'categories',
+        'customers',
+        'parts',
+        'products',
+        'mailshots',
+        'deals',
+        'deal_components',
+        'deal_campaigns',
+        'lists',
+        'delivery_notes',
+        'invoices',
+        'deleted_invoices',
+        'payments',
+        'users',
+        'staff',
 
-update_mailshots_index($db);
+        'suppliers',
+        'agents',
+        'supplier_products',
+        'webpages',
+        'prospects',
+        'orders',
+        'locations'
+    ];
 
+}
 
-update_deals_index($db);
-update_deal_components_index($db);
+if (in_array('customers', $objects)) {
+    update_customers_index($db);
+}
+if (in_array('categories', $objects)) {
+    update_categories_index($db);
+}
+if (in_array('parts', $objects)) {
+    update_parts_index($db);
+}
+if (in_array('products', $objects)) {
+    update_products_index($db);
+}
+if (in_array('mailshots', $objects)) {
+    update_mailshots_index($db);
+}
+if (in_array('deal_components', $objects)) {
+    update_deal_components_index($db);
+}
+if (in_array('deals', $objects)) {
+    update_deals_index($db);
+}
+if (in_array('deal_campaigns', $objects)) {
+    update_deal_campaigns_index($db);
+}
 
+if (in_array('lists', $objects)) {
+    update_lists_index($db);
+}
 
-update_deal_campaigns_index($db);
+if (in_array('delivery_notes', $objects)) {
+    update_delivery_notes_index($db);
+}
 
-update_lists_index($db);
+if (in_array('invoices', $objects)) {
+    update_invoices_index($db);
+}
+if (in_array('deleted_invoices', $objects)) {
+    update_deleted_invoices_index($db);
+}
+if (in_array('payments', $objects)) {
+    update_payments_index($db);
+}
+if (in_array('users', $objects)) {
+    update_users_index($db);
+}
+if (in_array('staff', $objects)) {
+    update_staff_index($db);
+}
 
-update_delivery_notes_index($db);
+if (in_array('suppliers', $objects)) {
+    update_suppliers_index($db);
+}
+if (in_array('agents', $objects)) {
+    update_agents_index($db);
+}
+if (in_array('supplier_products', $objects)) {
+    update_supplier_products_index($db);
+}
+if (in_array('webpages', $objects)) {
+    update_webpages_index($db);
+}
+if (in_array('prospects', $objects)) {
+    update_prospects_index($db);
+}
+if (in_array('orders', $objects)) {
+    update_orders_index($db);
+}
+if (in_array('locations', $objects)) {
+    update_locations_index($db);
+}
 
-
-update_deleted_invoices_index($db);
-update_payments_index($db);
-update_invoices_index($db);
-
-update_users_index($db);
-update_staff_index($db);
-update_suppliers_index($db);
-update_agents_index($db);
-update_supplier_products_index($db);
-update_webpages_index($db);
-update_prospects_index($db);
-update_orders_index($db);
-update_locations_index($db);
 
 
 if (!empty($params['body'])) {
+
     $responses = $client->bulk($params);
+
 }
 
 
@@ -71,21 +143,22 @@ function process_indexing($indexer) {
     global $global_counter;
 
 
-    $_index_data = $indexer->get_index_header();
+    if($_index_body = $indexer->get_index_body()) {
 
-    $_index_body = $indexer->get_index_body();
 
-    if (!empty($_index_body['module'])) {
         $global_counter++;
-        $params['body'][] = [
-            'index' => [
-                '_index' => $_index_data['index'],
-                '_id'    => $_index_data['id']
-            ]
-        ];
+        foreach ($indexer->get_index_header() as $_key => $index_header) {
+
+            $params['body'][] = [
+                'index' => [
+                    '_index' => $index_header['index'],
+                    '_id'    => $index_header['id']
+                ]
+            ];
 
 
-        $params['body'][] = $_index_body;
+            $params['body'][] = $_index_body[$_key];
+        }
 
     }
 
@@ -95,7 +168,8 @@ function process_indexing($indexer) {
         //print "** $global_counter  **\n";
 
         $responses = $client->bulk($params);
-        $params    = ['body' => []];
+
+        $params = ['body' => []];
         unset($responses);
     }
 }
@@ -525,13 +599,23 @@ function update_customers_index($db) {
     $contador  = 0;
 
 
-    $sql  = "select `Customer Key` from `Customer Dimension` order by `Customer Key` desc ";
+    $sql = "select `Customer Key` from `Customer Dimension` order by `Customer Key` desc ";
+
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
 
         $object = get_object('Customer', $row['Customer Key']);
-        process_indexing($object->index_elastic_search($hosts, true));
+        process_indexing(
+            $object->index_elastic_search(
+                $hosts, true, [
+                'quick',
+                'favourites',
+                'assets',
+                'assets_interval'
+            ]
+            )
+        );
 
         $contador++;
         if ($print_est) {
