@@ -219,7 +219,7 @@ if ($user->get('User Type') == 'Agent') {
         echo json_encode(search_ES($data, $user->get('Handle'), ['warehouse']));
         exit;
     } elseif ($data['state']['module'] == 'dashboard') {
-        echo json_encode(search_ES($data, $user->get('Handle'), '', array(), $stores));
+        echo json_encode(search_ES($data, $user->get('Handle'), [], array(), $stores));
         exit;
     }
 }
@@ -243,6 +243,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
     $section = $query_data['state']['section'];
 
+
     $query = trim($query_data['query']);
 
 
@@ -250,6 +251,24 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
 
     $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+
+    if (in_array('customers', $modules)) {
+
+
+        if (preg_match_all(
+            '/([A-Z]{1,2}\d[A-Z\d]?\s\d[A-Z]{2})/i', $query, $matches
+        )) {
+
+            foreach ($matches[1] as $match) {
+                $query .= ' '.preg_replace('/\s/', '', $match);
+            }
+
+
+        }
+
+
+    }
 
 
     $params = [
@@ -330,6 +349,8 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
                 "module" => $modules
             ]
         );
+
+
     }
 
     foreach ($scopes as $scope => $boost) {
@@ -350,7 +371,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
     }
 
 
-    $now    = DateTime::createFromFormat('U.u', microtime(true));
+    $now = DateTime::createFromFormat('U.u', microtime(true));
 
    // print_r($params);
 
@@ -385,8 +406,8 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
             'date'           => $now->format("Y-m-d\TH:i:s.u"),
             'tenant'         => strtolower(DNS_ACCOUNT_CODE),
             'stores'         => join($stores),
-            'query'          => $query,
-            'modules'        => (is_array($modules) ? $modules[0] : ''),
+            'query'          => $query_data['query'],
+            'modules'        => (count($modules) > 0 ? $modules[0] : ''),
             'section'        => $section,
             'user'           => $user_code,
             'search_index'   => $query_data['search_index'],
@@ -402,7 +423,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
     $analytics_index = $client->index($analytics_params);
 
 
-    $class = (is_array($modules) ? $modules[0] : 'dashboard');
+    $class = (count($modules) > 0 ? $modules[0] : 'dashboard');
 
 
     if (preg_match('/_server/', $query_data['state']['module'])) {
@@ -415,7 +436,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
         'state'          => 200,
         'number_results' => $result['hits']['total']['value'],
         'results'        => $result['hits']['hits'],
-        'query'          => $query,
+        'query'          => $query_data['query'],
         'class'          => $class,
         'search_index'   => $analytics_index['_id'],
         'mtime'          => $mtime
