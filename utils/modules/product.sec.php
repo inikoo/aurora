@@ -125,23 +125,11 @@ function get_product_section() {
               'label' => _('Mailshots'),
               'icon'  => 'bullhorn'
           ),
-          'product.correlation' => array(
+          'product.correlations' => array(
               'title'   => _('Sales correlations'),
-              'label'   => _('Correlations'),
+              'label'   => _('Related products'),
               'icon'    => 'project-diagram',
-              'subtabs' => array(
-                  'product.sales_correlation'     => array(
-                      'label' => _('Sales correlation'),
-                      'icon'  => 'user',
 
-                  ),
-                  'product.sales_anticorrelation' => array(
-                      'label' => _('Sales anticorrelation'),
-                      'icon'  => 'user-slash',
-
-
-                  ),
-              )
           ),
 
 

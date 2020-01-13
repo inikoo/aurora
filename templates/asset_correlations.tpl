@@ -27,14 +27,16 @@
 {foreach  from=$tables item=table}
 <table class="island" id="{$table.id}">
     <tr>
-    <th>
+    <th colspan="3">
     {$table.title}
     </th>
     </tr>
     <tbody>
     {foreach  from=$table.assets item=asset}
         <tr>
-            <td>{$asset.key}</td>
+            <td>{$asset.icons}</td>
+            <td>{$asset.code}</td>
+            <td>{$asset.name}</td>
         </tr>
     {/foreach}
     </tbody>

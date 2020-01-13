@@ -18,7 +18,7 @@ use libphonenumber\PhoneNumberUtil;
 require_once 'vendor/autoload.php';
 
 
-class ES_indexer {
+class Elastic_Indexer {
     /**
      * @var \PDO
      */
@@ -330,7 +330,7 @@ class ES_indexer {
         if (in_array('favourites', $this->indices)) {
             $this->object_data['favourites'] = [];
 
-            $sql  = "select P.`Product Code` from `Customer Favourite Product Fact` B left join `Product Dimension` P on (P.`Product ID`=`Customer Favourite Product Product ID`) where `Customer Favourite Product Customer Key`=?";
+            $sql  = "select `Customer Favourite Product Product ID` from `Customer Favourite Product Fact`  where `Customer Favourite Product Customer Key`=?";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(
                 array(
@@ -338,7 +338,7 @@ class ES_indexer {
                 )
             );
             while ($row = $stmt->fetch()) {
-                $this->object_data['favourites'][] = $row['Product Code'];
+                $this->object_data['favourites'][] = $row['Customer Favourite Product Product ID'];
             }
         }
 
@@ -365,20 +365,18 @@ class ES_indexer {
             $products    = [];
             $families    = [];
             $departments = [];
-            $sql         = "select P.`Product Code`,F.`Category Code` as fam ,D.`Category Code` as dept from `Order Transaction Fact` OTD 
-                        left join `Product Dimension` P on (OTD.`Product ID`=P.`Product ID`) 
-                        left join `Category Dimension` F on (OTD.`OTF Category Family Key`=F.`Category Key`) 
-                        left join `Category Dimension` D on (OTD.`OTF Category Department Key`=D.`Category Key`) 
-                        where `Customer Key`=? and  `Invoice Key` >0 ".$period_data['sql_where'];
+
+
+            $sql         = "select `Product ID`,`OTF Category Family Key`,`OTF Category Department Key` from `Order Transaction Fact` OTD  where `Customer Key`=? and  `Invoice Key` >0 ".$period_data['sql_where'];
             $stmt        = $this->db->prepare($sql);
             $stmt->execute([$this->object->id]);
             while ($row = $stmt->fetch()) {
-                $products[] = $row['Product Code'];
-                if ($row['fam'] != '') {
-                    $families[] = $row['fam'];
+                $products[] = $row['Product ID'];
+                if ($row['OTF Category Family Key'] >0) {
+                    $families[] = $row['OTF Category Family Key'];
                 }
-                if ($row['dept'] != '') {
-                    $departments[] = $row['dept'];
+                if ($row['OTF Category Department Key'] >0) {
+                    $departments[] = $row['OTF Category Department Key'];
                 }
 
             }
@@ -389,6 +387,9 @@ class ES_indexer {
             $this->object_data['families_bought'.$period_data['sql_where']] = array_keys(array_flip($families));
 
             $this->object_data['departments_bought'.$period_data['sql_where']] = array_keys(array_flip($departments));
+
+
+
 
 
             unset($products);
@@ -839,7 +840,6 @@ class ES_indexer {
         $this->label_2 = ($this->object->get('Units Per Case') != 1 ? $this->object->get('Units Per Case').'x ' : '').$this->object->get('Name');
         $this->label_3 = $this->object->get('Price');
 
-        //'InProcess','Active','Suspended','Discontinuing','Discontinued'
         switch ($this->object->get('Product Status')) {
             case 'Discontinuing':
                 $this->weight       = 50;
@@ -858,8 +858,6 @@ class ES_indexer {
                 $this->icon_classes = 'fa fa-fw fa-cube';
                 break;
         }
-
-        //'Online Force Out of Stock','Online Auto','Offline','Online Force For Sale'
         switch ($this->object->get('Product Web Configuration')) {
             case 'Online Force Out of Stock':
                 $this->icon_classes .= '|fa fa-fw fa-stop red';

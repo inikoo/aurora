@@ -30,7 +30,6 @@ $worker = new GearmanWorker();
 $worker->addServer('127.0.0.1');
 $worker->addFunction("au_take_webpage_screenshot", "fork_take_webpage_screenshot");
 $worker->addFunction("au_redo_time_series", "fork_redo_time_series");
-$worker->addFunction("au_sales_correlation", "fork_sales_correlation");
 
 $db      = false;
 $account = false;

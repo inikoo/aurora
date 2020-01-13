@@ -181,8 +181,8 @@ function get_products_module() {
                     ),
 
                     'category.sales_correlation' => array(
-                        'title' => _('Sales correlations'),
-                        'label' => _('Correlations'),
+                        'title' => _('Related categories'),
+                        'label' => _('Related categories'),
                         'icon'  => 'project-diagram',
                     ),
 

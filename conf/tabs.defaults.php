@@ -4268,36 +4268,6 @@ $tab_defaults = array(
         'f_field'     => 'caption'
     ),
 
-    'category_sales_correlations' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'correlation',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-
-    ),
-
-
-    'product_sales_correlations' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'correlation',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-
-    ),
-
-    'product_sales_anticorrelations' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'correlation',
-        'sort_order'  => -1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-
-    ),
     'subject_categories'             => array(
         'view'        => 'overview',
         'sort_key'    => 'code',

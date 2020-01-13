@@ -200,7 +200,7 @@ function process_indexing($indexer) {
     }
 
 
-    if ($global_counter > 0 && $global_counter % 200 == 0 and  count($params['body'])>0 ) {
+    if ($global_counter > 0 && $global_counter % 500 == 0 and  count($params['body'])>0 ) {
 
         $responses = $client->bulk($params);
 

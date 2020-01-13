@@ -2282,8 +2282,7 @@ class Page extends DB_Table {
         $max_sales_links = ceil($max_links * .6);
 
 
-        // $min_sales_correlation_samples = 5;
-        // $correlation_upper_limit       = .5 / ($min_sales_correlation_samples);
+
         $see_also     = array();
         $number_links = 0;
         $items        = array();
