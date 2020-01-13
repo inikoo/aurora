@@ -1094,13 +1094,13 @@ class Customer extends Subject {
                 $sql = sprintf("update `Order Dimension` set `Order Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
 
-                $this->fork_subject_index_elastic_search();
+                //$this->fork_subject_index_elastic_search();
                 break;
             case 'Customer Delivery Sticky Note':
                 $this->update_field($field, $value);
                 $sql = sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
-                $this->fork_subject_index_elastic_search();
+                //$this->fork_subject_index_elastic_search();
                 //todo maybe we need to change index form orers too
                 break;
             case 'Customer Web Login Password':
@@ -1279,15 +1279,16 @@ class Customer extends Subject {
 
             case('Customer Sticky Note'):
                 $this->update_field_switcher('Sticky Note', $value);
-                $this->fork_subject_index_elastic_search();                break;
+                //$this->fork_subject_index_elastic_search();
+                break;
             case('Sticky Note'):
                 $this->update_field('Customer '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
-                $this->fork_subject_index_elastic_search();
+                //$this->fork_subject_index_elastic_search();
                 break;
             case('Note'):
                 $this->add_note($value);
-                $this->fork_subject_index_elastic_search();
+                //$this->fork_subject_index_elastic_search();
                 break;
             case('Attach'):
                 $this->add_attach($value);
