@@ -165,7 +165,7 @@ function process_indexing($indexer) {
     }
 
 
-    if ($global_counter > 0 && $global_counter % 1000 == 0) {
+    if ($global_counter > 0 && $global_counter % 200 == 0) {
 
         $responses = $client->bulk($params);
 
@@ -248,50 +248,72 @@ function update_isf_index($db) {
     $lap_time0 = microtime_float();
     $contador  = 0;
 
+    $chunk_size=100000;
+    $offset=0;
+    while($offset<$total){
 
-    $sql  = "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) ";
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
-    while ($row = $stmt->fetch()) {
-
-        $global_counter++;
-
-        $params['body'][] = [
-            'index' => [
-                '_index' => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
-            ]
-        ];
+        $limit ="limit $offset , $chunk_size";
 
 
-        $params['body'][] = [
-            'tenant'=>strtolower(DNS_ACCOUNT_CODE),
-            'date'=>$row['Date'],
-            'sku'=>$row['Part SKU'],
-            'location_key'=>$row['Location Key'],
-            'part'=>$row['Part Reference'],
-            'location'=>$row['Location Code'],
-            'qty'=>$row['Quantity On Hand'],
-            'cost_paid'=>$row['Value At Cost'],
-            'value'=>$row['Value Commercial'],
+        $offset=$offset+$chunk_size;
 
-        ];
+        $sql  = "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) $limit";
 
 
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
 
-        if ($global_counter > 0 && $global_counter % 1000 == 0) {
+            $global_counter++;
 
-            $responses = $client->bulk($params);
+            $params['body'][] = [
+                'index' => [
+                    '_index' => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                ]
+            ];
 
-            $params = ['body' => []];
-            unset($responses);
+
+            $params['body'][] = [
+                'tenant'=>strtolower(DNS_ACCOUNT_CODE),
+                'date'=>$row['Date'],
+                'sku'=>$row['Part SKU'],
+                'location_key'=>$row['Location Key'],
+                'part'=>$row['Part Reference'],
+                'location'=>$row['Location Code'],
+                'qty'=>$row['Quantity On Hand'],
+                'cost_paid'=>$row['Value At Cost'],
+                'value'=>$row['Value Commercial'],
+
+            ];
+
+
+
+            if ($global_counter > 0 && $global_counter % 1000 == 0) {
+
+                $responses = $client->bulk($params);
+
+                $params = ['body' => []];
+                unset($responses);
+            }
+
+
+            $contador++;
+            if ($print_est) {
+                print_lap_times($object_name, $contador, $total, $lap_time0);
+            }
         }
 
 
-        $contador++;
-        if ($print_est) {
-            print_lap_times($object_name, $contador, $total, $lap_time0);
-        }
+
     }
+
+
+
+
+
+
+
+
     print "\n";
 }
 
@@ -491,7 +513,7 @@ function update_parts_index($db) {
     $contador  = 0;
 
 
-    $sql  = "select `Part SKU` from `Part Dimension`  ";
+    $sql  = "select `Part SKU` from `Part Dimension` where `Part Reference`='mol-09' ";
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
@@ -521,7 +543,7 @@ function update_locations_index($db) {
     $contador  = 0;
 
 
-    $sql  = "select `Location Key` from `Location Dimension` order by `Location Key` desc ";
+    $sql  = "select `Location Key` from `Location Dimension` order by `Location Key` desc  ";
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {

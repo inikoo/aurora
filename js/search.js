@@ -132,7 +132,7 @@ $(function () {
 
     $('#navigation').on('input propertychange', ' .smart_search_input input', function () {
 
-        const delay = 200;
+        const delay = 300;
         search($(this), delay)
     });
 
