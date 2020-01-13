@@ -306,7 +306,8 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
                             ],
                             [
                                 'match' => [
-                                    'code' => $query
+                                    'code^2' => $query,
+
                                 ]
                             ],
                             [
@@ -320,6 +321,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
                                         "rt_code._2gram",
                                         "rt_code._3gram"
                                     ]
+
                                 ]
                             ]
 
