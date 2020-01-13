@@ -129,7 +129,9 @@ if (in_array('locations', $objects)) {
     update_locations_index($db);
 }
 
-
+if (in_array('isf', $objects)) {
+    update_isf_index($db);
+}
 
 if (!empty($params['body'])) {
 
@@ -163,9 +165,7 @@ function process_indexing($indexer) {
     }
 
 
-    // Every 1000 documents stop and send the bulk request
     if ($global_counter > 0 && $global_counter % 1000 == 0) {
-        //print "** $global_counter  **\n";
 
         $responses = $client->bulk($params);
 
@@ -231,6 +231,70 @@ function update_deals_index($db) {
     }
     print "\n";
 }
+
+
+/**
+ * @param $db \PDO
+ */
+function update_isf_index($db) {
+
+    global $params, $client;
+    global $global_counter;
+
+    $object_name = 'ISF';
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+
+    $sql  = "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+
+        $global_counter++;
+
+        $params['body'][] = [
+            'index' => [
+                '_index' => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
+            ]
+        ];
+
+
+        $params['body'][] = [
+            'tenant'=>strtolower(DNS_ACCOUNT_CODE),
+            'date'=>$row['Date'],
+            'sku'=>$row['Part SKU'],
+            'location_key'=>$row['Location Key'],
+            'part'=>$row['Part Reference'],
+            'location'=>$row['Location Code'],
+            'qty'=>$row['Quantity On Hand'],
+            'cost_paid'=>$row['Value At Cost'],
+            'value'=>$row['Value Commercial'],
+
+        ];
+
+
+
+        if ($global_counter > 0 && $global_counter % 1000 == 0) {
+
+            $responses = $client->bulk($params);
+
+            $params = ['body' => []];
+            unset($responses);
+        }
+
+
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+    print "\n";
+}
+
 
 /**
  * @param $db \PDO
@@ -898,6 +962,9 @@ function get_total_objects($db, $object_name) {
             break;
         case 'Email Campaigns':
             $sql = "select count(*) as num from `Email Campaign Dimension`";
+            break;
+        case 'ISF':
+            $sql = "select count(*) as num from `Inventory Spanshot Fact`";
             break;
         default:
             return $total_objects;

@@ -71,3 +71,20 @@ $params['body'] = array(
     )
 );
 $client->indices()->updateAliases($params);
+
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_isf',
+                'alias'   => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);

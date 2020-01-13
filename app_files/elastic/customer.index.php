@@ -3,7 +3,7 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:   11 January 2020  12:26::41  +0800, Kuala Lumpur, Nalaysia
+ Created:   11 January 2020  12:26::41  +0800, Kuala Lumpur, Malaysia
 
  Copyright (c) 2019, Inikoo
 
