@@ -196,10 +196,10 @@ class Order extends DB_Table {
                 }
 
                 $this->fork_index_elastic_search();
-                foreach($this->get_invoices('objects') as $invoice){
+                foreach ($this->get_invoices('objects') as $invoice) {
                     $invoice->fork_index_elastic_search();
                 }
-                foreach($this->get_deliveries('objects') as $delivery_motes){
+                foreach ($this->get_deliveries('objects') as $delivery_motes) {
                     $delivery_motes->fork_index_elastic_search();
                 }
 
@@ -227,14 +227,14 @@ class Order extends DB_Table {
             case 'Order Public ID':
             case 'Order Customer Name':
                 $this->update_field($field, $value, $options);
-                foreach($this->get_invoices('objects') as $invoice){
+                foreach ($this->get_invoices('objects') as $invoice) {
                     $invoice->fork_index_elastic_search();
                 }
-                foreach($this->get_deliveries('objects') as $delivery_motes){
+                foreach ($this->get_deliveries('objects') as $delivery_motes) {
                     $delivery_motes->fork_index_elastic_search();
                 }
                 break;
-                default:
+            default:
                 $base_data = $this->base_data();
 
 
@@ -2003,10 +2003,10 @@ class Order extends DB_Table {
             );
         }
 
-        if($old_value!=$this->get('Order State')){
-    $this->fork_index_elastic_search();
+        if ($old_value != $this->get('Order State')) {
+            $this->fork_index_elastic_search();
 
-}
+        }
 
     }
 
@@ -3329,7 +3329,7 @@ class Order extends DB_Table {
 
     }
 
-    function update_number_replacements($update_parents=true) {
+    function update_number_replacements($update_parents = true) {
 
         $old_in_warehouse_no_alerts   = $this->get('Order Replacements In Warehouse without Alerts');
         $old_in_warehouse_with_alerts = $this->get('Order Replacements In Warehouse with Alerts');
@@ -3380,9 +3380,8 @@ class Order extends DB_Table {
         }
 
 
-
-        $sql ="SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=?  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ";
-
+        $sql =
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=?  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ";
 
 
         $stmt = $this->db->prepare($sql);
@@ -3408,9 +3407,6 @@ class Order extends DB_Table {
         }
 
 
-
-
-
         $in_warehouse_no_alerts = $in_warehouse - $in_warehouse_with_alerts;
 
 
@@ -3431,7 +3427,6 @@ class Order extends DB_Table {
         }
 
 
-
         $this->fast_update(
             array(
                 'Order Replacements In Warehouse without Alerts' => $in_warehouse_no_alerts,
@@ -3445,56 +3440,50 @@ class Order extends DB_Table {
         );
 
 
+        if ($update_parents) {
+
+            $account = get_object('Account', 1);
+
+            require_once 'utils/new_fork.php';
 
 
-     if($update_parents) {
+            if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
+                $update_in_warehouse = true;
+            } else {
+                $update_in_warehouse = false;
+            }
 
-         $account=get_object('Account',1);
+            if ($old_packed_done != $packed_done) {
+                $update_packed = true;
+            } else {
+                $update_packed = false;
+            }
 
-         require_once 'utils/new_fork.php';
+            if ($old_approved != $approved) {
+                $update_approved = true;
+            } else {
+                $update_approved = false;
+            }
 
+            if ($old_dispatched_today != $dispatched_today) {
+                $update_dispatched_today = true;
+            } else {
+                $update_dispatched_today = false;
+            }
 
-         if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
-             $update_in_warehouse=true;
-         }else{
-             $update_in_warehouse=false;
-         }
-
-         if ($old_packed_done != $packed_done) {
-             $update_packed=true;
-         }else{
-             $update_packed=false;
-         }
-
-         if ($old_approved != $approved) {
-             $update_approved=true;
-         }else{
-             $update_approved=false;
-         }
-
-         if ($old_dispatched_today != $dispatched_today) {
-             $update_dispatched_today=true;
-         }else{
-             $update_dispatched_today=false;
-         }
-
-         new_housekeeping_fork(
-             'au_housekeeping', array(
-             'type'         => 'order_replacements_updated',
-             'order_key'    => $this->id,
-             'update_in_warehouse'=>$update_in_warehouse,
-             'update_packed'=>$update_packed,
-             'update_approved'=>$update_approved,
-             'update_dispatched_today'=>$update_dispatched_today,
-         ), $account->get('Account Code'), $this->db
-         );
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'                    => 'order_replacements_updated',
+                'order_key'               => $this->id,
+                'update_in_warehouse'     => $update_in_warehouse,
+                'update_packed'           => $update_packed,
+                'update_approved'         => $update_approved,
+                'update_dispatched_today' => $update_dispatched_today,
+            ), $account->get('Account Code'), $this->db
+            );
 
 
-
-
-
-
-     }
+        }
     }
 
     function create_return($transactions) {

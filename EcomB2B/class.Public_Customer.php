@@ -210,7 +210,7 @@ class Public_Customer extends DBW_Table {
             );
 
             $this->new = true;
-
+            $this->fork_index_elastic_search();
 
         } else {
             $this->error = true;
@@ -421,7 +421,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Delivery Address Link':
 
                 $this->update_delivery_address_link($value, $options);
-
+                $this->fork_index_elastic_search();
                 break;
 
             case 'Customer Contact Address':
@@ -449,7 +449,7 @@ class Public_Customer extends DBW_Table {
                     }
 
                 }
-
+                $this->fork_index_elastic_search();
                 break;
 
 
@@ -505,7 +505,7 @@ class Public_Customer extends DBW_Table {
                 if ($old_country != $this->data['Customer Invoice Address Country 2 Alpha Code']) {
                     $this->validate_customer_tax_number();
                 }
-
+                $this->fork_index_elastic_search();
                 break;
             case 'Customer Delivery Address':
 
@@ -522,7 +522,7 @@ class Public_Customer extends DBW_Table {
                     }
                 }
 
-
+                $this->fork_index_elastic_search();
                 break;
 
 
@@ -582,7 +582,7 @@ class Public_Customer extends DBW_Table {
 
                 }
 
-
+            $this->fork_index_elastic_search();
                 return true;
 
             case 'Customer Preferred Contact Number':
@@ -609,7 +609,7 @@ class Public_Customer extends DBW_Table {
                 $this->update_field($field, $value, $options);
                 $this->update_field($this->table_name.'Customer Preferred Contact Number Formatted Number', $this->get('Customer Main XHTML '.$value), $options);
 
-
+                $this->fork_index_elastic_search();
                 break;
 
 
@@ -703,7 +703,7 @@ class Public_Customer extends DBW_Table {
                     print "$sql\n";
                     exit;
                 }
-
+                $this->fork_index_elastic_search();
                 break;
             case 'Customer Main Contact Name':
                 //  $old_value = $this->get('Main Contact Name');
@@ -759,7 +759,7 @@ class Public_Customer extends DBW_Table {
                     exit;
                 }
 
-
+                $this->fork_index_elastic_search();
                 break;
 
             case 'Customer Main Plain Email':
@@ -846,7 +846,7 @@ class Public_Customer extends DBW_Table {
                     exit;
                 }
 
-
+                $this->fork_index_elastic_search();
                 break;
             case 'Customer Registration Number':
             case 'Customer Location':

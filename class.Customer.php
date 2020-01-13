@@ -1130,7 +1130,7 @@ class Customer extends Subject {
                 $this->update_address('Contact', json_decode($value, true), $options);
 
 
-                    $this->fork_index_elastic_search();
+                $this->fork_index_elastic_search();
 
 
                 break;
@@ -1509,7 +1509,6 @@ class Customer extends Subject {
 
                     )
                 );
-
 
 
                 break;
@@ -2787,7 +2786,6 @@ class Customer extends Subject {
     function delete($note = '') {
 
 
-
         $this->deleted = false;
 
 
@@ -2868,7 +2866,7 @@ class Customer extends Subject {
             'customer_key' => $this->id,
             'website_user' => $this->get('Customer Website User Key'),
             'editor'       => $this->editor
-        ),  DNS_ACCOUNT_CODE, $this->db
+        ), DNS_ACCOUNT_CODE, $this->db
         );
 
         $this->fork_index_elastic_search('delete_elastic_index_object');

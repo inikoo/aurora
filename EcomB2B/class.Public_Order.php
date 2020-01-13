@@ -255,6 +255,7 @@ class Public_Order extends DBW_Table {
             }
 
 
+            $this->fork_index_elastic_search();
         }
 
         $this->update_metadata = array(
