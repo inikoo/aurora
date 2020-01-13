@@ -317,9 +317,9 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
                                     "type" => "bool_prefix",
 
                                     "fields" => [
-                                        "rt_code",
-                                        "rt_code._2gram",
-                                        "rt_code._3gram"
+                                        "rt_code^1.1",
+                                        "rt_code._2gram^1.1",
+                                        "rt_code._3gram^1.1"
                                     ]
 
                                 ]

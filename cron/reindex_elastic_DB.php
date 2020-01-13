@@ -178,7 +178,9 @@ function process_indexing($indexer) {
     global $global_counter;
 
 
-    if ($_index_body = $indexer->get_index_body()) {
+    $_index_body = $indexer->get_index_body());
+
+    if (is_array($_index_body) and count($_index_body) > 0) {
 
 
         $global_counter++;

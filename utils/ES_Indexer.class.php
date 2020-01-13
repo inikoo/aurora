@@ -292,9 +292,9 @@ class ES_indexer {
                                                                                )
         )) {
             $this->real_time[] = $this->object->get('Customer Contact Address Postal Code');
-            $this->real_time[] = preg_replace('/\s/','',$this->object->get('Customer Contact Address Postal Code'));
+            $this->real_time[] = preg_replace('/\s/', '', $this->object->get('Customer Contact Address Postal Code'));
 
-            $this->label_4     .= ' '.$this->object->get('Customer Contact Address Postal Code');
+            $this->label_4 .= ' '.$this->object->get('Customer Contact Address Postal Code');
         }
 
 
@@ -1827,7 +1827,9 @@ class ES_indexer {
         $params = ['body' => []];
 
 
-        if ($body = $this->get_index_body()) {
+        $body = $this->get_index_body();
+        if (is_array($body) and count($body) > 0) {
+
 
             foreach ($this->get_index_header() as $key => $index_header) {
 
