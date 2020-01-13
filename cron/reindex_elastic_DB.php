@@ -19,7 +19,6 @@ require 'vendor/autoload.php';
 use Elasticsearch\ClientBuilder;
 
 
-
 $params         = ['body' => []];
 $global_counter = 0;
 
@@ -60,27 +59,61 @@ if (count($argv) > 0) {
 
 if (in_array('customers', $objects)) {
     update_customers_index($db);
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
 }
 if (in_array('categories', $objects)) {
     update_categories_index($db);
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
 }
 if (in_array('parts', $objects)) {
     update_parts_index($db);
+
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
+
 }
 if (in_array('products', $objects)) {
     update_products_index($db);
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
 }
 if (in_array('mailshots', $objects)) {
     update_mailshots_index($db);
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
 }
 if (in_array('deal_components', $objects)) {
     update_deal_components_index($db);
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
 }
 if (in_array('deals', $objects)) {
     update_deals_index($db);
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
 }
 if (in_array('deal_campaigns', $objects)) {
     update_deal_campaigns_index($db);
+    if (!empty($params['body'])) {
+        $responses = $client->bulk($params);
+        $params    = ['body' => []];
+    }
 }
 
 if (in_array('lists', $objects)) {
@@ -136,7 +169,7 @@ if (in_array('isf', $objects)) {
 if (!empty($params['body'])) {
 
     $responses = $client->bulk($params);
-
+    $params    = ['body' => []];
 }
 
 
@@ -145,7 +178,7 @@ function process_indexing($indexer) {
     global $global_counter;
 
 
-    if($_index_body = $indexer->get_index_body()) {
+    if ($_index_body = $indexer->get_index_body()) {
 
 
         $global_counter++;
@@ -229,6 +262,8 @@ function update_deals_index($db) {
             print_lap_times($object_name, $contador, $total, $lap_time0);
         }
     }
+
+
     print "\n";
 }
 
@@ -248,16 +283,17 @@ function update_isf_index($db) {
     $lap_time0 = microtime_float();
     $contador  = 0;
 
-    $chunk_size=100000;
-    $offset=0;
-    while($offset<$total){
+    $chunk_size = 100000;
+    $offset     = 0;
+    while ($offset < $total) {
 
-        $limit ="limit $offset , $chunk_size";
+        $limit = "limit $offset , $chunk_size";
 
 
-        $offset=$offset+$chunk_size;
+        $offset = $offset + $chunk_size;
 
-        $sql  = "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) $limit";
+        $sql =
+            "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) $limit";
 
 
         $stmt = $db->prepare($sql);
@@ -274,18 +310,17 @@ function update_isf_index($db) {
 
 
             $params['body'][] = [
-                'tenant'=>strtolower(DNS_ACCOUNT_CODE),
-                'date'=>$row['Date'],
-                'sku'=>$row['Part SKU'],
-                'location_key'=>$row['Location Key'],
-                'part'=>$row['Part Reference'],
-                'location'=>$row['Location Code'],
-                'qty'=>$row['Quantity On Hand'],
-                'cost_paid'=>$row['Value At Cost'],
-                'value'=>$row['Value Commercial'],
+                'tenant'       => strtolower(DNS_ACCOUNT_CODE),
+                'date'         => $row['Date'],
+                'sku'          => $row['Part SKU'],
+                'location_key' => $row['Location Key'],
+                'part'         => $row['Part Reference'],
+                'location'     => $row['Location Code'],
+                'qty'          => $row['Quantity On Hand'],
+                'cost_paid'    => $row['Value At Cost'],
+                'value'        => $row['Value Commercial'],
 
             ];
-
 
 
             if ($global_counter > 0 && $global_counter % 1000 == 0) {
@@ -304,14 +339,7 @@ function update_isf_index($db) {
         }
 
 
-
     }
-
-
-
-
-
-
 
 
     print "\n";
@@ -695,11 +723,11 @@ function update_customers_index($db) {
         process_indexing(
             $object->index_elastic_search(
                 $hosts, true, [
-                'quick',
-                'favourites',
-                'assets',
-                'assets_interval'
-            ]
+                          'quick',
+                          'favourites',
+                          'assets',
+                          'assets_interval'
+                      ]
             )
         );
 
