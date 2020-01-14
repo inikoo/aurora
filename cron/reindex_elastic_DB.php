@@ -60,116 +60,178 @@ if (count($argv) > 0) {
 if (in_array('customers', $objects)) {
     update_customers_index($db);
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 }
 if (in_array('categories', $objects)) {
     update_categories_index($db);
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 }
 if (in_array('parts', $objects)) {
     update_parts_index($db);
 
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 
 }
 if (in_array('products', $objects)) {
     update_products_index($db);
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 }
 if (in_array('mailshots', $objects)) {
     update_mailshots_index($db);
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 }
 if (in_array('deal_components', $objects)) {
     update_deal_components_index($db);
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 }
 if (in_array('deals', $objects)) {
     update_deals_index($db);
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 }
 if (in_array('deal_campaigns', $objects)) {
     update_deal_campaigns_index($db);
     if (!empty($params['body'])) {
-        $responses = $client->bulk($params);
-        $params    = ['body' => []];
+        add_indices($client, $params);
+        $params = ['body' => []];
     }
 }
 
 if (in_array('lists', $objects)) {
     update_lists_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 
 if (in_array('delivery_notes', $objects)) {
     update_delivery_notes_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 
 if (in_array('invoices', $objects)) {
     update_invoices_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('deleted_invoices', $objects)) {
     update_deleted_invoices_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('payments', $objects)) {
     update_payments_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('users', $objects)) {
     update_users_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('staff', $objects)) {
     update_staff_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 
 if (in_array('suppliers', $objects)) {
     update_suppliers_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('agents', $objects)) {
     update_agents_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('supplier_products', $objects)) {
     update_supplier_products_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('webpages', $objects)) {
     update_webpages_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('prospects', $objects)) {
     update_prospects_index($db);
+
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('orders', $objects)) {
     update_orders_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 if (in_array('locations', $objects)) {
     update_locations_index($db);
+
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 
 if (in_array('isf', $objects)) {
     update_isf_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
 }
 
 if (!empty($params['body'])) {
 
-    $responses = $client->bulk($params);
-    $params    = ['body' => []];
+    add_indices($client, $params);
+    $params = ['body' => []];
 }
 
 
@@ -200,12 +262,12 @@ function process_indexing($indexer) {
     }
 
 
-    if ($global_counter > 0 && $global_counter % 500 == 0 and  count($params['body'])>0 ) {
+    if ($global_counter > 0 && $global_counter % 10 == 0 and count($params['body']) > 0) {
 
-        $responses = $client->bulk($params);
+        add_indices($client, $params);
 
         $params = ['body' => []];
-        unset($responses);
+
     }
 }
 
@@ -285,66 +347,107 @@ function update_isf_index($db) {
     $lap_time0 = microtime_float();
     $contador  = 0;
 
-    $chunk_size = 100000;
+    $chunk_size = 5000;
     $offset     = 0;
-    while ($offset < $total) {
-
-        $limit = "limit $offset , $chunk_size";
 
 
-        $offset = $offset + $chunk_size;
+    $warehouse = get_object('Warehouse', 1);
 
-        $sql =
-            "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) $limit";
+    $from = date("Y-m-d", strtotime($warehouse->get('Warehouse Valid From')));
+    $to   = date("Y-m-d", strtotime('now'));
 
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        while ($row = $stmt->fetch()) {
+    $sql = sprintf(
+        "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=%s AND `Date`<=%s ORDER BY `Date` DESC", prepare_mysql($from), prepare_mysql($to)
+    );
 
-            $global_counter++;
 
-            $params['body'][] = [
-                'index' => [
-                    '_index' => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row2) {
+
+            print_r($row2);
+
+            $offset = $offset + $chunk_size;
+
+            $sql =
+                "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `Date`=?";
+
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                [
+                    $row2['Date']
                 ]
-            ];
+            );
+            while ($row = $stmt->fetch()) {
+
+                $global_counter++;
+
+                $params['body'][] = [
+                    'index' => [
+                        '_index' => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                    ]
+                ];
 
 
-            $params['body'][] = [
-                'tenant'       => strtolower(DNS_ACCOUNT_CODE),
-                'date'         => $row['Date'],
-                'sku'          => $row['Part SKU'],
-                'location_key' => $row['Location Key'],
-                'part'         => $row['Part Reference'],
-                'location'     => $row['Location Code'],
-                'qty'          => $row['Quantity On Hand'],
-                'cost_paid'    => $row['Value At Cost'],
-                'value'        => $row['Value Commercial'],
+                $params['body'][] = [
+                    'tenant'       => strtolower(DNS_ACCOUNT_CODE),
+                    'date'         => $row['Date'],
+                    'sku'          => $row['Part SKU'],
+                    'location_key' => $row['Location Key'],
+                    'part'         => $row['Part Reference'],
+                    'location'     => $row['Location Code'],
+                    'qty'          => $row['Quantity On Hand'],
+                    'cost_paid'    => $row['Value At Cost'],
+                    'value'        => $row['Value Commercial'],
 
-            ];
-
-
-            if ($global_counter > 0 && $global_counter % 1000 == 0) {
-
-                $responses = $client->bulk($params);
-
-                $params = ['body' => []];
-                unset($responses);
-            }
+                ];
 
 
-            $contador++;
-            if ($print_est) {
-                print_lap_times($object_name, $contador, $total, $lap_time0);
+                if ($global_counter > 0 && $global_counter % 1000 == 0) {
+
+                    add_indices($client, $params);
+
+                    $params = ['body' => []];
+
+
+                }
+
+
+                $contador++;
+                if ($print_est) {
+                    print_lap_times($row2['Date'], $contador, $total, $lap_time0);
+                }
             }
         }
-
 
     }
 
 
     print "\n";
+}
+
+
+function add_indices($client, $params) {
+    $results = $client->bulk($params);
+
+
+    if(!empty($results['errors'])){
+        print_r($results);
+    }
+
+
+
+    foreach($results['items'] as $res){
+       // print $res['index']['result']."\n";
+
+
+        if( !isset($res['index']['result']) or   $res['index']['result']!='updated'){
+          print_r($res);
+        }
+    }
+
+
 }
 
 
@@ -543,13 +646,12 @@ function update_parts_index($db) {
     $contador  = 0;
 
 
-    $sql  = "select `Part SKU` from `Part Dimension` where `Part Reference`='mol-09' ";
+    $sql  = "select `Part SKU` from `Part Dimension`  ";
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
         $object = get_object('Part', $row['Part SKU']);
         process_indexing($object->index_elastic_search($hosts, true));
-
 
         $contador++;
         if ($print_est) {
