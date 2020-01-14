@@ -39,11 +39,13 @@ $time_diff = $mtime - $query_data['mtime'];
 $params = [
     'index' => strtolower('au_q_search_analytics_'.DNS_ACCOUNT_CODE),
     'id'    => $query_data['search_index'],
+    'retry_on_conflict'=>4,
     'body'  => [
         'doc' => [
             'action'     => $query_data['action'],
             'delta_time' => $time_diff
-        ]
+        ],
+
     ]
 ];
 
@@ -55,6 +57,7 @@ if ($query_data['click_url'] != '') {
 }
 
 $response = $client->update($params);
+
 
 
 
