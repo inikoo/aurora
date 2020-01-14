@@ -167,7 +167,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         $store = get_object('Store', $state['store_key']);
     }
 
-
     switch ($state['parent']) {
 
         case 'store':
@@ -4876,7 +4875,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             break;
 
         case 'products':
-            $state['current_store'] = $state['store']->id;
 
             if ($user->get_number_stores() > 1) {
                 $branch[] = array(

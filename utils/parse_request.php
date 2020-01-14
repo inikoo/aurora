@@ -23,8 +23,10 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
     $request = $_data['request'];
 
+    $request = preg_replace('/\?$/', '', $request);
 
     $request = preg_replace('/\/+/', '/', $request);
+
     if ($request == '/' or $request == '') {
         $request = 'dashboard';
     }
@@ -60,7 +62,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
     if ($count_view_path > 0) {
         $root            = array_shift($view_path);
         $count_view_path = count($view_path);
-        switch ($root){
+        switch ($root) {
             case 'index.php':
             case 'dashboard':
                 $module  = 'dashboard';
@@ -234,11 +236,11 @@ function parse_request($_data, $db, $modules, $account, $user) {
                         }
                     }
 
-                }elseif(is_numeric($view_path[0])){
-                    $module  = 'mailroom';
-                    $parent='store';
-                    $parent_key=$view_path[0];
-                    $section = 'marketing';
+                } elseif (is_numeric($view_path[0])) {
+                    $module     = 'mailroom';
+                    $parent     = 'store';
+                    $parent_key = $view_path[0];
+                    $section    = 'marketing';
                     if (isset($view_path[1])) {
                         if ($view_path[1] == 'notifications') {
                             $section = 'customer_notifications';
@@ -311,14 +313,13 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                                 }
                             }
-                        }
-                        elseif ($view_path[1] == 'marketing') {
+                        } elseif ($view_path[1] == 'marketing') {
                             $section = 'marketing';
                             if (isset($view_path[2])) {
-                                if(is_numeric($view_path[2])){
+                                if (is_numeric($view_path[2])) {
                                     $section = 'email_campaign_type';
                                     $object  = 'email_campaign_type';
-                                    $key = $view_path[2];
+                                    $key     = $view_path[2];
 
                                     if (isset($view_path[3])) {
                                         if ($view_path[3] == 'mailshot') {
@@ -369,8 +370,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                 }
 
                                             }
-                                        }
-                                        elseif ($view_path[3] == 'tracking') {
+                                        } elseif ($view_path[3] == 'tracking') {
 
 
                                             $section = 'email_tracking';
@@ -394,15 +394,13 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 }
                             }
 
-                        }
-                        elseif ($view_path[1] == 'staff_notifications') {
+                        } elseif ($view_path[1] == 'staff_notifications') {
 
 
+                            $section = 'user_notifications';
 
-                                $section    = 'user_notifications';
 
-
-                                if(isset($view_path[2])){
+                            if (isset($view_path[2])) {
 
                                 if (is_numeric($view_path[2])) {
                                     $section = 'email_campaign_type';
@@ -430,7 +428,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     }
 
                                 }
-                                }
+                            }
 
 
                         }
@@ -725,11 +723,15 @@ function parse_request($_data, $db, $modules, $account, $user) {
                     break;
                 }
 
-                $module  = 'products';
-                $section = 'products';
 
                 if (isset($view_path[0])) {
+
+                    $module  = 'products';
+                    $section = 'products';
+
+
                     if (is_numeric($view_path[0])) {
+
                         $parent     = 'store';
                         $parent_key = $view_path[0];
                         if (isset($view_path[1])) {
@@ -910,13 +912,17 @@ function parse_request($_data, $db, $modules, $account, $user) {
                         $section = 'products';
 
 
+                    } else {
+                        exit('xx');
+                        $module  = 'utils';
+                        $section = 'not_found';
+                        $tab     = 'not_found';
                     }
 
 
                 }
+
                 break;
-
-
             case 'services':
                 if (!$user->can_view('stores')) {
                     $module  = 'utils';
@@ -3009,11 +3015,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $section = 'campaigns';
 
 
-
-
-
-
-                            }elseif ($view_path[1] == 'vo') {
+                            } elseif ($view_path[1] == 'vo') {
 
                                 $section = 'vouchers';
 
