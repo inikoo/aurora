@@ -1802,8 +1802,8 @@ class Elastic_Indexer {
 
         $this->client->delete(
             [
-                'index' => strtolower('au_q_search_'.$this->account_code),
-                'id'    => $this->prefix.$this->object->id,
+                'index' => strtolower('au_search_'.$this->account_code),
+                'id'    => $this->account_code.'.'.$this->prefix.$this->object->id,
             ]
         );
         switch ($this->object->get_object_name()) {
@@ -1811,7 +1811,7 @@ class Elastic_Indexer {
                 $this->client->delete(
                     [
                         'index' => strtolower('au_customers_'.$this->account_code),
-                        'id'    => $this->object->id,
+                        'id'    => $this->account_code.'.'.$this->object->id,
                     ]
                 );
                 break;
@@ -2018,8 +2018,8 @@ class Elastic_Indexer {
             switch ($index_type) {
                 case 'quick':
                     $index_header[] = [
-                        'index' => strtolower('au_q_search_'.$this->account_code),
-                        'id'    => $this->prefix.$this->object->id,
+                        'index' => strtolower('au_search_'.$this->account_code),
+                        'id'    => $this->account_code.'.'.$this->prefix.$this->object->id,
                     ];
                     switch ($this->object->get_object_name()) {
                         case 'Customer':
@@ -2035,7 +2035,7 @@ class Elastic_Indexer {
                 case 'assets_interval':
                     $index_header[] = [
                         'index' => strtolower('au_customers_'.$this->account_code),
-                        'id'    => $this->object->id,
+                        'id'    => $this->account_code.'.'.$this->object->id,
                     ];
                     break;
                 default:

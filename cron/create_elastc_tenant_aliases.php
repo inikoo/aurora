@@ -40,8 +40,8 @@ $params['body'] = array(
     'actions' => array(
         array(
             'add' => array(
-                'index'   => 'au_q_search',
-                'alias'   => 'au_q_search_'.strtolower(DNS_ACCOUNT_CODE),
+                'index'   => 'au_search',
+                'alias'   => 'au_search_'.strtolower(DNS_ACCOUNT_CODE),
                 "routing" => DNS_ACCOUNT_CODE,
                 "filter"  => [
                     "term" => [

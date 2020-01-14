@@ -18,7 +18,7 @@ require '../../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_q_search_analytics';
+//curl -X DELETE 'http://localhost:9200/au_search_analytics';
 
 
 
