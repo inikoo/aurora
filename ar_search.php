@@ -40,7 +40,7 @@ if ($data['query'] == '') {
     exit;
 }
 
-if ($data['state']['current_store']) {
+if (!empty($data['state']['current_store'])) {
     $stores = array($data['state']['current_store']);
 } else {
     $stores = $user->stores;
