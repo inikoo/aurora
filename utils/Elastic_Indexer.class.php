@@ -1853,6 +1853,10 @@ class Elastic_Indexer {
     public function get_index_body() {
 
 
+        if($this->weight<=0){
+            $this->weight=1;
+        }
+
         if ($this->skip_add_index) {
             return false;
         }
