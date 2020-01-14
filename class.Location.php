@@ -192,7 +192,7 @@ class Location extends DB_Table {
                 }
             }
 
-
+            $this->fork_index_elastic_search();
             return $this;
 
 
@@ -371,6 +371,7 @@ class Location extends DB_Table {
                 $this->update_field('Location File As', $this->get_file_as($code), 'no_history');
 
                 $this->update_field('Location Code', $code, $options);
+                $this->fork_index_elastic_search();
                 break;
 
             case 'Warehouse Area Code':
@@ -547,6 +548,7 @@ class Location extends DB_Table {
                             $warehouse->update_location_flag_number($old_key);
                         }
 
+                        $this->fork_index_elastic_search();
 
                     } else {
                         $this->error = true;
@@ -951,6 +953,7 @@ class Location extends DB_Table {
             $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
+        $this->fork_index_elastic_search('delete_elastic_index_object');
 
     }
 
