@@ -241,6 +241,7 @@ class SupplierPart extends DB_Table {
             $this->add_subject_history(
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
+            $this->fork_index_elastic_search();
 
 
             return;
@@ -2013,10 +2014,10 @@ class SupplierPart extends DB_Table {
 
 
         $this->deleted = true;
+        $this->fork_index_elastic_search('delete_elastic_index_object');
 
 
         return 'part/'.$this->data['Supplier Part Part SKU'];
-
 
     }
 

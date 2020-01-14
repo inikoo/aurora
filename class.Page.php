@@ -287,6 +287,8 @@ class Page extends DB_Table {
 
             return $this;
 
+            $this->fork_index_elastic_search();
+
 
         } else {
             $this->error = true;
@@ -3497,6 +3499,8 @@ class Page extends DB_Table {
 
 
         }
+
+        $this->fork_index_elastic_search('delete_elastic_index_object');
 
 
     }

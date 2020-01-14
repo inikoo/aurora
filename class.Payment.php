@@ -128,6 +128,9 @@ class Payment extends DB_Table {
             $this->id  = $this->db->lastInsertId();
             $this->new = true;
             $this->get_data('id', $this->id);
+
+            $this->fork_index_elastic_search();
+
         } else {
             print "Error can not create payment\n";
             print "$sql\n";
@@ -342,7 +345,7 @@ class Payment extends DB_Table {
                 $this->update_field($field, $value, $options);
 
                 $this->update_payment_parents();
-
+                $this->fork_index_elastic_search();
 
                 break;
 
@@ -451,6 +454,7 @@ class Payment extends DB_Table {
 
 
         $this->update_payment_parents();
+        $this->fork_index_elastic_search('delete_elastic_index_object');
 
 
     }

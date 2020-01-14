@@ -122,6 +122,7 @@ class Public_Payment extends DBW_Table {
             $this->id  = $this->db->lastInsertId();
             $this->new = true;
             $this->get_data('id', $this->id);
+            $this->fork_index_elastic_search();
         } else {
             print "Error can not create payment\n";
             exit;
