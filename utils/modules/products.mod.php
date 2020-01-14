@@ -64,7 +64,7 @@ function get_products_module() {
                 )
 
             ),
-
+/*
 
             'services' => array(
                 'type'      => 'navigation',
@@ -76,6 +76,7 @@ function get_products_module() {
                     'services' => array()
                 )
             ),
+*/
             'products' => array(
                 'type'      => 'navigation',
                 'label'     => _('Products'),
