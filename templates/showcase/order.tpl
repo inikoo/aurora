@@ -174,7 +174,7 @@
      data-customer_key="{$order->get('Order Customer Key')}" data-state_index="{$order->get('State Index')}">
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
-            <div class="data_field  " style="margin-bottom:10px">
+            <div class="data_field  " >
 
               <span class="button" onclick="change_view('customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}')">
                 <i class="fa fa-user fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i> <span
@@ -184,9 +184,12 @@
                           class="link Order_Customer_Key">{$order->get('Order Customer Key')|string_format:"%05d"}</span>
               </span>
             </div>
+            <div class="data_field {if $order->get('Order Customer Name')==$order->get('Order Customer Contact Name')}hide{/if} " >
+                <i class="fa fa-fw  fa-male super_discreet" title="{t}Contact name{/t}"  ></i> <span  class=" Order_Customer_Contact_Name">{$order->get('Order Customer Contact Name')}</span>
+            </div>
 
 
-            <div class="data_field small  " style="margin-top:5px">
+            <div class="data_field small  " style="margin-top:10px">
 
                 <span id="display_telephones"></span>
                 {if $customer->get('Customer Preferred Contact Number')=='Mobile'}
