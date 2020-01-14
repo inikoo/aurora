@@ -443,7 +443,7 @@ function add_indices($client, $params) {
 
 
         if( !isset($res['index']['result']) or   $res['index']['result']!='updated'){
-          print_r($res);
+        //  print_r($res);
         }
     }
 
