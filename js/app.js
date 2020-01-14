@@ -3,6 +3,8 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
+var ajax_search_Req='clean';
+
 function isMobile() {
     try {
         document.createEvent("TouchEvent");
