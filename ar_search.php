@@ -272,7 +272,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
 
 
     $params = [
-        'index' => strtolower('au_q_search_'.strtolower(DNS_ACCOUNT_CODE)),
+        'index' => strtolower('au_search_'.strtolower(DNS_ACCOUNT_CODE)),
 
         'body'    =>
 

@@ -262,7 +262,7 @@ function process_indexing($indexer) {
     }
 
 
-    if ($global_counter > 0 && $global_counter % 10 == 0 and count($params['body']) > 0) {
+    if ($global_counter > 0 && $global_counter % 1000 == 0 and count($params['body']) > 0) {
 
         add_indices($client, $params);
 

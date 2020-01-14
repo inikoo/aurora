@@ -1,0 +1,47 @@
+/*
+
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created:   14 January 2020  14:35::05  +0800, Kuala Lumpur, Malaysia
+
+ Copyright (c) 2022, Inikoo
+
+ Version 3.0
+*/
+
+.islands {
+  display: flex;
+
+  .island {
+    flex-grow: 1;
+    margin: 30px;
+    padding: 20px 40px;
+    border: 1px solid #ccc;
+
+    th {
+      font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+      font-weight: 800;
+      border-bottom: 1px solid #ccc;
+    }
+
+    td, th {
+      padding: 5px 10px;
+    }
+
+    td {
+      border-bottom: 1px solid #eee;
+
+      &:last-of-type {
+        border-bottom: 1px solid #ccc;
+
+      }
+    }
+
+    tr:last-of-type td{
+      border-bottom: 1px solid #ccc;
+
+    }
+
+
+  }
+}

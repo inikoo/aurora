@@ -14,6 +14,30 @@
 use Elasticsearch\ClientBuilder;
 
 
+$size = 20;
+
+
+if (isset($_SESSION['island_state']['correlations']['period'])) {
+    $period = $_SESSION['island_state']['correlations']['period'];
+
+} else {
+    $_SESSION['island_state']['correlations']['period'] = 'all';
+
+    $period = 'all';
+
+}
+
+switch ($period) {
+    case 'all':
+        $period_suffix = '';
+        break;
+
+    default:
+        $period_suffix = '_'.$period;
+        break;
+}
+
+
 //print_r($state);
 
 $asset = $state['_object'];
@@ -21,7 +45,7 @@ $asset = $state['_object'];
 /**
  * @var $family \ProductCategory
  */
-$family=get_object('Category',$asset->get('Product Family Category Key'));
+$family = get_object('Category', $asset->get('Product Family Category Key'));
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
@@ -34,15 +58,15 @@ $params = [
 
             "query"        => [
                 'match' => [
-                    'products_bought' => $asset->id
+                    'products_bought'.$period_suffix => $asset->id
                 ]
             ],
             'aggregations' => [
                 'products' => [
                     'significant_terms' => [
-                        "field"         => "products_bought",
+                        "field"         => "products_bought".$period_suffix,
                         "min_doc_count" => 1,
-                        "size"          => $family->get('Category Number Subjects')+25
+                        "size"          => $family->get('Category Number Subjects') + $size + 5
                     ]
                 ]
             ]
@@ -64,11 +88,11 @@ $result = $client->search($params);
 $assets_ids  = [];
 $assets_data = [];
 foreach ($result['aggregations']['products']['buckets'] as $result) {
-    if($result['key']==$asset->id){
+    if ($result['key'] == $asset->id) {
         continue;
     }
-    $assets_ids[]                = $result['key'];
-    $assets_data[$result['key']] = [
+    $assets_ids[]                         = $result['key'];
+    $assets_data[$result['key']]          = [
         'score' => $result['score']
     ];
     $assets_data_diff_fam[$result['key']] = [
@@ -77,7 +101,8 @@ foreach ($result['aggregations']['products']['buckets'] as $result) {
 }
 
 $in   = str_repeat('?,', count($assets_ids) - 1).'?';
-$sql  = "SELECT `Product Family Category Key`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Units Per Case`,`Product Status`,`Product Web State`,`Product Web Configuration`,`Product Availability`,`Product Number of Parts` FROM `Product Dimension` WHERE `Product ID` IN ($in)";
+$sql  =
+    "SELECT `Product Family Category Key`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Units Per Case`,`Product Status`,`Product Web State`,`Product Web Configuration`,`Product Availability`,`Product Number of Parts` FROM `Product Dimension` WHERE `Product ID` IN ($in)";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     $assets_ids
@@ -85,7 +110,7 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
 
 
-    $icon_classes='';
+    $icon_classes = '';
     switch ($row['Product Status']) {
         case 'Discontinuing':
             $icon_classes = 'fa fa-fw fa-cube warning';
@@ -152,21 +177,21 @@ while ($row = $stmt->fetch()) {
             break;
 
     }
-    $icons='';
-    foreach(preg_split('/\|/',$icon_classes) as $icon_class){
-        $icons.="<i class='$icon_class'></i> ";
+    $icons = '';
+    foreach (preg_split('/\|/', $icon_classes) as $icon_class) {
+        $icons .= "<i class='$icon_class'></i> ";
     }
 
 
     $assets_data[$row['Product ID']]['icons'] = $icons;
-    $assets_data[$row['Product ID']]['code'] = $row['Product Code'];
-    $assets_data[$row['Product ID']]['name'] = $row['Product Units Per Case'].'x '.$row['Product Name'];
+    $assets_data[$row['Product ID']]['code']  = $row['Product Code'];
+    $assets_data[$row['Product ID']]['name']  = $row['Product Units Per Case'].'x '.$row['Product Name'];
 
-    if($row['Product Family Category Key']!=$asset->get('Product Family Category Key')){
+    if ($row['Product Family Category Key'] != $asset->get('Product Family Category Key')) {
         $assets_data_diff_fam[$row['Product ID']]['icons'] = $icons;
-        $assets_data_diff_fam[$row['Product ID']]['code'] = $row['Product Code'];
-        $assets_data_diff_fam[$row['Product ID']]['name'] = $row['Product Units Per Case'].'x '.$row['Product Name'];
-    }else{
+        $assets_data_diff_fam[$row['Product ID']]['code']  = $row['Product Code'];
+        $assets_data_diff_fam[$row['Product ID']]['name']  = $row['Product Units Per Case'].'x '.$row['Product Name'];
+    } else {
         unset($assets_data_diff_fam[$row['Product ID']]);
     }
 
@@ -177,15 +202,33 @@ while ($row = $stmt->fetch()) {
 $tables = array(
     [
         'id'     => 'correlated_products',
-        'title'  => _('Products'),
+        'data'   => json_encode(
+            [
+                'object' => $asset->get_object_name(),
+                'key'    => $asset->id,
+                'size'   => $size + 1
+            ]
+        ),
+        'title'  => _("Customers also bought"),
         'assets' => array_slice($assets_data, 0, 20)
     ],
     [
-        'id'     => 'correlated_products',
-        'title'  => _('Products excluding same family'),
+        'id'     => 'correlated_products_excl_family',
+        'data'   => json_encode(
+            [
+                'object'     => $asset->get_object_name(),
+                'key'        => $asset->id,
+                'size'       => $family->get('Category Number Subjects') + $size + 1,
+                'family_key' => $family->id
+            ]
+        ),
+        'title'  => _("Customers also bought").' <span class="small">('._('excluding same family').')</span>',
         'assets' => array_slice($assets_data_diff_fam, 0, 20)
     ]
 );
+
+
+$smarty->assign('period', $period);
 
 $smarty->assign('tables', $tables);
 $html = $smarty->fetch('asset_correlations.tpl');

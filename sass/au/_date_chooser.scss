@@ -24,6 +24,14 @@
     width: 5.25%;
     text-align: center;
   }
+
+  &.right{
+    div{
+      float:right;
+    }
+  }
+
+
 }
 
 #select_date_control_panel, #select_interval_control_panel {
