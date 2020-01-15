@@ -2052,7 +2052,7 @@ class Elastic_Indexer {
                             ]
                         ]
                     ];
-                    print_r($this->client->update($params));
+                    $this->client->update($params);
                     break;
                 case 'assets_interval':
 
