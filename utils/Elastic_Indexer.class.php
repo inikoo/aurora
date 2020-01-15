@@ -1817,7 +1817,7 @@ class Elastic_Indexer {
             case 'Customer':
                 $this->client->delete(
                     [
-                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                        'index' => strtolower('au_customers_'.$this->account_code),
                         'id'    => $this->account_code.'.'.$this->object->id,
                     ]
                 );
@@ -2008,7 +2008,7 @@ class Elastic_Indexer {
         switch ($this->object->get_object_name()) {
             case 'Customer':
                 $index_header[] = [
-                    'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                    'index' => strtolower('au_customers_'.$this->account_code),
                     'id'    => $this->account_code.'.'.$this->object->id,
                 ];
                 break;
@@ -2029,7 +2029,7 @@ class Elastic_Indexer {
                 case 'favourites':
 
                     $params = [
-                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                        'index' => strtolower('au_customers_'.$this->account_code),
                         'id'    => $this->account_code.'.'.$this->object->id,
                         'body'  => [
                             'doc' => [
@@ -2042,7 +2042,7 @@ class Elastic_Indexer {
                 case 'assets':
 
                     $params = [
-                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                        'index' => strtolower('au_customers_'.$this->account_code),
                         'id'    => $this->account_code.'.'.$this->object->id,
                         'body'  => [
                             'doc' => [
@@ -2057,7 +2057,7 @@ class Elastic_Indexer {
                 case 'assets_interval':
 
                     $params = [
-                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                        'index' => strtolower('au_customers_'.$this->account_code),
                         'id'    => $this->account_code.'.'.$this->object->id,
                         'body'  => [
                             'doc' => [
