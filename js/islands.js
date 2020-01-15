@@ -12,6 +12,10 @@ $(function () {
     $('#tab').on('click', '.islands_container .date_chooser > div', function () {
 
 
+        if($(this).hasClass('selected')){
+            return;
+        }
+
         $('.date_chooser > div').removeClass('selected');
 
 
@@ -23,10 +27,8 @@ $(function () {
 
         $('.islands_container .islands table').each(function (i, obj) {
 
-            // console.log($(obj).data('args'))
 
             const args={ period: period,tipo:$(obj).attr('id'), args:$(obj).data('args')}
-            console.log(args)
 
             $.getJSON('/'+ar_file, {
                 args

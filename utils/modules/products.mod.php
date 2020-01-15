@@ -181,7 +181,7 @@ function get_products_module() {
                         'icon'  => 'bullhorn'
                     ),
 
-                    'category.sales_correlation' => array(
+                    'category.correlations' => array(
                         'title' => _('Related categories'),
                         'label' => _('Related categories'),
                         'icon'  => 'project-diagram',

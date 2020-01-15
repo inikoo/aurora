@@ -376,7 +376,7 @@ class Elastic_Indexer {
             $departments = [];
 
 
-            $sql = "select `Product ID`,`OTF Category Family Key`,`OTF Category Department Key` from `Order Transaction Fact` OTD  where `Customer Key`=? and  `Invoice Key` >0 ".$period_data['sql_where'];
+            $sql = "select `Product ID`,`OTF Category Family Key`,`OTF Category Department Key` from `Order Transaction Fact` OTD  where `Customer Key`=? and  `Invoice Key` >0 and `Order Transaction Amount`>0  ".$period_data['sql_where'];
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$this->object->id]);

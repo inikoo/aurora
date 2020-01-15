@@ -9,6 +9,9 @@
 
 */
 
+
+
+
 use Elasticsearch\ClientBuilder;
 
 require_once 'common.php';
@@ -33,8 +36,11 @@ switch ($tipo) {
 
 
     case 'correlated_products':
+    case 'correlated_products_excl_family':
+
         $data = prepare_values(
             $_REQUEST['args'], array(
+                                 'tipo'   => array('type' => 'string'),
                                  'args'   => array('type' => 'string'),
                                  'period' => array('type' => 'string'),
                              )
@@ -43,14 +49,21 @@ switch ($tipo) {
 
         break;
 
-    case 'correlated_products_excl_family':
+
+    case 'correlated_categories':
+    case 'correlated_categories_excl_dept':
         $data = prepare_values(
             $_REQUEST['args'], array(
+                                 'tipo' => array('type' => 'string'),
+
                                  'args'   => array('type' => 'string'),
                                  'period' => array('type' => 'string'),
                              )
         );
-        correlated_products_excl_family($data, $db, $client);
+        correlated_categories($data, $db, $client);
+
+        break;
+
 
         break;
     default:
@@ -63,7 +76,8 @@ switch ($tipo) {
         break;
 }
 
-function correlated_products($_data, $db, $client) {
+
+function correlated_categories($_data, $db, $client) {
 
 
     //    $_SESSION['island_state']['correlations']['period'] = 'all';
@@ -104,27 +118,17 @@ function correlated_products($_data, $db, $client) {
         'body' =>
 
             [
-
-
                 "query"        => [
-                    'bool' => [
-                        'must' => [
 
-                            'term' => [
-                                'products_bought'.$period_suffix => $_data['args']['key']
-                            ],
-                            'term' => [
-                                'store_key' =>$_data['args']['store_key']
-                            ]
-                        ]
-                    ]
-
+                    'term' => [
+                        $_data['args']['field_name'].$period_suffix => $_data['args']['key']
+                    ],
 
                 ],
                 'aggregations' => [
-                    'products' => [
+                    'categories' => [
                         'significant_terms' => [
-                            "field"         => "products_bought".$period_suffix,
+                            "field"         => $_data['args']['field_name'].$period_suffix,
                             "min_doc_count" => 1,
                             "size"          => $_data['args']['size']
                         ]
@@ -145,9 +149,10 @@ function correlated_products($_data, $db, $client) {
 
     $result = $client->search($params);
 
+
     $assets_ids  = [];
     $assets_data = [];
-    foreach ($result['aggregations']['products']['buckets'] as $result) {
+    foreach ($result['aggregations']['categories']['buckets'] as $result) {
         if ($result['key'] == $_data['args']['key']) {
             continue;
         }
@@ -158,10 +163,27 @@ function correlated_products($_data, $db, $client) {
 
     }
 
+
     if (count($assets_ids) > 0) {
-        $in   = str_repeat('?,', count($assets_ids) - 1).'?';
-        $sql  =
-            "SELECT `Product Family Category Key`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Units Per Case`,`Product Status`,`Product Web State`,`Product Web Configuration`,`Product Availability`,`Product Number of Parts` FROM `Product Dimension` WHERE `Product ID` IN ($in)";
+
+        $in = str_repeat('?,', count($assets_ids) - 1).'?';
+
+        if ($_data['args']['cat_subject'] == 'Product') {
+            $sql = "SELECT D.`Category Code` as dept,C.`Category Store Key`,C.`Category Key`,`Product Category Status`,C.`Category Subject`,C.`Category Root Key`,`Product Category Department Category Key`,C.`Category Code`,C.`Category Label` 
+                    FROM `Category Dimension` C 
+                                left join `Product Category Dimension` B on (C.`Category Key`=B.`Product Category Key`)  
+                                 left join `Category Dimension` D on (D.`Category Key`=`Product Category Department Category Key`)  
+                                WHERE C.`Category Key` IN ($in)";
+
+        } else {
+            $sql = "SELECT `Category Store Key`,C.`Category Key`,`Product Category Status`,`Category Subject`,`Category Root Key`,`Product Category Department Category Key`,`Category Code`,`Category Label` 
+                    FROM `Category Dimension` C 
+                                left join `Product Category Dimension` B on (C.`Category Key`=B.`Product Category Key`)  
+                                WHERE C.`Category Key` IN ($in)";
+
+        }
+
+
         $stmt = $db->prepare($sql);
         $stmt->execute(
             $assets_ids
@@ -170,86 +192,73 @@ function correlated_products($_data, $db, $client) {
 
         while ($row = $stmt->fetch()) {
 
-            switch ($row['Product Status']) {
-                case 'Discontinuing':
-                    $icon_classes = 'fa fa-fw fa-cube warning';
-                    break;
-                case 'Discontinued':
 
-                    $icon_classes = 'fa fa-fw fa-cube very_discreet';
-                    break;
-                case 'Suspended':
+            //print $row['Product Category Department Category Key'].' '.$_data['args']['department_key']."\n";
+            if ($_data['tipo'] == 'correlated_categories' or $row['Product Category Department Category Key'] != $_data['args']['department_key']) {
 
-                    $icon_classes = 'fa fa-fw fa-cube error';
-                    break;
-                default:
 
-                    $icon_classes = 'fa fa-fw fa-cube';
-                    break;
+                if ($row['Category Store Key'] != $_data['args']['store_key']) {
+                    unset($assets_data[$row['Category Key']]);
+
+                    continue;
+                }
+
+
+                //print "**\n";
+
+                if ($row['Category Root Key'] == $_data['args']['store_fam_category_key'] or $row['Category Root Key'] == $_data['args']['store_dept_category_key']) {
+                    $icon_classes = 'fa yellow_main ';
+                } else {
+                    $icon_classes = 'far discreet ';
+                }
+
+                if ($row['Category Subject'] == 'Product') {
+                    $icon_classes .= 'fa-fw fa-folder-open';
+                } else {
+                    $icon_classes .= 'fa-fw fa-folder-tree';
+                }
+
+                switch ($row['Product Category Status']) {
+                    case 'In Process':
+                        break;
+
+                    case 'Active':
+                        break;
+                    case 'Suspended':
+                        $icon_classes .= ' very_discreet red';
+
+                        break;
+                    case 'Discontinued':
+                        $icon_classes .= ' very_discreet warning';
+                        break;
+                    case 'Discontinuing':
+                        $icon_classes .= ' warning';
+                        break;
+
+                }
+
+
+                $icons = '';
+                foreach (preg_split('/\|/', $icon_classes) as $icon_class) {
+                    $icons .= "<i class='$icon_class'></i> ";
+                }
+
+                $code = sprintf('<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>', $row['Category Store Key'], $row['Category Key'], $row['Category Code']);
+                if ($_data['args']['cat_subject'] == 'Product') {
+                    $code .= ' <span class="small very_discreet">('.$row['dept'].')</span>';
+                }
+                $name = $row['Category Label'];
+
+
+                $assets_data[$row['Category Key']]['data'] = [
+                    $icons,
+                    $code,
+                    $name
+                ];
+
+            } else {
+                unset($assets_data[$row['Category Key']]);
             }
-            switch ($row['Product Web Configuration']) {
-                case 'Online Force Out of Stock':
-                    $icon_classes .= '|fa fa-fw fa-stop red';
-                    break;
-
-                case 'Online Force For Sale':
-                    $icon_classes .= '|fa fa-fw fa-stop';
-
-                    switch ($row['Product Availability State']) {
-                        case 'OnDemand':
-                        case 'Normal':
-                        case 'Excess':
-                            $icon_classes .= ' green';
-                            break;
-                        case 'VeryLow':
-                        case 'Error':
-                        case 'OutofStock':
-                        case 'Low':
-                            $icon_classes .= ' yellow';
-                            break;
-                        default:
-                            break;
-                    }
-
-                    break;
-                case 'Online Auto':
-                    $icon_classes .= '|fa fa-fw fa-circle';
-
-                    switch ($row['Product Availability State']) {
-                        case 'OnDemand':
-                        case 'Normal':
-                        case 'Excess':
-                            $icon_classes .= ' green';
-                            break;
-                        case 'VeryLow':
-                        case 'Low':
-                            $icon_classes .= ' yellow';
-                            break;
-                        case 'Error':
-                        case 'OutofStock':
-                            $icon_classes .= ' red';
-                            break;
-                        default:
-                            break;
-                    }
-
-                    break;
-
-            }
-            $icons = '';
-            foreach (preg_split('/\|/', $icon_classes) as $icon_class) {
-                $icons .= "<i class='$icon_class'></i> ";
-            }
-
-            $code = $row['Product Code'];
-            $name = $row['Product Units Per Case'].'x '.$row['Product Name'];
-
-            $assets_data[$row['Product ID']]['data'] = [
-                $icons,
-                $code,
-                $name
-            ];
-
         }
 
     } else {
@@ -273,11 +282,7 @@ function correlated_products($_data, $db, $client) {
 
 }
 
-
-function correlated_products_excl_family($_data, $db, $client) {
-
-    $max_results = 20;
-
+function correlated_products($_data, $db, $client) {
 
     if (isset($_data['period']) and in_array(
             $_data['period'], [
@@ -306,6 +311,8 @@ function correlated_products_excl_family($_data, $db, $client) {
     }
 
 
+    $max_results = 20;
+
     $params = [
         'index' => strtolower('au_customers_'.strtolower(DNS_ACCOUNT_CODE)),
 
@@ -313,22 +320,16 @@ function correlated_products_excl_family($_data, $db, $client) {
 
             [
 
-                "query"        => [
-                    'bool' => [
-                        'must' => [
 
-                            'term' => [
-                                'products_bought'.$period_suffix => $_data['args']['key']
-                            ],
-                            'term' => [
-                                'store_key' =>$_data['args']['store_key']
-                            ]
-                        ]
+                "query"        => [
+
+
+                    'term' => [
+                        'products_bought'.$period_suffix => $_data['args']['key']
                     ]
 
 
                 ],
-
                 'aggregations' => [
                     'products' => [
                         'significant_terms' => [
@@ -343,16 +344,14 @@ function correlated_products_excl_family($_data, $db, $client) {
         '_source' => [
             'store_key',
 
-            'url'
+
         ],
         'size'    => 1
 
 
     ];
 
-
     $result = $client->search($params);
-
 
     $assets_ids  = [];
     $assets_data = [];
@@ -360,29 +359,34 @@ function correlated_products_excl_family($_data, $db, $client) {
         if ($result['key'] == $_data['args']['key']) {
             continue;
         }
-        $assets_ids[]                         = $result['key'];
-        $assets_data[$result['key']]          = [
+        $assets_ids[]                = $result['key'];
+        $assets_data[$result['key']] = [
             'score' => $result['score']
         ];
-        $assets_data_diff_fam[$result['key']] = [
-            'score' => $result['score']
-        ];
+
     }
 
     if (count($assets_ids) > 0) {
-        $in = str_repeat('?,', count($assets_ids) - 1).'?';
-
+        $in   = str_repeat('?,', count($assets_ids) - 1).'?';
         $sql  =
-            "SELECT `Product Family Category Key`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Units Per Case`,`Product Status`,`Product Web State`,`Product Web Configuration`,`Product Availability`,`Product Number of Parts` FROM `Product Dimension` WHERE `Product ID` IN ($in)";
+            "SELECT `Product Store Key`,`Product Family Category Key`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Units Per Case`,`Product Status`,`Product Web State`,`Product Web Configuration`,`Product Availability`,`Product Number of Parts` FROM `Product Dimension` WHERE `Product ID` IN ($in)";
         $stmt = $db->prepare($sql);
         $stmt->execute(
             $assets_ids
         );
 
+
+
         while ($row = $stmt->fetch()) {
 
+            if ($row['Product Store Key'] != $_data['args']['store_key']) {
+                unset($assets_data[$row['Product ID']]);
 
-            if ($row['Product Family Category Key'] != $_data['args']['family_key']) {
+                continue;
+            }
+
+            if ($_data['tipo'] == 'correlated_products' or $row['Product Family Category Key'] != $_data['args']['family_key']) {
+
                 switch ($row['Product Status']) {
                     case 'Discontinuing':
                         $icon_classes = 'fa fa-fw fa-cube warning';
@@ -454,8 +458,11 @@ function correlated_products_excl_family($_data, $db, $client) {
                     $icons .= "<i class='$icon_class'></i> ";
                 }
 
-                $code = $row['Product Code'];
+                $code = sprintf('<span class="link" onclick="\'products/%d/%d\'">%s</span>',$row['Product Store Key'],$row['Product ID'],$row['Product Code']);
                 $name = $row['Product Units Per Case'].'x '.$row['Product Name'];
+
+
+
 
                 $assets_data[$row['Product ID']]['data'] = [
                     $icons,
@@ -466,13 +473,13 @@ function correlated_products_excl_family($_data, $db, $client) {
             } else {
                 unset($assets_data[$row['Product ID']]);
             }
-
-
         }
 
-    }else{
-        $assets_data=[];
+    } else {
+        $assets_data = [];
     }
+
+
 
     $html        = '';
     $assets_data = array_slice($assets_data, 0, $max_results);
@@ -483,8 +490,9 @@ function correlated_products_excl_family($_data, $db, $client) {
 
     }
 
+
     echo json_encode(
         ['html' => $html]
     );
-}
 
+}

@@ -11,6 +11,10 @@
 
 */
 
+
+
+
+
 use Elasticsearch\ClientBuilder;
 
 
@@ -57,17 +61,10 @@ $params = [
         [
 
             "query"        => [
-                'bool' => [
-                    'must' => [
 
-                        'term' => [
-                            'products_bought'.$period_suffix => $asset->id
-                        ],
-                        'term' => [
-                            'store_key' => $asset->get('Store Key')
-                        ]
-                    ]
-                ]
+                'term' => [
+                    'products_bought'.$period_suffix => $asset->id
+                ],
 
 
             ],
@@ -85,7 +82,6 @@ $params = [
     '_source' => [
         'store_key',
 
-        'url'
     ],
     'size'    => 1
 
@@ -93,7 +89,8 @@ $params = [
 ];
 
 
-$result = $client->search($params);
+$result      = $client->search($params);
+
 $assets_ids  = [];
 $assets_data = [];
 foreach ($result['aggregations']['products']['buckets'] as $result) {
@@ -114,13 +111,19 @@ if (count($assets_ids) > 0) {
 
     $in   = str_repeat('?,', count($assets_ids) - 1).'?';
     $sql  =
-        "SELECT `Product Family Category Key`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Units Per Case`,`Product Status`,`Product Web State`,`Product Web Configuration`,`Product Availability`,`Product Number of Parts` FROM `Product Dimension` WHERE `Product ID` IN ($in)";
+        "SELECT  `Product Store Key`,`Product Family Category Key`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Units Per Case`,`Product Status`,`Product Web State`,`Product Web Configuration`,`Product Availability`,`Product Number of Parts` FROM `Product Dimension` WHERE `Product ID` IN ($in)";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         $assets_ids
     );
     while ($row = $stmt->fetch()) {
 
+        if ($row['Product Store Key'] != $asset->get('Store Key')) {
+            unset($assets_data[$row['Product ID']]);
+            unset($assets_data_diff_fam[$row['Product ID']]);
+
+            continue;
+        }
 
         $icon_classes = '';
         switch ($row['Product Status']) {
@@ -196,7 +199,7 @@ if (count($assets_ids) > 0) {
 
 
         $assets_data[$row['Product ID']]['icons'] = $icons;
-        $assets_data[$row['Product ID']]['code']  = $row['Product Code'];
+        $assets_data[$row['Product ID']]['code']  =  sprintf('<span class="link" onclick="\'products/%d/%d\'">%s</span>',$row['Product Store Key'],$row['Product ID'],$row['Product Code']);
         $assets_data[$row['Product ID']]['name']  = $row['Product Units Per Case'].'x '.$row['Product Name'];
 
         if ($row['Product Family Category Key'] != $asset->get('Product Family Category Key')) {
@@ -213,6 +216,7 @@ if (count($assets_ids) > 0) {
     $assets_data_diff_fam = [];
     $assets_data          = [];
 }
+
 
 $tables = array(
     [
