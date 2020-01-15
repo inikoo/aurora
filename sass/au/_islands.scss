@@ -31,10 +31,7 @@
     td {
       border-bottom: 1px solid #eee;
 
-      &:last-of-type {
-        border-bottom: 1px solid #ccc;
 
-      }
     }
 
     tr:last-of-type td{
@@ -42,6 +39,19 @@
 
     }
 
+    .icons{width: 40px;padding-right: 5px}
+    .code{min-width: 80px;}
+
+    .truncate{
+      max-width: 370px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
 
   }
+
+
+
 }

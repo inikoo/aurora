@@ -60,6 +60,7 @@ if (count($argv) > 0) {
 if (in_array('customers', $objects)) {
     update_customers_index($db);
     if (!empty($params['body'])) {
+       // print_r($params);
         add_indices($client, $params);
         $params = ['body' => []];
     }
@@ -817,7 +818,7 @@ function update_customers_index($db) {
     $contador  = 0;
 
 
-    $sql = "select `Customer Key` from `Customer Dimension` order by `Customer Key` desc ";
+    $sql = "select `Customer Key` from `Customer Dimension`  order by `Customer Key` desc ";
 
     $stmt = $db->prepare($sql);
     $stmt->execute();
@@ -827,10 +828,8 @@ function update_customers_index($db) {
         process_indexing(
             $object->index_elastic_search(
                 $hosts, true, [
-                          'quick',
-                          'favourites',
-                          'assets',
-                          'assets_interval'
+                          'quick'
+
                       ]
             )
         );

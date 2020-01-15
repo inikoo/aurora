@@ -327,7 +327,7 @@ class Elastic_Indexer {
                 break;
         }
 
-        if (in_array('favourites', $this->indices)) {
+        if (in_array('quick', $this->indices) or in_array('favourites', $this->indices)) {
             $this->object_data['favourites'] = [];
 
             $sql  = "select `Customer Favourite Product Product ID` from `Customer Favourite Product Fact`  where `Customer Favourite Product Customer Key`=?";
@@ -343,13 +343,13 @@ class Elastic_Indexer {
         }
 
         $interval = array();
-        if (in_array('assets', $this->indices)) {
+        if (in_array('quick', $this->indices) or in_array('assets', $this->indices)) {
             $interval[] = array(
                 'suffix'    => '',
                 'sql_where' => ''
             );
         }
-        if (in_array('assets_interval', $this->indices)) {
+        if (in_array('quick', $this->indices) or in_array('assets_interval', $this->indices)) {
             $interval[] = array(
                 'suffix'    => '_1y',
                 'sql_where' => ' and `Invoice Date`>DATE_SUB(NOW(),INTERVAL 1 YEAR) '
@@ -358,7 +358,16 @@ class Elastic_Indexer {
                 'suffix'    => '_1q',
                 'sql_where' => ' and `Invoice Date`>DATE_SUB(NOW(),INTERVAL 1 Quarter)'
             );
+            $interval[] = array(
+                'suffix'    => '_1m',
+                'sql_where' => ' and `Invoice Date`>DATE_SUB(NOW(),INTERVAL 1 Month)'
+            );
+            $interval[] = array(
+                'suffix'    => '_1w',
+                'sql_where' => ' and `Invoice Date`>DATE_SUB(NOW(),INTERVAL 1 Week)'
+            );
         }
+
 
         foreach ($interval as $period_data) {
 
@@ -367,29 +376,27 @@ class Elastic_Indexer {
             $departments = [];
 
 
-            $sql         = "select `Product ID`,`OTF Category Family Key`,`OTF Category Department Key` from `Order Transaction Fact` OTD  where `Customer Key`=? and  `Invoice Key` >0 ".$period_data['sql_where'];
-            $stmt        = $this->db->prepare($sql);
+            $sql = "select `Product ID`,`OTF Category Family Key`,`OTF Category Department Key` from `Order Transaction Fact` OTD  where `Customer Key`=? and  `Invoice Key` >0 ".$period_data['sql_where'];
+
+            $stmt = $this->db->prepare($sql);
             $stmt->execute([$this->object->id]);
             while ($row = $stmt->fetch()) {
                 $products[] = $row['Product ID'];
-                if ($row['OTF Category Family Key'] >0) {
+                if ($row['OTF Category Family Key'] > 0) {
                     $families[] = $row['OTF Category Family Key'];
                 }
-                if ($row['OTF Category Department Key'] >0) {
+                if ($row['OTF Category Department Key'] > 0) {
                     $departments[] = $row['OTF Category Department Key'];
                 }
 
             }
 
 
-            $this->object_data['products_bought'.$period_data['sql_where']] = array_keys(array_flip($products));
+            $this->object_data['products_bought'.$period_data['suffix']] = array_keys(array_flip($products));
 
-            $this->object_data['families_bought'.$period_data['sql_where']] = array_keys(array_flip($families));
+            $this->object_data['families_bought'.$period_data['suffix']] = array_keys(array_flip($families));
 
-            $this->object_data['departments_bought'.$period_data['sql_where']] = array_keys(array_flip($departments));
-
-
-
+            $this->object_data['departments_bought'.$period_data['suffix']] = array_keys(array_flip($departments));
 
 
             unset($products);
@@ -1810,7 +1817,7 @@ class Elastic_Indexer {
             case 'Customer':
                 $this->client->delete(
                     [
-                        'index' => strtolower('au_customers_'.$this->account_code),
+                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
                         'id'    => $this->account_code.'.'.$this->object->id,
                     ]
                 );
@@ -1853,8 +1860,8 @@ class Elastic_Indexer {
     public function get_index_body() {
 
 
-        if($this->weight<=0){
-            $this->weight=1;
+        if ($this->weight <= 0) {
+            $this->weight = 1;
         }
 
         if ($this->skip_add_index) {
@@ -1863,97 +1870,78 @@ class Elastic_Indexer {
 
         $index_body = [];
 
-        foreach ($this->indices as $index_type) {
+        $body = array(
+            'rt'           => $this->flatten($this->real_time),
+            'url'          => $this->url,
+            'module'       => $this->module,
+            'weight'       => $this->weight,
+            'store_key'    => $this->store_key,
+            'store_label'  => $this->get_store_code($this->store_key),
+            'icon_classes' => $this->icon_classes,
+            'label_1'      => $this->label_1,
+            'label_2'      => $this->label_2,
+            'label_3'      => $this->label_3,
+            'label_4'      => $this->label_4,
+        );
 
-
-            switch ($index_type) {
-                case 'quick':
-
-                    $body = array(
-                        'rt'           => $this->flatten($this->real_time),
-                        'url'          => $this->url,
-                        'module'       => $this->module,
-                        'weight'       => $this->weight,
-                        'store_key'    => $this->store_key,
-                        'store_label'  => $this->get_store_code($this->store_key),
-                        'icon_classes' => $this->icon_classes,
-                        'label_1'      => $this->label_1,
-                        'label_2'      => $this->label_2,
-                        'label_3'      => $this->label_3,
-                        'label_4'      => $this->label_4,
-                    );
-
-                    if ($this->code != '') {
-                        $body['code']    = $this->code;
-                        $body['rt_code'] = $this->code;
-
-                    }
-
-                    if (count($this->scopes) > 0) {
-                        $body['scopes'] = $this->scopes;
-                    }
-                    $body['tenant'] = $this->account_code;
-                    $index_body[]   = $body;
-
-                    switch ($this->object->get_object_name()) {
-                        case 'Customer':
-                            $body = array(
-                                'url'         => $this->url,
-                                'module'      => $this->module,
-                                'weight'      => $this->weight,
-                                'store_key'   => $this->store_key,
-                                'store_label' => $this->get_store_code($this->store_key),
-
-                            );
-
-                            if ($this->code != '') {
-                                $body['code'] = $this->code;
-                            }
-
-                            if (count($this->scopes) > 0) {
-                                $body['scopes'] = $this->scopes;
-                            }
-                            $body['tenant'] = $this->account_code;
-                            $index_body[]   = $body;
-                            break;
-                    }
-                    break;
-                case 'favourites':
-                    $index_body[] = array(
-                        'tenant'     => $this->account_code,
-                        'favourites' => $this->get_object_data('favourites')
-                    );
-                    break;
-                case 'assets':
-                    $body[]                     = array(
-                        'tenant' => $this->account_code,
-                    );
-                    $body['products_bought']    = $this->get_object_data('products_bought');
-                    $body['families_bought']    = $this->get_object_data('families_bought');
-                    $body['departments_bought'] = $this->get_object_data('departments_bought');
-
-                    $index_body[] = $body;
-                    break;
-                case 'assets_interval':
-                    $body[]                        = array(
-                        'tenant' => $this->account_code,
-                    );
-                    $body['products_bought_1y']    = $this->get_object_data('products_bought_1y');
-                    $body['products_bought_1q']    = $this->get_object_data('products_bought_1q');
-                    $body['families_bought_1y']    = $this->get_object_data('families_bought_1y');
-                    $body['families_bought_1q']    = $this->get_object_data('families_bought_1q');
-                    $body['departments_bought_1y'] = $this->get_object_data('departments_bought_1y');
-                    $body['departments_bought_1q'] = $this->get_object_data('departments_bought_1q');
-                    $index_body[]                  = $body;
-                    break;
-
-
-                default:
-                    break;
-            }
-
+        if ($this->code != '') {
+            $body['code']    = $this->code;
+            $body['rt_code'] = $this->code;
 
         }
+
+        if (count($this->scopes) > 0) {
+            $body['scopes'] = $this->scopes;
+        }
+        $body['tenant'] = $this->account_code;
+        $index_body[]   = $body;
+
+
+        switch ($this->object->get_object_name()) {
+            case 'Customer':
+                $body = array(
+                    'url'         => $this->url,
+                    'weight'      => $this->weight,
+                    'store_key'   => $this->store_key,
+                    'store_label' => $this->get_store_code($this->store_key),
+
+                );
+
+                if ($this->code != '') {
+                    $body['code'] = $this->code;
+                }
+
+                if (count($this->scopes) > 0) {
+                    $body['scopes'] = $this->scopes;
+                }
+                $body['tenant'] = $this->account_code;
+
+                $body['favourites'] = $this->get_object_data('favourites');
+
+                $body['products_bought']    = $this->get_object_data('products_bought');
+                $body['families_bought']    = $this->get_object_data('families_bought');
+                $body['departments_bought'] = $this->get_object_data('departments_bought');
+                
+                $body['products_bought_1y'] = $this->get_object_data('products_bought_1y');
+                $body['products_bought_1q'] = $this->get_object_data('products_bought_1q');
+                $body['products_bought_1m'] = $this->get_object_data('products_bought_1m');
+                $body['products_bought_1w'] = $this->get_object_data('products_bought_1w');
+
+                $body['families_bought_1y'] = $this->get_object_data('families_bought_1y');
+                $body['families_bought_1q'] = $this->get_object_data('families_bought_1q');
+                $body['families_bought_1m'] = $this->get_object_data('families_bought_1m');
+                $body['families_bought_1w'] = $this->get_object_data('families_bought_1w');
+
+                $body['departments_bought_1y'] = $this->get_object_data('departments_bought_1y');
+                $body['departments_bought_1q'] = $this->get_object_data('departments_bought_1q');
+                $body['departments_bought_1m'] = $this->get_object_data('departments_bought_1m');
+                $body['departments_bought_1w'] = $this->get_object_data('departments_bought_1w');
+
+
+                $index_body[] = $body;
+                break;
+        }
+
 
         return $index_body;
 
@@ -2013,39 +2001,91 @@ class Elastic_Indexer {
 
         $index_header = [];
 
-        foreach ($this->indices as $index_type) {
-
-            switch ($index_type) {
-                case 'quick':
-                    $index_header[] = [
-                        'index' => strtolower('au_search_'.$this->account_code),
-                        'id'    => $this->account_code.'.'.$this->prefix.$this->object->id,
-                    ];
-                    switch ($this->object->get_object_name()) {
-                        case 'Customer':
-                            $index_header[] = [
-                                'index' => strtolower('au_customers_'.$this->account_code),
-                                'id'    => $this->object->id,
-                            ];
-                            break;
-                    }
-                    break;
-                case 'favourites':
-                case 'assets':
-                case 'assets_interval':
-                    $index_header[] = [
-                        'index' => strtolower('au_customers_'.$this->account_code),
-                        'id'    => $this->account_code.'.'.$this->object->id,
-                    ];
-                    break;
-                default:
-                    break;
-            }
-
-
+        $index_header[] = [
+            'index' => strtolower('au_search_'.$this->account_code),
+            'id'    => $this->account_code.'.'.$this->prefix.$this->object->id,
+        ];
+        switch ($this->object->get_object_name()) {
+            case 'Customer':
+                $index_header[] = [
+                    'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                    'id'    => $this->account_code.'.'.$this->object->id,
+                ];
+                break;
         }
 
+        
         return $index_header;
+    }
+
+    public function update_index() {
+        
+        
+        
+        
+        foreach ($this->indices as $index_type) {
+            switch ($index_type) {
+
+                case 'favourites':
+
+                    $params = [
+                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                        'id'    => $this->account_code.'.'.$this->object->id,
+                        'body'  => [
+                            'doc' => [
+                                'favourites' => $this->get_object_data('favourites')
+                            ]
+                        ]
+                    ];
+                    $this->client->update($params);
+                    break;
+                case 'assets':
+
+                    $params = [
+                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                        'id'    => $this->account_code.'.'.$this->object->id,
+                        'body'  => [
+                            'doc' => [
+                                'products_bought' =>  $this->get_object_data('products_bought'),
+                                'families_bought' =>  $this->get_object_data('families_bought'),
+                                'departments_bought' =>  $this->get_object_data('departments_bought')
+                            ]
+                        ]
+                    ];
+                    print_r($this->client->update($params));
+                    break;
+                case 'assets_interval':
+
+                    $params = [
+                        'index' => strtolower('au_customers_tmp_'.$this->account_code),
+                        'id'    => $this->account_code.'.'.$this->object->id,
+                        'body'  => [
+                            'doc' => [
+                                'products_bought_1y' =>  $this->get_object_data('products_bought_1y'),
+                                'families_bought_1y' =>  $this->get_object_data('families_bought_1y'),
+                                'departments_bought_1y' =>  $this->get_object_data('departments_bought_1y'),
+                                
+                                'products_bought_1q' =>  $this->get_object_data('products_bought_1q'),
+                                'families_bought_1q' =>  $this->get_object_data('families_bought_1q'),
+                                'departments_bought_1q' =>  $this->get_object_data('departments_bought_1q'),
+                                
+                                'products_bought_1m' =>  $this->get_object_data('products_bought_1m'),
+                                'families_bought_1m' =>  $this->get_object_data('families_bought_1m'),
+                                'departments_bought_1m' =>  $this->get_object_data('departments_bought_1m'),
+                                
+                                'products_bought_1w' =>  $this->get_object_data('products_bought_1w'),
+                                'families_bought_1w' =>  $this->get_object_data('families_bought_1w'),
+                                'departments_bought_1w' =>  $this->get_object_data('departments_bought_1w')
+                            ]
+                        ]
+                    ];
+                    $this->client->update($params);
+                    break;
+
+            }
+        }
+
+
     }
 
     private function tokenize_address($type) {

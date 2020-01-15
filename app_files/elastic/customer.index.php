@@ -113,6 +113,32 @@ $params = [
                     "normalizer" => "code_normalizer"
                 ),
 
+                'products_bought_1m'    => array(
+                    'type'  => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ),
+                'families_bought_1m'    => array(
+                    'type'  => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ),
+                'departments_bought_1m'    => array(
+                    'type'  => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ),
+
+                'products_bought_1w'    => array(
+                    'type'  => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ),
+                'families_bought_1w'    => array(
+                    'type'  => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ),
+                'departments_bought_1w'    => array(
+                    'type'  => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ),
+
                 'history'      => array(
                     'type' => 'text'
                 ),

@@ -18,6 +18,8 @@ function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
     if (!$customer->id) {
         return "";
     }
+    $customer->index_elastic_search(get_ES_hosts(),  false,  ['assets','assets_interval']);
+
 
 
     if ($customer->deleted) {

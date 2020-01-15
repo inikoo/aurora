@@ -23,6 +23,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
     $request = $_data['request'];
 
+    $request= urldecode($request);
+
     $request = preg_replace('/\?$/', '', $request);
 
     $request = preg_replace('/\/+/', '/', $request);
@@ -752,8 +754,10 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $parent_key = $view_path[0];
                             } else {
                                 if ($view_path[1] == 'category') {
+
                                     $section = 'category';
                                     $object  = 'category';
+
 
                                     if (isset($view_path[2])) {
 
@@ -793,6 +797,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                         )) {
 
                                                         $key = $view_path[4];
+
+
 
                                                     }
 
@@ -913,7 +919,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
                     } else {
-                        exit('xx');
+
                         $module  = 'utils';
                         $section = 'not_found';
                         $tab     = 'not_found';

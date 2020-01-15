@@ -27,10 +27,17 @@
             {t}1q{/t}
         </div>
 
-
+        <div  data-period="1m"
+              class="fixed_interval {if  $period=='1m'}selected{/if}" title="{t}1 month{/t}">
+            {t}1m{/t}
+        </div>
+        <div  data-period="1w"
+              class="fixed_interval {if  $period=='1w'}selected{/if}" title="{t}1 week{/t}">
+            {t}1w{/t}
+        </div>
     </div>
 
-    <div class="islands">
+    <div class="islands assets">
         {foreach  from=$tables item=table}
             <table class="island" id="{$table.id}"  data-args='{$table.data}'   >
                 <tr>
@@ -41,9 +48,9 @@
                 <tbody class="res">
                 {foreach  from=$table.assets item=asset}
                     <tr>
-                        <td>{$asset.icons}</td>
-                        <td>{$asset.code}</td>
-                        <td>{$asset.name}</td>
+                        <td class="icons">{$asset.icons}</td>
+                        <td class="code">{$asset.code}</td>
+                        <td class="truncate">{$asset.name}</td>
                     </tr>
                 {/foreach}
                 </tbody>
@@ -53,39 +60,3 @@
 
 </div>
 
-<script>
-
-    $(function () {
-
-
-        $('#tab').on('click', '.islands_container .date_chooser > div', function () {
-
-            const ar_file = $('.islands_container').data('ar')
-
-            const period= $(this).data('period')
-
-            $('.islands_container .islands table').each(function (i, obj) {
-
-               // console.log($(obj).data('args'))
-
-                const args={ period: period,tipo:$(obj).attr('id'), args:$(obj).data('args')}
-                console.log(args)
-
-                $.getJSON('/'+ar_file, {
-                    args
-
-
-                }, function (data) {
-
-                    $(obj).find('tbody.res').html(data.html)
-
-                });
-
-            });
-
-
-        })
-
-
-    });
-</script>

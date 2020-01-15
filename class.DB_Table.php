@@ -957,7 +957,12 @@ abstract class DB_Table extends stdClass {
         $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db,$indices);
         $indexer->prepare_object();
         if (!$bulk) {
-            $indexer->add_index();
+            if(in_array('quick',$indices)){
+                $indexer->add_index();
+            }else{
+                $indexer->update_index();
+            }
+
         }
         return $indexer;
     }
