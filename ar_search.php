@@ -160,7 +160,8 @@ if ($user->get('User Type') == 'Agent') {
         exit;
 
     } elseif ($data['state']['module'] == 'production') {
-        search_production($db, $account, $user, $data);
+        echo json_encode(search_ES($data, $user->get('Handle'), ['production']));
+        exit;
 
     } elseif ($data['state']['module'] == 'delivery_notes' or $data['state']['module'] == 'delivery_notes_server') {
         check_for_store_permissions($stores);
