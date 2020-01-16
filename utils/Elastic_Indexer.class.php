@@ -139,36 +139,31 @@ class Elastic_Indexer {
 
         $this->skip_add_index = false;
 
+
+
     }
 
 
-    public function prepare_object() {
-
+    private function set_prefix(){
         switch ($this->object->get_object_name()) {
             case 'Customer':
                 $this->prefix            = 'c';
-                $this->object_index_name = 'customers';
-                $this->prepare_customer();
+
                 break;
             case 'Prospect':
                 $this->prefix = 'cp';
-                $this->prepare_prospect();
                 break;
             case 'Order':
                 $this->prefix = 'o';
-                $this->prepare_order();
                 break;
             case 'Part':
                 $this->prefix = 'sko';
-                $this->prepare_part();
                 break;
             case 'Location':
                 $this->prefix = 'loc';
-                $this->prepare_location();
                 break;
             case 'Product':
                 $this->prefix = 'p';
-                $this->prepare_product();
                 break;
             case 'Category':
                 switch ($this->object->get('Category Scope')) {
@@ -176,7 +171,6 @@ class Elastic_Indexer {
 
                         if ($this->object->get('Category Branch Type') == 'Head') {
                             $this->prefix = 'cat_p';
-                            $this->prepare_product_category();
                         } else {
 
                             $this->skip_add_index = true;
@@ -186,6 +180,101 @@ class Elastic_Indexer {
 
                         if ($this->object->get('Category Branch Type') == 'Head') {
                             $this->prefix = 'cat_sko';
+                        }
+                        break;
+
+                }
+
+                break;
+
+            case 'Page':
+                $this->prefix = 'wp';
+                break;
+            case 'Supplier':
+                $this->prefix = 'sup';
+                break;
+            case 'Agent':
+                $this->prefix = 'ag';
+                break;
+            case 'Supplier Part':
+                $this->prefix = 'sp';
+                break;
+            case 'Staff':
+                $this->prefix = 's';
+                break;
+            case 'User':
+                $this->prefix = 'u';
+                break;
+            case 'Invoice':
+                $this->prefix = 'i';
+                break;
+            case 'Delivery Note':
+                $this->prefix = 'dn';
+                break;
+            case 'Payment':
+                $this->prefix = 'pay';
+                break;
+            case 'List':
+                $this->prefix = 'li';
+                break;
+            case 'Deal':
+                $this->prefix = 'd';
+                break;
+            case 'Deal Component':
+                $this->prefix = 'dc';
+                break;
+            case 'Deal Campaign':
+                $this->prefix = 'dcc';
+                break;
+            case 'Email Campaign':
+                $this->prefix = 'm';
+                break;
+        }
+    }
+
+    public function prepare_object() {
+
+        $this->set_prefix();
+        switch ($this->object->get_object_name()) {
+            case 'Customer':
+
+                $this->object_index_name = 'customers';
+                $this->prepare_customer();
+                break;
+            case 'Prospect':
+
+                $this->prepare_prospect();
+                break;
+            case 'Order':
+
+                $this->prepare_order();
+                break;
+            case 'Part':
+
+                $this->prepare_part();
+                break;
+            case 'Location':
+
+                $this->prepare_location();
+                break;
+            case 'Product':
+
+                $this->prepare_product();
+                break;
+            case 'Category':
+                switch ($this->object->get('Category Scope')) {
+                    case 'Product':
+
+                        if ($this->object->get('Category Branch Type') == 'Head') {
+                            $this->prepare_product_category();
+                        } else {
+
+                            $this->skip_add_index = true;
+                        }
+                        break;
+                    case 'Part':
+
+                        if ($this->object->get('Category Branch Type') == 'Head') {
                             $this->prepare_part_category();
                         } else {
                             $this->skip_add_index = true;
@@ -199,59 +288,45 @@ class Elastic_Indexer {
                 break;
 
             case 'Page':
-                $this->prefix = 'wp';
                 $this->prepare_webpage();
                 break;
             case 'Supplier':
-                $this->prefix = 'sup';
                 $this->prepare_supplier();
                 break;
             case 'Agent':
-                $this->prefix = 'ag';
                 $this->prepare_agent();
                 break;
             case 'Supplier Part':
-                $this->prefix = 'sp';
                 $this->prepare_supplier_part();
                 break;
             case 'Staff':
-                $this->prefix = 's';
                 $this->prepare_staff();
                 break;
             case 'User':
-                $this->prefix = 'u';
                 $this->prepare_user();
                 break;
             case 'Invoice':
-                $this->prefix = 'i';
                 $this->prepare_invoice();
                 break;
             case 'Delivery Note':
-                $this->prefix = 'dn';
                 $this->prepare_delivery_note();
                 break;
             case 'Payment':
-                $this->prefix = 'pay';
                 $this->prepare_payment();
                 break;
             case 'List':
-                $this->prefix = 'li';
                 $this->prepare_list();
                 break;
             case 'Deal':
-                $this->prefix = 'd';
                 $this->prepare_deal();
                 break;
             case 'Deal Component':
-                $this->prefix = 'dc';
                 $this->prepare_deal_component();
                 break;
             case 'Deal Campaign':
-                $this->prefix = 'dcc';
                 $this->prepare_deal_campaign();
                 break;
             case 'Email Campaign':
-                $this->prefix = 'm';
                 $this->prepare_mailshot();
                 break;
         }
@@ -1806,7 +1881,7 @@ class Elastic_Indexer {
 
     public function delete_index() {
 
-
+        $this->set_prefix();
         $this->client->delete(
             [
                 'index' => strtolower('au_search_'.$this->account_code),
