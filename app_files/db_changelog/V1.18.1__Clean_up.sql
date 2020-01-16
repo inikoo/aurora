@@ -1,1 +1,1 @@
-DROP TABLE `Customer Favorite Product Bridge`;
+DROP TABLE  IF EXISTS `Customer Favorite Product Bridge`;
