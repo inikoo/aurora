@@ -112,7 +112,7 @@ class Elastic_Indexer {
      */
     private $indices;
 
-    function __construct($hosts, $account_code, $object, $db, $indices) {
+    function __construct($hosts, $account_code, $object, $db, $indices=[]) {
         $this->client       = ClientBuilder::create()->setHosts($hosts)->build();
         $this->indices      = $indices;
         $this->object       = $object;

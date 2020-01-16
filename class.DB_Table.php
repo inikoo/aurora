@@ -954,16 +954,17 @@ abstract class DB_Table extends stdClass {
     function index_elastic_search($hosts, $bulk = false, $indices = ['quick']) {
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
-        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db,$indices);
+        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db, $indices);
         $indexer->prepare_object();
         if (!$bulk) {
-            if(in_array('quick',$indices)){
+            if (in_array('quick', $indices)) {
                 $indexer->add_index();
-            }else{
+            } else {
                 $indexer->update_index();
             }
 
         }
+
         return $indexer;
     }
 
@@ -980,6 +981,7 @@ abstract class DB_Table extends stdClass {
         $redis_key     = 'Au_Cached_obj'.$account_code.'.'.$this->get_object_name().'.'.$this->id;
         $data_to_cache = json_encode($this->data);
         $redis->set($redis_key, $data_to_cache);
+
         return $data_to_cache;
 
     }
