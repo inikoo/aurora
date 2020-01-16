@@ -2420,7 +2420,14 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             "DELETE FROM `Invoice Dimension`  WHERE  `Invoice Key`=%d", $this->id
         );
         $this->db->exec($sql);
-        $this->delete_index_elastic_search(get_ES_hosts());
+
+
+        try {
+            $this->delete_index_elastic_search(get_ES_hosts());
+        } catch (\Throwable $exception) {
+            Sentry\captureException($exception);
+        }
+
 
         $this->data['items'] = $items_data;
 

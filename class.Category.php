@@ -2832,10 +2832,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                             if (!preg_match('/skip_direct_update/', $options)) {
-                                $product->update(
+                                $product->fast_update(
                                     array(
                                         'Product Department Category Key' => $this->id
-                                    ), 'no_history'
+                                    )
                                 );
                             }
 

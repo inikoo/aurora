@@ -12,10 +12,15 @@
 
 trait OrderItems {
 
+    /**
+     * @var PDO
+     */
+    public $db;
 
     function update_item($data) {
 
-        $account = get_object('Account', '');
+
+        $product = get_object('Product', $data['item_historic_key'], 'historic_key');
 
         $gross = 0;
 
@@ -82,176 +87,199 @@ trait OrderItems {
         if (in_array(
             $this->data['Order State'], array(
                                           'InWarehouse',
-
                                           'PackedDone',
                                       )
         )) {
 
 
-            $dn_keys = $this->get_deliveries('keys');
-            $dn_key  = array_pop($dn_keys);
-            $dn      = get_object('DeliveryNote', $dn_key);
+            //todo this is too bad!!!!! you need to choose the proper DN
+            $dn_key = array_pop($this->get_deliveries('keys'));
+            $dn     = get_object('DeliveryNote', $dn_key);
 
 
         } else {
             $dn_key = 0;
+            $dn     = false;
         }
 
 
-        $sql = sprintf(
-            "SELECT `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF WHERE `Order Key`=%d AND `Product Key`=%d ", $this->id,
-            $data['item_historic_key']
-        );
+        $sql = "SELECT `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF WHERE `Order Key`=? AND `Product Key`=? ";
 
+
+        $params = [
+            $this->id,
+            $data['item_historic_key']
+        ];
 
         if ($dn_key) {
-            $sql .= sprintf(' and `Delivery Note Key`=%d', $dn_key);
+            $sql      .= ' and `Delivery Note Key`=?';
+            $params[] = $dn_key;
         }
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            $params
+        );
+        if ($row = $stmt->fetch()) {
+            $otf_key = $row['Order Transaction Fact Key'];
+
+            $old_quantity   = $row['Order Quantity'];
+            $old_net_amount = $row['Order Transaction Gross Amount'] - $row['Order Transaction Total Discount Amount'];
+
+            $delta_qty -= $old_quantity;
+
+            if (!$quantity_set) {
+                $quantity = $old_quantity;
+            }
 
 
-                $otf_key = $row['Order Transaction Fact Key'];
-
-                $old_quantity   = $row['Order Quantity'];
-                $old_net_amount = $row['Order Transaction Gross Amount'] - $row['Order Transaction Total Discount Amount'];
-
-                $delta_qty -= $old_quantity;
-
-                if (!$quantity_set) {
-                    $quantity = $old_quantity;
-                }
-
-                //if (!$bonus_quantity_set) {
-                // $bonus_quantity=$old_bonus_quantity;
-                //}
-                $total_quantity = $quantity + $bonus_quantity;
-
-                //   print "\n**** $old_quantity $old_bonus_quantity   ;  ($quantity_set,$bonus_quantity_set) ; QTY    $quantity ==     $total_quantity\n";
-
-                $product = get_object('Product', $data['item_historic_key'], 'historic_key');
+            $total_quantity = $quantity + $bonus_quantity;
 
 
-                if ($total_quantity == 0) {
+           
 
 
-                    $this->delete_transaction(
-                        $row['Order Transaction Fact Key']
-                    );
-                    $otf_key = 0;
-                    $gross   = 0;
+            if ($total_quantity == 0) {
 
 
-                } else {
+                $this->delete_transaction(
+                    $row['Order Transaction Fact Key']
+                );
+                $otf_key = 0;
+                $gross   = 0;
 
 
-                    $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
-                    $gross            = round($quantity * $product->data['Product History Price'], 2);
-
-                    $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
-                    $cost         = round($quantity * $product_cost, 4);
-
-                    $sql = sprintf(
-                        "update `Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f,`Current Dispatching State`=%s  ,`Cost Supplier`=%.4f where `Order Transaction Fact Key`=%d ",
-                        $estimated_weight, $quantity, $bonus_quantity, prepare_mysql(gmdate('Y-m-d H:i:s')), $gross, 0, $gross, prepare_mysql($data['Current Dispatching State']), $cost, $row['Order Transaction Fact Key']
-
-                    );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $this->update_field(
-                                'Order Last Updated Date', gmdate('Y-m-d H:i:s'), 'no_history'
-                            );
-                        }
-                    }
-
-
-                    if ($dn_key) {
-
-                        $sql = sprintf(
-                            "UPDATE  `Order Transaction Fact` SET `Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d",
-
-                            $dn_key, prepare_mysql(
-                                $dn->get('Delivery Note Address Country 2 Alpha Code')
-                            ), $row['Order Transaction Fact Key']
-
-                        );
-                        $this->db->exec($sql);
-                    }
-
-
-                    //   print "$sql  $otf_key  \n";
-                    //    exit;
-                }
             } else {
-                //-----here
-
-                $old_quantity = 0;
-
-                $old_net_amount = 0;
 
 
-                $total_quantity = $quantity + $bonus_quantity;
+                $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
+                $gross            = round($quantity * $product->data['Product History Price'], 2);
+
+                $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
+                $cost         = round($quantity * $product_cost, 4);
 
 
-                //print 'Q'.$quantity.' B'.$bonus_quantity.'|';
+                $sql = "update `Order Transaction Fact` set 
+                                    `Estimated Weight`=?,`Order Quantity`=?,`Order Bonus Quantity`=?,`Order Last Updated Date`=?,`Order Transaction Gross Amount`=?,`Order Transaction Total Discount Amount`=?,`Order Transaction Amount`=?,`Current Dispatching State`=?  ,`Cost Supplier`=? 
+                                    where `Order Transaction Fact Key`=? ";
 
 
-                if ($total_quantity > 0) {
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $estimated_weight,
+                        $quantity,
+                        $bonus_quantity,
+                        gmdate('Y-m-d H:i:s'),
+                        $gross,
+                        0,
+                        $gross,
+                        $data['Current Dispatching State'],
+                        $cost,
+                        $row['Order Transaction Fact Key']
+                    ]
+                );
+                if ($stmt->rowCount()) {
+                    $this->fast_update(array('Order Last Updated Date' => gmdate('Y-m-d H:i:s')));
+                }
 
-                    $product          = get_object('Product', $data['item_historic_key'], 'historic_key');
-                    $gross            = round($quantity * $product->data['Product History Price'], 2);
-                    $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
 
-                    $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
-                    $cost         = round($total_quantity * $product_cost, 4);
+                if ($dn_key) {
+
+                    $sql = "UPDATE `Order Transaction Fact` SET `Delivery Note Key`=? ,`Destination Country 2 Alpha Code`=? WHERE `Order Transaction Fact Key`=?";
+                    $this->db->prepare($sql)->execute(
+                        [
+                            $dn_key,
+                            $dn->get('Delivery Note Address Country 2 Alpha Code'),
+                            $row['Order Transaction Fact Key']
+                        ]
+                    );
 
 
+                }
 
-                    $sql = sprintf(
-                        "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
-			`Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
+            }
+        }else{
+            $old_quantity   = 0;
+            $old_net_amount = 0;
+            $total_quantity = $quantity + $bonus_quantity;
+
+
+            if ($total_quantity > 0) {
+
+                $gross            = round($quantity * $product->data['Product History Price'], 2);
+                $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
+
+                $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
+                $cost         = round($total_quantity * $product_cost, 4);
+
+
+                $sql = "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
+			`Product Key`,`Product ID`,
 			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Quantity`,
 			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Store Key`,`Units Per Case`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
-VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
-	%d,%d,%s,%d,%d,
-	%s,%s,%s,%s,%s,
-	%.2f,%.2f,%.2f,%s,%f,%s,%.4f,'{}')   ", prepare_mysql($product->get('Product Department Category Key')), prepare_mysql($product->get('Product Family Category Key')), $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code),
-                        prepare_mysql($this->data['Order Currency']), $estimated_weight, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s')), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), 0, 0,
-                        prepare_mysql($data['Current Dispatching State']), prepare_mysql($data['Current Payment State']), prepare_mysql($this->data['Order Customer Key']), prepare_mysql($this->data['Order Key']), $quantity, $gross, 0, $gross,
-                        prepare_mysql($this->data['Order Store Key']), $product->data['Product Units Per Case'], prepare_mysql($dn_key), $cost
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)   ";
+
+
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $product->get('Product Department Category Key'),
+                        $product->get('Product Family Category Key'),
+                        $bonus_quantity,
+                        $order_type,
+                        $tax_rate,
+
+                        $tax_code,
+                        $this->data['Order Currency'],
+                        $estimated_weight,
+                        gmdate('Y-m-d H:i:s'),
+                        gmdate('Y-m-d H:i:s'),
+
+                        $product->historic_id,
+                        $product->data['Product ID'],
+                        $data['Current Dispatching State'],
+                        $data['Current Payment State'],
+                        $this->data['Order Customer Key'],
+
+                        $this->data['Order Key'],
+                        $quantity,
+                        $gross,
+                        0,
+                        $gross,
+
+                        $this->data['Order Store Key'],
+                        $product->data['Product Units Per Case'],
+                        $dn_key,
+                        $cost,
+                        '{}'
+                    )
+                );
+
+
+                $otf_key = $this->db->lastInsertId();
+
+                $this->new_otfs[] = $otf_key;
+
+                if ($dn_key) {
+
+                    $sql = "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=?,`Delivery Note Key`=? ,`Destination Country 2 Alpha Code`=? WHERE `Order Transaction Fact Key`=?";
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $estimated_weight,
+                            $dn_key,
+                            $dn->get('Delivery Note Address Country 2 Alpha Code'),
+                            $otf_key
+                        )
                     );
 
 
-                    //  print $sql;
-
-                    $this->db->exec($sql);
-
-                    $otf_key = $this->db->lastInsertId();
-
-                    $this->new_otfs[] = $otf_key;
-
-                    if ($dn_key) {
-
-                        $sql = sprintf(
-                            "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight, $dn_key, prepare_mysql(
-                            $dn->get('Delivery Note Address Country 2 Alpha Code')
-                        ), $otf_key
-
-                        );
-                        $this->db->exec($sql);
-                    }
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
+
+       
 
         $this->update_field('Order Last Updated Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
@@ -319,7 +347,6 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 
 
             if (count($campaigns_diff) > 0 or count($deal_diff) > 0 or count($deal_components_diff) > 0) {
-                $account = get_object('Account', '');
 
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
@@ -330,7 +357,7 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                     'deal_components' => $deal_components_diff,
 
 
-                ), $account->get('Account Code'), $this->db
+                ), DNS_ACCOUNT_CODE, $this->db
                 );
             }
 
@@ -483,10 +510,7 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 
             if ($this->get('Order Number Items') == 0) {
                 $hide[] = 'order_payments_list';
-            } else {
-
             }
-
 
             $this->update_metadata = array(
 
@@ -562,14 +586,14 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                 'au_housekeeping', array(
                 'type'      => 'order_items_changed',
                 'order_key' => $this->id,
-            ), $account->get('Account Code'), $this->db
+            ), DNS_ACCOUNT_CODE, $this->db
             );
 
 
             return array(
-                'updated'             => true,
-                'otf_key'             => $otf_key,
-                'to_charge'           => money($net_amount-$gross_discounts, $this->data['Order Currency']),
+                'updated'   => true,
+                'otf_key'   => $otf_key,
+                'to_charge' => money($net_amount - $gross_discounts, $this->data['Order Currency']),
 
                 'item_discounts'      => $discounts,
                 'net_amount'          => $net_amount,
@@ -580,7 +604,8 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                 'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
             );
 
-        } else {
+        }
+        else {
 
             $net_amount = $gross;
             if (in_array(
@@ -686,24 +711,24 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                         '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i  class="fa minus fa-minus fa-fw like_button "  style="visibility:hidden;cursor:pointer" aria-hidden="true"></i>
                         <input readonly class=" width_50 " style="text-align: center" value="%s" ovalue="%s"> 
-                        <i  class="fa plus  fa-plus fa-fw like_button "  style="visibility:hidden;ccursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
+                        <i  class="fa plus  fa-plus fa-fw like_button "  style="visibility:hidden;cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
                         $row['Order Quantity'] + 0
                     );
 
                 } else {
 
-                    if($this->get('Order Customer Client Key')>0){
+                    if ($this->get('Order Customer Client Key') > 0) {
 
-                        $edit_quantity     = sprintf(
+                        $edit_quantity = sprintf(
                             '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i onClick="save_item_qty_change(this,{type:\'client_order\',client_key:'.$this->get('Order Customer Client Key').',order_key:'.$this->id.'})" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
                         <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
-                        <i onClick="save_item_qty_change(this,{type:\'client_order\',client_key:'.$this->get('Order Customer Client Key').',order_key:'.$this->id.'})"  class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
-                            $row['Order Quantity'] + 0
+                        <i onClick="save_item_qty_change(this,{type:\'client_order\',client_key:'.$this->get('Order Customer Client Key').',order_key:'.$this->id.'})"  class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>',
+                            $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
                         );
-                    }else{
+                    } else {
 
-                        $edit_quantity     = sprintf(
+                        $edit_quantity = sprintf(
                             '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i onClick="save_item_qty_change(this)" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
                         <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 

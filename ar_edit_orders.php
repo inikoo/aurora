@@ -2162,13 +2162,19 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
             $description .= ' <span style="color:#777">['.$stock.']</span> '.$deal_info;
 
 
-            $sql = sprintf(
-                'update `Order Transaction Fact` set `Product ID`=%d,`Product Key`=%d,`Product Code`=%s,`Estimated Weight`=%f,`OTF Category Family Key`=%d,`OTF Category Department Key`=%d  where `Order Transaction Fact Key`=%d  ', $product->id,
-                $product->get('Product Current Key'), prepare_mysql($product->get('Product Code')), $product->get('Product Package Weight'), $product->get('Product Family Category Key'), $product->get('Product Department Category Key'),
-                $row['Order Transaction Fact Key']
-            );
 
-            $db->exec($sql);
+            $sql = "update `Order Transaction Fact` set `Product ID`=?,`Product Key`=?,`Estimated Weight`=?,`OTF Category Family Key`=?,`OTF Category Department Key`=?  where `Order Transaction Fact Key`=?";
+
+            $db->prepare($sql)->execute(
+                array(
+                    $product->id,
+                    $product->get('Product Current Key'),
+                    $product->get('Product Package Weight'),
+                    $product->get('Product Family Category Key'),
+                    $product->get('Product Department Category Key'),
+                    $row['Order Transaction Fact Key']
+                )
+            );
 
 
             $transaction_deal_data = array(

@@ -66,7 +66,6 @@ switch ($tipo) {
         break;
 
 
-
     case 'get_charges_info':
 
         get_charges_info($order);
@@ -497,11 +496,11 @@ function get_basket_html($data, $customer) {
         list(
             $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
             ) = get_address_form_data(
-            ($order->get('Order Invoice Address Country 2 Alpha Code')==''?
-                ($customer->get('Customer Invoice Address Country 2 Alpha Code')==''?$store->get('Store Home Country Code 2 Alpha'):$customer->get('Customer Invoice Address Country 2 Alpha Code'))
-                :$order->get('Order Invoice Address Country 2 Alpha Code'))
+            ($order->get('Order Invoice Address Country 2 Alpha Code') == '' ? ($customer->get('Customer Invoice Address Country 2 Alpha Code') == '' ? $store->get('Store Home Country Code 2 Alpha') : $customer->get('Customer Invoice Address Country 2 Alpha Code'))
+                : $order->get('Order Invoice Address Country 2 Alpha Code'))
 
-                                     , $website->get('Website Locale'));
+            , $website->get('Website Locale')
+        );
 
 
         $smarty->assign('invoice_address_labels', $invoice_address_labels);
@@ -510,16 +509,13 @@ function get_basket_html($data, $customer) {
         $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
 
 
-
-
         list(
             $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
             ) = get_address_form_data(
 
-            ($order->get('Order Delivery Address Country 2 Alpha Code')==''?
-                ($customer->get('Customer Delivery Address Country 2 Alpha Code')==''?$store->get('Store Home Country Code 2 Alpha'):$customer->get('Customer Delivery Address Country 2 Alpha Code'))
-                :$order->get('Order Delivery Address Country 2 Alpha Code'))
-                , $website->get('Website Locale'));
+            ($order->get('Order Delivery Address Country 2 Alpha Code') == '' ? ($customer->get('Customer Delivery Address Country 2 Alpha Code') == '' ? $store->get('Store Home Country Code 2 Alpha') : $customer->get('Customer Delivery Address Country 2 Alpha Code'))
+                : $order->get('Order Delivery Address Country 2 Alpha Code')), $website->get('Website Locale')
+        );
 
         $smarty->assign('delivery_address_labels', $delivery_address_labels);
         $smarty->assign('delivery_required_fields', $delivery_required_fields);
@@ -799,13 +795,18 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
             $description .= '<br/>'.$deal_info;
 
 
-            $sql = sprintf(
-                'update `Order Transaction Fact` set `Product ID`=%d,`Product Key`=%d,`Product Code`=%s,`Estimated Weight`=%f,`OTF Category Family Key`=%d,`OTF Category Department Key`=%d  where `Order Transaction Fact Key`=%d  ', $product->id,
-                $product->get('Product Current Key'), prepare_mysql($product->get('Product Code')), $product->get('Product Package Weight'), $product->get('Product Family Category Key'), $product->get('Product Department Category Key'),
-                $row['Order Transaction Fact Key']
-            );
+            $sql = "update `Order Transaction Fact` set `Product ID`=?,`Product Key`=?,`Estimated Weight`=?,`OTF Category Family Key`=?,`OTF Category Department Key`=?  where `Order Transaction Fact Key`=?";
 
-            $db->exec($sql);
+            $db->prepare($sql)->execute(
+                array(
+                    $product->id,
+                    $product->get('Product Current Key'),
+                    $product->get('Product Package Weight'),
+                    $product->get('Product Family Category Key'),
+                    $product->get('Product Department Category Key'),
+                    $row['Order Transaction Fact Key']
+                )
+            );
 
 
             $transaction_deal_data = array(

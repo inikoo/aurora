@@ -1118,7 +1118,7 @@ class Product extends Asset {
 
     function update_status_from_parts() {
 
-        $old_status=$this->get('Product Status');
+        $old_status = $this->get('Product Status');
 
         $status = 'Active';
 
@@ -1156,7 +1156,7 @@ class Product extends Asset {
 
         $this->update_availability();
 
-        if( $old_status!=$this->get('Product Status')){
+        if ($old_status != $this->get('Product Status')) {
             $this->fork_index_elastic_search();
         }
 
@@ -1197,7 +1197,7 @@ class Product extends Asset {
 
     function update_availability($use_fork = true) {
 
-        $old_availability_state=$this->get('Product Availability State');
+        $old_availability_state = $this->get('Product Availability State');
 
 
         $min_days_available = '';
@@ -1324,7 +1324,7 @@ class Product extends Asset {
             )
         );
 
-        if($old_availability_state!=$this->get('Product Availability State')){
+        if ($old_availability_state != $this->get('Product Availability State')) {
             $this->fork_index_elastic_search();
         }
 
@@ -2869,20 +2869,18 @@ class Product extends Asset {
                     return;
                 }
 
-                include_once 'class.Category.php';
 
-
-                $root_category = new Category(
-                    $this->get('Store Family Category Key')
-                );
+                $root_category = get_object('Category', $this->get('Store Family Category Key'));
                 if ($root_category->id) {
                     $root_category->editor = $this->editor;
                     $family                = $root_category->create_category(array('Category Code' => $value));
                     if ($family->id) {
 
                         $this->update_field_switcher('Product Family Category Key', $family->id, $options);
-                        $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
 
+                        $this->fast_update(
+                            ['Product Department Category Key' => $family->get('Product Category Department Category Key')]
+                        );
 
                     } else {
                         $this->error = true;
@@ -2941,7 +2939,9 @@ class Product extends Asset {
                         }
 
 
-                        $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
+                        $this->fast_update(
+                            ['Product Department Category Key' => $family->get('Product Category Department Category Key')]
+                        );
 
 
                     }
@@ -2956,7 +2956,10 @@ class Product extends Asset {
                             $category->disassociate_subject($this->id);
                         }
 
-                        $this->update_field_switcher('Product Department Category Key', '', 'no_history');
+
+                        $this->fast_update(
+                            ['Product Department Category Key' => '']
+                        );
 
 
                     }
