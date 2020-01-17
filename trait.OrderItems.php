@@ -93,7 +93,9 @@ trait OrderItems {
 
 
             //todo this is too bad!!!!! you need to choose the proper DN
-            $dn_key = array_pop($this->get_deliveries('keys'));
+
+            $_deliveries=$this->get_deliveries('keys');
+            $dn_key = array_pop($_deliveries);
             $dn     = get_object('DeliveryNote', $dn_key);
 
 
