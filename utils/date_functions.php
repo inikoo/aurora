@@ -710,10 +710,12 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
         case 'Week To Day':
         case 'Week To Date':
         case 'wtd':
+
+
+
             $db_interval = 'Week To Day';
 
             $from_date     = false;
-            $from_date_1yb = false;
 
             $sql = sprintf(
                 "SELECT `First Day`  FROM kbase.`Week Dimension` WHERE `Year`=%d AND `Week`=%d", date('Y'), date('W')
@@ -723,33 +725,15 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $from_date      = $row['First Day'].' 00:00:00';
-                    $lapsed_seconds = strtotime('now') - strtotime($from_date);
                 } else {
                     return;
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
 
             $to_date = gmdate('Y-m-d 23:59:59');
 
 
-            $sql = sprintf(
-                "SELECT `First Day`  FROM  kbase.`Week Dimension` WHERE `Year`=%d AND `Week`=%d", date('Y') - 1, date('W')
-            );
-
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $from_date_1yb = $row['First Day'].' 00:00:00';
-                } else {
-                    return;
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
 
 
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));

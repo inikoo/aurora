@@ -126,7 +126,7 @@ class Category extends DB_Table {
 
                 // print_r($sql);
 
-            }  elseif ($this->data['Category Scope'] == 'Product') {
+            } elseif ($this->data['Category Scope'] == 'Product') {
 
 
                 $this->subject_table_name = 'Product Category';
@@ -352,13 +352,6 @@ class Category extends DB_Table {
                 );
                 $this->db->exec($sql);
 
-            } elseif ($this->data['Category Scope'] == 'Location') {
-                $created_msg = _("Location's category created");
-
-                $sql = sprintf(
-                    "INSERT INTO `Location Category Dimension` (`Location Category Key`,`Location Category Warehouse Key`) VALUES (%d,%d)", $this->id, $this->data['Category Warehouse Key']
-                );
-                $this->db->exec($sql);
             } elseif ($this->data['Category Scope'] == 'Product') {
                 $store = get_object('Store', $this->data['Category Store Key']);
 
@@ -1281,12 +1274,7 @@ class Category extends DB_Table {
 
                 $sql = sprintf("SELECT count(*) AS num FROM `Part Dimension`");
                 break;
-            case('Location'):
 
-                $sql = sprintf(
-                    "SELECT count(*) AS num FROM `Location Dimension` WHERE `Location Warehouse Key`=%d", $this->data['Category Warehouse Key']
-                );
-                break;
             case('Customer'):
 
                 $sql = sprintf(
@@ -1641,7 +1629,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
         if ($this->data['Category Scope'] == 'Invoice') {
             $sql = sprintf(
-                'DELETE FROM `Invoice Category Dimension` WHERE `Category Key`=%d', $this->id
+                'DELETE FROM `Invoice Category Dimension` WHERE `Invoice Category Key`=%d', $this->id
             );
             $this->db->exec($sql);
 
@@ -1659,17 +1647,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
         } elseif ($this->data['Category Scope'] == 'Supplier') {
             $sql = sprintf(
-                'DELETE FROM `Supplier Category Dimension` WHERE `Category Key`=%d', $this->id
+                'DELETE FROM `Supplier Category Dimension` WHERE `Supplier Category Key`=%d', $this->id
             );
             $this->db->exec($sql);
         } elseif ($this->data['Category Scope'] == 'Part') {
             $sql = sprintf(
-                'DELETE FROM `Part Category Dimension`  WHERE `Category Key`=%d', $this->id
-            );
-            $this->db->exec($sql);
-        } elseif ($this->data['Category Scope'] == 'Location') {
-            $sql = sprintf(
-                'DELETE FROM `Location Category Dimension`  WHERE `Category Key`=%d', $this->id
+                'DELETE FROM `Part Category Dimension`  WHERE `Part Category Key`=%d', $this->id
             );
             $this->db->exec($sql);
         } elseif ($this->data['Category Scope'] == 'Product') {
@@ -1697,12 +1680,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         $this->db->exec($sql);
 
 
-        $sql = sprintf(
-            'DELETE FROM `Category Bridge` WHERE  `Subject`="Category"  and  `Subject Key`=%d', $this->id
+        $sql = "DELETE FROM `Category Bridge` WHERE  `Subject`='Category'  and  `Subject Key`=?";
+
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id
+            )
         );
 
-
-        $this->db->exec($sql);
 
         $sql = sprintf(
             'DELETE FROM `Category Bridge` WHERE   and  `Category Key`=%d', $this->id
@@ -1755,7 +1740,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         $category_tree_keys = preg_split(
             '/\>/', preg_replace('/\>$/', '', $this->data['Category Position'])
         );
-        //print_r($this->data['Category Position']);
         array_pop($category_tree_keys);
 
         return $category_tree_keys;
@@ -1774,11 +1758,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $row['Category Key']
                 );
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
         return $children_objects;
 
@@ -2175,107 +2155,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-    function sub_category_selected_by_subject($subject_key) {
-        $sub_category_keys_selected = array();
-        $sql                        = sprintf(
-            "SELECT C.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE `Category Subject`=%s AND `Subject Key`=%d AND `Category Parent Key`=%d", prepare_mysql($this->data['Category Subject']),
-            $subject_key, $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $sub_category_keys_selected[$row['Category Key']] = $row['Category Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $sub_category_keys_selected;
-    }
-
-    function get_children_objects_new_subject() {
-        $sql = sprintf(
-            "SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d AND `Category Show Subject User Interface`='Yes' ORDER BY `Category Code` ", $this->id
-        );
-
-
-        $children_keys = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $tmp                                 = get_object('Category', $row['Category Key']);
-                $tmp->editor                         = $this->editor;
-                $children_keys[$row['Category Key']] = $tmp;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $children_keys;
-
-    }
-
-    function get_children_objects_public_edit() {
-        $sql = sprintf(
-            "SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d AND `Category Show Public Edit`='Yes' ORDER BY `Category Code` ", $this->id
-        );
-        //  print $sql;
-
-        $children_keys = array();
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $tmp                                 = get_object('Category', $row['Category Key']);
-                $tmp->editor                         = $this->editor;
-                $children_keys[$row['Category Key']] = $tmp;
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $children_keys;
-
-    }
-
-    function get_children_objects_public_new_subject() {
-        $sql = sprintf(
-            "SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d AND `Category Show Public New Subject`='Yes' ORDER BY `Category Code` ", $this->id
-        );
-
-        $children_keys = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $tmp                                 = get_object('Category', $row['Category Key']);
-                $tmp->editor                         = $this->editor;
-                $children_keys[$row['Category Key']] = $tmp;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $children_keys;
-
-    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-        // print_r($this->base_data('Product Category Data'));
-        // exit;
 
 
         if (array_key_exists($field, $this->base_data())) {
@@ -2333,7 +2214,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     if ($value) {
 
 
-                        if ($this->data['Product Category Department Category Key'] != $value) {
+                        if ($this->data['Product Category Department Category Key'] != $value or true) {
+
 
                             $old_parent_category = get_object('Category', $this->data['Product Category Department Category Key']);
                             $new_parent_category = get_object('Category', $value);
@@ -2372,7 +2254,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                             //todo Urgent update navigation of products
 
-                            $sql = sprintf('update `Product Dimension` set `Product Department Category Key`=%d  where `Product Family Category Key`=%d  ', $new_parent_category->id, $this->id);
+                            $sql = "update `Product Dimension` set `Product Department Category Key`=?  where `Product Family Category Key`=?";
+
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $new_parent_category->id,
+                                    $this->id
+                                )
+                            );
+
+
                             $this->db->exec($sql);
 
 
@@ -2381,6 +2272,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         $hide = array('no_department_warning');
 
+                        $this->fast_update(
+                            [
+                                'Product Category Department Category Key' => $new_parent_category->id
+                            ], 'Product Category Dimension'
+                        );
 
                     } else {
                         if ($this->data['Product Category Department Category Key'] != '') {
@@ -2397,20 +2293,29 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
-                        $sql = sprintf('update `Product Dimension` set `Product Department Category Key`=NULL  where `Product Family Category Key`=%d  ', $this->id);
+                        $sql = "update `Product Dimension` set `Product Department Category Key`=NULL  where `Product Family Category Key`=?";
+
+                        $this->db->prepare($sql)->execute(
+                            array(
+                                $this->id
+                            )
+                        );
+
+
                         $this->db->exec($sql);
 
 
                         $show = array('no_department_warning');
 
 
+                        $this->fast_update(
+                            [
+                                'Product Category Department Category Key' => ''
+                            ], 'Product Category Dimension'
+                        );
+
+
                     }
-
-
-                    //print "$field, $value";
-
-                    //$this->update_subject_field($field, $value, 'no_history');
-                    $this->update_table_field($field, $value, 'no_history', 'Product Category', 'Product Category Dimension', $this->id);
 
 
                     $categories = '';
@@ -2684,12 +2589,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 );
                 $this->db->exec($sql);
                 break;
-            case('Location'):
-                $sql = sprintf(
-                    "INSERT INTO  `Location Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Warehouse Key'], $this->id, $history_key, prepare_mysql($type)
-                );
-                $this->db->exec($sql);
-                break;
+
             case('Supplier'):
                 $sql = sprintf(
                     "INSERT INTO  `Supplier Category History Bridge` VALUES (%d,%d,%s)", $this->id, $history_key, prepare_mysql($type)
@@ -2709,19 +2609,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     'insert into `Product Category History Bridge` (`Store Key`,`Category Key`,`History Key`,`Type`)  values (%d,%d,%d,%s)', $this->get('Store Key'), $this->id, $history_key, prepare_mysql($type)
                 );
 
-                //print $sql;
 
                 $this->db->exec($sql);
                 $this->update_product_category_history_records_data();
 
 
                 break;
-            case('Family'):
-                $sql = sprintf(
-                    "INSERT INTO  `Product Family Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Store Key'], $this->id, $history_key, prepare_mysql($type)
-                );
-                $this->db->exec($sql);
-                break;
+
         }
     }
 
@@ -2738,7 +2632,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
             return true;
         }
-
 
         if ($this->data['Category Subject Multiplicity'] == 'Yes' or $force_associate) {
 
@@ -2801,49 +2694,63 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         break;
                     case('Product'):
 
-                        $product         = get_object('Product', $subject_key);
-                        $product->editor = $this->editor;
+
+
 
                         $store = get_object('Store', $this->get('Category Store Key'));
-                        if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
-                            $product->update(array('Product Family Category Key' => $this->id), 'no_history');
 
-                        }
+                        if ($this->get('Category Subject') == 'Category') {
 
-                        $abstract = sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
-                        $details  = '';
-
-
-                        if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
-
-
+                            $_cat         = get_object('Category', $subject_key);
+                            $_cat->editor = $this->editor;
+                            $abstract     = sprintf(_('Category %s associated with category %s'), $_cat->get('Code'), $this->get('Code'));
+                            $details      = '';
                             if (!preg_match('/skip_direct_update/', $options)) {
-                                $product->update(
-                                    array(
-                                        'Product Family Category Key' => $this->id
-                                    ), 'no_history'
-                                );
-                            }
 
-                        }
+                                if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
+
+                                    $_cat->fast_update(
+                                        [
+                                            'Product Category Department Category Key' => $this->id,
+                                        ], 'Product Category Dimension'
+                                    );
+
+                                    $sql = "update `Product Dimension` set `Product Department Category Key`=?  where `Product Family Category Key`=? ";
+
+                                    $this->db->prepare($sql)->execute(
+                                        array(
+                                            $this->id,
+                                            $_cat->id
+                                        )
+                                    );
 
 
-                        if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
-
-
-                            if (!preg_match('/skip_direct_update/', $options)) {
-                                $product->fast_update(
-                                    array(
-                                        'Product Department Category Key' => $this->id
-                                    )
-                                );
+                                }
                             }
 
 
+                        } elseif ($this->get('Category Subject') == 'Product') {
+
+                            $product         = get_object('Product', $subject_key);
+                            $product->editor = $this->editor;
+                            $abstract        = sprintf(_('Product %s associated with category %s'), $product->get('Code'), $this->get('Code'));
+                            $details         = '';
+
+                            if (!preg_match('/skip_direct_update/', $options)) {
+
+
+                                if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
+
+                                    $product->fast_update(
+                                        [
+                                            'Product Family Category Key'     => $this->id,
+                                            'Product Department Category Key' => $this->get('Product Category Department Category Key')
+                                        ]
+                                    );
+                                }
+                            }
+
                         }
-
-
-                        $website = get_object('Website', $store->get('Store Website Key'));
 
 
                         $webpage = get_object('Webpage', $this->get('Product Category Webpage Key'));
@@ -2851,9 +2758,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         //  print_r($webpage);
 
                         if ($webpage->id) {
-
-                            // print_r($webpage);
-
                             $webpage->reindex_items();
                         }
 
@@ -2931,12 +2835,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         } else {
 
 
-            $parents_where = '';
-            $parent_keys   = $this->get_parent_keys();
-
-
-            $found = false;
-            $sql   = sprintf(
+            $sql = sprintf(
                 "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C    ON  (C.`Category Key`=B.`Category Key`)   WHERE  `Category Branch Type`='Head' AND `Category Root Key`=%d  AND B.`Category Key`!=%d AND `Subject`=%s AND `Subject Key`=%d",
                 $this->data['Category Root Key'], $this->id, prepare_mysql($this->data['Category Subject']), $subject_key
             );
@@ -2962,30 +2861,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-    /**
-     * @return array
-     */
-    public function get_children_keys() {
-
-        $children_keys = array();
-
-        $sql = "SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=? ";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $this->id
-            )
-        );
-        while ($row = $stmt->fetch()) {
-            $children_keys[$row['Category Key']] = $row['Category Key'];
-
-        }
-
-
-        return $children_keys;
-
-    }
 
     function create_timeseries($data, $fork_key = false) {
         switch ($this->data['Category Scope']) {
@@ -3065,204 +2940,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-    function get_other_categories() {
-
-        $other_data = array();
-
-        $sql = sprintf(
-            "SELECT * FROM `Category Dimension` WHERE `Is Category Field Other`='Yes' AND `Category Subject`='Customer'"
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $other_data[$row['Category Parent Key']] = $row['Category Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $other_data;
-    }
-
-    function get_other_value($subject, $subject_key) {
-        $other_values = '';
-        $sql          = sprintf(
-            "SELECT ifnull(group_concat(DISTINCT `Other Note`),'') AS other_value FROM `Category Bridge` B LEFT JOIN  `Category Dimension` C ON (C.`Category Key`=B.`Category Key`)  WHERE `Subject`=%s AND `Subject Key`=%d AND `Other Note`!='' AND  `Is Category Field Other`='Yes' AND `Category Parent Key`=%d",
-            prepare_mysql($subject), $subject_key, $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $other_value = $row['other_value'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $other_value;
-    }
-
-    function update_other_value($subject_key, $other_value) {
-
-        $sql = sprintf(
-            "UPDATE `Category Bridge` SET `Other Note` =%s WHERE `Category Key`=%d AND `Subject`=%s AND `Subject Key`=%d  ", prepare_mysql($other_value), $this->id, prepare_mysql($this->data['Category Subject']), $subject_key
-
-        );
-        //print $sql;
-        $this->db->exec($sql);
-
-    }
-
-    function number_of_children_with_other_value($subject, $subject_key) {
-
-        $number_of_children = 0;
-
-        $sql = sprintf(
-            " SELECT  count(DISTINCT C.`Category Key`) AS number_of_children    FROM `Category Dimension` C LEFT JOIN  `Category Bridge` B ON (C.`Category Key`=B.`Category Key`)  WHERE  `Subject`=%s AND `Subject Key`=%d AND `Is Category Field Other`='Yes' AND `Category Parent Key`=%d",
-            prepare_mysql($subject), $subject_key, $this->id
-        );
-        //print $sql;
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_of_children = $row['number_of_children'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $number_of_children;
-    }
-
-    function get_children_key_is_other_value() {
-        $children_key_is_other_value = 0;
-
-        $sql = sprintf(
-            " SELECT `Category Key`    FROM `Category Dimension` C  WHERE   `Is Category Field Other`='Yes' AND `Category Parent Key`=%d",
-
-
-            $this->id
-        );
-        //print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $children_key_is_other_value = $row['Category Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $children_key_is_other_value;
-    }
-
-    function get_children_key_is_other_value_public_edit() {
-        $children_key_is_other_value = 0;
-
-        $sql = sprintf(
-            " SELECT `Category Key`    FROM `Category Dimension` C  WHERE   `Is Category Field Other`='Yes' AND `Category Parent Key`=%d AND `Category Show Public Edit`='Yes'",
-
-
-            $this->id
-        );
-        //print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $children_key_is_other_value = $row['Category Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $children_key_is_other_value;
-    }
-
-    function get_user_view_icon() {
-
-
-        if ($this->data['Category Show Subject User Interface'] == 'Yes') {
-            if ($this->data['Category Show Public New Subject'] == 'Yes') {
-                if ($this->data['Category Show Public Edit'] == 'Yes') {
-                    $image_tag = 'yyy';
-                } else {
-                    $image_tag = 'yyn';
-                }
-            } else {
-                if ($this->data['Category Show Public Edit'] == 'Yes') {
-                    $image_tag = 'yny';
-                } else {
-                    $image_tag = 'ynn';
-                }
-
-            }
-
-
-        } else {
-            if ($this->data['Category Show Public New Subject'] == 'Yes') {
-
-                if ($this->data['Category Show Public Edit'] == 'Yes') {
-                    $image_tag = 'nyy';
-                } else {
-                    $image_tag = 'nyn';
-                }
-
-
-            } else {
-
-
-                if ($this->data['Category Show Public Edit'] == 'Yes') {
-                    $image_tag = 'nny';
-                } else {
-                    $image_tag = 'nnn';
-                }
-
-
-            }
-
-        }
-
-        $public_view_icon = '<img src="art/icons/category_user_view_'.$image_tag.'.png" title="'._('Category View').'" /> ';
-
-        return $public_view_icon;
-
-    }
-
-    function get_icon() {
-        $branch_type_icon = '';
-        switch ($this->data['Category Branch Type']) {
-            case('Root'):
-                $branch_type_icon = '<img src="art/icons/category_root'.($this->data['Category Can Have Other'] == 'Yes' ? ($this->data['Category Children Other'] == 'Yes' ? '_with_other' : '_can_other') : '').'.png" title="'._('Root Node').'" /> ';
-                break;
-            case('Node'):
-                $branch_type_icon = '<img src="art/icons/category_node'.($this->data['Category Can Have Other'] == 'Yes' ? ($this->data['Category Children Other'] == 'Yes' ? '_with_other' : '_can_other') : '').'.png" title="'._('Node').'" />';
-                break;
-            case('Head'):
-                if ($this->data['Is Category Field Other'] == 'No') {
-                    $branch_type_icon = '<img src="art/icons/category_head.png" title="'._(
-                            'Head Node'
-                        ).'" /> ';
-                } else {
-                    $branch_type_icon = '<img src="art/icons/category_head_other.png" title="'._('Head Node').' ('._('Other').')" /> ';
-                }
-
-        }
-
-        return $branch_type_icon;
-    }
 
     function get_field_label($field) {
 

@@ -123,7 +123,10 @@ switch ($tipo) {
                              'type'     => 'numeric',
                              'optional' => true
                          ),
-                         'state'      => array('type' => 'json array','optional' => true),
+                         'state'      => array(
+                             'type'     => 'json array',
+                             'optional' => true
+                         ),
                          'metadata'   => array(
                              'type'     => 'json array',
                              'optional' => true
@@ -2291,8 +2294,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
 
     $candidates = array();
 
-    $query_array    = preg_split('/\s+/', $queries);
-    $number_queries = count($query_array);
+    $query_array = preg_split('/\s+/', $queries);
 
 
     foreach ($query_array as $q) {
@@ -2323,28 +2325,26 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
         }
 
 
-        $sql = sprintf(
-            "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where true $where_root_categories and `Category Label`  REGEXP '[[:<:]]%s' limit 100 ", $q
+        $sql = "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where true $where_root_categories and `Category Label`  REGEXP  ? limit 100 ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '[[:<:]]'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Category Label'] == $q) {
+                $candidates[$row['Category Key']] = 55;
+            } else {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Category Label'] == $q) {
-                    $candidates[$row['Category Key']] = 55;
-                } else {
-
-                    $len_name                         = strlen(
-                        $row['Category Label']
-                    );
-                    $len_q                            = strlen($q);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Category Key']] = 50 * $factor;
-                }
-
+                $len_name                         = strlen(
+                    $row['Category Label']
+                );
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Category Key']] = 50 * $factor;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -3831,7 +3831,7 @@ function find_families($db, $account, $memcache_ip, $user, $data) {
             case 'root_key':
 
 
-                $where = sprintf(' and `Category Root Key`=%d', $data['metadata']['parent_key']);
+                $where = sprintf(' and `Category Root Key`=%d and `Category Branch Type`="Head" ', $data['metadata']['parent_key']);
                 break;
 
             case 'store':
@@ -3860,6 +3860,7 @@ function find_families($db, $account, $memcache_ip, $user, $data) {
         }
 
     }
+
 
 
     $candidates = array();

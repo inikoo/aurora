@@ -2062,11 +2062,15 @@ function get_invoices_element_numbers($db, $parameters) {
     );
 
 
+
+
     $parent_key = $parameters['parent_key'];
 
 
     $where_interval = prepare_mysql_dates($from, $to, '`Invoice Date`');
     $where_interval = $where_interval['mysql'];
+
+
 
     $elements_numbers = array(
         'type'          => array(

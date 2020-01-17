@@ -1703,39 +1703,35 @@ class Product extends Asset {
 
     }
 
-    function get_categories($scope = 'keys') {
 
-        if ($scope == 'objects') {
-            include_once 'class.Category.php';
-        }
-
+    function get_categories($output = 'keys',$scope='all',$args='') {
 
         $categories = array();
+        $sql = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Product' AND `Category Branch Type`!='Root'";
 
-
-        $sql = sprintf(
-            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Product' AND `Subject Key`=%d AND `Category Branch Type`!='Root'", $this->id
+        $params=array(
+            $this->id
         );
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $categories[$row['Category Key']] = new Category(
-                        $row['Category Key']
-                    );
-                } else {
-                    $categories[$row['Category Key']] = $row['Category Key'];
-                }
-
-
-            }
+        if($scope=='root_key'){
+            $sql.=' and C.`Category Root Key`=?';
+            $params[]=$args;
         }
 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            $params
+        );
+        while ($row = $stmt->fetch()) {
+            if ($output == 'objects') {
+                $categories[$row['Category Key']] = get_object('Category',$row['Category Key']);
+            } else {
+                $categories[$row['Category Key']] = $row['Category Key'];
+            }
+        }
         return $categories;
-
-
     }
+
 
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {

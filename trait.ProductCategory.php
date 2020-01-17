@@ -288,7 +288,6 @@ trait ProductCategory {
             );
 
 
-
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
 
@@ -860,39 +859,32 @@ trait ProductCategory {
 
     }
 
-    function get_categories($scope = 'keys') {
-
-        if ($scope == 'objects') {
-            include_once 'class.Category.php';
-        }
-
-        $type = 'Category';
+    function get_categories($output = 'keys',$scope='all',$args='') {
 
         $categories = array();
+        $sql = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Category' AND `Category Branch Type`!='Root'";
 
-
-        $sql = sprintf(
-            "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`=%s AND `Subject Key`=%d AND `Category Branch Type`!='Root'", prepare_mysql($type), $this->id
+        $params=array(
+            $this->id
         );
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $categories[$row['Category Key']] = new Category(
-                        $row['Category Key']
-                    );
-                } else {
-                    $categories[$row['Category Key']] = $row['Category Key'];
-                }
-
-
-            }
+        if($scope=='root_key'){
+            $sql.=' and C.`Category Root Key`=?';
+            $params[]=$args;
         }
 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            $params
+        );
+        while ($row = $stmt->fetch()) {
+            if ($output == 'objects') {
+                $categories[$row['Category Key']] = get_object('Category',$row['Category Key']);
+            } else {
+                $categories[$row['Category Key']] = $row['Category Key'];
+            }
+        }
         return $categories;
-
-
     }
 
     function get_category_data() {
@@ -1080,7 +1072,6 @@ trait ProductCategory {
         $this->fast_update_json_field('Category Properties', 'spread_marketing_customers_last_updated', gmdate('U'));
 
     }
-
 
 
 }
