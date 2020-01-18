@@ -10,13 +10,7 @@
 
 
 */
-
-
-
-
-
-use Elasticsearch\ClientBuilder;
-
+include_once 'elastic/assets_correlation.elastic.php';
 
 $size = 20;
 
@@ -51,49 +45,13 @@ $asset = $state['_object'];
  */
 $family = get_object('Category', $asset->get('Product Family Category Key'));
 
-$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
-
-$params = [
-    'index' => strtolower('au_customers_'.strtolower(DNS_ACCOUNT_CODE)),
-
-    'body' =>
-
-        [
-
-            "query"        => [
-
-                'term' => [
-                    'products_bought'.$period_suffix => $asset->id
-                ],
+$result = get_elastic_sales_correlated_assets($asset->id, 'products_bought', $period_suffix,  $family->get('Category Number Subjects') + $size + 5);
 
 
-            ],
-            'aggregations' => [
-                'products' => [
-                    'significant_terms' => [
-                        "field"         => "products_bought".$period_suffix,
-                        "min_doc_count" => 1,
-                        "size"          => $family->get('Category Number Subjects') + $size + 5
-                    ]
-                ]
-            ]
-        ],
-
-    '_source' => [
-        'store_key',
-
-    ],
-    'size'    => 1
-
-
-];
-
-
-$result      = $client->search($params);
 
 $assets_ids  = [];
 $assets_data = [];
-foreach ($result['aggregations']['products']['buckets'] as $result) {
+foreach ($result['aggregations']['assets']['buckets'] as $result) {
     if ($result['key'] == $asset->id) {
         continue;
     }

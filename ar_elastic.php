@@ -10,13 +10,9 @@
 */
 
 
-
-
-use Elasticsearch\ClientBuilder;
-
 require_once 'common.php';
 require_once 'utils/ar_common.php';
-
+require_once 'elastic/assets_correlation.elastic.php';
 
 if (!isset($_REQUEST['args']['tipo'])) {
     $response = array(
@@ -27,7 +23,6 @@ if (!isset($_REQUEST['args']['tipo'])) {
     exit;
 }
 
-$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
 
 $tipo = $_REQUEST['args']['tipo'];
@@ -45,7 +40,7 @@ switch ($tipo) {
                                  'period' => array('type' => 'string'),
                              )
         );
-        correlated_products($data, $db, $client);
+        correlated_products($data, $db);
 
         break;
 
@@ -60,7 +55,7 @@ switch ($tipo) {
                                  'period' => array('type' => 'string'),
                              )
         );
-        correlated_categories($data, $db, $client);
+        correlated_categories($data, $db);
 
         break;
 
@@ -77,7 +72,7 @@ switch ($tipo) {
 }
 
 
-function correlated_categories($_data, $db, $client) {
+function correlated_categories($_data, $db) {
 
 
     //    $_SESSION['island_state']['correlations']['period'] = 'all';
@@ -112,47 +107,14 @@ function correlated_categories($_data, $db, $client) {
 
     $max_results = 20;
 
-    $params = [
-        'index' => strtolower('au_customers_'.strtolower(DNS_ACCOUNT_CODE)),
 
-        'body' =>
+    $result = get_elastic_sales_correlated_assets($_data['args']['key'], $_data['args']['field_name'],$period_suffix,  $_data['args']['size']);
 
-            [
-                "query"        => [
-
-                    'term' => [
-                        $_data['args']['field_name'].$period_suffix => $_data['args']['key']
-                    ],
-
-                ],
-                'aggregations' => [
-                    'categories' => [
-                        'significant_terms' => [
-                            "field"         => $_data['args']['field_name'].$period_suffix,
-                            "min_doc_count" => 1,
-                            "size"          => $_data['args']['size']
-                        ]
-                    ]
-                ]
-            ],
-
-        '_source' => [
-            'store_key',
-
-            'url'
-        ],
-        'size'    => 1
-
-
-    ];
-
-
-    $result = $client->search($params);
 
 
     $assets_ids  = [];
     $assets_data = [];
-    foreach ($result['aggregations']['categories']['buckets'] as $result) {
+    foreach ($result['aggregations']['assets']['buckets'] as $result) {
         if ($result['key'] == $_data['args']['key']) {
             continue;
         }
@@ -282,7 +244,7 @@ function correlated_categories($_data, $db, $client) {
 
 }
 
-function correlated_products($_data, $db, $client) {
+function correlated_products($_data, $db) {
 
     if (isset($_data['period']) and in_array(
             $_data['period'], [
@@ -313,49 +275,11 @@ function correlated_products($_data, $db, $client) {
 
     $max_results = 20;
 
-    $params = [
-        'index' => strtolower('au_customers_'.strtolower(DNS_ACCOUNT_CODE)),
-
-        'body' =>
-
-            [
-
-
-                "query"        => [
-
-
-                    'term' => [
-                        'products_bought'.$period_suffix => $_data['args']['key']
-                    ]
-
-
-                ],
-                'aggregations' => [
-                    'products' => [
-                        'significant_terms' => [
-                            "field"         => "products_bought".$period_suffix,
-                            "min_doc_count" => 1,
-                            "size"          => $_data['args']['size']
-                        ]
-                    ]
-                ]
-            ],
-
-        '_source' => [
-            'store_key',
-
-
-        ],
-        'size'    => 1
-
-
-    ];
-
-    $result = $client->search($params);
+    $result = get_elastic_sales_correlated_assets($_data['args']['key'],'products_bought',$period_suffix,  $_data['args']['size']);
 
     $assets_ids  = [];
     $assets_data = [];
-    foreach ($result['aggregations']['products']['buckets'] as $result) {
+    foreach ($result['aggregations']['assets']['buckets'] as $result) {
         if ($result['key'] == $_data['args']['key']) {
             continue;
         }

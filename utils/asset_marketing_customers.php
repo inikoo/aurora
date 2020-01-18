@@ -10,11 +10,20 @@
  Version 2.0
 */
 
-function get_targeted_product_customers($customers, $db, $product_id, $threshold,$expand=true) {
+/**
+ * @param      $customers
+ * @param      $db PDO
+ * @param      $product_id
+ * @param      $threshold
+ * @param bool $expand
+ *
+ * @return mixed
+ */
+function get_targeted_product_customers($customers, $db, $product_id, $threshold, $expand = true) {
 
 
     $sql  =
-        'select `Customer Favourite Product Customer Key` ,`Customer Main Plain Email` from `Customer Favourite Product Fact` left join `Customer Dimension` on (`Customer Favourite Product Customer Key`=`Customer Key`)  where `Customer Favourite Product Product ID`=? and  `Customer Main Plain Email`!=""  and `Customer Send Email Marketing`="Yes" ';
+        "select `Customer Favourite Product Customer Key` ,`Customer Main Plain Email` from `Customer Favourite Product Fact` left join `Customer Dimension` on (`Customer Favourite Product Customer Key`=`Customer Key`)  where `Customer Favourite Product Product ID`=? and  `Customer Main Plain Email`!=''  and `Customer Send Email Marketing`='Yes'";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($product_id)
@@ -31,7 +40,7 @@ function get_targeted_product_customers($customers, $db, $product_id, $threshold
     }
 
     $sql  =
-        'select OTF.`Customer Key` ,`Customer Main Plain Email` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `Product ID`=? and `Order Date`>? and `Customer Send Email Marketing`="Yes"   and  `Customer Main Plain Email`!=""';
+        "select OTF.`Customer Key` ,`Customer Main Plain Email` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `Product ID`=? and `Order Date`>? and `Customer Send Email Marketing`='Yes'   and  `Customer Main Plain Email`!=''";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
@@ -50,7 +59,7 @@ function get_targeted_product_customers($customers, $db, $product_id, $threshold
     }
 
     $sql  =
-        'select OTF.`Customer Key` ,`Customer Main Plain Email` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `Product ID`=? and `Order `>? and `Customer Send Email Marketing`="Yes"  and  `Customer Main Plain Email`!=""';
+        "select OTF.`Customer Key` ,`Customer Main Plain Email` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `Product ID`=? and `Order Date`>? and `Customer Send Email Marketing`='Yes'  and  `Customer Main Plain Email`!=''";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
@@ -68,7 +77,7 @@ function get_targeted_product_customers($customers, $db, $product_id, $threshold
     }
 
     $sql =
-        'select OTF.`Customer Key` ,`Customer Main Plain Email` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `Product ID`=?  and `Customer Send Email Marketing`="Yes"  and  `Customer Main Plain Email`!=""';
+        "select OTF.`Customer Key` ,`Customer Main Plain Email` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `Product ID`=?  and `Customer Send Email Marketing`='Yes'  and  `Customer Main Plain Email`!=''";
 
 
     $stmt = $db->prepare($sql);
@@ -80,37 +89,28 @@ function get_targeted_product_customers($customers, $db, $product_id, $threshold
     }
 
     $estimated_recipients = count($customers);
-    if ($estimated_recipients > $threshold ) {
+    if ($estimated_recipients > $threshold) {
         return $customers;
     }
 
 
+    if ($expand) {
 
-    if($expand) {
+        include_once 'elastic/assets_correlation.elastic.php';
 
+        $result = get_elastic_sales_correlated_assets($product_id, 'products_bought', '_1y', 10);
 
-        $sql = "SELECT `Product B ID` FROM `Product Sales Correlation`  where `Product A ID`=?   ORDER BY `Correlation` DESC limit 5";
+        foreach ($result['buckets'] as $row) {
+            $customers = get_targeted_product_customers($customers, $db, $row['key'], ceil($threshold), false);
 
-
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array($product_id)
-        );
-
-
-        while ($row = $stmt->fetch()) {
-
-
-            $customers = get_targeted_product_customers($customers, $db, $row['Product B ID'], ceil($threshold),false);
-
-            $estimated_recipients = count($customers);if ($estimated_recipients > $threshold) {
+            $estimated_recipients = count($customers);
+            if ($estimated_recipients > $threshold) {
                 return $customers;
             }
-
         }
+
+
     }
-
-
 
 
     return $customers;
@@ -118,27 +118,31 @@ function get_targeted_product_customers($customers, $db, $product_id, $threshold
 
 }
 
-
+/**
+ * @param $customers
+ * @param $db \PDO
+ * @param $product_id
+ * @param $threshold
+ *
+ * @return mixed
+ */
 function get_spread_product_customers($customers, $db, $product_id, $threshold) {
+
+    include_once 'elastic/assets_correlation.elastic.php';
 
 
     $customers = get_targeted_product_customers($customers, $db, $product_id, ceil($threshold / 2));
 
 
     $product = get_object('Product', $product_id);
-
     $counter = 0;
-    $sql     = "SELECT `Product B ID` FROM `Product Sales Correlation`  where `Product A ID`=?   ORDER BY `Correlation` DESC limit 50";
 
 
-    $stmt = $db->prepare($sql);
-    $stmt->execute(
-        array($product->id)
-    );
-    while ($row = $stmt->fetch()) {
+    $result = get_elastic_sales_correlated_assets($product->id, 'products_bought', '_1y', 50);
 
+    foreach ($result['buckets'] as $row) {
         $counter++;
-        $customers = get_targeted_product_customers($customers, $db, $row['Product B ID'], ceil($threshold / 5));
+        $customers = get_targeted_product_customers($customers, $db, $row['key'], ceil($threshold / 5));
 
         $estimated_recipients = count($customers);
         if ($estimated_recipients > $threshold * 2) {
@@ -147,8 +151,11 @@ function get_spread_product_customers($customers, $db, $product_id, $threshold) 
         if ($estimated_recipients > $threshold and $counter > 10) {
             return $customers;
         }
-
     }
+
+
+
+
 
 
     if ($product->get('Product Family Category Key')) {
@@ -156,25 +163,19 @@ function get_spread_product_customers($customers, $db, $product_id, $threshold) 
 
     }
 
-
-    $sql = "SELECT `Product B ID` FROM `Product Sales Correlation`  where `Product A ID`=?   ORDER BY `Correlation` DESC limit 50";
-
-
-    $stmt = $db->prepare($sql);
-    $stmt->execute(
-        array($product->id)
-    );
-    while ($row = $stmt->fetch()) {
-
-
-        $customers            = get_targeted_product_customers($customers, $db, $row['Product B ID'], $threshold);
+    $result = get_elastic_sales_correlated_assets($product->id, 'products_bought', '', 50);
+    foreach ($result['buckets'] as $row) {
+        $customers            = get_targeted_product_customers($customers, $db, $row['key'], $threshold);
         $estimated_recipients = count($customers);
         if ($estimated_recipients > $threshold) {
             return $customers;
         }
     }
 
-    $customers = get_targeted_product_customers($customers, $db, $product_id, $threshold);
+
+
+
+    $customers            = get_targeted_product_customers($customers, $db, $product_id, $threshold);
     $estimated_recipients = count($customers);
     if ($estimated_recipients > $threshold) {
         return $customers;
@@ -191,9 +192,19 @@ function get_spread_product_customers($customers, $db, $product_id, $threshold) 
 
 }
 
-
+/**
+ * @param $customers
+ * @param $db \PDO
+ * @param $category_key
+ * @param $threshold
+ *
+ * @return mixed
+ */
 function get_targeted_categories_customers($customers, $db, $category_key, $threshold) {
 
+    /**
+     * @var $category \ProductCategory
+     */
     $category = get_object('Category', $category_key);
     $store    = get_object('Store', $category->get('Store Key'));
 
@@ -201,8 +212,8 @@ function get_targeted_categories_customers($customers, $db, $category_key, $thre
 
     if ($products_ids != '') {
         $sql =
-            'select `Customer Favourite Product Customer Key`,`Customer Main Plain Email` from `Customer Favourite Product Fact` left join `Customer Dimension` on (`Customer Favourite Product Customer Key`=`Customer Key`) where `Customer Favourite Product Product ID` in ('
-            .$products_ids.') and  `Customer Main Plain Email`!=""  and `Customer Send Email Marketing`="Yes" ';
+            "select `Customer Favourite Product Customer Key`,`Customer Main Plain Email` from `Customer Favourite Product Fact` left join `Customer Dimension` on (`Customer Favourite Product Customer Key`=`Customer Key`) where `Customer Favourite Product Product ID` in ("
+            .$products_ids.") and  `Customer Main Plain Email`!=''  and `Customer Send Email Marketing`='Yes'";
 
         $stmt = $db->prepare($sql);
         $stmt->execute(
@@ -224,16 +235,18 @@ function get_targeted_categories_customers($customers, $db, $category_key, $thre
     $category_type = '';
 
     if ($category->get('Category Root Key') == $store->get('Store Family Category Key')) {
-        $category_type = 'OTF Category Family Key';
+        $category_type = '`OTF Category Family Key`';
     } elseif ($category->get('Category Root Key') == $store->get('Store Department Category Key')) {
-        $category_type = 'OTF Category Department Key';
+        $category_type = '`OTF Category Department Key`';
     }
 
 
     if ($category_type) {
 
-        $sql = 'select OTF.`Customer Key`,`Customer Main Plain Email` from `Order Transaction Fact`  OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `'.$category_type
-            .'`=? and `Order Date`>? and `Customer Send Email Marketing`="Yes"  and  `Customer Main Plain Email`!=""';
+        $sql = sprintf(
+            "select OTF.`Customer Key`,`Customer Main Plain Email` from `Order Transaction Fact`  OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where %s=? and `Order Date`>? and `Customer Send Email Marketing`='Yes'  and  `Customer Main Plain Email`!=''",
+            $category_type
+        );
 
 
         $stmt = $db->prepare($sql);
@@ -258,8 +271,10 @@ function get_targeted_categories_customers($customers, $db, $category_key, $thre
         }
 
 
-        $sql  = 'select OTF.`Customer Key`,`Customer Main Plain Email` from `Order Transaction Fact`  OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `'.$category_type
-            .'`=? and `Order Date`>? and `Customer Send Email Marketing`="Yes"  and  `Customer Main Plain Email`!="" ';
+        $sql  = sprintf(
+            "select OTF.`Customer Key`,`Customer Main Plain Email` from `Order Transaction Fact`  OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where %s=? and `Order Date`>? and `Customer Send Email Marketing`='Yes'  and  `Customer Main Plain Email`!=''",
+            $category_type
+        );
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
@@ -276,10 +291,10 @@ function get_targeted_categories_customers($customers, $db, $category_key, $thre
             return $customers;
         }
 
-        $sql = 'select OTF.`Customer Key`,`Customer Main Plain Email` from `Order Transaction Fact`  OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where `'.$category_type
-            .'`=? and `Customer Send Email Marketing`="Yes"  and  `Customer Main Plain Email`!="" ';
-
-
+        $sql = sprintf(
+            "select OTF.`Customer Key`,`Customer Main Plain Email` from `Order Transaction Fact`  OTF left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`) where %s=? and `Customer Send Email Marketing`='Yes' and `Customer Main Plain Email`!=''",
+            $category_type
+        );
 
 
         $stmt = $db->prepare($sql);
@@ -298,8 +313,18 @@ function get_targeted_categories_customers($customers, $db, $category_key, $thre
 
 }
 
-
+/**
+ * @param $customers
+ * @param $db \PDO
+ * @param $category_key
+ * @param $threshold
+ *
+ * @return mixed
+ */
 function get_spread_categories_customers($customers, $db, $category_key, $threshold) {
+
+    include_once 'elastic/assets_correlation.elastic.php';
+
 
     $customers = get_targeted_categories_customers($customers, $db, $category_key, ceil($threshold / 2));
 
@@ -310,82 +335,75 @@ function get_spread_categories_customers($customers, $db, $category_key, $thresh
     $counter = 0;
 
     if ($category->get('Category Subject') == 'Product') {
-        $sql = sprintf(
-            "SELECT `Category B Key` FROM `Product Category Sales Correlation` WHERE `Category A Key`=%d and `Correlation`>0  ORDER BY `Correlation` DESC  limit 25 ", $category->id
-        );
+
+        $result = get_elastic_sales_correlated_assets($category->id, 'families_bought', '_1y', 25);
+
+        foreach ($result['buckets'] as $row) {
+            $customers = get_targeted_categories_customers(
+                $customers, $db, $row['key'], min(ceil($threshold / 5), 1000)
+            );
+            $counter++;
 
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                $customers = get_targeted_categories_customers(
-                    $customers, $db, $row['Category B Key'], min(ceil($threshold / 5), 1000)
-                );
-                $counter++;
-
-
-                $estimated_recipients = count($customers);
-                if ($estimated_recipients > $threshold and $counter > 5) {
-                    return $customers;
-                }
-
+            $estimated_recipients = count($customers);
+            if ($estimated_recipients > $threshold and $counter > 5) {
+                return $customers;
             }
         }
 
-        $customers = get_targeted_categories_customers($customers, $db, $category_key, $threshold);
-        $estimated_recipients = count($customers);
 
+
+
+        $customers            = get_targeted_categories_customers($customers, $db, $category_key, $threshold);
+        $estimated_recipients = count($customers);
 
 
         if ($estimated_recipients > $threshold and $counter > 5) {
             return $customers;
         }
 
-        $sql = sprintf(
-            "SELECT `Category B Key` FROM `Product Category Sales Correlation` WHERE `Category A Key`=%d and `Correlation`>0  ORDER BY `Correlation` DESC  limit 100 ", $category->id
-        );
+
+        $result = get_elastic_sales_correlated_assets($category->id, 'families_bought', '', 100);
+
+        foreach ($result['buckets'] as $row) {
+            $customers = get_targeted_categories_customers(
+                $customers, $db, $row['key'], $threshold
+            );
+            $counter++;
 
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                $customers = get_targeted_categories_customers(
-                    $customers, $db, $row['Category B Key'], $threshold
-                );
-                $counter++;
-
-
-                $estimated_recipients = count($customers);
-                if ($estimated_recipients > $threshold) {
-                    return $customers;
-                }
-
+            $estimated_recipients = count($customers);
+            if ($estimated_recipients > $threshold) {
+                return $customers;
             }
         }
+
+
+
 
 
     } elseif ($category->get('Category Subject') == 'Category') {
-        $sql = sprintf(
-            "SELECT `Category B Key` FROM `Product Category Sales Correlation` WHERE `Category A Key`=%d and `Correlation`>0  ORDER BY `Correlation` DESC  limit 5 ", $category->id
-        );
 
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
 
-                $customers = get_targeted_categories_customers($customers, $db, $row['Category B Key'], min(ceil($threshold / 5), 1000));
-                $counter++;
-                $estimated_recipients = count($customers);
+        $result = get_elastic_sales_correlated_assets($category->id, 'departments_bought', '_1y', 5);
+
+        foreach ($result['buckets'] as $row) {
+            $customers = get_targeted_categories_customers($customers, $db, $row['key'], min(ceil($threshold / 5), 1000));
+            $counter++;
+            $estimated_recipients = count($customers);
 
 
-                if ($estimated_recipients > $threshold and $counter > 2) {
-                    return $customers;
-                }
-
+            if ($estimated_recipients > $threshold and $counter > 2) {
+                return $customers;
             }
         }
 
-        $customers = get_targeted_categories_customers($customers, $db, $category_key, $threshold);
+
+
+
+
+        $customers            = get_targeted_categories_customers($customers, $db, $category_key, $threshold);
         $estimated_recipients = count($customers);
 
         if ($estimated_recipients > $threshold and $counter > 5) {
@@ -393,26 +411,24 @@ function get_spread_categories_customers($customers, $db, $category_key, $thresh
         }
 
 
-        $sql = sprintf(
-            "SELECT `Category B Key` FROM `Product Category Sales Correlation` WHERE `Category A Key`=%d and `Correlation`>0  ORDER BY `Correlation` DESC  limit 100 ", $category->id
-        );
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
+        $result = get_elastic_sales_correlated_assets($category->id, 'departments_bought', '', 100);
 
-                $customers = get_targeted_categories_customers(
-                    $customers, $db, $row['Category B Key'], $threshold
-                );
-                $counter++;
+        foreach ($result['buckets'] as $row) {
+            $customers = get_targeted_categories_customers(
+                $customers, $db, $row['key'], $threshold
+            );
+            $counter++;
 
 
-                $estimated_recipients = count($customers);
-                if ($estimated_recipients > $threshold) {
-                    return $customers;
-                }
-
+            $estimated_recipients = count($customers);
+            if ($estimated_recipients > $threshold) {
+                return $customers;
             }
         }
+
+
+
 
 
     }
