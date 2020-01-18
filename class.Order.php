@@ -2078,7 +2078,7 @@ class Order extends DB_Table {
 
         $sql = sprintf(
 
-            "UPDATE `Order Transaction Fact` SET   `Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
+            "UPDATE `Order Transaction Fact` SET   `Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Transaction Out of Stock Amount`=0 WHERE `Order Key`=%d ",
 
             $this->id
         );

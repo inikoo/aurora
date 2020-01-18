@@ -19,8 +19,8 @@ $where = sprintf(
 
 
 $wheref = '';
-if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and OTF.`Product Code` like '".addslashes($f_value)."%'";
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
+    $wheref .= " and `Part Reference` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
@@ -55,7 +55,3 @@ $fields = "`Part Package Description`,`Inventory Transaction Quantity`,`Out of S
 `Quantity On Hand`,PD.`Part Current On Hand Stock`,`Date Picked`,`Date Packed`
 ";
 
-//	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
-
-?>

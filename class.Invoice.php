@@ -199,45 +199,60 @@ class Invoice extends DB_Table {
                 if ($transaction['type'] == 'otf') {
 
 
-                    $sql = sprintf(
-                        "SELECT * FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Fact Key`=%d AND `Order Transaction Type`='Order'", $this->data['Invoice Order Key'], $transaction['id']
+                    $sql =
+                        "SELECT `Order Transaction Amount`,`Product Key`,`Product ID`,`Store Key`,`Customer Key`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code` FROM `Order Transaction Fact` WHERE `Order Key`=? AND `Order Transaction Fact Key`=? AND `Order Transaction Type`='Order'";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->data['Invoice Order Key'],
+                            $transaction['id']
+                        )
                     );
+                    while ($row = $stmt->fetch()) {
+                        if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Order Transaction Amount'])) {
+                            $amount = round(-1.0 * $transaction['amount'], 2);
 
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-
-                            if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Order Transaction Amount'])) {
-                                $amount = -1.0 * $transaction['amount'];
-
-                                $sql = sprintf(
-                                    'INSERT INTO  `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Invoice Date`,`Order Transaction Type`,`Order Key`,`Invoice Key`,
+                            $sql = "INSERT INTO  `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Invoice Date`,`Order Transaction Type`,`Order Key`,`Invoice Key`,
 
                                 `Product Key`,`Product ID`,`Store Key`,`Customer Key`,
-                                `Order Transaction Gross Amount`,`Order Transaction Amount`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Exchange Rate`,
-                                `Product Code`
-                                ) VALUES (%s,%s,%s,%s,%d,%d,
-                                        %d,%d,%d,%d,
-                                        %.2f, %.2f,%f,%s,%s,%f,%s
-                                        
-                                        
-                                ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id, $row['Product Key'], $row['Product ID'], $row['Store Key'], $row['Customer Key'], $amount,
-                                    $amount, $row['Transaction Tax Rate'], prepare_mysql($row['Transaction Tax Code']), prepare_mysql($row['Order Currency Code']), $base_data['Invoice Currency Exchange'], prepare_mysql($row['Product Code'])
-                                );
+                                `Order Transaction Gross Amount`,`Order Transaction Amount`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Exchange Rate`
+                               
+                                ) VALUES (?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,? ) ";
+
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $date,
+                                    $date,
+                                    $date,
+                                    'Refund',
+
+                                    $this->data['Invoice Order Key'],
+                                    $this->id,
+                                    $row['Product Key'],
+                                    $row['Product ID'],
+
+                                    $row['Store Key'],
+                                    $row['Customer Key'],
+                                    $amount,
+                                    $amount,
+
+                                    $row['Transaction Tax Rate'],
+                                    $row['Transaction Tax Code'],
+                                    $row['Order Currency Code'],
+                                    $base_data['Invoice Currency Exchange']
+                                )
+                            );
 
 
-                                $this->db->exec($sql);
-                                $refund_otf       = $this->db->lastInsertId();
-                                $_feedback        = $transaction['feedback'];
-                                $_feedback['otf'] = $refund_otf;
-                                $feedback[]       = $_feedback;
+                            $this->db->exec($sql);
+                            $refund_otf       = $this->db->lastInsertId();
+                            $_feedback        = $transaction['feedback'];
+                            $_feedback['otf'] = $refund_otf;
+                            $feedback[]       = $_feedback;
 
 
-                            }
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
 
@@ -245,139 +260,169 @@ class Invoice extends DB_Table {
                 if ($transaction['type'] == 'otf_tax') {
 
 
-                    $sql = sprintf(
-                        "SELECT * FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Fact Key`=%d AND `Order Transaction Type`='Order' ", $this->data['Invoice Order Key'], $transaction['id']
+                    $sql =
+                        "SELECT `Product Key`,`Product ID`,`Store Key`,`Customer Key`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code` FROM `Order Transaction Fact` WHERE `Order Key`=? AND `Order Transaction Fact Key`=? AND `Order Transaction Type`='Order' ";
 
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->data['Invoice Order Key'],
+                            $transaction['id']
+                        )
                     );
+                    while ($row = $stmt->fetch()) {
+                        if ($transaction['amount'] > 0) {
+                            $tax_amount = -1.0 * $transaction['amount'];
+                            $amount     = 0;
 
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-
-
-                            if ($transaction['amount'] > 0) {
-                                $tax_amount = -1.0 * $transaction['amount'];
-                                $amount     = 0;
-
-                                $sql = sprintf(
-                                    'INSERT INTO  `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Invoice Date`,`Order Transaction Type`,`Order Key`,`Invoice Key`,
+                            $sql = "INSERT INTO  `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Invoice Date`,`Order Transaction Type`,`Order Key`,`Invoice Key`,
 
                                 `Product Key`,`Product ID`,`Store Key`,`Customer Key`,
                                 `Order Transaction Gross Amount`,`Order Transaction Amount`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Exchange Rate`,
-                                `Product Code`,`Order Transaction Metadata`
-                                ) VALUES (%s,%s,%s,%s,%d,%d,
-                                        %d,%d,%d,%d,
-                                        %.2f, %.2f,%f,%s,%s,%f,%s,%s
-                                        
-                                        
-                                ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id, $row['Product Key'], $row['Product ID'], $row['Store Key'], $row['Customer Key'], $amount,
-                                    $amount, $row['Transaction Tax Rate'], prepare_mysql($row['Transaction Tax Code']), prepare_mysql($row['Order Currency Code']), $base_data['Invoice Currency Exchange'], prepare_mysql($row['Product Code']),
-                                    prepare_mysql(json_encode(array('TORA' => $tax_amount)))
-                                );
+                                `Order Transaction Metadata`
+                                ) VALUES (?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?)";
 
 
-                                $this->db->exec($sql);
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $date,
+                                    $date,
+                                    $date,
+                                    'Refund',
+
+                                    $this->data['Invoice Order Key'],
+                                    $this->id,
+                                    $row['Product Key'],
+                                    $row['Product ID'],
+
+                                    $row['Store Key'],
+                                    $row['Customer Key'],
+                                    $amount,
+                                    $amount,
+
+                                    $row['Transaction Tax Rate'],
+                                    $row['Transaction Tax Code'],
+                                    $row['Order Currency Code'],
+                                    $base_data['Invoice Currency Exchange'],
 
 
-                            }
+                                    json_encode(array('TORA' => $tax_amount))
+                                )
+                            );
+
+
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
 
                 } elseif ($transaction['type'] == 'onptf') {
 
 
-                    $sql = sprintf(
-                        'SELECT * FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Order No Product Transaction Fact Key`=%d AND `Type`="Order" ', $this->data['Invoice Order Key'], $transaction['id']
+                    $sql =
+                        "SELECT `Transaction Net Amount`,`Transaction Refund Net Amount`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Tax Category Code`,`Currency Code`,`Currency Exchange` FROM `Order No Product Transaction Fact` WHERE `Order Key`=? AND `Order No Product Transaction Fact Key`=? AND `Type`='Order'";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->data['Invoice Order Key'],
+                            $transaction['id']
+                        )
                     );
+                    while ($row = $stmt->fetch()) {
+                        if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Transaction Net Amount'] - $row['Transaction Refund Net Amount'])) {
+                            $amount = round(-1.0 * $transaction['amount'], 2);
 
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-
-                            if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Transaction Net Amount'] - $row['Transaction Refund Net Amount'])) {
-                                $amount = -1.0 * $transaction['amount'];
-
-                                $sql = sprintf(
-                                    'INSERT INTO  `Order No Product Transaction Fact` (
-`Order Date`,`Invoice Date`,`Type`,`Order Key`,
-`Invoice Key`,`Transaction Type`,`Transaction Type Key`,
+                            $sql = "INSERT INTO  `Order No Product Transaction Fact` (`Order Date`,`Invoice Date`,`Type`,`Order Key`,`Invoice Key`,`Transaction Type`,`Transaction Type Key`,
                                 `Transaction Description`,
                                 `Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,
                                 `Currency Code`,`Currency Exchange`
                             
-                                ) VALUES (%s,%s,%s,%d,
-                                %d,%s,%d,
-                                        %s,
-                                        %.2f, %.2f,%s,
-                                        %s,%f
-                                        
-                                        
-                                ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id, prepare_mysql($row['Transaction Type']), $row['Transaction Type Key'], prepare_mysql($row['Transaction Description']),
-                                    $amount, $amount, prepare_mysql($row['Tax Category Code']), prepare_mysql($row['Currency Code']), $row['Currency Exchange']
-                                );
+                                ) VALUES (?,?,?,?, ?,?,?,?, ?,?,?,?, ?)";
 
 
-                                $this->db->exec($sql);
-                                $refund_onptf       = $this->db->lastInsertId();
-                                $_feedback          = $transaction['feedback'];
-                                $_feedback['onptf'] = $refund_onptf;
-                                $feedback[]         = $_feedback;
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $date,
+                                    $date,
+                                    'Refund',
+                                    $this->data['Invoice Order Key'],
 
-                                //    print "$sql\n";
-                            }
+                                    $this->id,
+                                    $row['Transaction Type'],
+                                    $row['Transaction Type Key'],
+                                    $row['Transaction Description'],
+
+                                    $amount,
+                                    $amount,
+                                    $row['Tax Category Code'],
+                                    $row['Currency Code'],
+
+                                    $row['Currency Exchange']
+                                )
+                            );
+
+
+                            $refund_onptf       = $this->db->lastInsertId();
+                            $_feedback          = $transaction['feedback'];
+                            $_feedback['onptf'] = $refund_onptf;
+                            $feedback[]         = $_feedback;
+
+                            //    print "$sql\n";
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
 
                 } elseif ($transaction['type'] == 'onptf_tax') {
 
 
-                    $sql = sprintf(
-                        'SELECT * FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Order No Product Transaction Fact Key`=%d AND `Type`="Order" ', $this->data['Invoice Order Key'], $transaction['id']
+                    $sql =
+                        "SELECT `Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Tax Category Code`,`Currency Code`,`Currency Exchange`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=? AND `Order No Product Transaction Fact Key`=? AND `Type`='Order'";
+
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->data['Invoice Order Key'],
+                            $transaction['id']
+                        )
                     );
+                    while ($row = $stmt->fetch()) {
+                        if ($transaction['amount'] > 0) {
 
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-
-                            if ($transaction['amount'] > 0) {
-
-                                $tax_amount = -1.0 * $transaction['amount'];
-                                $amount     = 0;
-                                $sql        = sprintf(
-                                    'INSERT INTO  `Order No Product Transaction Fact` (
-`Order Date`,`Invoice Date`,`Type`,`Order Key`,
-`Invoice Key`,`Transaction Type`,`Transaction Type Key`,
+                            $tax_amount = round(-1.0 * $transaction['amount'], 2);
+                            $amount     = 0;
+                            $sql        = "INSERT INTO  `Order No Product Transaction Fact` (`Order Date`,`Invoice Date`,`Type`,`Order Key`,`Invoice Key`,`Transaction Type`,`Transaction Type Key`,
                                 `Transaction Description`,
                                 `Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,
                                 `Currency Code`,`Currency Exchange`,`Order No Product Transaction Metadata`
                             
-                                ) VALUES (%s,%s,%s,%d,
-                                %d,%s,%d,
-                                        %s,
-                                        %.2f, %.2f,%s,
-                                        %s,%f,%s
-                                        
-                                        
-                                ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id, prepare_mysql($row['Transaction Type']), $row['Transaction Type Key'], prepare_mysql($row['Transaction Description']),
-                                    $amount, $amount, prepare_mysql($row['Tax Category Code']), prepare_mysql($row['Currency Code']), $row['Currency Exchange'], prepare_mysql(json_encode(array('TORA' => $tax_amount)))
-                                );
+                                ) VALUES (?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?)";
+
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $date,
+                                    $date,
+                                    'Refund',
+                                    $this->data['Invoice Order Key'],
+
+                                    $this->id,
+                                    $row['Transaction Type'],
+                                    $row['Transaction Type Key'],
+                                    $row['Transaction Description'],
+
+                                    $amount,
+                                    $amount,
+                                    $row['Tax Category Code'],
+                                    $row['Currency Code'],
+
+                                    $row['Currency Exchange'],
+                                    json_encode(array('TORA' => $tax_amount))
+                                )
+                            );
 
 
-                                $this->db->exec($sql);
-                                //    print "$sql\n";
-                            }
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
 
@@ -561,17 +606,31 @@ class Invoice extends DB_Table {
 
                     $is_base = 'Yes';
 
-                    $sql = sprintf(
-                        "    UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id
-                    );
-                    $this->db->exec($sql);
-                    // print "$sql\n";
-                    $sql = sprintf(
-                        "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (%d,%s,%.2f,%s) ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax, prepare_mysql($is_base), $tax,
-                        prepare_mysql($is_base)
 
+                    $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
+
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            round($tax, 2),
+                            $this->id
+                        )
                     );
-                    $this->db->exec($sql);
+
+
+                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+
+
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $this->id,
+                            $tax_code,
+                            round($tax, 2),
+                            $is_base,
+                            round($tax, 2),
+                            $is_base
+                        )
+                    );
+
 
                 }
 
@@ -585,18 +644,30 @@ class Invoice extends DB_Table {
                     $tax_total    += $tax;
                     $is_base      = 'Yes';
 
-                    $sql = sprintf(
-                        "    UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id
-                    );
-                    $this->db->exec($sql);
-                    // print "$sql\n";
-                    $sql = sprintf(
-                        "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (%d,%s,%.2f,%s) ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax, prepare_mysql($is_base), $tax,
-                        prepare_mysql($is_base)
 
+                    $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
+
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            round($tax, 2),
+                            $this->id
+                        )
                     );
-                    $this->db->exec($sql);
-                    //print "$sql\n";
+
+
+                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+
+
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $this->id,
+                            $tax_code,
+                            round($tax, 2),
+                            $is_base,
+                            round($tax, 2),
+                            $is_base
+                        )
+                    );
 
 
                 }
@@ -763,20 +834,20 @@ class Invoice extends DB_Table {
                 if ($this->data['Invoice Tax Number'] != '') {
                     if ($this->data['Invoice Tax Number Valid'] == 'Yes') {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Invoice Tax Number'].$source
+                            '<i style="margin-right: 0" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Invoice Tax Number'].$source
                         );
                     } elseif ($this->data['Invoice Tax Number Valid'] == 'Unknown') {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Invoice Tax Number'].$source
+                            '<i style="margin-right: 0" class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Invoice Tax Number'].$source
                         );
                     } elseif ($this->data['Invoice Tax Number Valid'] == 'API_Down') {
                         return sprintf(
-                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Invoice Tax Number'],
+                            '<i style="margin-right: 0"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Invoice Tax Number'],
                             ' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
                         );
                     } else {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Invoice Tax Number'].$source
+                            '<i style="margin-right: 0" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Invoice Tax Number'].$source
                         );
                     }
                 }
@@ -896,7 +967,6 @@ class Invoice extends DB_Table {
             case('Total Net Adjust Amount'):
             case('Total Tax Adjust Amount'):
             case('Outstanding Total Amount'):
-            case('Credit Net Amount'):
             case('Credit Net Amount'):
             case('Total Profit'):
 
@@ -1465,18 +1535,30 @@ class Invoice extends DB_Table {
 
                 $is_base = 'Yes';
 
-                $sql = sprintf(
-                    "    UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id
-                );
-                $this->db->exec($sql);
-                // print "$sql\n";
-                $sql = sprintf(
-                    "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (%d,%s,%.2f,%s) ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax, prepare_mysql($is_base), $tax,
-                    prepare_mysql($is_base)
 
+                $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
+
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $tax,
+                        $this->id
+                    )
                 );
-                $this->db->exec($sql);
-                //print "$sql\n";
+
+
+                $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+
+
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $this->id,
+                        $tax_code,
+                        $tax,
+                        $is_base,
+                        $tax,
+                        $is_base
+                    )
+                );
 
 
             }
@@ -1593,6 +1675,9 @@ class Invoice extends DB_Table {
 
 
         if ($category_key) {
+            /**
+             * @var $category \Category
+             */
             $category                    = get_object('Category', $category_key);
             $category->skip_update_sales = $skip_update_sales;
 
@@ -1879,16 +1964,34 @@ class Invoice extends DB_Table {
             $total_tax    += $tax;
             $is_base      = 'Yes';
 
-            $sql = sprintf("UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id);
-            $this->db->exec($sql);
-            // print "$sql\n";
-            $sql = sprintf(
-                "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (%d,%s,%.2f,%s) 
-                ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax, prepare_mysql($is_base), $tax, prepare_mysql($is_base)
 
+
+
+            $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
+
+            $this->db->prepare($sql)->execute(
+                array(
+                    $tax,
+                    $this->id
+                )
             );
-            $this->db->exec($sql);
-            //print "$sql\n";
+
+
+            $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+
+
+            $this->db->prepare($sql)->execute(
+                array(
+                    $this->id,
+                    $tax_code,
+                    $tax,
+                    $is_base,
+                    $tax,
+                    $is_base
+                )
+            );
+
+
 
 
         }
@@ -2223,7 +2326,7 @@ class Invoice extends DB_Table {
 
         $sql = "SELECT `Invoice Date`,
 O.`Order Transaction Fact Key`,`Order Currency Code`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`
-`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
+`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
 
 
 FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=?";
@@ -2286,7 +2389,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
                 $items_data[] = array(
                     'product_pid' => $row['Product ID'],
-                    'code'        => $row['Product Code'],
+                    'code'        => $row['Product History Code'],
                     'description' => $description,
                     'quantity'    => $quantity,
                     'net'         => money($factor * $row['Order Transaction Amount'], $row['Order Currency Code'])
@@ -2424,7 +2527,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
         try {
             $this->delete_index_elastic_search(get_ES_hosts());
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Sentry\captureException($exception);
         }
 
@@ -2530,7 +2633,13 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
-    function get_payments($scope = 'keys', $filter = '') {
+    /**
+     * @param string $scope
+     * @param string $filter
+     *
+     * @return array
+     */
+    public function get_payments($scope = 'keys', $filter = '') {
 
 
         if ($filter == 'Completed') {
@@ -2571,6 +2680,9 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
+    /**
+     * @param $payment \Payment
+     */
     function add_payment($payment) {
 
         $payment->update(array('Payment Invoice Key' => $this->id), 'no_history');

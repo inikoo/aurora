@@ -21,8 +21,8 @@ $where  = sprintf(
     ' where ITF.`Delivery Note Key`=%d', $parameters['parent_key']
 );
 $wheref = '';
-if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and OTF.`Product Code` like '".addslashes($f_value)."%'";
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
+    $wheref .= " and `Part Reference` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;

@@ -986,7 +986,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $payment_service_provider->update_payments_data();
 
 
-            $store   = get_object('Store', $payment->get('Payment Store Key'));
+            $store = get_object('Store', $payment->get('Payment Store Key'));
 
             $customer->update_payments();
             $store->update_orders();
@@ -1039,7 +1039,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $order = get_object('Order', $data['order_key']);
 
 
-            $store   = get_object('Store', $order->get('Store Key'));
+            $store = get_object('Store', $order->get('Store Key'));
 
 
             switch ($order->get('Order State')) {
@@ -1162,8 +1162,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             break;
         case 'order_state_changed':
-            $order   = get_object('Order', $data['order_key']);
-            $store   = get_object('Store', $order->get('Store Key'));
+            $order = get_object('Order', $data['order_key']);
+            $store = get_object('Store', $order->get('Store Key'));
 
 
             $store->update_orders();
@@ -1504,7 +1504,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
         case 'delivery_note_created':
 
-            $store = get_object('Store',$data['store_key']);
+            $store = get_object('Store', $data['store_key']);
             $store->load_acc_data();
             $account->load_acc_data();
 
@@ -1532,13 +1532,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
 
-
-
             break;
 
         case 'replacement_created':
-            $order   = get_object('Order', $data['order_key']);
-            $store   = get_object('Store', $order->get('Store Key'));
+            $order = get_object('Order', $data['order_key']);
+            $store = get_object('Store', $order->get('Store Key'));
             $store->load_acc_data();
 
 
@@ -1550,7 +1548,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $account->update_dispatching_time_data('1m');
             $account->update_sitting_time_in_warehouse();
 
-            $store = get_object('Store',$data['store_key']);
+            $store = get_object('Store', $data['store_key']);
             $store->load_acc_data();
             $store->update_dispatching_time_data('1m');
             $store->update_sitting_time_in_warehouse();
@@ -1696,7 +1694,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $delivery_note = get_object('Delivery_Note', $data['delivery_note_key']);
 
 
-            $store   = get_object('Store', $order->get('Store Key'));
+            $store = get_object('Store', $order->get('Store Key'));
 
 
             $store->update_orders();
@@ -1778,7 +1776,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             }
 
-            $customer->index_elastic_search($ES_hosts,  false,  ['assets','assets_interval']);
+            $customer->index_elastic_search($ES_hosts, false, [
+                'assets',
+                'assets_interval'
+            ]
+            );
             break;
 
         case 'update_warehouse_leakages':
@@ -2198,7 +2200,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'delivery_note_cancelled':
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
-            $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+            $store         = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
             $store->load_acc_data();
 
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
@@ -2709,15 +2711,17 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 foreach ($result as $row) {
 
 
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET  `Product Key`=%d, `Product Code`=%s, `Order Transaction Gross Amount`=%.2f, `Order Transaction Total Discount Amount`=0	, `Order Transaction Amount`=%.2f  WHERE `Order Transaction Fact Key`=%d',
-                        $product->get('Product Current Key'), prepare_mysql($product->get('Product Code')), $product->get('Product Price') * $row['Order Quantity'], $product->get('Product Price') * $row['Order Quantity'],
+                    $sql = "UPDATE `Order Transaction Fact` SET  `Product Key`=?,  `Order Transaction Gross Amount`=?, `Order Transaction Total Discount Amount`=0	, `Order Transaction Amount`=?  WHERE `Order Transaction Fact Key`=?";
 
-                        $row['Order Transaction Fact Key']
+                    $db->prepare($sql)->execute(
+                        array(
+                            $product->get('Product Current Key'),
+                            round($product->get('Product Price') * $row['Order Quantity'],2),
+                            round($product->get('Product Price') * $row['Order Quantity'],2),
+                            $row['Order Transaction Fact Key']
+                        )
                     );
 
-
-                    $db->exec($sql);
 
                     $order          = get_object('Order', $row['Order Key']);
                     $old_used_deals = $order->get_used_deals();
@@ -2824,7 +2828,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $smarty_web = new Smarty();
 
 
-            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
+            $base = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
 
 
             $smarty_web->template_dir = 'EcomB2B/templates';
@@ -2911,13 +2915,17 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
-            $customer->index_elastic_search($ES_hosts,  false,  ['assets','assets_interval']);
+            $customer->index_elastic_search($ES_hosts, false, [
+                'assets',
+                'assets_interval'
+            ]
+            );
 
             break;
         case 'delivery_note_dispatched':
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
-            $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+            $store         = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
             $store->load_acc_data();
 
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
@@ -3312,7 +3320,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
         case 'order_replacements_updated':
 
-            $order=get_object('Order',$data['order_key']);
+            $order = get_object('Order', $data['order_key']);
 
             $store = get_object('Store', $order->get('Store Key'));
             $store->update_orders_in_warehouse_data();
@@ -3348,7 +3356,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $account->update_sitting_time_in_warehouse();
             $account->update_orders();
 
-            $store = get_object('Store',$data['store_key']);
+            $store = get_object('Store', $data['store_key']);
             $store->load_acc_data();
             $store->update_orders();
             $store->update_dispatching_time_data('1m');
@@ -3359,7 +3367,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'create_elastic_index_object':
             $object = get_object($data['object'], $data['object_key']);
             if ($object->id) {
-                $object->index_elastic_search($ES_hosts,false,$data['indices']);
+                $object->index_elastic_search($ES_hosts, false, $data['indices']);
             }
 
             break;

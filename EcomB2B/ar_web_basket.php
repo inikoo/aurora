@@ -795,13 +795,12 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
             $description .= '<br/>'.$deal_info;
 
 
-            $sql = "update `Order Transaction Fact` set `Product ID`=?,`Product Key`=?,`Estimated Weight`=?,`OTF Category Family Key`=?,`OTF Category Department Key`=?  where `Order Transaction Fact Key`=?";
+            $sql = "update `Order Transaction Fact` set `Product ID`=?,`Product Key`=?,`OTF Category Family Key`=?,`OTF Category Department Key`=?  where `Order Transaction Fact Key`=?";
 
             $db->prepare($sql)->execute(
                 array(
                     $product->id,
                     $product->get('Product Current Key'),
-                    $product->get('Product Package Weight'),
                     $product->get('Product Family Category Key'),
                     $product->get('Product Department Category Key'),
                     $row['Order Transaction Fact Key']

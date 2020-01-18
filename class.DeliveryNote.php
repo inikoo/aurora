@@ -135,12 +135,19 @@ class DeliveryNote extends DB_Table {
                     $estimated_weight       = ($row['Order Quantity'] + $row['Order Bonus Quantity']) * $row['Product Package Weight'];
                     $total_estimated_weight += $estimated_weight;
                     $distinct_items++;
-                    $sql = sprintf(
-                        "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Order Last Updated Date`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight,
-                        prepare_mysql($this->data['Delivery Note Date Created']), $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), $row['Order Transaction Fact Key']
+                    $sql = "UPDATE  `Order Transaction Fact` SET `Order Last Updated Date`=?,`Delivery Note Key`=? WHERE `Order Transaction Fact Key`=?";
 
+
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $this->data['Delivery Note Date Created'],
+                            $this->data['Delivery Note Key'],
+                            $row['Order Transaction Fact Key']
+
+                        )
                     );
-                    $this->db->exec($sql);
+
+
                 }
             }
 
@@ -161,22 +168,19 @@ class DeliveryNote extends DB_Table {
             }
 
 
-            $sql = sprintf(
-                "SELECT OTF.`Product Code`,OTF.`Order Quantity`,OTF.`Product ID`,`Product Package Weight`,`Order Quantity`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)
-		WHERE `Order Key`=%d  AND `Current Dispatching State` IN ('Submitted by Customer','In Process')  ", $order->id
+            $sql = "SELECT OTF.`Product ID`,`Order Quantity`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)
+		WHERE `Order Key`=?  AND `Current Dispatching State` IN ('Submitted by Customer','In Process')  ";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $order->id
+                )
             );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'], $row['Order Bonus Quantity'], $this->get('Delivery Note Date')
-                    );
-
-
-                }
+            while ($row = $stmt->fetch()) {
+                $this->create_inventory_transaction_fact_item(
+                    $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'], $row['Order Bonus Quantity'], $this->get('Delivery Note Date')
+                );
             }
 
 
@@ -192,8 +196,6 @@ class DeliveryNote extends DB_Table {
             $this->update_totals();
 
             $this->fork_index_elastic_search();
-
-
 
 
         } else {
@@ -800,7 +802,7 @@ class DeliveryNote extends DB_Table {
     function update_totals() {
 
 
-        $old_weight=$this->get('Weight');
+        $old_weight = $this->get('Weight');
 
         $ordered          = 0;
         $picked           = 0;
@@ -849,7 +851,7 @@ class DeliveryNote extends DB_Table {
             )
         );
 
-        if( $old_weight!=$this->get('Weight')){
+        if ($old_weight != $this->get('Weight')) {
             $this->fork_index_elastic_search();
         }
 
@@ -967,7 +969,6 @@ class DeliveryNote extends DB_Table {
 
                 }
             }
-
 
 
             require_once 'utils/new_fork.php';
@@ -1721,7 +1722,7 @@ class DeliveryNote extends DB_Table {
 
                 if ($this->data['Delivery Note Type'] == 'Order') {
                     $order->update(array('Order State' => 'un_dispatch'));
-                }else{
+                } else {
                     $order->update_number_replacements();
 
                 }
@@ -1739,7 +1740,6 @@ class DeliveryNote extends DB_Table {
                 );
 
                 $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
 
 
                 new_housekeeping_fork(
@@ -2590,9 +2590,9 @@ class DeliveryNote extends DB_Table {
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'       => 'update_delivery_note_warehouse_state',
-           'store_key'=>$this->get('Delivery Note Store Key')
-        ),DNS_ACCOUNT_CODE, $this->db
+            'type'      => 'update_delivery_note_warehouse_state',
+            'store_key' => $this->get('Delivery Note Store Key')
+        ), DNS_ACCOUNT_CODE, $this->db
         );
 
 

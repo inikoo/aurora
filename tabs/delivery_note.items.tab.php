@@ -10,11 +10,12 @@
 */
 
 
+/**
+ * @var $delivery_note \DeliveryNote
+ */
+$delivery_note=$state['_object'];
 
-
-
-
-if($state['_object']->get('Delivery Note State')=='Cancelled'){
+if($delivery_note->get('Delivery Note State')=='Cancelled'){
     $tipo    = 'delivery_note_cancelled.items';
     $tab     = 'delivery_note_cancelled.items';
     $ar_file = 'ar_orders_tables.php';
@@ -36,13 +37,9 @@ $table_views = array(
 );
 
 $table_filters = array(
-    'code' => array(
-        'label' => _('Code'),
-        'title' => _('Product code')
-    ),
-    'name' => array(
-        'label' => _('Name'),
-        'title' => _('Product name')
+    'reference' => array(
+        'label' => _('Reference'),
+        'title' => _('Part reference')
     ),
 
 );
@@ -62,17 +59,13 @@ $smarty->assign(
                         )
 
 );
-$smarty->assign('dn', $state['_object']);
+$smarty->assign('dn', $delivery_note);
 
 
-$warehouse=get_object('warehouse',$state['_object']->get('Delivery Note Warehouse Key'));
+$warehouse=get_object('warehouse',$delivery_note->get('Delivery Note Warehouse Key'));
 
 $table_buttons   = array();
 $smarty->assign('table_buttons', $table_buttons);
 
-
-
 include('utils/get_table_html.php');
 
-
-?>

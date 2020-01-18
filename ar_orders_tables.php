@@ -1561,7 +1561,6 @@ function order_items($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-
     $customer_order = get_object('Order', $_data['parameters']['parent_key']);
 
 
@@ -1689,7 +1688,7 @@ function order_items($_data, $db, $user) {
         $adata[] = array(
 
             'id'            => (integer)$data['Order Transaction Fact Key'],
-            'code'          => sprintf('<span class="item_code"><span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span></span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+            'code'          => sprintf('<span class="item_code"><span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span></span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product History Code']),
             'description'   => '<span class="item_description">'.$description.'</span>',
             'quantity'      => $quantity,
             'quantity_edit' => $quantity_edit,
@@ -2804,7 +2803,7 @@ function refund_new_items($_data, $db, $user) {
             $adata[] = array(
 
                 'id'          => (integer)$data['Order Transaction Fact Key'],
-                'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+                'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product History Code']),
                 'description' => $description,
                 'quantity'    => $quantity,
                 'refund_net'  => $refund_net,
@@ -3014,7 +3013,7 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 
                 'id'          => (integer)$data['Order Transaction Fact Key'],
                 'product_pid' => (integer)$data['Product ID'],
-                'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+                'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product History Code']),
                 'description' => $description,
                 'quantity'    => $quantity,
                 'refund_tax'  => $refund_tax,
@@ -3113,7 +3112,7 @@ function replacement_new_items($_data, $db, $user) {
             $adata[]     = array(
 
                 'id'        => (integer)$data['Inventory Transaction Key'],
-                'code'      => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+                'code'      => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product History Code']),
                 'reference' => sprintf('<span class="link" onclick="change_view(\'/parts/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
 
                 'product_description' => $description,
@@ -3206,7 +3205,7 @@ function return_new_items($_data, $db, $user) {
             $adata[] = array(
 
                 'id'        => (integer)$data['Inventory Transaction Key'],
-                'code'      => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+                'code'      => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product History Code']),
                 'reference' => sprintf('<span class="link" onclick="change_view(\'/parts/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
 
                 'product_description' => $description,

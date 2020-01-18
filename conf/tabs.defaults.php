@@ -826,7 +826,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
+        'f_field'     => 'reference',
 
     ),
     'delivery_note.picking_aid'        => array(
@@ -844,7 +844,7 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
+        'f_field'     => 'reference',
 
     ),
     'delivery_note.fast_track_packing' => array(

@@ -155,7 +155,6 @@ trait OrderItems {
             } else {
 
 
-                $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
                 $gross            = round($quantity * $product->data['Product History Price'], 2);
 
                 $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
@@ -163,14 +162,13 @@ trait OrderItems {
 
 
                 $sql = "update `Order Transaction Fact` set 
-                                    `Estimated Weight`=?,`Order Quantity`=?,`Order Bonus Quantity`=?,`Order Last Updated Date`=?,`Order Transaction Gross Amount`=?,`Order Transaction Total Discount Amount`=?,`Order Transaction Amount`=?,`Current Dispatching State`=?  ,`Cost Supplier`=? 
+                                    `Order Quantity`=?,`Order Bonus Quantity`=?,`Order Last Updated Date`=?,`Order Transaction Gross Amount`=?,`Order Transaction Total Discount Amount`=?,`Order Transaction Amount`=?,`Current Dispatching State`=?  ,`Cost Supplier`=? 
                                     where `Order Transaction Fact Key`=? ";
 
 
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
                     [
-                        $estimated_weight,
                         $quantity,
                         $bonus_quantity,
                         gmdate('Y-m-d H:i:s'),
@@ -189,11 +187,10 @@ trait OrderItems {
 
                 if ($dn_key) {
 
-                    $sql = "UPDATE `Order Transaction Fact` SET `Delivery Note Key`=? ,`Destination Country 2 Alpha Code`=? WHERE `Order Transaction Fact Key`=?";
+                    $sql = "UPDATE `Order Transaction Fact` SET `Delivery Note Key`=? WHERE `Order Transaction Fact Key`=?";
                     $this->db->prepare($sql)->execute(
                         [
                             $dn_key,
-                            $dn->get('Delivery Note Address Country 2 Alpha Code'),
                             $row['Order Transaction Fact Key']
                         ]
                     );
@@ -211,17 +208,16 @@ trait OrderItems {
             if ($total_quantity > 0) {
 
                 $gross            = round($quantity * $product->data['Product History Price'], 2);
-                $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
 
                 $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
                 $cost         = round($total_quantity * $product_cost, 4);
 
 
-                $sql = "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
+                $sql = "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Order Date`,`Order Last Updated Date`,
 			`Product Key`,`Product ID`,
 			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Quantity`,
-			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Store Key`,`Units Per Case`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)   ";
+			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Store Key`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)   ";
 
 
                 $this->db->prepare($sql)->execute(
@@ -234,7 +230,7 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)   ";
 
                         $tax_code,
                         $this->data['Order Currency'],
-                        $estimated_weight,
+
                         gmdate('Y-m-d H:i:s'),
                         gmdate('Y-m-d H:i:s'),
 
@@ -251,7 +247,6 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)   ";
                         $gross,
 
                         $this->data['Order Store Key'],
-                        $product->data['Product Units Per Case'],
                         $dn_key,
                         $cost,
                         '{}'
@@ -265,12 +260,10 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)   ";
 
                 if ($dn_key) {
 
-                    $sql = "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=?,`Delivery Note Key`=? ,`Destination Country 2 Alpha Code`=? WHERE `Order Transaction Fact Key`=?";
+                    $sql = "UPDATE  `Order Transaction Fact` SET `Delivery Note Key`=?  WHERE `Order Transaction Fact Key`=?";
                     $this->db->prepare($sql)->execute(
                         array(
-                            $estimated_weight,
                             $dn_key,
-                            $dn->get('Delivery Note Address Country 2 Alpha Code'),
                             $otf_key
                         )
                     );

@@ -14,14 +14,14 @@
 $where  = sprintf(' where O.`Invoice Key`=%d   ', $parameters['parent_key']);
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and O.`Product Code` like '".addslashes($f_value)."%'";
+    $wheref .= " and `Product History Code` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'code') {
-    $order = 'O.`Product Code`';
+    $order = '`Product History Code`';
 } elseif ($order == 'created') {
     $order = '`Invoice Date`';
 } elseif ($order == 'last_updated') {
@@ -41,11 +41,9 @@ $sql_totals
 
 $fields
     = "`Store Key`,
-O.`Order Transaction Fact Key`,`Product Currency`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`,
+O.`Order Transaction Fact Key`,`Product Currency`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,
 `Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Currency Code`,`Transaction Tax Rate`,`Order Transaction Metadata`
 
 ";
 
-// $sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
 

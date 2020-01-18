@@ -139,9 +139,9 @@ $smarty->assign('label_title_no', _('Proforma No.'));
 $transactions = array();
 $sql          = sprintf(
     "SELECT `Product Origin Country Code`,`Product Package Weight`,`Order Transaction Amount`,`Order Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
-`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
+`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code` as `Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
-  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Order Key`=%d ORDER BY `Product Code`", $order->id
+  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Order Key`=%d ORDER BY `Product History Code`", $order->id
 );
 //print $sql;exit;
 

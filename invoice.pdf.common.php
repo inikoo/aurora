@@ -17,6 +17,10 @@ $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit;
 }
+
+/**
+ * @var $invoice \Invoice
+ */
 $invoice = get_object('Invoice', $id);
 if (!$invoice->id) {
     exit;
@@ -189,11 +193,11 @@ $transactions = array();
 
 $sql = sprintf(
     "SELECT   `Product CPNP Number`,`Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Package Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
-`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
+`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code` as `Product Code`
  FROM 
- `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
+ `Order Transaction Fact` OTF  LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
  
- WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
+ WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product History Code`", $invoice->id
 );
 
 
@@ -202,6 +206,7 @@ $sql = sprintf(
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+
 
         $currency = $row['Order Currency Code'];
 
@@ -433,13 +438,13 @@ if ($result = $db->query($sql)) {
 
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
-    "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,`Product Barcode Number`,
-`Product Tariff Code`,`Product Tariff Code`,`Product Origin Country Code`,`Product Package Weight`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`
+    "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,`Product Barcode Number`,`Product History Code` as `Product Code`,
+`Product Tariff Code`,`Product Tariff Code`,`Product Origin Country Code`,`Product Package Weight`,P.`Product ID`,`Product History Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`
 FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
 
-  WHERE    `Invoice Key`=%d   and   (`No Shipped Due Out of Stock`>0   )  ORDER BY `Product Code`", $invoice->id
+  WHERE    `Invoice Key`=%d   and   (`No Shipped Due Out of Stock`>0   )  ORDER BY `Product History Code`", $invoice->id
 );
 //print $sql;exit;
 
