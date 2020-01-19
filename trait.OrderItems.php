@@ -213,11 +213,14 @@ trait OrderItems {
                 $cost         = round($total_quantity * $product_cost, 4);
 
 
-                $sql = "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Order Date`,`Order Last Updated Date`,
-			`Product Key`,`Product ID`,
-			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Quantity`,
-			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Store Key`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)   ";
+                $sql = "INSERT INTO `Order Transaction Fact` ( 
+                                      `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,
+                                      `Transaction Tax Code`,`Order Currency Code`,
+                                      `Order Date`,`Order Last Updated Date`,
+			`Product Key`,`Product ID`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,
+                                      `Order Key`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,
+                                      `Store Key`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
+VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
                 $this->db->prepare($sql)->execute(
