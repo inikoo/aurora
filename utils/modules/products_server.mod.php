@@ -26,7 +26,6 @@ function get_products_server_module() {
                 'subtabs_parent' => array(
                     'stores.sales.plot'     => 'stores.sales',
                     'stores.sales.history'  => 'stores.sales',
-                    'stores.sales.calendar' => 'stores.sales',
                     'stores.sales.info'     => 'stores.sales'
 
                 ),
@@ -46,11 +45,7 @@ function get_products_server_module() {
                                     'Sales history'
                                 )
                             ),
-                            'stores.sales.calendar' => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
+
                             'stores.sales.info'     => array(
                                 'label'   => '',
                                 'title'   => _('Sales data info'),

@@ -16,7 +16,6 @@ function get_product_section() {
       'subtabs_parent' => array(
           'product.sales.plot'                                   => 'product.sales',
           'product.sales.history'                                => 'product.sales',
-          'product.sales.calendar'                               => 'product.sales',
           'product.sales.info'                                   => 'product.sales',
           'product.customers'                                    => 'product.customers',
           'product.customers.favored'                            => 'product.customers',
@@ -59,11 +58,7 @@ function get_product_section() {
                           'Sales history'
                       )
                   ),
-                  'product.sales.calendar' => array(
-                      'label' => _(
-                          'Calendar'
-                      )
-                  ),
+
                   'product.sales.info'     => array(
                       'label'   => '',
                       'title'   => _('Sales data info'),

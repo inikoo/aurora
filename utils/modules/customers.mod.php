@@ -181,7 +181,6 @@ function get_customers_module() {
 
                     'customer.sales.plot'      => 'customer.sales',
                     'customer.sales.history'   => 'customer.sales',
-                    'customer.sales.calendar'  => 'customer.sales',
                     'customer.sales.dashboard' => 'customer.sales',
                     'customer.sales.info'      => 'customer.sales',
 
@@ -270,9 +269,7 @@ function get_customers_module() {
                             'customer.sales.history'   => array(
                                 'label' => _('Sales history')
                             ),
-                            'customer.sales.calendar'  => array(
-                                'label' => _('Calendar')
-                            ),
+
                             'customer.sales.info'      => array(
                                 'label'   => '',
                                 'title'   => _('Sales data info'),

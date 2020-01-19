@@ -29,7 +29,6 @@ $parameters = array(
 );
 
 
-//$smarty->assign('title',   sprintf(_("Employee's calendar %s"), date('Y',$default['year'])   )    );
 
 
 include('utils/get_table_html.php');

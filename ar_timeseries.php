@@ -52,7 +52,7 @@ switch ($tipo) {
 
             )
         );
-        part_stock($db, $data, $account);
+        part_stock($data);
         break;
 
     case 'csv':
@@ -434,58 +434,26 @@ count(distinct `Customer Key`) as customers
 }
 
 
-function part_stock($db, $data, $account) {
+function part_stock( $data) {
+
+    include_once 'elastic/isf.elastic.php';
+
+    print "Date,Open,High,Low,Close,Volume,Adj Close\n";
 
 
-    switch ($data['parent']) {
-        case 'part':
-            $fields
-                   = '`Date`,sum(`Quantity Open`) as open ,sum(`Quantity High`) as high,sum(`Quantity Low`) as low,sum(`Quantity On Hand`) as close';
-            $where = sprintf("where `Part SKU`=%d", $data['parent_key']);
-            $group = ' group by `Date`';
-            break;
-
-        default:
-            return;
-
+    $results=get_part_inventory_transaction_fact($data['parent_key'],$data['from'],$data['to']);
+    foreach(array_reverse($results) as $result){
+        print $result['key_as_string'].',0,0,0,'.$result['stock']['value']."\n";
     }
-
-    $where_interval = prepare_mysql_dates($data['from'], $data['to'], '`Date`');
-    $where .= $where_interval['mysql'];
-
-    //$cache = new Memcached();
-    //$cache->addServer($memcache_ip, 11211);
-
-    $sql    = sprintf(
-        "SELECT %s FROM `Inventory Spanshot Fact` %s   %s  ORDER BY `Date` DESC ", $fields, $where, $group
-    );
-
-
-        $res = array();
-        print "Date,Open,High,Low,Close,Volume,Adj Close\n";
-
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                print sprintf(
-                    "%s,%.1f,%.1f,%.1f,%.1f\n", $row['Date'], $row['open'], $row['high'], $row['low'], $row['close']
-                );
-
-                $res[] = $row;
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print $sql;
-            exit;
-        }
-
 
 
 
 }
+
+
+
+
+
 
 
 

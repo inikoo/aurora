@@ -424,7 +424,6 @@ function get_suppliers_module() {
                 'subtabs_parent' => array(
                     'supplier.sales.plot'      => 'supplier.sales',
                     'supplier.sales.history'   => 'supplier.sales',
-                    'supplier.sales.calendar'  => 'supplier.sales',
                     'supplier.sales.dashboard' => 'supplier.sales',
                     'supplier.sales.info'      => 'supplier.sales',
 
@@ -461,11 +460,7 @@ function get_suppliers_module() {
                                     'Sales history'
                                 )
                             ),
-                            'supplier.sales.calendar'  => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
+
 
 
                             'supplier.sales.info' => array(

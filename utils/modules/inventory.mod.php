@@ -146,7 +146,6 @@ function get_inventory_module() {
 
                     'category.part.sales.plot'     => 'category.part.sales',
                     'category.part.sales.history'  => 'category.part.sales',
-                    'category.part.sales.calendar' => 'category.part.sales',
                     'category.part.sales.info'     => 'category.part.sales'
 
                 ),
@@ -171,11 +170,7 @@ function get_inventory_module() {
                                     'Sales history'
                                 )
                             ),
-                            'category.part.sales.calendar' => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
+
                             'category.part.sales.info'     => array(
                                 'label'   => '',
                                 'title'   => _('Sales data info'),
@@ -270,7 +265,6 @@ function get_inventory_module() {
                     'part.stock.cost'          => 'part.stock',
                     'part.stock.history.plot'  => 'part.stock',
                     'part.sales.plot'          => 'part.sales',
-                    'part.sales.calendar'      => 'part.sales',
                     'part.sales.info'          => 'part.sales',
 
                 ),
@@ -299,11 +293,7 @@ function get_inventory_module() {
                                     'Sales history'
                                 )
                             ),
-                            'part.sales.calendar' => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
+
                             'part.sales.info'     => array(
                                 'label'   => '',
                                 'title'   => _('Sales data info'),

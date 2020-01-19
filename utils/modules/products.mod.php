@@ -117,7 +117,6 @@ function get_products_module() {
                 'subtabs_parent' => array(
                     'category.product.sales.plot'     => 'category.sales',
                     'category.product.sales.history'  => 'category.sales',
-                    'category.product.sales.calendar' => 'category.sales',
                     'category.product.sales.info'     => 'category.sales',
 
                     'category.customers'         => 'category.customers',
@@ -149,11 +148,7 @@ function get_products_module() {
                                     'Sales history'
                                 )
                             ),
-                            'category.product.sales.calendar' => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
+
                             'category.product.sales.info'     => array(
                                 'label' => _('Info'),
                                 'icon'  => 'info',

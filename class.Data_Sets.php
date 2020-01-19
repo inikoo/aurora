@@ -175,7 +175,7 @@ class Data_Sets extends DB_Table {
         global $dns_db;
 
 
-        $tables='';
+        $tables = '';
 
         if ($this->data['Data Sets Code'] == 'Images') {
             $tables = '"Image Dimension"';
@@ -235,9 +235,8 @@ class Data_Sets extends DB_Table {
 
 
         } elseif ($this->data['Data Sets Code'] == 'Attachments') {
-            $tables
-                 = '"Attachment Bridge","Attachment Bridge History Bridge","Attachment Dimension"';
-            $sql = sprintf(
+            $tables = '"Attachment Bridge","Attachment Bridge History Bridge","Attachment Dimension"';
+            $sql    = sprintf(
                 'SELECT count(*) AS num  FROM `Attachment Dimension`', $this->id
             );
             if ($result = $this->db->query($sql)) {
@@ -304,34 +303,47 @@ class Data_Sets extends DB_Table {
 
 
         } elseif ($this->data['Data Sets Code'] == 'ISF') {
-            $tables = '"Inventory Spanshot Fact"';
-            $sql    = sprintf(
-                'SELECT count(*) AS num  FROM `Inventory Spanshot Fact`', $this->id
+
+            $client   = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+            $response = $client->count(
+                [
+                    'index' => strtolower('au_isf_'.strtolower(DNS_ACCOUNT_CODE)),
+
+                ]
             );
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $num = $row['num'];
 
-                } else {
-                    $num = 0;
+            $number_items = $response['count'];
 
-                }
-                $this->update(
-                    array(
-                        'Data Sets Number Sets'  => 1,
-                        'Data Sets Number Items' => $num
-                    ), 'no_history'
-                );
 
+            $response = $client->indices()->stats(
+                [
+                    'index' => strtolower('au_isf')
+                ]
+            );
+
+            $total_size       = $response['indices']['au_isf']['primaries']['store']['size_in_bytes'];
+            $total_docs = $response['indices']['au_isf']['primaries']['docs']['count'];
+
+            if ($total_docs > 0) {
+                $size = $total_size * $number_items / $total_docs;
             } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
+                $size = 0;
             }
 
+
+            $this->fast_update(
+                array(
+                    'Data Sets Number Sets'  => 1,
+                    'Data Sets Number Items' => $number_items,
+                    'Data Sets Size'         => $size
+
+                )
+            );
+
+
         } elseif ($this->data['Data Sets Code'] == 'Uploads') {
-            $tables
-                 = '"Upload Dimension","Upload File Dimension","Upload Record Dimension"';
-            $sql = sprintf(
+            $tables = '"Upload Dimension","Upload File Dimension","Upload Record Dimension"';
+            $sql    = sprintf(
                 'SELECT count(*) AS num  FROM `Upload Dimension`', $this->id
             );
             if ($result = $this->db->query($sql)) {

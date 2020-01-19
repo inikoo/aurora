@@ -16,7 +16,6 @@ function get_service_section() {
       'subtabs_parent' => array(
           'service.sales.plot'           => 'service.sales',
           'service.sales.history'        => 'service.sales',
-          'service.sales.calendar'       => 'service.sales',
           'service.customers.customers'  => 'service.customers',
           'service.customers.favourites' => 'service.customers',
           'service.website.webpage'      => 'service.website',
@@ -43,9 +42,7 @@ function get_service_section() {
                   'service.sales.history'  => array(
                       'label' => _('Sales history')
                   ),
-                  'service.sales.calendar' => array(
-                      'label' => _('Calendar')
-                  ),
+
 
               )
           ),
