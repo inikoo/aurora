@@ -927,61 +927,7 @@ class PartLocation extends DB_Table {
 
     }
 
-    function last_inventory_date() {
-        $sql = sprintf(
-            "SELECT `Date` FROM `Inventory Spanshot Fact` WHERE  `Part Sku`=%d   ORDER BY `Date` DESC LIMIT 1", $this->part_sku
-        );
 
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return $row['Date'];
-            } else {
-                return false;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
-    function first_inventory_transacion() {
-        $sql = sprintf(
-            "SELECT DATE(`Date`) AS Date FROM `Inventory Transaction Fact`
-                     WHERE  `Part Sku`=%d AND (`Inventory Transaction Type` LIKE 'Associate' )  ORDER BY `Date`", $this->part_sku
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return $row['Date'];
-            } else {
-                return false;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-    }
-
-    function last_inventory_audit() {
-        $sql = sprintf(
-            "SELECT DATE(`Date`) AS Date FROM `Inventory Transaction Fact` WHERE  `Part Sku`=%d AND  `Location Key`=%d AND (`Inventory Transaction Type` LIKE 'Audit' OR `Inventory Transaction Type`='Not Found' )  ORDER BY `Date` DESC", $this->part_sku,
-            $this->location_key
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return $row['Date'];
-            } else {
-                return false;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-    }
 
     function delete() {
         $this->disassociate();
@@ -1874,7 +1820,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         $sql = sprintf(
             "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s   AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Section`='Lost'   ", prepare_mysql($start),
-            prepare_mysql($end), $this->part_sku, $this->location_key
+           prepare_mysql($end), $this->part_sku, $this->location_key
         );
 
 

@@ -3984,31 +3984,7 @@ class Part extends Asset {
     }
 
 
-    function get_stock($date) {
-        $stock = 0;
-        $value = 0;
-        $sql   = sprintf(
-            "SELECT ifnull(sum(`Quantity On Hand`), 0) AS stock, ifnull(sum(`Value At Cost`), 0) AS value FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d AND `Date`=%s", $this->id, prepare_mysql($date)
-        );
 
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $stock = $row['stock'];
-                $value = $row['value'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return array(
-            $stock,
-            $value
-        );
-    }
 
     function update_stock_in_paid_orders() {
 
