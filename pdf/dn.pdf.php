@@ -8,6 +8,9 @@
 
  Version 2.0
 */
+
+use Mpdf\Mpdf;
+
 chdir('../');
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -57,7 +60,7 @@ $smarty->assign('order', $order);
 
 $dangerous_goods = array();
 $sql             = sprintf(
-    ' select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!="" or `Part Packing Group`!="Noe" ) group by `Part UN Number`,`Part Packing Group`  '
+    "select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!='' or `Part Packing Group`!='No' ) group by `Part UN Number`,`Part Packing Group` "
 );
 
 $stmt = $db->prepare($sql);
@@ -111,7 +114,7 @@ bindtextdomain("inikoo", "./locales");
 textdomain("inikoo");
 
 
-$mpdf = new \Mpdf\Mpdf(
+$mpdf = new Mpdf(
     [
         'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
         'mode'          => 'utf-8',
@@ -130,8 +133,6 @@ $mpdf->SetTitle(
 $mpdf->SetAuthor($store->data['Store Name']);
 
 
-//$mpdf->SetDisplayMode('fullpage');
-//$mpdf->SetJS('this.print();');    // set when we want to print....
 
 $smarty->assign('store', $store);
 
@@ -141,12 +142,15 @@ $smarty->assign('delivery_note', $delivery_note);
 $transactions = array();
 
 $sql = sprintf(
-    "SELECT `Part SKO Barcode`,`Order Quantity`,`Order Bonus Quantity`,`Part Reference`,`Part Package Description`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Inventory Transaction Quantity`,`Out of Stock`,`Not Found`,`No Picked Other`,`Inventory Transaction Type`,`Required`,ITF.`Part SKU` ,
+    "SELECT `Part SKO Barcode`,`Order Quantity`,`Order Bonus Quantity`,`Part Reference`,`Part Package Description`,`Product History Code`,`Product History Units Per Case`,`Product History Name`,`Product RRP`,`Inventory Transaction Quantity`,`Out of Stock`,`Not Found`,`No Picked Other`,`Inventory Transaction Type`,`Required`,ITF.`Part SKU` ,
        `Part UN Number` AS un_number,
 `Part Packing Group` AS part_packing_group
        
        FROM `Inventory Transaction Fact` AS ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`) LEFT JOIN `Order Transaction Fact` OTF  ON (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`) 
-LEFT JOIN  `Product Dimension` PD ON (OTF.`Product ID`=PD.`Product ID`)  WHERE ITF.`Delivery Note Key`=%d AND `Inventory Transaction Type`!='Adjust' ORDER BY `Part Reference`  ", $delivery_note->id
+LEFT JOIN  `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)  
+LEFT JOIN  `Product Dimension` PD ON (OTF.`Product ID`=PD.`Product ID`)  
+
+WHERE ITF.`Delivery Note Key`=%d AND `Inventory Transaction Type`!='Adjust' ORDER BY `Part Reference`  ", $delivery_note->id
 );
 
 if ($result = $db->query($sql)) {
@@ -165,16 +169,13 @@ if ($result = $db->query($sql)) {
         $row['Ordered']             = $row['Order Quantity'] + $row['Order Bonus Quantity'];
         $row['notes']               = $notes;
         $row['RRP']                 = money($row['Product RRP'], $store->data['Store Currency Code']);
-        $row['Product Description'] = $row['Product Units Per Case'].'x '.$row['Product Name'];
+        $row['Product Description'] = $row['Product History Units Per Case'].'x '.$row['Product HistoryName'];
+        $row['Product Code']        = $row['Product History Code'];
 
 
         $row['dispatched'] = number(-1 * $row['Inventory Transaction Quantity']);
         $transactions[]    = $row;
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
 
 
