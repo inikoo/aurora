@@ -174,13 +174,6 @@ class DealComponent extends DB_Table {
         );
 
 
-        $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
-        $smarty_web->addPluginsDir('./smarty_plugins');
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
         switch ($this->get('Deal Component Allowance Target')) {
@@ -197,7 +190,15 @@ class DealComponent extends DB_Table {
 
 
                     $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
-                    $smarty_web->clearCache(null, $cache_id);
+
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'     => 'clear_smarty_web_cache',
+                        'cache_id' => $cache_id
+                    ), DNS_ACCOUNT_CODE, $this->db
+                    );
+
+
 
                 }
 
@@ -213,14 +214,18 @@ class DealComponent extends DB_Table {
                         $webpage = get_object('Webpage', $row['Product Webpage Key']);
                         if ($webpage->id) {
                             $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
-                            $smarty_web->clearCache(null, $cache_id);
+
+                            new_housekeeping_fork(
+                                'au_housekeeping', array(
+                                'type'     => 'clear_smarty_web_cache',
+                                'cache_id' => $cache_id
+                            ), DNS_ACCOUNT_CODE, $this->db
+                            );
+
+
                         }
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -1052,10 +1057,19 @@ class DealComponent extends DB_Table {
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
+        require_once 'utils/new_fork.php';
+
         foreach ($webpage_keys as $data) {
 
             $cache_id = $data[0].'|'.$data[1];
-            $smarty_web->clearCache(null, $cache_id);
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'clear_smarty_web_cache',
+                'cache_id' => $cache_id
+            ), DNS_ACCOUNT_CODE, $this->db
+            );
+
         }
 
 

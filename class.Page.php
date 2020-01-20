@@ -618,28 +618,33 @@ class Page extends DB_Table {
         $template_response = '';
 
 
-        $smarty_web = new Smarty();
-
+        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
 
         if (!$this->fork) {
-            $base = 'EcomB2B/server_files/';
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'clear_smarty_web_cache',
+                'cache_id' => $cache_id
+            ), DNS_ACCOUNT_CODE, $this->db
+            );
+
+
         } else {
-            $account = get_object('Account', 1);
-            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
+
+            $base = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
+            $smarty_web = new Smarty();
+            $smarty_web->template_dir = 'EcomB2B/templates';
+            $smarty_web->compile_dir  = $base.'smarty/templates_c';
+            $smarty_web->cache_dir    = $base.'smarty/cache';
+            $smarty_web->config_dir   = $base.'smarty/configs';
+            $smarty_web->addPluginsDir('./smarty_plugins');
+            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            $smarty_web->clearCache(null, $cache_id);
+
+
         }
-
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = $base.'smarty/templates_c';
-        $smarty_web->cache_dir    = $base.'smarty/cache';
-        $smarty_web->config_dir   = $base.'smarty/configs';
-        $smarty_web->addPluginsDir('./smarty_plugins');
-
-
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-        $smarty_web->clearCache(null, $cache_id);
 
 
         $redis = new Redis();
@@ -664,27 +669,40 @@ class Page extends DB_Table {
         $this->update_state('Offline');
 
 
-        $smarty_web = new Smarty();
+
+        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
 
 
         if (!$this->fork) {
-            $base = 'EcomB2B/server_files/';
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'clear_smarty_web_cache',
+                'cache_id' => $cache_id
+            ), DNS_ACCOUNT_CODE, $this->db
+            );
+
+
         } else {
-            $account = get_object('Account', 1);
-            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
+
+            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
+
+            $smarty_web = new Smarty();
+
+            $smarty_web->template_dir = 'EcomB2B/templates';
+            $smarty_web->compile_dir  = $base.'smarty/templates_c';
+            $smarty_web->cache_dir    = $base.'smarty/cache';
+            $smarty_web->config_dir   = $base.'smarty/configs';
+            $smarty_web->addPluginsDir('./smarty_plugins');
+
+            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
+            $smarty_web->clearCache(null, $cache_id);
         }
 
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = $base.'smarty/templates_c';
-        $smarty_web->cache_dir    = $base.'smarty/cache';
-        $smarty_web->config_dir   = $base.'smarty/configs';
-        $smarty_web->addPluginsDir('./smarty_plugins');
 
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-        $smarty_web->clearCache(null, $cache_id);
 
 
         $this->update_metadata = array(
@@ -831,33 +849,46 @@ class Page extends DB_Table {
         $this->updated = true;
 
 
-        $smarty_web = new Smarty();
+        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
+
+
 
         if (!$this->fork) {
-            $base = 'EcomB2B/server_files/';
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'clear_smarty_web_cache',
+                'cache_id' => $cache_id
+            ), DNS_ACCOUNT_CODE, $this->db
+            );
+
         } else {
-            $account = get_object('Account', 1);
-            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
+
+            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
+
+            $smarty_web = new Smarty();
+            $smarty_web->template_dir = 'EcomB2B/templates';
+            $smarty_web->compile_dir  = $base.'smarty/templates_c';
+            $smarty_web->cache_dir    = $base.'smarty/cache';
+            $smarty_web->config_dir   = $base.'smarty/configs';
+            $smarty_web->addPluginsDir('./smarty_plugins');
+
+            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
+            $smarty_web->clearCache(null, $cache_id);
         }
 
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = $base.'smarty/templates_c';
-        $smarty_web->cache_dir    = $base.'smarty/cache';
-        $smarty_web->config_dir   = $base.'smarty/configs';
-        $smarty_web->addPluginsDir('./smarty_plugins');
-
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-        $smarty_web->clearCache(null, $cache_id);
-        $account = get_object('Account', 1);
+
 
 
         $redis = new Redis();
         if ($redis->connect('127.0.0.1', 6379)) {
 
-            $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
+            $cache_id_prefix = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_';
 
             $redis->del($cache_id_prefix.$this->data['Webpage Code']);
             $redis->del($cache_id_prefix.strtolower($this->data['Webpage Code']));
@@ -2228,9 +2259,9 @@ class Page extends DB_Table {
 
             case 'Category Products':
 
-                $result=get_elastic_sales_correlated_assets($this->data['Webpage Scope Key'],'families_bought','_1y',$max_sales_links*2);
+                $result = get_elastic_sales_correlated_assets($this->data['Webpage Scope Key'], 'families_bought', '_1y', $max_sales_links * 2);
 
-                foreach($result['buckets'] as $row){
+                foreach ($result['buckets'] as $row) {
 
 
                     $_family  = get_object('Category', $row['key']);
@@ -2344,15 +2375,13 @@ class Page extends DB_Table {
                 $product = get_object('Product', $this->data['Webpage Scope Key']);
 
 
+                $result = get_elastic_sales_correlated_assets($product->id, 'products_bought', '_1y', $max_sales_links * 2);
 
 
-                $result=get_elastic_sales_correlated_assets($product->id,'products_bought','_1y',$max_sales_links*2);
+                foreach ($result['buckets'] as $row) {
 
 
-                foreach($result['buckets'] as $row){
-
-
-                    $_product  = get_object('Product', $row['key']);
+                    $_product = get_object('Product', $row['key']);
                     $_webpage = $_product->get_webpage();
                     if ($_webpage->id and $_webpage->data['Webpage State'] == 'Online') {
                         $see_also[$_webpage->id] = array(
@@ -2368,9 +2397,6 @@ class Page extends DB_Table {
 
 
                 }
-
-
-
 
 
                 if ($number_links >= $max_links) {
@@ -2503,7 +2529,6 @@ class Page extends DB_Table {
     function reindex_see_also($block_index) {
 
 
-
         $content_data = $this->get('Content Data');
         $block_found  = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
@@ -2581,8 +2606,7 @@ class Page extends DB_Table {
                 }
 
 
-            }
-            elseif ($item['type'] == 'product') {
+            } elseif ($item['type'] == 'product') {
 
 
                 $sql = "SELECT `Product Web State` FROM `Product Dimension` WHERE `Product ID`=?";

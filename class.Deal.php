@@ -205,6 +205,7 @@ class Deal extends DB_Table {
 
             }
             $this->fork_index_elastic_search();
+
             return;
         }
 
@@ -945,7 +946,7 @@ class Deal extends DB_Table {
 
 
                 $this->update_websites();
-            $this->fork_index_elastic_search();
+                $this->fork_index_elastic_search();
 
                 break;
             case('Deal Begin Date'):
@@ -1050,21 +1051,21 @@ class Deal extends DB_Table {
 
         }
 
-        /** @var $smarty_web Smarty */
-        $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
-        $smarty_web->addPluginsDir('./smarty_plugins');
 
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
+        require_once 'utils/new_fork.php';
 
         foreach ($webpage_keys as $data) {
 
             $cache_id = $data[0].'|'.$data[1];
-            $smarty_web->clearCache(null, $cache_id);
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'clear_smarty_web_cache',
+                'cache_id' => $cache_id
+            ), DNS_ACCOUNT_CODE, $this->db
+            );
+
+
         }
 
 
@@ -1351,7 +1352,6 @@ class Deal extends DB_Table {
 
         $campaign->update_number_of_deals();
         $this->fork_index_elastic_search('delete_elastic_index_object');
-
 
 
     }

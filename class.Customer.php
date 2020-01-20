@@ -1041,7 +1041,7 @@ class Customer extends Subject {
             'type'        => 'order_created',
             'subject_key' => $order->id,
             'editor'      => $order->editor
-        ), $account->get('Account Code'), $this->db
+        ), DNS_ACCOUNT_CODE, $this->db
         );
 
         return $order;

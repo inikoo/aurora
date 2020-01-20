@@ -1776,10 +1776,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             }
 
-            $customer->index_elastic_search($ES_hosts, false, [
-                'assets',
-                'assets_interval'
-            ]
+            $customer->index_elastic_search(
+                $ES_hosts, false, [
+                             'assets',
+                             'assets_interval'
+                         ]
             );
             break;
 
@@ -2716,8 +2717,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     $db->prepare($sql)->execute(
                         array(
                             $product->get('Product Current Key'),
-                            round($product->get('Product Price') * $row['Order Quantity'],2),
-                            round($product->get('Product Price') * $row['Order Quantity'],2),
+                            round($product->get('Product Price') * $row['Order Quantity'], 2),
+                            round($product->get('Product Price') * $row['Order Quantity'], 2),
                             $row['Order Transaction Fact Key']
                         )
                     );
@@ -2915,10 +2916,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
-            $customer->index_elastic_search($ES_hosts, false, [
-                'assets',
-                'assets_interval'
-            ]
+            $customer->index_elastic_search(
+                $ES_hosts, false, [
+                             'assets',
+                             'assets_interval'
+                         ]
             );
 
             break;
@@ -3376,8 +3378,27 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             if ($object->id) {
                 $object->delete_index_elastic_search($ES_hosts);
             }
+            break;
+        case 'clear_smarty_web_cache':
 
 
+
+            $smarty_web = new Smarty();
+
+
+
+            $base = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
+
+
+            $smarty_web->template_dir = 'EcomB2B/templates';
+            $smarty_web->compile_dir  = $base.'smarty/templates_c';
+            $smarty_web->cache_dir    = $base.'smarty/cache';
+            $smarty_web->config_dir   = $base.'smarty/configs';
+            $smarty_web->addPluginsDir('./smarty_plugins');
+            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            $smarty_web->clearCache(null, $data['cache_id']);
+
+            break;
         default:
             break;
 
