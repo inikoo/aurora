@@ -60,7 +60,7 @@ if (count($argv) > 0) {
 if (in_array('customers', $objects)) {
     update_customers_index($db);
     if (!empty($params['body'])) {
-       // print_r($params);
+        // print_r($params);
         add_indices($client, $params);
         $params = ['body' => []];
     }
@@ -229,6 +229,14 @@ if (in_array('isf', $objects)) {
     }
 }
 
+if (in_array('wisf', $objects)) {
+    update_wisf_index($db);
+    if (!empty($params['body'])) {
+        add_indices($client, $params);
+        $params = ['body' => []];
+    }
+}
+
 if (!empty($params['body'])) {
 
     add_indices($client, $params);
@@ -366,12 +374,13 @@ function update_isf_index($db) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row2) {
 
-            print_r($row2);
 
             $offset = $offset + $chunk_size;
 
-            $sql =
-                "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `Date`=?";
+            //$sql = "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial`,`Value At Day Cost` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `Date`=?";
+
+
+            $sql = "select `Date`,`Part SKU`,`Location Key`,`Quantity On Hand`,`Value At Cost`,`Value Commercial`,`Value At Day Cost` from `Inventory Spanshot Fact` ISF where `Date`=?";
 
 
             $stmt = $db->prepare($sql);
@@ -392,15 +401,21 @@ function update_isf_index($db) {
 
 
                 $params['body'][] = [
-                    'tenant'       => strtolower(DNS_ACCOUNT_CODE),
-                    'date'         => $row['Date'],
-                    'sku'          => $row['Part SKU'],
-                    'location_key' => $row['Location Key'],
-                    'part'         => $row['Part Reference'],
-                    'location'     => $row['Location Code'],
-                    'qty'          => $row['Quantity On Hand'],
-                    'cost_paid'    => $row['Value At Cost'],
-                    'value'        => $row['Value Commercial'],
+                    'tenant'                  => strtolower(DNS_ACCOUNT_CODE),
+                    'date'                    => $row['Date'],
+                    '1st_day_year'            => (preg_match('/\d{4}-01-01/', $row['Date']) ? true : false),
+                    '1st_day_month'           => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
+                    '1st_day_quarter'         => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
+                    '1st_day_week'            => (gmdate('w', strtotime($row['Date'])) ? true : false),
+                    'sku'                     => $row['Part SKU'],
+                    'location_key'            => $row['Location Key'],
+                    'stock_on_hand'           => $row['Quantity On Hand'],
+                    'stock_cost'              => $row['Value At Cost'],
+                    'stock_value_at_day_cost' => $row['Value At Day Cost'],
+                    'stock_commercial_value'  => $row['Value Commercial'],
+
+                    // 'part'         => $row['Part Reference'],
+                    //'location'     => $row['Location Code'],
 
                 ];
 
@@ -429,22 +444,130 @@ function update_isf_index($db) {
 }
 
 
+/**
+ * @param $db \PDO
+ */
+function update_wisf_index($db) {
+
+    global $params, $client;
+    global $global_counter;
+
+    $object_name = 'WISF';
+    $print_est   = true;
+
+    $total     = get_total_objects($db, $object_name);
+    $lap_time0 = microtime_float();
+    $contador  = 0;
+
+    $chunk_size = 5000;
+    $offset     = 0;
+
+
+    $warehouse = get_object('Warehouse', 1);
+
+    $from = date("Y-m-d", strtotime($warehouse->get('Warehouse Valid From')));
+    $to   = date("Y-m-d", strtotime('now'));
+
+
+    $sql = sprintf(
+        "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=%s AND `Date`<=%s ORDER BY `Date` DESC", prepare_mysql($from), prepare_mysql($to)
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row2) {
+
+
+            $offset = $offset + $chunk_size;
+
+            $sql = "select * from `Inventory Warehouse Spanshot Fact` where `Date`=?";
+
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                [
+                    $row2['Date']
+                ]
+            );
+            while ($row = $stmt->fetch()) {
+
+                $global_counter++;
+
+                $params['body'][] = [
+                    'index' => [
+                        '_index' => 'au_wisf_'.strtolower(DNS_ACCOUNT_CODE),
+                    ]
+                ];
+
+
+                $params['body'][] = [
+                    'tenant'          => strtolower(DNS_ACCOUNT_CODE),
+                    'date'            => $row['Date'],
+                    '1st_day_year'    => (preg_match('/\d{4}-01-01/', $row['Date']) ? true : false),
+                    '1st_day_month'   => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
+                    '1st_day_quarter' => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
+                    '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) ? true : false),
+
+
+                    'parts'     => $row['Parts'],
+                    'locations' => $row['Locations'],
+
+                    'stock_cost'              => $row['Value At Cost'],
+                    'stock_value_at_day_cost' => $row['Value At Day Cost'],
+                    'stock_commercial_value'  => $row['Value Commercial'],
+
+                    'stock_value_in_purchase_order' => $row['Inventory Warehouse Spanshot In PO'],
+                    'stock_value_in_other'          => $row['Inventory Warehouse Spanshot In Other'],
+                    'stock_value_out_sales'         => $row['Inventory Warehouse Spanshot Out Sales'],
+                    'stock_value_out_other'         => $row['Inventory Warehouse Spanshot Out Other'],
+
+
+                    'stock_value_dormant_1y'   => $row['Dormant 1 Year Value At Day Cost'],
+                    'parts_with_no_sales_1y'   => $row['Inventory Warehouse Spanshot Fact Dormant Parts'],
+                    'parts_with_stock_left_1y' => $row['Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts'],
+
+
+                ];
+
+
+                if ($global_counter > 0 && $global_counter % 1000 == 0) {
+
+                    add_indices($client, $params);
+
+                    $params = ['body' => []];
+
+
+                }
+
+
+                $contador++;
+                if ($print_est) {
+                    print_lap_times($row2['Date'], $contador, $total, $lap_time0);
+                }
+            }
+        }
+
+    }
+
+
+    print "\n";
+}
+
 function add_indices($client, $params) {
     $results = $client->bulk($params);
 
 
-    if(!empty($results['errors'])){
+    if (!empty($results['errors'])) {
         print_r($results);
     }
 
 
+    foreach ($results['items'] as $res) {
+        // print $res['index']['result']."\n";
 
-    foreach($results['items'] as $res){
-       // print $res['index']['result']."\n";
 
-
-        if( !isset($res['index']['result']) or   $res['index']['result']!='updated'){
-        //  print_r($res);
+        if (!isset($res['index']['result']) or $res['index']['result'] != 'updated') {
+            //  print_r($res);
         }
     }
 
@@ -1118,6 +1241,9 @@ function get_total_objects($db, $object_name) {
             break;
         case 'ISF':
             $sql = "select count(*) as num from `Inventory Spanshot Fact`";
+            break;
+        case 'WISF':
+            $sql = "select count(*) as num from `Inventory Warehouse Spanshot Fact`";
             break;
         default:
             return $total_objects;

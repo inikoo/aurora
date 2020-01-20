@@ -18,11 +18,11 @@ require '../../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_isf';
+//curl -X DELETE 'http://localhost:9200/au_wisf';
 
 
 $params = [
-    'index' => strtolower('au_isf'),
+    'index' => strtolower('au_wisf'),
     'body'  => array(
         'settings' => array(
             'analysis'   => array(
@@ -79,23 +79,13 @@ $params = [
                 '1st_day_week' => array(
                     'type'=> 'boolean',
                 ),
-                'sku'  => [
-                    'type'       => 'integer',
-                ],
-                'location_key'  => [
+
+
+                'parts'  => [
                     'type'       => 'short',
                 ],
-                'part'  => [
-                    'type'       => 'keyword',
-                    "normalizer" => "code_normalizer"
-                ],
-                'location'  => [
-                    'type'       => 'keyword',
-                    "normalizer" => "code_normalizer"
-                ],
-
-                'stock_on_hand'  => [
-                    'type'       => 'float',
+                'locations'  => [
+                    'type'       => 'short',
                 ],
 
                 'stock_cost'  => [
@@ -120,20 +110,15 @@ $params = [
                 'stock_value_out_other'  => [
                     'type'       => 'float',
                 ],
-
-                'stock_in_purchase_order'  => [
+                'stock_value_dormant_1y'  => [
                     'type'       => 'float',
                 ],
-                'stock_in_other'  => [
-                    'type'       => 'float',
+                'parts_with_no_sales_1y'  => [
+                    'type'       => 'short',
                 ],
-                'stock_out_sales'  => [
-                    'type'       => 'float',
+                'parts_with_stock_left_1y'  => [
+                    'type'       => 'short',
                 ],
-                'stock_out_other'  => [
-                    'type'       => 'float',
-                ],
-
 
 
             )

@@ -88,3 +88,20 @@ $params['body'] = array(
     )
 );
 $client->indices()->updateAliases($params);
+
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_wisf',
+                'alias'   => 'au_wisf_'.strtolower(DNS_ACCOUNT_CODE),
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);
