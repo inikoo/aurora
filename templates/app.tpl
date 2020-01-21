@@ -191,11 +191,11 @@
                             <i class="far fa-search"></i>
                         </label>
                         <form>
-                            <input/>
+                            <input />
                         </form>
                         <div class="options">
                             <span class="close_search ">
-                <button>
+                         <button>
                 <i class="fal fa-fw fa-times"></i>
                 </button>
             </span>
@@ -212,7 +212,7 @@
                     </div>
 
                     <div class="smart_search_result hide">
-                        <div class="search_result_title  small">
+                        <div class="search_result_title small">
                             <div class="result_info italic">{t}Lightweight results{/t} <span class="num"></span></div>
 
 

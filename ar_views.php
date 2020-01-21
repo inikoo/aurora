@@ -856,7 +856,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
-    if ($data['old_state']['module'] != $state['module'] or $data['old_state']['section'] != $state['section'] or $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key'] != $state['key'] or $reload or isset(
+    if ($data['old_state']['module'] != $state['module'] or
+        $data['old_state']['section'] != $state['section'] or
+        $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key'] != $state['key'] or $reload or isset(
             $data['metadata']['reload_showcase']
 
         )
@@ -1357,14 +1359,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $response['app_state'] = $state;
 
 
-    if (!isset($response['nav'])) {
-        $response['nav'] = [
-            '',
-            '',
-            '',
-            ''
-        ];
-    }
+
 
     $encoded = json_encode($response);
 

@@ -320,15 +320,27 @@ function change_view(_request, metadata) {
 
                 state = data.app_state;
 
-                let display_search = false;
-                let search_placeholder = '';
+
 
                 if (data.nav != undefined) {
 
 
                     if (typeof (data.nav[0]) != undefined) {
-                        display_search = data.nav[0].show
-                        search_placeholder= data.nav[0].placeholder
+                        let display_search = data.nav[0].show
+                        let search_placeholder= data.nav[0].placeholder
+
+
+                      
+                        if (display_search) {
+                            $('.smart_search_input label').removeClass('hide')
+                            $('.smart_search_input form').removeClass('hide')
+                            $('.smart_search_input input').attr("placeholder", search_placeholder);
+
+                        } else {
+                            $('.smart_search_input label').addClass('hide')
+                            $('.smart_search_input form').addClass('hide')
+                        }
+
 
                     }
 
@@ -346,21 +358,13 @@ function change_view(_request, metadata) {
                     } else {
                         $('#web_navigation').html('')
                     }
-                }
 
-                if (display_search) {
-                    $('.smart_search_input label').removeClass('hide')
-                    $('.smart_search_input form').removeClass('hide')
-                    $('.smart_search_input input').attr("placeholder", search_placeholder);
 
-                } else {
-
-                    $('.smart_search_input label').addClass('hide')
-
-                    $('.smart_search_input form').addClass('hide')
 
 
                 }
+
+
 
                 if (typeof (data.tabs) != "undefined" && data.tabs !== null) {
                     $('#tabs').html(data.tabs);
