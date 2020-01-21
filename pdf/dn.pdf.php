@@ -169,7 +169,7 @@ if ($result = $db->query($sql)) {
         $row['Ordered']             = $row['Order Quantity'] + $row['Order Bonus Quantity'];
         $row['notes']               = $notes;
         $row['RRP']                 = money($row['Product RRP'], $store->data['Store Currency Code']);
-        $row['Product Description'] = $row['Product History Units Per Case'].'x '.$row['Product HistoryName'];
+        $row['Product Description'] = $row['Product History Units Per Case'].'x '.$row['Product History Name'];
         $row['Product Code']        = $row['Product History Code'];
 
 
