@@ -330,7 +330,7 @@ function change_view(_request, metadata) {
                         let search_placeholder= data.nav[0].placeholder
 
 
-                      
+
                         if (display_search) {
                             $('.smart_search_input label').removeClass('hide')
                             $('.smart_search_input form').removeClass('hide')

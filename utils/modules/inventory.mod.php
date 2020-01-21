@@ -60,38 +60,7 @@ function get_inventory_module() {
                 )
             ),
 
-            'feedback'        => array(
-                'type'      => 'right_button',
-                'title'     => _('Issues'),
-                'icon'      => 'poop',
-                'reference' => 'inventory/feedback',
-                'tabs'      => array(
 
-
-                    'inventory.feedback'                 => array(
-                        'label' => _('Issues'),
-                        'icon'  => 'poop'
-                    ),
-                    'inventory.feedback_per_part'        => array(
-                        'label' => _('Issues group by part'),
-                    ),
-                    'inventory.feedback_per_part_family' => array(
-                        'label' => _('Issues group by family'),
-                    ),
-
-
-                )
-            ),
-            'barcodes'        => array(
-                'type'      => 'right_button',
-                'title'     => _('Retail barcodes'),
-                'icon'      => 'barcode',
-                'reference' => 'inventory/barcodes',
-                'tabs'      => array(
-                    'inventory.barcodes' => array('label' => _('Barcodes'))
-
-                )
-            ),
             'barcode'         => array(
                 'type'  => 'object',
                 'title' => _('Barcode'),
@@ -553,7 +522,38 @@ function get_inventory_module() {
 
                 )
             ),
+            'feedback'        => array(
+                'type'      => 'right_button',
+                'title'     => _('Issues'),
+                'icon'      => 'poop',
+                'reference' => 'inventory/feedback',
+                'tabs'      => array(
 
+
+                    'inventory.feedback'                 => array(
+                        'label' => _('Issues'),
+                        'icon'  => 'poop'
+                    ),
+                    'inventory.feedback_per_part'        => array(
+                        'label' => _('Issues group by part'),
+                    ),
+                    'inventory.feedback_per_part_family' => array(
+                        'label' => _('Issues group by family'),
+                    ),
+
+
+                )
+            ),
+            'barcodes'        => array(
+                'type'      => 'right_button',
+                'title'     => _('Retail barcodes'),
+                'icon'      => 'barcode',
+                'reference' => 'inventory/barcodes',
+                'tabs'      => array(
+                    'inventory.barcodes' => array('label' => _('Barcodes'))
+
+                )
+            ),
 
             'product' => get_product_section(),
 

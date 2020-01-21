@@ -18,7 +18,7 @@ function get_production_module() {
         'sections'    => array(
             'dashboard' => array(
                 'type'      => 'navigation',
-                'label'     => _('Dashboard'),
+                'label'     => '',
                 'title'     => _("Manufacture dashboard"),
                 'icon'      => 'tachometer',
                 'reference' => 'production/%d',
