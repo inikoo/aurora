@@ -766,6 +766,10 @@
 
                         });
 
+                        {if $website->settings('captcha_client')}
+                            register_data['captcha']= grecaptcha.getResponse();
+                        {/if}
+
 
                         register_data['new-password'] = sha256_digest(register_data['new-password']);
 
@@ -774,6 +778,9 @@
                         ajaxData.append("tipo", 'register')
                         ajaxData.append("store_key", '{$store->id}')
                         ajaxData.append("data", JSON.stringify(register_data))
+
+
+
 
 
                         $.ajax({

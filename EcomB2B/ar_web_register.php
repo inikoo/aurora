@@ -76,7 +76,7 @@ function register($db, $website, $data, $editor, $account) {
 
         if ($website->settings('captcha_server') != '') {
 
-            if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
+            if (isset($raw_data['captcha']) && !empty($raw_data['captcha'])) {
 
                 $ip = '';
                 if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
@@ -90,7 +90,7 @@ function register($db, $website, $data, $editor, $account) {
 
                 $secretKey = $website->settings('captcha_server');
 
-                $request = 'https://www.google.com/recaptcha/api/siteverify?secret='.$secretKey.'&response='.$_POST['g-recaptcha-response'];
+                $request = 'https://www.google.com/recaptcha/api/siteverify?secret='.$secretKey.'&response='.$raw_data['captcha'];
                 if ($ip != '') {
                     $request .= '&remoteip='.$ip;
                 }

@@ -188,7 +188,6 @@
 
 
             </fieldset>
-
             {if !empty($poll_queries)}
 
                 <fieldset>

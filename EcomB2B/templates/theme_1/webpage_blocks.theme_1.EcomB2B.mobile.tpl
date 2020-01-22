@@ -642,7 +642,9 @@
 
                             });
 
-
+                            {if $website->settings('captcha_client')}
+                            register_data['captcha']= grecaptcha.getResponse();
+                            {/if}
 
                             register_data['new-password'] = sha256_digest(register_data['new-password']);
 
