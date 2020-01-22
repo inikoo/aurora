@@ -469,6 +469,24 @@ $object_fields = array(
                 'type'       => 'value'
             ),
 
+            array(
+                'id'         => 'Localised_Labels_captcha_fail',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_captcha_fail']) ? _('Robot verification failed, please try again') : $labels['_captcha_fail']),
+                'label'      => _('reCAPTCHA fail'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_captcha_missing',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_captcha_missing']) ? _('Please check on the reCAPTCHA box') : $labels['_captcha_missing']),
+                'label'      => _('Forgot click reCAPTCHA'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
         )
     ),

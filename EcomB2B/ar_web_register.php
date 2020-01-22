@@ -51,7 +51,7 @@ switch ($tipo) {
 }
 
 /**
- * @param $db \PDO
+ * @param $db      \PDO
  * @param $website \Public_Website
  * @param $data
  * @param $editor
@@ -65,6 +65,9 @@ function register($db, $website, $data, $editor, $account) {
     include_once 'class.Public_Store.php';
 
     $store = new Public_Store($data['store_key']);
+
+
+    $labels = $website->get('Localised Labels');
 
 
     $store->editor = $editor;
@@ -105,7 +108,7 @@ function register($db, $website, $data, $editor, $account) {
                     echo json_encode(
                         array(
                             'state' => 400,
-                            'msg'   => _('Robot verification failed, please try again')
+                            'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Robot verification failed, please try again'))
                         )
                     );
                 }
@@ -114,7 +117,8 @@ function register($db, $website, $data, $editor, $account) {
                 echo json_encode(
                     array(
                         'state' => 400,
-                        'msg'   => _('Please check on the reCAPTCHA box')
+                        'msg'   => (!empty($labels['_captcha_missing']) ? $labels['_captcha_missing'] : _('Please check on the reCAPTCHA box'))
+
                     )
                 );
                 exit;
