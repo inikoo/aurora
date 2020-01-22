@@ -189,7 +189,6 @@
 
             </fieldset>
 
-
             {if !empty($poll_queries)}
 
                 <fieldset>
@@ -229,9 +228,7 @@
                             </section>
 
                         {/if}
-
                     {/foreach}
-
 
 
 
@@ -254,6 +251,11 @@
 
 
             </fieldset>
+            {if !empty($settings.captcha_client)}
+            <footer>
+                <div class="g-recaptcha" data-sitekey="{$settings.captcha_client}"></div>
+            </footer>
+            {/if}
             <footer>
                 <button  id="register_button" type="submit" class="button" ">{$data.labels._submit_label}  <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
             </footer>

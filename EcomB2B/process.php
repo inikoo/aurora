@@ -10,6 +10,8 @@
  Version 2.0
 */
 
+
+
 require_once '../vendor/autoload.php';
 require 'keyring/dns.php';
 require_once 'utils/sentry.php';
@@ -20,14 +22,19 @@ $redis->connect('127.0.0.1', 6379);
 
 session_start();
 
+
 if (empty($_SESSION['website_key'])) {
     include_once('utils/find_website_key.include.php');
     $_SESSION['website_key']=get_website_key_from_domain($redis);
 }
 
+
+
+
 $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
 $url = preg_replace('/\?.*$/', '', $url);
 $url = substr($url, 0, 256);
+
 
 if ($url == 'sitemap.xml') {
 
@@ -136,10 +143,9 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
 
     $original_url = $url;
     $page_key     = get_page_key_from_code($website_key, $url, $db);

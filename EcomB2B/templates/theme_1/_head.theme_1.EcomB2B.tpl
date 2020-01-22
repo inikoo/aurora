@@ -31,6 +31,8 @@
         {/if}
         {literal}
 
+
+
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -272,6 +274,12 @@
     {if $with_gallery==1}
         <link rel="stylesheet" href="assets/image_gallery.min.css" type="text/css"/>
     {/if}
+
+    {if $with_register==1}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {/if}
+
+
     {if !isset($is_devel) or !$is_devel  }
     {if  $zendesk_chat_code!='' }
 

@@ -40,6 +40,8 @@ if (defined('SENTRY_DNS_ECOM_JS')) {
 }
 
 
+
+
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
@@ -375,6 +377,8 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         $smarty->assign('required_fields', $required_fields);
         $smarty->assign('no_required_fields', $no_required_fields);
 
+
+        $smarty->assign('settings', $website->settings);
 
         $smarty->assign('countries', $countries);
         $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));

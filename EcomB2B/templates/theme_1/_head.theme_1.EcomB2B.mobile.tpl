@@ -255,6 +255,10 @@
         <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
     {/if}
 
+    {if $with_register==1}
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {/if}
+
     <style>
 
 

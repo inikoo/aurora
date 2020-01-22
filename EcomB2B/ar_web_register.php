@@ -50,6 +50,15 @@ switch ($tipo) {
         break;
 }
 
+/**
+ * @param $db \PDO
+ * @param $website \Public_Website
+ * @param $data
+ * @param $editor
+ * @param $account \Public_Account
+ *
+ * @throws \Exception
+ */
 function register($db, $website, $data, $editor, $account) {
 
     include_once 'utils/new_fork.php';
@@ -63,6 +72,55 @@ function register($db, $website, $data, $editor, $account) {
 
 
     if ($store->id) {
+
+
+        if ($website->settings('captcha_server') != '') {
+
+            if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
+
+                $ip = '';
+                if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+                    $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+
+                } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+                    $ip = $_SERVER['REMOTE_ADDR'];
+
+                }
+
+
+                $secretKey = $website->settings('captcha_server');
+
+                $request = 'https://www.google.com/recaptcha/api/siteverify?secret='.$secretKey.'&response='.$_POST['g-recaptcha-response'];
+                if ($ip != '') {
+                    $request .= '&remoteip='.$ip;
+                }
+
+                $verifyResponse = file_get_contents($request);
+
+
+                $responseData = json_decode($verifyResponse);
+
+                if (!$responseData->success) {
+
+                    echo json_encode(
+                        array(
+                            'state' => 400,
+                            'msg'   => _('Robot verification failed, please try again')
+                        )
+                    );
+                }
+            } else {
+
+                echo json_encode(
+                    array(
+                        'state' => 400,
+                        'msg'   => _('Please check on the reCAPTCHA box')
+                    )
+                );
+                exit;
+            }
+        }
+
         $customer_data = array(
             'Customer Main Contact Name'   => $raw_data['name'],
             'Customer Company Name'        => $raw_data['organization'],
@@ -70,7 +128,6 @@ function register($db, $website, $data, $editor, $account) {
             'Customer Tax Number'          => $raw_data['tax_number'],
             'Customer Main Plain Email'    => $raw_data['email'],
             'Customer Main Plain Mobile'   => $raw_data['tel'],
-            'Customer Registration Number' => $raw_data['registration_number'],
             'Customer Type by Activity'    => ($website->get('Website Registration Type') == 'ApprovedOnly' ? 'ToApprove' : 'Active')
 
         );
@@ -128,8 +185,6 @@ function register($db, $website, $data, $editor, $account) {
             }
 
 
-
-
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'         => 'customer_registered',
@@ -182,7 +237,7 @@ function register($db, $website, $data, $editor, $account) {
 
                     echo json_encode(
                         array(
-                            'state'  => 400,
+                            'state' => 400,
                         )
                     );
                     exit;
