@@ -366,6 +366,7 @@ function update_isf_index($db) {
     $to   = date("Y-m-d", strtotime('now'));
 
 
+
     $sql = sprintf(
         "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=%s AND `Date`<=%s ORDER BY `Date` DESC", prepare_mysql($from), prepare_mysql($to)
     );
@@ -377,10 +378,10 @@ function update_isf_index($db) {
 
             $offset = $offset + $chunk_size;
 
-            //$sql = "select `Date`,P.`Part SKU`,L.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial`,`Value At Day Cost` from `Inventory Spanshot Fact` ISF  left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `Date`=?";
 
-
-            $sql = "select `Date`,`Part SKU`,`Location Key`,`Quantity On Hand`,`Value At Cost`,`Value Commercial`,`Value At Day Cost` from `Inventory Spanshot Fact` ISF where `Date`=?";
+            $sql = "select `Quantity In`,`Quantity Sold`,`Sold Amount`,`Location Warehouse Key`, `Quantity Lost`, `Inventory Spanshot Amount In PO`,`Inventory Spanshot Amount In Other`,`Inventory Spanshot Amount Out Sales`,`Inventory Spanshot Amount Out Other`,  `Date`,ISF.`Part SKU`,ISF.`Location Key`,`Location Code` ,`Part Reference`,`Quantity On Hand`,`Value At Cost`,`Value Commercial`,`Value At Day Cost` from `Inventory Spanshot Fact` ISF  
+    left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) 
+where `Date`=?";
 
 
             $stmt = $db->prepare($sql);
@@ -389,33 +390,54 @@ function update_isf_index($db) {
                     $row2['Date']
                 ]
             );
+
             while ($row = $stmt->fetch()) {
+
+
 
                 $global_counter++;
 
                 $params['body'][] = [
                     'index' => [
-                        '_index' => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                        '_index' => 'au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                        '_id'    => DNS_ACCOUNT_CODE.'.'.$row['Part SKU'].'_'.$row['Location Key'].'.'.$row['Date'],
+
                     ]
                 ];
 
 
                 $params['body'][] = [
-                    'tenant'                  => strtolower(DNS_ACCOUNT_CODE),
-                    'date'                    => $row['Date'],
-                    '1st_day_year'            => (preg_match('/\d{4}-01-01/', $row['Date']) ? true : false),
-                    '1st_day_month'           => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
-                    '1st_day_quarter'         => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
-                    '1st_day_week'            => (gmdate('w', strtotime($row['Date'])) ? true : false),
-                    'sku'                     => $row['Part SKU'],
-                    'location_key'            => $row['Location Key'],
+                    'tenant'          => strtolower(DNS_ACCOUNT_CODE),
+                    'date'            => $row['Date'],
+                    '1st_day_year'    => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
+                    '1st_day_month'   => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
+                    '1st_day_quarter' => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
+                    '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
+                    'sku'             => $row['Part SKU'],
+                    'location_key'    => $row['Location Key'],
+
+                    'warehouse' => ($row['Location Warehouse Key']==''?1:$row['Location Warehouse Key']),
+
                     'stock_on_hand'           => $row['Quantity On Hand'],
                     'stock_cost'              => $row['Value At Cost'],
                     'stock_value_at_day_cost' => $row['Value At Day Cost'],
                     'stock_commercial_value'  => $row['Value Commercial'],
 
-                    // 'part'         => $row['Part Reference'],
-                    //'location'     => $row['Location Code'],
+
+                    'sold_amount' => $row['Sold Amount'],
+
+                    'book_in' => $row['Quantity In'],
+                    'sold'    => $row['Quantity Sold'],
+                    'lost'    => $row['Quantity Lost'],
+
+                    'stock_value_in_purchase_order' => $row['Inventory Spanshot Amount In PO'],
+                    'stock_value_in_other'          => $row['Inventory Spanshot Amount In Other'],
+                    'stock_value_out_sales'         => $row['Inventory Spanshot Amount Out Sales'],
+                    'stock_value_out_other'         => $row['Inventory Spanshot Amount Out Other'],
+
+
+                    'part_reference' => $row['Part Reference'],
+                    'location_code'  => $row['Location Code'],
 
                 ];
 
@@ -432,7 +454,122 @@ function update_isf_index($db) {
 
                 $contador++;
                 if ($print_est) {
-                    print_lap_times($row2['Date'], $contador, $total, $lap_time0);
+                   print_lap_times($row2['Date'], $contador, $total, $lap_time0);
+                }
+            }
+
+
+
+
+            $sql = "select `Part Package Description`, `Part Valid From`,`Part Reference`,`Date`,ISF.`Part SKU`, 
+       group_concat(DISTINCT `Location Key`) as locations,
+              group_concat(DISTINCT `Warehouse Key`) as warehouses,
+
+       sum(`Quantity On Hand`) as stock_on_hand,sum(`Value At Cost`) as stock_cost,sum(`Value Commercial`) as stock_commercial_value,sum(`Value At Day Cost`) as stock_value_at_day_cost ,
+       sum(`Quantity Given`) as given,sum(`Quantity In`) as book_in,sum(`Inventory Spanshot Stock Left 1 Year Ago`) stock_left_1_year_ago,`Dormant 1 Year` as no_sales_1_year,
+       sum(`Quantity Sold`) as sold,sum(`Quantity Lost`) as lost,`Inventory Spanshot Warehouse SKO Value`,sum(`Sold Amount`) as sold_amount,
+       sum(`Inventory Spanshot Amount In PO`) as stock_value_in_purchase_order,
+        sum(`Inventory Spanshot Amount In Other`) as stock_value_in_other,
+        sum(`Inventory Spanshot Amount Out Sales`) as stock_value_out_sales, 
+       sum(`Inventory Spanshot Amount Out Other`) as stock_value_out_other
+       
+
+from `Inventory Spanshot Fact` ISF 
+        left join `Part Dimension` P on (P.`Part SKU`=ISF.`Part SKU`) 
+                where `Date`=?  group by ISF.`Part SKU`";
+
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                [
+                    $row2['Date']
+                ]
+            );
+            $_datagms_1_year_back = gmdate('U', strtotime($row['Date'].' - 1 year'));
+            $_parts=0;
+            while ($row = $stmt->fetch()) {
+
+                $_parts++;
+
+
+                $global_counter++;
+
+                $params['body'][] = [
+                    'index' => [
+                        '_index' => 'au_part_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                        '_id'    => DNS_ACCOUNT_CODE.'.'.$row['Part SKU'].'.'.$row['Date'],
+
+                    ]
+                ];
+
+                if (gmdate('U', strtotime($row['Part Valid From'])) > $_datagms_1_year_back) {
+                    $no_sales_1_year_icon = 'fal fa-seedling';
+                } else {
+                    switch ($row['no_sales_1_year']) {
+                        case 'Yes':
+                            $no_sales_1_year_icon = 'fa fa-snooze';
+                            break;
+                        case 'No':
+                            $no_sales_1_year_icon = 'fa success fa-check';
+                            break;
+                        default:
+                            $no_sales_1_year_icon = 'error fa fa-question';
+                            break;
+                    }
+                }
+
+                $params['body'][] = [
+                    'tenant'          => strtolower(DNS_ACCOUNT_CODE),
+                    'date'            => $row['Date'],
+                    '1st_day_year'    => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
+                    '1st_day_month'   => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
+                    '1st_day_quarter' => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
+                    '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
+                    'sku'             => $row['Part SKU'],
+
+
+                    'locations'  => preg_split('/,/', $row['locations']),
+                    'warehouses' => preg_split('/,/', $row['warehouses']),
+
+
+                    'stock_on_hand'           => $row['stock_on_hand'],
+                    'stock_cost'              => $row['stock_cost'],
+                    'stock_value_at_day_cost' => $row['stock_value_at_day_cost'],
+                    'stock_commercial_value'  => $row['stock_commercial_value'],
+
+                    'sold_amount' => $row['sold_amount'],
+                    'book_in'     => $row['book_in'],
+                    'sold'        => $row['sold'],
+                    'lost'        => $row['lost'],
+
+                    'stock_value_in_purchase_order' => $row['stock_value_in_purchase_order'],
+                    'stock_value_in_other'          => $row['stock_value_in_other'],
+                    'stock_value_out_sales'         => $row['stock_value_out_sales'],
+                    'stock_value_out_other'         => $row['stock_value_out_other'],
+
+
+                    'sko_cost'              => $row['Inventory Spanshot Warehouse SKO Value'],
+                    'stock_left_1_year_ago' => $row['stock_left_1_year_ago'],
+                    'no_sales_1_year'       => ($row['no_sales_1_year'] == 'Yes' ? true : false),
+                    'no_sales_1_year_icon'  => $no_sales_1_year_icon,
+                    'part_reference'        => $row['Part Reference'],
+                    'part_description'      => $row['Part Package Description'],
+
+                ];
+
+
+                if ($global_counter > 0 && $global_counter % 1000 == 0) {
+
+                    add_indices($client, $params);
+
+                    $params = ['body' => []];
+
+
+                }
+
+
+                if ($print_est) {
+                  print_lap_times($row2['Date'], $contador, $total, $lap_time0);
                 }
             }
         }
@@ -495,7 +632,9 @@ function update_wisf_index($db) {
 
                 $params['body'][] = [
                     'index' => [
-                        '_index' => 'au_wisf_'.strtolower(DNS_ACCOUNT_CODE),
+                        '_index' => 'au_warehouse_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                        '_id'    => DNS_ACCOUNT_CODE.'.'.$row['Date'],
+
                     ]
                 ];
 
@@ -503,10 +642,10 @@ function update_wisf_index($db) {
                 $params['body'][] = [
                     'tenant'          => strtolower(DNS_ACCOUNT_CODE),
                     'date'            => $row['Date'],
-                    '1st_day_year'    => (preg_match('/\d{4}-01-01/', $row['Date']) ? true : false),
+                    '1st_day_year'    => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
                     '1st_day_month'   => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
                     '1st_day_quarter' => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
-                    '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) ? true : false),
+                    '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
 
 
                     'parts'     => $row['Parts'],

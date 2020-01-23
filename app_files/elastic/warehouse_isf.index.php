@@ -18,11 +18,8 @@ require '../../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_isf';
-
-
 $params = [
-    'index' => strtolower('au_isf'),
+    'index' => strtolower('au_warehouse_isf'),
     'body'  => array(
         'settings' => array(
             'analysis'   => array(
@@ -79,61 +76,46 @@ $params = [
                 '1st_day_week' => array(
                     'type'=> 'boolean',
                 ),
-                'sku'  => [
-                    'type'       => 'integer',
-                ],
-                'location_key'  => [
-                    'type'       => 'short',
-                ],
-                'part'  => [
-                    'type'       => 'keyword',
-                    "normalizer" => "code_normalizer"
-                ],
-                'location'  => [
-                    'type'       => 'keyword',
-                    "normalizer" => "code_normalizer"
-                ],
 
-                'stock_on_hand'  => [
-                    'type'       => 'float',
+
+                'parts'  => [
+                    'type'       => 'keyword',
+                ],
+                'locations'  => [
+                    'type'       => 'keyword',
                 ],
 
                 'stock_cost'  => [
-                    'type'       => 'float',
+                    'type'       => 'keyword',
                 ],
                 'stock_value_at_day_cost'  => [
-                    'type'       => 'float',
+                    'type'       => 'keyword',
                 ],
                 'stock_commercial_value'  => [
-                    'type'       => 'float',
+                    'type'       => 'keyword',
                 ],
 
                 'stock_value_in_purchase_order'  => [
-                    'type'       => 'float',
+                    'type'       => 'keyword',
                 ],
                 'stock_value_in_other'  => [
-                    'type'       => 'float',
+                    'type'       => 'keyword',
                 ],
                 'stock_value_out_sales'  => [
-                    'type'       => 'float',
+                    'type'       => 'keyword',
                 ],
                 'stock_value_out_other'  => [
-                    'type'       => 'float',
+                    'type'       => 'keyword',
                 ],
-
-                'stock_in_purchase_order'  => [
-                    'type'       => 'float',
+                'stock_value_dormant_1y'  => [
+                    'type'       => 'keyword',
                 ],
-                'stock_in_other'  => [
-                    'type'       => 'float',
+                'parts_with_no_sales_1y'  => [
+                    'type'       => 'keyword',
                 ],
-                'stock_out_sales'  => [
-                    'type'       => 'float',
+                'parts_with_stock_left_1y'  => [
+                    'type'       => 'keyword',
                 ],
-                'stock_out_other'  => [
-                    'type'       => 'float',
-                ],
-
 
 
             )

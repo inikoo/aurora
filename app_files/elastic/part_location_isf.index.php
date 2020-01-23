@@ -18,11 +18,10 @@ require '../../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-//curl -X DELETE 'http://localhost:9200/au_wisf';
 
 
 $params = [
-    'index' => strtolower('au_wisf'),
+    'index' => strtolower('au_part_location_isf'),
     'body'  => array(
         'settings' => array(
             'analysis'   => array(
@@ -60,7 +59,6 @@ $params = [
                 ],
                 'warehouse'  => [
                     'type'       => 'keyword',
-                    "normalizer" => "code_normalizer"
                 ],
                 'date' => array(
                     'type'=> 'date',
@@ -79,13 +77,24 @@ $params = [
                 '1st_day_week' => array(
                     'type'=> 'boolean',
                 ),
-
-
-                'parts'  => [
-                    'type'       => 'short',
+                'sku'  => [
+                    'type'       => 'keyword',
                 ],
-                'locations'  => [
-                    'type'       => 'short',
+                'location_key'  => [
+                    'type'       => 'keyword',
+                ],
+                'part_reference'  => [
+                    'type'       => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ],
+                'location_code'  => [
+                    'type'       => 'keyword',
+                    "normalizer" => "code_normalizer"
+                ],
+
+                'stock_on_hand'  => [
+                    'type'       => 'float',
+                    'index' => false
                 ],
 
                 'stock_cost'  => [
@@ -96,30 +105,70 @@ $params = [
                 ],
                 'stock_commercial_value'  => [
                     'type'       => 'float',
+                    'index' => false
                 ],
 
                 'stock_value_in_purchase_order'  => [
                     'type'       => 'float',
+                    'index' => false
                 ],
                 'stock_value_in_other'  => [
                     'type'       => 'float',
+                    'index' => false
                 ],
                 'stock_value_out_sales'  => [
                     'type'       => 'float',
+                    'index' => false
                 ],
                 'stock_value_out_other'  => [
                     'type'       => 'float',
-                ],
-                'stock_value_dormant_1y'  => [
-                    'type'       => 'float',
-                ],
-                'parts_with_no_sales_1y'  => [
-                    'type'       => 'short',
-                ],
-                'parts_with_stock_left_1y'  => [
-                    'type'       => 'short',
+                    'index' => false
                 ],
 
+
+
+
+                'stock_in_purchase_order'  => [
+                    'type'       => 'keyword',
+                    'index' => false
+                ],
+                'stock_in_other'  => [
+                    'type'       => 'keyword',
+                    'index' => false
+                ],
+                'stock_out_sales'  => [
+                    'type'       => 'keyword',
+                    'index' => false
+                ],
+                'stock_out_other'  => [
+                    'type'       => 'keyword',
+                    'index' => false
+                ],
+
+                'book_in'               => [
+                    'type'  => 'float',
+                    'index' => false
+                ],
+                'sold'                  => [
+                    'type'  => 'float',
+                    'index' => false
+                ],
+                'sold_amount'                  => [
+                    'type'  => 'float',
+                    'index' => false
+                ],
+
+
+
+
+                'given'                 => [
+                    'type'  => 'float',
+                    'index' => false
+                ],
+                'lost'                  => [
+                    'type'  => 'float',
+                    'index' => false
+                ],
 
             )
         )

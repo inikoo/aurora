@@ -76,8 +76,26 @@ $params['body'] = array(
     'actions' => array(
         array(
             'add' => array(
-                'index'   => 'au_isf',
-                'alias'   => 'au_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                'index'   => 'au_part_isf',
+                'alias'   => 'au_part_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);
+
+
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_part_location_isf',
+                'alias'   => 'au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE),
                 "filter"  => [
                     "term" => [
                         "tenant" => DNS_ACCOUNT_CODE
@@ -93,8 +111,8 @@ $params['body'] = array(
     'actions' => array(
         array(
             'add' => array(
-                'index'   => 'au_wisf',
-                'alias'   => 'au_wisf_'.strtolower(DNS_ACCOUNT_CODE),
+                'index'   => 'au_warehouse_isf',
+                'alias'   => 'au_warehouse_isf_'.strtolower(DNS_ACCOUNT_CODE),
                 "filter"  => [
                     "term" => [
                         "tenant" => DNS_ACCOUNT_CODE
