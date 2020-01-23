@@ -131,8 +131,8 @@ function check_for_box_serial_number($data, $db, $user, $account) {
         }
 
         include 'keyring/dns.php';
-        $box_db=get_box_db();
-        $sql = "SELECT `Box Key`,`Box Aurora Account Code`  FROM box.`Box Dimension`  WHERE  `Box ID`=?    ";
+        $box_db = get_box_db();
+        $sql    = "SELECT `Box Key`,`Box Aurora Account Code`  FROM box.`Box Dimension`  WHERE  `Box ID`=?    ";
 
         $stmt = $box_db->prepare($sql);
         $stmt->execute(
@@ -349,7 +349,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Another contractor is using this payroll Id'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Staff Key` AS `key` ,`Staff Alias` AS field FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' AND  `Staff ID`=%s", prepare_mysql($data['value'])
+                        "SELECT `Staff Key` AS `key` ,`Staff Alias` AS field FROM `Staff Dimension` WHERE  `Staff ID`=%s", prepare_mysql($data['value'])
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -362,7 +362,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Another contractor is using this code'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Staff Key` AS `key` ,`Staff Alias` AS field FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' AND  `Staff Alias`=%s", prepare_mysql($data['value'])
+                        "SELECT `Staff Key` AS `key` ,`Staff Alias` AS field FROM `Staff Dimension` WHERE   `Staff Alias`=%s", prepare_mysql($data['value'])
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -375,7 +375,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'Another contractor is using this code'
                     );
                     $sql                      = sprintf(
-                        "SELECT `Staff Key` AS `key` ,`Staff Alias` AS field FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' AND  `Staff Email`=%s", prepare_mysql($data['value'])
+                        "SELECT `Staff Key` AS `key` ,`Staff Alias` AS field FROM `Staff Dimension` WHERE   `Staff Email`=%s", prepare_mysql($data['value'])
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
@@ -408,13 +408,12 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
             if ($data['object'] == 'Staff') {
-                $extra_where = "`Staff Currently Working`='Yes' and";
+
             } else {
                 $data['object'] = 'Staff';
-                $extra_where    = '';
             }
 
-
+            $extra_where = '';
             switch ($field) {
                 case 'Staff ID':
                     $invalid_msg              = _(
@@ -945,11 +944,10 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Product Code':
 
 
-                    $invalid_msg              = _('Product code already used');
+                    $invalid_msg = _('Product code already used');
 
-                    $sql                      = sprintf(
-                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ",
-                        prepare_mysql($data['value']), $data['parent_key']
+                    $sql = sprintf(
+                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ", prepare_mysql($data['value']), $data['parent_key']
 
                     );
 
