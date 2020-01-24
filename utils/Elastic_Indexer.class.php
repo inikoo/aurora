@@ -351,7 +351,7 @@ class Elastic_Indexer {
         //$this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
         $this->url = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
 
-        $this->customer_user=$this->object->id;
+        $this->customer_user[]=$this->object->id;
 
         $this->real_time[] = $this->object->id;
         $this->real_time[] = $this->object->get('Name');
@@ -664,7 +664,7 @@ class Elastic_Indexer {
 
         $this->module    = 'orders';
         $this->store_key = $this->object->get('Store Key');
-        $this->customer_user=$this->object->get('Order Customer Key');
+        $this->customer_user[]=$this->object->get('Order Customer Key');
 
         $this->code = $this->object->get('Order Public ID');
 
@@ -1274,7 +1274,7 @@ class Elastic_Indexer {
                 'suppliers' => 100
             );
 
-            $this->supplier_user=$supplier->id;
+            $this->supplier_user[]=$supplier->id;
 
             foreach($supplier->get_agents() as $agent_key){
                 $this->agent_user[]=$agent_key;
@@ -1330,7 +1330,7 @@ class Elastic_Indexer {
             'agents' => 100
         );
 
-        $this->agent_user=$this->object->id;
+        $this->agent_user[]=$this->object->id;
         $this->code = $this->object->get('Agent Code');
         $this->url  = sprintf('agent/%d', $this->object->id);
 
@@ -1360,7 +1360,7 @@ class Elastic_Indexer {
                 'supplier_parts' => 100
             );
 
-            $this->supplier_user=$this->object->get('Supplier Key');
+            $this->supplier_user[]=$this->object->get('Supplier Key');
 
 
         }
@@ -1562,7 +1562,7 @@ class Elastic_Indexer {
 
         $this->module    = 'accounting';
         $this->store_key = $this->object->get('Store Key');
-        $this->customer_user=$this->object->get('Invoice Customer Key');
+        $this->customer_user[]=$this->object->get('Invoice Customer Key');
 
         $this->code = $this->object->get('Public ID');
 
@@ -1615,7 +1615,7 @@ class Elastic_Indexer {
 
         $this->module    = 'delivering';
         $this->store_key = $this->object->get('Store Key');
-        $this->customer_user=$this->object->get('Delivery Note Customer Key');
+        $this->customer_user[]=$this->object->get('Delivery Note Customer Key');
 
 
         $this->code = $this->object->get('ID');
@@ -1657,7 +1657,7 @@ class Elastic_Indexer {
 
         $this->module    = 'accounting';
         $this->store_key = $this->object->get('Store Key');
-        $this->customer_user=$this->object->get('Payment Customer Key');
+        $this->customer_user[]=$this->object->get('Payment Customer Key');
 
         $this->scopes = array(
             'payments' => 100
@@ -2015,6 +2015,17 @@ class Elastic_Indexer {
         if (count($this->scopes) > 0) {
             $body['scopes'] = $this->scopes;
         }
+
+        if (count($this->agent_user) > 0) {
+            $body['agent_user']= $this->agent_user;
+        }
+        if (count($this->supplier_user) > 0) {
+            $body['supplier_user'] = $this->supplier_user;
+        }
+        if (count($this->customer_user) > 0) {
+            $body['customer_user'] = $this->customer_user;
+        }
+
         $body['tenant'] = $this->account_code;
         $index_body[]   = $body;
 

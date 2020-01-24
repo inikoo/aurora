@@ -15,7 +15,6 @@ use Elasticsearch\ClientBuilder;
 
 require_once 'common.php';
 require_once 'utils/ar_common.php';
-//include_once 'search_functions.php';
 
 
 $data = prepare_values(
@@ -48,7 +47,31 @@ if (!empty($data['state']['current_store'])) {
 
 
 if ($user->get('User Type') == 'Agent') {
-    agent_search($db, $account, $user, $data);
+
+
+
+
+    if ($data['state']['module'] == 'agent_suppliers' ) {
+        $scopes = array(
+            'suppliers' => 10
+        );
+        $module=['suppliers'];
+    }elseif ($data['state']['module'] == 'agent_parts' or $data['state']['module'] == 'agent_part' ) {
+        $scopes = array(
+            'supplier_parts' => 10
+        );
+        $module=['suppliers'];
+    }else{
+        $module=['suppliers'];
+        $scopes=[];
+    }
+    echo json_encode(search_ES($data, $user->get('Handle'), $module,$scopes,[],[$user->get('User Parent Key')]  ));
+
+
+    exit;
+
+
+
 } else {
     if ($data['state']['module'] == 'customers' or $data['state']['module'] == 'customers_server') {
 
@@ -239,7 +262,10 @@ function check_for_store_permissions($stores) {
     }
 }
 
-function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = array()) {
+function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = [],$agents=[]) {
+
+
+
 
 
     $section = $query_data['state']['section'];
@@ -373,10 +399,17 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = ar
         );
     }
 
+    if (count($agents) > 0) {
+        $params['body']['query']['bool']['filter'][] = array(
+            "terms" => [
+                "agent_user" => $agents
+            ]
+        );
+    }
+
 
     $now = DateTime::createFromFormat('U.u', microtime(true));
 
-   // print_r($params);
 
 
     $result = $client->search($params);
