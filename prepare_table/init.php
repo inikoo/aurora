@@ -13,7 +13,6 @@
 include_once 'utils/date_functions.php';
 
 
-
 if (!isset($rtext_label)) {
     $rtext_label = '';
 }
@@ -43,29 +42,29 @@ foreach ($parameters as $parameter => $parameter_value) {
 
 if (!isset($dont_save_table_state)) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['o']       = $order;
-    $_SESSION['table_state'][$_data['parameters']['tab']]['od'] = ($order_direction == '' ? -1 : 1);
-    $_SESSION['table_state'][$_data['parameters']['tab']]['nr'] = $number_results;
+    $_SESSION['table_state'][$_data['parameters']['tab']]['od']      = ($order_direction == '' ? -1 : 1);
+    $_SESSION['table_state'][$_data['parameters']['tab']]['nr']      = $number_results;
     $_SESSION['table_state'][$_data['parameters']['tab']]['f_value'] = $f_value;
 }
 
-if (isset($_data['parameters']['invoices_vat']) ) {
+if (isset($_data['parameters']['invoices_vat'])) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_vat'] = $_data['parameters']['invoices_vat'];
 }
-if (isset($_data['parameters']['invoices_no_vat']) ) {
-    $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_no_vat'] =  $_data['parameters']['invoices_no_vat'];
+if (isset($_data['parameters']['invoices_no_vat'])) {
+    $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_no_vat'] = $_data['parameters']['invoices_no_vat'];
 }
-if (isset($_data['parameters']['invoices_null']) ) {
-    $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_null'] =  $_data['parameters']['invoices_null'];
+if (isset($_data['parameters']['invoices_null'])) {
+    $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_null'] = $_data['parameters']['invoices_null'];
 }
 
-include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
+if (file_exists('prepare_table/'.$_data['parameters']['tab'].'.ptble.php')) {
+    include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
+    if (!isset($skip_get_table_totals)) {
+        list($rtext, $total, $filtered) = get_table_totals(
+            $db, $sql_totals, $wheref, $rtext_label, (isset($totals_metadata) ? $totals_metadata : false)
+        );
 
-
-
-
-if (!isset($skip_get_table_totals)) {
-    list($rtext, $total, $filtered) = get_table_totals($db, $sql_totals, $wheref, $rtext_label, (isset($totals_metadata) ? $totals_metadata : false)
-    );
+    }
 
 }
 
@@ -73,8 +72,9 @@ if (!isset($skip_get_table_totals)) {
 if (isset($parameters['period']) and $parameters['period'] != 'all') {
     include_once 'utils/date_functions.php';
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
 
@@ -87,15 +87,15 @@ if (isset($parameters['period']) and $parameters['period'] != 'all') {
     }
 
 
-
 }
 
 
 if (isset($parameters['parent_period']) and $parameters['parent_period'] != 'all') {
     include_once 'utils/date_functions.php';
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $parameters['parent_period'], $parameters['parent_from'], $parameters['parent_to']
     );
 
@@ -106,7 +106,6 @@ if (isset($parameters['parent_period']) and $parameters['parent_period'] != 'all
     } else {
         $rtext .= " ($_from)";
     }
-
 
 
 }

@@ -16,45 +16,37 @@ $tipo    = 'stock.history.day';
 
 $default = $user->get_tab_defaults($tab);
 
-$table_views = array(
+$table_views   = array(
     'overview' => array(
         'label' => _('Stock'),
         'title' => _('Stock')
     ),
-    '1_year'    => array(
+    '1_year'   => array(
         'label' => _('1 year'),
         'title' => _('1 year')
     ),
 
 );
 $table_filters = array(
-
-    'reference'         => array(
+    'part_reference' => array(
         'label' => _('Reference'),
         'title' => _('Reference')
     ),
 
-
-
 );
 
-
-
-
-$parameters    = array(
-    'parent'     => 'day',
-    'parent_key' =>$state['key'],
-    'warehouse_key' =>$state['current_warehouse'],
+$parameters = array(
+    'parent'        => 'date',
+    'parent_key'    => $state['key'],
+    'warehouse_key' => $state['current_warehouse'],
 );
 
-$table_buttons   = array();
+$table_buttons = array();
 
 $smarty->assign('table_buttons', $table_buttons);
 
 
-
 include 'utils/get_table_html.php';
 
-$html = $html;
 
-?>
+

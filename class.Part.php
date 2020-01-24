@@ -11,6 +11,7 @@
 
  Version 2.0
 */
+use Elasticsearch\ClientBuilder;
 
 include_once 'class.Asset.php';
 
@@ -26,7 +27,6 @@ class Part extends Asset {
     public $fork = false;
 
     function __construct($arg1, $arg2 = false, $arg3 = false, $_db = false) {
-
 
 
         if (!$_db) {
@@ -1820,7 +1820,7 @@ class Part extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                //  print 'yyyy';
+
 
                 $this->update_margin();
 
@@ -3121,9 +3121,9 @@ class Part extends Asset {
                 'editor'   => $this->editor
             ), $account->get('Account Code')
             );
-            
+
             $this->fork_index_elastic_search();
-            
+
         }
 
 
@@ -3984,8 +3984,6 @@ class Part extends Asset {
     }
 
 
-
-
     function update_stock_in_paid_orders() {
 
 
@@ -4296,7 +4294,7 @@ class Part extends Asset {
                 $supplier_part->delete();
             }
         }
-        
+
         $this->fork_index_elastic_search('delete_elastic_index_object');
 
 
@@ -4834,17 +4832,57 @@ class Part extends Asset {
                 );
 
 
-                $total_stock = 0;
+                $locations   = 0;
+                
+
+                $stock_on_hand           = 0;
+                $stock_cost              = 0;
+                $stock_value_at_day_cost = 0;
+                $stock_commercial_value  = 0;
+
+                $sold_amount = 0;
+
+                $book_in = 0;
+                $sold    = 0;
+                $lost    = 0;
+
+                $stock_value_in_purchase_order = 0;
+                $stock_value_in_other          = 0;
+                $stock_value_out_sales         = 0;
+                $stock_value_out_other         = 0;
+
+
+                $location_keys=[];
+                $warehouse_keys=[];
+
                 if ($result3 = $this->db->query($sql)) {
                     foreach ($result3 as $row3) {
 
                         $part_location               = new PartLocation($this->id.'_'.$row3['Location Key']);
                         $result_update_stock_history = $part_location->update_stock_history_date($row['Date']);
 
-                        if ($result_update_stock_history) {
+                        if ($result_update_stock_history['action'] == 'updated') {
+
+                            $locations++;
 
 
-                            $total_stock += $result_update_stock_history['stock'];
+
+                            $location_keys[$part_location->location->id]=1;
+                            $warehouse_keys[$part_location->location->get('Location Warehouse Key')]=1;
+
+                            $stock_on_hand                 += $result_update_stock_history['data']['stock_on_hand'];
+                            $stock_cost                    += $result_update_stock_history['data']['stock_cost'];
+                            $stock_value_at_day_cost       += $result_update_stock_history['data']['stock_value_at_day_cost'];
+                            $stock_commercial_value        += $result_update_stock_history['data']['stock_commercial_value'];
+                            $sold_amount                   += $result_update_stock_history['data']['sold_amount'];
+                            $book_in                       += $result_update_stock_history['data']['book_in'];
+                            $sold                          += $result_update_stock_history['data']['sold'];
+                            $lost                          += $result_update_stock_history['data']['lost'];
+                            $stock_value_in_purchase_order += $result_update_stock_history['data']['stock_value_in_purchase_order'];
+                            $stock_value_in_other          += $result_update_stock_history['data']['stock_value_in_other'];
+                            $stock_value_out_sales         += $result_update_stock_history['data']['stock_value_out_sales'];
+                            $stock_value_out_other         += $result_update_stock_history['data']['stock_value_out_other'];
+
                         }
 
 
@@ -4855,7 +4893,7 @@ class Part extends Asset {
 
 
                 $stock_left_1_year_ago = 0;
-                if ($total_stock > 0) {
+                if ($stock_on_hand > 0) {
 
                     $date_1yr_back = gmdate('Y-m-d', strtotime($row['Date'].' -1 year'));
                     if (gmdate('U', strtotime($this->get('Part Valid From'))) < gmdate('U', strtotime($row['Date'].' -1 year'))) {
@@ -4876,12 +4914,7 @@ class Part extends Asset {
 
 
                         $total_out_1_year = 0;
-                        /*
-                        $sql              = sprintf(
-                            "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Section`='Out' ", prepare_mysql($date_1yr_back.' 23:59:59'),
-                            prepare_mysql($row['Date'].' 23:59:59'), $this->id
-                        );
-*/
+
 
                         $sql = sprintf(
                             "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Record Type`='Movement'  and  `Inventory Transaction Quantity`<0  ",
@@ -4909,10 +4942,6 @@ class Part extends Asset {
                 }
 
 
-                //print "$stock_one_year_ago $total_out_1_year   = $total_stock  ||   $stock_left_1_year_ago   = ";
-                //exit;
-
-
                 if (strtotime($this->data['Part Valid From']) <= strtotime($row['Date'].' 23:59:59 -1 year')) {
 
                     $sql = sprintf(
@@ -4933,11 +4962,83 @@ class Part extends Asset {
                 }
 
 
-                $sql = sprintf(
-                    'update `Inventory Spanshot Fact` set `Inventory Spanshot Stock Left 1 Year Ago`=%f ,`Dormant 1 Year`=%s where `Part SKU`=%d and `Date`=%s ', $stock_left_1_year_ago, prepare_mysql($dormant_1year), $this->id, prepare_mysql($row['Date'])
-                );
+                if (gmdate('U', strtotime($this->data['Part Valid From'])) > gmdate('U', strtotime($row['Date'].' - 1 year'))) {
 
-                $this->db->exec($sql);
+                    $no_sales_1_year_icon = 'fal fa-seedling';
+
+
+                } else {
+                    switch ($dormant_1year) {
+                        case 'Yes':
+                            $no_sales_1_year_icon = 'fa fa-snooze';
+                            break;
+                        case 'No':
+                            $no_sales_1_year_icon = 'fa success fa-check';
+                            break;
+                        default:
+                            $no_sales_1_year_icon = 'error fa fa-question';
+                            break;
+
+                    }
+                }
+
+                $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+                $params = ['body' => []];
+
+
+                $params['body'][] = [
+                    'index' => [
+                        '_index' => 'au_part_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                        '_id'    => DNS_ACCOUNT_CODE.'.'.$this->id.'.'.$row['Date'],
+
+                    ]
+                ];
+
+                $params['body'][] = [
+                    'tenant'                  => strtolower(DNS_ACCOUNT_CODE),
+                    'date'                    => $row['Date'],
+                    '1st_day_year'            => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
+                    '1st_day_month'           => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
+                    '1st_day_quarter'         => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
+                    '1st_day_week'            => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
+                    'sku'                     => $this->sku,
+                    'locations'               => $locations,
+
+                    'locations'  => array_keys($location_keys),
+                    'warehouses' => array_keys($warehouse_keys),
+
+
+                    'stock_on_hand'           => $stock_on_hand,
+                    'stock_cost'              => $stock_cost,
+                    'stock_value_at_day_cost' => $stock_value_at_day_cost,
+                    'stock_commercial_value'  => $stock_commercial_value,
+
+                    'sold_amount' => $sold_amount,
+                    'book_in'     => $book_in,
+                    'sold'        => $sold,
+                    'lost'        => $lost,
+
+                    'stock_value_in_purchase_order' => $stock_value_in_purchase_order,
+                    'stock_value_in_other'          => $stock_value_in_other,
+                    'stock_value_out_sales'         => $stock_value_out_sales,
+                    'stock_value_out_other'         => $stock_value_out_other,
+
+
+                    'sko_cost'              => (isset($result_update_stock_history['cost_per_sko'])? $result_update_stock_history['cost_per_sko']:$this->get('Part Cost in Warehouse')),
+                    'stock_left_1_year_ago' => $stock_left_1_year_ago,
+                    'no_sales_1_year'       =>  ($dormant_1year == 'Yes' ? true : false),
+                    'no_sales_1_year_icon'  => $no_sales_1_year_icon,
+                    'part_reference'        => $this->data['Part Reference'],
+                    'part_description'      => $this->data['Part Package Description'],
+
+                ];
+
+
+                $client->bulk($params);
+
+
+
 
 
             }

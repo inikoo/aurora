@@ -2415,9 +2415,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             $date = gmdate('Y-m-d H:i:s');
+
+
+
+
             $sql  = sprintf(
                 'insert into `Stack BiKey Dimension` (`Stack BiKey Creation Date`,`Stack BiKey Last Update Date`,`Stack BiKey Operation`,`Stack BiKey Object Key One`,`Stack BiKey Object Key Two`) values (%s,%s,%s,%d,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack BiKey Last Update Date`=%s ,`Stack BiKey Counter`=`Stack BiKey Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('update_ISF'), $data['part_sku'], $data['location_key'], prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack BiKey Last Update Date`=%s ,`Stack BiKey Counter`=`Stack BiKey Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('update_part_location_isf'), $data['part_sku'], $data['location_key'], prepare_mysql($date)
 
             );
             $db->exec($sql);

@@ -44,16 +44,14 @@ $intervals = array(
     '1 Week',
 );
 
-$sql = sprintf("SELECT count(*) AS num FROM `Stack BiKey Dimension`  where `Stack BiKey Operation`='update_ISF'");
-if ($result = $db->query($sql)) {
-    if ($row = $result->fetch()) {
-        $total = $row['num'];
-    } else {
-        $total = 0;
-    }
+$sql = "SELECT count(*) AS num FROM `Stack Dimension`  where `Stack Operation`='update_isf'";
+
+$stmt = $db->prepare($sql);
+$stmt->execute();
+if ($row = $stmt->fetch()) {
+    $total = $row['num'];
 } else {
-    print_r($error_info = $db->errorInfo());
-    exit;
+    $total = 0;
 }
 
 
@@ -82,11 +80,18 @@ if ($result = $db->query($sql)) {
                 $editor['Date'] = gmdate('Y-m-d H:i:s');
 
 
+                $date=gmdate('Y-m-d');
+
+                $part=get_object('Part',$row['Stack BiKey Object Key One']);
+                $part->editor = $editor;
+                $part->update_part_inventory_snapshot_fact($date, $date);
+
+
+
                 $part_location         = new PartLocation($row['Stack BiKey Object Key One'].'_'.$row['Stack BiKey Object Key Two']);
                 $part_location->editor = $editor;
 
 
-                $part_location->update_stock_history_date(gmdate('Y-m-d'));
 
 
                 if ($part_location->location->id) {
@@ -94,17 +99,11 @@ if ($result = $db->query($sql)) {
 
                     $sql = sprintf(
                         'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
-                        prepare_mysql($date),
-                        prepare_mysql($date),
-                        prepare_mysql('warehouse_ISF'),
-                        $part_location->location->get('Location Warehouse Key'),
-                        prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('warehouse_ISF'), $part_location->location->get('Location Warehouse Key'), prepare_mysql($date)
 
                     );
                     $db->exec($sql);
                 }
-
 
 
                 if ($part_location->get('Quantity On Hand') < 0) {
@@ -144,4 +143,4 @@ if ($total > 0) {
 }
 
 
-?>
+

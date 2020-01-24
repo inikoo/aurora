@@ -50,9 +50,6 @@ function get_table_totals($db, $sql_totals, $wheref = '', $record_label = '', $m
             if ($row = $result->fetch()) {
                 $total = $row['num'];
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
         if ($wheref != '') {
@@ -64,7 +61,6 @@ function get_table_totals($db, $sql_totals, $wheref = '', $record_label = '', $m
 
         } else {
             $filtered      = 0;
-            $filter_total  = 0;
             $total_records = $total;
         }
 
@@ -73,7 +69,6 @@ function get_table_totals($db, $sql_totals, $wheref = '', $record_label = '', $m
         if (is_array($metadata)) {
 
             $filtered      = $metadata['filtered'];
-            $filter_total  = $metadata['filter_total'];
             $total_records = $metadata['total_records'];
             $total         = $metadata['total'];
         }

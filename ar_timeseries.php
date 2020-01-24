@@ -207,11 +207,24 @@ function asset_sales($db, $data, $account) {
 
 
         case 'part':
-            $fields
-                   = ' `Date`,sum(`Sold Amount`)  as `Sales`, sum(`Quantity Sold`)  as  `Volume`';
-            $where = sprintf("where `Part SKU`=%d", $data['parent_key']);
-            $table = "`Inventory Spanshot Fact`";
-            $group = 'group by `Date`';
+
+            include_once 'elastic/isf.elastic.php';
+
+
+
+            $results_raw=get_part_inventory_transaction_fact('sales',$data['parent_key']);
+
+            $results=$results_raw['aggregations']['stock_per_day']['buckets'];
+            print "Date,Open,Volume\n";
+
+            foreach(array_reverse($results) as $result){
+                print $result['key_as_string'].','.$result['sold_amount']['value'].','.$result['sold']['value']."\n";
+            }
+
+            exit();
+
+
+
             break;
 
         case 'product':
@@ -441,7 +454,9 @@ function part_stock( $data) {
     print "Date,Open,High,Low,Close,Volume,Adj Close\n";
 
 
-    $results=get_part_inventory_transaction_fact($data['parent_key'],$data['from'],$data['to']);
+    $results_raw=get_part_inventory_transaction_fact('stock',$data['parent_key']);
+
+    $results=$results_raw['aggregations']['stock_per_day']['buckets'];
     foreach(array_reverse($results) as $result){
         print $result['key_as_string'].',0,0,0,'.$result['stock']['value']."\n";
     }

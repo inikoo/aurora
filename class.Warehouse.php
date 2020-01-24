@@ -12,6 +12,7 @@
  Version 2.0
 */
 
+use Elasticsearch\ClientBuilder;
 
 include_once 'class.DB_Table.php';
 
@@ -996,6 +997,11 @@ class Warehouse extends DB_Table {
 
     function update_inventory_snapshot($from = '', $to = false) {
 
+        $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+
+        include_once 'utils/warehouse_isf_functions.php';
+
         if ($from == '') {
             $from = gmdate('Y-m-d', strtotime($this->data['Warehouse Valid From'].' +0:00'));
         }
@@ -1012,137 +1018,402 @@ class Warehouse extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
+
+                $params = [
+                    'index' => strtolower('au_part_isf_'.strtolower(DNS_ACCOUNT_CODE)),
+
+                    'body' => [
+                        'query'        => [
+
+                            'bool' => [
+
+
+                                'filter' => [
+                                    [
+                                        "term" => [
+                                            'date' => $row['Date'],
+                                        ],
+
+
+                                    ],
+                                    [
+                                        "term" => [
+                                            'warehouses' => $this->id,
+                                        ],
+
+
+                                    ],
+                                    [
+                                        "term" => [
+                                            'no_sales_1_year' => true,
+                                        ],
+
+
+                                    ],
+
+                                ]
+
+
+                            ]
+                        ],
+                        "aggregations" => [
+                            "parts" => [
+                                "cardinality" => [
+                                    "field" => "sku"
+                                ],
+                            ],
+                        ],
+                        'size'         => 0
+
+                    ],
+
+
+                ];
+
+                $response = $client->search($params);
+
+
+                $parts_no_sales_1_year = $response['aggregations']['parts']['value'];
+
+
+                $params   = [
+                    'index' => strtolower('au_part_isf_'.strtolower(DNS_ACCOUNT_CODE)),
+
+                    'body' => [
+                        'query'        => [
+
+                            'bool' => [
+
+
+                                'filter' => [
+                                    [
+                                        "term" => [
+                                            'date' => $row['Date'],
+                                        ],
+
+
+                                    ],
+                                    [
+                                        "term" => [
+                                            'warehouses' => $this->id,
+                                        ],
+
+
+                                    ],
+                                    [
+                                        'range' => [
+                                            'stock_left_1_year_ago' => [
+                                                'gt' => 0
+                                            ]
+                                        ],
+
+                                    ]
+
+                                ]
+
+
+                            ]
+                        ],
+                        "aggregations" => [
+                            "parts" => [
+                                "cardinality" => [
+                                    "field" => "sku"
+                                ],
+                            ],
+                        ],
+                        'size'         => 10
+
+                    ],
+
+
+                ];
+                $response = $client->search($params);
+
+
+                $parts_with_stock_left_1_year = $response['aggregations']['parts']['value'];
+
+
+                $params = [
+                    'index' => strtolower('au_part_isf_'.strtolower(DNS_ACCOUNT_CODE)),
+
+                    'body' => [
+                        'query' => [
+
+                            'bool' => [
+
+
+                                'filter' => [
+                                    [
+                                        "term" => [
+                                            'date' => $row['Date'],
+                                        ],
+
+
+                                    ],
+                                    [
+                                        "term" => [
+                                            'warehouses' => $this->id,
+                                        ],
+
+
+                                    ],
+                                    [
+                                        'range' => [
+                                            'stock_value_at_day_cost' => [
+                                                'gt' => 0
+                                            ]
+                                        ],
+
+                                    ]
+
+                                ]
+
+
+                            ]
+                        ]
+
+
+                    ],
+
+                    'size'    => 1000,
+                    '_source' => [
+                        'stock_value_at_day_cost',
+                        'sku',
+                        'date'
+                    ],
+                    'scroll'  => '5s'
+                ];
+
+
+                $response = $client->search($params);
+
+
                 $dormant_1y_open_value_at_day = 0;
-
-                $sql = sprintf(
-                    'SELECT ITF.`Part SKU`,`Part Cost`,`Value At Day Cost` FROM `Inventory Spanshot Fact` ITF LEFT JOIN `Part Dimension` P  ON (P.`Part SKU`=ITF.`Part SKU`)WHERE `Warehouse Key`=%d AND `Date`=%s AND `Value At Day Cost`!=0 AND `Part Valid From`>%s',
-                    $this->id, prepare_mysql($row['Date']), prepare_mysql(
-                        date(
-                            "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
-                        )
-                    )
-                );
+                while (isset($response['hits']['hits']) && count($response['hits']['hits']) > 0) {
 
 
-                if ($result2 = $this->db->query($sql)) {
-                    foreach ($result2 as $row2) {
+                    foreach ($response['hits']['hits'] as $hit) {
 
-
-                        $sql = sprintf(
-                            "SELECT `Inventory Transaction Key` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND  `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s  limit 1 ", $row2['Part SKU'], prepare_mysql(
-                            date(
-                                "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
-                            )
-                        ), prepare_mysql($row['Date'].' 23:59:59')
-                        );
-
-
-                        if ($result3 = $this->db->query($sql)) {
-                            if ($row3 = $result3->fetch()) {
-
-                            } else {
-                                $dormant_1y_open_value_at_day += $row2['Value At Day Cost'];
-                            }
-
+                        if (get_if_part_hsa_no_sales_1y($this->db, $hit['_source']['sku'], $row['Date'])) {
+                            $dormant_1y_open_value_at_day += $hit['_source']['stock_value_at_day_cost'];
                         }
 
 
                     }
+
+
+                    $scroll_id = $response['_scroll_id'];
+
+
+                    $response = $client->scroll(
+                        [
+                            'scroll_id' => $scroll_id,
+                            'scroll'    => '5s'
+                        ]
+                    );
+
+
                 }
 
-                $parts_with_stock_left_1_year = 0;
-                $sql                          = sprintf(
-                    "select  count(distinct `Part SKU`) as  num FROM `Inventory Spanshot Fact` WHERE `Warehouse Key`=%d AND `Date`=%s and `Inventory Spanshot Stock Left 1 Year Ago`>0 ", $this->id, prepare_mysql($row['Date'])
 
+                $data = array(
+                    'locations'        => 0,
+                    'parts'            => 0,
+                    'stock_cost'       => 0,
+                    'value_at_day'     => 0,
+                    'commercial_value' => 0,
+
+                    'amount_in_po'     => 0,
+                    'amount_in_other'  => 0,
+                    'amount_out_sales' => 0,
+                    'amount_out_other' => 0,
                 );
 
-                // print "$sql\n";
+                $params = [
+                    'index' => strtolower('au_part_isf_'.strtolower(DNS_ACCOUNT_CODE)),
 
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
+                    'body' => [
+                        'query'        => [
 
-                        $parts_with_stock_left_1_year = $row2['num'];
-                    }
-                }
-
-                $sql = sprintf(
-                    "select  count(distinct `Part SKU`) as  num FROM `Inventory Spanshot Fact` WHERE `Warehouse Key`=%d AND `Date`=%s and `Dormant 1 Year`='Yes' ", $this->id, prepare_mysql($row['Date'])
-
-                );
-
-                $parts_no_sales_1_year = 0;
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-
-                        $parts_no_sales_1_year = $row2['num'];
-                    }
-                }
+                            'bool' => [
+                                'filter' => [
+                                    [
+                                        "term" => [
+                                            'date' => $row['Date'],
+                                        ],
+                                    ],
+                                    [
+                                        "term" => [
+                                            'warehouses' => $this->id,
+                                        ],
+                                    ],
 
 
-                $sql = sprintf(
-                    "SELECT `Date`,
-			count(DISTINCT `Part SKU`) AS parts,`Date`, 
-            count(DISTINCT `Location Key`) AS locations,
-			sum(`Value At Cost`) AS value_at_cost ,
-			sum(`Value At Day Cost`) AS value_at_day,
-			sum(`Value Commercial`) AS commercial_value,
-			
-			sum(`Inventory Spanshot Amount In PO`) AS amount_in_po,
-			sum(`Inventory Spanshot Amount In Other`) AS amount_in_other,
-			sum(`Inventory Spanshot Amount Out Sales`) AS amount_out_sales,
-			sum(`Inventory Spanshot Amount Out Other`) AS amount_out_other
-
-			
-			
-			
-			FROM `Inventory Spanshot Fact` WHERE `Warehouse Key`=%d AND `Date`=%s", $this->id, prepare_mysql($row['Date'])
-
-                );
-
-                // print "$sql\n";
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
+                                ]
 
 
-                        //   print_r($row2);
-
-                        $sql = sprintf(
-                            "INSERT INTO `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
-				`Value At Cost`,`Value At Day Cost`,`Value Commercial`,
-                                            
-                                                 
-                                                 `Dormant 1 Year Value At Day Cost`,
-				`Inventory Warehouse Spanshot In PO`,`Inventory Warehouse Spanshot In Other`,`Inventory Warehouse Spanshot Out Sales`,`Inventory Warehouse Spanshot Out Other`,
-                                                 `Inventory Warehouse Spanshot Fact Dormant Parts`,`Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts`
-
-				) VALUES (%s,%d,%d,%d  ,%f,%f,%f, %f, %f,%f,%f,%f,%d,%d) ON DUPLICATE KEY UPDATE
-					`Value At Cost`=%.2f, `Value At Day Cost`=%.2f,`Value Commercial`=%.2f,
-	
-			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f,
-			`Inventory Warehouse Spanshot In PO`=%.2f,`Inventory Warehouse Spanshot In Other`=%.2f,`Inventory Warehouse Spanshot Out Sales`=%.2f,`Inventory Warehouse Spanshot Out Other`=%.2f,
-`Inventory Warehouse Spanshot Fact Dormant Parts`=%d,`Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts`=%d
-			", prepare_mysql($row['Date']), $this->id, $row2['parts'], $row2['locations'],
-
-                            $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
+                            ]
+                        ],
+                        "aggregations" => [
+                            "stock_cost"              => [
+                                "sum" => [
+                                    "field" => "stock_cost"
+                                ],
+                            ],
+                            "stock_value_at_day_cost" => [
+                                "sum" => [
+                                    "field" => "stock_value_at_day_cost"
+                                ],
+                            ],
+                            "stock_commercial_value"  => [
+                                "sum" => [
+                                    "field" => "stock_commercial_value"
+                                ],
+                            ],
 
 
-                            $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'], $parts_no_sales_1_year, $parts_with_stock_left_1_year,
+                            "parts" => [
+                                "value_count" => [
+                                    "field" => "sku"
+                                ],
+                            ],
 
-                            $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
+                            "stock_value_in_purchase_order" => [
+                                "sum" => [
+                                    "field" => "stock_value_in_purchase_order"
+                                ],
+                            ],
+                            "stock_value_in_other"          => [
+                                "sum" => [
+                                    "field" => "stock_value_in_other"
+                                ],
+                            ],
+                            "stock_value_out_sales"         => [
+                                "sum" => [
+                                    "field" => "stock_value_out_sales"
+                                ],
+                            ],
+                            "stock_value_out_other"         => [
+                                "sum" => [
+                                    "field" => "stock_value_out_other"
+                                ],
+                            ],
+
+                        ],
+                        'size'         => 3
+
+                    ],
 
 
-                            $row2['parts'], $row2['locations'], $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'], $parts_no_sales_1_year, $parts_with_stock_left_1_year
+                ];
 
-                        );
+                $response = $client->search($params);
+
+                $data['parts'] = $response['aggregations']['parts']['value'];
+
+                $data['stock_cost']              = $response['aggregations']['stock_cost']['value'];
+                $data['stock_value_at_day_cost'] = $response['aggregations']['stock_value_at_day_cost']['value'];
+                $data['stock_commercial_value']  = $response['aggregations']['stock_commercial_value']['value'];
+
+                $data['stock_value_in_purchase_order'] = $response['aggregations']['stock_value_in_purchase_order']['value'];
+                $data['stock_value_in_other']          = $response['aggregations']['stock_value_in_other']['value'];
+                $data['stock_value_out_sales']         = $response['aggregations']['stock_value_out_sales']['value'];
+                $data['stock_value_out_other']         = $response['aggregations']['stock_value_out_other']['value'];
 
 
-                        $this->db->exec($sql);
+                $params   = [
+                    'index' => strtolower('au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE)),
+
+                    'body' => [
+                        'query'        => [
+
+                            'bool' => [
+                                'filter' => [
+                                    [
+                                        "term" => [
+                                            'date' => $row['Date'],
+                                        ],
+                                    ],
+                                    [
+                                        "term" => [
+                                            'warehouse' => $this->id,
+                                        ],
+                                    ],
 
 
-                    }
-                }
+                                ]
+
+
+                            ]
+                        ],
+                        "aggregations" => [
+
+
+                            "locations" => [
+                                "cardinality" => [
+                                    "field"               => "location_key",
+                                    "precision_threshold" => 20000
+                                ],
+                            ],
+
+
+                        ],
+                        'size'         => 0
+
+                    ],
+
+
+                ];
+                $response = $client->search($params);
+
+                $data['locations'] = $response['aggregations']['locations']['value'];;
+
+
+
+
+                $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+
+                $params = ['body' => []];
+
+
+                $params['body'][] = [
+                    'index' => [
+                        '_index' => 'au_warehouse_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                        '_id'    => DNS_ACCOUNT_CODE.'.'.$row['Date'],
+
+                    ]
+                ];
+                $params['body'][] = [
+                    'tenant'          => strtolower(DNS_ACCOUNT_CODE),
+                    'date'            => $row['Date'],
+                    '1st_day_year'    => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
+                    '1st_day_month'   => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
+                    '1st_day_quarter' => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
+                    '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
+
+
+                    'parts'     => $data['parts'],
+                    'locations' => $data['locations'],
+
+                    'stock_cost'              => $data['stock_cost'],
+                    'stock_value_at_day_cost' => $data['stock_value_at_day_cost'],
+                    'stock_commercial_value'  => $data['stock_commercial_value'],
+
+                    'stock_value_in_purchase_order' => $data['stock_value_in_purchase_order'],
+                    'stock_value_in_other'          => $data['stock_value_in_other'],
+                    'stock_value_out_sales'         => $data['stock_value_out_sales'],
+                    'stock_value_out_other'         => $data['stock_value_out_other'],
+
+
+                    'stock_value_dormant_1y'   => $dormant_1y_open_value_at_day,
+                    'parts_with_no_sales_1y'   => $parts_no_sales_1_year,
+                    'parts_with_stock_left_1y' => $parts_with_stock_left_1_year,
+
+
+                ];
+
+                $client->bulk($params);
 
 
             }

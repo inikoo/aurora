@@ -1209,9 +1209,7 @@ class SupplierPart extends DB_Table {
 
                 if (preg_match('/^Part /', $field)) {
 
-                    //$field=preg_replace('/^Part /', '', $field);
 
-                    //print "xxx $field  ".$value." \n  ";
                     $this->part->update(array($field => $value), $options);
                     $this->updated = $this->part->updated;
                     $this->msg     = $this->part->msg;

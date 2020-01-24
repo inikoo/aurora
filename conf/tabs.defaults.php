@@ -4464,11 +4464,11 @@ $tab_defaults = array(
     ),
     'inventory.stock.history.day' => array(
         'view'          => 'overview',
-        'sort_key'      => 'reference',
+        'sort_key'      => 'part_reference',
         'sort_order'    => 1,
         'rpp'           => 50,
         'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
+        'f_field'       => 'part_reference',
         'export_fields' => $export_fields['inventory_stock_history_day']
 
 

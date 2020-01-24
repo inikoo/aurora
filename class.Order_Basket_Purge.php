@@ -943,7 +943,6 @@ class Order_Basket_Purge extends DB_Table {
             exit;
         }
 
-        // exit('xxx');
         $this->update_state('Finished');
 
         if (isset($this->socket)) {

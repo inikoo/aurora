@@ -9,15 +9,15 @@
 -->
 *}
 
-<div id="chartdiv" style="padding:10px;width:95%; height:600px;margin-bottom:80px;" data-data="{$data}"></div>
+<div id="chart_div" style="padding:10px;width:95%; height:600px;margin-bottom:80px;" data-data="{$data}"></div>
 
 
 <script>
 
-    var data = JSON.parse(atob($('#chartdiv').data("data")))
+    var data = JSON.parse(atob($('#chart_div').data("data")))
 
 
-    var chart = AmCharts.makeChart("chartdiv",
+    var chart = AmCharts.makeChart("chart_div",
             {
                 "type": "stock",
                 "pathToImages": "/art/amcharts/",

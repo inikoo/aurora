@@ -197,7 +197,6 @@ trait OrderShippingOperations {
 
         if ($this->data['Order Shipping Method'] == 'Set') {
 
-            //print $this->data['Order Shipping Net Amount'].'xx';
             return array(
                 ($this->data['Order Shipping Net Amount'] == '' ? 0 : $this->data['Order Shipping Net Amount']),
                 0,

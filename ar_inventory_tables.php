@@ -525,57 +525,72 @@ function parts($_data, $db, $user, $type, $account) {
 
 function stock_history($_data, $db, $user, $account) {
 
+    include_once 'elastic/isf.elastic.php';
+
 
     if ($_data['parameters']['frequency'] == 'annually') {
-        $rtext_label = 'year';
-        $date_format = "%Y";
+        $rtext_label       = 'year';
+        $date_format       = "%Y";
+        $calendar_interval = '1y';
     } elseif ($_data['parameters']['frequency'] == 'monthly') {
-        $rtext_label = 'month';
-        $date_format = "%b %Y";
-
+        $rtext_label       = 'month';
+        $date_format       = "%b %Y";
+        $calendar_interval = '1M';
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
-        $rtext_label = 'week';
-        $date_format = "(%e %b) %Y %W";
-
+        $rtext_label       = 'week';
+        $date_format       = "(%e %b) %Y %W";
+        $calendar_interval = '1w';
     } else {
-        $rtext_label = 'day';
-        $date_format = "%a %e %b %Y";
-
+        $rtext_label       = 'day';
+        $date_format       = "%a %e %b %Y";
+        $calendar_interval = '1d';
     }
 
     include_once 'prepare_table/init.php';
 
-    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    $results = get_part_inventory_transaction_fact('stock_history',$_data['parameters']['parent_key'], $calendar_interval);
 
 
-    //  print $sql;
+
+    list($rtext, $total, $filtered) = get_table_totals(
+        $db, false, '', $rtext_label, [
+               'filtered'      => 0,
+               'total_records' => $results['hits']['total']['value'],
+               'total'         => $results['hits']['total']['value']
+           ]
+    );
+
+
     $record_data = array();
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
 
 
-            $record_data[] = array(
-                // 'date'       => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
-                // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
-                // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
-                //'week_year'  => strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
 
-                'date'  => strftime($date_format, strtotime($data['Date'].' +0:00')),
-                'stock' => number($data['Quantity On Hand']),
-                'value' => money($data['Stock Value'], $account->get('Currency Code')),
-                'in'    => number($data['Quantity In']),
-                'sold'  => number($data['Quantity Sold']),
-                'lost'  => number($data['Quantity Lost']),
-
-            );
+    foreach ( $results['aggregations']['stock_per_day']['buckets'] as $data) {
 
 
+
+
+
+        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
+            $value = money($data['stock_cost']['value'], $account->get('Currency Code'));
+        } else {
+            $value = money($data['stock_value_at_day_cost']['value'], $account->get('Currency Code'));
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
+        $record_data[] = array(
+
+
+            'date'  => strftime($date_format, strtotime($data['key_as_string'].' +0:00')),
+            'stock' => number($data['stock']['value']),
+            'value' =>$value,
+            'in'    => number($data['book_in']['value']),
+            'sold'  => number($data['sold']['value']),
+            'lost'  => number($data['lost']['value'])
+
+        );
+
+
     }
 
 
@@ -584,8 +599,8 @@ function stock_history($_data, $db, $user, $account) {
             'state'         => 200,
             'data'          => $record_data,
             'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
+            'sort_key'      => $order,
+            'sort_dir'      => $order_direction,
             'total_records' => $total
 
         )
@@ -596,9 +611,12 @@ function stock_history($_data, $db, $user, $account) {
 
 function inventory_stock_history($_data, $db, $user, $account) {
 
+    include_once 'elastic/warehouse_isf_date_histogram.elastic.php';
+
 
     if ($_data['parameters']['frequency'] == 'annually') {
         $rtext_label = 'year';
+
         $date_format = "%Y";
     } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label = 'month';
@@ -606,21 +624,169 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
     } elseif ($_data['parameters']['frequency'] == 'quarterly') {
         $rtext_label = 'quarter';
+
         $date_format = "%e %b %Y";
 
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label = 'week';
+
         $date_format = "(%e %b) %Y %W";
 
     } else {
         $rtext_label = 'day';
+
         $date_format = "%a %e %b %Y";
 
     }
 
+
+    include_once 'prepare_table/init.php';
+
+
+    $results = get_warehouse_isf($_data);
+
+
+    list($rtext, $total, $filtered) = get_table_totals(
+        $db, false, '', $rtext_label, [
+               'filtered'      => 0,
+               'total_records' => $results['total']['value'],
+               'total'         => $results['total']['value']
+           ]
+    );
+
+
+    $record_data = array();
+
+    foreach ($results['hits'] as $result) {
+
+        $data = $result['_source'];
+
+        $date = strftime($date_format, strtotime($data['date'].' +0:00'));
+
+        if ($_data['parameters']['frequency'] == 'daily') {
+
+            $date = sprintf(
+                '<span class="link" onclick="change_view(\'inventory/stock_history/day/%s\')" >%s</span>', $data['date'], $date
+            );
+        }
+
+        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
+            $value = money($data['stock_cost'], $account->get('Currency Code'));
+        } else {
+            $value = money($data['stock_value_at_day_cost'], $account->get('Currency Code'));
+        }
+
+        $record_data[] = array(
+
+            'date'             => $date,
+            'parts'            => number($data['parts']),
+            'locations'        => number($data['locations']),
+            'value'            => $value,
+            'commercial_value' => money($data['stock_commercial_value'], $account->get('Currency Code')),
+            // 'in_po'            => sprintf('<span class="%s">%s</span>', ($data['in_po'] == 0 ? 'super_discreet' : ''), money($data['in_po'], $account->get('Currency Code'))),
+            // 'in_other'         => sprintf('<span class="%s">%s</span>', ($data['in_other'] == 0 ? 'super_discreet' : ''), money($data['in_other'], $account->get('Currency Code'))),
+            //'out_sales'        => sprintf('<span class="%s">%s</span>', ($data['out_sales'] == 0 ? 'super_discreet' : ''), money($data['out_sales'], $account->get('Currency Code'))),
+            //'out_other'        => sprintf('<span class="%s">%s</span>', ($data['out_other'] == 0 ? 'super_discreet' : ''), money($data['out_other'], $account->get('Currency Code'))),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $order,
+            'sort_dir'      => $order_direction,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function stock_history_day($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'part';
+
+    include_once 'elastic/part_isf_date.elastic.php';
+    include_once 'prepare_table/init.php';
+
+
+    $results = get_elastic_stock_history_day($_data);
+
+
+    list($rtext, $total, $filtered) = get_table_totals(
+        $db, false, '', $rtext_label, [
+               'filtered'      => 0,
+               'total_records' => $results['total']['value'],
+               'total'         => $results['total']['value']
+           ]
+    );
+
+
+    $record_data = array();
+
+
+    foreach ($results['hits'] as $row) {
+
+        $data = $row['_source'];
+
+
+        $record_data[] = array(
+            'part_reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['sku'], $data['part_reference']),
+
+            'description' => $data['part_description'],
+
+            'stock_on_hand' => number($data['stock_on_hand']),
+            'stock_cost'    => money($data['stock_cost'], $account->get('Currency Code')),
+
+            'stock_value_at_day_cost' => money($data['stock_value_at_day_cost'], $account->get('Currency Code')),
+
+
+            'sko_cost'              => money($data['sko_cost'], $account->get('Currency Code')),
+            'book_in'               => number($data['book_in']),
+            'sold'                  => number($data['sold']),
+            'lost'                  => number($data['lost']),
+            // 'given'                 => number($data['given']),
+            'stock_left_1_year_ago' => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' : number($data['stock_left_1_year_ago'])),
+            'no_sales_1_year'       => sprintf('<i class="%s"></i>', $data['no_sales_1_year_icon'])
+        );
+
+
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $order,
+            'sort_dir'      => $order_direction,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function stock_history_day_old($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'part';
+
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $_datagms_1_year_back = gmdate('U', strtotime($parameters['parent_key'].' - 1 year'));
 
 
     $record_data = array();
@@ -629,31 +795,44 @@ function inventory_stock_history($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-            $date = strftime($date_format, strtotime($data['Date'].' +0:00'));
+            if (gmdate('U', strtotime($data['Part Valid From'])) > $_datagms_1_year_back) {
 
-            if ($_data['parameters']['frequency'] == 'daily') {
+                $no_sales_1_year       = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
+                $stock_left_1_year_ago = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
 
-                $date = sprintf(
-                    '<span class="link" onclick="change_view(\'inventory/stock_history/day/%s\')" >%s</span>', $data['Date'], $date
-                );
+
+            } else {
+                switch ($data['no_sales_1_year']) {
+                    case 'Yes':
+                        $no_sales_1_year = '<span class="error"><i class="fa fa-snooze"></i></span>';
+                        break;
+                    case 'No':
+                        $no_sales_1_year = '<span class="success"><i class="fa fa-check"></i></span>';
+                        break;
+                    case '':
+                        $no_sales_1_year = '<span class="error"><i class="fa fa-question"></i></span>';
+                        break;
+                    default:
+                        $no_sales_1_year = $data['no_sales_1_year'];
+                }
+                $stock_left_1_year_ago = ($data['stock_left_1_year_ago'] == '' ? '' : number($data['stock_left_1_year_ago']));
             }
 
 
-            $value = money($data['Value'], $account->get('Currency Code'));
-
             $record_data[] = array(
+                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
 
-                'date'             => $date,
-                'parts'            => number($data['Parts']),
-                'locations'        => number($data['Locations']),
-                'value'            => $value,
-                'commercial_value' => money($data['Value Commercial'], $account->get('Currency Code')),
-                // 'in_po'            => sprintf('<span class="%s">%s</span>', ($data['in_po'] == 0 ? 'super_discreet' : ''), money($data['in_po'], $account->get('Currency Code'))),
-                // 'in_other'         => sprintf('<span class="%s">%s</span>', ($data['in_other'] == 0 ? 'super_discreet' : ''), money($data['in_other'], $account->get('Currency Code'))),
-                //'out_sales'        => sprintf('<span class="%s">%s</span>', ($data['out_sales'] == 0 ? 'super_discreet' : ''), money($data['out_sales'], $account->get('Currency Code'))),
-                //'out_other'        => sprintf('<span class="%s">%s</span>', ($data['out_other'] == 0 ? 'super_discreet' : ''), money($data['out_other'], $account->get('Currency Code'))),
+                'description' => $data['Part Package Description'],
 
-
+                'stock'                 => number($data['stock']),
+                'stock_value'           => money($data['stock_value'], $account->get('Currency Code')),
+                'cost'                  => money($data['cost'], $account->get('Currency Code')),
+                'in'                    => number($data['book_in']),
+                'sold'                  => number($data['sold']),
+                'lost'                  => number($data['lost']),
+                'given'                 => number($data['given']),
+                'stock_left_1_year_ago' => $stock_left_1_year_ago,
+                'no_sales_1_year'       => $no_sales_1_year
             );
 
 
@@ -2278,89 +2457,6 @@ function parts_barcode_errors($_data, $db, $user) {
 }
 
 
-function stock_history_day($_data, $db, $user, $account) {
-
-
-    $rtext_label = 'part';
-
-    include_once 'prepare_table/init.php';
-
-    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-
-
-    $_datagms_1_year_back = gmdate('U', strtotime($parameters['parent_key'].' - 1 year'));
-
-
-    $record_data = array();
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-
-            if (gmdate('U', strtotime($data['Part Valid From'])) > $_datagms_1_year_back) {
-
-                $no_sales_1_year       = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
-                $stock_left_1_year_ago = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
-
-
-            } else {
-                switch ($data['no_sales_1_year']) {
-                    case 'Yes':
-                        $no_sales_1_year = '<span class="error"><i class="fa fa-snooze"></i></span>';
-                        break;
-                    case 'No':
-                        $no_sales_1_year = '<span class="success"><i class="fa fa-check"></i></span>';
-                        break;
-                    case '':
-                        $no_sales_1_year = '<span class="error"><i class="fa fa-question"></i></span>';
-                        break;
-                    default:
-                        $no_sales_1_year = $data['no_sales_1_year'];
-                }
-                $stock_left_1_year_ago = ($data['stock_left_1_year_ago'] == '' ? '' : number($data['stock_left_1_year_ago']));
-            }
-
-
-            $record_data[] = array(
-                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-
-                'description' => $data['Part Package Description'],
-
-                'stock'                 => number($data['stock']),
-                'stock_value'           => money($data['stock_value'], $account->get('Currency Code')),
-                'cost'                  => money($data['cost'], $account->get('Currency Code')),
-                'in'                    => number($data['book_in']),
-                'sold'                  => number($data['sold']),
-                'lost'                  => number($data['lost']),
-                'given'                 => number($data['given']),
-                'stock_left_1_year_ago' => $stock_left_1_year_ago,
-                'no_sales_1_year'       => $no_sales_1_year
-            );
-
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $record_data,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-
 function stock_cost($_data, $db, $user, $account) {
 
 
@@ -3514,7 +3610,6 @@ function parts_no_products($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-
             $cost = money($data['Part Cost'], $account->get('Account Currency'));
 
             if ($data['Part Cost in Warehouse'] == '') {
@@ -3592,7 +3687,6 @@ function parts_no_products($_data, $db, $user, $account) {
             $stock_status = sprintf('<span class="part_status_%d"><i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" title="%s"></i></span>', $data['Part SKU'], $data['Part SKU'], _('Discontinuing, click to set as an active part'));
 
 
-
             $reference = sprintf(
                 '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'],
                 ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
@@ -3647,9 +3741,9 @@ function parts_no_products($_data, $db, $user, $account) {
 
                 'stock' => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
 
-                'valid_from'          => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
-                'valid_to'            => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
-                'active_from'         => strftime("%a %e %b %Y", strtotime($data['Part Active From'].' +0:00')),
+                'valid_from'  => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
+                'valid_to'    => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
+                'active_from' => strftime("%a %e %b %Y", strtotime($data['Part Active From'].' +0:00')),
 
                 'cost'            => $cost,
                 'sko_stock_value' => $sko_stock_value,
@@ -3708,10 +3802,6 @@ function parts_forced_not_for_sale_on_website($_data, $db, $user, $account) {
     $record_data = array();
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
-
-
 
 
             $cost = money($data['Part Cost'], $account->get('Account Currency'));
@@ -3909,15 +3999,13 @@ function parts_forced_not_for_sale_on_website($_data, $db, $user, $account) {
                 'stock' => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
 
 
-
-
-                'valid_from'          => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
-                'valid_to'            => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
-                'active_from'         => strftime("%a %e %b %Y", strtotime($data['Part Active From'].' +0:00')),
+                'valid_from'  => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
+                'valid_to'    => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
+                'active_from' => strftime("%a %e %b %Y", strtotime($data['Part Active From'].' +0:00')),
 
                 'cost'            => $cost,
                 'sko_stock_value' => $sko_stock_value,
-               // 'margin'          => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
+                // 'margin'          => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
                 'next_deliveries' => $next_deliveries
             );
 

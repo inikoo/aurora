@@ -16,7 +16,7 @@ renderable: false,
 cell: "string",
 
 },{
-name: "reference",
+name: "part_reference",
 label: "{t}Part{/t}",
 editable: false,
 defaultOrder:1,
@@ -29,14 +29,12 @@ cell: Backgrid.HtmlCell.extend({ })
 name: "description",
 label: "{t}Description{/t}",
 editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='description'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortable:false,
 cell: Backgrid.HtmlCell.extend({ })
 
 },
 {
-name: "stock",
+name: "stock_on_hand",
 label: "{t}Stock{/t}",
 editable: false,
 defaultOrder:1,
@@ -48,7 +46,7 @@ headerCell: integerHeaderCell
 },
 
 {
-name: "cost",
+name: "sko_cost",
 label: "{t}SKO value{/t}",
 editable: false,
 
@@ -59,18 +57,33 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
 {
-name: "stock_value",
+name: "stock_cost",
 label: "{t}Stock value{/t}",
 editable: false,
-
+renderable : {if $account->get('Account Add Stock Value Type') == 'Blockchain'}true{else}false{/if},
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='stock_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='stock_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+{
+name: "stock_value_at_day_cost",
+label: "{t}Stock value{/t}",
+editable: false,
+renderable : {if $account->get('Account Add Stock Value Type') != 'Blockchain'}true{else}false{/if},
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_value_at_day_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
 
 {
 name: "no_sales_1_year",
@@ -108,14 +121,20 @@ grid.columns.findWhere({ name: 'stock_left_1_year_ago'} ).set("renderable", fals
 
 
 
-grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'sko_cost'} ).set("renderable", false)
+
+grid.columns.findWhere({ name: 'stock_cost'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'stock_value_at_day_cost'} ).set("renderable", false)
 
 if(view=='overview'){
 
-grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'sko_cost'} ).set("renderable", true)
 
+{if $account->get('Account Add Stock Value Type') == 'Blockchain'}
+grid.columns.findWhere({ name: 'stock_cost'} ).set("renderable", true)
+{else}
+grid.columns.findWhere({ name: 'stock_value_at_day_cost'} ).set("renderable", true)
+{/if}
 
 }else if(view=='1_year'){
 grid.columns.findWhere({ name: 'no_sales_1_year'} ).set("renderable", true)
