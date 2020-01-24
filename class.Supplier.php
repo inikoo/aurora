@@ -1735,8 +1735,12 @@ class Supplier extends SubjectSupplier {
     }
 
 
-
-    function get_agents($scope='keys'){
+    /**
+     * @param string $scope
+     *
+     * @return array
+     */
+    public function get_agents($scope='keys'){
 
         $agents_data = array();
         $sql         = sprintf(

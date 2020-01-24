@@ -116,6 +116,16 @@ $params = [
                 'scopes'      => array(
                     'type' => 'rank_features',
                 ),
+
+                'agent_user' => array(
+                    'type'  => 'keyword',
+                ),
+                'supplier_user' => array(
+                    'type'  => 'keyword',
+                ),
+                'customer_user' => array(
+                    'type'  => 'keyword',
+                ),
             )
         )
 

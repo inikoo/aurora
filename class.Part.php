@@ -4833,7 +4833,7 @@ class Part extends Asset {
 
 
                 $locations   = 0;
-                
+
 
                 $stock_on_hand           = 0;
                 $stock_cost              = 0;

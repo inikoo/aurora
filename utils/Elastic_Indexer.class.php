@@ -137,6 +137,13 @@ class Elastic_Indexer {
         $this->prefix    = '';
         $this->store_key = '';
 
+
+        $this->agent_user = [];
+        $this->supplier_user = [];
+        $this->customer_user = [];
+
+
+
         $this->skip_add_index = false;
 
 
@@ -343,6 +350,8 @@ class Elastic_Indexer {
 
         //$this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
         $this->url = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
+
+        $this->customer_user=$this->object->id;
 
         $this->real_time[] = $this->object->id;
         $this->real_time[] = $this->object->get('Name');
@@ -655,6 +664,7 @@ class Elastic_Indexer {
 
         $this->module    = 'orders';
         $this->store_key = $this->object->get('Store Key');
+        $this->customer_user=$this->object->get('Order Customer Key');
 
         $this->code = $this->object->get('Order Public ID');
 
@@ -822,9 +832,7 @@ class Elastic_Indexer {
         $this->real_time[] = preg_replace('/-/', '_', $this->object->get('Part Reference'));
 
 
-        //  $number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Part Reference')));
-        //  $this->real_time[] = $number_only_id;
-        //  $this->real_time[] = (int)$number_only_id;
+
 
 
         $this->real_time[] = $this->object->get('Part Package Description');
@@ -857,6 +865,14 @@ class Elastic_Indexer {
             default:
                 $this->icon_classes = 'fal fa-fw fa-question-circle';
 
+
+        }
+
+        foreach($this->object->get_suppliers('objects') as $supplier){
+            $this->supplier_user[]=$supplier->id;
+            foreach($supplier->get_agents() as $agent_key){
+                $this->agent_user[]=$agent_key;
+            }
 
         }
 
@@ -1242,31 +1258,50 @@ class Elastic_Indexer {
 
     private function prepare_supplier() {
 
-        if ($this->object->get('Supplier Production') == 'Yes') {
+
+        /**
+         * @var $supplier \Supplier
+         */
+        $supplier=$this->object;
+        
+
+        if ($supplier->get('Supplier Production') == 'Yes') {
             $this->module = 'production';
         } else {
             $this->module = 'suppliers';
+
             $this->scopes = array(
                 'suppliers' => 100
             );
+
+            $this->supplier_user=$supplier->id;
+
+            foreach($supplier->get_agents() as $agent_key){
+                $this->agent_user[]=$agent_key;
+            }
+
         }
-        $this->code = $this->object->get('Supplier Code');
-
-        $this->url = sprintf('supplier/%d', $this->object->id);
-
-        $this->real_time[] = $this->object->get('Supplier Code');
-        $this->real_time[] = $this->object->get('Supplier Name');
-        $this->real_time[] = $this->object->get('Supplier Nickname');
-        $this->real_time[] = $this->object->get('Supplier Main Contact Name');
-        $this->real_time[] = $this->object->get('Supplier Main Plain Email');
-        $this->real_time[] = $this->object->get('Supplier Website');
-
-        $this->label_1 = $this->object->get('Supplier Code');
-        $this->label_2 = $this->object->get('Name');
-        $this->label_3 = $this->object->get('Location');
 
 
-        switch ($this->object->get('Supplier Type')) {
+        $this->code = $supplier->get('Supplier Code');
+
+
+
+        $this->url = sprintf('supplier/%d', $supplier->id);
+
+        $this->real_time[] = $supplier->get('Supplier Code');
+        $this->real_time[] = $supplier->get('Supplier Name');
+        $this->real_time[] = $supplier->get('Supplier Nickname');
+        $this->real_time[] = $supplier->get('Supplier Main Contact Name');
+        $this->real_time[] = $supplier->get('Supplier Main Plain Email');
+        $this->real_time[] = $supplier->get('Supplier Website');
+
+        $this->label_1 = $supplier->get('Supplier Code');
+        $this->label_2 = $supplier->get('Name');
+        $this->label_3 = $supplier->get('Location');
+
+
+        switch ($supplier->get('Supplier Type')) {
             case 'Free':
                 $this->icon_classes = 'far fa-fw fa-hand-holding-box ';
                 $this->weight       = 50;
@@ -1274,6 +1309,9 @@ class Elastic_Indexer {
             case 'Agent':
                 $this->icon_classes = 'far fa-fw fa-hand-holding-box| fal fa-fw fa-user-agent small  discreet ';
                 $this->weight       = 50;
+
+
+
                 break;
             case 'Archived':
                 $this->icon_classes = 'far fa-fw fa-hand-holding-box error super_discreet ';
@@ -1292,6 +1330,7 @@ class Elastic_Indexer {
             'agents' => 100
         );
 
+        $this->agent_user=$this->object->id;
         $this->code = $this->object->get('Agent Code');
         $this->url  = sprintf('agent/%d', $this->object->id);
 
@@ -1320,21 +1359,21 @@ class Elastic_Indexer {
             $this->scopes = array(
                 'supplier_parts' => 100
             );
+
+            $this->supplier_user=$this->object->get('Supplier Key');
+
+
         }
 
 
         $this->url = sprintf('supplier/%d/part/%d', $this->object->get('Supplier Part Supplier Key'), $this->object->id);
 
         $this->real_time[] = $this->object->get('Supplier Part Reference');
-        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Supplier Part Reference')));
-        //$this->real_time[] = $number_only_id;
-        //$this->real_time[] = (int)$number_only_id;
+
         $this->real_time[] = $this->object->get('Supplier Part Description');
 
         $this->real_time[] = $this->object->part->get('Part Reference');
-        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->part->get('Part Reference')));
-        //$this->real_time[] = $number_only_id;
-        //$this->real_time[] = (int)$number_only_id;
+
         $this->real_time[] = $this->object->part->get('Part Package Description');
         $this->real_time[] = $this->object->part->get('Part SKO Barcode');
         $this->real_time[] = strip_tags($this->object->part->get('Materials'));
@@ -1349,6 +1388,11 @@ class Elastic_Indexer {
         $this->label_3 = $supplier->get('Supplier Code');
         if ($supplier->get('Supplier Type') == 'Agent') {
             $this->label_3 .= ' <i class="fal small discreet fa-fw fa-user-secret"></i>';
+
+            foreach($supplier->get_agents() as $agent_key){
+                $this->agent_user[]=$agent_key;
+            }
+
         }
 
 
@@ -1518,7 +1562,7 @@ class Elastic_Indexer {
 
         $this->module    = 'accounting';
         $this->store_key = $this->object->get('Store Key');
-
+        $this->customer_user=$this->object->get('Invoice Customer Key');
 
         $this->code = $this->object->get('Public ID');
 
@@ -1571,6 +1615,8 @@ class Elastic_Indexer {
 
         $this->module    = 'delivering';
         $this->store_key = $this->object->get('Store Key');
+        $this->customer_user=$this->object->get('Delivery Note Customer Key');
+
 
         $this->code = $this->object->get('ID');
 
@@ -1611,6 +1657,7 @@ class Elastic_Indexer {
 
         $this->module    = 'accounting';
         $this->store_key = $this->object->get('Store Key');
+        $this->customer_user=$this->object->get('Payment Customer Key');
 
         $this->scopes = array(
             'payments' => 100
