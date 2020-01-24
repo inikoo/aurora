@@ -208,7 +208,7 @@
                             <li>
                                 <span class="block_link ">
                                     <i class="fa fa-angle-right"></i>
-                                    <span contenteditable="true" class="menu_login_details_title">{if !empty($data.labels.menu_login_details_title)}{$data.labels.menu_login_details_title}{else}{t}Login details{/t}{/if}</span>
+                                    <span contenteditable="true" id="menu_login_details_title">{if !empty($data.labels.menu_login_details_title)}{$data.labels.menu_login_details_title}{else}{t}Login details{/t}{/if}</span>
                                     <i data-block="_login_details" onClick="change_block(this)" style="color:mediumpurple"  class="padding_left_10 fa like_button fa-arrow-right"></i>
                                 </span>
                             </li>
@@ -233,7 +233,7 @@
                             <li>
                                 <span class="block_link like_button">
                                     <i class="fa fa-angle-right"></i>
-                                    <span id="_poll_title"  contenteditable="true" id="menu_poll_title">{if empty($data.labels.menu_poll_title)}{t}Poll{/t}{else}{$data.labels.menu_poll_title}{/if}</span>
+                                    <span contenteditable="true" id="menu_poll_title">{if empty($data.labels.menu_poll_title)}{t}Poll{/t}{else}{$data.labels.menu_poll_title}{/if}</span>
                                     <i data-block="_poll_details" onClick="change_block(this)" style="color:mediumpurple"  class="padding_left_10 fa like_button fa-arrow-right"></i>
                                     </span>
                             </li>
