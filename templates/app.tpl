@@ -7,14 +7,7 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
     <link href="/assets/au_app.min.css" rel="stylesheet">
     {if !$is_devel}
-        <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
-        <script>
-            window.LogRocket && window.LogRocket.init('lrrztl/aurora');
-            LogRocket.identify('{$user->get('User Handle')}_{$account->get('Account Code')}', {
-                name: '{$user->get('User Alias')}', url: '{$account->get('Account Code')|lower}.aurora.systems'
-            });
 
-        </script>
 
 
     {if !empty($sentry_js)}
