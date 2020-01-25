@@ -18,10 +18,10 @@
 
 
     {if !empty($sentry_js)}
-    <script>
-        import * as Sentry from '@sentry/browser';
-    </script>
-
+        <script
+                src="https://browser.sentry-cdn.com/5.11.1/bundle.min.js"
+                integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV"
+                crossorigin="anonymous"></script>
 
     {/if}
 
