@@ -120,7 +120,7 @@
                 integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV"
                 crossorigin="anonymous"></script>
 
-       
+
         <script>
     Sentry.init({
     dsn: '{$sentry_js}' ,

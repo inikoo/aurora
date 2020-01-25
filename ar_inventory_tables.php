@@ -656,7 +656,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
 
     $record_data = array();
-
+$i=0;
     foreach ($results['hits'] as $result) {
 
         $data = $result['_source'];
@@ -677,8 +677,8 @@ function inventory_stock_history($_data, $db, $user, $account) {
         }
 
         $record_data[] = array(
-
-            'date'             => $date,
+'id'=>$i++,
+           'date'             => $date,
             'parts'            => number($data['parts']),
             'locations'        => number($data['locations']),
             'value'            => $value,

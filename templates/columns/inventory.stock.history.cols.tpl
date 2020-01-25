@@ -25,57 +25,6 @@ sortType: "toggle",
 
 
 {
-name: "day",
-label: "{t}Date{/t}",
-renderable:{if $data['tab']=='inventory.stock.history.daily'}true{else}false{/if},
-
-editable: false,
-cell: Backgrid.Cell.extend({
-events: {
-"click": function() {
-change_view('inventory/stock_history/day/' + this.model.get("date"))
-}
-},
-className: "link aright width_150"
-
-
-}),
-headerCell: integerHeaderCell,
-sortType: "toggle",
-}, {
-name: "year",
-label: "{t}Year{/t}",
-editable: false,
-renderable:{if $data['tab']=='inventory.stock.history.annually'}true{else}false{/if},
-cell: Backgrid.Cell.extend({
-className: "aright width_150"
-}),
-headerCell: integerHeaderCell,
-sortType: "toggle",
-}, {
-name: "month_year",
-label: "{t}Month{/t}",
-editable: false,
-renderable:{if $data['tab']=='inventory.stock.history.monthly'}true{else}false{/if},
-cell: Backgrid.Cell.extend({
-className: "aright width_150"
-}),
-headerCell: integerHeaderCell,
-sortType: "toggle",
-}, {
-name: "week_year",
-label: "{t}Week{/t}",
-editable: false,
-renderable:{if $data['tab']=='inventory.stock.history.weekly'}true{else}false{/if},
-cell: Backgrid.Cell.extend({
-className: "aright width_150"
-}),
-headerCell: integerHeaderCell,
-sortType: "toggle",
-},
-
-
-{
 name: "parts",
 label: "{t}Parts{/t}",
 editable: false,
