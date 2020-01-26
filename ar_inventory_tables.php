@@ -549,8 +549,7 @@ function stock_history($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
-    $results = get_part_inventory_transaction_fact('stock_history',$_data['parameters']['parent_key'], $calendar_interval);
-
+    $results = get_part_inventory_transaction_fact('stock_history', $_data['parameters']['parent_key'], $calendar_interval);
 
 
     list($rtext, $total, $filtered) = get_table_totals(
@@ -565,12 +564,7 @@ function stock_history($_data, $db, $user, $account) {
     $record_data = array();
 
 
-
-
-    foreach ( $results['aggregations']['stock_per_day']['buckets'] as $data) {
-
-
-
+    foreach ($results['aggregations']['stock_per_day']['buckets'] as $data) {
 
 
         if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
@@ -583,7 +577,7 @@ function stock_history($_data, $db, $user, $account) {
 
             'date'  => strftime($date_format, strtotime($data['key_as_string'].' +0:00')),
             'stock' => number($data['stock']['value']),
-            'value' =>$value,
+            'value' => $value,
             'in'    => number($data['book_in']['value']),
             'sold'  => number($data['sold']['value']),
             'lost'  => number($data['lost']['value'])
@@ -656,7 +650,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
 
     $record_data = array();
-$i=0;
+    $i           = 0;
     foreach ($results['hits'] as $result) {
 
         $data = $result['_source'];
@@ -677,8 +671,8 @@ $i=0;
         }
 
         $record_data[] = array(
-'id'=>$i++,
-           'date'             => $date,
+            'id'               => $i++,
+            'date'             => $date,
             'parts'            => number($data['parts']),
             'locations'        => number($data['locations']),
             'value'            => $value,
@@ -766,7 +760,7 @@ function stock_history_day($_data, $db, $user, $account) {
             'state'         => 200,
             'data'          => $record_data,
             'rtext'         => $rtext,
-            'sort_key'      => $order,
+            'sort_key'      => 'Date',
             'sort_dir'      => $order_direction,
             'total_records' => $total
 

@@ -95,7 +95,13 @@ function new_customer_client($data, $customer, $account, $editor) {
             $customer_data['Customer Client Contact Address country'] = $raw_data['country'];
         }
 
+
+
+
         $client = $customer->create_client($customer_data);
+
+
+        print_r($client);
 
         if ($customer->new_client) {
 
