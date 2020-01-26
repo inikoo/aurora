@@ -40,8 +40,6 @@ if (defined('SENTRY_DNS_ECOM_JS')) {
 }
 
 
-
-
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
@@ -157,7 +155,7 @@ if (isset($is_homepage)) {
                     'au_housekeeping', array(
                     'type'         => 'unsubscribe_prospect',
                     'prospect_key' => $row['Prospect Key'],
-                    'date'=>gmdate('Y-m-d H:i:s')
+                    'date'         => gmdate('Y-m-d H:i:s')
 
                 ), DNS_ACCOUNT_CODE
                 );
@@ -298,7 +296,9 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('zendesk_chat_code', $website->get('Website Zendesk Chat Code'));
     $smarty->assign('tawk_chat_code', $website->get('Website Tawk Chat Code'));
     $smarty->assign('sumo_code', $website->get('Website Sumo Code'));
-
+    if (function_exists('get_ecom_firebase_data')) {
+        $smarty->assign('firebase', get_ecom_firebase_data($website->get('Website Type')));
+    }
 
     $one_signal = $website->get('Website One Signal Code');
 

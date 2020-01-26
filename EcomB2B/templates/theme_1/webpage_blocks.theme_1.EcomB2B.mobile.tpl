@@ -1603,5 +1603,23 @@
     </div>
 {/if}
 {/if}
+{if !empty($firebase)}
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
+    <script>
+        var firebaseConfig = {
+            apiKey: "{$firebase.apiKey}",
+            authDomain: "{$firebase.projectId}.firebaseapp.com",
+            databaseURL: "https://{$firebase.projectId}.firebaseio.com",
+            projectId: "{$firebase.projectId}",
+            storageBucket: "{$firebase.projectId}.appspot.com",
+            messagingSenderId: "{$firebase.messagingSenderId}",
+            appId: "{$firebase.appId}",
+            measurementId:  "{$firebase.measurementId}"
+        };
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+{/if}
 </body>
 </html>
