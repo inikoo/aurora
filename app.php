@@ -43,6 +43,8 @@ $_SESSION['detected_device']=$detected_device;
 $smarty->assign('timezone_info', get_timezone_info());
 
 
+$smarty->assign('firebase', get_firebase_data());
+
 
 $smarty->assign('is_devel', preg_match('/bali|sasi|sakoi|geko/', gethostname()));
 
