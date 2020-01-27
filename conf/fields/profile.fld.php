@@ -118,6 +118,33 @@ $object_fields = array(
         )
     ),
 
+
+    array(
+        'label'      => _('Notifications'),
+        'show_title' => true,
+        'class'      => 'edit_fields hide',
+        'fields'     => array(
+
+
+
+
+            array(
+                'id'     => 'User_Browser_Notifications',
+                'render' => false,
+                'edit'            => 'user_browser_notifications',
+                'class'=>'operation_with_field',
+                'value'           => '',
+                'formatted_value' => $object->get('User Browser Notifications'),
+                'label'           => '',
+                'required'        => false,
+                'type'            => ''
+            ),
+
+
+        )
+    ),
+
+
     array(
         'label'      => _('Preferences'),
         'show_title' => true,
@@ -162,4 +189,4 @@ $object_fields = array(
 );
 
 
-?>
+

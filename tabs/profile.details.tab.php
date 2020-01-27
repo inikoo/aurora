@@ -18,6 +18,7 @@ $object_fields = get_object_fields($user, $db, $user, $smarty, array('type' => '
 
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
+$smarty->assign('object', $user);
 
 $smarty->assign('js_code', 'js/injections/profile_details.'.(_DEVEL ? '' : 'min.').'js');
 $html = $smarty->fetch('edit_object.tpl');

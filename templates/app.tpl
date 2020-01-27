@@ -338,6 +338,8 @@
     {if !empty($firebase)}
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-messaging.js"></script>
+
     <script>
         var firebaseConfig = {
             apiKey: "{$firebase.apiKey}",
@@ -351,6 +353,11 @@
         };
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
+
+        //const messaging = firebase.messaging();
+       // messaging.usePublicVapidKey('<YOUR_PUBLIC_VAPID_KEY_HERE>');
+
+
     </script>
     {/if}
 

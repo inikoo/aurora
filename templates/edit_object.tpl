@@ -271,7 +271,7 @@
                                 <i  data-right_code="{if !empty($field.right_code)}{$field.right_code}{/if}"   data-labels='{ "footer": "{t}Authorised users{/t}: ","title":"{t}Restricted operation{/t}" , "text":"{t}Please ask an authorised user to edit this field{/t}"}' id="{$field.id}_lock" class=" locked_show_edit_button  fa fa-lock  fw {if $edit!='' or $class=='new'  or $class=='operation'   or $edit=='no_icon'  }hide{/if} edit lock"></i>
                                 <i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>
 
-                                <span  class="{if  $class=='operation_with_field'  }hide{/if}" ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i>
+                                <span  class="{if  $class=='operation_with_field'  }hide{/if} " ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i>
                                 <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' or $edit=='no_icon'  or $class=='operation_with_field'  }hide{/if}  edit_button" onclick="open_edit_this_field(this)"></i>
                                 </span>
                             </td>
@@ -285,6 +285,8 @@
                                 {elseif $edit=='no_icon' }
                                     <span id="{$field.id}_formatted_value" class=" " >{$field.formatted_value}</span>
                                 {elseif  $edit=='mixed_recipients'}
+                                    <div id="{$field.id}_formatted_value" class=" {$field.id} " >{$field.formatted_value}</div>
+                                {elseif  $edit=='user_browser_notifications'}
                                     <div id="{$field.id}_formatted_value" class=" {$field.id} " >{$field.formatted_value}</div>
                                 {elseif  $edit=='date_interval'}
                                     <div id="{$field.id}_formatted_value" class=" {$field.id} " >to do</div>
@@ -420,6 +422,8 @@
 
                                 {elseif $edit=='mixed_recipients'  }
                                     {include file="mixed_recipients.edit.tpl" field_id=$field.id mixed_recipients=$object->get(preg_replace('/_/',' ',$field.id)) mode='edit'}
+                                {elseif $edit=='user_browser_notifications'  }
+                                    {include file="user_browser_notifications.edit.tpl" field_id=$field.id user_browser_notifications=$object->get(preg_replace('/_/',' ',$field.id)) mode='edit'}
 
                                 {elseif $edit=='textarea'  }
                                     <textarea id="{$field.id}" class="input_field hide"
