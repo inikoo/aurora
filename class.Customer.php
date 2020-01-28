@@ -1556,6 +1556,11 @@ class Customer extends Subject {
 
     function validate_customer_tax_number() {
 
+        if(!empty($this->skip_validate_tax_number)){
+            return;
+        }
+
+
         if ($this->data['Customer Tax Number'] == '') {
             $this->fast_update(
                 array(

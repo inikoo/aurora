@@ -15,6 +15,9 @@ trait OrderTax {
 
     function update_tax_number($value, $options = '', $updated_from_invoice = false) {
 
+
+
+
         if ($this->get('State Index') <= 0) {
             return;
         }
@@ -49,6 +52,11 @@ trait OrderTax {
     }
 
     function validate_order_tax_number() {
+
+        if(!empty($this->skip_validate_tax_number)){
+            return;
+        }
+
 
         if ($this->get('State Index') <= 0) {
             return;

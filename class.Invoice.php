@@ -2106,6 +2106,11 @@ class Invoice extends DB_Table {
 
     function update_tax_number_valid($value) {
 
+
+        if(!empty($this->skip_validate_tax_number)){
+            return;
+        }
+
         include_once 'utils/validate_tax_number.php';
 
 

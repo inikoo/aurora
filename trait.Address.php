@@ -184,6 +184,10 @@ trait Address {
 
                             $order->editor = $this->editor;
 
+                            if(!empty($this->skip_validate_tax_number)){
+                                $order->skip_validate_tax_number=$this->skip_validate_tax_number;
+                            }
+
 
                             $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), 'no_history', array('no_propagate_customer' => true));
                         }
