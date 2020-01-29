@@ -123,13 +123,16 @@ class Auth {
                     $ikey = $data[3];
 
                     $pass_tests = true;
-                    if ($time < time(gmdate('U'))) {
+
+
+                    if ($time < gmdate('U')) {
                         $pass_tests                = false;
                         $this->pass['main_reason'] = 'logging_timeout';
                         $this->pass['time']        = 'No';
                     } else {
                         $this->pass['time'] = 'Yes';
                     }
+
 
                     $this->pass['ip'] = 'Yes';
 

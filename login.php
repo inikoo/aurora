@@ -70,7 +70,7 @@ if ($account->id and $account->get('Account State') == 'Active') {
     require_once "utils/aes.php";
 
 
-    $Sk = "skstart|".(date('U') + 3600)."|".ip_from_cloudfare()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+    $Sk = "skstart|".(gmdate('U') + 30)."|".ip_from_cloudfare()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St = AESEncryptCtr($Sk, SKEY, 256);
     $smarty->assign('st', $St);
 
