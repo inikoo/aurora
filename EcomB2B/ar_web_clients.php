@@ -101,7 +101,6 @@ function new_customer_client($data, $customer, $account, $editor) {
         $client = $customer->create_client($customer_data);
 
 
-        print_r($client);
 
         if ($customer->new_client) {
 

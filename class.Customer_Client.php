@@ -64,6 +64,27 @@ class Customer_Client extends Subject {
 
     function create($raw_data, $address_raw_data) {
 
+        if (empty($raw_data['Customer Client Code'])) {
+            $this->error = true;
+            $this->msg   = _('Unique customer reference required');
+
+            return;
+        }
+
+        $sql  = "select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Code`=? and `Customer Client Customer Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $raw_data['Customer Client Code'],
+                $raw_data['Customer Client Customer Key']
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $this->error = true;
+            $this->msg   = _('Other customer has same unique reference');
+
+            return;
+        }
 
         $this->data = $this->base_data();
         foreach ($raw_data as $key => $value) {
@@ -255,7 +276,6 @@ class Customer_Client extends Subject {
         }
 
 
-
         switch ($field) {
 
 
@@ -284,7 +304,7 @@ class Customer_Client extends Subject {
 
     function create_customer_client_order() {
 
-        $account=get_object('Account',1);
+        $account = get_object('Account', 1);
 
 
         $order_data = array(
@@ -490,7 +510,6 @@ class Customer_Client extends Subject {
         $customer_with_orders = 'No';
         $first_order          = '';
         $last_order           = '';
-
 
 
         $sql = sprintf(

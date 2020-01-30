@@ -9,13 +9,37 @@
 -->
 *}
 
+<style>
+.client_showcase{
+    display:flex;
+    border-bottom:1px solid #ccc;
+    padding:5px 15px
 
+}
+
+    .client_name{
+        font-weight:400;
+        color:#555
+    }
+
+</style>
 
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "0"}{/if}
+
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}"  data-client_key="{$customer_client->id}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
+<div id="block_{$key}" data-block_key="{$key}"  data-client_key="{$customer_client->id}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
+
+
+    <div class="client_showcase" style="margin-bottom:{$top_margin}px">
+            <div>
+                <span class="client_name">{$customer_client->get('Customer Client Name')}</span>
+            </div>
+
+    </div>
+
+
 
     <div class="text_blocks container"   >
 
@@ -277,9 +301,33 @@
 
             <div id="_orders_details" class="block hide">
 
-                <h3 class="mirror_master">{if !empty($data.labels._orders_title)}{$data.labels._orders_title}{else}{t}Orders{/t}{/if}</h3>
 
-                <table class="orders">
+                {assign "orders" $customer_client->get_orders_data()}
+
+                <div style="display:flex;width: 100%">
+                    <div style="flex-grow:1">
+                        <h1 class="orders_title">
+                            {if $orders|@count gt 0}
+                            {if !empty($data.labels._orders_title)}{$data.labels._orders_title}{else}{t}Orders{/t}{/if}
+                            {else}
+                                {if !empty($data.labels._orders_title)}{$data.label.client_no_orders}{else}{t}Customer hasn't any order yet{/t}{/if}
+
+                            {/if}
+
+                        </h1>
+                    </div>
+
+                    <div style="flex-grow:1;text-align: right">
+                        <a href="#new_client_form" class="modal-opener">
+                            <button class="empty"  onclick="window.location.href = 'client_basket.sys?client_id={$customer_client->id}';" style="cursor:pointer;line-height30px;padding:10px 20px;text-align: center;border:none;position: relative;top:-20px;font-size: 16px"> <i class="fa fa-plus padding_right_5"></i>
+                                {if empty($labels._add_customer_client)}{t}New order{/t}{else}{$labels._new_order}{/if}</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+
+                <table class="orders  {if $orders|@count eq 0}hide{/if}  ">
                     <thead>
                     <tr>
                         <th class="text-left" id="_orders_th_number">{if empty($data.labels._orders_th_number)}{t}Number{/t}{else}{$data.labels._orders_th_number}{/if}</th>
@@ -292,7 +340,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {foreach from=$customer_client->get_orders_data() item=_order}
+                    {foreach from=$orders item=_order}
 
                             <tr>
 

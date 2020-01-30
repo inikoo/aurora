@@ -413,20 +413,7 @@
             getScript("/assets/mobile.logged_in.min.js", function () {
 
 
-                var getUrlParameter = function getUrlParameter(sParam) {
-                    var sPageURL = window.location.search.substring(1),
-                        sURLVariables = sPageURL.split('&'),
-                        sParameterName,
-                        i;
 
-                    for (i = 0; i < sURLVariables.length; i++) {
-                        sParameterName = sURLVariables[i].split('=');
-
-                        if (sParameterName[0] === sParam) {
-                            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-                        }
-                    }
-                };
 
                 var order_key=getUrlParameter('order_key');
                 var timestamp=getUrlParameter('t');
@@ -1603,6 +1590,28 @@
     </div>
 {/if}
 {/if}
+
+{if $with_client==1 or $with_thanks==1 or $with_client_basket}
+    <script>
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+    </script>
+{/if}
+
+
+
 {if !empty($firebase)}
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>

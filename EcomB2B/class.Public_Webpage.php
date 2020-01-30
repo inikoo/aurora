@@ -37,7 +37,6 @@ class Public_Webpage {
         if ($tipo == 'scope') {
 
 
-
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
             );
@@ -54,8 +53,6 @@ class Public_Webpage {
         } else {
             $sql = sprintf("SELECT * FROM `Page Store Dimension` PS  WHERE  PS.`Page Key`=%d", $tag);
         }
-
-
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -99,15 +96,15 @@ class Public_Webpage {
             case 'Webpage Browser Title':
             case 'Browser Title':
 
-                $website=get_object('Website',$this->get('Webpage Website Key'));
-                $title_format=$website->get('Website Settings Browser Title Format');
+                $website      = get_object('Website', $this->get('Webpage Website Key'));
+                $title_format = $website->get('Website Settings Browser Title Format');
 
-                $placeholders=array(
-                    '[Webpage]'=>$this->data['Webpage Name'],
-                    '[Website]'=>$website->get('Webpage Name')
+                $placeholders = array(
+                    '[Webpage]' => $this->data['Webpage Name'],
+                    '[Website]' => $website->get('Webpage Name')
                 );
 
-                return strtr($title_format,$placeholders);
+                return strtr($title_format, $placeholders);
 
             case 'Meta Description':
                 return $this->data['Webpage '.$key];
@@ -124,7 +121,6 @@ class Public_Webpage {
             case 'Webpage Website Key':
             case 'Website URL':
                 return $this->data[$key];
-
 
 
             case 'Name':
@@ -151,97 +147,251 @@ class Public_Webpage {
                 return $content_data;
 
             case 'Navigation Data':
-                if ($this->data['Webpage '.$key] == '') {
+
+
+                if ($this->data['Webpage Code'] == 'client.sys') {
+                    $website = get_object('Website', $this->get('Webpage Website Key'));
+
                     $navigation_data = array(
-                        'show'=>false,
+                        'show'        => true,
+                        'breadcrumbs' => [
+                            [
+                                'link'  => 'https://'.$website->get('Website URL'),
+                                'title' => _('Home'),
+                                'label' => '<i class="fa fa-home"></i>'
+                            ],
+                            [
+                                'link'  => 'https://'.$website->get('Website URL').'/clients.sys',
+                                'title' => _('Customers'),
+                                'label' => '<i class="fal fa-user"></i> '._('Customers')
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => '',
+                                'label' => '',
+                                'class' => 'client_nav'
+                            ]
+
+                        ],
+                        'next'        => false,
+                        'prev'        => false,
+
+                    );
+                } elseif ($this->data['Webpage Code'] == 'clients.sys') {
+                    $website = get_object('Website', $this->get('Webpage Website Key'));
+
+                    $navigation_data = array(
+                        'show'        => true,
+                        'breadcrumbs' => [
+                            [
+                                'link'  => 'https://'.$website->get('Website URL'),
+                                'title' => _('Home'),
+                                'label' => '<i class="fa fa-home"></i>'
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => _('Customers'),
+                                'label' => '<i class="fal fa-user"></i> '._('Customers')
+                            ]
+
+
+                        ],
+                        'next'        => false,
+                        'prev'        => false,
+
+                    );
+                } elseif ($this->data['Webpage Code'] == 'profile.sys') {
+                    $website = get_object('Website', $this->get('Webpage Website Key'));
+
+                    $navigation_data = array(
+                        'show'        => true,
+                        'breadcrumbs' => [
+                            [
+                                'link'  => 'https://'.$website->get('Website URL'),
+                                'title' => _('Home'),
+                                'label' => '<i class="fa fa-home"></i>'
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => _('Profile'),
+                                'label' => '<i class="fal fa-cog"></i> '._('Profile')
+                            ]
+
+
+                        ],
+                        'next'        => false,
+                        'prev'        => false,
+
+                    );
+                }elseif ($this->data['Webpage Code'] == 'portfolio.sys') {
+                    $website = get_object('Website', $this->get('Webpage Website Key'));
+
+                    $navigation_data = array(
+                        'show'        => true,
+                        'breadcrumbs' => [
+                            [
+                                'link'  => 'https://'.$website->get('Website URL'),
+                                'title' => _('Home'),
+                                'label' => '<i class="fa fa-home"></i>'
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => _('Portfolio'),
+                                'label' => '<i class="fal fa-store"></i> '._('Portfolio')
+                            ]
+
+
+                        ],
+                        'next'        => false,
+                        'prev'        => false,
+
+                    );
+                } elseif ($this->data['Webpage Code'] == 'clients_orders.sys') {
+                    $website = get_object('Website', $this->get('Webpage Website Key'));
+
+                    $navigation_data = array(
+                        'show'        => true,
+                        'breadcrumbs' => [
+                            [
+                                'link'  => 'https://'.$website->get('Website URL'),
+                                'title' => _('Home'),
+                                'label' => '<i class="fa fa-home"></i>'
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => _('Orders'),
+                                'label' => '<i class="fal fa-shopping-cart"></i> '._('Orders')
+                            ],
+
+
+                        ],
+                        'next'        => false,
+                        'prev'        => false,
+
+                    );
+                } elseif ($this->data['Webpage Code'] == 'client_basket.sys') {
+                    $website = get_object('Website', $this->get('Webpage Website Key'));
+
+                    $navigation_data = array(
+                        'show'        => true,
+                        'breadcrumbs' => [
+                            [
+                                'link'  => 'https://'.$website->get('Website URL'),
+                                'title' => _('Home'),
+                                'label' => '<i class="fa fa-home"></i>'
+                            ],
+                            [
+                                'link'  => 'https://'.$website->get('Website URL').'/clients.sys',
+                                'title' => _('Customers'),
+                                'label' => '<i class="fal fa-user"></i> '._('Customers')
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => '',
+                                'label' => '',
+                                'class' => 'client_nav'
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => '',
+                                'label' => 'xxx',
+                                'class' => 'order_nav'
+                            ]
+
+                        ],
+                        'next'        => false,
+                        'prev'        => false,
+
+                    );
+                } elseif ($this->data['Webpage '.$key] == '') {
+                    $navigation_data = array(
+                        'show'        => false,
                         'breadcrumbs' => array(),
                         'next'        => false,
-                        'prev'    => false,
+                        'prev'        => false,
 
                     );
                 } else {
+
+
                     $navigation_data = json_decode($this->data['Webpage '.$key], true);
+
+
                 }
 
                 return $navigation_data;
 
 
-
-
             case 'Discounts':
 
 
-                switch ($this->data['Webpage Scope']){
+                switch ($this->data['Webpage Scope']) {
                     case 'Category Products':
-                        $deals=array();
-                        $sql ="SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label`  FROM `Deal Component Dimension`  left join  `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join  `Deal Campaign Dimension` Dcam on (`Deal Component Campaign Key`=Dcam.`Deal Campaign Key`)     WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=? AND `Deal Component Status`='Active'";
-                        $stmt = $this->db->prepare($sql);
+                        $deals = array();
+                        $sql   =
+                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label`  FROM `Deal Component Dimension`  left join  `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join  `Deal Campaign Dimension` Dcam on (`Deal Component Campaign Key`=Dcam.`Deal Campaign Key`)     WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=? AND `Deal Component Status`='Active'";
+                        $stmt  = $this->db->prepare($sql);
                         $stmt->execute(
                             array(
                                 $this->data['Webpage Scope Key']
                             )
                         );
                         while ($row = $stmt->fetch()) {
-                            $deals[]=array(
-                                'key'=>$row['Deal Component Key'],
-                                'icon'=>$row['Deal Component Icon'],
-                                'name'=>$row['Deal Name Label'],
-                                'until'=>$row['Deal Component Expiration Date'],
-                                'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' ')),
-                                'term'=>$row['Deal Term Label'],
-                                'allowance'=>$row['Deal Component Allowance Label']
+                            $deals[] = array(
+                                'key'             => $row['Deal Component Key'],
+                                'icon'            => $row['Deal Component Icon'],
+                                'name'            => $row['Deal Name Label'],
+                                'until'           => $row['Deal Component Expiration Date'],
+                                'until_formatted' => strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' ')),
+                                'term'            => $row['Deal Term Label'],
+                                'allowance'       => $row['Deal Component Allowance Label']
                             );
-                            }
-
-
+                        }
 
 
                         return array(
-                            'show'=>(count($deals)==0?false:true),
-                            'deals'=>$deals
+                            'show'  => (count($deals) == 0 ? false : true),
+                            'deals' => $deals
                         );
 
                         break;
 
                     case 'Product':
-                        $deals=array();
+                        $deals = array();
 
-                        $categories=array();
+                        $categories = array();
 
-                        $sql="select `Category Key` from `Category Bridge` where   `Subject`='Product'   and `Subject Key`=? ";
+                        $sql = "select `Category Key` from `Category Bridge` where   `Subject`='Product'   and `Subject Key`=? ";
 
                         $stmt = $this->db->prepare($sql);
                         $stmt->execute(
                             array($this->data['Webpage Scope Key'])
                         );
                         while ($row = $stmt->fetch()) {
-                            $categories[$row['Category Key']]=$row['Category Key'];
+                            $categories[$row['Category Key']] = $row['Category Key'];
 
                         }
 
 
-
-
-
-                        if(count($categories)>0){
+                        if (count($categories) > 0) {
                             $sql = sprintf(
                                 "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label` 
 FROM `Deal Component Dimension`   left join 
 `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join `Deal Campaign Dimension` DCam on (`Deal Component Campaign Key`=DCam.`Deal Campaign Key`)  WHERE `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
-                                join($categories,',')
+                                join($categories, ',')
                             );
 
                             if ($result = $this->db->query($sql)) {
                                 foreach ($result as $row) {
 
-                                    $deals[]=array(
-                                        'key'=>$row['Deal Component Key'],
-                                        'icon'=>$row['Deal Component Icon'],
-                                        'name'=>$row['Deal Name Label'],
-                                        'until'=>$row['Deal Component Expiration Date'],
-                                        'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' +0:00')),
-                                        'term'=>$row['Deal Term Label'],
-                                        'allowance'=>$row['Deal Component Allowance Label']
+                                    $deals[] = array(
+                                        'key'             => $row['Deal Component Key'],
+                                        'icon'            => $row['Deal Component Icon'],
+                                        'name'            => $row['Deal Name Label'],
+                                        'until'           => $row['Deal Component Expiration Date'],
+                                        'until_formatted' => strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' +0:00')),
+                                        'term'            => $row['Deal Term Label'],
+                                        'allowance'       => $row['Deal Component Allowance Label']
                                     );
 
 
@@ -252,15 +402,15 @@ FROM `Deal Component Dimension`   left join
 
 
                         return array(
-                            'show'=>(count($deals)==0?false:true),
-                            'deals'=>$deals
+                            'show'  => (count($deals) == 0 ? false : true),
+                            'deals' => $deals
                         );
 
                         break;
                     default:
                         return array(
-                            'show'=>false,
-                            'deals'=>array()
+                            'show'  => false,
+                            'deals' => array()
                         );
                 }
 

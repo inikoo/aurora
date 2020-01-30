@@ -54,7 +54,6 @@ class Public_Customer_Client extends DBW_Table {
             return;
         }
 
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id       = $this->data['Customer Client Key'];
             $this->metadata = json_decode($this->data['Customer Client Metadata'], true);
@@ -65,7 +64,6 @@ class Public_Customer_Client extends DBW_Table {
     }
 
     function create($raw_data, $address_raw_data) {
-
 
         if (empty($raw_data['Customer Client Code'])) {
             $this->error = true;
@@ -89,7 +87,12 @@ class Public_Customer_Client extends DBW_Table {
             return;
         }
 
-
+        $this->data = $this->base_data();
+        foreach ($raw_data as $key => $value) {
+            if (array_key_exists($key, $this->data)) {
+                $this->data[$key] = _trim($value);
+            }
+        }
         $this->editor = $raw_data['editor'];
 
         $this->data['Customer Client Creation Date'] = gmdate('Y-m-d H:i:s');
@@ -238,7 +241,7 @@ class Public_Customer_Client extends DBW_Table {
 
     function get_order_in_process_key() {
 
-        $sql       = "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=? AND `Order State`='InBasket' ";
+        $sql  = "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=? AND `Order State`='InBasket' ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -247,7 +250,7 @@ class Public_Customer_Client extends DBW_Table {
         );
         if ($row = $stmt->fetch()) {
             $order_key = $row['Order Key'];
-        }else{
+        } else {
             $order_key = false;
         }
 
@@ -268,14 +271,148 @@ class Public_Customer_Client extends DBW_Table {
                 break;
             case 'Customer Client Location':
             case 'Customer Client Code':
-            case 'Customer Client Company Name':
-            case 'Customer Client Main Contact Name':
+
             case 'Customer Client Main Plain Email':
             case 'Customer Client Main Plain Mobile':
 
                 $this->update_field($field, $value, $options);
 
                 break;
+            case 'Customer Client Company Name':
+
+                $old_value = $this->get('Company Name');
+
+                if ($value == '' and $this->data[$this->table_name.' Main Contact Name'] == '') {
+                    $this->msg   = _("Company name can't be empty if the contact name is empty as well");
+                    $this->error = true;
+
+                    return true;
+                }
+
+                $this->update_field($field, $value, $options);
+                if ($value == '') {
+
+                    $this->fast_update(
+                        ['Customer Client Name' => $this->data['Customer Client Main Contact Name']]
+                    );
+
+                } else {
+                    $this->fast_update(
+                        ['Customer Client Name' => $value]
+                    );
+                }
+
+                if ($this->get('Contact Address Country 2 Alpha Code') != '' and $old_value == $this->get('Contact Address Organization')) {
+                    $this->update_field(
+                        $this->table_name.' Contact Address Organization', $value, 'no_history'
+                    );
+                    $this->update_address_formatted_fields('Contact');
+
+
+                }
+
+
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` ='InBasket'  AND `Order Customer Client Key`=%d ", $this->id);
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+
+
+                        $_value = $this->get('Customer Client Contact Address');
+
+
+                        $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+
+                    }
+                }
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Name_Truncated'         => $this->get('Name Truncated'),
+                        'Subject_Name'           => $this->get('Name'),
+                        'Company_Name_Formatted' => $this->get('Company Name Formatted')
+
+
+                    )
+                );
+
+
+                $this->fork_index_elastic_search();
+
+                return true;
+
+            case 'Customer Client  Main Contact Name':
+
+
+                $old_value = $this->get('Main Contact Name');
+
+                if ($value == '' and $this->data[$this->table_name.' Company Name'] == '') {
+                    $this->msg   = _("Contact name can't be empty if the company name is empty");
+                    $this->error = true;
+
+                    return;
+                }
+
+                $this->update_field($field, $value, $options);
+                if ($this->data[$this->table_name.' Company Name'] == '') {
+                    $this->update_field($this->table_name.' Name', $value, 'no_history');
+
+                }
+
+
+                if ($this->get('Contact Address Country 2 Alpha Code') != '' and $old_value == $this->get('Contact Address Recipient')) {
+                    $this->update_field($this->table_name.' Contact Address Recipient', $value, 'no_history');
+                    $this->update_address_formatted_fields('Contact');
+
+                }
+
+
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` = 'InBasket'   AND `Order Customer Client Key`=%d ", $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+
+
+                        $_value = $this->get('Customer Client Contact Address');
+
+
+                        $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+
+                    }
+                }
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Name_Truncated'              => $this->get('Name Truncated'),
+                        'Subject_Name'                => $this->get('Name'),
+                        'Main_Contact_Name_Formatted' => $this->get('Main Contact Name Formatted')
+
+                    )
+
+                );
+
+
+                $this->other_fields_updated = array(
+                    $this->table_name.'_Name' => array(
+                        'field'           => $this->table_name.'_Name',
+                        'render'          => true,
+                        'value'           => $this->get($this->table_name.' Name'),
+                        'formatted_value' => $this->get('Name'),
+
+
+                    )
+                );
+
+
+                $this->fork_index_elastic_search();
+
+                return true;
+
 
             default:
 
@@ -375,6 +512,7 @@ class Public_Customer_Client extends DBW_Table {
         if ($order->error) {
             $this->error = true;
             $this->msg   = $order->msg;
+
             return $order;
         }
 
@@ -414,7 +552,10 @@ class Public_Customer_Client extends DBW_Table {
 
     }
 
-    function get_orders_data() {
+    /**
+     * @return array
+     */
+    public function get_orders_data() {
 
         $orders_data = array();
         $sql         = sprintf('select `Order Invoice Key`,`Order Key`,`Order Public ID`,`Order Date`,`Order Total Amount`,`Order State`,`Order Currency` from `Order Dimension` where `Order Customer Client Key`=%d order by `Order Date` desc ', $this->id);

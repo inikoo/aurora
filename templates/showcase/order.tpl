@@ -687,7 +687,7 @@
                     </span>
 
 
-                    <div class="delivery_note_operation data_entry_delivery_note {if $dn->get('State Index')>=80 or $dn->get('State Index')<0  or $store->settings('data_entry_picking_aid')!='Yes' }hide{/if}">
+                    <div class="delivery_note_operation data_entry_delivery_note   {if $dn->get('State Index')>=80 or $dn->get('State Index')<0  or $store->settings('data_entry_picking_aid')!='Yes' }hide{/if}">
                         <div class="square_button right" title="{t}Input picking sheet data{/t}">
                             <i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note({$dn->id})"></i>
                         </div>

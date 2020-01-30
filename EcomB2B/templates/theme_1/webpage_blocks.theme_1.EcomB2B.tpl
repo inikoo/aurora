@@ -16,7 +16,6 @@
         {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
     {/foreach}
 {else}
-
 {if $logged_in}
     <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" data-labels='{
     "zero_money":"{$zero_money}",
@@ -26,27 +25,23 @@
     }'></span>
 {/if}
 <div class="wrapper_boxed">
-
     <div class="site_wrapper">
-
         {include file="theme_1/header.theme_1.EcomB2B.tpl"}
-
         <div id="body" class="{$website->get('content_background_type')}">
-
             {if $navigation.show}
                 <div class="navigation top_body">
                     <div class="breadcrumbs">
                     {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
-                        <span class="breadcrumb"><a href="{$breadcrumb.link}" title="{$breadcrumb.title}">{$breadcrumb.label}</a> {if !$smarty.foreach.breadcrumbs.last}
-                                <i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>
-                            {/if}</span>
+                    <span class="breadcrumb {if isset($breadcrumb.class)}{$breadcrumb.class}{/if} "><a href="{$breadcrumb.link}" title="{$breadcrumb.title}">{$breadcrumb.label}</a> </span>
+                        {if !$smarty.foreach.breadcrumbs.last}
+                            <i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>
+                        {/if}
                     {/foreach}
                     </div>
                     <div class="nav">{if $navigation.prev}<a href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a
                             href="{$navigation.next.link}" title="{$navigation.next.title}"><i class="fas fa-arrow-right next"></i></a>{/if}</div>
                     <div style="clear:both"></div>
                 </div>
-
             {/if}
             {if isset($discounts) and count($discounts.deals)>0 }
                 <div class="discounts top_body"  >
@@ -67,6 +62,7 @@
                     <div style="clear:both"></div>
                 </div>
             {/if}
+
             {assign "with_iframe" false}
             {assign "with_login" false}
             {assign "with_register" false}
@@ -553,10 +549,12 @@
                             getScript("/assets/desktop.logged_in.min.js", function () {
                                 getScript("/assets/desktop.forms.min.js", function () {
                                     getScript("/assets/desktop.client_basket.min.js", function () {
-                                        $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key={$client_key}&device_prefix=", function (data) {
+                                        $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key="+getUrlParameter('client_id')+"&device_prefix=", function (data) {
                                             $('#client_basket').html(data.html);
-
-
+                                            $('.breadcrumbs .client_nav').html(data.client_nav.label)
+                                            $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
+                                            $('.breadcrumbs .order_nav').html(data.order_nav.label)
+                                            $('.breadcrumbs .order_nav').attr('title',data.order_nav.title)
                                         })
                                     })
                                 })
@@ -565,20 +563,7 @@
             {if $with_thanks==1}
                             getScript("/assets/desktop.logged_in.min.js", function () {
 
-                var getUrlParameter = function getUrlParameter(sParam) {
-                    var sPageURL = window.location.search.substring(1),
-                        sURLVariables = sPageURL.split('&'),
-                        sParameterName,
-                        i;
 
-                    for (i = 0; i < sURLVariables.length; i++) {
-                        sParameterName = sURLVariables[i].split('=');
-
-                        if (sParameterName[0] === sParam) {
-                            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-                        }
-                    }
-                };
 
                 var order_key=getUrlParameter('order_key');
                 var timestamp=getUrlParameter('t');
@@ -644,6 +629,7 @@
                 })
             })
 
+
             {/if}
             {if $with_profile==1}
             getScript("/assets/desktop.forms.min.js", function () {
@@ -653,12 +639,16 @@
                 })
                 })
             })
+
             {/if}
             {if $with_client==1}
-                  getScript("/assets/desktop.forms.min.js", function () {
-                      $.getJSON("ar_web_client.php?tipo=get_client_html&id={$client_key}&device_prefix=", function (data) {
+                            getScript("/assets/desktop.forms.min.js", function () {
+                      $.getJSON("ar_web_client.php?tipo=get_client_html&id="+getUrlParameter('id')+"&device_prefix=", function (data) {
                           $('#client').html(data.html)
-                       })
+                          $('.breadcrumbs .client_nav').html(data.client_nav.label)
+                          $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
+
+                      })
                    })
              {/if}
 
@@ -1634,6 +1624,28 @@
     </script>
 {/if}
 {/if}
+
+
+
+{if $with_client==1 or $with_thanks==1 or $with_client_basket}
+<script>
+    var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+    sURLVariables = sPageURL.split('&'),
+    sParameterName,
+    i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+    sParameterName = sURLVariables[i].split('=');
+
+    if (sParameterName[0] === sParam) {
+    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+    }
+    }
+    };
+</script>
+{/if}
+
 {if !empty($firebase)}
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
@@ -1650,6 +1662,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
+
     </script>
 {/if}
 </body></html>

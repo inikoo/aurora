@@ -51,6 +51,9 @@ switch ($tipo) {
     case 'get_client_order_items_html':
         $data = prepare_values(
             $_REQUEST, array(
+                         'client_key'    => array(
+                             'type' => 'key',
+                         ),
                          'device_prefix' => array(
                              'type'     => 'string',
                              'optional' => true
@@ -58,7 +61,7 @@ switch ($tipo) {
                      )
         );
 
-        get_client_order_items_html($data, $customer);
+        get_client_order_items_html($data, $customer->id);
 
 
         break;
@@ -107,7 +110,27 @@ function update_special_instructions($data, $order, $editor) {
 
 }
 
-function get_client_order_items_html($data, $customer) {
+function get_client_order_items_html($data, $customer_key) {
+
+    $customer_client = get_object('Customer_Client', $data['client_key']);
+    if (!$customer_client->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    if ($customer_client->get('Customer Client Customer Key') != $customer_key) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
     $smarty = new Smarty();
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -116,11 +139,13 @@ function get_client_order_items_html($data, $customer) {
     $smarty->addPluginsDir('./smarty_plugins');
 
 
+
+
     $website = get_object('Website', $_SESSION['website_key']);
 
     $theme = $website->get('Website Theme');
 
-    $order = get_object('Order', $customer->get_order_in_process_key());
+    $order = get_object('Order', $customer_client->get_order_in_process_key());
 
 
     $smarty->assign('edit', true);
@@ -191,6 +216,8 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
 
     $order_key = $customer_client->get_order_in_process_key();
 
+
+
     $order = get_object('Order', $order_key);
 
     if($order->id){
@@ -201,8 +228,19 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
         );
     }else{
 
-        $order->currency_code=$store->get('Store Currency Code');
+
+        $order=$customer_client->create_order();
+
+
+        //$order->currency_code=$store->get('Store Currency Code');
+
+
+
+
     }
+
+
+
 
 
 
@@ -246,7 +284,17 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
         'state' => 200,
         'empty' => false,
         'html'  => $smarty->fetch($theme.'/blk.client_basket.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
-    );
+        'client_nav' => [
+            'label' => $customer_client->get('Customer Client Code'),
+            'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
+
+        ],
+        'order_nav' => [
+            'label' => $order->get('Public ID'),
+            'title' => htmlspecialchars($order->get('Public ID'))
+
+        ]
+        );
 
 
     echo json_encode($response);

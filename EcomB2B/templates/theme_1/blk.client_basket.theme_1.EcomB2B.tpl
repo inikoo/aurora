@@ -30,7 +30,7 @@
 {assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
 
-<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}" data-order_key="{$order->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}" data-order_key="{$order->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="min-height:500px;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
     <div class="order_header  text_blocks  text_template_21">
@@ -39,7 +39,6 @@
                 <div class="text_block '">
                     <h2 class="order_number  {if !$order->id}hide{/if}">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h2>
 
-                    <h2>{if !empty($labels._client)}{$labels._client}{else}{t}Customer{/t}{/if} <span class="customer_client_code">{$customer_client->get('Code')}</span>  <span class="customer_client_name">{$customer_client->get('Name')}</span> </h2>
 
 
                     <div class="text_blocks text_template_2">
@@ -143,7 +142,7 @@
             </div>
 
                 <div class="container order basket   " style="margin-bottom: 30px">
-                     <span class="basket_order_items">
+                     <span class="basket_order_items" data-scope="client" data-scope_key="{$customer_client->id}"   >
                     {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=true hide_title=true  items_data=$items_data }
                      </span>
 
@@ -152,7 +151,7 @@
 
 
 
-         <div class="order_header container text_blocks  text_template_2 {if !$order->id}hide{/if} ">
+         <div class="order_header container text_blocks  text_template_2 {if !$order->id   or $order->get('Order Number Items')==0  }hide{/if} ">
              <div class="text_block" >
                  <form action="" method="post" enctype="multipart/form-data"  class="sky-form"  style="box-shadow: none"
 
@@ -183,7 +182,6 @@
                         <section class="col col-11">
                             <button id="basket_go_to_checkout"   style="margin:0px;{if $order->get('Products')==0 }display:none{/if}" type="submit" class="button"><b>{$data._go_checkout_label}</b> <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
 
-                            <button id="basket_continue_shopping" onclick="$(this).find('i').addClass('fa-spinner fa-spin'); window.location = '/'"  style="margin:0px;margin-right:30px;" type="submit" class="button"><i  class=" fa fa-fw fa-arrow-left" aria-hidden="true"></i> {if !empty($data._go_shop_label)}{$data._go_shop_label}{else}{t}Continue shopping{/t}{/if}  </button>
 
 
                         </section>

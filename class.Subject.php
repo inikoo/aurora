@@ -592,10 +592,6 @@ class Subject extends DB_Table {
                     $this->update_field($this->table_name.' Name', $value, 'no_history');
                 }
 
-
-
-
-
                 if ( $this->get('Contact Address Country 2 Alpha Code')!='' and  $old_value == $this->get('Contact Address Organization')) {
                     $this->update_field(
                         $this->table_name.' Contact Address Organization', $value, 'no_history'

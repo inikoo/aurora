@@ -80,12 +80,11 @@ switch ($tipo) {
 }
 
 /**
- * @param $data array
+ * @param $data         array
  * @param $customer_key integer
- * @param $editor array
+ * @param $editor       array
  */
 function update_contact_address($data, $customer_key, $editor) {
-
 
 
     $customer_client = get_object('Customer_Client', $data['key']);
@@ -232,15 +231,20 @@ function get_client_html($data, $customer) {
     $smarty->addPluginsDir('./smarty_plugins');
 
 
+    //print_r($data);
+
+
     $website         = get_object('Website', $_SESSION['website_key']);
     $store           = get_object('Store', $website->get('Website Store Key'));
     $customer_client = get_object('Customer_Client', $data['id']);
+
+    //print_r($customer_client);
 
 
     $webpage = $website->get_webpage('client.sys');
     $content = $webpage->get('Content Data');
 
-    $block='';
+    $block       = '';
     $block_found = false;
     $block_key   = false;
     foreach ($content['blocks'] as $_block_key => $_block) {
@@ -291,8 +295,13 @@ function get_client_html($data, $customer) {
 
 
     $response = array(
-        'state' => 200,
-        'html'  => $smarty->fetch('theme_1/blk.client.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        'state'      => 200,
+        'html'       => $smarty->fetch('theme_1/blk.client.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        'client_nav' => [
+            'label' => $customer_client->get('Customer Client Code'),
+            'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
+
+        ]
     );
 
 

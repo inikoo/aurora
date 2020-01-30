@@ -324,7 +324,7 @@ class DeliveryNote extends DB_Table {
                                                          'Shortages'
                                                      )
                 )) {
-                    $icon .= ' errir';
+                    $icon .= ' error';
                 }
 
                 return $icon;
@@ -338,39 +338,32 @@ class DeliveryNote extends DB_Table {
                 switch ($this->data['Delivery Note State']) {
                     case 'Ready to be Picked':
                         return 10;
-                        break;
+
 
                     case 'Picking':
                         return 20;
-                        break;
+
 
                     case 'Picked':
                         return 30;
-                        break;
+
                     case 'Packing':
                         return 40;
-                        break;
+
                     case 'Packed':
                         return 70;
-                        break;
                     case 'Packed Done':
                         return 80;
-                        break;
                     case 'Approved':
                         return 90;
-                        break;
                     case 'Dispatched':
                         return 100;
-                        break;
                     case 'Cancelled':
                         return -20;
-                        break;
                     case 'Cancelled to Restock':
                         return -10;
-                        break;
                     default:
                         return 0;
-                        break;
                 }
                 break;
 
