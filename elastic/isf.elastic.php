@@ -13,7 +13,7 @@
 use Elasticsearch\ClientBuilder;
 
 
-function get_part_inventory_transaction_fact($scope, $part_sku, $calendar_interval = '1d', $timezone = 'UTC') {
+function get_part_inventory_transaction_fact($scope, $part_sku, $calendar_interval = '1d', $_order='asc', $timezone = 'UTC') {
 
     $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
@@ -22,7 +22,7 @@ function get_part_inventory_transaction_fact($scope, $part_sku, $calendar_interv
 
         case 'stock':
             $aggregations = [
-                "stock"                   => [
+                "stock" => [
                     "sum" => [
                         "field" => "stock_on_hand"
                     ]
@@ -30,24 +30,27 @@ function get_part_inventory_transaction_fact($scope, $part_sku, $calendar_interv
 
 
             ];
+
+
+
             break;
         case 'sales':
             $aggregations = [
 
-                "sold"                    => [
+                "sold"        => [
                     "sum" => [
                         "field" => "sold"
                     ]
                 ],
-                "sold_amount"             => [
+                "sold_amount" => [
                     "sum" => [
                         "field" => "sold_amount"
                     ]
                 ],
 
 
-
             ];
+
             break;
         default:
             $aggregations = [
@@ -94,6 +97,7 @@ function get_part_inventory_transaction_fact($scope, $part_sku, $calendar_interv
 
 
             ];
+           // $_order='desc';
     }
 
 
@@ -104,19 +108,21 @@ function get_part_inventory_transaction_fact($scope, $part_sku, $calendar_interv
             "sort" => [
                 [
                     "date" => [
-                        "order" => "asc"
+                        "order" => "desc"
                     ]
                 ]
             ],
             "aggs" => [
                 "stock_per_day" => [
-                    "date_histogram" => [
+                    "date_histogram"    => [
                         "field"             => "date",
                         "calendar_interval" => $calendar_interval,
                         "time_zone"         => $timezone,
-                        "min_doc_count"     => 1
+                        "min_doc_count"     => 1,
+                        "order" =>[ "_key" => $_order ]
+
                     ],
-                    "aggregations"   => $aggregations
+                    "aggregations"      => $aggregations,
 
                 ]
             ],

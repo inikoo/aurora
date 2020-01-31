@@ -549,7 +549,10 @@ function stock_history($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
-    $results = get_part_inventory_transaction_fact('stock_history', $_data['parameters']['parent_key'], $calendar_interval);
+
+//    print_r($_data);
+
+    $results = get_part_inventory_transaction_fact('stock_history', $_data['parameters']['parent_key'], $calendar_interval,$_data['od']);
 
 
     list($rtext, $total, $filtered) = get_table_totals(
