@@ -4419,9 +4419,9 @@ class Store extends DB_Table {
                     $this->error = true;
                     $this->msg   = _("Value can't be empty");
                 }
-                if (strlen($value)>3) {
+                if (strlen($value)>4) {
                     $this->error = true;
-                    $this->msg   = _("The max length of the code is 3 characters");
+                    $this->msg   = _("The max length of the code is 4 characters");
                 }
                 $this->update_field($field, $value, $options);
 
