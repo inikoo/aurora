@@ -36,7 +36,7 @@ foreach ($XMLContent as $line) {
 
 
                 $sql = sprintf(
-                    'insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql('EUR'.$currency_code), $_value
+                    'insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql('EUR'.$currency_code), $_value
                 );
                 $db->exec($sql);
                 // print $sql."\n";
@@ -44,7 +44,7 @@ foreach ($XMLContent as $line) {
 
                 if ($_value != 0) {
                     $sql = sprintf(
-                        'insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql($currency_code.'EUR'),
+                        'insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql($currency_code.'EUR'),
                         1 / $_value
                     );
                     $db->exec($sql);

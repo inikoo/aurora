@@ -75,6 +75,7 @@ function get_omega_export_text($db, $account, $invoice) {
     }
 
 
+
     if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Address Country 2 Alpha Code')) {
         $invoice_numeric_code          = 100;
         $invoice_alpha_code            = 'OF';

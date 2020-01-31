@@ -39,20 +39,20 @@ foreach ($data as $key => $row) {
 
             if ($_key == 0) {
                 $date = $_value;
-             //   print "$date\n";
+             //  print "$date\n";
 
             } else {
                 if (is_numeric($_value)) {
 
                     if (isset($currency_codes[$_key])) {
                         $currency_code = $currency_codes[$_key];
-                        $sql           = sprintf('insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql('EUR'.$currency_code), $_value);
+                        $sql           = sprintf('insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql('EUR'.$currency_code), $_value);
                         $db->exec($sql);
                         //print $sql."\n";
 
 
                         if ($_value != 0) {
-                            $sql = sprintf('insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql($currency_code.'EUR'), 1 / $_value);
+                            $sql = sprintf('insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql($currency_code.'EUR'), 1 / $_value);
                             $db->exec($sql);
                             //print $sql."\n";
                         }
