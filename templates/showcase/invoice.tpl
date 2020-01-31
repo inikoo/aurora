@@ -116,8 +116,7 @@
             </tr>
             <tr style="{if $account->get('Account Currency')==$invoice->get('Invoice Currency')}display:none{/if}"
                 class="exchange bottom-strong-border">
-                <td class="aright">{$account->get('Account Currency')}
-                    /{$invoice->get('Invoice Currency')} {(1/$invoice->get('Invoice Currency Exchange'))|string_format:"%.3f"}</td>
+                <td class="aright">{$invoice->get('account_currency_label')}/{$invoice->get('Invoice Currency')} {(1/$invoice->get('Invoice Currency Exchange'))|string_format:"%.3f"}</td>
                 <td class="Corporate_Currency_Total_Amount aright">{$invoice->get('Corporate Currency Total Amount')}</td>
             </tr>
 

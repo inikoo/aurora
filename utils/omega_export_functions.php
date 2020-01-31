@@ -53,27 +53,9 @@ function get_omega_export_text($db, $account, $invoice) {
     if ($invoice->get('Invoice Currency') == 'EUR') {
         $exchange_rate = 1;
     } else {
-        $sql = 'select `ECB Currency Exchange Rate` from kbase.`ECB Currency Exchange Dimension` where `ECB Currency Exchange Date`<? and `ECB Currency Exchange Currency Pair`=? order by `ECB Currency Exchange Date` desc';
 
-
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array(
-                gmdate('Y-m-d', strtotime($invoice->get('Invoice Date').' +0:00')),
-                $invoice->get('Invoice Currency').'EUR'
-            )
-        );
-        if ($row = $stmt->fetch()) {
-
-            $exchange_rate = $row['ECB Currency Exchange Rate'];
-
-        } else {
-            $exchange_rate = $invoice->get('Invoice Currency Exchange');
-        }
-
-
+        $exchange_rate = $invoice->get('Invoice Currency Exchange');
     }
-
 
 
     if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Address Country 2 Alpha Code')) {
