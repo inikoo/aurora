@@ -44,7 +44,7 @@ $smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
 
-$smarty->assign('is_devel', preg_match('/bali|sasi|sakoi|geko/', gethostname()));
+$smarty->assign('is_devel', (ENVIRONMENT=='DEVEL'?true:false));
 
 if (defined('SENTRY_DNS_AUJS')) {
     $smarty->assign('sentry_js',SENTRY_DNS_AUJS);

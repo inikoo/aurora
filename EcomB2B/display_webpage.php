@@ -173,7 +173,7 @@ if (isset($is_homepage)) {
 }
 
 
-$is_devel = preg_match('/bali|sasi|sakoi|geko/', gethostname());
+$is_devel = (ENVIRONMENT=='DEVEL'?true:false);
 
 
 if (isset($_REQUEST['snapshot'])) {

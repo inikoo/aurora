@@ -44,11 +44,7 @@ $smarty->assign('timezone_info', get_timezone_info());
 
 
 $smarty->assign('firebase', get_firebase_data());
-
-
-$smarty->assign('is_devel', preg_match('/bali|sasi|sakoi|geko/', gethostname()));
-
-
+$smarty->assign('is_devel', (ENVIRONMENT=='DEVEL'?true:false));
 
 if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');

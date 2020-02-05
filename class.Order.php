@@ -2409,7 +2409,7 @@ class Order extends DB_Table {
     function send_review_invitation() {
 
 
-        if (preg_match('/bali|sasi|sakoi|geko/', gethostname()) or $this->get('Order Email') == '') {
+        if (ENVIRONMENT=='DEVEL' or $this->get('Order Email') == '') {
             return;
         }
 

@@ -147,10 +147,11 @@ trait Send_Email {
         $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
 
 
-        $to_address = $recipient->get('Main Plain Email');
 
-        if (preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
-            $to_address = 'raul@inikoo.com';
+        if(ENVIRONMENT=='DEVEL'){
+            $to_address = DEVEL_EMAIL;
+        }else{
+            $to_address = $recipient->get('Main Plain Email');
         }
 
         if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation' and

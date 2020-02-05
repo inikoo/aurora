@@ -8,7 +8,7 @@ var on_my_Submit = function () {
 
     input_pwd.val('secret');
     $('#token').val(epwd);
-    $("#login_form").trigger('submit');
+   $("#login_form").trigger('submit');
 
 
 }

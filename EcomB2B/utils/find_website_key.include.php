@@ -19,14 +19,13 @@ function get_website_key_from_domain($redis) {
     if ($redis->exists($redis_key)) {
         return $redis->get($redis_key);
     } else {
-        if (preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
+        if (ENVIRONMENT=='DEVEL') {
 
-            /** @var $_website_key integer */
             include 'keyring/dns.php';
             $redis->set(
-                $redis_key, $_website_key
+                $redis_key, DEVEL_WEBSITE_KEY
             );
-            return $_website_key;
+            return DEVEL_WEBSITE_KEY;
         } else {
 
             /** @var $dns_host string */

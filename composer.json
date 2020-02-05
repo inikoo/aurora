@@ -24,6 +24,7 @@
     "giggsey/libphonenumber-for-php": "^8.11",
     "ext-zlib": "*",
     "fzaninotto/faker": "^1.9",
-    "ext-iconv": "*"
+    "ext-iconv": "*",
+    "ext-redis": "*"
   }
 }

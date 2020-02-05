@@ -41,5 +41,7 @@
     "grunt-terser": "^1.0.0",
     "grunt-text-replace": "^0.4.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@fortawesome/fontawesome-pro": "^5.12.0"
+  }
 }

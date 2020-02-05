@@ -1628,7 +1628,7 @@
         </div>
     </div>
 {/if}
-{if $smarty.server.SERVER_NAME!='ecom.bali' and !empty($tawk_chat_code)}
+{if !$is_devel and !empty($tawk_chat_code)}
     <script type="text/javascript">
         var Tawk_API=Tawk_API||{
 
