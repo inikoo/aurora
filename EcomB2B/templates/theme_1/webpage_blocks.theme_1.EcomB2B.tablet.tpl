@@ -1473,7 +1473,12 @@
         ga('auTracker.send', 'pageview');
         {/if}
 
+        {if $with_portfolio==1}
+        function fixedEncodeURIComponent(str) {
+            return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
+        }
 
+        {/if}
 
 
 </script>

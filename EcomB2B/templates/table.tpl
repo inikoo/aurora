@@ -365,8 +365,8 @@
 
 
     var Row = Backbone.Model.extend({
-
     });
+
 
 
     var Rows = Backbone.PageableCollection.extend({
@@ -383,62 +383,74 @@
 
         parseState: function (resp, queryParams, state, options) {
             $('#rtext').html(resp.resultset.rtext)
-
-            var total_pages = Math.ceil(resp.resultset.total_records / state.pageSize)
             $('#table_buttons').removeClass('hide')
 
 
-            if (total_pages > 0 && '{if isset($f_label)}{$f_label}{/if}' != '') {
-                $('#filter_container').removeClass('hide')
-            }
 
-            if (total_pages == 1) {
-                $('#paginator').html('')
-                $('#first_page').addClass('disabled')
-                $('#prev_page').addClass('disabled')
-                $('#last_page').addClass('disabled')
-                $('#next_page').addClass('disabled')
+            if(resp.resultset.total_records==0){
 
-            } else if (total_pages > 1) {
-
-                $('#first_page').removeClass('hide')
-                $('#prev_page').removeClass('hide')
-                $('#last_page').removeClass('hide')
-                $('#next_page').removeClass('hide')
+                $('#table').addClass('hide')
+                $('#show_export_dialog').addClass('hide')
 
 
-                $('#paginator').html(rows.state.currentPage + '/' + total_pages)
 
-                $('#first_page').removeClass('disabled')
-                $('#prev_page').removeClass('disabled')
-                $('#last_page').removeClass('disabled')
-                $('#next_page').removeClass('disabled')
+            }else {
+
+                var total_pages = Math.ceil(resp.resultset.total_records / state.pageSize)
 
 
-                if (rows.state.currentPage == 1) {
-                    $('#prev_page').addClass('disabled')
+                if (total_pages > 0 && '{if isset($f_label)}{$f_label}{/if}' != '') {
+                    $('#filter_container').removeClass('hide')
+                }
+
+                if (total_pages == 1) {
+                    $('#paginator').html('')
                     $('#first_page').addClass('disabled')
-
-                } else if (rows.state.currentPage == 2) {
-
-                 //   $('#first_page').addClass('disabled')
-
-                } else if (rows.state.currentPage == total_pages) {
+                    $('#prev_page').addClass('disabled')
+                    $('#last_page').addClass('disabled')
                     $('#next_page').addClass('disabled')
 
-                    $('#last_page').addClass('disabled')
+                } else if (total_pages > 1) {
+
+                    $('#first_page').removeClass('hide')
+                    $('#prev_page').removeClass('hide')
+                    $('#last_page').removeClass('hide')
+                    $('#next_page').removeClass('hide')
+
+
+                    $('#paginator').html(rows.state.currentPage + '/' + total_pages)
+
+                    $('#first_page').removeClass('disabled')
+                    $('#prev_page').removeClass('disabled')
+                    $('#last_page').removeClass('disabled')
+                    $('#next_page').removeClass('disabled')
+
+
+                    if (rows.state.currentPage == 1) {
+                        $('#prev_page').addClass('disabled')
+                        $('#first_page').addClass('disabled')
+
+                    } else if (rows.state.currentPage == 2) {
+
+                        //   $('#first_page').addClass('disabled')
+
+                    } else if (rows.state.currentPage == total_pages) {
+                        $('#next_page').addClass('disabled')
+
+                        $('#last_page').addClass('disabled')
+
+                    }
 
                 }
 
-            }
+                $('th.ascending').removeClass('ascending')
+                $('th.descending').removeClass('descending')
 
-            $('th.ascending').removeClass('ascending')
-            $('th.descending').removeClass('descending')
-
-            if (resp.resultset.sort_dir == 'desc') {
-                $('th.' + resp.resultset.sort_key).addClass('descending')
-            }else {
-                $('th.' + resp.resultset.sort_key).addClass('ascending')
+                if (resp.resultset.sort_dir == 'desc') {
+                    $('th.' + resp.resultset.sort_key).addClass('descending')
+                } else {
+                    $('th.' + resp.resultset.sort_key).addClass('ascending')
+                }
             }
 
             return {
@@ -458,8 +470,6 @@
     var rows = new Rows();
     var grid = new Backgrid.Grid({
         columns: columns, collection: rows,
-
-
     });
 
 
@@ -469,15 +479,7 @@
 
 
     grid.render()
-
-
-
-
-
     $("#table").append(grid.el);
-
-
-
     change_table_view('{$table_view}', false)
 
     $("#filter").append(serverSideFilter.render().el);

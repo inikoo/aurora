@@ -49,27 +49,7 @@ var HeaderHtmlCell = Backgrid.HeaderCell.extend({
     }
 
 
-/*
 
-    render: function () {
-        this.$el.empty();
-
-
-        if (this.column.get('title')) {
-            this.$el.attr('title', this.column.get('title'))
-
-        }
-        if (this.column.get('headerClass')) {
-            this.$el.addClass(this.column.get('headerClass'));
-        }
-
-
-       this.$el.append(this.column.get("label"))
-
-        this.delegateEvents();
-        return this;
-    }
-    */
 
 });
 
@@ -95,25 +75,6 @@ var rightHeaderHtmlCell = Backgrid.HeaderCell.extend({
         return this;
 
 
-        /*
-        this.$el.empty();
-
-
-        if (this.column.get('title')) {
-            this.$el.attr('title', this.column.get('title'))
-
-        }
-        if (this.column.get('headerClass')) {
-            this.$el.addClass(this.column.get('headerClass'));
-        }
-
-
-        this.$el.append(this.column.get("label"))
-
-
-        this.delegateEvents();
-        return this;
-        */
 
     }
 });
@@ -591,14 +552,6 @@ function show_download_edit_items_dialog(element) {
 }
 
 
-
-
-
-
-
-
-
-
 function hide_export_dialog(export_dialog) {
     $(export_dialog).addClass('hide')
 
@@ -933,7 +886,6 @@ function edit_category_subject(element) {
 }
 
 function post_table_rendered(el) {
-
 
 
     switch (state.tab) {

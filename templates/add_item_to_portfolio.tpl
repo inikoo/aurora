@@ -27,6 +27,9 @@
 
 
 <script>
+
+
+
     $("#add_item_to_portfolio_form").on("input propertychange", function (evt) {
 
 
@@ -53,7 +56,7 @@
 
 
         var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_item_to_portfolio').val()) + '&scope=item' + '&metadata=' + atob($('#add_item_to_portfolio_form').data("metadata")) + '&state=' + JSON.stringify(state)
-
+console.log(request)
         $.getJSON(request, function (data) {
 
 

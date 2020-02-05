@@ -9,8 +9,8 @@
 
 */
 
-include 'conf/export_fields.php';
-include 'conf/elements_options.php';
+include_once 'conf/export_fields.php';
+include_once 'conf/elements_options.php';
 
 $default_rrp_options = array(
     500,

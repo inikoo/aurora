@@ -129,7 +129,123 @@ function get_export_fields($element,$account_currency_code='') {
             ),
 
         ),
+        'customers_dropshipping' => array(
+            array(
+                'name'    => 'C.`Customer Key`',
+                'label'   => _('ID'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Customer Name`',
+                'label'   => _('Name'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Customer Main Contact Name`',
+                'label'   => _('Contact'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Customer Main Plain Email`',
+                'label'   => _('Email'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Customer Main Plain Telephone`',
+                'label'   => _('Telephone'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Customer Main Plain Mobile`',
+                'label'   => _('Mobile'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Customer Tax Number`',
+                'label'   => _('Tax Number'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => 'REPLACE(`Customer Contact Address Formatted`,"<br/>","\n") as`Customer Address`',
+                'label'   => _('Contact address'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Customer Contact Address Postal Label`',
+                'label'   => _('Contact address (Postal label)'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Customer Contact Address Line 1`,`Customer Contact Address Line 2`,`Customer Contact Address Sorting Code`,`Customer Contact Address Postal Code`,`Customer Contact Address Dependent Locality`,`Customer Contact Address Locality`,`Customer Contact Address Administrative Area`,`Customer Contact Address Country 2 Alpha Code`',
+                'label'   => _('Contact address (Separated fields)'),
+                'checked' => 0,
+                'labels'  => array(
+                    _('Contact address'),
+                    _('Contact address line 2'),
+                    _('Contact address sorting code'),
+                    _('Contact address postal code'),
+                    _('Contact address dependent locality'),
+                    _('Contact address locality'),
+                    _('Contact address administrative area'),
+                    _('Contact address country'),
 
+                )
+            ),
+
+            array(
+                'name'    => 'REPLACE(`Customer Invoice Address Formatted`,"<br/>","\n") as`Customer Billing Address`',
+                'label'   => _('Billing address'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Customer Invoice Address Line 1`,`Customer Invoice Address Line 2`,`Customer Invoice Address Sorting Code`,`Customer Invoice Address Postal Code`,`Customer Invoice Address Dependent Locality`,`Customer Invoice Address Locality`,`Customer Invoice Address Administrative Area`,`Customer Invoice Address Country 2 Alpha Code`',
+                'label'   => _('Billing address (Separated fields)'),
+                'checked' => 0,
+                'labels'  => array(
+                    _('Billing address'),
+                    _('Billing address line 2'),
+                    _('Billing address sorting code'),
+                    _('Billing address postal code'),
+                    _('Billing address dependent locality'),
+                    _('Billing address locality'),
+                    _('Billing address administrative area'),
+                    _('Billing address country'),
+
+                )
+            ),
+            array(
+                'name'    => 'REPLACE(`Customer Delivery Address Formatted`,"<br/>","\n") as`Customer Delivery Address`',
+                'label'   => _('Delivery address'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Customer Delivery Address Line 1`,`Customer Delivery Address Line 2`,`Customer Delivery Address Sorting Code`,`Customer Delivery Address Postal Code`,`Customer Delivery Address Dependent Locality`,`Customer Delivery Address Locality`,`Customer Delivery Address Administrative Area`,`Customer Delivery Address Country 2 Alpha Code`',
+                'label'   => _('Delivery address (Separated fields)'),
+                'checked' => 0,
+                'labels'  => array(
+                    _('Delivery address'),
+                    _('Delivery address line 2'),
+                    _('Delivery address sorting code'),
+                    _('Delivery address postal code'),
+                    _('Delivery address dependent locality'),
+                    _('Delivery address locality'),
+                    _('Delivery address administrative area'),
+                    _('Delivery address country'),
+
+                )
+            ),
+            array(
+                'name'    => '`Customer Last Order Date`',
+                'label'   => _('Last order date'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Customer Account Balance`',
+                'label'   => _('Account balance'),
+                'checked' => 0
+            ),
+
+        ),
         'prospects' => array(
 
             array(

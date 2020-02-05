@@ -130,7 +130,28 @@ function get_portfolio_table_html($data, $customer) {
 
     $table_buttons = array();
 
+    $table_buttons[] = array(
+        'icon'     => 'plus',
+        'title'    => _("Add product to portfolio"),
+        'id'       => 'add_to_portfolio',
+        'class'    => 'items_operation',
+        'add_item_to_portfolio' => array(
 
+            'field_label' => _("Product").':',
+            'metadata'    => base64_encode(
+                json_encode(
+                    array(
+                        'scope'      => 'product',
+                        'parent'     => 'Store',
+                        'parent_key' => $store->id,
+                        'options'    => array('for_order'),
+                    )
+                )
+            )
+
+        )
+
+    );
 
     $smarty->assign('table_buttons', $table_buttons);
 
