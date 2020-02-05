@@ -10,6 +10,7 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
+require_once 'utils/table_functions.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -44,6 +45,11 @@ switch ($tipo) {
 
     case 'get_portfolio_items':
         get_portfolio_items($customer, $db);
+
+        break;
+    case 'portfolio_items':
+        portfolio_items(get_table_parameters(), $db, $customer);
+
         break;
     case 'add_product_to_portfolio':
         $data = prepare_values(
@@ -71,8 +77,126 @@ switch ($tipo) {
 
 }
 
-function get_portfolio_items($customer, $db) {
 
+
+function portfolio_items($_data, $db,$customrt) {
+
+
+    include_once 'utils/currency_functions.php';
+
+    $rtext_label = 'product';
+
+
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            //'Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand'
+            switch ($data['Product Availability State']) {
+                case 'Excess':
+                case 'Normal':
+
+
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('Active'));
+                    break;
+                case 'OnDemand':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('On demand'));
+                    break;
+                case 'Error':
+                case 'OutofStock':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#F25056" title="%s"></i>', _('Out of stock'));
+                    break;
+                case 'VeryLow':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#ff7c00" title="%s"></i>', _('Very low stock'));
+                    break;
+                case 'Low':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#FCBE07" title="%s"></i>', _('Low stock'));
+                    break;
+
+                default:
+                    $stock_status = $data['Product Availability State'];
+                    break;
+            }
+
+
+            if ($data['Product Availability State'] == 'Discontinued') {
+                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
+
+            } elseif ($data['Product Availability State'] == 'Discontinuing') {
+                $status_icon =  ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
+            } else {
+                $status_icon = '';
+            }
+
+
+            $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+            $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+
+
+            $record_data[] = array(
+
+                'id'           => (integer)$data['Product ID'],
+                'code'         => $code.$status_icon,
+                'name'         => $name,
+                'stock_status' => $stock_status.$status_icon,
+                'price'         => money($data['Product Price'],$data['Store Currency Code']),
+                'rrp'         => money($data['Product RRP'],$data['Store Currency Code']),
+
+
+                'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),
+
+                'amount' => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
+
+                'qty'        => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
+                'orders'     => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
+                'clients'    => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients'])),
+                'operations' => sprintf('<i class="far button fa-trash-alt" onclick="remove_item_from_portfolio(this,%d,%s)" ></i>', $data['Customer Portfolio Customer Key'], $data['Product ID'])
+
+            );
+
+
+        }
+
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function get_portfolio_items($customer, $db) {
 
 
     $data = array();
@@ -251,12 +375,12 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
     );
     if ($row = $stmt->fetch()) {
 
-            $response = array(
-                'state' => 400,
-                'msg'   => _('Product already in portfolio')
-            );
-            echo json_encode($response);
-            exit;
+        $response = array(
+            'state' => 400,
+            'msg'   => _('Product already in portfolio')
+        );
+        echo json_encode($response);
+        exit;
 
 
     } else {

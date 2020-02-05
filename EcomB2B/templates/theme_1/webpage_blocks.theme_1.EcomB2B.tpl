@@ -952,13 +952,34 @@
 
              {if $with_portfolio==1}
                             getScript("/assets/datatables.min.js", function () {
-                                $('#portfolio_items').DataTable( {
-                                    "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items",
-                                    "language": {
-                                        "search": "{if empty($labels._filter_products)}{t}Filter products{/t}{else}{$labels._filter_products}{/if}:"
+
+                                const request_data ={ "tipo":'portfolio'}
+
+                                $.ajax({
+                                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+
+                                        if (data.state == 200) {
+
+
+
+                                            state = data.app_state;
+                                            $('#table_container').html(data.html)
+
+
+
+
+
+
+
+                                        }
+
                                     }
-                                } );
-                            })
+                                });
+
+
+
+                        })
                             {/if}
              {if $with_clients==1}
              getScript("/assets/desktop.forms.min.js", function () {
@@ -967,7 +988,6 @@
                                         "ajax": "ar_web_clients.php?tipo=get_clients"
                                     });
                  })
-
 
                  $("form").submit(function(e) {
                      e.preventDefault();

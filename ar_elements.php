@@ -4238,7 +4238,7 @@ function get_customer_active_portfolio_elements($db, $data) {
             $row['element'] = 'Ok';
         }
 
-        $elements_numbers['status'][$row['element']] = $row['number'];
+        $elements_numbers['availability_state'][$row['element']] = $row['number'];
     }
 
 

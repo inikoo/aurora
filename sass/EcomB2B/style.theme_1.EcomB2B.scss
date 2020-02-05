@@ -7,6 +7,27 @@
  Version 3
 
 */
+$height_header: 30px;
+$height_short_row: 22px;
+$color_success: #26A65B;
+$height_address_bar: 26px;
+$font_title: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+$header_background_color: #fefefe;
+$color_success: #26A65B;
+$color_warning: #ED9121;
+$color_error: tomato;
+$color_attention: #ffc822;
+
+@mixin unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
 
 @import 'core';
 @import 'responsive';
@@ -14,6 +35,13 @@
 @import 'footer';
 @import 'text_blocks';
 @import 'froala_style';
+@import 'tabs';
+@import 'table_title';
+
+@import 'table';
+@import 'square_buttons.scss';
+
+
 @import 'aurora';
 
 

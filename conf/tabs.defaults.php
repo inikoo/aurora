@@ -30,9 +30,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers'],
-        'export_fields' => $export_fields['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers'),
+        'export_fields' => get_export_fields('customers')
 
     ),
 
@@ -43,9 +43,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers'],
-        'export_fields' => $export_fields['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers'),
+        'export_fields' => get_export_fields('customers')
 
     ),
     'customers.list' => array(
@@ -55,7 +55,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'export_fields' => $export_fields['customers']
+        'export_fields' => get_export_fields('customers')
 
     ),
 
@@ -99,8 +99,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['poll_query_history'])[0],
-        'elements'      => $elements_options['poll_query_history']
+        'elements_type' => array_keys(get_elements_option('poll_query_history'))[0],
+        'elements'      => get_elements_option('poll_query_history')
     ),
     'poll_query_option.history' => array(
         'view'          => 'overview',
@@ -109,8 +109,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['poll_query_option_history'])[0],
-        'elements'      => $elements_options['poll_query_option_history']
+        'elements_type' => array_keys(get_elements_option('poll_query_option_history'))[0],
+        'elements'      => get_elements_option('poll_query_option_history')
     ),
 
 
@@ -145,9 +145,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers'],
-        'export_fields' => $export_fields['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers'),
+        'export_fields' => get_export_fields('customers')
 
     ),
 
@@ -158,9 +158,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'email',
-        'elements_type' => array_keys($elements_options['prospects'])[0],
-        'elements'      => $elements_options['prospects'],
-        'export_fields' => $export_fields['prospects']
+        'elements_type' => array_keys(get_elements_option('prospects'))[0],
+        'elements'      => get_elements_option('prospects'),
+        'export_fields' => get_export_fields('prospects')
 
     ),
 
@@ -181,8 +181,8 @@ $tab_defaults = array(
         'rpp'           => 500,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['mailshots'])[0],
-        'elements'      => $elements_options['mailshots'],
+        'elements_type' => array_keys(get_elements_option('mailshots'))[0],
+        'elements'      => get_elements_option('mailshots'),
     ),
 
 
@@ -337,8 +337,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['customer_history'])[0],
-        'elements'      => $elements_options['customer_history']
+        'elements_type' => array_keys(get_elements_option('customer_history'))[0],
+        'elements'      => get_elements_option('customer_history')
     ),
     'customer.orders'               => array(
         'view'          => 'overview',
@@ -350,8 +350,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders')
     ),
     'customer.invoices'             => array(
         'view'          => 'overview',
@@ -363,9 +363,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices'],
-        'export_fields' => $export_fields['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices'),
+        'export_fields' => get_export_fields('invoices')
 
     ),
     'customer.active_portfolio' => array(
@@ -376,9 +376,9 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
         'f_period'    => 'ytd',
-        'elements_type' => array_keys($elements_options['customer_portfolio'])[0],
-        'elements'      => $elements_options['customer_portfolio'],
-        'export_fields' => $export_fields['products']
+        'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
+        'elements'      => get_elements_option('customer_portfolio'),
+        'export_fields' => get_export_fields('products')
 
     ),
     'customer.removed_portfolio' => array(
@@ -439,7 +439,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'frequency'   => 'monthly',
         'f_field'     => '',
-        //  'export_fields'=>$export_fields['timeserie_records']
+        //  'export_fields'=>get_export_fields('timeserie_records')
 
     ),
     'customer.product.orders'       => array(
@@ -450,9 +450,9 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
 
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders'],
-        'export_fields' => $export_fields['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders'),
+        'export_fields' => get_export_fields('orders')
     ),
     'customer.product.invoices'     => array(
         'view'          => 'overview',
@@ -464,9 +464,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices'],
-        'export_fields' => $export_fields['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices'),
+        'export_fields' => get_export_fields('invoices')
     ),
     'customer.product.transactions' => array(
         'view'        => 'overview',
@@ -498,8 +498,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['prospect_history'])[0],
-        'elements'      => $elements_options['prospect_history']
+        'elements_type' => array_keys(get_elements_option('prospect_history'))[0],
+        'elements'      => get_elements_option('prospect_history')
     ),
     'orders.website'                => array(
         'view'          => 'overview',
@@ -509,7 +509,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
 
 
     ),
@@ -544,7 +544,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
 
     ),
     'orders.in_process.paid'     => array(
@@ -555,7 +555,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
 
     ),
 
@@ -568,7 +568,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
     ),
     'orders.in_warehouse_with_alerts' => array(
         'view'          => 'overview',
@@ -578,7 +578,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
     ),
 
     'orders.packed_done' => array(
@@ -589,7 +589,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
     ),
 
 
@@ -601,7 +601,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
     ),
 
 
@@ -613,7 +613,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
         'elements_type' => 'location',
-        'elements'      => $elements_options['orders_in_control_panel'],
+        'elements'      => get_elements_option('orders_in_control_panel'),
     ),
 
     'orders' => array(
@@ -627,8 +627,8 @@ $tab_defaults = array(
         'to'            => '',
         'period'        => 'all',
         'elements_type' => 'state',
-        'elements'      => $elements_options['orders'],
-        'export_fields' => $export_fields['orders']
+        'elements'      => get_elements_option('orders'),
+        'export_fields' => get_export_fields('orders')
 
     ),
 
@@ -643,7 +643,7 @@ $tab_defaults = array(
         'to'            => '',
         'period'        => 'all',
         'elements_type' => 'state',
-        'elements'      => $elements_options['orders']
+        'elements'      => get_elements_option('orders')
 
     ),
     'order.items'        => array(
@@ -674,8 +674,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['customer_history'])[0],
-        'elements'      => $elements_options['customer_history']
+        'elements_type' => array_keys(get_elements_option('customer_history'))[0],
+        'elements'      => get_elements_option('customer_history')
     ),
 
     'order.history'        => array(
@@ -693,7 +693,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['invoices']
+        'export_fields' => get_export_fields('invoices')
 
     ),
     'order.delivery_notes' => array(
@@ -703,7 +703,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['delivery_notes']
+        'export_fields' => get_export_fields('delivery_notes')
 
     ),
     'shipper.consignments' => array(
@@ -713,7 +713,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['consignments']
+        'export_fields' => get_export_fields('consignments')
 
     ),
     'order.payments'       => array(
@@ -797,7 +797,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['invoices']
+        'export_fields' => get_export_fields('invoices')
 
 
     ),
@@ -808,7 +808,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['orders']
+        'export_fields' => get_export_fields('orders')
 
 
     ),
@@ -891,7 +891,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['orders'],
+        'export_fields' => get_export_fields('orders'),
 
 
     ),
@@ -902,7 +902,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['delivery_notes']
+        'export_fields' => get_export_fields('delivery_notes')
 
 
     ),
@@ -924,9 +924,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices'],
-        'export_fields' => $export_fields['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices'),
+        'export_fields' => get_export_fields('invoices')
 
     ),
 
@@ -951,9 +951,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices'],
-        'export_fields' => $export_fields['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices'),
+        'export_fields' => get_export_fields('invoices')
 
     ),
 
@@ -967,7 +967,7 @@ $tab_defaults = array(
         'from'        => '',
         'to'          => '',
         'period'      => 'all',
-        //   'export_fields' => $export_fields['invoices_group_by_customer']
+        //   'export_fields' => get_export_fields('invoices_group_by_customer')
 
     ),
 
@@ -982,9 +982,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices'],
-        'export_fields' => $export_fields['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices'),
+        'export_fields' => get_export_fields('invoices')
 
     ),
 
@@ -1005,8 +1005,8 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'label',
         'f_period'    => 'ytd',
-        //  'elements_type'=>array_keys($elements_options['suppliers'])[0],
-        //  'elements'=>$elements_options['suppliers']
+        //  'elements_type'=>array_keys(get_elements_option('suppliers'))[0],
+        //  'elements'=>get_elements_option('suppliers')
 
     ),
 
@@ -1020,8 +1020,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices')
     ),
     'deleted_invoices_server'    => array(
         'view'          => 'overview',
@@ -1033,8 +1033,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices')
     ),
     'deleted_invoices'           => array(
         'view'          => 'overview',
@@ -1046,8 +1046,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['invoices'])[0],
-        'elements'      => $elements_options['invoices']
+        'elements_type' => array_keys(get_elements_option('invoices'))[0],
+        'elements'      => get_elements_option('invoices')
     ),
     'invoices_server.categories' => array(
         'view'        => 'overview',
@@ -1067,9 +1067,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['delivery_notes'])[0],
-        'elements'      => $elements_options['delivery_notes'],
-        'export_fields' => $export_fields['delivery_notes']
+        'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
+        'elements'      => get_elements_option('delivery_notes'),
+        'export_fields' => get_export_fields('delivery_notes')
 
     ),
     'delivery_notes_server'      => array(
@@ -1082,8 +1082,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['delivery_notes'])[0],
-        'elements'      => $elements_options['delivery_notes']
+        'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
+        'elements'      => get_elements_option('delivery_notes')
     ),
 
     'returns_server' => array(
@@ -1260,9 +1260,9 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['products'])[0],
-        'elements'      => $elements_options['products'],
-        'export_fields' => $export_fields['products']
+        'elements_type' => array_keys(get_elements_option('products'))[0],
+        'elements'      => get_elements_option('products'),
+        'export_fields' => get_export_fields('products')
 
     ),
     'back_to_stock_notification_request.products' => array(
@@ -1284,8 +1284,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['services'])[0],
-        'elements'      => $elements_options['services'],
+        'elements_type' => array_keys(get_elements_option('services'))[0],
+        'elements'      => get_elements_option('services'),
 
     ),
     'store.sales.history'   => array(
@@ -1306,8 +1306,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['products'])[0],
-        'elements'      => $elements_options['products'],
+        'elements_type' => array_keys(get_elements_option('products'))[0],
+        'elements'      => get_elements_option('products'),
 
     ),
     'category.all_products' => array(
@@ -1318,8 +1318,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['products'])[0],
-        'elements'      => $elements_options['products'],
+        'elements_type' => array_keys(get_elements_option('products'))[0],
+        'elements'      => get_elements_option('products'),
 
     ),
     'products.categories'   => array(
@@ -1355,7 +1355,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'frequency'   => 'monthly',
         'f_field'     => '',
-        //  'export_fields'=>$export_fields['timeserie_records']
+        //  'export_fields'=>get_export_fields('timeserie_records')
 
     ),
     'product.orders'        => array(
@@ -1368,9 +1368,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'ytd',
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders'],
-        'export_fields' => $export_fields['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders'),
+        'export_fields' => get_export_fields('orders')
     ),
 
     'product.customers'                                    => array(
@@ -1381,7 +1381,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name',
 
-        'export_fields' => $export_fields['customers']
+        'export_fields' => get_export_fields('customers')
 
     ),
     'product.back_to_stock_notification_request.customers' => array(
@@ -1392,7 +1392,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name',
 
-        'export_fields' => $export_fields['customers']
+        'export_fields' => get_export_fields('customers')
 
     ),
 
@@ -1403,9 +1403,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers'],
-        'export_fields' => $export_fields['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers'),
+        'export_fields' => get_export_fields('customers')
 
     ),
 
@@ -1434,7 +1434,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'frequency'   => 'monthly',
         'f_field'     => '',
-        //  'export_fields'=>$export_fields['timeserie_records']
+        //  'export_fields'=>get_export_fields('timeserie_records')
 
     ),
     'service.orders'        => array(
@@ -1447,9 +1447,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'ytd',
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders'],
-        'export_fields' => $export_fields['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders'),
+        'export_fields' => get_export_fields('orders')
     ),
 
     'charge.orders'    => array(
@@ -1462,9 +1462,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'ytd',
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders'],
-        'export_fields' => $export_fields['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders'),
+        'export_fields' => get_export_fields('orders')
     ),
     'charge.customers' => array(
         'view'          => 'overview',
@@ -1473,8 +1473,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers')
     ),
 
     'charge.history' => array(
@@ -1484,8 +1484,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'elements_type' => array_keys($elements_options['deal_history'])[0],
-        'elements'      => $elements_options['deal_history']
+        'elements_type' => array_keys(get_elements_option('deal_history'))[0],
+        'elements'      => get_elements_option('deal_history')
     ),
 
 
@@ -1497,7 +1497,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name',
 
-        'export_fields' => $export_fields['customers']
+        'export_fields' => get_export_fields('customers')
 
     ),
 
@@ -1508,9 +1508,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers'],
-        'export_fields' => $export_fields['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers'),
+        'export_fields' => get_export_fields('customers')
 
     ),
 
@@ -1523,7 +1523,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'frequency'   => 'monthly',
         'f_field'     => '',
-        //  'export_fields'=>$export_fields['timeserie_records']
+        //  'export_fields'=>get_export_fields('timeserie_records')
 
     ),
     /*
@@ -1533,8 +1533,8 @@ $tab_defaults = array(
         'sort_order'    => 1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
-        'elements_type' => array_keys($elements_options['product_categories'])[0],
-        'elements'      => $elements_options['product_categories'],
+        'elements_type' => array_keys(get_elements_option('product_categories'))[0],
+        'elements'      => get_elements_option('product_categories'),
         'f_field'       => 'code'
     ),
     */
@@ -1544,8 +1544,8 @@ $tab_defaults = array(
         'sort_order'    => 0,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
-        'elements_type' => array_keys($elements_options['product_categories'])[0],
-        'elements'      => $elements_options['product_categories'],
+        'elements_type' => array_keys(get_elements_option('product_categories'))[0],
+        'elements'      => get_elements_option('product_categories'),
         'f_period'      => 'ytd',
         'f_field'       => 'code'
     ),
@@ -1557,8 +1557,8 @@ $tab_defaults = array(
         'sort_order'    => 0,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
-        'elements_type' => array_keys($elements_options['product_categories'])[0],
-        'elements'      => $elements_options['product_categories'],
+        'elements_type' => array_keys(get_elements_option('product_categories'))[0],
+        'elements'      => get_elements_option('product_categories'),
         'f_period'      => 'ytd',
         'f_field'       => 'code'
     ),
@@ -1571,8 +1571,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'elements_type' => array_keys($elements_options['websites'])[0],
-        'elements'      => $elements_options['websites'],
+        'elements_type' => array_keys(get_elements_option('websites'))[0],
+        'elements'      => get_elements_option('websites'),
     ),
     'website.webpages' => array(
         'view'          => 'overview',
@@ -1582,8 +1582,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['webpages'])[0],
-        'elements'      => $elements_options['webpages'],
+        'elements_type' => array_keys(get_elements_option('webpages'))[0],
+        'elements'      => get_elements_option('webpages'),
     ),
 
     'website.in_process_webpages' => array(
@@ -1594,8 +1594,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['online_webpages'])[0],
-        'elements'      => $elements_options['online_webpages'],
+        'elements_type' => array_keys(get_elements_option('online_webpages'))[0],
+        'elements'      => get_elements_option('online_webpages'),
     ),
 
     'website.ready_webpages' => array(
@@ -1606,8 +1606,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['online_webpages'])[0],
-        'elements'      => $elements_options['online_webpages'],
+        'elements_type' => array_keys(get_elements_option('online_webpages'))[0],
+        'elements'      => get_elements_option('online_webpages'),
     ),
 
     'website.online_webpages'          => array(
@@ -1618,8 +1618,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['online_webpages'])[0],
-        'elements'      => $elements_options['online_webpages'],
+        'elements_type' => array_keys(get_elements_option('online_webpages'))[0],
+        'elements'      => get_elements_option('online_webpages'),
     ),
     'website.offline_webpages'         => array(
         'view'          => 'overview',
@@ -1628,8 +1628,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'elements_type' => array_keys($elements_options['online_webpages'])[0],
-        'elements'      => $elements_options['online_webpages'],
+        'elements_type' => array_keys(get_elements_option('online_webpages'))[0],
+        'elements'      => get_elements_option('online_webpages'),
 
     ),
     'webpage_type.online_webpages'     => array(
@@ -1702,8 +1702,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers')
     ),
     'website.search.queries'       => array(
         'view'        => 'overview',
@@ -1789,8 +1789,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['suppliers'])[0],
-        'elements'      => $elements_options['suppliers']
+        'elements_type' => array_keys(get_elements_option('suppliers'))[0],
+        'elements'      => get_elements_option('suppliers')
 
     ),
 
@@ -1803,7 +1803,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
         'f_period'    => 'ytd',
 
-        'export_fields' => $export_fields['supplier_parts']
+        'export_fields' => get_export_fields('supplier_parts')
 
 
     ),
@@ -1816,7 +1816,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
         'f_period'    => 'ytd',
 
-        'export_fields' => $export_fields['supplier_parts']
+        'export_fields' => get_export_fields('supplier_parts')
 
 
     ),
@@ -1830,7 +1830,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
         'f_period'    => 'ytd',
 
-        'export_fields' => $export_fields['supplier_parts']
+        'export_fields' => get_export_fields('supplier_parts')
     ),
     'suppliers.supplier_parts.critical'     => array(
         'view'        => 'reorder',
@@ -1841,7 +1841,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
         'f_period'    => 'ytd',
 
-        'export_fields' => $export_fields['supplier_parts']
+        'export_fields' => get_export_fields('supplier_parts')
     ),
     'suppliers.supplier_parts.out_of_stock' => array(
         'view'        => 'reorder',
@@ -1852,7 +1852,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
         'f_period'    => 'ytd',
 
-        'export_fields' => $export_fields['supplier_parts']
+        'export_fields' => get_export_fields('supplier_parts')
     ),
 
     'category.suppliers'     => array(
@@ -1911,8 +1911,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_orders'])[0],
-        'elements'      => $elements_options['supplier_orders']
+        'elements_type' => array_keys(get_elements_option('supplier_orders'))[0],
+        'elements'      => get_elements_option('supplier_orders')
     ),
     'suppliers.deliveries'    => array(
         'view'          => 'overview',
@@ -1924,8 +1924,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
-        'elements'      => $elements_options['supplier_deliveries']
+        'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
+        'elements'      => get_elements_option('supplier_deliveries')
     ),
     'supplier.history'        => array(
         'view'          => 'overview',
@@ -1934,8 +1934,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['supplier_history'])[0],
-        'elements'      => $elements_options['supplier_history']
+        'elements_type' => array_keys(get_elements_option('supplier_history'))[0],
+        'elements'      => get_elements_option('supplier_history')
     ),
     'supplier.images'         => array(
         'view'        => 'overview',
@@ -1953,9 +1953,9 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['supplier_parts'])[0],
-        'elements'      => $elements_options['supplier_parts'],
-        'export_fields' => $export_fields['supplier_parts']
+        'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+        'elements'      => get_elements_option('supplier_parts'),
+        'export_fields' => get_export_fields('supplier_parts')
 
     ),
 
@@ -1966,9 +1966,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['supplier_parts'])[0],
-        'elements'      => $elements_options['agent_parts'],
-        'export_fields' => $export_fields['agent_parts']
+        'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+        'elements'      => get_elements_option('agent_parts'),
+        'export_fields' => get_export_fields('agent_parts')
 
     ),
 
@@ -1992,8 +1992,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_orders'])[0],
-        'elements'      => $elements_options['supplier_orders']
+        'elements_type' => array_keys(get_elements_option('supplier_orders'))[0],
+        'elements'      => get_elements_option('supplier_orders')
     ),
     'production_supplier.orders'        => array(
         'view'          => 'overview',
@@ -2005,8 +2005,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['production_orders'])[0],
-        'elements'      => $elements_options['production_orders']
+        'elements_type' => array_keys(get_elements_option('production_orders'))[0],
+        'elements'      => get_elements_option('production_orders')
     ),
     'supplier.deliveries'               => array(
         'view'          => 'overview',
@@ -2018,8 +2018,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
-        'elements'      => $elements_options['supplier_deliveries']
+        'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
+        'elements'      => get_elements_option('supplier_deliveries')
     ),
     'production_supplier.deliveries'    => array(
         'view'          => 'overview',
@@ -2031,8 +2031,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['production_deliveries'])[0],
-        'elements'      => $elements_options['production_deliveries']
+        'elements_type' => array_keys(get_elements_option('production_deliveries'))[0],
+        'elements'      => get_elements_option('production_deliveries')
     ),
     'supplier.order.history'            => array(
         'view'          => 'overview',
@@ -2041,8 +2041,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['supplier_order_history'])[0],
-        'elements'      => $elements_options['supplier_order_history']
+        'elements_type' => array_keys(get_elements_option('supplier_order_history'))[0],
+        'elements'      => get_elements_option('supplier_order_history')
     ),
     'supplier.order.items'              => array(
         'view'          => 'overview',
@@ -2051,9 +2051,9 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'export_fields' => $export_fields['supplier.order.items'],
-        'elements_type' => array_keys($elements_options['supplier_order_items'])[0],
-        'elements'      => $elements_options['supplier_order_items']
+        'export_fields' => get_export_fields('supplier.order.items'),
+        'elements_type' => array_keys(get_elements_option('supplier_order_items'))[0],
+        'elements'      => get_elements_option('supplier_order_items')
 
     ),
     'supplier.order.items_in_process'   => array(
@@ -2063,7 +2063,7 @@ $tab_defaults = array(
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
-        'export_fields' => $export_fields['supplier.order.items']
+        'export_fields' => get_export_fields('supplier.order.items')
 
 
     ),
@@ -2083,8 +2083,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['supplier_parts'])[0],
-        'elements'      => $elements_options['supplier_parts']
+        'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+        'elements'      => get_elements_option('supplier_parts')
 
     ),
     'category.supplier_categories'      => array(
@@ -2095,8 +2095,8 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'label',
         'f_period'    => 'ytd',
-        //  'elements_type'=>array_keys($elements_options['suppliers'])[0],
-        //  'elements'=>$elements_options['suppliers']
+        //  'elements_type'=>array_keys(get_elements_option('suppliers'))[0],
+        //  'elements'=>get_elements_option('suppliers')
 
     ),
     'client_order.items'                => array(
@@ -2106,7 +2106,7 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'export_fields' => $export_fields['client_order_items']
+        'export_fields' => get_export_fields('client_order_items')
 
 
     ),
@@ -2117,7 +2117,7 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'export_fields' => $export_fields['client_order_items']
+        'export_fields' => get_export_fields('client_order_items')
 
 
     ),
@@ -2231,8 +2231,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['supplier_parts'])[0],
-        'elements'      => $elements_options['supplier_parts']
+        'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+        'elements'      => get_elements_option('supplier_parts')
 
     ),
     'supplier.attachments'             => array(
@@ -2281,7 +2281,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'frequency'   => 'monthly',
         'f_field'     => '',
-        //  'export_fields'=>$export_fields['timeserie_records']
+        //  'export_fields'=>get_export_fields('timeserie_records')
 
     ),
 
@@ -2292,8 +2292,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['supplier_part_history'])[0],
-        'elements'      => $elements_options['supplier_part_history']
+        'elements_type' => array_keys(get_elements_option('supplier_part_history'))[0],
+        'elements'      => get_elements_option('supplier_part_history')
     ),
 
     'supplier_part.supplier.orders'     => array(
@@ -2306,8 +2306,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_orders'])[0],
-        'elements'      => $elements_options['supplier_orders']
+        'elements_type' => array_keys(get_elements_option('supplier_orders'))[0],
+        'elements'      => get_elements_option('supplier_orders')
     ),
     'supplier_part.supplier.deliveries' => array(
         'view'          => 'overview',
@@ -2319,8 +2319,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
-        'elements'      => $elements_options['supplier_deliveries']
+        'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
+        'elements'      => get_elements_option('supplier_deliveries')
     ),
 
 
@@ -2334,8 +2334,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['production_orders'])[0],
-        'elements'      => $elements_options['production_orders']
+        'elements_type' => array_keys(get_elements_option('production_orders'))[0],
+        'elements'      => get_elements_option('production_orders')
     ),
     'production_part.supplier.deliveries' => array(
         'view'          => 'overview',
@@ -2347,8 +2347,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['production_deliveries'])[0],
-        'elements'      => $elements_options['production_deliveries']
+        'elements_type' => array_keys(get_elements_option('production_deliveries'))[0],
+        'elements'      => get_elements_option('production_deliveries')
     ),
 
 
@@ -2368,8 +2368,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['agent_history'])[0],
-        'elements'      => $elements_options['agent_history']
+        'elements_type' => array_keys(get_elements_option('agent_history'))[0],
+        'elements'      => get_elements_option('agent_history')
     ),
     'agent.images'            => array(
         'view'        => 'overview',
@@ -2387,8 +2387,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['agent_suppliers'])[0],
-        'elements'      => $elements_options['agent_suppliers']
+        'elements_type' => array_keys(get_elements_option('agent_suppliers'))[0],
+        'elements'      => get_elements_option('agent_suppliers')
 
     ),
     'agent.supplier_parts'    => array(
@@ -2398,9 +2398,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['supplier_parts'])[0],
-        'elements'      => $elements_options['supplier_parts'],
-        'export_fields' => $export_fields['supplier_parts']
+        'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+        'elements'      => get_elements_option('supplier_parts'),
+        'export_fields' => get_export_fields('supplier_parts')
 
 
     ),
@@ -2414,8 +2414,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['agent_orders'])[0],
-        'elements'      => $elements_options['agent_orders']
+        'elements_type' => array_keys(get_elements_option('agent_orders'))[0],
+        'elements'      => get_elements_option('agent_orders')
     ),
     'agent.client_orders'     => array(
         'view'          => 'overview',
@@ -2427,8 +2427,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['agent_client_orders'])[0],
-        'elements'      => $elements_options['agent_client_orders']
+        'elements_type' => array_keys(get_elements_option('agent_client_orders'))[0],
+        'elements'      => get_elements_option('agent_client_orders')
     ),
     'agent.deliveries'        => array(
         'view'          => 'overview',
@@ -2440,8 +2440,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
-        'elements'      => $elements_options['supplier_deliveries']
+        'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
+        'elements'      => get_elements_option('supplier_deliveries')
     ),
     'agent.client_deliveries' => array(
         'view'          => 'overview',
@@ -2453,8 +2453,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['agent_client_deliveries'])[0],
-        'elements'      => $elements_options['agent_client_deliveries']
+        'elements_type' => array_keys(get_elements_option('agent_client_deliveries'))[0],
+        'elements'      => get_elements_option('agent_client_deliveries')
     ),
 
 
@@ -2492,8 +2492,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
-        'elements'      => $elements_options['supplier_deliveries']
+        'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
+        'elements'      => get_elements_option('supplier_deliveries')
     ),
 
 
@@ -2539,8 +2539,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['products'])[0],
-        'elements'      => $elements_options['products'],
+        'elements_type' => array_keys(get_elements_option('products'))[0],
+        'elements'      => get_elements_option('products'),
 
     ),
 
@@ -2590,8 +2590,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_orders'])[0],
-        'elements'      => $elements_options['supplier_orders']
+        'elements_type' => array_keys(get_elements_option('supplier_orders'))[0],
+        'elements'      => get_elements_option('supplier_orders')
     ),
     'part.supplier.deliveries'    => array(
         'view'          => 'overview',
@@ -2603,8 +2603,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
-        'elements'      => $elements_options['supplier_deliveries']
+        'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
+        'elements'      => get_elements_option('supplier_deliveries')
     ),
     'part.sales.history'          => array(
         'view'        => 'overview',
@@ -2614,7 +2614,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'frequency'   => 'monthly',
         'f_field'     => '',
-        //  'export_fields'=>$export_fields['timeserie_records']
+        //  'export_fields'=>get_export_fields('timeserie_records')
 
     ),
     'category.part.sales.history' => array(
@@ -2625,7 +2625,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'frequency'   => 'monthly',
         'f_field'     => '',
-        //  'export_fields'=>$export_fields['timeserie_records']
+        //  'export_fields'=>get_export_fields('timeserie_records')
 
     ),
     'warehouse.locations'         => array(
@@ -2635,9 +2635,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'elements_type' => array_keys($elements_options['locations'])[0],
-        'elements'      => $elements_options['locations'],
-        'export_fields' => $export_fields['locations']
+        'elements_type' => array_keys(get_elements_option('locations'))[0],
+        'elements'      => get_elements_option('locations'),
+        'export_fields' => get_export_fields('locations')
     ),
 
     'warehouse.replenishments'                  => array(
@@ -2655,7 +2655,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'export_fields' => $export_fields['part_locations']
+        'export_fields' => get_export_fields('part_locations')
 
     ),
     'warehouse.part_locations_with_errors.wget' => array(
@@ -2674,9 +2674,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'elements_type' => array_keys($elements_options['locations'])[0],
-        'elements'      => $elements_options['locations'],
-        'export_fields' => $export_fields['locations']
+        'elements_type' => array_keys(get_elements_option('locations'))[0],
+        'elements'      => get_elements_option('locations'),
+        'export_fields' => get_export_fields('locations')
     ),
     'warehouse_area.parts'                      => array(
         'view'          => 'overview',
@@ -2685,7 +2685,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'export_fields' => $export_fields['part_locations']
+        'export_fields' => get_export_fields('part_locations')
 
     ),
     'warehouse_area.history'                    => array(
@@ -2721,8 +2721,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['location_history'])[0],
-        'elements'      => $elements_options['location_history']
+        'elements_type' => array_keys(get_elements_option('location_history'))[0],
+        'elements'      => get_elements_option('location_history')
     ),
     'location.parts'              => array(
         'view'        => 'overview',
@@ -2740,8 +2740,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['part_stock_transactions'])[0],
-        'elements'      => $elements_options['part_stock_transactions'],
+        'elements_type' => array_keys(get_elements_option('part_stock_transactions'))[0],
+        'elements'      => get_elements_option('part_stock_transactions'),
     ),
 
     'inventory.parts' => array(
@@ -2752,9 +2752,9 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['parts'])[0],
-        'elements'      => $elements_options['parts'],
-        'export_fields' => $export_fields['parts']
+        'elements_type' => array_keys(get_elements_option('parts'))[0],
+        'elements'      => get_elements_option('parts'),
+        'export_fields' => get_export_fields('parts')
 
     ),
 
@@ -2774,9 +2774,9 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['parts_weight_errors'])[0],
-        'elements'      => $elements_options['parts_weight_errors'],
-        'export_fields' => $export_fields['parts_weight_errors']
+        'elements_type' => array_keys(get_elements_option('parts_weight_errors'))[0],
+        'elements'      => get_elements_option('parts_weight_errors'),
+        'export_fields' => get_export_fields('parts_weight_errors')
 
     ),
     'inventory.parts_no_products.wget'  => array(
@@ -2806,9 +2806,9 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'barcode',
-        'elements_type' => array_keys($elements_options['part_barcode_errors'])[0],
-        'elements'      => $elements_options['part_barcode_errors'],
-        'export_fields' => $export_fields['part_barcode_errors']
+        'elements_type' => array_keys(get_elements_option('part_barcode_errors'))[0],
+        'elements'      => get_elements_option('part_barcode_errors'),
+        'export_fields' => get_export_fields('part_barcode_errors')
 
 
     ),
@@ -2822,7 +2822,7 @@ $tab_defaults = array(
         'f_period'      => 'all',
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'export_fields' => $export_fields['parts']
+        'export_fields' => get_export_fields('parts')
 
     ),
     'inventory.discontinuing_parts'      => array(
@@ -2833,7 +2833,7 @@ $tab_defaults = array(
         'f_period'      => 'all',
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'export_fields' => $export_fields['parts']
+        'export_fields' => get_export_fields('parts')
 
     ),
     'inventory.in_process_parts'         => array(
@@ -2843,7 +2843,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'export_fields' => $export_fields['parts']
+        'export_fields' => get_export_fields('parts')
 
     ),
     'warehouse.feedback'                 => array(
@@ -2942,9 +2942,9 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['part_categories'])[0],
-        'elements'      => $elements_options['part_categories'],
-        'export_fields' => $export_fields['part_categories']
+        'elements_type' => array_keys(get_elements_option('part_categories'))[0],
+        'elements'      => get_elements_option('part_categories'),
+        'export_fields' => get_export_fields('part_categories')
 
     ),
 
@@ -2965,8 +2965,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['part_stock_transactions'])[0],
-        'elements'      => $elements_options['part_stock_transactions'],
+        'elements_type' => array_keys(get_elements_option('part_stock_transactions'))[0],
+        'elements'      => get_elements_option('part_stock_transactions'),
     ),
     'part.stock.cost'                     => array(
         'view'        => 'overview',
@@ -2996,8 +2996,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['part_stock_transactions'])[0],
-        'elements'      => $elements_options['part_stock_transactions'],
+        'elements_type' => array_keys(get_elements_option('part_stock_transactions'))[0],
+        'elements'      => get_elements_option('part_stock_transactions'),
 
     ),
 
@@ -3021,8 +3021,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['parts'])[0],
-        'elements'      => $elements_options['parts'],
+        'elements_type' => array_keys(get_elements_option('parts'))[0],
+        'elements'      => get_elements_option('parts'),
     ),
     'category.all_parts'      => array(
         'view'          => 'overview',
@@ -3032,8 +3032,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['parts'])[0],
-        'elements'      => $elements_options['parts'],
+        'elements_type' => array_keys(get_elements_option('parts'))[0],
+        'elements'      => get_elements_option('parts'),
 
     ),
     'category_root.all_parts' => array(
@@ -3044,8 +3044,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['category_root_subjects'])[0],
-        'elements'      => $elements_options['category_root_subjects'],
+        'elements_type' => array_keys(get_elements_option('category_root_subjects'))[0],
+        'elements'      => get_elements_option('category_root_subjects'),
 
     ),
 
@@ -3056,8 +3056,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'number',
-        'elements_type' => array_keys($elements_options['barcodes'])[0],
-        'elements'      => $elements_options['barcodes'],
+        'elements_type' => array_keys(get_elements_option('barcodes'))[0],
+        'elements'      => get_elements_option('barcodes'),
     ),
 
 
@@ -3088,8 +3088,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['products'])[0],
-        'elements'      => $elements_options['products'],
+        'elements_type' => array_keys(get_elements_option('products'))[0],
+        'elements'      => get_elements_option('products'),
 
     ),
     'barcode.history'              => array(
@@ -3118,9 +3118,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['supplier_parts'])[0],
-        'elements'      => $elements_options['supplier_parts'],
-        'export_fields' => $export_fields['supplier_parts']
+        'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+        'elements'      => get_elements_option('supplier_parts'),
+        'export_fields' => get_export_fields('supplier_parts')
 
     ),
     'production.materials'         => array(
@@ -3503,7 +3503,7 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'frequency'     => 'monthly',
         'f_field'       => '',
-        'export_fields' => $export_fields['timeserie_records']
+        'export_fields' => get_export_fields('timeserie_records')
 
     ),
     'data_sets.images'           => array(
@@ -3562,8 +3562,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'handle',
-        'elements_type' => array_keys($elements_options['users'])[0],
-        'elements'      => $elements_options['users'],
+        'elements_type' => array_keys(get_elements_option('users'))[0],
+        'elements'      => get_elements_option('users'),
     ),
     'users.staff.groups'        => array(
         'view'        => 'overview',
@@ -3599,8 +3599,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['payments'])[0],
-        'elements'      => $elements_options['payments'],
+        'elements_type' => array_keys(get_elements_option('payments'))[0],
+        'elements'      => get_elements_option('payments'),
 
 
     ),
@@ -3696,8 +3696,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['payments'])[0],
-        'elements'      => $elements_options['payments'],
+        'elements_type' => array_keys(get_elements_option('payments'))[0],
+        'elements'      => get_elements_option('payments'),
     ),
     'store.payments'           => array(
         'view'          => 'overview',
@@ -3706,8 +3706,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['payments'])[0],
-        'elements'      => $elements_options['payments'],
+        'elements_type' => array_keys(get_elements_option('payments'))[0],
+        'elements'      => get_elements_option('payments'),
     ),
     'payment_account.stores'   => array(
         'view'        => 'overview',
@@ -3758,8 +3758,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'handle',
-        'elements_type' => array_keys($elements_options['users'])[0],
-        'elements'      => $elements_options['users'],
+        'elements_type' => array_keys(get_elements_option('users'))[0],
+        'elements'      => get_elements_option('users'),
     ),
 
 
@@ -3885,8 +3885,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'handle',
-        'elements_type' => array_keys($elements_options['users'])[0],
-        'elements'      => $elements_options['users'],
+        'elements_type' => array_keys(get_elements_option('users'))[0],
+        'elements'      => get_elements_option('users'),
     ),
     'users.contractors' => array(
         'view'          => 'overview',
@@ -3895,8 +3895,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'handle',
-        'elements_type' => array_keys($elements_options['users'])[0],
-        'elements'      => $elements_options['users'],
+        'elements_type' => array_keys(get_elements_option('users'))[0],
+        'elements'      => get_elements_option('users'),
     ),
     'users.agents'      => array(
         'view'          => 'overview',
@@ -3905,8 +3905,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'handle',
-        'elements_type' => array_keys($elements_options['users'])[0],
-        'elements'      => $elements_options['users'],
+        'elements_type' => array_keys(get_elements_option('users'))[0],
+        'elements'      => get_elements_option('users'),
     ),
     'deleted.users'     => array(
         'view'        => 'overview',
@@ -3927,9 +3927,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'last_m',
-        'elements_type' => array_keys($elements_options['ec_sales_list'])[0],
-        'elements'      => $elements_options['ec_sales_list'],
-        'export_fields' => $export_fields['ec_sales_list']
+        'elements_type' => array_keys(get_elements_option('ec_sales_list'))[0],
+        'elements'      => get_elements_option('ec_sales_list'),
+        'export_fields' => get_export_fields('ec_sales_list')
 
     ),
 
@@ -3949,7 +3949,7 @@ $tab_defaults = array(
         'invoices_no_vat' => 1,
         'invoices_null'   => 1,
 
-        'export_fields' => $export_fields['intrastat']
+        'export_fields' => get_export_fields('intrastat')
 
 
     ),
@@ -3967,7 +3967,7 @@ $tab_defaults = array(
         'period'      => 'last_m',
 
 
-        'export_fields' => $export_fields['intrastat']
+        'export_fields' => get_export_fields('intrastat')
 
 
     ),
@@ -4056,7 +4056,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['delivery_notes'],
+        'export_fields' => get_export_fields('delivery_notes'),
         'period'      => 'last_w',
         'from'          => '',
         'to'            => '',
@@ -4092,7 +4092,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['delivery_notes'],
+        'export_fields' => get_export_fields('delivery_notes'),
         'period'      => 'last_w',
         'from'          => '',
         'to'            => '',
@@ -4145,8 +4145,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'mtd',
-        'elements_type' => array_keys($elements_options['lost_stock'])[0],
-        'elements'      => $elements_options['lost_stock'],
+        'elements_type' => array_keys(get_elements_option('lost_stock'))[0],
+        'elements'      => get_elements_option('lost_stock'),
 
     ),
     'stock_given_free'         => array(
@@ -4159,8 +4159,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'mtd',
-        'elements_type' => array_keys($elements_options['stock_given_free'])[0],
-        'elements'      => $elements_options['stock_given_free'],
+        'elements_type' => array_keys(get_elements_option('stock_given_free'))[0],
+        'elements'      => get_elements_option('stock_given_free'),
 
     ),
 
@@ -4229,7 +4229,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['invoices']
+        'export_fields' => get_export_fields('invoices')
 
 
     ),
@@ -4240,7 +4240,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['invoices']
+        'export_fields' => get_export_fields('invoices')
 
     ),
     'category.history'                   => array(
@@ -4284,8 +4284,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['deals'])[0],
-        'elements'      => $elements_options['deals'],
+        'elements_type' => array_keys(get_elements_option('deals'))[0],
+        'elements'      => get_elements_option('deals'),
     ),
     'campaigns'        => array(
         'view'        => 'overview',
@@ -4294,8 +4294,8 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name',
-        // 'elements_type' => array_keys($elements_options['campaigns'])[0],
-        // 'elements'      => $elements_options['campaigns'],
+        // 'elements_type' => array_keys(get_elements_option('campaigns'))[0],
+        // 'elements'      => get_elements_option('campaigns'),
     ),
     'campaign.history' => array(
         'view'          => 'overview',
@@ -4304,8 +4304,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'elements_type' => array_keys($elements_options['campaign_history'])[0],
-        'elements'      => $elements_options['campaign_history']
+        'elements_type' => array_keys(get_elements_option('campaign_history'))[0],
+        'elements'      => get_elements_option('campaign_history')
     ),
     'campaign.deals'   => array(
         'view'          => 'overview',
@@ -4314,8 +4314,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['deals'])[0],
-        'elements'      => $elements_options['deals'],
+        'elements_type' => array_keys(get_elements_option('deals'))[0],
+        'elements'      => get_elements_option('deals'),
     ),
 
     'vouchers' => array(
@@ -4325,8 +4325,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['deals'])[0],
-        'elements'      => $elements_options['deals'],
+        'elements_type' => array_keys(get_elements_option('deals'))[0],
+        'elements'      => get_elements_option('deals'),
     ),
 
     'campaign_bulk_deals'                 => array(
@@ -4336,8 +4336,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'target',
-        'elements_type' => array_keys($elements_options['deals'])[0],
-        'elements'      => $elements_options['fixed_deals'],
+        'elements_type' => array_keys(get_elements_option('deals'))[0],
+        'elements'      => get_elements_option('fixed_deals'),
 
     ),
     'campaign.orders'                     => array(
@@ -4350,8 +4350,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders')
     ),
     'campaign.customers'                  => array(
         'view'          => 'overview',
@@ -4360,8 +4360,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers')
 
     ),
     'deal.history'                        => array(
@@ -4371,8 +4371,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'elements_type' => array_keys($elements_options['deal_history'])[0],
-        'elements'      => $elements_options['deal_history']
+        'elements_type' => array_keys(get_elements_option('deal_history'))[0],
+        'elements'      => get_elements_option('deal_history')
     ),
     'deal.components'                     => array(
         'view'        => 'overview',
@@ -4402,8 +4402,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders')
     ),
     'deal.customers'                      => array(
         'view'          => 'overview',
@@ -4412,8 +4412,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers')
 
     ),
 
@@ -4424,8 +4424,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['deal_components'])[0],
-        'elements'      => $elements_options['deal_components'],
+        'elements_type' => array_keys(get_elements_option('deal_components'))[0],
+        'elements'      => get_elements_option('deal_components'),
     ),
 
     'category.deals' => array(
@@ -4435,8 +4435,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['deal_components'])[0],
-        'elements'      => $elements_options['deal_components'],
+        'elements_type' => array_keys(get_elements_option('deal_components'))[0],
+        'elements'      => get_elements_option('deal_components'),
     ),
 
     'customer.deals' => array(
@@ -4446,8 +4446,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['deals'])[0],
-        'elements'      => $elements_options['deals'],
+        'elements_type' => array_keys(get_elements_option('deals'))[0],
+        'elements'      => get_elements_option('deals'),
     ),
 
 
@@ -4459,8 +4459,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['parts'])[0],
-        'elements'      => $elements_options['parts'],
+        'elements_type' => array_keys(get_elements_option('parts'))[0],
+        'elements'      => get_elements_option('parts'),
     ),
     'inventory.stock.history.day' => array(
         'view'          => 'overview',
@@ -4469,7 +4469,7 @@ $tab_defaults = array(
         'rpp'           => 50,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'part_reference',
-        'export_fields' => $export_fields['inventory_stock_history_day']
+        'export_fields' => get_export_fields('inventory_stock_history_day')
 
 
     ),
@@ -4482,7 +4482,7 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
-        //    'export_fields' => $export_fields['warehouse_parts_to_replenish_picking_location']
+        //    'export_fields' => get_export_fields('warehouse_parts_to_replenish_picking_location')
 
     ),
     'supplier.parts_to_replenish_picking_location.wget'  => array(
@@ -4556,8 +4556,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['webpage_publishing_history'])[0],
-        'elements'      => $elements_options['webpage_publishing_history']
+        'elements_type' => array_keys(get_elements_option('webpage_publishing_history'))[0],
+        'elements'      => get_elements_option('webpage_publishing_history')
     ),
     'category.webpage.logbook'                 => array(
         'view'          => 'overview',
@@ -4566,8 +4566,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['webpage_publishing_history'])[0],
-        'elements'      => $elements_options['webpage_publishing_history']
+        'elements_type' => array_keys(get_elements_option('webpage_publishing_history'))[0],
+        'elements'      => get_elements_option('webpage_publishing_history')
     ),
     'product.webpages'                         => array(
         'view'        => 'overview',
@@ -4586,8 +4586,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['webpage_publishing_history'])[0],
-        'elements'      => $elements_options['webpage_publishing_history']
+        'elements_type' => array_keys(get_elements_option('webpage_publishing_history'))[0],
+        'elements'      => get_elements_option('webpage_publishing_history')
     ),
 
     'deleted.webpage.history' => array(
@@ -4607,7 +4607,7 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'export_fields' => $export_fields['supplier_timeseries_drill_down_parts']
+        'export_fields' => get_export_fields('supplier_timeseries_drill_down_parts')
 
     ),
     'supplier.timeseries_record.families' => array(
@@ -4617,7 +4617,7 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'export_fields' => $export_fields['supplier_timeseries_drill_down_families']
+        'export_fields' => get_export_fields('supplier_timeseries_drill_down_families')
 
     ),
     'email_campaign.mail_list'            => array(
@@ -4627,7 +4627,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'email',
-        'export_fields' => $export_fields['mail_list']
+        'export_fields' => get_export_fields('mail_list')
 
     ),
     'newsletter.mail_list'                => array(
@@ -4637,7 +4637,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'email',
-        'export_fields' => $export_fields['mail_list']
+        'export_fields' => get_export_fields('mail_list')
 
 
     ),
@@ -4648,7 +4648,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'email',
-        'export_fields' => $export_fields['abandoned_cart.mail_list']
+        'export_fields' => get_export_fields('abandoned_cart.mail_list')
 
 
     ),
@@ -4660,9 +4660,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'email',
-        'elements_type' => array_keys($elements_options['sent_emails'])[0],
-        'elements'      => $elements_options['sent_emails'],
-        'export_fields' => $export_fields['customer_sent_emails']
+        'elements_type' => array_keys(get_elements_option('sent_emails'))[0],
+        'elements'      => get_elements_option('sent_emails'),
+        'export_fields' => get_export_fields('customer_sent_emails')
 
 
     ),
@@ -4725,8 +4725,8 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['orders'])[0],
-        'elements'      => $elements_options['orders']
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders')
     ),
     'customer_client.delivery_notes' => array(
         'view'          => 'overview',
@@ -4738,7 +4738,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'export_fields' => $export_fields['delivery_notes']
+        'export_fields' => get_export_fields('delivery_notes')
 
     ),
     'prospect.sent_emails'           => array(
@@ -4799,8 +4799,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'elements_type' => array_keys($elements_options['deal_history'])[0],
-        'elements'      => $elements_options['deal_history']
+        'elements_type' => array_keys(get_elements_option('deal_history'))[0],
+        'elements'      => get_elements_option('deal_history')
     ),
 
     'stock_leakages'                  => array(
@@ -4820,8 +4820,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'elements_type' => array_keys($elements_options['leakages_transactions'])[0],
-        'elements'      => $elements_options['leakages_transactions']
+        'elements_type' => array_keys(get_elements_option('leakages_transactions'))[0],
+        'elements'      => get_elements_option('leakages_transactions')
     ),
     'list.history'                    => array(
         'view'          => 'overview',
@@ -4830,8 +4830,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => '',
-        'elements_type' => array_keys($elements_options['list_history'])[0],
-        'elements'      => $elements_options['list_history']
+        'elements_type' => array_keys(get_elements_option('list_history'))[0],
+        'elements'      => get_elements_option('list_history')
     ),
     'email_tracking.events'           => array(
         'view'        => 'overview',
@@ -4860,9 +4860,9 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['customers'])[0],
-        'elements'      => $elements_options['customers'],
-        'export_fields' => $export_fields['customers']
+        'elements_type' => array_keys(get_elements_option('customers'))[0],
+        'elements'      => get_elements_option('customers'),
+        'export_fields' => get_export_fields('customers')
 
     ),
     'prospect_agent.prospects'        => array(
@@ -4875,9 +4875,9 @@ $tab_defaults = array(
         'from'          => '',
         'to'            => '',
         'period'        => 'all',
-        'elements_type' => array_keys($elements_options['prospect_agent_prospects'])[0],
-        'elements'      => $elements_options['prospect_agent_prospects'],
-        'export_fields' => $export_fields['prospects']
+        'elements_type' => array_keys(get_elements_option('prospect_agent_prospects'))[0],
+        'elements'      => get_elements_option('prospect_agent_prospects'),
+        'export_fields' => get_export_fields('prospects')
 
     ),
     'prospect_agent.sent_emails'      => array(
@@ -4920,8 +4920,8 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
 
-        'elements_type' => array_keys($elements_options['purged_orders'])[0],
-        'elements'      => $elements_options['purged_orders']
+        'elements_type' => array_keys(get_elements_option('purged_orders'))[0],
+        'elements'      => get_elements_option('purged_orders')
     ),
 
     'purge.history'     => array(
@@ -4931,8 +4931,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'note',
-        'elements_type' => array_keys($elements_options['purges_history'])[0],
-        'elements'      => $elements_options['purges_history']
+        'elements_type' => array_keys(get_elements_option('purges_history'))[0],
+        'elements'      => get_elements_option('purges_history')
     ),
     'clocking_machines' => array(
         'view'        => 'overview',

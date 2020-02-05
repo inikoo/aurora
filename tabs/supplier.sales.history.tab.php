@@ -17,17 +17,6 @@ $tipo    = 'sales_history';
 $default = $user->get_tab_defaults($tab);
 
 
-/*
-include 'conf/export_fields.php';
-$default['export_fields']=$export_fields['timeserie_records_'.$state['_object']->get('Type')];
-if ($state['_object']->get('Type')=='StoreSales') {
-	$default['export_fields'][1]['label'].=' '.$state['_object']->parent->get('Currency Code');
-	$default['export_fields'][2]['label'].=' '.$account->get('Currency Code');
-	if ($state['_object']->parent->get('Currency Code')==$account->get('Currency Code')) {
-		unset($default['export_fields'][2]);
-	}
-}
-*/
 $table_views = array();
 
 $table_filters = array();
@@ -41,4 +30,4 @@ $parameters = array(
 include 'utils/get_table_html.php';
 
 
-?>
+

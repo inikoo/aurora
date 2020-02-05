@@ -12,6 +12,7 @@ module.exports = function (grunt) {
             ecom_desktop_in: {
                 options: {
                     sourceMap: true,
+
                 },
                 src: ['EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
                 dest: 'EcomB2B/assets/desktop.in.min.js'
@@ -40,8 +41,9 @@ module.exports = function (grunt) {
             }, ecom_datatables: {
                 options: {
                     sourceMap: true,
+
                 }, src: [
-                     'EcomB2B/js/libs/datatables.js',
+                    'js_libs/underscore.min.js', 'js_libs/backbone.min.js', 'js_libs/backbone.paginator.js', 'js_libs/backgrid.js', 'js_libs/backgrid-filter.js','js/table.js'
                 ], dest: 'EcomB2B/assets/datatables.min.js',
             }, ecom_desktop_forms: {
                 options: {
@@ -125,7 +127,9 @@ module.exports = function (grunt) {
                     'bower_components/moment/min/moment-with-locales.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-2012-2022.js', 'bower_components/select2/dist/js/select2.js', //'js_libs/moment-with-locales.js',
                     //'js_libs/moment-timezone-with-data.js',
 
-                    'js_libs/chrono.js', 'js_libs/sha256.js', 'js_libs/underscore.min.js', 'js_libs/backbone.min.js', 'js_libs/backbone.paginator.js', 'js_libs/backgrid.js', 'js_libs/backgrid-filter.js', 'js_libs/snap.svg.js', 'js_libs/svg-dial.js', 'js_libs/countrySelect.js', 'js_libs/intlTelInput-jquery.14.0.6.js',
+                    'js_libs/chrono.js', 'js_libs/sha256.js',
+                    'js_libs/underscore.min.js', 'js_libs/backbone.min.js', 'js_libs/backbone.paginator.js', 'js_libs/backgrid.js', 'js_libs/backgrid-filter.js',
+                    'js_libs/snap.svg.js', 'js_libs/svg-dial.js', 'js_libs/countrySelect.js', 'js_libs/intlTelInput-jquery.14.0.6.js',
 
                     //'js_libs/d3.js',
                     //'js_libs/d3fc.layout.js',
@@ -227,7 +231,7 @@ module.exports = function (grunt) {
                     'EcomB2B/assets/desktop.min.css': [
                         'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css'],
                     'EcomB2B/assets/datatables.min.css': [
-                        'EcomB2B/css/datatables.css'],
+                        'css/backgrid.css', 'css/backgrid-filter.css'],
                     'EcomB2B/assets/forms.min.css': [
                         'EcomB2B/css/sweetalert.css', 'EcomB2B/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
                     'EcomB2B/assets/image_gallery.min.css': [

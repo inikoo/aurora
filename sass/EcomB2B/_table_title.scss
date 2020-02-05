@@ -1,0 +1,13 @@
+.table_top {
+  margin-top:10px;
+  font-family: $font_title;
+  height: $height_header;
+  line-height: $height_header;
+  border-bottom: 1px solid #ccc;
+  .title {
+    padding-left: 10px;
+    color:#555;
+    font-size: 21px;
+    font-weight: 700;
+  }
+}

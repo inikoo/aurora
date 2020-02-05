@@ -40,15 +40,4 @@ if ($result=$db->query($sql)) {
         $webpage->reindex();
 
         }
-}else {
-    print_r($error_info=$db->errorInfo());
-    print "$sql\n";
-    exit;
 }
-//exit;
-
-
-
-
-
-

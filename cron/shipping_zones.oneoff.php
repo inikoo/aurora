@@ -38,7 +38,7 @@ function create_deal_shipping_zones($db) {
     //$db->exec($sql);
 
     $sql = sprintf(
-        "SELECT `Store Key` FROM `Store Dimension` where `Store Code` in ('ES') "
+        "SELECT `Store Key` FROM `Store Dimension` where `Store Code` in ('PT') "
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -89,7 +89,7 @@ function create_new_shipping_zones($db) {
 
 
     $sql = sprintf(
-        "SELECT `Store Key` FROM `Store Dimension` where `Store Code` in ('ES') "
+        "SELECT `Store Key` FROM `Store Dimension` where `Store Code` in ('PT') "
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -3452,7 +3452,309 @@ function get_discounted_shipping_zones_data($account_code) {
                 )
 
             ),
+            'PT' => array(
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'España Península',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 3.25
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
 
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'ES',
+                                'excluded_postal_codes' => '/^(07|51|52|35|38)/',
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Portugal e Islas Baleares',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 150,
+                                    'price' => 5.25
+                                ),
+                                array(
+                                    'from'  => 150,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'PT'
+                            ),
+
+                            array(
+                                'country_code'          => 'ES',
+                                'included_postal_codes' => '/^07/',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Islas Canarias, Ceuta y Melilla',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 450,
+                                    'price' => 10.25
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'ES',
+                                'included_postal_codes' => '/^(51|52|35|38)/',
+                            )
+                        )
+                    )
+                ),
+
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zona 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 250,
+                                    'price' => 7.50
+                                ),
+
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'MC'
+                            )
+
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z5',
+                    'Shipping Zone Name'        => 'Zona 5',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 300,
+                                    'price' => 12.50
+                                ),
+
+                                array(
+                                    'from'  => 300,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'GR'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'SM'
+                            ),
+                            array(
+                                'country_code' => 'VA'
+                            ),
+                            array(
+                                'country_code' => 'CH'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'LI'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            ),
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z6',
+                    'Shipping Zone Name'        => 'Zona 6',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 500,
+                                    'price' => 17.50
+                                ),
+
+                                array(
+                                    'from'  => 500,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'GR'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'NO'
+                            ),
+                            array(
+                                'country_code' => 'RS'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'AL'
+                            ),
+                            array(
+                                'country_code' => 'BA'
+                            ),
+                            array(
+                                'country_code' => 'CY'
+                            ),
+                            array(
+                                'country_code' => 'FO'
+                            ),
+                            array(
+                                'country_code' => 'IS'
+                            ),
+                            array(
+                                'country_code' => 'ME'
+                            ),
+                            array(
+                                'country_code' => 'MK'
+                            ),
+                            array(
+                                'country_code' => 'MT'
+                            ),
+                            array(
+                                'country_code' => 'TR'
+                            ),
+                            array(
+                                'country_code' => 'XK'
+                            ),
+                        )
+                    )
+                )
+
+            ),
         )
 
 

@@ -1,0 +1,47 @@
+.square_button {
+  height: $height_header;
+  width: $height_header;
+  font-size: 16px;
+  text-align: center;
+  line-height: $height_header;
+  color: #444;
+  cursor: pointer;
+
+  &.text {
+    width: 100px;
+
+    &.text.width_150 {
+      width: 150px;
+    }
+
+
+  }
+
+  .disabled {
+    opacity: .2;
+
+    &:hover {
+      color: #444;
+    }
+  }
+
+  &:hover {
+    color: #000;
+    background: #FFF;
+  }
+
+  &.left {
+    float: left;
+    border-right: 1px solid #ccc;
+  }
+
+  &.right {
+    float: right;
+    border-left: 1px solid #ccc;
+
+    &.border {
+      border-right: 1px solid #aaa;
+    }
+
+  }
+}

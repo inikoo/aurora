@@ -10,7 +10,9 @@
 */
 
 $color_success: #26A65B;
-
+.aright {
+  text-align: right !important;
+}
 
 .success {
   color: $color_success
@@ -1433,7 +1435,8 @@ small {
 
 .navigation {
   width: 100%;
-  padding: 7px 0 5px;
+  padding: 2px 0px 0px 0px;
+  font-size: 12.9px;
 
   .breadcrumbs {
     float: left;

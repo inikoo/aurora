@@ -132,7 +132,16 @@ $object_fields = array(
                 'id'         => 'Localised_Labels_product_code',
                 'edit'       => ($supervisor_edit ? 'string' : ''),
                 'right_code' => 'WS-'.$store_key,
-                'value'      => (empty($labels['_product_code']) ? _('Product Code') : $labels['_product_code']),
+                'value'      => (empty($labels['_product_code']) ? _('Code') : $labels['_product_code']),
+                'label'      => _('Code'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_product_name',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_name']) ? _('Name') : $labels['_product_name']),
                 'label'      => _('Code'),
                 'required'   => true,
                 'type'       => 'value'

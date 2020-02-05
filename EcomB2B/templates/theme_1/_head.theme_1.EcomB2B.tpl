@@ -14,7 +14,6 @@
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
 <head>
     {if !isset($is_devel) or !$is_devel  }
-
        {if  $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
         <script>(function (w, d, s, l, i) {

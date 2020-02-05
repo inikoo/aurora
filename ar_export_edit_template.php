@@ -31,7 +31,6 @@ $_data = prepare_values(
 $do_not_save_table_state = true;
 $_data['nr']           = 1000000;
 $_data['page']         = 1;
-include 'conf/export_fields.php';
 
 
 if ($_data['type'] == 'excel') {
@@ -44,7 +43,7 @@ if ($_data['type'] == 'excel') {
 
 
 $_sql = sprintf(
-    "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download User Key`) VALUES (%s,%s,%d) ",
+    "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Creator Key`) VALUES (%s,%s,%d) ",
     prepare_mysql(gmdate('Y-m-d H:i:s')),
     prepare_mysql($output),
     $user->id

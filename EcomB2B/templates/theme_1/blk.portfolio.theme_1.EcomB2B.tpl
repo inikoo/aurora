@@ -16,22 +16,16 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}   {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
-    <div class=" container ">
+<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}    {if !$data.show}hide{/if}" style="padding-top:0;padding-bottom:{$bottom_margin}px">
 
-        <h1>
-            {if !empty($data.labels.title)}{$data.labels.title}{else}{t}My portfolio{/t}{/if}
-        </h1>
-        <table id="portfolio_items" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th style="text-align: left">Code</th>
-                <th style="text-align: left">Name</th>
-            </tr>
-            </thead>
 
-        </table>
+    <div class="table_top">
+        <span class="title">{t}Portfolio{/t}</span>
 
     </div>
+    <div id="table_container">
+
+    </div>
+
 
 </div>

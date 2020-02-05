@@ -45,7 +45,7 @@
 
 
 
-    <tr class="basket_order_ths {if !$order->id}hide{/if}">
+    <tr class="basket_order_ths {if !$order->id or $order->get('Order Number Items')==0  }hide{/if}">
         <th class="text-left">{if !empty($labels._items_code)}{$labels._items_code}{else}{t}Code{/t}{/if}</th>
         <th class="text-left">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
         <th class="text-right">{if !empty($labels._items_quantity)}{$labels._items_quantity}{else}{t}Quantity{/t}{/if}</th>

@@ -1,0 +1,112 @@
+#tabs {
+  margin-top: 2px;
+}
+
+#element_type {
+  float: left;
+  margin-left: 10px;
+  color: #777;
+  cursor: pointer;
+  min-width: 50px;
+  border: none;
+
+  i {
+    margin-right: 5px;
+  }
+}
+
+.tabs, .subtabs {
+  @include unselectable;
+
+  height: $height_short_row;
+  line-height: $height_short_row;
+  clear: both;
+  border-bottom: 1px solid #ccc;
+  color: #666;
+  font-size: $height_short_row*.6;
+  background-color: #fff;
+
+  .tab, .element {
+    height: $height_short_row;
+    float: left;
+    padding: 0 20px;
+    border-right: 1px solid #ccc;
+    cursor: pointer;
+
+    &.right {
+      float: right;
+      border-right: none;
+      border-left: 1px solid #ccc;
+    }
+
+    &.icon_only {
+
+      padding: 0 10px
+    }
+
+    .fa, .far, .fas, .fab, .fab, .fal {
+      font-size: 75%;
+      color: #888;
+      position: relative;
+      top: -1px;
+    }
+  }
+
+  .tab {
+    &:hover, &.selected {
+      background-color: #edf3f8;
+      color: #000;
+    }
+
+    &:hover, &.selected > .fa, .far, .fas, .fab, .fal {
+      color: #666;
+    }
+
+    i.success {
+
+
+      color: $color_success
+
+    }
+  }
+
+
+  .element {
+    .qty {
+      color: #aaa;
+    }
+
+    &.selected {
+      color: #222;
+    }
+
+    &.selected > .qty {
+      color: #111;
+    }
+
+    &:hover, &.selected > .fa, .far, .fas, .fab, .fal {
+      color: #000;
+    }
+
+    .fa, .far, .fas, .fab, .fal {
+      font-size: 100%;
+      position: relative;
+      top: 1px;
+      margin-right: 5px;
+    }
+  }
+}
+
+.subtabs {
+  .tab {
+    &:first-of-type {
+      margin-left: 60px;
+      border-left: 1px solid #ccc;
+    }
+
+    &.first {
+      margin-left: 60px;
+      border-left: 1px solid #ccc;
+    }
+  }
+}

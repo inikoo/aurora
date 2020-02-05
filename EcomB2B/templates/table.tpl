@@ -10,7 +10,7 @@
 
 {if isset($elements) and count($elements)>0     }
     <div id="elements" class="elements tabs ">
-        <div id="element_type" class="{if count($elements)<2}hide {/if}" onClick="show_elements_types()"><i id="element_type_select_icon" class="fa fa-bars"></i></div>
+        <div id="element_type" class="{if count($elements)<2}hide {/if}" onClick="show_elements_types()"><i id="element_type_select_icon" class="fa fa-bars""></i></div>
         {foreach from=$elements item=element_group key=_elements_type}
             <div id="elements_group_{$_elements_type}" elements_type="$_elements_type" class="elements_group {if $_elements_type!=$elements_type}hide{/if}">
                 {foreach from=$element_group['items']|@array_reverse item=element key=id}
@@ -188,9 +188,9 @@
 {/if}
 
 
-    {if isset($table_top_lower_template)}
+{if isset($table_top_lower_template)}
     {include file=$table_top_lower_template  }
-    {/if}
+{/if}
 
     <div class="table_info">
         <div id="last_page" onclick="rows.getLastPage()" class="square_button right hide" title="{t}Last page{/t}" style="position:relative">
@@ -299,24 +299,23 @@
 
                 <span class="label">{$f_label}</span>:
             </div>
-            <div>
 
-            </div>
 
 
         </div>
 
         {include file="table_buttons.tpl"}
 
+
+
         {if isset($table_operation_msg)}
             <span class="{$table_operation_msg}" style="float:right;margin-right: 10px"></span>
         {/if}
 
         <span class="padding_left_10" id="rtext"></span>
-
     </div>
 
-<div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">
+    <div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">
     <div style="float:left"><i class="far fa-square fa-fw button" style="padding:0px 5px 0px 0px" aria-hidden="true" onClick="select_all_rows(this)"></i> {t}Check/Uncheck all{/t}</div>
     <div style="float:left;margin-left:20px"><span id="selected_checkboxes" data-keys=""></span></div>
     <div style="clear:both"></div>
@@ -349,7 +348,9 @@
 <script>
 
 
-    var selected_checkbox ={ }
+    var selected_checkbox ={
+
+    }
 
     {if isset($title)}
         $('#nav_title').html("{$title}")
@@ -366,7 +367,6 @@
     var Row = Backbone.Model.extend({
 
     });
-
 
 
     var Rows = Backbone.PageableCollection.extend({
@@ -471,7 +471,11 @@
     grid.render()
 
 
+
+
+
     $("#table").append(grid.el);
+
 
 
     change_table_view('{$table_view}', false)
@@ -479,6 +483,7 @@
     $("#filter").append(serverSideFilter.render().el);
 
 
+    console.log(grid.el)
 
     rows.fetch({
         reset: true, success: function () {
@@ -489,6 +494,8 @@
 
 
     });
+
+
 
 
     {if !empty($elements)}
@@ -511,6 +518,7 @@
     {include file="$js_code" }
     {/if}
     {/if}
+
 
 </script>
 <div id="elements_chooser" class="hide panel popout_chooser corner">

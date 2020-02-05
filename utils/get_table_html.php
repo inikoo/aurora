@@ -22,7 +22,6 @@ if (isset($_SESSION['table_state'][$tab])) {
     $table_state = array();
 }
 
-
 foreach ($default as $key => $value) {
     if ($key == 'rpp_options') {
 
@@ -240,12 +239,9 @@ if (isset($columns_parameters)) {
 
 }
 
-
 if (isset($table_views[$table_view])) {
     $table_views[$table_view]['selected'] = true;
 }
-
-
 
 $smarty->assign('table_views', $table_views);
 
