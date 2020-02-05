@@ -43,19 +43,20 @@ $parameters = array(
 
 );
 
-$table_buttons   = array();
+$table_buttons = array();
 
 $table_buttons[] = array(
-    'icon'     => 'plus',
-    'title'    => _("Add product to customer's portfolio"),
-    'id'       => 'add_to_portfolio',
-    'class'    => 'items_operation',
+    'icon'                  => 'plus',
+    'title'                 => _("Add product to customer's portfolio"),
+    'id'                    => 'add_to_portfolio',
+    'class'                 => 'items_operation',
     'add_item_to_portfolio' => array(
 
         'field_label' => _("Product").':',
         'metadata'    => base64_encode(
             json_encode(
                 array(
+                    'ar_url'     => '/ar_edit_customers.php',
                     'scope'      => 'product',
                     'parent'     => 'Store',
                     'parent_key' => $state['_object']->get('Store Key'),
@@ -70,16 +71,14 @@ $table_buttons[] = array(
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(
-    'table_metadata',
-    json_encode(
-        array(
-            'parent'     => $state['object'],
-            'parent_key' => $state['key'],
-        )
-    )
+    'table_metadata', json_encode(
+                        array(
+                            'parent'     => $state['object'],
+                            'parent_key' => $state['key'],
+                        )
+                    )
 
 );
-
 
 
 include('utils/get_table_html.php');

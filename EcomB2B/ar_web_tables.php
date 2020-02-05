@@ -138,9 +138,12 @@ function get_portfolio_table_html($data, $customer) {
         'add_item_to_portfolio' => array(
 
             'field_label' => _("Product").':',
+            'ar_url'     => '/ar_web_portfolio.php',
             'metadata'    => base64_encode(
                 json_encode(
                     array(
+
+
                         'scope'      => 'product',
                         'parent'     => 'Store',
                         'parent_key' => $store->id,

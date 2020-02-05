@@ -48,14 +48,13 @@ switch ($tipo) {
 
         break;
     case 'portfolio_items':
-        portfolio_items(get_table_parameters(), $db, $customer);
+        portfolio_items(get_table_parameters(), $db);
 
         break;
     case 'add_product_to_portfolio':
         $data = prepare_values(
             $_REQUEST, array(
                          'product_id'  => array('type' => 'key'),
-                         'webpage_key' => array('type' => 'key')
                      )
         );
 
@@ -67,7 +66,6 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'product_id'  => array('type' => 'key'),
-                         'webpage_key' => array('type' => 'key'),
                      )
         );
 
@@ -79,7 +77,7 @@ switch ($tipo) {
 
 
 
-function portfolio_items($_data, $db,$customrt) {
+function portfolio_items($_data, $db) {
 
 
     include_once 'utils/currency_functions.php';
@@ -376,8 +374,12 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
     if ($row = $stmt->fetch()) {
 
         $response = array(
-            'state' => 400,
-            'msg'   => _('Product already in portfolio')
+            'state' => 200,
+            'result' => 'no_change',
+            'msg'   => _('Product already in portfolio'),
+            'update_metadata'=>[
+                'class_html'=>[]
+            ]
         );
         echo json_encode($response);
         exit;
@@ -420,7 +422,10 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
 
         $response = array(
             'state'  => 200,
-            'result' => 'add'
+            'result' => 'add',
+            'update_metadata'=>[
+                'class_html'=>[]
+            ]
         );
         echo json_encode($response);
         exit;

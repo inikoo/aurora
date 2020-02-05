@@ -30,7 +30,7 @@ module.exports = function (grunt) {
             }, ecom_dropshipping_logged_in: {
                 options: {
                     sourceMap: true,},
-                src: ['EcomB2B/js/dropshipping/portfolio.js','EcomB2B/js/dropshipping/logout.js',
+                src: ['EcomB2B/js/dropshipping/portfolio.js','EcomB2B/js/dropshipping/logout.js','EcomB2B/js/dropshipping/dropshipping.js'
                 ], dest: 'EcomB2B/assets/dropshipping.logged_in.min.js',
             }, ecom_image_gallery: {
                 options: {
@@ -152,7 +152,7 @@ module.exports = function (grunt) {
                 }, src: ['js/common.js', 'js/help.js', 'js/keyboard_shortcuts.js', 'js/barcode_scanner.js', 'js/edit.js',
 
                     'js/mixed_recipients.edit.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/pdf.js', 'js/edit_webpage_edit.js', 'js/new.js',
-                    'js/order.common.js', 'js/order_collection.js', 'js/location_parts.js',
+                    'js/order.common.js', 'js/order_collection.js', 'js/location_parts.js','js/dropshipping.js',
 
                     'js/email_campaign.common.js',
                     'js/new_marketing_mailshot.js',

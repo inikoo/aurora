@@ -1721,3 +1721,39 @@ i.product_stock_dot {
 ul.clean{
   list-style-type:none
 }
+
+.search_results_container {
+  z-index: 100;
+  position: absolute;
+  width: 750px;
+
+
+  #results_container_shifted {
+    position: relative;
+    left: -427px;
+
+  }
+
+  // .results_container {
+
+  table {
+    border: 1px solid #ccc;
+    background: #FFF;
+    width: 100%;
+    tr {
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      &:last-of-type {
+        border-bottom: none;
+      }
+    }
+    td.label {
+      padding-left: 20px;
+    }
+
+    tr:hover, tr.selected {
+      background: $color_background_selected;
+    }
+  }
+  //  }
+}

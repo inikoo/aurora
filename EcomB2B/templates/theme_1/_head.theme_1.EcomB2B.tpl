@@ -151,6 +151,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     {/if}
 
+    {if $logged_in and $store->get('Store Type')=='Dropshipping' }
+        <script src="/assets/dropshipping.logged_in.min.js"></script>
+
+    {/if}
+
     <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
     {assign "with_forms" false}
     {assign "with_not_found" 0}
