@@ -1,5 +1,74 @@
 section.table_block {
 
+  .export_dialog_block {
+    table {
+      width: 100%;
+
+      .main_title {
+        font-family: $font_title;
+        font-weight: 300 !important;
+        border: none;
+        color: $color_dark_font;
+        background-color: $color_dark;
+        .button {
+          .fa,.fal,.fas,.far,.fab{
+            position: relative;
+            top: 1px;
+          }
+
+        }
+
+
+      }
+      .formated_value {
+        margin-right: 10px;
+      }
+      td {
+        vertical-align: text-top;
+      }
+      tr {
+        border-bottom: 1px solid #ddd;
+        height: $height_row;
+        line-height: $height_row;
+      }
+      tr.small_row {
+        height: $height_short_row;
+        line-height: $height_short_row;
+        //border-bottom: none;
+      }
+      tr.no_border {
+        border: none;
+      }
+
+      tr.new {
+        cursor: pointer;
+      }
+      .new_button {
+        position: relative;
+
+        left: 5px;
+      }
+      .title {
+        border-top: none;
+        td {
+          font-family: $font_title;
+          font-weight: 600;
+          padding-top: 10px;
+          .fa.link {
+            margin-left: 5px;
+            position: relative;
+            top: 2px;
+          }
+        }
+      }
+      .label {
+        width: 280px;
+        vertical-align: top;
+      }
+
+    }
+  }
+
 
   .table_views.tabs {
     @include unselectable;
@@ -501,3 +570,4 @@ table.filter {
   }
 }
 */
+

@@ -18,7 +18,9 @@ $color_warning: #ED9121;
 $color_error: tomato;
 $color_attention: #ffc822;
 $color_background_selected: #edf3f8;
-
+$color_dark_font: #ddd;
+$color_dark: #656565;
+$height_row: 32px;
 
 @mixin unselectable {
   -webkit-touch-callout: none;

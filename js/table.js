@@ -727,7 +727,7 @@ function export_table(element) {
         if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
     });
 
-    var request = "/ar_export.php?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
+    var request = $(element).data('ar_url')+"?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
 
     $.getJSON(request, function (data) {
         if (data.state == 200) {
