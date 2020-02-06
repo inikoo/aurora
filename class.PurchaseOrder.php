@@ -2426,7 +2426,7 @@ class PurchaseOrder extends DB_Table {
         if ($state_index < 0) {
             $date = ($this->data['Purchase Order Cancelled Date'] == '' ? '' : gmdate('Y-m-d', strtotime($this->data['Purchase Order Cancelled Date'].' +0:00')));
             $type = 'Cancelled';
-        } elseif ($state_index < 10) {
+        } elseif ($state_index <= 10) {
             $date = ($this->data['Purchase Order Creation Date'] == '' ? '' : gmdate('Y-m-d', strtotime($this->data['Purchase Order Creation Date'].' +0:00')));
             $type = 'Created';
         } elseif ($state_index <= 70) {
