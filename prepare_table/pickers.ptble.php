@@ -27,7 +27,7 @@ if (isset($parameters['period'])) {
     $where_interval               = prepare_mysql_dates($from, $to, '`Date`');
     $where                        .= $where_interval['mysql'];
     $where_interval_working_hours = prepare_mysql_dates($from, $to, '`Timesheet Date`', 'only dates')['mysql'];
-    $where_interval_feedback      = prepare_mysql_dates($from, $to, '`Feedback Date`')['mysql'];
+    $where_interval_feedback      = prepare_mysql_dates($from, $to, 'ITF2.`Date Picked`')['mysql'];
 }
 
 
@@ -83,9 +83,9 @@ $group_by = 'group by `Picker Key`';
 
 $table = ' `Inventory Transaction Fact` ITF  left join `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Inventory Transaction Key`)   left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) ';
 
-$fields = "
+$fields = "`Picker Key`,ITF.`Inventory Transaction Key`,
 (select count(distinct `Feedback Key`) from `Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
-             left join `Inventory Transaction Fact` ITF2 on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  where   `Feedback Picker`='Yes' and  ITF2.`Picker Key`=ITF.`Picker Key` $where_interval_feedback ) as issues,
+             left join `Inventory Transaction Fact` ITF2 on   (ITF2.`Inventory Transaction Key`=`Feedback ITF Original Key`)  where   `Feedback Picker`='Yes' and  ITF2.`Picker Key`=ITF.`Picker Key` $where_interval_feedback ) as issues,
   count(distinct ITF.`Delivery Note Key`,`Part SKU`) as dp ,
 
  $issues_percentage_field as issues_percentage ,

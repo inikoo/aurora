@@ -24,7 +24,7 @@ if (isset($parameters['period'])) {
     $where_interval               = prepare_mysql_dates($from, $to, '`Date`');
     $where                        .= $where_interval['mysql'];
     $where_interval_working_hours = prepare_mysql_dates($from, $to, '`Timesheet Date`', 'only dates')['mysql'];
-    $where_interval_feedback      = prepare_mysql_dates($from, $to, '`Feedback Date`')['mysql'];
+    $where_interval_feedback      = prepare_mysql_dates($from, $to, 'ITF2.`Date Packed`')['mysql'];
 
 }
 
