@@ -29,7 +29,6 @@ function connect_websocket() {
         websocket_connected = true;
 
 
-        console.log('real_time.'+$('body').data('account_code').toLowerCase())
 
         ws_connection.subscribe('real_time.' + $('body').data('account_code').toLowerCase(), function (topic, data) {
 

@@ -54,7 +54,7 @@ $(function () {
             ws_connection.publish('ping', 'hi')
         }
 
-    }, 60000);
+    }, 97500);
 
 
 })

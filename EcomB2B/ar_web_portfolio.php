@@ -500,7 +500,10 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
 
         $response = array(
             'state'  => 200,
-            'result' => 'remove'
+            'result' => 'remove',
+            'update_metadata'=>[
+                'class_html'=>[]
+            ]
         );
         echo json_encode($response);
         exit;

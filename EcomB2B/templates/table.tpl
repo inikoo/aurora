@@ -391,11 +391,8 @@
 
                 $('#table').addClass('hide')
                 $('#show_export_dialog').addClass('hide')
-
-
-
             }else {
-
+                $('#table').removeClass('hide')
                 var total_pages = Math.ceil(resp.resultset.total_records / state.pageSize)
 
 

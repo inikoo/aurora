@@ -229,3 +229,74 @@ function save_add_item_to_portfolio() {
 
 
 }
+
+
+function remove_item_from_portfolio(element,customer_key,product_id) {
+
+    $(element).removeClass('fa-trash-alt').addClass('fa-spinner fa-spin');
+
+    var form_data = new FormData();
+
+    form_data.append("tipo", 'remove_product_from_portfolio')
+    form_data.append("customer_key", customer_key)
+    form_data.append("product_id", product_id)
+
+
+    var request = $.ajax({
+
+        url: $('#add_item_to_portfolio_form').data("ar_url"),
+        data: form_data,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        dataType: 'json'
+
+    })
+
+
+    request.done(function (data) {
+
+
+
+        if (data.state == 200) {
+            $(element).closest('tr').remove()
+            for (var key in data.update_metadata.class_html) {
+                console.log(key)
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
+
+            for (var key in data.update_metadata.hide) {
+                $('#' + data.update_metadata.hide[key]).addClass('hide')
+            }
+            for (var key in data.update_metadata.show) {
+                $('#' + data.update_metadata.show[key]).removeClass('hide')
+            }
+
+
+
+
+
+
+        } else if (data.state == 400) {
+            $(element).removeClass('fa-spinner fa-spin').addClass('fa-trash-alt');
+
+
+            Swal.fire({
+                type: 'error', title: data.msg
+            })
+
+        }
+
+    })
+
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+
+        console.log(jqXHR.responseText)
+
+
+    });
+
+
+}
