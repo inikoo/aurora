@@ -11,7 +11,10 @@
 */
 
 trait OrderDiscountOperations {
-
+    /**
+     * @var PDO
+     */
+    public $db;
 
     function update_discounts_items() {
 
@@ -69,12 +72,14 @@ trait OrderDiscountOperations {
         );
 
 
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
                 $deals_component_data[$row['Deal Component Key']] = $row;
             }
         }
+
 
 
 
@@ -96,11 +101,8 @@ trait OrderDiscountOperations {
             foreach ($result as $row) {
                 $deals_component_data[$row['Deal Component Key']] = $row;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+
 
 
         foreach ($deals_component_data as $deal_component_data) {
@@ -115,6 +117,7 @@ trait OrderDiscountOperations {
     }
 
     function test_deal_terms($deal_component_data) {
+
 
         switch ($deal_component_data['Deal Component Terms Type']) {
 
@@ -282,10 +285,6 @@ trait OrderDiscountOperations {
 
                         }
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -738,7 +737,6 @@ trait OrderDiscountOperations {
 
 
 
-
         if (isset($deal_component_data['Deal Name Label'])) {
 
             $deal_info = sprintf(
@@ -1041,7 +1039,6 @@ trait OrderDiscountOperations {
 
                                 $product = get_object('Product', $product_pid);
 
-
                                 $this->allowance[$allowance_index][$product_pid] = array(
                                     'Product ID'           => $product->id,
                                     'Product Key'          => $product->historic_id,
@@ -1215,8 +1212,10 @@ trait OrderDiscountOperations {
 
 
                         if (isset($this->allowance['Get Free No Ordered Product'][$product_pid])) {
+
                             $this->allowance['Get Free No Ordered Product'][$product_pid]['Get Free'] += $get_free_allowance;
                         } else {
+
                             $this->allowance['Get Free No Ordered Product'][$product_pid] = array(
                                 'Product ID'           => $product->id,
                                 'Product Key'          => $product->historic_id,
@@ -1540,6 +1539,8 @@ trait OrderDiscountOperations {
 
         $sql = sprintf('select `Order Transaction Fact Key`,`Deal Component Key`,`Order Transaction Deal Key`,`Amount Discount`,`Bonus Quantity` from `Order Transaction Deal Bridge` where `Order Key`=%d and `Deal Component Key`>0 ', $this->id);
 
+
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $current_OTDBs_to_delete[$row['Order Transaction Fact Key'].'_'.$row['Deal Component Key']] = array(
@@ -1558,10 +1559,6 @@ trait OrderDiscountOperations {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1698,6 +1695,10 @@ trait OrderDiscountOperations {
             }
 
         }
+
+
+
+
         if (isset($this->allowance['Get Free No Ordered Product'])) {
             foreach ($this->allowance['Get Free No Ordered Product'] as $type => $allowance_data) {
 
@@ -1787,7 +1788,9 @@ trait OrderDiscountOperations {
                 $this->db->exec($sql);
 
 
-               // print "$sql\n";
+               //print "$sql\n";
+
+
 
                 $inserted_otdk = $this->db->lastInsertId();
 
@@ -1822,7 +1825,6 @@ trait OrderDiscountOperations {
                 $sql = sprintf(
                     "SELECT `Order Meta Transaction Deal Key` FROM `Order Meta Transaction Deal Dimension`  WHERE `Order Key`=%d AND `Deal Component Key`=%d", $this->id, $allowance_data['Deal Component Key']
                 );
-
 
                 if ($result = $this->db->query($sql)) {
 
@@ -1861,10 +1863,6 @@ trait OrderDiscountOperations {
 
                         $this->db->exec($sql);
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -1901,10 +1899,6 @@ trait OrderDiscountOperations {
                     $this->delete_transaction($row['Order Transaction Fact Key']);
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -1921,6 +1915,8 @@ trait OrderDiscountOperations {
 
 
         }
+
+
 
         foreach ($current_OTF_bonus_to_clear as $otf_key) {
 

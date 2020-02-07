@@ -1,0 +1,1 @@
+ALTER TABLE `Order Meta Transaction Deal Dimension` CHANGE `Bonus Product Family Key` `Bonus Product Category Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;
