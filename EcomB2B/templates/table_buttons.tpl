@@ -17,7 +17,6 @@
     {else}
 
 
-    {if isset($button.move_all_parts_from_location)}{include file="move_all_parts_from_location.tpl" data=$button.move_all_parts_from_location }{/if}
 
 
     {if isset($button.inline_new_object)}{include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}}{/if}
@@ -27,25 +26,15 @@
     {if isset($button.data_attr)}{foreach from=$button.data_attr key=attr_key item=attr_value }data-{$attr_key}="{$attr_value}" {/foreach}{/if}
 
 
-    class="table_button square_button right {if isset($button.class)}{$button.class}{/if}"
-    {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{elseif isset($button.change_tab) and $button.change_tab!=''}onclick=
-    "change_view(state.request + '&tab={$button.change_tab}')"{/if}
-    {if isset($button.title)}title="{$button.title}"{/if}
-    >
+    class="table_button square_button  right {if isset($button.class)}{$button.class}{/if}"
 
-    {if $button.icon=='edit_add'}
-    <span id="show_edit_table_dialog_button" class="fa-stack" onclick="show_edit_table_dialog()"><i class="fa fa-plus fa-stack-1x " style="font-size:70%; margin-right:-50%;margin-left:-25%;margin-top:-10%"></i><i
-                class="fa fa-pencil fa-stack-1x " style="margin-right:0%;margin-left:0%;"></i></span>
-    {elseif $button.icon=='edit'}
-    <span id="show_edit_table_dialog_button" onclick="show_edit_table_dialog()">
+    {if isset($button.title)}title="{$button.title}"{/if}>
 
-            <i class="fa fa-fw fa-edit "></i>
-                </span>
-    {else}
-    <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="{if isset($button.icon_classes)}{$button.icon_classes}{else}fa fa-{$button.icon} fa-fw{/if}"></i>
-    {/if}
 
-</div>
+    <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="{if isset($button.icon_classes)}{$button.icon_classes}{else}fa fa-{$button.icon} fa-fw{/if}"></i> {if isset($button.label)}{$button.label}{/if}
+
+
+    </div>
 {if $button.icon=='edit_add'}
     <div id="inline_edit_table_items_buttons" class="hide" style="float:right;margin-right: 10px" data-object='{$edit_table_dialog.spreadsheet_edit.object}'>
         <i id="inline_edit_table_items_save_button" onclick="save_table_items()" class="fa fa-cloud button save" aria-hidden="true"></i>
@@ -56,9 +45,6 @@
 
 {if isset($button.add_item)}{include file="add_item.tpl" data=$button.add_item trigger={$button.id}}{/if}
 {if isset($button.add_item_to_portfolio)}{include file="add_item_to_portfolio.tpl" data=$button.add_item_to_portfolio trigger={$button.id}}{/if}
-{if isset($button.add_allowance_to_order_recursion_deal)}{include file="add_allowance_to_order_recursion_deal.tpl" data=$button.add_allowance_to_order_recursion_deal trigger={$button.id}}{/if}
-{if isset($button.add_bulk_deal)}{include file="add_bulk_deal.tpl" data=$button.add_bulk_deal trigger={$button.id}}{/if}
-{if isset($button.add_part_to_location)}{include file="add_part_to_location.tpl" data=$button.add_part_to_location trigger={$button.id}}{/if}
 {if isset($button.inline_new_object)}
     <span id="inline_new_object_msg" class="invalid"></span>
 {elseif isset($button.add_item)}

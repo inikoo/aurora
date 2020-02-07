@@ -261,8 +261,8 @@ class Public_Product {
                 if ($this->data['Product Origin Country Code']!='') {
                     include_once 'class.Country.php';
                     $country = new Country('code', $this->data['Product Origin Country Code']);
-                    if($country->get('Country Name')!=''){
-                        return '<img alt="" src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.png" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
+                    if(trim($country->get('Country Name'))!=''){
+                        return '<img alt="" data-country_key="'.$country->id.'"   src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.png" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
                     }
 
                 }

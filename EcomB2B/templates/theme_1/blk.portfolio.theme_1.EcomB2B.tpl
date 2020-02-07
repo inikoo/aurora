@@ -18,11 +18,8 @@
 
     <div class="table_top">
         <span class="title">{t}Portfolio{/t}</span>
-
     </div>
-    <div id="table_container">
-
-    </div>
+    <div id="table_container"></div>
 
 
 </div>

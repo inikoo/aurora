@@ -43,12 +43,11 @@ switch ($tipo) {
         category_products($data, $db, $customer->id);
         break;
 
-    case 'get_portfolio_items':
-        get_portfolio_items($customer, $db);
 
-        break;
     case 'portfolio_items':
-        portfolio_items(get_table_parameters(), $db);
+        $_data=get_table_parameters();
+        $_data['parameters']['parent_key']=$customer->id;
+        portfolio_items($_data, $db);
 
         break;
     case 'add_product_to_portfolio':
@@ -103,7 +102,6 @@ function portfolio_items($_data, $db) {
      */
 
     $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-    $record_data = array();
 
     $record_data = array();
     if ($result = $db->query($sql)) {
@@ -194,38 +192,7 @@ function portfolio_items($_data, $db) {
     echo json_encode($response);
 }
 
-function get_portfolio_items($customer, $db) {
 
-
-    $data = array();
-
-    $sql = "SELECT `Product ID`,`Product Code`,`Product Name`,`Product Web State`,`Customer Portfolio Key`,`Product Units Per Case` 
-            FROM 
-            `Customer Portfolio Fact` CPF left join  `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) 
-            WHERE   `Customer Portfolio Customer Key`=?
-            ";
-
-
-    $stmt = $db->prepare($sql);
-    $stmt->execute(
-        array(
-            $customer->id
-        )
-    );
-    while ($row = $stmt->fetch()) {
-        $data[] = array(
-            $row['Product Code'],
-            ($row['Product Units Per Case'] > 1 ? $row['Product Units Per Case'].'x' : '').$row['Product Name']
-        );
-    }
-
-
-    echo json_encode(
-        array('data' => $data)
-
-    );
-
-}
 
 
 function category_products($data, $db, $customer_key) {

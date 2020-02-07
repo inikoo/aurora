@@ -19,8 +19,7 @@
             display: none
         }
     }
-
-    </style>
+</style>
 
 
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "30"}{/if}
@@ -38,9 +37,6 @@
 
                 <div class="text_block '">
                     <h2 class="order_number  {if !$order->id}hide{/if}">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h2>
-
-
-
                     <div class="text_blocks text_template_2">
                 <div class="text_block ">
                     <h5>

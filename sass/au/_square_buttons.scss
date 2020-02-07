@@ -13,8 +13,12 @@
     &.text.width_150 {
       width: 150px;
     }
-
-
+    &.text.width_250 {
+      width: 250px;
+    }
+    &.text.width_auto {
+      width: auto;padding-right: 10px;
+    }
   }
 
   .disabled {
