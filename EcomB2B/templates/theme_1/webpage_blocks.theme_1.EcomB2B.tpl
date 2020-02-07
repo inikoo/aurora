@@ -954,24 +954,14 @@
                             getScript("/assets/datatables.min.js", function () {
 
                                 const request_data ={ "tipo":'portfolio'}
-
                                 $.ajax({
+
                                     url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-
-
                                         if (data.state == 200) {
 
-
-
                                             state = data.app_state;
+
                                             $('#table_container').html(data.html)
-
-
-
-
-
-
-
                                         }
 
                                     }
@@ -984,10 +974,25 @@
              {if $with_clients==1}
              getScript("/assets/desktop.forms.min.js", function () {
                  getScript("/assets/datatables.min.js", function () {
-                     $('#clients').DataTable({
-                                        "ajax": "ar_web_clients.php?tipo=get_clients"
-                                    });
+
+                     const request_data ={ "tipo":'clients'}
+
+                     $.ajax({
+                         url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                             if (data.state == 200) {
+                                 state = data.app_state;
+                                 $('#table_container').html(data.html)
+                             }
+
+                         }
+                     });
+
                  })
+
+                 $(document).on('click', '#new_customer', function (e) {
+                    $( "#trigger_new_customer" ).trigger( "click" );
+                });
 
                  $("form").submit(function(e) {
                      e.preventDefault();

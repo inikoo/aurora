@@ -38,8 +38,6 @@
         <h2 class="center-text">{$product->get('Name')}</h2>
 
         {if $logged_in}
-
-
             {if $product->get('Web State')=='Out of Stock'}
                 <div style="margin-top: 10px" class="notification-small  bg-red-light ">
                     <strong class="bg-red-dark "><i class="fa fa-frown"></i></strong>

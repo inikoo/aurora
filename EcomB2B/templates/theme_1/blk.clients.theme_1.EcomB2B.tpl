@@ -16,43 +16,19 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}   {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
-    <div class=" container ">
-
-        <div style="display:flex;width: 100%">
-            <div style="flex-grow:1">
-                <h1>
-                    {if !empty($data.labels.title)}{$data.labels.title}{else}{t}Customers{/t}{/if}
-                </h1>
-            </div>
-
-            <div style="flex-grow:1;text-align: right">
-                <a href="#new_client_form" class="modal-opener">
-                    <button class="empty" style="cursor:pointer;line-height30px;padding:10px 20px;text-align: center;border:none;position: relative;top:-20px;font-size: 16px"> <i class="fa fa-plus padding_right_5"></i>
-                        {if empty($labels._add_customer_client)}{t}Add customer{/t}{else}{$labels._add_customer_client}{/if}</span>
-                    </button>
-                </a>
-            </div>
-        </div>
-        <table id="clients" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th style="text-align: left">{if empty($data.labels._customer_client_code)}{t}Code{/t}{else}{$data.labels._customer_client_code}{/if}</th>
-                <th style="text-align: left">{if empty($data.labels._customer_client_name)}{t}Name{/t}{else}{$data.labels._customer_client_name}{/if}</th>
-                <th style="text-align: left">{if empty($data.labels._customer_client_orders)}{t}Orders{/t}{else}{$data.labels._customer_client_orders}{/if}</th>
-                <th></th>
-
-            </tr>
-            </thead>
-
-        </table>
-
+<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}   {if !$data.show}hide{/if}" style="padding-top:0;padding-bottom:{$bottom_margin}px">
+    <div class="table_top">
+        <span class="title">{t}Customers{/t}</span>
     </div>
-
+    <div id="table_container"></div>
 </div>
 
 
-
+<div close="hide" >
+    <a id="trigger_new_customer" href="#new_client_form" class="modal-opener">
+       x
+    </a>
+</div>
 <div class="reg_form" >
     <form id="new_client_form" class="sky-form sky-form-modal">
         <header >{if empty($labels._new_customer_client)}{t}New customer{/t}{else}{$labels._new_customer_client}{/if}</header>
@@ -83,29 +59,29 @@
                 <label class="input">
                     <i class="icon-append far fa-user"></i>
                     <input class="register_field" type="text" autocomplete="name" name="name"  placeholder="{if !empty($labels._contact_name_placeholder) }{$data.labels._contact_name_placeholder}{else}{t}Contact name{/t}{/if}">
-                    <b   class="tooltip tooltip-bottom-right">{$data.labels._contact_name_tooltip}</b>
+                    <b   class="tooltip tooltip-bottom-right">{if !empty($data.labels._contact_name_tooltip)}{$data.labels._contact_name_tooltip}{else}{t}Contact name{/t}{/if}</b>
                 </label>
             </section>
 
             <section>
                 <label class="input">
                     <i class="icon-append far fa-store-alt"></i>
-                    <input class="register_field" type="text" autocomplete="organization" name="organization"  placeholder="{$data.labels._company_placeholder}">
-                    <b  class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
+                    <input class="register_field" type="text" autocomplete="organization" name="organization"  placeholder="{if !empty($data.labels._company_placeholder)}{$data.labels._company_placeholder}{else}{t}Company name{/t}{/if}">
+                    <b  class="tooltip tooltip-bottom-right">{if !empty($data.labels._company_tooltip)}{$data.labels._company_tooltip}{else}{t}Company name{/t}{/if}</b>
                 </label>
             </section>
             <section>
                 <label class="input">
                     <i class="icon-append far fa-envelope" ></i>
-                    <input class="register_field" type="email" autocomplete="email"  name="email" placeholder="{$data.labels._email_placeholder}">
-                    <b   class="tooltip tooltip-bottom-right">{$data.labels._email_tooltip}</b>
+                    <input class="register_field" type="email" autocomplete="email"  name="email" placeholder="{if !empty($data.labels._email_placeholder)}{$data.labels._email_placeholder}{else}{t}Email{/t}{/if}}">
+                    <b   class="tooltip tooltip-bottom-right">{if !empty($data.labels._email_tooltip)}{$data.labels._email_tooltip}{else}{t}Email{/t}{/if}</b>
                 </label>
             </section>
             <section>
                 <label class="input">
                     <i class="icon-append far fa-mobile" ></i>
-                    <input class="register_field" type="text" autocomplete="tel"  name="tel" placeholder="{$data.labels._mobile_placeholder}">
-                    <b class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
+                    <input class="register_field" type="text" autocomplete="tel"  name="tel" placeholder="{if !empty($data.labels._mobile_placeholder)}{$data.labels._mobile_placeholder}{else}{t}Mobile{/t}{/if}">
+                    <b class="tooltip tooltip-bottom-right">{if !empty($data.labels._mobile_tooltip)}{$data.labels._mobile_tooltip}{else}{t}Mobile{/t}{/if}</b>
                 </label>
             </section>
 
