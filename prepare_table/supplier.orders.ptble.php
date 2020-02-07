@@ -177,7 +177,7 @@ if ($order == 'public_id') {
 } elseif ($order == 'user') {
     $order = '`Purchase Order Main Buyer Name`';
 } elseif ($order == 'date') {
-    $order = 'O.`Purchase Order Creation Date`';
+    $order = 'O.`Purchase Order Date`';
 } elseif ($order == 'supplier') {
     $order = 'O.`Purchase Order Supplier Name`';
 } elseif ($order == 'state') {
@@ -191,7 +191,8 @@ if ($order == 'public_id') {
 }
 
 $fields = '`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
-`Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`,`Purchase Order Currency Exchange`,`Purchase Order Main Buyer Name`,`Purchase Order Max Supplier Delivery State`
+`Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`,`Purchase Order Currency Exchange`,`Purchase Order Main Buyer Name`,`Purchase Order Max Supplier Delivery State`,
+`Purchase Order Date`,`Purchase Order Date Type`
 ';
 
 $sql_totals = "select count(Distinct O.`Purchase Order Key`) as num from $table $where ";

@@ -916,6 +916,32 @@ function orders($_data, $db, $user, $account) {
                 $state .= ' <span class="very_small discreet">('.$max_state.')</span>';
             }
 
+            $date = strftime("%e %b %Y", strtotime($data['Purchase Order Date'].' +0:00'));
+            switch ($data['Purchase Order Date Type']) {
+                case 'Creation':
+                    $date .= ' <i class="fal fa-fw fa-seeding padding_right_10 padding_left_5" title="'._('Creation date').'"></i>';
+
+                    break;
+                case 'Submitted':
+                    $date .= ' <i class="fal fa-fw fa-paper-plane padding_right_10 padding_left_5" title="'._('Submitted date').'"></i>';
+
+                    break;
+                case 'ETA':
+                    $date .= ' <i class="fal fa-fw fa-clock padding_right_10 padding_left_5" title="'._('Estimated time of arrival').'"></i>';
+
+                    break;
+                case 'Received':
+                    $date .= ' <i class="fal fa-fw fa-sign-in fa-rotate-90 padding_right_10 padding_left_5" title="'._('Received date').'"></i>';
+
+                    break;
+                case 'Cancelled':
+                    $date .= ' <i class="fa very_discreet fa-fw fa-minus-circle error padding_right_10 padding_left_5" title="'._('Cancelled date').'"></i>';
+
+                    break;
+                default:
+                    $date .= ' '.$data['Purchase Order Date Type'];
+                    break;
+            }
 
             $table_data[] = array(
                 'id'              => (integer)$data['Purchase Order Key'],
@@ -924,8 +950,8 @@ function orders($_data, $db, $user, $account) {
                     '<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'],
                     ($data['Purchase Order Public ID'] == '' ? '<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>' : $data['Purchase Order Public ID'])
                 ),
-                'date'            => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
-                'last_date'       => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+                'date'            => $date,
+                // 'last_date'       => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'           => $state,
                 'total_amount'    => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
                 'total_ac_amount' => money($data['Purchase Order Total Amount'] * $data['Purchase Order Currency Exchange'], $account->get('Currency Code')),
@@ -1149,9 +1175,9 @@ function deliveries($_data, $db, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            if ($data['Supplier Delivery CBM'] ==0 or $data['Supplier Delivery CBM'] =='') {
+            if ($data['Supplier Delivery CBM'] == 0 or $data['Supplier Delivery CBM'] == '') {
                 $size_icon = '';
-            }elseif ($data['Supplier Delivery CBM'] > 25) {
+            } elseif ($data['Supplier Delivery CBM'] > 25) {
                 $size_icon = '<i class="fa fa-container-storage"></i>';
             } elseif ($data['Supplier Delivery CBM'] < .2) {
                 $size_icon = '<i class="fa fa-box-alt"></i>';
@@ -1203,11 +1229,11 @@ function deliveries($_data, $db, $user) {
 
 
             if ($data['Supplier Delivery CBM'] == 0 or $data['Supplier Delivery CBM'] == '') {
-                $cbm='';
-            }elseif ($data['Supplier Delivery CBM'] <.2) {
-                $cbm='<0.2'.' m³';;
-            }else{
-                $cbm=number($data['Supplier Delivery CBM']).' m³';
+                $cbm = '';
+            } elseif ($data['Supplier Delivery CBM'] < .2) {
+                $cbm = '<0.2'.' m³';;
+            } else {
+                $cbm = number($data['Supplier Delivery CBM']).' m³';
             }
 
             $table_data[] = array(
@@ -1850,14 +1876,14 @@ function order_items($_data, $db, $user, $account) {
 
             $amount = '<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
 
-            if ($data['Part Package Weight'] > 0 and $units_per_sko!=0) {
+            if ($data['Part Package Weight'] > 0 and $units_per_sko != 0) {
                 $weight = weight(
                     $data['Part Package Weight'] * $data['Purchase Order Submitted Units'] / $units_per_sko
                 );
             } else {
                 $weight = '<i class="error fa fa-exclamation-circle"></i>';
             }
-            if ($data['Supplier Part Carton CBM'] > 0  and  $units_per_sko!=0 and  $skos_per_carton!=0 ) {
+            if ($data['Supplier Part Carton CBM'] > 0 and $units_per_sko != 0 and $skos_per_carton != 0) {
                 $cbm = number(
                         $data['Purchase Order Submitted Units'] * $data['Supplier Part Carton CBM'] / $units_per_sko / $skos_per_carton
                     ).' m³';
@@ -1901,16 +1927,16 @@ function order_items($_data, $db, $user, $account) {
             }
 
 
-            $units_qty       = $data['Purchase Order Submitted Units'];
-            if( $skos_per_carton!=0){
-                $skos_qty        = $units_qty / $units_per_sko;
-            }else{
-                $skos_qty=0;
+            $units_qty = $data['Purchase Order Submitted Units'];
+            if ($skos_per_carton != 0) {
+                $skos_qty = $units_qty / $units_per_sko;
+            } else {
+                $skos_qty = 0;
             }
-            if( $skos_per_carton!=0) {
+            if ($skos_per_carton != 0) {
                 $cartons_qty = $skos_qty / $skos_per_carton;
-            }else{
-                $cartons_qty=0;
+            } else {
+                $cartons_qty = 0;
 
             }
             $transaction_key = $data['Purchase Order Transaction Fact Key'];
@@ -2480,8 +2506,9 @@ function delivery_checking_items($_data, $db, $user, $account) {
             }
 
             if ($locations != '') {
-                $description .= '<br><i style="margin-left:4px" class="fa fa-inventory button discreet  hide'.($number_locations == 0 ? 'hide' : '').
-                    '" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._('Hide locations').'"    onClick="show_part_locations(this)" ></i>';
+                $description .= '<br><i style="margin-left:4px" class="fa fa-inventory button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._(
+                        'Hide locations'
+                    ).'"    onClick="show_part_locations(this)" ></i>';
 
 
                 $description .= $locations;
@@ -2489,7 +2516,7 @@ function delivery_checking_items($_data, $db, $user, $account) {
             }
 
 
-            if ($data['Supplier Delivery Checked Units'] == '' or $data['Part Units Per Package']==0) {
+            if ($data['Supplier Delivery Checked Units'] == '' or $data['Part Units Per Package'] == 0) {
 
                 $sko_checked_quantity = '';
 
@@ -2511,16 +2538,14 @@ function delivery_checking_items($_data, $db, $user, $account) {
                 $data['Supplier Part Historic Key'], ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
             );
 
-           if($data['Part Units Per Package']==0){
-               $quantity_error='<i class="error fa fa-exclamation-circle" title="'._('Units per SKO is zero').'"></i> ';
-               $quantity=0;
-           }else{
-               $quantity_error='';
-               $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
+            if ($data['Part Units Per Package'] == 0) {
+                $quantity_error = '<i class="error fa fa-exclamation-circle" title="'._('Units per SKO is zero').'"></i> ';
+                $quantity       = 0;
+            } else {
+                $quantity_error = '';
+                $quantity       = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
 
-           }
-
-
+            }
 
 
             if ($data['Metadata'] == '') {
