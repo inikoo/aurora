@@ -192,15 +192,14 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "pending_orders",
-label: "{t}Pending{/t}",
-title: "{t}Pending orders{/t}",
+name: "operations",
+label: "",
+title: "",
 
 editable: false,
+sortable: false,
 
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='pending_orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell

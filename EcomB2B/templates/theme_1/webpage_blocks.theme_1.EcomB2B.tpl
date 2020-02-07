@@ -597,7 +597,7 @@
 
                         $.getJSON(checkout_request, function (data) {
 
-                            $('#bottom_header  .control_panel').html('<a id="go_back_basket hide"  href="basket.sys" class="button"><i class="far fa-arrow-alt-left  " title="{t}Go back to basket{/t}" aria-hidden="true"></i>\n' + '<span>{if empty($labels._go_back_to_basket)}{t}Go back to basket{/t}{else}{$labels._go_back_to_basket}{/if}</span></a>')
+                            $('#bottom_header  .control_panel').html('<a id="go_back_basket hide"  href="'+data.basket_url+'" class="button"><i class="far fa-arrow-alt-left  " title="{t}Go back to basket{/t}" aria-hidden="true"></i>\n' + '<span>{if empty($labels._go_back_to_basket)}{t}Go back to basket{/t}{else}{$labels._go_back_to_basket}{/if}</span></a>')
 
                             $('#checkout').html(data.html)
 
@@ -1003,6 +1003,7 @@
                      {
                          submitHandler: function(form)
                          {
+
                              var button=$('#save_new_client_button');
 
                              if(button.hasClass('wait')){
@@ -1011,7 +1012,6 @@
 
                              button.addClass('wait')
                              button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
-
 
                              var register_data={ }
 

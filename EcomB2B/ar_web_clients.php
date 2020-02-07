@@ -188,7 +188,7 @@ function customer_clients($_data, $db) {
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
-            $action = '<button onclick="window.location.href = \'client_basket.sys?client_id='.$data['Customer Client Key'].'\';">'._('New order').'</button>';
+            $action = '<span class="like_button" onclick="window.location.href = \'/client_basket.sys?client_id='.$data['Customer Client Key'].'\';"><i class="far fa-shopping-cart padding_right_10"></i>   '._('New order').'</span>';
 
             $record_data[] = array(
                 'id'             => (integer)$data['Customer Client Key'],
@@ -206,6 +206,7 @@ function customer_clients($_data, $db) {
               'email'                 => $data['Customer Client Main Plain Email'],
               'telephone'             => $data['Customer Client Main XHTML Telephone'],
               'mobile'                => $data['Customer Client Main XHTML Mobile'],
+                'operations'=>$action
             );
         }
 

@@ -245,7 +245,10 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     include_once __DIR__.'/utils/natural_language.php';
 
     $webpage = get_object('Webpage', $webpage_key);
-
+    $website     = get_object('Website', $_SESSION['website_key']);
+    if ($webpage->get('Webpage Code') == 'basket.sys'  and $website->get('Website Type')=='EcomDS'   ) {
+        exit;
+    }
 
     if (!$webpage->id or ($webpage->get('Webpage Code') == 'reset_pwd.sys' and !isset($is_reset))) {
 
