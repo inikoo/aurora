@@ -24,9 +24,9 @@
 </div>
 
 
-<div close="hide" >
+<div class="hide" close="hide" >
     <a id="trigger_new_customer" href="#new_client_form" class="modal-opener">
-       x
+
     </a>
 </div>
 <div class="reg_form" >
@@ -159,7 +159,7 @@
         </fieldset>
 
         <footer>
-            <button  id="save_new_client_button" type="submit" class="button" ">{$data.labels._submit_label}  <i class="fa fa-fw fa-arrow-right"></i> </button>
+            <button  id="save_new_client_button" type="submit" class="button" ">{if empty($labels._new_customer_client)}{t}New customer{/t}{else}{$labels._new_customer_client}{/if} <i class="fa fa-fw fa-arrow-right"></i> </button>
         </footer>
     </form>
 </div>
