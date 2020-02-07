@@ -126,8 +126,6 @@
             </div>
 
         </div>
-
-
         {assign 'origin' $product->get('Origin')}
         {assign 'weight' $product->get('Unit Weight')}
         {assign 'dimensions' $product->get('Unit Dimensions')}

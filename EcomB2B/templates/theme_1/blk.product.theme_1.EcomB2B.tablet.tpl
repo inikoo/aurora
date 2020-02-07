@@ -43,11 +43,7 @@
                                 </a>
                             </figure>
                         {/foreach}
-
-
                     </div>
-
-
                 </div>
 
                 <div class="one-half-responsive last-column ">
