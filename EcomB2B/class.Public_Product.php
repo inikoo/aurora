@@ -258,16 +258,17 @@ class Public_Product {
                 break;
 
             case 'Origin':
-                if ($this->data['Product Origin Country Code']) {
+                if ($this->data['Product Origin Country Code']!='') {
                     include_once 'class.Country.php';
                     $country = new Country('code', $this->data['Product Origin Country Code']);
+                    if($country->get('Country Name')!=''){
+                        return '<img alt="" src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.png" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
+                    }
 
-                    return '<img alt="" src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.png" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
-                } else {
-                    return '';
                 }
+                    return '';
 
-                break;
+
 
             case 'Image Data':
 
