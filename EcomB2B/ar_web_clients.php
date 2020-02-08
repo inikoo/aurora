@@ -125,7 +125,10 @@ function new_customer_client($data, $customer, $account, $editor) {
             echo json_encode(
                 array(
                     'state' => 200,
-                    'msg'   => 'reg'
+                    'msg'   => 'reg',
+                    'metadata'=>[
+                        'class_html'=>[]
+                    ]
                 )
             );
             exit;

@@ -1046,6 +1046,10 @@
 
                                      if (data.state == '200') {
 
+                                         rows.fetch({
+                                             reset: true
+                                         });
+
                                          for (var key in data.metadata.class_html) {
                                              $('.' + key).html(data.metadata.class_html[key])
                                          }

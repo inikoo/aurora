@@ -32,10 +32,68 @@
 <div id="block_{$key}" data-block_key="{$key}"  data-client_key="{$customer_client->id}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
 
 
-    <div class="client_showcase" style="margin-bottom:{$top_margin}px">
-            <div>
-                <span class="client_name">{$customer_client->get('Customer Client Name')}</span>
+    <div class="client_showcase" style="margin-bottom:{$top_margin}px;padding-top:10px">
+
+
+
+            <div class="data_container" >
+
+                <div class="data_field" style="min-width: 270px;">
+                    <i title="{t}Customer code{/t}" class="fa fa-fw  fa-fingerprint padding_right_10"></i> <span style="font-weight: 800" class="Customer_Client_Code">{$customer_client->get('Customer Client Code')}</span>
+                </div>
+                <div class="data_field" style="min-width: 270px;">
+                    <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male padding_right_10"></i> <span class="Customer_Client_Main_Contact_Name">{$customer_client->get('Customer Client Main Contact Name')}</span>
+                </div>
+
+
+
+                <div id="Customer_Client_Main_Plain_Email_display"  class="data_field Subject_Email_display  {if !$customer_client->get('Customer Client Main Plain Email')}hide{/if}">
+                    <i class="fa fa-fw fa-at padding_right_10"></i> <span class="Subject_Email" id="Customer_Client_Other_Email_mailto">{if $customer_client->get('Customer Client Main Plain Email')}{mailto address=$customer_client->get('Main Plain Email')}{/if}</span>
+                </div>
+
+                <div id="Customer_Client_Other_Email_display" class="data_field hide">
+                    <i class="fa fa-fw fa-at discreet"></i> <span class="Customer_Client_Other_Email_mailto"></span>
+                </div>
+                <span id="display_telephones"></span> {if $customer_client->get('Customer Client Preferred Contact Number')=='Mobile'}
+                    <div id="Customer_Client_Main_Plain_Mobile_display"
+                         class="data_field  Subject_Mobile_display  {if !$customer_client->get('Customer Client Main Plain Mobile')}hide{/if}">
+                        <i class="far fa-fw fa-mobile"></i> <span
+                                class="Customer_Client_Main_Plain_Mobile Subject_Mobile">{$customer_client->get('Main XHTML Mobile')}</span>
+                    </div>
+                    <div id="Customer_Client_Main_Plain_Telephone_display"
+                         class="data_field Subject_Telephone_display {if !$customer_client->get('Customer Client Main Plain Telephone')}hide{/if}">
+                        <i class="fa fa-fw fa-phone"></i> <span
+                                class="Customer_Client_Main_Plain_Telephone Subject_Telephone">{$customer_client->get('Main XHTML Telephone')}</span>
+                    </div>
+                {else}
+                    <div id="Customer_Client_Main_Plain_Telephone_display"
+                         class="data_field Subject_Telephone_display {if !$customer_client->get('Customer Client Main Plain Telephone')}hide{/if}">
+                        <i title="Telephone" class="fa fa-fw fa-phone"></i> <span  class="Customer_Client_Main_Plain_Telephone Subject_Telephone">{$customer_client->get('Main XHTML Telephone')}</span>
+                    </div>
+                    <div id="Customer_Client_Main_Plain_Mobile_display"
+                         class="data_field Subject_Mobile_display {if !$customer_client->get('Customer Client Main Plain Mobile')}hide{/if}">
+                        <i title="Mobile" class="fa fa-fw fa-mobile"></i> <span
+                                class="Customer_Client_Main_Plain_Mobile Subject_Mobile">{$customer_client->get('Main XHTML Mobile')}</span>
+                    </div>
+                {/if}
+
+
+
+
+
             </div>
+            <div class="data_container" >
+                <div style="min-height:80px;float:left;width:28px">
+                    <i class="fa fa-fw fa-map-marker-alt"></i>
+                </div>
+                <div class="Customer_Client_Contact_Address" style="float:left;min-width:242px">
+                    {$customer_client->get('Contact Address Formatted')}
+                </div>
+
+            </div>
+
+
+
 
     </div>
 
