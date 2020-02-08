@@ -112,6 +112,9 @@ gettext("Log In");
 /* ../templates//login.tpl */
 gettext("Was not possible to log in with these credentials");
 
+/* ../templates//au_header.tpl */
+gettext("Skip");
+
 /* ../templates//customers.mobile.tpl */
 gettext("Contacts by number of orders");
 
@@ -297,6 +300,39 @@ gettext("List name");
 
 /* ../templates//dashboard/production.todo.ordered.dbard.tpl */
 gettext("Urgent");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("All stores");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("Sitting time");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("Average sitting time");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("Orders sitting in the warehouse");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("Dispatch time");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("Average dispatch time (last 30 days)");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("Order dispatched (last 30 days)");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("hrs");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("hrs");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("hrs");
+
+/* ../templates//dashboard/dispatching_times.dbard.tpl */
+gettext("hrs");
 
 /* ../templates//dashboard/orders.dbard.tpl */
 gettext("In basket");
@@ -1815,6 +1851,9 @@ gettext("Cancelled");
 
 /* ../templates//showcase/order.tpl */
 gettext("Customer");
+
+/* ../templates//showcase/order.tpl */
+gettext("Contact name");
 
 /* ../templates//showcase/order.tpl */
 gettext("Email");
@@ -4667,6 +4706,9 @@ gettext("Delivery time");
 gettext("Customer name");
 
 /* ../templates//showcase/invoice.tpl */
+gettext("Contact name");
+
+/* ../templates//showcase/invoice.tpl */
 gettext("Tax number");
 
 /* ../templates//showcase/invoice.tpl */
@@ -5753,6 +5795,15 @@ gettext("Display view");
 gettext("Margin");
 
 /* ../templates//theme_1/_order.theme_1.tpl */
+gettext("Add product");
+
+/* ../templates//theme_1/_order.theme_1.tpl */
+gettext("Product code");
+
+/* ../templates//theme_1/_order.theme_1.tpl */
+gettext("Quantity");
+
+/* ../templates//theme_1/_order.theme_1.tpl */
 gettext("Code");
 
 /* ../templates//theme_1/_order.theme_1.tpl */
@@ -5762,7 +5813,7 @@ gettext("Description");
 gettext("Quantity");
 
 /* ../templates//theme_1/_order.theme_1.tpl */
-gettext("Amount");
+gettext("Amount net");
 
 /* ../templates//theme_1/website.colors.theme_1.tpl */
 gettext("Header height");
@@ -7513,6 +7564,9 @@ gettext("Display view");
 /* ../templates//theme_1/blk.control.reset_password.theme_1.tpl */
 gettext("Margin");
 
+/* ../templates//table_buttons.tpl */
+gettext("inline editing");
+
 /* ../templates//order_delivery_addresses_directory.tpl */
 gettext("Set order for collection");
 
@@ -7873,9 +7927,6 @@ gettext("Refund");
 /* ../templates//invoice.pdf.tpl */
 gettext("Transfer of tax liability");
 
-/* ../templates//navigation.tpl */
-gettext("Skip");
-
 /* ../templates//footer_preview.tpl */
 gettext("Logged in");
 
@@ -7893,6 +7944,12 @@ gettext("Save");
 
 /* ../templates//footer_preview.tpl */
 gettext("Reset footer");
+
+/* ../templates//stop_junk_email.placeholder.tpl */
+gettext("You want to be removed from this mailing list?");
+
+/* ../templates//stop_junk_email.placeholder.tpl */
+gettext("Click here to be removed");
 
 /* ../templates//parts_list.edit.tpl */
 gettext("Part");
@@ -8327,12 +8384,6 @@ gettext("Filter table");
 gettext("Apply filter");
 
 /* ../templates//table.tpl */
-gettext("inline editing");
-
-/* ../templates//table.tpl */
-gettext("Undo");
-
-/* ../templates//table.tpl */
 gettext("Check/Uncheck all");
 
 /* ../templates//control.email_template_text.tpl */
@@ -8343,36 +8394,6 @@ gettext("Email subject");
 
 /* ../templates//control.email_template_text.tpl */
 gettext("Save");
-
-/* ../templates//edit_table.tpl */
-gettext("Exit edit");
-
-/* ../templates//edit_table.tpl */
-gettext("Export edit template");
-
-/* ../templates//edit_table.tpl */
-gettext("Queued");
-
-/* ../templates//edit_table.tpl */
-gettext("Download");
-
-/* ../templates//edit_table.tpl */
-gettext("Stop");
-
-/* ../templates//edit_table.tpl */
-gettext("Download");
-
-/* ../templates//edit_table.tpl */
-gettext("Stop");
-
-/* ../templates//edit_table.tpl */
-gettext("Comma Separated Value");
-
-/* ../templates//edit_table.tpl */
-gettext("Close dialog");
-
-/* ../templates//edit_table.tpl */
-gettext("Close");
 
 /* ../templates//control.sales.tpl */
 gettext("Store currency");
@@ -9859,23 +9880,17 @@ gettext("Author");
 /* ../templates//columns/barcode.history.cols.tpl */
 gettext("Note");
 
-/* ../templates//columns/product_sales_correlations.cols.tpl */
-gettext("Category status");
-
-/* ../templates//columns/product_sales_correlations.cols.tpl */
+/* ../templates//columns/offers_group_by_store.cols.tpl */
 gettext("Code");
 
-/* ../templates//columns/product_sales_correlations.cols.tpl */
-gettext("Correlation");
+/* ../templates//columns/offers_group_by_store.cols.tpl */
+gettext("Store Name");
 
-/* ../templates//columns/product_sales_correlations.cols.tpl */
-gettext("Customers than order both categories");
+/* ../templates//columns/offers_group_by_store.cols.tpl */
+gettext("Campaigns");
 
-/* ../templates//columns/product_sales_correlations.cols.tpl */
-gettext("Customers that order A but no B ");
-
-/* ../templates//columns/product_sales_correlations.cols.tpl */
-gettext("Customers that order B but no A ");
+/* ../templates//columns/offers_group_by_store.cols.tpl */
+gettext("Offers");
 
 /* ../templates//columns/supplier.delivery.check_items.cols.tpl */
 gettext("S. Code");
@@ -9996,18 +10011,6 @@ gettext("Note");
 
 /* ../templates//columns/inventory.stock.history.cols.tpl */
 gettext("Date");
-
-/* ../templates//columns/inventory.stock.history.cols.tpl */
-gettext("Date");
-
-/* ../templates//columns/inventory.stock.history.cols.tpl */
-gettext("Year");
-
-/* ../templates//columns/inventory.stock.history.cols.tpl */
-gettext("Month");
-
-/* ../templates//columns/inventory.stock.history.cols.tpl */
-gettext("Week");
 
 /* ../templates//columns/inventory.stock.history.cols.tpl */
 gettext("Parts");
@@ -10281,18 +10284,6 @@ gettext("Invoiced Net");
 
 /* ../templates//columns/deal.customers.cols.tpl */
 gettext("Clients");
-
-/* ../templates//columns/marketing_server.cols.tpl */
-gettext("Code");
-
-/* ../templates//columns/marketing_server.cols.tpl */
-gettext("Store Name");
-
-/* ../templates//columns/marketing_server.cols.tpl */
-gettext("Campaigns");
-
-/* ../templates//columns/marketing_server.cols.tpl */
-gettext("Offers");
 
 /* ../templates//columns/warehouse_area.parts.cols.tpl */
 gettext("Part");
@@ -11169,9 +11160,6 @@ gettext("Parcels");
 
 /* ../templates//columns/campaign_order_recursion.components.cols.tpl */
 gettext("Description");
-
-/* ../templates//columns/campaign_order_recursion.components.cols.tpl */
-gettext("Public description");
 
 /* ../templates//columns/campaign_order_recursion.components.cols.tpl */
 gettext("From");
@@ -15233,6 +15221,9 @@ gettext("SKO value");
 gettext("Stock value");
 
 /* ../templates//columns/inventory.stock.history.day.cols.tpl */
+gettext("Stock value");
+
+/* ../templates//columns/inventory.stock.history.day.cols.tpl */
 gettext("Sales 1 year");
 
 /* ../templates//columns/inventory.stock.history.day.cols.tpl */
@@ -16159,24 +16150,6 @@ gettext("Total");
 /* ../templates//columns/orders.in_warehouse_no_alerts.cols.tpl */
 gettext("Delivery note");
 
-/* ../templates//columns/product_sales_anticorrelations.cols.tpl */
-gettext("Category status");
-
-/* ../templates//columns/product_sales_anticorrelations.cols.tpl */
-gettext("Code");
-
-/* ../templates//columns/product_sales_anticorrelations.cols.tpl */
-gettext("Correlation");
-
-/* ../templates//columns/product_sales_anticorrelations.cols.tpl */
-gettext("Customers than order both categories");
-
-/* ../templates//columns/product_sales_anticorrelations.cols.tpl */
-gettext("Customers that order A but no B ");
-
-/* ../templates//columns/product_sales_anticorrelations.cols.tpl */
-gettext("Customers that order B but no A ");
-
 /* ../templates//columns/reports.cols.tpl */
 gettext("Name");
 
@@ -16833,6 +16806,9 @@ gettext("Email");
 
 /* ../templates//columns/mailshot.sent_emails.cols.tpl */
 gettext("Customer");
+
+/* ../templates//columns/mailshot.sent_emails.cols.tpl */
+gettext("Prospect");
 
 /* ../templates//columns/mailshot.sent_emails.cols.tpl */
 gettext("Sent date");
@@ -18589,6 +18565,27 @@ gettext("CTR");
 /* ../templates//columns/websites.cols.tpl */
 gettext("Webpages");
 
+/* ../templates//columns/mailroom_group_by_store.cols.tpl */
+gettext("Code");
+
+/* ../templates//columns/mailroom_group_by_store.cols.tpl */
+gettext("Store Name");
+
+/* ../templates//columns/mailroom_group_by_store.cols.tpl */
+gettext("Marketing");
+
+/* ../templates//columns/mailroom_group_by_store.cols.tpl */
+gettext("Customers notifications");
+
+/* ../templates//columns/mailroom_group_by_store.cols.tpl */
+gettext("Staff notifications");
+
+/* ../templates//columns/mailroom_group_by_store.cols.tpl */
+gettext("Sent emails");
+
+/* ../templates//columns/mailroom_group_by_store.cols.tpl */
+gettext("Sum orders");
+
 /* ../templates//columns/prospect_agent.sent_emails.cols.tpl */
 gettext("Email");
 
@@ -18723,24 +18720,6 @@ gettext("Stock");
 
 /* ../templates//columns/supplier.surplus_parts.wget.cols.tpl */
 gettext("In production");
-
-/* ../templates//columns/category_sales_correlations.cols.tpl */
-gettext("Category status");
-
-/* ../templates//columns/category_sales_correlations.cols.tpl */
-gettext("Code");
-
-/* ../templates//columns/category_sales_correlations.cols.tpl */
-gettext("Correlation");
-
-/* ../templates//columns/category_sales_correlations.cols.tpl */
-gettext("Customers than order both categories");
-
-/* ../templates//columns/category_sales_correlations.cols.tpl */
-gettext("Customers that order A but no B ");
-
-/* ../templates//columns/category_sales_correlations.cols.tpl */
-gettext("Customers that order B but no A ");
 
 /* ../templates//columns/deal.history.cols.tpl */
 gettext("Date");
@@ -22259,7 +22238,22 @@ gettext("Worker permissions plus force products as offline or out of stock");
 gettext("Supervisor");
 
 /* ../templates//user_permissions.edit.tpl */
-gettext("Create, edit products, send newsletters and marketing emails, create and edit webpages");
+gettext("Create, edit products, create and edit webpages");
+
+/* ../templates//user_permissions.edit.tpl */
+gettext("Worker");
+
+/* ../templates//user_permissions.edit.tpl */
+gettext("Mailroom (Notifications & Mailshots)");
+
+/* ../templates//user_permissions.edit.tpl */
+gettext("Worker permissions plus notifications management");
+
+/* ../templates//user_permissions.edit.tpl */
+gettext("Supervisor");
+
+/* ../templates//user_permissions.edit.tpl */
+gettext("Edit notifications, send newsletters and marketing emails");
 
 /* ../templates//user_permissions.edit.tpl */
 gettext("Worker");
@@ -22317,6 +22311,33 @@ gettext("Picked by");
 
 /* ../templates//inline_new_object.tpl */
 gettext("Invalid value");
+
+/* ../templates//asset_correlations.tpl */
+gettext("All");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1 year");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1Y");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1 quarter");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1q");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1 month");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1m");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1 week");
+
+/* ../templates//asset_correlations.tpl */
+gettext("1w");
 
 /* ../templates//add_item.tpl */
 gettext("Invalid value");
@@ -22404,6 +22425,9 @@ gettext("Amount");
 
 /* ../templates//control.intrastat_parts.tpl */
 gettext("Weight");
+
+/* ../templates//user_browser_notifications.edit.tpl */
+gettext("Browser notifications");
 
 /* ../templates//production.purchase_order.pdf.tpl */
 gettext("Cancelled");
@@ -22517,40 +22541,37 @@ gettext("Error");
 gettext("Invalid value");
 
 /* ../templates//app.tpl */
+gettext("Logout");
+
+/* ../templates//app.tpl */
+gettext("Logout");
+
+/* ../templates//app.tpl */
 gettext("Error");
 
 /* ../templates//app.tpl */
 gettext("Fire");
 
 /* ../templates//app.tpl */
-gettext("Share screen");
+gettext("Submit ticket");
 
 /* ../templates//app.tpl */
-gettext("Share screen");
+gettext("Submit ticket");
 
 /* ../templates//app.tpl */
-gettext("Help");
+gettext("Search");
 
 /* ../templates//app.tpl */
-gettext("Online chat");
-
-/* ../templates//app.tpl */
-gettext("Help");
-
-/* ../templates//app.tpl */
-gettext("Help");
-
-/* ../templates//app.tpl */
-gettext("Logout");
-
-/* ../templates//app.tpl */
-gettext("Logout");
+gettext("Lightweight results");
 
 /* ../templates//app.tpl */
 gettext("Help");
 
 /* ../templates//app.tpl */
 gettext("Real time users");
+
+/* ../templates//app.tpl */
+gettext("Fire");
 
 /* ../templates//app.tpl */
 gettext("Help");

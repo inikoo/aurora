@@ -8834,7 +8834,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'web_users':
                     $branch[] = array(
-                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span> '._('eegistered users'),
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span> '._('Registered users'),
                         'icon'      => 'users-class',
                         'reference' => ''
                     );

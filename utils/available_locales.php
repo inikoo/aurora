@@ -47,12 +47,38 @@ $available_locales = array(
         'Language Name'          => _('French'),
         'Language Original Name' => 'Français'
     ),
+    /*
+    'hi_IN.UTF-8' => array(
+        'Locale'                 => 'hi_IN.UTF-8',
+        'Flag'                   => 'in',
+        'Language Code'          => 'hi',
+        'Language Name'          => _('Hindi').' ('._('India').')',
+        'Language Original Name' => 'हिन्दी'
+
+    ),
+    */
+    'id_ID.UTF-8' => array(
+        'Locale'                 => 'id_ID.UTF-8',
+        'Flag'                   => 'id',
+        'Language Code'          => 'id',
+        'Language Name'          => _('Indonesian'),
+        'Language Original Name' => 'bahasa Indonesia'
+
+    ),
     'it_IT.UTF-8' => array(
         'Locale'                 => 'it_IT.UTF-8',
         'Flag'                   => 'it',
         'Language Code'          => 'it',
         'Language Name'          => _('Italian'),
         'Language Original Name' => 'Italiano'
+    ),
+    'ms_MY.UTF-8' => array(
+        'Locale'                 => 'ms_MY.UTF-8',
+        'Flag'                   => 'my',
+        'Language Code'          => 'ns',
+        'Language Name'          => _('Malay'),
+        'Language Original Name' => 'Bahasa Melayu'
+
     ),
     'pl_PL.UTF-8' => array(
         'Locale'                 => 'pl_PL.UTF-8',
@@ -81,8 +107,11 @@ $available_locales = array(
         'Language Code'          => 'zh',
         'Language Name'          => _('Chinese'),
         'Language Original Name' => '中文'
-    )
+    ),
+
+
+
 
 
 );
-?>
+
