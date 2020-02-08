@@ -13,7 +13,7 @@
 .client_showcase{
     display:flex;
     border-bottom:1px solid #ccc;
-    padding:5px 15px
+    padding:5px 15px;
 
 }
 
@@ -32,7 +32,7 @@
 <div id="block_{$key}" data-block_key="{$key}"  data-client_key="{$customer_client->id}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
 
 
-    <div class="client_showcase" style="margin-bottom:{$top_margin}px;padding-top:10px">
+    <div class="client_showcase" style="padding-top:10px">
 
 
 
@@ -97,61 +97,18 @@
 
     </div>
 
-
+    <div class="table_top" style="margin-top: 4px">
+        <span class="title">{t}Orders{/t}</span>
+    </div>
+    <div id="table_container"></div>
 
     <div class="text_blocks container"   >
-
-        <div style="width: 250px" id="client_menu" class="text_block ">
-
-            <h4>{if !empty($data.labels._customer_client_title)}{$data.labels._customer_client_title}{else}{t}Customer details{/t}{/if}</h4>
-            <ul class="clean">
-                <li>
-                 <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer">
-                                    <i class="fa fa-angle-right"></i>
-                                    <span>{if !empty($data.labels.menu_contact_details_title)}{$data.labels.menu_contact_details_title}{else}{t}Customer details{/t}{/if}</span>
-                                </span>
-                </li>
-
-
-                <li>
-                    <span data-block="_delivery_addresses_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
-                                    <i class="fa fa-angle-right"></i>
-                                    <span>{if !empty($data.labels.menu_delivery_addresses_title)}{$data.labels.menu_delivery_addresses_title}{else}{t}Delivery address{/t}{/if}</span>
-
-                                    </span>
-                </li>
-
-
-
-
-            </ul>
-                <div>
-
-                    <h4>{if !empty($data.labels._customer_orders_title)}{$data.labels._customer_orders_title}{else}{t}Customer's orders{/t}{/if}</h4>
-
-                <ul class="clean">
-                    <li>
-
-
-                        <span data-block="_orders_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
-                                    <i class="fa fa-angle-right"></i>
-                                    <span class="_orders_address_title">{if empty($data.labels._orders_title)}{t}Orders{/t}{else}{$data.labels._orders_title}{/if}</span>
-                                    </span>
-
-                    </li>
-
-
-                </ul>
-            </div>
-
-
-        </div>
 
         <div style="width: 100%" class="text_block  ">
 
 
             <div id="_contact_details" class="block reg_form">
-                <form id="contact_details" class="sky-form" y>
+                <form id="contact_details" class="sky-form sky-form-modal" >
                     <header class="mirror_master" id="_contact_details_title">{if !empty($data.labels._contact_details_title)}{$data.labels._contact_details_title}{else}{t}Customer details{/t}{/if}</header>
 
 
@@ -218,10 +175,10 @@
                 </form>
             </div>
 
-            
+
             <div id="_delivery_addresses_details" class="block hide reg_form">
                 <div class="address_form">
-                    <form id="delivery_address_form" class="sky-form">
+                    <form id="delivery_address_form" class="sky-form sky-form-modal">
                         <header >{if !empty($data.labels._delivery_addresses_title)}{$data.labels._delivery_addresses_title}{else}{t}Delivery address{/t}{/if}</header>
 
 
@@ -357,71 +314,7 @@
 
             </div>
 
-            <div id="_orders_details" class="block hide">
-
-
-                {assign "orders" $customer_client->get_orders_data()}
-
-                <div style="display:flex;width: 100%">
-                    <div style="flex-grow:1">
-                        <h1 class="orders_title">
-                            {if $orders|@count gt 0}
-                            {if !empty($data.labels._orders_title)}{$data.labels._orders_title}{else}{t}Orders{/t}{/if}
-                            {else}
-                                {if !empty($data.labels._orders_title)}{$data.label.client_no_orders}{else}{t}Customer hasn't any order yet{/t}{/if}
-
-                            {/if}
-
-                        </h1>
-                    </div>
-
-                    <div style="flex-grow:1;text-align: right">
-                        <a href="#new_client_form" class="modal-opener">
-                            <button class="empty"  onclick="window.location.href = 'client_basket.sys?client_id={$customer_client->id}';" style="cursor:pointer;line-height30px;padding:10px 20px;text-align: center;border:none;position: relative;top:-20px;font-size: 16px"> <i class="fa fa-plus padding_right_5"></i>
-                                {if empty($labels._add_customer_client)}{t}New order{/t}{else}{$labels._new_order}{/if}</span>
-                            </button>
-                        </a>
-                    </div>
-                </div>
-
-
-                <table class="orders  {if $orders|@count eq 0}hide{/if}  ">
-                    <thead>
-                    <tr>
-                        <th class="text-left" id="_orders_th_number">{if empty($data.labels._orders_th_number)}{t}Number{/t}{else}{$data.labels._orders_th_number}{/if}</th>
-                        <th class="text-left" id="_orders_th_date">{if empty($data.labels._orders_th_date)}{t}Date{/t}{else}{$data.labels._orders_th_date}{/if}</th>
-                        <th class="text-left" id="_orders_th_status">{if empty($data.labels._orders_th_status)}{t}Status{/t}{else}{$data.labels._orders_th_status}{/if}</th>
-                        <th class="text-right" id="_orders_th_total">{if empty($data.labels._orders_th_total)}{t}Total{/t}{else}{$data.labels._orders_th_total}{/if}</th>
-                        <th></th>
-
-
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {foreach from=$orders item=_order}
-
-                            <tr>
-
-
-                                <td class="like_link" onclick="go_to_order({$_order.key})"><span>{$_order.number}</span></td>
-                                <td>{$_order.date}</td>
-                                <td>{$_order.state}</td>
-                                <td class="text-right">{$_order.total}</td>
-                                <td>
-                                    <a target="_blank" href="invoice.pdf.php?id={$_order.invoice_key}"><img class="button  {if !$_order.invoice_key}hide{/if}"
-                                                                                                            style="margin-left:50px;width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
-                                </td>
-                            </tr>
-
-                    {/foreach}
-                    </tbody>
-                </table>
-
-
-            </div>
-
-            <div id="_order_details" class="block hide">
-
+            
 
             </div>
 

@@ -59,6 +59,8 @@ if (isset($_data['parameters']['invoices_null'])) {
 
 if (file_exists('prepare_table/'.$_data['parameters']['tab'].'.ptble.php')) {
     include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
+
+
     if (!isset($skip_get_table_totals)) {
         list($rtext, $total, $filtered) = get_table_totals(
             $db, $sql_totals, $wheref, $rtext_label, (isset($totals_metadata) ? $totals_metadata : false)

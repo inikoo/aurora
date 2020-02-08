@@ -10,6 +10,7 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
+require_once 'utils/table_functions.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -24,52 +25,115 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
-    case 'get_orders':
+    case 'clients_orders':
 
 
-        get_orders($customer, $db);
+        $_data                             = get_table_parameters();
+        $_data['parameters']['parent_key'] = $customer->id;
+        clients_orders($_data, $db);
 
 
         break;
 
 }
 
-/**
- * @param $customer \Customer
- * @param $db \PDO
- */
-function get_orders($customer, $db) {
+
+function clients_orders($_data, $db) {
 
 
 
-    $data=array();
 
-    $sql = "SELECT `Order Key`,`Order Public ID`,`Customer Client Code`
-            FROM 
-                `Order Dimension` left join `Customer Client Dimension` on (`Order Customer Client Key`=`Customer Client Key`)
-            WHERE   `Order Customer Key`=?
-            ";
+    $rtext_label = 'order';
 
 
-    $stmt = $db->prepare($sql);
-    $stmt->execute(
-        array(
-            $customer->id
-        )
-    );
-    while ($row = $stmt->fetch()) {
-        $data[]=array(
-            $row['Order Public ID'],
-            $row['Customer Client Code'],
-        );
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Order State']) {
+                case('InBasket'):
+                    $state = _('In Basket');
+                    break;
+                case('InProcess'):
+                    $state = _('Submitted');
+                    break;
+                case('InWarehouse'):
+                    $state = _('In Warehouse');
+                    break;
+                case('PackedDone'):
+                    $state = _('Packed & Closed');
+                    break;
+                case('Dispatch Approved'):
+                    $state = _('Dispatch Approved');
+                    break;
+                case('Dispatched'):
+                    $state = _('Dispatched');
+                    break;
+                case('Cancelled'):
+                    $state = _('Cancelled');
+                    break;
+                default:
+                    $state = $data['Order State'];
+
+            }
+
+
+            $adata[] = array(
+                'id' => (integer)$data['Order Key'],
+
+                'public_id' => sprintf('<a href="client_order.sys?id=%d">%s</a>',  $data['Order Key'], $data['Order Public ID']),
+                'state'     => $state,
+
+                'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+                'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'customer'       => sprintf('<a href="client.sys?id=%d">%s</a>',  $data['Order Customer Client Key'], $data['Customer Client Name']),
+               // 'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
+               // 'payment_state'  => get_order_formatted_payment_state($data),
+                'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+               // 'margin'         => sprintf('<span title="%s: %s">%s</span>', _('Profit'), money($data['Order Profit Amount'], $data['Order Currency']), percentage($data['Order Margin'], 1)),
+
+
+            );
+
+
+        }
+
     }
 
 
-    echo json_encode(
-        array('data'=>$data)
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
 
+        )
     );
-
+    echo json_encode($response);
 }
-
 

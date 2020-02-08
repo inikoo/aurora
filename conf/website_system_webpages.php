@@ -69,26 +69,26 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope'            => 'HomepageToLaunch',
             'Webpage Type'             => 'Home',
             'Webpage Code'             => 'launching.sys',
-           // 'Webpage Browser Title'    => _('Coming soon'),
+            // 'Webpage Browser Title'    => _('Coming soon'),
             'Webpage Name'             => _('Launching website'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
                 array(
                     'blocks' => array(
                         array(
-                            'type'            => 'launching',
-                            'label'           => _('Launching website'),
-                            'icon'            => 'fa-rocket',
-                            'show'            => 1,
-                            'top_margin'      => 40,
-                            'bottom_margin'   => 60,
+                            'type'          => 'launching',
+                            'label'         => _('Launching website'),
+                            'icon'          => 'fa-rocket',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
 
-                            'image' => 'art/bg/launching.jpg',
-                            'labels'          => array(
+                            'image'  => 'art/bg/launching.jpg',
+                            'labels' => array(
 
-                                '_title'              => _("We're launching soon"),
-                                '_text'               => _("Our website is under construction. We'll be here soon with our new awesome site"),
-                                '_footer'              => _("Thanks"),
+                                '_title'  => _("We're launching soon"),
+                                '_text'   => _("Our website is under construction. We'll be here soon with our new awesome site"),
+                                '_footer' => _("Thanks"),
 
 
                             )
@@ -108,7 +108,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Portfolio',
             'Webpage Code'             => 'favourites.sys',
-           // 'Webpage Browser Title'    => _('Favourites'),
+            // 'Webpage Browser Title'    => _('Favourites'),
             'Webpage Name'             => _('Favourites'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => '',
@@ -140,7 +140,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Customer',
             'Webpage Code'             => 'login.sys',
-           // 'Webpage Browser Title'    => _('Login'),
+            // 'Webpage Browser Title'    => _('Login'),
             'Webpage Name'             => _('Login'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => json_encode(
@@ -255,36 +255,36 @@ function website_system_webpages_config($website_type) {
                                 'send_email' => 1,
 
                             ),
-                            'fields'=>array(
+                            'fields'        => array(
                                 array(
-                                    'field'=>'telephone',
-                                    'render'=>false,
-                                    'required'=>false
+                                    'field'    => 'telephone',
+                                    'render'   => false,
+                                    'required' => false
                                 ),
                                 array(
-                                    'field'=>'mobile',
-                                    'render'=>true,
-                                    'required'=>false
-                                ),
-                                 array(
-                                     'field'=>'name',
-                                     'render'=>true,
-                                     'required'=>false
-                                 ),
-                                array(
-                                    'field'=>'company',
-                                    'render'=>true,
-                                    'required'=>false
+                                    'field'    => 'mobile',
+                                    'render'   => true,
+                                    'required' => false
                                 ),
                                 array(
-                                    'field'=>'tex_number',
-                                    'render'=>true,
-                                    'required'=>false
+                                    'field'    => 'name',
+                                    'render'   => true,
+                                    'required' => false
                                 ),
                                 array(
-                                    'field'=>'registration_number',
-                                    'render'=>true,
-                                    'required'=>false
+                                    'field'    => 'company',
+                                    'render'   => true,
+                                    'required' => false
+                                ),
+                                array(
+                                    'field'    => 'tex_number',
+                                    'render'   => true,
+                                    'required' => false
+                                ),
+                                array(
+                                    'field'    => 'registration_number',
+                                    'render'   => true,
+                                    'required' => false
                                 )
                             )
 
@@ -691,7 +691,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
             'Webpage Code'             => 'thanks.sys',
-           // 'Webpage Browser Title'    => _('Thanks for your order'),
+            // 'Webpage Browser Title'    => _('Thanks for your order'),
             'Webpage Name'             => _('Thanks'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -761,7 +761,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Sys',
             'Webpage Code'             => 'offline.sys',
-           // 'Webpage Browser Title'    => _('Offline'),
+            // 'Webpage Browser Title'    => _('Offline'),
             'Webpage Name'             => _('Offline'),
             'Webpage Meta Description' => '',
 
@@ -865,7 +865,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Info',
             'Webpage Code'             => 'tac.sys',
-           // 'Webpage Browser Title'    => _('Terms & Conditions'),
+            // 'Webpage Browser Title'    => _('Terms & Conditions'),
             'Webpage Name'             => _('Terms & Conditions'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -973,7 +973,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-        'client.sys'        => array(
+        'client.sys'         => array(
             'Webpage Scope'            => 'Client',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Client',
@@ -1002,7 +1002,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Clients_Orders',
             'Webpage Code'             => 'clients_orders.sys',
-           // 'Webpage Browser Title'    => _("Client's orders"),
+            // 'Webpage Browser Title'    => _("Client's orders"),
             'Webpage Name'             => _("Client's orders"),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => '',
@@ -1024,7 +1024,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-        'client_basket.sys' => array(
+        'client_basket.sys'  => array(
             'Webpage Scope'            => 'Client_Basket',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
@@ -1035,25 +1035,65 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
                         array(
-                            'locked' => true,
-                            'type'   => 'client_basket',
-                            'label'  => _('Basket'),
-                            'icon'   => 'fa-basket',
-                            'show'   => 1,
-                            '_order_number_label' => _('Order number'),
+                            'locked'                  => true,
+                            'type'                    => 'client_basket',
+                            'label'                   => _('Basket'),
+                            'icon'                    => 'fa-basket',
+                            'show'                    => 1,
+                            '_order_number_label'     => _('Order number'),
                             '_delivery_address_label' => _('Delivery address'),
-                            '_items_gross' => _('Items Gross'),
-                            '_discounts'   => _('Discounts'),
-                            '_items_net'   => _('Items Net'),
-                            '_charges'     => _('Charges'),
-                            '_shipping'    => _('Shipping'),
-                            '_net'         => _('Net'),
-                            '_tax'         => _('Tax'),
-                            '_total'       => _('Total'),
-                            '_credit'       => _('Credit'),
-                            '_total_to_pay' => _('To pay'),
-                            '_special_instructions' => _('Special Instructions'),
-                            '_go_checkout_label' => _('Go to checkout'),
+                            '_items_gross'            => _('Items Gross'),
+                            '_discounts'              => _('Discounts'),
+                            '_items_net'              => _('Items Net'),
+                            '_charges'                => _('Charges'),
+                            '_shipping'               => _('Shipping'),
+                            '_net'                    => _('Net'),
+                            '_tax'                    => _('Tax'),
+                            '_total'                  => _('Total'),
+                            '_credit'                 => _('Credit'),
+                            '_total_to_pay'           => _('To pay'),
+                            '_special_instructions'   => _('Special Instructions'),
+                            '_go_checkout_label'      => _('Go to checkout'),
+
+                        )
+
+
+                    )
+
+
+                )
+            )
+
+        ),
+        'client_order.sys'   => array(
+            'Webpage Scope'            => 'Client_Order',
+            'Webpage Scope Metadata'   => '',
+            'Webpage Type'             => 'Ordering',
+            'Webpage Code'             => 'client_order.sys',
+            'Webpage Name'             => _("Client order"),
+            'Webpage Meta Description' => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'locked'                  => true,
+                            'type'                    => 'client_order',
+                            'label'                   => _('Client order'),
+                            'icon'                    => 'fa-shopping-cart',
+                            'show'                    => 1,
+                            '_order_number_label'     => _('Order number'),
+                            '_delivery_address_label' => _('Delivery address'),
+                            '_items_gross'            => _('Items Gross'),
+                            '_discounts'              => _('Discounts'),
+                            '_items_net'              => _('Items Net'),
+                            '_charges'                => _('Charges'),
+                            '_shipping'               => _('Shipping'),
+                            '_net'                    => _('Net'),
+                            '_tax'                    => _('Tax'),
+                            '_total'                  => _('Total'),
+                            '_credit'                 => _('Credit'),
+                            '_total_to_pay'           => _('To pay'),
+
 
                         )
 

@@ -1152,9 +1152,20 @@
                             {/if}
              {if $with_clients_orders==1}
                             getScript("/assets/datatables.min.js", function () {
-                                $('#clients_orders').DataTable( {
-                                    "ajax": "ar_web_clients_orders.php?tipo=get_orders"
-                                } );
+
+                                const request_data ={ "tipo":'clients_orders'}
+
+                                $.ajax({
+                                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                                        if (data.state == 200) {
+                                            state = data.app_state;
+                                            $('#table_container').html(data.html)
+                                        }
+
+                                    }
+                                });
+
                             })
                             {/if}
 

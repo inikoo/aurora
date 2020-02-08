@@ -54,6 +54,18 @@ switch ($tipo) {
 
         get_clients_table_html($data, $customer);
         break;
+    case 'clients_orders':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+
+        get_clients_orders_table_html($data, $customer);
+        break;
 
     default:
         $response = array(
@@ -272,6 +284,90 @@ function get_clients_table_html($data, $customer) {
 
     );
 
+    $smarty->assign('table_buttons', $table_buttons);
+
+
+    include 'utils/get_table_html.php';
+
+    $state=[
+        'tab'=>''
+    ];
+
+    $response = array(
+        'state' => 200,
+        'app_state'=>$state,
+        'html'  => $html
+    );
+    echo json_encode($response);
+
+}
+
+function get_clients_orders_table_html($data, $customer) {
+
+
+    include_once '../conf/export_fields.php';
+    include_once '../conf/elements_options.php';
+
+
+    $smarty = new Smarty();
+    $smarty->setTemplateDir('templates');
+    $smarty->setCompileDir('server_files/smarty/templates_c');
+    $smarty->setCacheDir('server_files/smarty/cache');
+    $smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->addPluginsDir('./smarty_plugins');
+
+
+    $website = get_object('Website', $_SESSION['website_key']);
+    $labels=$website->get('Localised Labels');
+
+    $store   = get_object('Store', $website->get('Website Store Key'));
+
+    $tab     = 'clients_orders';
+    $ar_file = 'ar_web_clients_orders.php';
+    $tipo    = 'clients_orders';
+
+
+
+    $default=array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => [500,100],
+        'f_field'       => 'public_id',
+        //    'f_period'      => 'ytd',
+        //'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
+        //'elements'      => get_elements_option('customer_portfolio'),
+        //'export_fields' => get_export_fields('products_public')
+
+    );
+
+    $table_views = array(
+        'overview'    => array('label' => _('Overview')),
+        //    'performance' => array('label' => _('Performance')),
+        //   'sales'       => array('label' => _('Sales')),
+        //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
+        //   'sales_q'     => array('label' => _('Invoiced amount (Qs)')),
+
+    );
+
+    $table_filters = array(
+        'public_id' => array(
+            'label' => _('Number'),
+            'title' => _('Order number')
+        ),
+
+
+    );
+
+    $parameters = array(
+        'parent'     => 'customer',
+        'parent_key' => $customer->id,
+
+    );
+
+
+    $table_buttons=[];
     $smarty->assign('table_buttons', $table_buttons);
 
 
