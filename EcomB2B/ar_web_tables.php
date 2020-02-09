@@ -55,9 +55,9 @@ switch ($tipo) {
         get_clients_table_html($data, $customer);
         break;
     case 'client_orders':
-        $data = prepare_values(
+        $data       = prepare_values(
             $_REQUEST, array(
-                        'client_id'=>array('type'=>'keys'),
+                         'client_id'     => array('type' => 'keys'),
                          'device_prefix' => array(
                              'type'     => 'string',
                              'optional' => true
@@ -69,7 +69,7 @@ switch ($tipo) {
             'parent_key' => $data['client_id'],
 
         );
-        get_orders_table_html($data, $parameters);
+        get_orders_table_html($data, $parameters,$db);
         break;
     case 'clients_orders':
         $data = prepare_values(
@@ -86,7 +86,7 @@ switch ($tipo) {
             'parent_key' => $customer->id,
 
         );
-        get_orders_table_html($data, $parameters,$customer);
+        get_orders_table_html($data, $parameters, $customer,$db);
         break;
     default:
         $response = array(
@@ -126,16 +126,17 @@ function get_portfolio_table_html($data, $customer) {
     $tipo    = 'portfolio_items';
 
 
-
-
-    $default=array(
+    $default = array(
         'view'          => 'overview',
         'sort_key'      => 'code',
         'sort_order'    => 1,
         'rpp'           => 100,
-        'rpp_options'   => [500,100],
+        'rpp_options'   => [
+            500,
+            100
+        ],
         'f_field'       => 'code',
-    //    'f_period'      => 'ytd',
+        //    'f_period'      => 'ytd',
         'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
         'elements'      => get_elements_option('customer_portfolio'),
         'export_fields' => get_export_fields('products_public')
@@ -143,11 +144,11 @@ function get_portfolio_table_html($data, $customer) {
     );
 
     $table_views = array(
-        'overview'    => array('label' => _('Overview')),
-    //    'performance' => array('label' => _('Performance')),
-     //   'sales'       => array('label' => _('Sales')),
-     //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
-     //   'sales_q'     => array('label' => _('Invoiced amount (Qs)')),
+        'overview' => array('label' => _('Overview')),
+        //    'performance' => array('label' => _('Performance')),
+        //   'sales'       => array('label' => _('Sales')),
+        //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
+        //   'sales_q'     => array('label' => _('Invoiced amount (Qs)')),
 
     );
 
@@ -173,14 +174,14 @@ function get_portfolio_table_html($data, $customer) {
     $table_buttons = array();
 
     $table_buttons[] = array(
-        'icon'     => 'plus',
-        'title'    => _("Add product to portfolio"),
-        'id'       => 'add_to_portfolio',
-        'class'    => 'items_operation',
+        'icon'                  => 'plus',
+        'title'                 => _("Add product to portfolio"),
+        'id'                    => 'add_to_portfolio',
+        'class'                 => 'items_operation',
         'add_item_to_portfolio' => array(
 
             'field_label' => _("Product").':',
-            'ar_url'     => '/ar_web_portfolio.php',
+            'ar_url'      => '/ar_web_portfolio.php',
             'metadata'    => base64_encode(
                 json_encode(
                     array(
@@ -203,14 +204,14 @@ function get_portfolio_table_html($data, $customer) {
 
     include 'utils/get_table_html.php';
 
-    $state=[
-        'tab'=>''
+    $state = [
+        'tab' => ''
     ];
 
     $response = array(
-        'state' => 200,
-        'app_state'=>$state,
-        'html'  => $html
+        'state'     => 200,
+        'app_state' => $state,
+        'html'      => $html
     );
     echo json_encode($response);
 
@@ -232,11 +233,9 @@ function get_clients_table_html($data, $customer) {
 
 
     $website = get_object('Website', $_SESSION['website_key']);
-    $labels=$website->get('Localised Labels');
+    $labels  = $website->get('Localised Labels');
 
-    $store   = get_object('Store', $website->get('Website Store Key'));
-
-
+    $store = get_object('Store', $website->get('Website Store Key'));
 
 
     $tab     = 'customer_clients';
@@ -244,15 +243,16 @@ function get_clients_table_html($data, $customer) {
     $tipo    = 'customer_clients';
 
 
-
-
-    $default=array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => [500,100],
-        'f_field'       => 'name',
+    $default = array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => [
+            500,
+            100
+        ],
+        'f_field'     => 'name',
         //    'f_period'      => 'ytd',
         //'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
         //'elements'      => get_elements_option('customer_portfolio'),
@@ -261,7 +261,7 @@ function get_clients_table_html($data, $customer) {
     );
 
     $table_views = array(
-        'overview'    => array('label' => _('Overview')),
+        'overview' => array('label' => _('Overview')),
         //    'performance' => array('label' => _('Performance')),
         //   'sales'       => array('label' => _('Sales')),
         //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
@@ -296,11 +296,11 @@ function get_clients_table_html($data, $customer) {
     $table_buttons = array();
 
     $table_buttons[] = array(
-        'icon'     => 'plus',
-        'title'    => (empty($labels['_add_customer_client'])?_('Add customer'):$labels['_add_customer_client']),
-        'label'    => (empty($labels['_add_customer_client'])?_('Add customer'):$labels['_add_customer_client']),
-        'id'       => 'new_customer',
-        'class'    => 'text width_auto',
+        'icon'  => 'plus',
+        'title' => (empty($labels['_add_customer_client']) ? _('Add customer') : $labels['_add_customer_client']),
+        'label' => (empty($labels['_add_customer_client']) ? _('Add customer') : $labels['_add_customer_client']),
+        'id'    => 'new_customer',
+        'class' => 'text width_auto',
 
 
     );
@@ -310,20 +310,20 @@ function get_clients_table_html($data, $customer) {
 
     include 'utils/get_table_html.php';
 
-    $state=[
-        'tab'=>''
+    $state = [
+        'tab' => ''
     ];
 
     $response = array(
-        'state' => 200,
-        'app_state'=>$state,
-        'html'  => $html
+        'state'     => 200,
+        'app_state' => $state,
+        'html'      => $html
     );
     echo json_encode($response);
 
 }
 
-function get_orders_table_html($data, $parameters) {
+function get_orders_table_html($data, $parameters,$db) {
 
 
     include_once '../conf/export_fields.php';
@@ -339,23 +339,25 @@ function get_orders_table_html($data, $parameters) {
 
 
     $website = get_object('Website', $_SESSION['website_key']);
-    $labels=$website->get('Localised Labels');
+    $labels  = $website->get('Localised Labels');
 
-    $store   = get_object('Store', $website->get('Website Store Key'));
+    $store = get_object('Store', $website->get('Website Store Key'));
 
     $tab     = 'clients_orders';
     $ar_file = 'ar_web_clients_orders.php';
     $tipo    = 'clients_orders';
 
 
-
-    $default=array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => [500,100],
-        'f_field'       => 'public_id',
+    $default = array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => [
+            500,
+            100
+        ],
+        'f_field'     => 'public_id',
         //    'f_period'      => 'ytd',
         //'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
         //'elements'      => get_elements_option('customer_portfolio'),
@@ -364,7 +366,7 @@ function get_orders_table_html($data, $parameters) {
     );
 
     $table_views = array(
-        'overview'    => array('label' => _('Overview')),
+        'overview' => array('label' => _('Overview')),
         //    'performance' => array('label' => _('Performance')),
         //   'sales'       => array('label' => _('Sales')),
         //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
@@ -381,23 +383,54 @@ function get_orders_table_html($data, $parameters) {
 
     );
 
+    $table_buttons = [];
 
 
-    $table_buttons=[];
+    if ($parameters['parent'] == 'client') {
+
+
+        $sql = "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=? AND `Order State`='InBasket' ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            [
+                $parameters['parent_key']
+            ]
+        );
+        if ($row = $stmt->fetch()) {
+            $order_key = $row['Order Key'];
+        } else {
+            $order_key = false;
+        }
+
+        if (!$order_key) {
+            $table_buttons[] = array(
+                'icon'  => 'plus',
+                'title' => (empty($labels['_new_client_order']) ? _('New order') : $labels['_new_client_order']),
+                'label' => (empty($labels['_new_client_order']) ? _('New order') : $labels['_new_client_order']),
+                'id'    => 'new_order',
+                'class' => 'text width_auto',
+
+
+            );
+        }
+
+    }
+
     $smarty->assign('table_buttons', $table_buttons);
     $smarty->assign('parameters', $parameters);
 
 
     include 'utils/get_table_html.php';
 
-    $state=[
-        'tab'=>''
+    $state = [
+        'tab' => ''
     ];
 
     $response = array(
-        'state' => 200,
-        'app_state'=>$state,
-        'html'  => $html
+        'state'     => 200,
+        'app_state' => $state,
+        'html'      => $html
     );
     echo json_encode($response);
 

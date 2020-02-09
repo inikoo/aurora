@@ -648,6 +648,12 @@
                           $('.breadcrumbs .client_nav').html(data.client_nav.label)
                           $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
 
+
+                          $(document).on('click', '#new_order', function (e) {
+                              window.location = '/client_basket.sys?client_id='+getUrlParameter('id');
+                          });
+
+
                           getScript("/assets/datatables.min.js", function () {
 
                               const request_data ={ "tipo":'client_orders','client_id':getUrlParameter('id')}
@@ -658,7 +664,14 @@
                                       if (data.state == 200) {
                                           state = data.app_state;
                                           $('#table_container').html(data.html)
+
+
+
+
+
                                       }
+
+
 
                                   }
                               });

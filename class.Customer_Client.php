@@ -248,16 +248,12 @@ class Customer_Client extends Subject {
 
 
         $order_key = false;
-        $sql       = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=%d AND `Order State`='InBasket' ", $this->id
-        );
+        $sql       = "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=? AND `Order State`='InBasket' ";
 
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $order_key = $row['Order Key'];
-            }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$this->id]);
+        if ($row = $stmt->fetch()) {
+            $order_key = $row['Order Key'];
         }
 
 
