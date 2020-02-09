@@ -30,7 +30,9 @@
 
 
 <div id="block_{$key}" data-block_key="{$key}"  data-client_key="{$customer_client->id}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
-
+    <div class="table_top" style="margin-top: 4px">
+        <span class="title"> <span class="margin_right_10">{t}Customer{/t}:</span> <span class="Customer_Client_Name">{$customer_client->get('Customer Client Name')}</span>  (<span class="Customer_Client_Name">{$customer_client->get('Customer Client Code')}</span>) </span>
+    </div>
 
     <div class="client_showcase" style="padding-top:10px">
 
@@ -97,9 +99,7 @@
 
     </div>
 
-    <div class="table_top" style="margin-top: 4px">
-        <span class="title">{t}Orders{/t}</span>
-    </div>
+
     <div id="table_container"></div>
 
     <div class="text_blocks container"   >

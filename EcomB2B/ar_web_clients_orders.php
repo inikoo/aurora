@@ -29,7 +29,26 @@ switch ($tipo) {
 
 
         $_data                             = get_table_parameters();
-        $_data['parameters']['parent_key'] = $customer->id;
+
+
+        if($_data['parameters']['parent']=='customer'){
+            $_data['parameters']['parent_key'] = $customer->id;
+        }elseif($_data['parameters']['parent']=='client'){
+
+            $sql="select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Key`=?  and  `Customer Client Customer Key`=? ";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$_data['parameters']['parent_key'],$customer->id]);
+            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                $_data['parameters']['parent_key'] = $row['Customer Client Key'];
+            }else{
+                exit('Forbidden A123');
+            }
+
+
+
+        }
+
         clients_orders($_data, $db);
 
 
@@ -65,8 +84,7 @@ function clients_orders($_data, $db) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
-
-    $record_data = array();
+    $adata = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {

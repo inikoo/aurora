@@ -54,6 +54,23 @@ switch ($tipo) {
 
         get_clients_table_html($data, $customer);
         break;
+    case 'client_orders':
+        $data = prepare_values(
+            $_REQUEST, array(
+                        'client_id'=>array('type'=>'keys'),
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+        $parameters = array(
+            'parent'     => 'client',
+            'parent_key' => $data['client_id'],
+
+        );
+        get_orders_table_html($data, $parameters);
+        break;
     case 'clients_orders':
         $data = prepare_values(
             $_REQUEST, array(
@@ -64,9 +81,13 @@ switch ($tipo) {
                      )
         );
 
-        get_clients_orders_table_html($data, $customer);
-        break;
+        $parameters = array(
+            'parent'     => 'customer',
+            'parent_key' => $customer->id,
 
+        );
+        get_orders_table_html($data, $parameters,$customer);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -302,7 +323,7 @@ function get_clients_table_html($data, $customer) {
 
 }
 
-function get_clients_orders_table_html($data, $customer) {
+function get_orders_table_html($data, $parameters) {
 
 
     include_once '../conf/export_fields.php';
@@ -360,15 +381,11 @@ function get_clients_orders_table_html($data, $customer) {
 
     );
 
-    $parameters = array(
-        'parent'     => 'customer',
-        'parent_key' => $customer->id,
-
-    );
 
 
     $table_buttons=[];
     $smarty->assign('table_buttons', $table_buttons);
+    $smarty->assign('parameters', $parameters);
 
 
     include 'utils/get_table_html.php';

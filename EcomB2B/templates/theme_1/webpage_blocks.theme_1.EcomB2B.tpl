@@ -648,9 +648,28 @@
                           $('.breadcrumbs .client_nav').html(data.client_nav.label)
                           $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
 
+                          getScript("/assets/datatables.min.js", function () {
+
+                              const request_data ={ "tipo":'client_orders','client_id':getUrlParameter('id')}
+
+                              $.ajax({
+                                  url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                                      if (data.state == 200) {
+                                          state = data.app_state;
+                                          $('#table_container').html(data.html)
+                                      }
+
+                                  }
+                              });
+
+                          })
+
+
                       })
                    })
              {/if}
+
 
             {if $with_register==1}
             $('#register_header_button').addClass('hide')

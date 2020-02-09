@@ -18,9 +18,20 @@ $currency = '';
 
 $table = '`Order Dimension` O  left join `Customer Client Dimension` CC on (CC.`Customer Client Key`=O.`Order Customer Client Key`)';
 
-$where = sprintf(
-    'where  `Order Customer Key`=%d  ', $parameters['parent_key']
-);
+if($parameters['parent']=='client'){
+    $where = sprintf(
+        'where  `Order Customer Client Key`=%d  ', $parameters['parent_key']
+    );
+
+}elseif($parameters['parent']=='customer'){
+    $where = sprintf(
+        'where  `Order Customer Key`=%d  ', $parameters['parent_key']
+    );
+
+}else{
+    exit ('forbidden x43429');
+}
+
 
 
 
