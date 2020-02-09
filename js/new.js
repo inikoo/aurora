@@ -187,35 +187,7 @@ function post_process_form_validation(){
 
 }
 
-function check_if_form_is_valid() {
 
-
-    var object = $('#fields').attr('object');
-    var valid = true;
-    $(".value").each(function (index) {
-        var field = $(this).attr('field')
-       // var value = $('#' + field).val()
-
-        //console.log(field + ' ' + $("#" + field).hasClass('valid') + ' ' + $("#" + field).hasClass('potentially_valid'))
-        if (!$("#" + field + '_validation').hasClass('valid')) {
-
-
-            valid = false;
-        }
-
-
-    });
-
-
-    if (valid) {
-        $('#' + object + '_save').addClass('valid').removeClass('invalid')
-
-    } else {
-        $('#' + object + '_save').removeClass('valid').addClass('invalid')
-
-    }
-
-}
 
 function save_new_object(object, form_type) {
 
