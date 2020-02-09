@@ -113,7 +113,7 @@ function process_update_order_item($db,$order, $product_pid, $quantity, $website
         $labels = $website->get('Localised Labels');
 
         if ($order->get('Shipping Net Amount') == 'TBC') {
-            $shipping_amount = sprintf('<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>%s</small>', (!empty($labels['_we_will_contact_you']) ? $labels['_we_will_contact_you'] : _('We will contact you')));
+            $shipping_amount = sprintf('<i class="fa error fa-exclamation-circle" aria-hidden="true"></i> <small>%s</small>', (!empty($labels['_we_will_contact_you']) ? $labels['_we_will_contact_you'] : _('We will contact you')));
         } else {
             $shipping_amount = $order->get('Shipping Net Amount');
         }
@@ -144,6 +144,12 @@ function process_update_order_item($db,$order, $product_pid, $quantity, $website
             $hide[] = 'Deal_Amount_Off_tr';
         } else {
             $show[] = 'Deal_Amount_Off_tr';
+        }
+
+        if ($order->get('Order Number Items') == 0) {
+            $hide[] = 'order_basket_footer';
+        } else {
+            $show[] = 'order_basket_footer';
         }
 
 

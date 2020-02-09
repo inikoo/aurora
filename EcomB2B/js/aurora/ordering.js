@@ -355,8 +355,6 @@ function post_save_change_item_in_basket(data){
         $('#transaction_deal_info_' + key).html(data.discounts_data[key]['deal_info'])
         $('#transaction_item_net_' + key).html(data.discounts_data[key]['item_net'])
 
-        console.log(key+' '+data.discounts_data[key]['item_net'])
-
     }
 
 

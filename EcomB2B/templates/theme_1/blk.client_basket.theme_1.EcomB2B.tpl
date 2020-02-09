@@ -147,7 +147,7 @@
 
 
 
-         <div class="order_header container text_blocks  text_template_2 {if !$order->id   or $order->get('Order Number Items')==0  }hide{/if} ">
+         <div class="order_header container text_blocks  text_template_2  order_basket_footer   {if !$order->id   or $order->get('Order Number Items')==0  }hide{/if} ">
              <div class="text_block" >
                  <form action="" method="post" enctype="multipart/form-data"  class="sky-form"  style="box-shadow: none"
 
