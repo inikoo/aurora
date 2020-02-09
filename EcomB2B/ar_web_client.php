@@ -148,12 +148,18 @@ function update_contact_address($data, $customer_key, $editor) {
     $customer_client->update(array('Customer Client Contact Address' => json_encode($address_data)));
 
 
+
     echo json_encode(
         array(
-            'state' => 200
+            'state'    => 200,
+            'metadata' => array(
+                'class_html' => [
+                        'Customer_Client_Contact_Address' => $customer_client->get('Contact Address Formatted'),
+
+                ]
+            )
         )
     );
-
 
 }
 
@@ -207,13 +213,57 @@ function update_customer_client_details($data, $customer_key, $editor) {
     $customer_client->editor = $editor;
     $customer_client->update($update_data);
 
+    $hide=[];
+    $show=[];
+
+    if($customer_client->get('Customer Client Company Name')==''){
+        $hide[]='Customer_Client_Company_Name_display';
+    }else{
+        $show[]='Customer_Client_Company_Name_display';
+    }
+    if($customer_client->get('Customer Client Main Contact Name')==''){
+        $hide[]='Customer_Client_Main_Contact_Name_display';
+    }else{
+        $show[]='Customer_Client_Main_Contact_Name_display';
+    }
+    if($customer_client->get('Customer Client Main Plain Email')==''){
+        $hide[]='Subject_Email_display';
+    }else{
+        $show[]='Subject_Email_display';
+    }
+    if($customer_client->get('Main XHTML Mobile')==''){
+        $hide[]='Subject_Mobile_display';
+    }else{
+        $show[]='Subject_Mobile_display';
+    }
+    if($customer_client->get('Main XHTML Telephone')==''){
+        $hide[]='Subject_Telephone_display';
+    }else{
+        $show[]='Subject_Telephone_display';
+    }
 
     echo json_encode(
         array(
             'state'    => 200,
             'metadata' => array(
-                'class_html' => array()
-            )
+                'class_html' => [
+                    'Customer_Client_Main_Plain_Mobile' => $customer_client->get('Main XHTML Mobile'),
+                    'Customer_Client_Main_Plain_Telephone' => $customer_client->get('Main XHTML Telephone'),
+                    'Subject_Email' => ($customer_client->get('Customer Client Main Plain Email')==''?'':'<a href="'.$customer_client->get('Customer Client Main Plain Email').'">'.$customer_client->get('Customer Client Main Plain Email').'</a>'),
+                    'Customer_Client_Main_Contact_Name' => $customer_client->get('Customer Client Main Contact Name'),
+                    'Customer_Client_Code' => $customer_client->get('Customer Client Code'),
+                    'Customer_Client_Name' => $customer_client->get('Customer Client Name'),
+                    'Customer_Client_Contact_Address' => $customer_client->get('Contact Address Formatted'),
+                    'Customer_Client_Company_Name'=> $customer_client->get('Customer Client Company Name'),
+                ],
+                'hide'=>$hide,
+                'show'=>$show,
+            ),
+            'client_nav' => [
+                'label' => $customer_client->get('Customer Client Code'),
+                'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
+
+            ]
         )
     );
 

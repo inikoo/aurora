@@ -72,11 +72,6 @@ class Public_Customer extends DBW_Table {
 
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
-
-
     function find($raw_data, $address_raw_data, $options = '') {
 
 
@@ -353,6 +348,10 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
     function get_order_in_process_key() {
 
 
@@ -577,12 +576,10 @@ class Public_Customer extends DBW_Table {
                     $this->update_field_switcher('Customer Preferred Contact Number', '');
 
 
-                } else {
-
-
                 }
 
-            $this->fork_index_elastic_search();
+                $this->fork_index_elastic_search();
+
                 return true;
 
             case 'Customer Preferred Contact Number':
@@ -607,7 +604,7 @@ class Public_Customer extends DBW_Table {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_field($this->table_name.'Customer Preferred Contact Number Formatted Number', $this->get('Customer Main XHTML '.$value), $options);
+                $this->update_field('Customer Preferred Contact Number Formatted Number', $this->get('Customer Main XHTML '.$value), $options);
 
                 $this->fork_index_elastic_search();
                 break;
@@ -656,12 +653,7 @@ class Public_Customer extends DBW_Table {
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
-
 
                 //if ($old_value == $this->get('Customer Invoice Address Organization')) {
 
@@ -914,21 +906,6 @@ class Public_Customer extends DBW_Table {
 
     }
 
-
-    function update_tax_number($value) {
-
-        $this->update_field('Customer Tax Number', $value);
-
-        if ($this->updated) {
-            $this->validate_customer_tax_number();
-        }
-
-
-
-        return true;
-
-    }
-
     function validate_customer_tax_number() {
 
         if ($this->data['Customer Tax Number'] == '') {
@@ -967,6 +944,18 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function update_tax_number($value) {
+
+        $this->update_field('Customer Tax Number', $value);
+
+        if ($this->updated) {
+            $this->validate_customer_tax_number();
+        }
+
+
+        return true;
+
+    }
 
     function update_poll_answer($poll_key, $value, $options) {
 
@@ -1006,7 +995,7 @@ class Public_Customer extends DBW_Table {
 
     function create_order() {
 
-         $account=get_object('Account',1);
+        $account = get_object('Account', 1);
 
 
         $order_data = array(
@@ -1030,14 +1019,14 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
         $order_data['Order Tax Number Validation Date']    = $this->data['Customer Tax Number Validation Date'];
         $order_data['Order Tax Number Validation Source']  = $this->data['Customer Tax Number Validation Source'];
-        $order_data['Order Tax Number Validation Message']  = $this->data['Customer Tax Number Validation Message'];
+        $order_data['Order Tax Number Validation Message'] = $this->data['Customer Tax Number Validation Message'];
 
         $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
 
-        $order_data['Order Available Credit Amount']       = $this->data['Customer Account Balance'];
-        $order_data['Order Sales Representative Key']      = $this->data['Customer Sales Representative Key'];
+        $order_data['Order Available Credit Amount']  = $this->data['Customer Account Balance'];
+        $order_data['Order Sales Representative Key'] = $this->data['Customer Sales Representative Key'];
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
         $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
@@ -1087,7 +1076,7 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
-        $order_data['Recargo Equivalencia']          = $this->get('Customer Recargo Equivalencia');
+        $order_data['Recargo Equivalencia'] = $this->get('Customer Recargo Equivalencia');
 
 
         include_once 'class.Public_Order.php';
@@ -1186,10 +1175,6 @@ class Public_Customer extends DBW_Table {
             if ($row = $result->fetch()) {
                 $number_saved_credit_cards = $row['number'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1216,29 +1201,7 @@ class Public_Customer extends DBW_Table {
 
                 $card_data[] = $_card_data;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-
-        /*
-                $card_data[] = array(
-                    'id'              => 1,
-                    'Card Number'     => 'XXXX XXXX XXXX 3423',
-                    'Card Expiration' => '11/33'
-
-                );
-
-                $card_data[] = array(
-                    'id'              => 2,
-                    'Card Number'     => 'XXXX XXXX XXXX 1234',
-                    'Card Expiration' => '21/33'
-
-
-                );
-
-        */
 
         return $card_data;
 
@@ -1275,18 +1238,10 @@ class Public_Customer extends DBW_Table {
 
                         $this->db->exec($sql);
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1310,12 +1265,7 @@ class Public_Customer extends DBW_Table {
                 $_card_data = json_decode(AESDecryptCtr($row['Customer Credit Card Metadata'], $key, 256), true);
                 $token      = $_card_data['Token'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-
 
         return $token;
 
@@ -1532,7 +1482,6 @@ class Public_Customer extends DBW_Table {
                 $this->new_client = true;
 
 
-
             } else {
                 $this->error = true;
                 $this->msg   = $client->msg;
@@ -1547,7 +1496,6 @@ class Public_Customer extends DBW_Table {
 
         return false;
     }
-
 
 
 }

@@ -817,10 +817,7 @@
 
                             for (var key in data.metadata.class_html) {
 
-                                console.log('.' + key)
 
-                                console.log($('.' + key).html())
-                               // $('.' + key).html('');
                                 $('.' + key).html(data.metadata.class_html[key])
                             }
 

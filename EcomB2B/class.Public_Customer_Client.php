@@ -9,6 +9,9 @@
  Version 3
 */
 
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
+
 include_once 'class.DBW_Table.php';
 include_once 'trait.Address.php';
 
@@ -273,11 +276,93 @@ class Public_Customer_Client extends DBW_Table {
             case 'Customer Client Code':
 
             case 'Customer Client Main Plain Email':
-            case 'Customer Client Main Plain Mobile':
 
                 $this->update_field($field, $value, $options);
 
                 break;
+
+
+            case 'Customer Client Main Plain Mobile':
+            case 'Customer Client Main Plain Telephone':
+                $value = preg_replace('/\s/', '', $value);
+                if ($value == '+') {
+                    $value = '';
+                }
+                if ($value != '') {
+
+                    include_once 'utils/get_phoneUtil.php';
+                    $phoneUtil = get_phoneUtil();
+                    try {
+                        if ($this->data['Customer Client Contact Address Country 2 Alpha Code'] == '' or $this->data['Customer Client Contact Address Country 2 Alpha Code'] == 'XX') {
+
+                            if ($this->get('Store Key')) {
+                                $store   = get_object('Store', $this->data['Customer Store Key']);
+                                $country = $store->get('Home Country Code 2 Alpha');
+                            } else {
+                                $account = get_object('Account', 1);
+                                $country = $account->get('Account Country 2 Alpha Code');
+                            }
+
+                        } else {
+                            $country = $this->data['Customer Client Contact Address Country 2 Alpha Code'];
+                        }
+                        $proto_number    = $phoneUtil->parse($value, $country);
+                        $formatted_value = $phoneUtil->format($proto_number, PhoneNumberFormat::INTERNATIONAL);
+
+                        $value = $phoneUtil->format($proto_number, PhoneNumberFormat::E164);
+
+
+                    } catch (NumberParseException $e) {
+                        $this->error     = true;
+                        $this->msg       = 'Error 1234';
+                        $formatted_value = '';
+                    }
+
+                } else {
+                    $formatted_value = '';
+                }
+
+
+                $this->update_field($field, $value, 'no_history');
+                $this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
+
+
+                $this->update_field_switcher('Customer Client Preferred Contact Number', '');
+
+
+                $this->fork_index_elastic_search();
+
+
+
+
+                return true;
+            case 'Customer Client Preferred Contact Number':
+
+
+                if ($value == '') {
+                    $value = $this->data['Customer Client Preferred Contact Number'];
+
+                    if ($value == '') {
+                        $value = 'Mobile';
+                    }
+
+                    if ($this->data['Customer Client Main Plain Mobile'] == '' and $this->data['Customer Client Main Plain Telephone'] != '') {
+                        $value = 'Telephone';
+                    } elseif ($this->data['Customer Client Main Plain Mobile'] != '' and $this->data['Customer Client Main Plain Telephone'] == '') {
+                        $value = 'Mobile';
+                    } elseif ($this->data['Customer Client Main Plain Mobile'] == '' and $this->data['Customer Client Main Plain Telephone'] == '') {
+                        $value = 'Mobile';
+                    }
+
+                }
+
+
+                $this->update_field($field, $value, $options);
+                $this->update_field('Customer Client Preferred Contact Number Formatted Number', $this->get('Customer Client Main XHTML '.$value), $options);
+
+                $this->fork_index_elastic_search();
+                break;
+
             case 'Customer Client Company Name':
 
                 $old_value = $this->get('Company Name');
@@ -344,7 +429,7 @@ class Public_Customer_Client extends DBW_Table {
 
                 return true;
 
-            case 'Customer Client  Main Contact Name':
+            case 'Customer Client Main Contact Name':
 
 
                 $old_value = $this->get('Main Contact Name');
