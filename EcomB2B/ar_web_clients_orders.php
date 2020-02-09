@@ -117,11 +117,19 @@ function clients_orders($_data, $db) {
 
             }
 
+            if($data['Order State']=='InBasket'){
+                $public_id=sprintf('<a href="client_basket.sys?client_id=%d">%s</a>',  $data['Order Customer Client Key'], $data['Order Public ID']);
+
+            }else{
+                $public_id=sprintf('<a href="client_order.sys?id=%d">%s</a>',  $data['Order Key'], $data['Order Public ID']);
+
+            }
+
 
             $adata[] = array(
                 'id' => (integer)$data['Order Key'],
 
-                'public_id' => sprintf('<a href="client_order.sys?id=%d">%s</a>',  $data['Order Key'], $data['Order Public ID']),
+                'public_id' => $public_id,
                 'state'     => $state,
 
                 'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
