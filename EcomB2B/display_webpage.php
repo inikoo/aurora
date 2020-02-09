@@ -412,22 +412,14 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     } elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
-        if (!empty($_GET['invoice_pdf'])) {
-            $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
+      //  if (!empty($_GET['invoice_pdf'])) {
+      //      $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
 
-        } elseif (!empty($_GET['order'])) {
-            $smarty->assign('redirect_after_login', '/profile.sys?order='.$_GET['order']);
+      //  } elseif (!empty($_GET['order'])) {
+       //     $smarty->assign('redirect_after_login', '/profile.sys?order='.$_GET['order']);
 
-        }
+       // }
 
-    } elseif ($webpage->get('Webpage Code') == 'client.sys') {
-
-
-    } elseif ($webpage->get('Webpage Code') == 'client_basket.sys') {
-
-        $smarty->assign('client_key', (isset($_REQUEST['client_id']) ? $_REQUEST['client_id'] : 0));
-    } elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
-        $smarty->assign('client_order_key', (isset($_REQUEST['order_key']) ? $_REQUEST['order_key'] : 0));
     }
 
 

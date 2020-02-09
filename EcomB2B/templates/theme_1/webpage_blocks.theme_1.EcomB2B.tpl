@@ -593,7 +593,11 @@
             getScript("/assets/desktop.logged_in.min.js", function () {
                 getScript("/assets/desktop.forms.min.js", function () {
                     getScript("/assets/desktop.checkout.min.js", function () {
-                        const checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix{if isset($client_order_key)}&client_order_key={$client_order_key}{/if}";
+
+                        let checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix";
+                        if(getUrlParameter('order_key')!=undefined){
+                            checkout_request+='&client_order_key='+getUrlParameter('order_key')
+                        }
 
                         $.getJSON(checkout_request, function (data) {
 

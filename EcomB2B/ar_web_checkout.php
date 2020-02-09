@@ -54,7 +54,7 @@ switch ($tipo) {
     case 'get_checkout_html':
         $data = prepare_values(
             $_REQUEST, array(
-                         'device_prefix' => array(
+                         'device_prefix'    => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
@@ -65,7 +65,7 @@ switch ($tipo) {
                      )
         );
 
-        get_checkout_html($data, $website,$customer, $smarty);
+        get_checkout_html($data, $website, $customer, $smarty);
 
 
         break;
@@ -272,8 +272,6 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
             );
 
 
-
-
             echo json_encode($response);
             exit;
 
@@ -420,10 +418,10 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 
 
 /**
- * @param $order \Public_Order
+ * @param $order   \Public_Order
  * @param $amount
  * @param $editor
- * @param $db \PDO
+ * @param $db      \PDO
  * @param $account \Public_Account
  *
  * @return array
@@ -517,33 +515,55 @@ function pay_credit($order, $amount, $editor, $db, $account) {
  *
  * @throws \SmartyException
  */
-function get_checkout_html($data, $website,$customer, $smarty) {
+function get_checkout_html($data, $website, $customer, $smarty) {
 
 
     require_once __DIR__.'/utils/aes.php';
 
-    $theme   = $website->get('Website Theme');
+    $theme = $website->get('Website Theme');
 
 
-    if($website->get('Website Type')=='EcomDS'){
+    if ($website->get('Website Type') == 'EcomDS') {
 
-        if(empty($data['client_order_key']) or !is_numeric($data['client_order_key']) or $data['client_order_key']<=0 ){
+        if (empty($data['client_order_key']) or !is_numeric($data['client_order_key']) or $data['client_order_key'] <= 0) {
 
             $response = array(
                 'state' => 400,
-                'msg'   => 'client order key not provided'
+                'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided</div>'
+
+
+        );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $order = get_object('Order', $data['client_order_key']);
+
+        if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
+            $response = array(
+                'state' => 200,
+                'html'  => '<div style="margin:100px auto;text-align: center">Incorrect order id</div>'
 
             );
             echo json_encode($response);
             exit;
         }
 
-        $order = get_object('Order',$data['client_order_key']);
+        if ($order->get('Order State')!='InBasket') {
+            $response = array(
+                'state' => 200,
+                'html'  => '<div style="margin:100px auto;text-align: center">Order not in basket</div>'
 
-    }else{
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+    } else {
         $order = get_object('Order', $customer->get_order_in_process_key());
     }
-
 
 
     $order->fast_update(
@@ -573,7 +593,7 @@ function get_checkout_html($data, $website,$customer, $smarty) {
 
     $content = $webpage->get('Content Data');
 
-    $block   =array();
+    $block       = array();
     $block_found = false;
     $block_key   = false;
     foreach ($content['blocks'] as $_block_key => $_block) {
@@ -620,15 +640,16 @@ function get_checkout_html($data, $website,$customer, $smarty) {
     $smarty->assign('data', $block);
     $smarty->assign('labels', $website->get('Localised Labels'));
 
-    if($website->get('Website Type')=='EcomDS'){
-        $basket_url='/client_basket.sys?client_id='.$order->get('Order Customer Client Key');
-    }else{
-        $basket_url='/basket.sys';
+    if ($website->get('Website Type') == 'EcomDS') {
+        $basket_url = '/client_basket.sys?client_id='.$order->get('Order Customer Client Key');
+    } else {
+        $basket_url = '/basket.sys';
     }
 
     $response = array(
-        'state' => 200,
-        'html'  => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),        'basket_url'  =>$basket_url
+        'state'      => 200,
+        'html'       => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        'basket_url' => $basket_url
     );
 
 
@@ -999,7 +1020,6 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
                 $private_message = join(', ', $error_private_messages);
             } else {
-
 
 
                 if ($result->transaction->status == 'processor_declined') {
