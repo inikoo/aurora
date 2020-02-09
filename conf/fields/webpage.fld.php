@@ -193,7 +193,7 @@ $object_fields[] = array(
             'edit'              => ($edit ? 'string' : ''),
             'value'             => htmlspecialchars($object->get('Webpage Code')),
             'formatted_value'   => $object->get('Code'),
-            'label'             => _('Code').' <span class="small">( <i class="fa fa-exclamation-triangle warning padding_right_5  '.($new ? 'hide' : '').' " title="'._('URL will change').'"></i>URL )</span>',
+            'label'             => _('Code').' <span class="small">(<i class="fa fa-exclamation-triangle warning padding_right_5  '.($new ? 'hide' : '').' " title="'._('URL will change').'"></i>URL)</span>',
             'required'          => true,
             'type'              => 'value',
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
@@ -250,7 +250,7 @@ $object_fields[] = array(
             'value'           => htmlspecialchars($object->get('Webpage Children Browser Title Format')),
             'formatted_value' => $object->get('Children Browser Title Format'),
             'label'           => '<i class="fa fa-level-down padding_right_5	"></i>'.$children_format_label,
-            'required'        => true,
+            'required'            => (($object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products')?true:false),
             'type'            => 'value',
 
 
