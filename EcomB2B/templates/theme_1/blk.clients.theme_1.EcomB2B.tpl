@@ -29,32 +29,25 @@
 
     </a>
 </div>
-<div class="reg_form" >
-    <form id="new_client_form" class="sky-form sky-form-modal">
+<div class="reg_form hide" style="margin-top:30px;margin-bottom:60px;" >
+    <form id="new_client_form" class="sky-form ">
         <header >{if empty($labels._new_customer_client)}{t}New customer{/t}{else}{$labels._new_customer_client}{/if}</header>
 
 
+
+
         <fieldset>
-            <section>
-                <label " class="input " style="cursor:pointer" >
+            <section >
+                <label  class="input " style="cursor:pointer" >
 
                     <i class="icon-append far fa-fingerprint" style="cursor:pointer"></i>
                     <input class="new_client_field" name="client_reference"
-                           placeholder="{if !empty($data.labels._client_reference_placeholder)}{$data.labels._client_reference_placeholder}{else}{t}Unique customer reference{/t}{/if}">
-                    <b  class="tooltip tooltip-bottom-right">{if !empty($data.labels._client_reference_tooltip)}{$data.labels._client_reference_tooltip}{else}{t}Reference{/t}{/if}</b>
+                           placeholder="{if !empty($data.labels._client_reference_placeholder)}{$data.labels._client_reference_placeholder}{else}{t}Your customer id{/t}{/if}">
+                    <b  class="tooltip tooltip-bottom-right">{if !empty($data.labels._client_reference_tooltip)}{$data.labels._client_reference_tooltip}{else}{t}Unique id associated with this customers{/t}{/if}</b>
                 </label>
             </section>
 
-        </fieldset>
-
-        <fieldset>
-
-
-
-        </fieldset>
-
-        <fieldset>
-            <section>
+            <section >
                 <label class="input">
                     <i class="icon-append far fa-user"></i>
                     <input class="register_field" type="text" autocomplete="name" name="name"  placeholder="{if !empty($labels._contact_name_placeholder) }{$data.labels._contact_name_placeholder}{else}{t}Contact name{/t}{/if}">
@@ -69,10 +62,11 @@
                     <b  class="tooltip tooltip-bottom-right">{if !empty($data.labels._company_tooltip)}{$data.labels._company_tooltip}{else}{t}Company name{/t}{/if}</b>
                 </label>
             </section>
+
             <section>
                 <label class="input">
                     <i class="icon-append far fa-envelope" ></i>
-                    <input class="register_field" type="email" autocomplete="email"  name="email" placeholder="{if !empty($data.labels._email_placeholder)}{$data.labels._email_placeholder}{else}{t}Email{/t}{/if}}">
+                    <input class="register_field" type="email" autocomplete="email"  name="email" placeholder="{if !empty($data.labels._email_placeholder)}{$data.labels._email_placeholder}{else}{t}Email{/t}{/if}">
                     <b   class="tooltip tooltip-bottom-right">{if !empty($data.labels._email_tooltip)}{$data.labels._email_tooltip}{else}{t}Email{/t}{/if}</b>
                 </label>
             </section>

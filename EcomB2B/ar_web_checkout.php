@@ -620,7 +620,12 @@ function get_checkout_html($data, $website,$customer, $smarty) {
     $smarty->assign('data', $block);
     $smarty->assign('labels', $website->get('Localised Labels'));
 
-    $basket_url='/basket.sys';
+    if($website->get('Website Type')=='EcomDS'){
+        $basket_url='/client_basket.sys?client_id='.$order->get('Order Customer Client Key');
+    }else{
+        $basket_url='/basket.sys';
+    }
+
     $response = array(
         'state' => 200,
         'html'  => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),        'basket_url'  =>$basket_url

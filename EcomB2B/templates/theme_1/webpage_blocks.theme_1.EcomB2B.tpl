@@ -1010,7 +1010,8 @@
                  })
 
                  $(document).on('click', '#new_customer', function (e) {
-                    $( "#trigger_new_customer" ).trigger( "click" );
+                    $( ".reg_form" ).removeClass( "hide" );
+                     $( ".clients" ).addClass( "hide" );
                 });
 
                  $("form").submit(function(e) {
