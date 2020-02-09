@@ -401,7 +401,7 @@ module.exports = function (grunt) {
             ecom_css: {
                 files: [{
                     expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: [
-                        'desktop.min.css','forms.min.css','image_gallery.min.css','mobile.min.css','tablet.min.css'
+                        'desktop.min.css','forms.min.css','image_gallery.min.css','mobile.min.css','tablet.min.css','datatables.min.css'
                     ], rename: function (dest, src) {
                         return dest + src.replace('.min', '.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min');
                     }
