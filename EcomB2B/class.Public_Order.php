@@ -405,10 +405,9 @@ class Public_Order extends DBW_Table {
             case 'Available Credit Amount':
 
                 if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
-                    return money(-1 * $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
-
+                    return money(-1 * ($this->data['Order Available Credit Amount']==''?0:$this->data['Order Available Credit Amount']), $this->data['Order Currency']);
                 } else {
-                    return money(-1 * $this->data['Order Total Amount'], $this->data['Order Currency']);
+                    return money(-1 * ($this->data['Order Total Amount']==''?0:$this->data['Order Total Amount']), $this->data['Order Currency']);
                 }
 
 
