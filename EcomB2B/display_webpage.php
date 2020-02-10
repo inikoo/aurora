@@ -40,6 +40,8 @@ if (defined('SENTRY_DNS_ECOM_JS')) {
 }
 
 
+
+
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
@@ -239,6 +241,12 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 }
 
 
+  if ($logged_in) {
+      $smarty->assign('analytics_user_key', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'],true);
+      $smarty->assign('ws_key', md5(DNS_ACCOUNT_CODE.'-'.$_SESSION['website_key'].'-'.$_SESSION['customer_key'].'-'.crc32($_SESSION['customer_key'].'v1')),true);
+
+  }
+
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
 
     include_once __DIR__.'/utils/public_object_functions.php';
@@ -326,10 +334,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $smarty->assign('logged_in', $logged_in);
 
-
-    if ($logged_in) {
-        $smarty->assign('analytics_user_id', strtolower($account->get('Account Code')).'.'.$_SESSION['customer_key']);
-    }
 
 
     $smarty->assign('labels', $website->get('Localised Labels'));

@@ -1,5 +1,5 @@
 /*Author: Raul Perusquia <raul@inikoo.com>
- Created: 27 August 2015 13:56:03 GMT+8 Singapoure.
+ Created: 27 August 2015 13:56:03 GMT+8 Singapore.
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
@@ -14,7 +14,6 @@ function isMobile() {
     }
 }
 
-
 var key_scope = false;
 var old_state_request = '';
 var websocket_connected = false;
@@ -28,18 +27,12 @@ $(function () {
     }
     structure = {}
 
-
     change_view($('#_request').val())
-
-
     $(document).on("keydown", function (e) {
         key_press(e)
     })
 
-
     connect_websocket();
-
-
     setInterval(function () {
         if (!websocket_connected_connecting && !websocket_connected) {
             connect_websocket();

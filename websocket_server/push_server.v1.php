@@ -17,14 +17,14 @@ $loop   = React\EventLoop\Factory::create();
 $pusher = new App\Publishers\Pusher;
 $context = new React\ZMQ\Context($loop);
 $pull    = $context->getSocket(ZMQ::SOCKET_PULL);
-$pull->bind('tcp://127.0.0.1:5555'); // Binding to 127.0.0.1 means the only client that can connect is itself
+$pull->bind('tcp://127.0.0.1:5555');
 $pull->on(
     'message', array(
                  $pusher,
                  'onBlogEntry2'
              )
 );
-$webSock   = new React\Socket\Server('0.0.0.0:8081', $loop); // Binding to 0.0.0.0 means remotes can connect
+$webSock   = new React\Socket\Server('0.0.0.0:8081', $loop);
 $webServer = new Ratchet\Server\IoServer(
     new Ratchet\Http\HttpServer(
         new Ratchet\Session\SessionProvider(
@@ -36,5 +36,3 @@ $webServer = new Ratchet\Server\IoServer(
 );
 $loop->run();
 
-
-?>

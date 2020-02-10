@@ -40,9 +40,9 @@
             ga('auTracker.set', 'dimension1', '{$account_code}.{$webpage->id}');
             ga('auTracker.set', 'dimension2', '{$account_code}.{$webpage->get('Webpage Website Key')}');
             ga('auTracker/set', 'dimension3', '{$account_code}');
-            {if !empty($analytics_user_id)}
-            ga('auTracker/set', 'dimension4', '{$analytics_user_id}');
-            ga('auTracker.set', 'userId', '{$analytics_user_id}');
+            {if !empty($analytics_user_key)}
+            ga('auTracker/set', 'dimension4', '{$analytics_user_key}');
+            ga('auTracker.set', 'userId', '{$analytics_user_key}');
             {else}
             ga('auTracker.set', 'dimension4', '{$account_code}.');
             {/if}
@@ -79,8 +79,8 @@
             ga('create', 'UA-100778677-3', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
             ga('auTracker.set', 'transport', 'beacon');
-            {if !empty($analytics_user_id)}
-            ga('auTracker.set', 'userId', '{$analytics_user_id}');
+            {if !empty($analytics_user_key)}
+            ga('auTracker.set', 'userId', '{$analytics_user_key}');
             {/if}
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
             {if  !empty($account_code)}
