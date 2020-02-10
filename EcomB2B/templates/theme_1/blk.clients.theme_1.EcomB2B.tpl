@@ -50,7 +50,7 @@
             <section >
                 <label class="input">
                     <i class="icon-append far fa-user"></i>
-                    <input class="register_field" type="text" autocomplete="name" name="name"  placeholder="{if !empty($labels._contact_name_placeholder) }{$data.labels._contact_name_placeholder}{else}{t}Contact name{/t}{/if}">
+                    <input class="register_field" type="text" autocomplete="name" name="name"  placeholder="{if !empty($data.labels._contact_name_placeholder) }{$data.labels._contact_name_placeholder}{else}{t}Contact name{/t}{/if}">
                     <b   class="tooltip tooltip-bottom-right">{if !empty($data.labels._contact_name_tooltip)}{$data.labels._contact_name_tooltip}{else}{t}Contact name{/t}{/if}</b>
                 </label>
             </section>
