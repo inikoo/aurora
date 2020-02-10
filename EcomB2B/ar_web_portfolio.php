@@ -148,7 +148,13 @@ function portfolio_items($_data, $db) {
 
             $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
-            $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+            if($data['Webpage URL']==''){
+                $code = sprintf('<span title="%s">%s</span>', $name, $data['Product Code']);
+
+            }else{
+                $code = sprintf('<a class="link" href="%s" title="%s">%s</a>', $data['Webpage URL'], $name, $data['Product Code']);
+
+            }
 
 
             $record_data[] = array(

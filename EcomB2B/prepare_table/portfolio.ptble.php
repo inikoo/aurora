@@ -15,7 +15,10 @@ include_once 'utils/date_functions.php';
 
 
 $table          =
-    " `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
+    " `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) 
+    left join `Store Dimension` S on (`Product Store Key`=`Store Key`)
+    left join `Page Store Dimension` W on (`Product Webpage Key`=`Page Key`)
+    ";
 $where_interval = '';
 $wheref         = '';
 
@@ -112,7 +115,7 @@ $sql_totals = "select count(distinct  CPF.`Customer Portfolio Key`) as num from 
 
 $fields = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Product Availability State`,`Customer Portfolio Customer Key`,`Customer Portfolio Removed Date`,
     `Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
-       `Customer Portfolio Creation Date`,`Customer Portfolio Last Ordered`,`Customer Portfolio Orders`,`Customer Portfolio Amount` ,`Customer Portfolio Ordered Quantity`,`Customer Portfolio Clients`
+       `Customer Portfolio Creation Date`,`Customer Portfolio Last Ordered`,`Customer Portfolio Orders`,`Customer Portfolio Amount` ,`Customer Portfolio Ordered Quantity`,`Customer Portfolio Clients`,`Webpage URL`
   
 
 ";
