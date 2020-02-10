@@ -165,8 +165,6 @@ function portfolio_items($_data, $db) {
                 'stock_status' => $stock_status.$status_icon,
                 'price'         => money($data['Product Price'],$data['Store Currency Code']),
                 'rrp'         => money($data['Product RRP'],$data['Store Currency Code']),
-
-
                 'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),
 
                 'amount' => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
