@@ -51,11 +51,9 @@
                 ga('auTracker.set', 'dimension4', '{$account_code}.');
             {/if}
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
-            {if  !empty($account_code)}
+
             ga('auTracker.set', 'contentGroup1', '{$account_code}');
 
-
-            {/if}
             ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
             ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
 

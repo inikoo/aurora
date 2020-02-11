@@ -17,7 +17,7 @@ require_once 'utils/sentry.php';
 
 if (!empty($_REQUEST['original_url'])) {
 
-    if (preg_match('/\.(jpg|png|gif|xml|txt|ico|css|js)$/i', $_REQUEST['original_url'])) {
+    if (preg_match('/\.(jpg|png|gif|xml|txt|ico|css|js|woff2)$/i', $_REQUEST['original_url'])) {
         header("HTTP/1.0 404 Not Found");
         exit();
     }

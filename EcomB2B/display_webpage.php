@@ -298,8 +298,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     }
 
 
-    $account = get_object('Account', 1);
-    $smarty->assign('account_code', $account->get('Account Code'));
+    $smarty->assign('account_code', DNS_ACCOUNT_CODE);
 
 
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
