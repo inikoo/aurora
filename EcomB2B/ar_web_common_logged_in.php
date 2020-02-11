@@ -14,6 +14,7 @@ require_once '../vendor/autoload.php';
 require 'keyring/dns.php';
 require_once 'utils/sentry.php';
 require 'keyring/key.php';
+include_once __DIR__.'/utils/web_locale_functions.php';
 
 session_start();
 
@@ -89,6 +90,17 @@ $editor = array(
 
 $order_key = $customer->get_order_in_process_key();
 $order     = get_object('Order', $order_key);
+
+$website = get_object('Website', $_SESSION['website_key']);
+
+if (!empty($_SESSION['website_locale'])) {
+    $website_locale = $_SESSION['website_locale'];
+} else {
+    $_SESSION['website_locale'] = $website->get('Website Locale');
+    $website_locale             = $website->get('Website Locale');
+}
+$locale = set_locate($website_locale);
+
 
 
 require_once 'utils/ar_web_common.php';

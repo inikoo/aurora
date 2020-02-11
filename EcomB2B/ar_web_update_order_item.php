@@ -11,7 +11,7 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
-include_once 'utils/web_set_locale.php';
+include_once 'utils/web_locale_functions.php';
 
 $website = get_object('Website', $_SESSION['website_key']);
 

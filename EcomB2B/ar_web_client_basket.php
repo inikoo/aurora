@@ -10,7 +10,7 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
-include_once __DIR__.'/utils/web_set_locale.php';
+include_once __DIR__.'/utils/web_locale_functions.php';
 
 
 $account        = get_object('Account', 1);

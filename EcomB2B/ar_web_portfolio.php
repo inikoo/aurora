@@ -45,15 +45,15 @@ switch ($tipo) {
 
 
     case 'portfolio_items':
-        $_data=get_table_parameters();
-        $_data['parameters']['parent_key']=$customer->id;
+        $_data                             = get_table_parameters();
+        $_data['parameters']['parent_key'] = $customer->id;
         portfolio_items($_data, $db);
 
         break;
     case 'add_product_to_portfolio':
         $data = prepare_values(
             $_REQUEST, array(
-                         'product_id'  => array('type' => 'key'),
+                         'product_id' => array('type' => 'key'),
                      )
         );
 
@@ -64,7 +64,7 @@ switch ($tipo) {
     case 'remove_product_from_portfolio':
         $data = prepare_values(
             $_REQUEST, array(
-                         'product_id'  => array('type' => 'key'),
+                         'product_id' => array('type' => 'key'),
                      )
         );
 
@@ -73,7 +73,6 @@ switch ($tipo) {
 
 
 }
-
 
 
 function portfolio_items($_data, $db) {
@@ -101,7 +100,7 @@ function portfolio_items($_data, $db) {
      * @var string $total
      */
 
-    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
     $record_data = array();
     if ($result = $db->query($sql)) {
@@ -140,7 +139,7 @@ function portfolio_items($_data, $db) {
                 $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
 
             } elseif ($data['Product Availability State'] == 'Discontinuing') {
-                $status_icon =  ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
+                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
             } else {
                 $status_icon = '';
             }
@@ -148,13 +147,15 @@ function portfolio_items($_data, $db) {
 
             $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
-            if($data['Webpage URL']==''){
+            if ($data['Webpage URL'] == '') {
                 $code = sprintf('<span title="%s">%s</span>', $name, $data['Product Code']);
 
-            }else{
+            } else {
                 $code = sprintf('<a class="link" href="%s" title="%s">%s</a>', $data['Webpage URL'], $name, $data['Product Code']);
 
             }
+
+
 
 
             $record_data[] = array(
@@ -163,8 +164,8 @@ function portfolio_items($_data, $db) {
                 'code'         => $code.$status_icon,
                 'name'         => $name,
                 'stock_status' => $stock_status.$status_icon,
-                'price'         => money($data['Product Price'],$data['Store Currency Code']),
-                'rrp'         => money($data['Product RRP'],$data['Store Currency Code']),
+                'price'        => money($data['Product Price'], $data['Store Currency Code']),
+                'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),
                 'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),
 
                 'amount' => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
@@ -195,8 +196,6 @@ function portfolio_items($_data, $db) {
     );
     echo json_encode($response);
 }
-
-
 
 
 function category_products($data, $db, $customer_key) {
@@ -345,11 +344,11 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
     if ($row = $stmt->fetch()) {
 
         $response = array(
-            'state' => 200,
-            'result' => 'no_change',
-            'msg'   => _('Product already in portfolio'),
-            'update_metadata'=>[
-                'class_html'=>[]
+            'state'           => 200,
+            'result'          => 'no_change',
+            'msg'             => _('Product already in portfolio'),
+            'update_metadata' => [
+                'class_html' => []
             ]
         );
         echo json_encode($response);
@@ -392,10 +391,10 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
         );
 
         $response = array(
-            'state'  => 200,
-            'result' => 'add',
-            'update_metadata'=>[
-                'class_html'=>[]
+            'state'           => 200,
+            'result'          => 'add',
+            'update_metadata' => [
+                'class_html' => []
             ]
         );
         echo json_encode($response);
@@ -470,10 +469,10 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
 
 
         $response = array(
-            'state'  => 200,
-            'result' => 'remove',
-            'update_metadata'=>[
-                'class_html'=>[]
+            'state'           => 200,
+            'result'          => 'remove',
+            'update_metadata' => [
+                'class_html' => []
             ]
         );
         echo json_encode($response);

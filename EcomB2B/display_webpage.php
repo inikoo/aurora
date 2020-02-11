@@ -13,7 +13,7 @@
 
 include_once __DIR__.'/utils/general_functions.php';
 include_once __DIR__.'/utils/web_common.php';
-include_once __DIR__.'/utils/web_set_locale.php';
+include_once __DIR__.'/utils/web_locale_functions.php';
 
 list($detected_device, $template_suffix) = get_device();
 
