@@ -10,18 +10,18 @@
 
 */
 
-use \Gumlet\ImageResize;
+use Gumlet\ImageResize;
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 function fork_export($job) {
 
-    global $account,$db,$session;// remove the global $db and $account is removed
+    global $account, $db, $session;// remove the global $db and $account is removed
 
     require_once 'vendor/autoload.php';
     include_once 'utils/image_functions.php';
@@ -33,20 +33,22 @@ function fork_export($job) {
 
     /**
      * @var $account \Account
-     * @var $db \PDO
+     * @var $db      \PDO
      */
-    $account=$_data[0];
-    $db=$_data[1];
-    $fork_data=$_data[2];
+    $account   = $_data[0];
+    $db        = $_data[1];
+    $fork_data = $_data[2];
+
+   // print_r($fork_data);
 
     $inikoo_account_code = $account->get('Account Code');
 
 
-    $output_type   = $fork_data['output'];
-    $sql_count     = $fork_data['sql_count'];
-    $sql_data      = $fork_data['sql_data'];
-    $user_key      = $fork_data['user_key'];
-    $download_key  = $fork_data['download_key'];
+    $output_type  = $fork_data['output'];
+    $sql_count    = $fork_data['sql_count'];
+    $sql_data     = $fork_data['sql_data'];
+    $ws_key       = $fork_data['ws_key'];
+    $download_key = $fork_data['download_key'];
 
 
     $creator     = 'aurora.systems';
@@ -59,19 +61,20 @@ function fork_export($job) {
 
     $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_data['table'].'_'.$download_key;
 
-    $files_to_delete = array();
+    $files_to_delete   = array();
     $columns_no_resize = array();
-    $number_rows = 0;
+    $number_rows       = 0;
 
     $sql = "update `Download Dimension` set `Download State`='In Process',`Download Filename`=? where `Download Key`=?  ";
 
 
-    $stmt= $db->prepare($sql);
-    $stmt->execute(array(
-                       $output_filename.'.'.$output_type,
-                       $download_key
-                   ));
-
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $output_filename.'.'.$output_type,
+            $download_key
+        )
+    );
 
 
     if ($sql_count != '') {
@@ -101,7 +104,7 @@ function fork_export($job) {
     $socket->send(
         json_encode(
             array(
-                'channel' => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
+                'channel' => $ws_key,
 
                 'progress_bar' => array(
                     array(
@@ -140,7 +143,7 @@ function fork_export($job) {
     //  return 1;
     //exit;
 
-    //  print_r($fork_data);
+
 
     if (empty($fork_data['fields']) or $fork_data['fields'] == '') {
 
@@ -169,8 +172,7 @@ function fork_export($job) {
 
 
     $sql_data = strtr($sql_data, $placeholders);
-    // print $sql_data;
-    // exit;
+
 
     $show_feedback = (float)microtime(true) + .250;
 
@@ -180,8 +182,6 @@ function fork_export($job) {
 
 
             if ($row_index == 1) {
-
-
 
 
                 $char_index = 1;
@@ -282,11 +282,9 @@ function fork_export($job) {
                         $original_image = get_object('Image', $value);
 
 
-
-
-                        $height=200;
-                        $width=200;
-                        $ratio = $original_image->get('Image Width') / $original_image->get('Image Height');
+                        $height = 200;
+                        $width  = 200;
+                        $ratio  = $original_image->get('Image Width') / $original_image->get('Image Height');
 
                         if ($ratio > 1) {
                             $height = ceil(200 / $ratio);
@@ -294,8 +292,7 @@ function fork_export($job) {
                             $width = ceil(200 * $ratio);
                         }
 
-                        $size_r=ceil($width).'x'.ceil($height);
-
+                        $size_r = ceil($width).'x'.ceil($height);
 
 
                         $image_path = preg_replace('/^img\//', 'img_'.$account->get('Code').'/', $original_image->get('Image Path'));
@@ -303,8 +300,6 @@ function fork_export($job) {
 
                         $cached_image_path = preg_replace('/^.*\/db\//', 'img_cache/', $image_path);
                         $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
-
-
 
 
                         if (!file_exists($cached_image_path)) {
@@ -373,13 +368,13 @@ function fork_export($job) {
 
                         $objDrawing->setResizeProportional(true);
 
-                       // $objDrawing->setWidth(200);                 //set width, height
+                        // $objDrawing->setWidth(200);                 //set width, height
 
-                       if($width>$height){
-                           $objDrawing->setWidth(200);
-                       }else{
-                           $objDrawing->setHeight(200);
-                       }
+                        if ($width > $height) {
+                            $objDrawing->setWidth(200);
+                        } else {
+                            $objDrawing->setHeight(200);
+                        }
 
 
                         $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());  //save
@@ -443,17 +438,13 @@ function fork_export($job) {
                             return 1;
                         }
                     }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
                 $socket->send(
                     json_encode(
                         array(
-                            'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
+                            'channel'      => $ws_key,
                             'progress_bar' => array(
                                 array(
                                     'id'    => 'download_'.$download_key,
@@ -532,7 +523,7 @@ function fork_export($job) {
         case('pdf'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
 
-               $objPHPExcel->getActiveSheet()->setShowGridLines(false);
+            $objPHPExcel->getActiveSheet()->setShowGridLines(false);
             $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(
                 PageSetup::ORIENTATION_LANDSCAPE
             );
@@ -544,17 +535,41 @@ function fork_export($job) {
     }
 
 
-    $sql = sprintf(
-        "update `Download Dimension` set `Download State`='Finish' , `Download Data`=%s   where `Download Key`=%d ", prepare_mysql(file_get_contents($output_file)), $download_key
+    $sql = "update `Download Dimension` set `Download State`='Finish' , `Download Data`=?   where `Download Key`=? ";
 
+
+    $db->prepare($sql)->execute(
+        array(
+            file_get_contents($output_file),
+            $download_key
+        )
     );
 
-    $db->exec($sql);
+    print_r(
+        array(
+            'channel'      => $ws_key,
+            'progress_bar' => array(
+                array(
+                    'id'           => 'download_'.$download_key,
+                    'state'        => 'Finish',
+                    'download_key' => $download_key,
+
+                    'progress_info' => _('Done'),
+                    'progress'      => sprintf('%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)),
+                    'percentage'    => percentage($number_rows, $number_rows),
+
+                )
+
+            ),
+
+
+        )
+    );
 
     $socket->send(
         json_encode(
             array(
-                'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
+                'channel'      => $ws_key,
                 'progress_bar' => array(
                     array(
                         'id'           => 'download_'.$download_key,
@@ -562,9 +577,7 @@ function fork_export($job) {
                         'download_key' => $download_key,
 
                         'progress_info' => _('Done'),
-                        'progress'      => sprintf(
-                            '%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)
-                        ),
+                        'progress'      => sprintf('%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)),
                         'percentage'    => percentage($number_rows, $number_rows),
 
                     )

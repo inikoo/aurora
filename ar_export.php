@@ -175,7 +175,7 @@ $export_data = array(
     'table'        => $_export_data['tipo'],
     'download_key' => $download_key,
     'output'       => $output,
-    'user_key'     => $user->id,
+    'ws_key'     => 'real_time.'.strtolower(DNS_ACCOUNT_CODE).'.'.$user->id,
     'sql_count'    => $sql_totals,
     'sql_data'     => $sql,
     'fetch_type'   => 'simple',
@@ -185,7 +185,7 @@ $export_data = array(
 
 
 new_housekeeping_fork(
-    'au_export', $export_data, $account->get('Account Code')
+    'au_export', $export_data, DNS_ACCOUNT_CODE
 );
 
 

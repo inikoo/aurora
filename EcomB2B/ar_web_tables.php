@@ -139,7 +139,7 @@ function get_portfolio_table_html($data, $customer) {
         //    'f_period'      => 'ytd',
         'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
         'elements'      => get_elements_option('customer_portfolio'),
-        'export_fields' => get_export_fields('products_public')
+        'export_fields' => get_export_fields('portfolio_items')
 
     );
 

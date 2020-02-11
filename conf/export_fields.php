@@ -1358,7 +1358,7 @@ function get_export_fields($element,$account_currency_code='') {
             ),
 
         ),
-        'products_public'     => array(
+        'portfolio_items'     => array(
 
             array(
                 'name'    => '`Product Status`',
@@ -1372,6 +1372,11 @@ function get_export_fields($element,$account_currency_code='') {
                 'checked' => 1
             ),
             array(
+                'name'    => '( select `Category Code` from `Category Dimension` where `Category Key`=`Product Family Category Key`)',
+                'label'   => _('Family'),
+                'checked' => 0
+            ),
+            array(
                 'name'    => '`Product Barcode Number`',
                 'label'   => _('Barcode'),
                 'checked' => 1
@@ -1382,50 +1387,31 @@ function get_export_fields($element,$account_currency_code='') {
                 'checked' => 0
             ),
 
-            array(
-                'name'    => '`Product XHTML Parts`',
-                'label'   => _('Parts'),
-                'checked' => 0
-            ),
 
 
-            array(
-                'name'    => '( select `Category Code` from `Category Dimension` where `Category Key`=`Product Family Category Key`)',
-                'label'   => _('Family'),
-                'checked' => 0
-            ),
-
-
-            array(
-                'name'    => '`Product Label in Family`',
-                'label'   => _('Label in family'),
-                'checked' => 0
-            ),
-
-
-            array(
-                'name'    => '`Product Units Per Case`',
-                'label'   => _('Units per outer'),
-                'checked' => 1
-            ),
 
             array(
                 'name'    => '`Product Price`',
                 'label'   => _('Outer price'),
                 'checked' => 1
             ),
-
+            array(
+                'name'    => '`Product Units Per Case`',
+                'label'   => _('Units per outer'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Product Unit Type`',
+                'label'   => _('Unit label'),
+                'checked' => 1
+            ),
             array(
                 'name'    => '`Product Price`/`Product Units Per Case`',
                 'label'   => _('Unit price'),
                 'checked' => 0
             ),
 
-            array(
-                'name'    => '`Product Unit Type`',
-                'label'   => _('Unit label'),
-                'checked' => 1
-            ),
+
 
             array(
                 'name'    => '`Product Name`',
@@ -1492,7 +1478,7 @@ function get_export_fields($element,$account_currency_code='') {
                 'checked' => 0
             ),
             array(
-                'name'    => '`Product Availability`',
+                'name'    => '`Product Availability State`',
                 'label'   => _('Stock'),
                 'checked' => 1
             ),
@@ -1524,6 +1510,7 @@ function get_export_fields($element,$account_currency_code='') {
             ),
 
         ),
+
         'intrastat'           => array(
             array(
                 'name'    => 'date_format( min(`Delivery Note Date`),\'%y%m\')',

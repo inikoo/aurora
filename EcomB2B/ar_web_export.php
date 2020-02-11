@@ -10,6 +10,8 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
+include_once 'utils/table_functions.php';
+include_once 'utils/new_fork.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -19,8 +21,6 @@ if (!isset($_REQUEST['tipo'])) {
     echo json_encode($response);
     exit;
 }
-
-
 
 
 $_data = prepare_values(
@@ -40,38 +40,41 @@ $_data['page']         = 1;
 
 $_data['type'] = strtolower($_data['type']);
 
+
+
 include 'conf/export_fields.php';
 
 
+if ($_data['tipo'] == 'portfolio_items') {
+    $_tipo = 'portfolio_items';
+} else {
+    exit($_data['tipo'].' not set');
+}
 
+$export_fields = get_export_fields($_tipo);
 
-  if ($_data['tipo'] == 'client_order.items') {
-        $_tipo = 'client_order_items';
-    } else {
-        $_tipo = $_data['tipo'];
-    }
+if (count($export_fields) == 0) {
+    $response = array(
+        'state' => 405,
+        'resp'  => 'field set not found: '.$_tipo
+    );
+    echo json_encode($response);
+    exit;
+}
 
-    $export_fields=get_export_fields($_tipo);
-
-    if (count($export_fields)==0) {
-        $response = array(
-            'state' => 405,
-            'resp'  => 'field set not found: '.$_tipo
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-    $field_set = $export_fields;
-
+$field_set = $export_fields;
 
 
 $group_by     = '';
 $_export_data = $_data;
+
 include_once 'prepare_table/init.php';
 
 
 $fields = '';
+
+
+
 
 foreach ($_export_data['fields'] as $_key => $field_key) {
 
@@ -111,13 +114,14 @@ if ($_export_data['tipo'] == 'products') {
     $sql = strtr($sql, $placeholders);
 }
 
-$_sql = "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Creator Key`) VALUES (?,?,?) ";
+$_sql = "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Creator Type`,`Download Creator Key`) VALUES (?,?,?,?) ";
 
 $db->prepare($_sql)->execute(
     array(
         gmdate('Y-m-d H:i:s'),
         $_export_data['tipo'],
-        $user->id
+        'Customer',
+        $customer->id
     )
 );
 
@@ -129,7 +133,7 @@ $export_data = array(
     'table'        => $_export_data['tipo'],
     'download_key' => $download_key,
     'output'       => $output,
-    'user_key'     => $user->id,
+    'ws_key'       => md5(DNS_ACCOUNT_CODE.'-'.$_SESSION['website_key'].'-'.$customer->id.'-'.crc32($customer->id.'v1')),
     'sql_count'    => $sql_totals,
     'sql_data'     => $sql,
     'fetch_type'   => 'simple',
@@ -139,7 +143,7 @@ $export_data = array(
 
 
 new_housekeeping_fork(
-    'au_export', $export_data, $account->get('Account Code')
+    'au_export', $export_data, DNS_ACCOUNT_CODE
 );
 
 

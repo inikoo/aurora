@@ -1,17 +1,17 @@
 <?php
+
 /*
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 30 December 2015 at 17:00:00 GMT+8, Kuala Lumpur, Malaysia
+ Created:  10 February 2020  22:35::06  +0800, Kuala Lumpur, Malaysia
 
  Copyright (c) 2015 Inikoo
 
  Version 3.0
 */
 
-require_once 'common.php';
-
+include_once 'ar_web_common_logged_in.php';
 
 
 ini_set('zlib.output_compression', 'Off');
@@ -25,13 +25,13 @@ if (!isset($_REQUEST['file']) || empty($_REQUEST['file'])) {
 $download_id = $_REQUEST['file'];
 
 
-$sql = "SELECT `Download Filename`,`Download Data` FROM `Download Dimension` WHERE `Download Key`=? and `Download Creator Type`='User' and `Download Creator Key`=?";
+$sql = "SELECT `Download Filename`,`Download Data` FROM `Download Dimension` WHERE `Download Key`=? and `Download Creator Type`='Customer' and `Download Creator Key`=?";
 
 $stmt = $db->prepare($sql);
 $stmt->execute(
     array(
         $download_id,
-        $user->id
+        $customer->id
     )
 );
 if ($row = $stmt->fetch()) {
@@ -43,7 +43,6 @@ if ($row = $stmt->fetch()) {
 }
 
 
-
 $path_parts = pathinfo($file_path);
 $file_name  = $path_parts['basename'];
 $file_ext   = $path_parts['extension'];
@@ -52,11 +51,8 @@ $file_path  = 'server_files/tmp/'.$file_name;
 
 file_put_contents($file_path, $blob_data);
 
-
-// allow a file to be streamed instead of sent as an attachment
 $is_attachment = isset($_REQUEST['stream']) ? false : true;
 
-// make sure the file exists
 if (is_file($file_path)) {
     $file_size = filesize($file_path);
     $file      = @fopen($file_path, "rb");
@@ -66,12 +62,9 @@ if (is_file($file_path)) {
 
         header("Pragma: public");
         header("Expires: -1");
-        header(
-            "Cache-Control: public, must-revalidate, post-check=0, pre-check=0"
-        );
+        header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
         header("Content-Disposition: attachment; filename=\"$file_name\"");
 
-        // set appropriate headers for attachment or streamed file
         if ($is_attachment) {
             header("Content-Disposition: attachment; filename=\"$file_name\"");
         } else {
@@ -92,24 +85,20 @@ if (is_file($file_path)) {
         header("Content-Type: ".$ctype);
 
 
+        $range = '';
 
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $begin = 0;
+            $end   = $file_size - 1;
 
-        $range ='';
-
-        if (isset($_SERVER['HTTP_RANGE']))
-        {
-            $begin  = 0;
-            $end  = $file_size - 1;
-
-            if (preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches))
-            {
-                $begin  = intval($matches[1]);
+            if (preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches)) {
+                $begin = intval($matches[1]);
                 if (!empty($matches[2])) {
-                    $end  = intval($matches[2]);
+                    $end = intval($matches[2]);
                 }
 
-                $range=$begin.'-'. $end;
-            }else{
+                $range = $begin.'-'.$end;
+            } else {
                 if (file_exists($file_path)) {
                     unlink($file_path);
                 }
@@ -121,12 +110,6 @@ if (is_file($file_path)) {
 
         }
 
-
-
-
-
-
-        //figure out download piece from range (if set)
         if ($range == '') {
             $seek_start = '';
             $seek_end   = '';
@@ -149,7 +132,6 @@ if (is_file($file_path)) {
             )) ? 0 : max(abs(intval($seek_start)), 0);
 
 
-        //Only send partial content header if downloading a piece of the file (IE workaround)
         if ($seek_start > 0 || $seek_end < ($file_size - 1)) {
             header('HTTP/1.1 206 Partial Content');
             header(
@@ -162,14 +144,12 @@ if (is_file($file_path)) {
 
         header('Accept-Ranges: bytes');
 
-
-
-        $sql ="INSERT INTO  `Download Attempt Dimension` (`Download Attempt Download Key`,`Download Attempt Creator Type`,`Download Attempt Creator Key`,`Download Attempt Date`)  VALUES (?,?,?,?)";
+        $sql = "INSERT INTO  `Download Attempt Dimension` (`Download Attempt Download Key`,`Download Attempt Creator Type`,`Download Attempt Creator Key`,`Download Attempt Date`)  VALUES (?,?,?,?)";
         $db->prepare($sql)->execute(
             array(
                 $download_id,
-                'User',
-                $user->id,
+                'Customer',
+                $customer->id,
                 gmdate('Y-m-d H:i:s')
             )
         );
@@ -179,11 +159,10 @@ if (is_file($file_path)) {
 
         $db->prepare($sql)->execute(
             array(
-                gmdate('Y-m-d H:i:s'), $download_id
+                gmdate('Y-m-d H:i:s'),
+                $download_id
             )
         );
-
-
 
 
         set_time_limit(0);
@@ -225,6 +204,5 @@ if (is_file($file_path)) {
 
     exit;
 }
-
 
 

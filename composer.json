@@ -25,6 +25,7 @@
     "ext-zlib": "*",
     "fzaninotto/faker": "^1.9",
     "ext-iconv": "*",
-    "ext-redis": "*"
+    "ext-redis": "*",
+    "ext-zmq": "*"
   }
 }
