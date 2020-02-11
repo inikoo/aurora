@@ -415,6 +415,18 @@ function get_orders_table_html($data, $parameters,$db) {
             );
         }
 
+    }else{
+
+        $table_buttons[] = array(
+            'icon'  => 'plus',
+            'title' => (empty($labels['_new_client_order']) ? _('New order') : $labels['_new_client_order']),
+            'label' => (empty($labels['_new_client_order']) ? _('New order') : $labels['_new_client_order']),
+            'id'    => 'new_order_anon',
+            'class' => 'text width_auto',
+
+
+        );
+
     }
 
     $smarty->assign('table_buttons', $table_buttons);
