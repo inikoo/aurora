@@ -2,7 +2,7 @@
 
 $(function () {
 
-    if($('body').data('ws')=='stop') {
+    if($('body').data('ws')=='y') {
 
 
         connect_websocket();
@@ -16,7 +16,7 @@ $(function () {
             }
 
 
-        }, 100000);
+        }, 10000);
 
         setInterval(function () {
 
