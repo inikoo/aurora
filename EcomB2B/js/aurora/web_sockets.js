@@ -16,7 +16,7 @@ $(function () {
             }
 
 
-        }, 1000);
+        }, 100000);
 
         setInterval(function () {
 
