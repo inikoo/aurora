@@ -13,6 +13,7 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
+
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}    {if !$data.show}hide{/if}" style="padding-top:0;padding-bottom:{$bottom_margin}px">
 
 

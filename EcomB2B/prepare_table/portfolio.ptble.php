@@ -117,7 +117,7 @@ $sql_totals = "select count(distinct  CPF.`Customer Portfolio Key`) as num from 
 
 $fields = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Product Availability State`,`Customer Portfolio Customer Key`,`Customer Portfolio Removed Date`,
     `Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
-       `Customer Portfolio Creation Date`,`Customer Portfolio Last Ordered`,`Customer Portfolio Orders`,`Customer Portfolio Amount` ,`Customer Portfolio Ordered Quantity`,`Customer Portfolio Clients`,`Webpage URL`,`Customer Portfolio Reference`
+       `Customer Portfolio Creation Date`,`Customer Portfolio Last Ordered`,`Customer Portfolio Orders`,`Customer Portfolio Amount` ,`Customer Portfolio Ordered Quantity`,`Customer Portfolio Clients`,`Webpage URL`,`Customer Portfolio Reference`,`Customer Portfolio Key`
   
 
 ";

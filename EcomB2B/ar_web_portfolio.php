@@ -70,10 +70,130 @@ switch ($tipo) {
 
         remove_product_from_portfolio($data, $db, $customer, $account);
         break;
+    case 'validate_portfolio_reference':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'reference'              => array('type' => 'string'),
+                         'customer_portfolio_key' => array('type' => 'key'),
+                     )
+        );
+
+        validate_portfolio_reference($data, $db, $customer);
+        break;
+    case 'update_portfolio_product_reference':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'reference'              => array('type' => 'string'),
+                         'customer_portfolio_key' => array('type' => 'key'),
+                     )
+        );
+
+        update_portfolio_product_reference($data, $db, $customer);
+        break;
+        break;
+
+}
+
+function update_portfolio_product_reference($data, $db, $customer) {
+
+    $reference = trim($data['reference']);
+
+
+    if ($reference != '') {
+        $sql  = "select `Customer Portfolio Key` from `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Key`!=? and `Customer Portfolio Reference`=?  ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $customer->id,
+                $data['customer_portfolio_key'],
+                $data['reference']
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            echo json_encode(
+                array(
+                    'state'     => 200,
+                    'ok'        => false,
+                    'reference' => $reference
+
+                )
+            );
+            exit;
+        }
+    }
+
+    $sql = "update `Customer Portfolio Fact` set `Customer Portfolio Reference`=?  where `Customer Portfolio Customer Key`=? and `Customer Portfolio Key`=?   ";
+    $db->prepare($sql)->execute(
+        array(
+            ($reference==''?null:$reference),
+            $customer->id,
+            $data['customer_portfolio_key'],
+        )
+    );
+
+
+    echo json_encode(
+        array(
+            'state'     => 200,
+            'ok'        => true,
+            'reference' => $reference,
+            'formatted_reference' => ($reference==''?_('Add reference'):$reference)
+
+        )
+    );
+    exit;
 
 
 }
 
+function validate_portfolio_reference($data, $db, $customer) {
+
+    if ($data['reference'] == '') {
+        echo json_encode(
+            array(
+                'state' => 200,
+                'ok'    => true,
+
+
+            )
+        );
+        exit;
+    }
+
+    $sql  = "select `Customer Portfolio Key` from `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Key`!=? and `Customer Portfolio Reference`=?  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $customer->id,
+            $data['customer_portfolio_key'],
+            $data['reference']
+        )
+    );
+    if ($row = $stmt->fetch()) {
+        echo json_encode(
+            array(
+                'state' => 200,
+                'ok'    => false,
+
+
+            )
+        );
+
+    } else {
+        echo json_encode(
+            array(
+                'state' => 200,
+                'ok'    => true,
+
+
+            )
+        );
+
+    }
+
+
+}
 
 function portfolio_items($_data, $db) {
 
@@ -155,12 +275,18 @@ function portfolio_items($_data, $db) {
 
             }
 
-            if($data['Customer Portfolio Reference']==''){
-                $reference=sprintf('<span class="very_discreet italic like_button">%s</span>',_('Add reference'));
-            }else{
-                $reference=sprintf('%s',$data['Customer Portfolio Reference']);
+            if ($data['Customer Portfolio Reference'] == '') {
+                $reference = sprintf(
+                    '<span id="portfolio_ref_%d" class="table_inline_edit edit_portfolio_reference_container  " data-cp_key="%d"><span class="very_discreet italic like_button edit_portfolio_reference">%s</span> <span class="editor hide">
+<input class="" data-old_value="" />  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Portfolio Key'], $data['Customer Portfolio Key'], _('Add reference')
+                );
+            } else {
+                $reference = sprintf(
+                    '<span id="portfolio_ref_%d" class="table_inline_edit edit_portfolio_reference_container  " data-cp_key="%d"><span class="  like_button edit_portfolio_reference">%s</span> <span class="editor hide">
+<input class="" data-old_value="%s" value="%s"/>  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Portfolio Key'], $data['Customer Portfolio Key'], $data['Customer Portfolio Reference'], $data['Customer Portfolio Reference'],
+                    $data['Customer Portfolio Reference']
+                );
             }
-
 
 
             $record_data[] = array(
@@ -168,7 +294,7 @@ function portfolio_items($_data, $db) {
                 'id'           => (integer)$data['Product ID'],
                 'code'         => $code.$status_icon,
                 'name'         => $name,
-                'reference'         => $reference,
+                'reference'    => $reference,
                 'stock_status' => $stock_status.$status_icon,
                 'price'        => money($data['Product Price'], $data['Store Currency Code']),
                 'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),
