@@ -155,6 +155,11 @@ function portfolio_items($_data, $db) {
 
             }
 
+            if($data['Customer Portfolio Reference']==''){
+                $reference=sprintf('<span class="very_discreet italic like_button">%s</span>',_('Add reference'));
+            }else{
+                $reference=sprintf('%s',$data['Customer Portfolio Reference']);
+            }
 
 
 
@@ -163,6 +168,7 @@ function portfolio_items($_data, $db) {
                 'id'           => (integer)$data['Product ID'],
                 'code'         => $code.$status_icon,
                 'name'         => $name,
+                'reference'         => $reference,
                 'stock_status' => $stock_status.$status_icon,
                 'price'        => money($data['Product Price'], $data['Store Currency Code']),
                 'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),
