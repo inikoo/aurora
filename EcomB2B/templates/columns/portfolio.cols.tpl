@@ -26,6 +26,13 @@ editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ })
 },
+{
+name: "reference",
+label: "{t}Your reference{/t}   ",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ })
+},
 
 
 

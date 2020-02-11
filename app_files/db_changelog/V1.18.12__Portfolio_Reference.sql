@@ -1,0 +1,1 @@
+ALTER TABLE `Customer Portfolio Fact` ADD `Customer Portfolio Reference` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL AFTER `Customer Portfolio Product ID`, ADD INDEX (`Customer Portfolio Reference`);

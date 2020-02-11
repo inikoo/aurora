@@ -87,7 +87,9 @@ $_order = $order;
 
 if ($order == 'code') {
     $order = '`Product Code File As`';
-} elseif ($order == 'name') {
+} elseif ($order == 'reference') {
+    $order = '`Customer Portfolio Reference`';
+}elseif ($order == 'name') {
     $order = '`Product Name`';
 } elseif ($order == 'status') {
     $order = '`Product Status`';
