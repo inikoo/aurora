@@ -2,7 +2,7 @@
 
 $(function () {
 
-    if($('body').data('ws')=='y') {
+    if($('body').data('ws')=='stop') {
 
 
         connect_websocket();
