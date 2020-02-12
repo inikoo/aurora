@@ -1171,7 +1171,17 @@
 
                             {/if}
              {if $with_clients_orders==1}
+
+
+                            $(document).on('click', '#client_order_new', function (e) {
+                                window.location = '/client_order_new.sys';
+                            });
+
+
                             getScript("/assets/datatables.min.js", function () {
+
+
+
 
                                 const request_data ={ "tipo":'clients_orders'}
 

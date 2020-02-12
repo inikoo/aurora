@@ -5,7 +5,6 @@
     "symfony/http-foundation": "^3.4",
     "mpdf/mpdf": "^7.1",
     "commerceguys/addressing": "^1.0",
-    "guzzlehttp/guzzle": "~6.0",
     "braintree/braintree_php" : "4.5.0",
     "smarty/smarty": "^3.1",
     "phpmailer/phpmailer": "~6.0",
