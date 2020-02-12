@@ -421,7 +421,7 @@ function get_orders_table_html($data, $parameters,$db) {
             'icon'  => 'plus',
             'title' => (empty($labels['_new_client_order']) ? _('New order') : $labels['_new_client_order']),
             'label' => (empty($labels['_new_client_order']) ? _('New order') : $labels['_new_client_order']),
-            'id'    => 'new_order_anon',
+            'id'    => 'client_order_new',
             'class' => 'text width_auto',
 
 

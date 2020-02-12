@@ -1076,7 +1076,7 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
                         array(
                             'locked'                  => true,
-                            'type'                    => 'new_client_order',
+                            'type'                    => 'client_order_new',
                             'label'                   => _('Basket'),
                             'icon'                    => 'fa-basket',
                             'show'                    => 1,
