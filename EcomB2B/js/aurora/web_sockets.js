@@ -6,7 +6,7 @@ $(function () {
 
 
         connect_websocket();
-        
+
         setInterval(function () {
             if (!websocket_connected_connecting && !websocket_connected) {
                 connect_websocket();

@@ -947,7 +947,7 @@ function website_system_webpages_config($website_type) {
 
         ),
 
-        'clients.sys'        => array(
+        'clients.sys'          => array(
             'Webpage Scope'            => 'Clients',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Clients',
@@ -973,7 +973,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-        'client.sys'         => array(
+        'client.sys'           => array(
             'Webpage Scope'            => 'Client',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Client',
@@ -997,7 +997,7 @@ function website_system_webpages_config($website_type) {
                 )
             )
         ),
-        'clients_orders.sys' => array(
+        'clients_orders.sys'   => array(
             'Webpage Scope'            => 'Clients_Orders',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Clients_Orders',
@@ -1024,7 +1024,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-        'client_basket.sys'  => array(
+        'client_basket.sys'    => array(
             'Webpage Scope'            => 'Client_Basket',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
@@ -1064,8 +1064,9 @@ function website_system_webpages_config($website_type) {
                 )
             )
 
-        ),'client_order_new.sys'  => array(
-            'Webpage Scope'            => 'New_Client_Order',
+        ),
+        'client_order_new.sys' => array(
+            'Webpage Scope'            => 'Client_Order_New',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
             'Webpage Code'             => 'client_order_new.sys',
@@ -1075,14 +1076,14 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
                         array(
-                            'locked'                  => true,
-                            'type'                    => 'client_order_new',
-                            'label'                   => _('Basket'),
-                            'icon'                    => 'fa-basket',
-                            'show'                    => 1,
-                            '_existing_customers'     => _('Existing customers'),
-                            '_new_customer' => _('New customer'),
-                            '_anon_customer'            => _('Anonymous order'),
+                            'locked'              => true,
+                            'type'                => 'client_order_new',
+                            'label'               => _('Basket'),
+                            'icon'                => 'fa-basket',
+                            'show'                => 1,
+                            '_existing_customers' => _('Existing customers'),
+                            '_new_customer'       => _('New customer'),
+                            '_anon_customer'      => _('Anonymous order'),
 
 
                         )
@@ -1095,7 +1096,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-        'client_order.sys'   => array(
+        'client_order.sys'     => array(
             'Webpage Scope'            => 'Client_Order',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
