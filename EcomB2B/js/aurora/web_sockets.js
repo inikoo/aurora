@@ -2,17 +2,14 @@
 
 $(function () {
 
-    if($('body').data('ws')=='yx') {
+    if($('body').data('ws')=='y') {
 
 
         connect_websocket();
-       // subscribe_websocket_channel();
-        
         
         setInterval(function () {
             if (!websocket_connected_connecting && !websocket_connected) {
                 connect_websocket();
-             //   subscribe_websocket_channel();
             }
 
 
@@ -108,7 +105,3 @@ function connect_websocket() {
 
 }
 
-function subscribe_websocket_channel() {
-
-
-}
