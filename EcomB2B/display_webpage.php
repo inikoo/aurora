@@ -40,8 +40,6 @@ if (defined('SENTRY_DNS_ECOM_JS')) {
 }
 
 
-
-
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
@@ -175,7 +173,7 @@ if (isset($is_homepage)) {
 }
 
 
-$is_devel = (ENVIRONMENT=='DEVEL'?true:false);
+$is_devel = (ENVIRONMENT == 'DEVEL' ? true : false);
 
 
 if (isset($_REQUEST['snapshot'])) {
@@ -241,11 +239,11 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 }
 
 
-  if ($logged_in) {
-      $smarty->assign('analytics_user_key', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'],true);
-      $smarty->assign('ws_key', md5(DNS_ACCOUNT_CODE.'-'.$_SESSION['website_key'].'-'.$_SESSION['customer_key'].'-'.crc32($_SESSION['customer_key'].'v1')),true);
+if ($logged_in) {
+    $smarty->assign('analytics_user_key', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], true);
+    $smarty->assign('ws_key', md5(DNS_ACCOUNT_CODE.'-'.$_SESSION['website_key'].'-'.$_SESSION['customer_key'].'-'.crc32($_SESSION['customer_key'].'v1')), true);
 
-  }
+}
 
 $smarty->assign('account_code', DNS_ACCOUNT_CODE);
 
@@ -256,8 +254,8 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     include_once __DIR__.'/utils/natural_language.php';
 
     $webpage = get_object('Webpage', $webpage_key);
-    $website     = get_object('Website', $_SESSION['website_key']);
-    if ($webpage->get('Webpage Code') == 'basket.sys'  and $website->get('Website Type')=='EcomDS'   ) {
+    $website = get_object('Website', $_SESSION['website_key']);
+    if ($webpage->get('Webpage Code') == 'basket.sys' and $website->get('Website Type') == 'EcomDS') {
         exit;
     }
 
@@ -301,8 +299,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     }
 
 
-
-
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
     $smarty->assign('zendesk_chat_code', $website->get('Website Zendesk Chat Code'));
     $smarty->assign('tawk_chat_code', $website->get('Website Tawk Chat Code'));
@@ -336,9 +332,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('logged_in', $logged_in);
 
 
-
     $smarty->assign('labels', $website->get('Localised Labels'));
-
 
 
     $smarty->assign('navigation', $webpage->get('Navigation Data'));
@@ -417,13 +411,13 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     } elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
-      //  if (!empty($_GET['invoice_pdf'])) {
-      //      $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
+        //  if (!empty($_GET['invoice_pdf'])) {
+        //      $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
 
-      //  } elseif (!empty($_GET['order'])) {
-       //     $smarty->assign('redirect_after_login', '/profile.sys?order='.$_GET['order']);
+        //  } elseif (!empty($_GET['order'])) {
+        //     $smarty->assign('redirect_after_login', '/profile.sys?order='.$_GET['order']);
 
-       // }
+        // }
 
     }
 

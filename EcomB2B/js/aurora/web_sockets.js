@@ -40,7 +40,7 @@ function connect_websocket() {
         var wsuri = 'ws://' + location.hostname + '/ws180718';
 
     } else {
-        var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + '//' + location.hostname + '/ws180718';
+        var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + '//' + location.hostname + '/ws200212';
 
     }
 
