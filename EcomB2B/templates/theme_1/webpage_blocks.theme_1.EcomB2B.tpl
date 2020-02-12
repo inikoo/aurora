@@ -88,6 +88,8 @@
 
             {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
+
+
                 {if $block.show}
 
                     {if $block.type=='basket' }
@@ -194,7 +196,7 @@
                     {elseif $block.type=='client_order_new'}
 
                         {if $logged_in}
-                            {assign "client_order_new" 1}
+                            {assign "with_client_order_new" 1}
                             {assign "with_datatables" 1}
                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
 
@@ -1186,7 +1188,7 @@
                             getScript("/assets/desktop.forms.min.js", function () {
                                 getScript("/assets/datatables.min.js", function () {
 
-                                    const request_data ={ "tipo":'choose_clent_for_order'}
+                                    const request_data ={ "tipo":'choose_client_for_order'}
 
                                     $.ajax({
                                         url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {

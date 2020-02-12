@@ -387,7 +387,8 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
 
-    } elseif ($webpage->get('Webpage Code') == 'clients.sys') {
+    } elseif ($webpage->get('Webpage Code') == 'clients.sys' or $webpage->get('Webpage Code') == 'client_order_new.sys') {
+
 
         require_once __DIR__.'/utils/get_addressing.php';
 
@@ -407,7 +408,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
         $smarty->assign('countries', $countries);
         $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
-
 
     } elseif ($webpage->get('Webpage Code') == 'login.sys') {
 

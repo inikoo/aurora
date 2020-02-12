@@ -72,7 +72,6 @@
                 }
             }
 
-
         </script>
 
 
@@ -212,7 +211,7 @@
             {else}
                 {assign "with_favourites" 1}
             {/if}
-        {elseif $block.type=='portfolio' or $block.type=='clients' or $block.type=='clients_orders'}
+        {elseif $block.type=='portfolio' or $block.type=='clients' or $block.type=='client_order_new' or  $block.type=='clients_orders'}
             {if !$logged_in}
                 {assign "with_not_found" 1}
             {else}
