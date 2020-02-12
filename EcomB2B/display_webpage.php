@@ -247,6 +247,9 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
   }
 
+$smarty->assign('account_code', DNS_ACCOUNT_CODE);
+
+
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
 
     include_once __DIR__.'/utils/public_object_functions.php';
@@ -298,7 +301,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     }
 
 
-    $smarty->assign('account_code', DNS_ACCOUNT_CODE);
 
 
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
