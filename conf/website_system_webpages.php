@@ -1065,7 +1065,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),'client_order_new.sys'  => array(
-            'Webpage Scope'            => 'New_Client_Order',
+            'Webpage Scope'            => 'Client_Order_New',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
             'Webpage Code'             => 'client_order_new.sys',

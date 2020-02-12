@@ -76,6 +76,7 @@
             {assign "with_products_portfolio" false}
             {assign "with_clients" false}
             {assign "with_clients_orders" false}
+            {assign "with_client_order_new" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
             {assign "with_gallery" false}
@@ -169,7 +170,7 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
-                    {elseif $block.type=='clients'}
+                    {elseif $block.type=='c'}
 
                         {if $logged_in}
                             {assign "with_clients" 1}
@@ -183,6 +184,17 @@
 
                         {if $logged_in}
                             {assign "with_clients_orders" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+
+                    {elseif $block.type=='client_order_new'}
+
+                        {if $logged_in}
+                            {assign "client_order_new" 1}
                             {assign "with_datatables" 1}
                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
 
@@ -1168,6 +1180,171 @@
 
 
              })
+
+                            {/if}
+             {if $with_client_order_new==1}
+                            getScript("/assets/desktop.forms.min.js", function () {
+                                getScript("/assets/datatables.min.js", function () {
+
+                                    const request_data ={ "tipo":'choose_clent_for_order'}
+
+                                    $.ajax({
+                                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                                            if (data.state == 200) {
+                                                state = data.app_state;
+                                                $('#table_container').html(data.html)
+                                            }
+
+                                        }
+                                    });
+
+                                })
+
+
+
+                                $(document).on('click', '#new_customer_for_order', function (e) {
+                                    $( ".reg_form" ).removeClass( "hide" );
+                                    $( ".clients" ).addClass( "hide" );
+                                });
+
+                                $("form").submit(function(e) {
+                                    e.preventDefault();
+                                    e.returnValue = false;
+                                });
+
+                                $("#new_client_form").validate(
+                                    {
+                                        submitHandler: function(form)
+                                        {
+
+                                            var button=$('#save_new_client_button');
+
+                                            if(button.hasClass('wait')){
+                                                return;
+                                            }
+
+                                            button.addClass('wait')
+                                            button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                                            var register_data={ }
+
+                                            $("#new_client_form input:not(.ignore)").each(function(i, obj) {
+                                                if(!$(obj).attr('name')==''){
+                                                    register_data[$(obj).attr('name')]=$(obj).val()
+                                                }
+                                            });
+
+                                            $("#new_client_form select:not(.ignore)").each(function(i, obj) {
+                                                if(!$(obj).attr('name')==''){
+                                                    register_data[$(obj).attr('name')]=$(obj).val()
+                                                }
+                                            });
+
+
+
+                                            var ajaxData = new FormData();
+
+                                            ajaxData.append("tipo", 'new_customer_client')
+                                            ajaxData.append("data", JSON.stringify(register_data))
+
+
+                                            $.ajax({
+                                                url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                                complete: function () {
+                                                }, success: function (data) {
+
+
+
+
+                                                    if (data.state == '200') {
+
+                                                        rows.fetch({
+                                                            reset: true
+                                                        });
+
+                                                        $( ".reg_form" ).addClass( "hide" );
+                                                        $( ".clients" ).removeClass( "hide" );
+
+                                                        for (var key in data.metadata.class_html) {
+                                                            $('.' + key).html(data.metadata.class_html[key])
+                                                        }
+
+                                                    } else if (data.state == '400') {
+                                                        swal("{t}Error{/t}!", data.msg, "error")
+                                                    }
+
+
+                                                    button.removeClass('wait')
+                                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                                }, error: function () {
+                                                    button.removeClass('wait')
+                                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                                }
+                                            });
+
+
+                                        },
+
+                                        rules:
+                                            {
+                                {foreach from=$required_fields item=required_field }
+                                {$required_field}: { required: true },
+                                {/foreach}
+                                {foreach from=$no_required_fields item=no_required_field }
+                                {$no_required_field}:{   required: false},
+                                {/foreach}
+
+                            },
+                                messages:
+                                {
+
+
+                                    administrativeArea:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    },
+                                    locality:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    },
+                                    dependentLocality:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    },
+                                    postalCode:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    },
+                                    addressLine1:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    },
+                                    addressLine2:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    },
+                                    sortingCode:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    }
+
+
+
+
+                                },
+                                errorPlacement: function(error, element)
+                                {
+                                    error.insertAfter(element.parent());
+                                }
+                            });
+
+
+
+
+
+
+                            })
 
                             {/if}
              {if $with_clients_orders==1}
