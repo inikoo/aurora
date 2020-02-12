@@ -10,9 +10,7 @@
 *}<!DOCTYPE HTML>
 <html lang="en">
 <head>
-
-    {if !isset($is_devel) or !$is_devel  }
-
+    {if !isset($is_devel) or !$is_devel}
     {if  $client_tag_google_manager_id!=''  }
         <!-- Google Tag Manager -->
         <script>(function (w, d, s, l, i) {
@@ -154,10 +152,6 @@
     {if !empty($content.blocks) and  $content.blocks|is_array}
     {foreach from=$content.blocks item=$block }
         {if $block.show}
-
-
-
-
             {if $block.type=='profile'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}

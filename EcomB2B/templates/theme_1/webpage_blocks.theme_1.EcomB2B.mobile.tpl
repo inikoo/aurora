@@ -9,7 +9,7 @@
 -->
 *}
 {include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
-<body data-device_prefix="mobile">
+<body data-device_prefix="mobile"  data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}"  {if $logged_in}   data-ws_key="{$ws_key}" {/if}>
 {include file="analytics.tpl"}
 {if $website->get('Website Status')=='InProcess'}
 {foreach from=$content.blocks item=$block key=key}

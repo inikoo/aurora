@@ -8,7 +8,7 @@
  Version 3
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.tablet.tpl"}
-<body data-device_prefix="tablet">
+<body data-device_prefix="tablet"  data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}"  {if $logged_in}   data-ws_key="{$ws_key}" {/if}>
 {include file="analytics.tpl"}
 {if $website->get('Website Status')=='InProcess'}
 {foreach from=$content.blocks item=$block key=key}
