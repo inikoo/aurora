@@ -1410,14 +1410,6 @@ class Public_Customer extends DBW_Table {
 
         $data['editor'] = $this->editor;
 
-        if (empty($data['Customer Client Code'])) {
-            $this->error      = true;
-            $this->msg        = _("Code missing");
-            $this->error_code = 'client_code_missing';
-            $this->metadata   = '';
-
-            return false;
-        }
 
 
         $data['Customer Client Store Key']     = $this->data['Customer Store Key'];

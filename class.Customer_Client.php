@@ -64,12 +64,7 @@ class Customer_Client extends Subject {
 
     function create($raw_data, $address_raw_data) {
 
-        if (empty($raw_data['Customer Client Code'])) {
-            $this->error = true;
-            $this->msg   = _('Unique customer reference required');
 
-            return;
-        }
 
         $sql  = "select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Code`=? and `Customer Client Customer Key`=?";
         $stmt = $this->db->prepare($sql);

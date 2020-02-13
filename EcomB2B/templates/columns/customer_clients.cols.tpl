@@ -11,14 +11,17 @@
 var columns = [
 {
 name: "id",
-label: "",
+label: "{t}Id{/t}",
 editable: false,
-renderable: false,
-cell: "string",
+renderable: true,
+sortType: "toggle",
+{if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({ })
 
 },{
 name: "code",
-label: "{t}ID{/t}",
+label: "{t}Your reference{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
