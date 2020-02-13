@@ -172,7 +172,7 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
-                    {elseif $block.type=='c'}
+                    {elseif $block.type=='clients'}
 
                         {if $logged_in}
                             {assign "with_clients" 1}
