@@ -70,16 +70,7 @@ switch ($tipo) {
 
         remove_product_from_portfolio($data, $db, $customer, $account);
         break;
-    case 'validate_portfolio_reference':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'reference'              => array('type' => 'string'),
-                         'customer_portfolio_key' => array('type' => 'key'),
-                     )
-        );
 
-        validate_portfolio_reference($data, $db, $customer);
-        break;
     case 'update_portfolio_product_reference':
 
         $data = prepare_values(
@@ -90,9 +81,15 @@ switch ($tipo) {
         );
 
         update_portfolio_product_reference($data, $db, $customer);
-        break;
-        break;
 
+        break;
+    default:
+        $response = array(
+            'state' => 405,
+            'resp'  => 'Tipo not found '.$tipo
+        );
+        echo json_encode($response);
+        exit;
 }
 
 function update_portfolio_product_reference($data, $db, $customer) {
@@ -126,7 +123,7 @@ function update_portfolio_product_reference($data, $db, $customer) {
     $sql = "update `Customer Portfolio Fact` set `Customer Portfolio Reference`=?  where `Customer Portfolio Customer Key`=? and `Customer Portfolio Key`=?   ";
     $db->prepare($sql)->execute(
         array(
-            ($reference==''?null:$reference),
+            ($reference == '' ? null : $reference),
             $customer->id,
             $data['customer_portfolio_key'],
         )
@@ -135,10 +132,10 @@ function update_portfolio_product_reference($data, $db, $customer) {
 
     echo json_encode(
         array(
-            'state'     => 200,
-            'ok'        => true,
-            'reference' => $reference,
-            'formatted_reference' => ($reference==''?_('Add reference'):$reference)
+            'state'               => 200,
+            'ok'                  => true,
+            'reference'           => $reference,
+            'formatted_reference' => ($reference == '' ? _('Add reference') : $reference)
 
         )
     );

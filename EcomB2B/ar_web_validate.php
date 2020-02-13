@@ -25,7 +25,6 @@ if (!isset($_REQUEST['tipo'])) {
 
 
 $tipo = $_REQUEST['tipo'];
-
 switch ($tipo) {
     case 'validate_email_registered':
         $data = prepare_values(
@@ -60,6 +59,13 @@ switch ($tipo) {
         } elseif ($data['object'] == 'Client') {
             validate_client_reference($data, $db, $customer);
 
+        }else{
+            $response = array(
+                'state' => 405,
+                'resp'  => 'validate_object_reference not found '.$data['object']
+            );
+            echo json_encode($response);
+            exit;
         }
         break;
 
@@ -70,7 +76,7 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
 
 
@@ -127,7 +133,6 @@ function validate_email_registered($db, $data) {
  * @param $customer \Public_Customer
  */
 function validate_portfolio_reference($data, $db, $customer) {
-
     if ($data['reference'] == '') {
         echo json_encode(
             array(
@@ -202,7 +207,9 @@ function validate_client_reference($data, $db, $customer) {
             $data['reference']
         )
     );
+
     if ($row = $stmt->fetch()) {
+
         echo json_encode(
             array(
                 'state' => 200,

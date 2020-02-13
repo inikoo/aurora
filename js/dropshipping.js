@@ -49,12 +49,12 @@ $(function () {
 
         ajaxData.append("tipo", 'validate_object_reference')
         ajaxData.append("reference", reference)
-        ajaxData.append("object", reference)
+        ajaxData.append("object", $(object).closest('.edit_object_reference_container').data('object'))
 
         ajaxData.append("object_key",$(object).closest('.edit_object_reference_container').data('object_key'))
 
         $.ajax({
-            url: 'ar_web_portfolio.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            url: 'ar_web_validate.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
 
             complete: function () {
 
@@ -87,7 +87,7 @@ $(function () {
     }
 
 
-    $(document).on('click', '#table .edit_object_reference_container .save', function (evt) {
+    $(document).on('click', '#table .edit_object_reference_container .save', function () {
 
 
         if(!$(this).hasClass('valid') || $(this).hasClass('fa-spinner')){
@@ -99,12 +99,28 @@ $(function () {
         $(this).addClass('fa-spin fa-spinner')
         var ajaxData = new FormData();
 
-        ajaxData.append("tipo", 'update_portfolio_product_reference')
-        ajaxData.append("customer_portfolio_key",   container.data('object_key'))
+        let ar_file='';
+        switch (container.data('object')) {
+            case 'Portfolio_Item':
+                ajaxData.append("tipo", 'update_portfolio_product_reference')
+                ajaxData.append("customer_portfolio_key",   container.data('object_key'))
+                 ar_file='ar_web_portfolio.php'
+                break;
+            case 'Client':
+                ajaxData.append("tipo", 'update_client_reference')
+                ajaxData.append("client_key",   container.data('object_key'))
+                 ar_file='ar_web_client.php'
+                break;
+            default:
+                return;
+        }
+
+
+
         ajaxData.append("reference",   container.find('input').val())
 
         $.ajax({
-            url: 'ar_web_portfolio.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            url: ar_file, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
 
             complete: function () {
 

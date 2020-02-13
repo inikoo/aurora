@@ -68,7 +68,16 @@ switch ($tipo) {
         update_contact_address($data, $customer->id, $editor);
         break;
 
+    case 'update_client_reference':
 
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'reference'              => array('type' => 'string'),
+                         'client_key' => array('type' => 'key'),
+                     )
+        );
+
+        update_client_reference($data, $db, $customer);
     default:
         $response = array(
             'state' => 405,
@@ -76,7 +85,7 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
 
 /**
@@ -356,5 +365,62 @@ function get_client_html($data, $customer) {
 
 
     echo json_encode($response);
+
+}
+
+/**
+ * @param $data
+ * @param $db \PDO
+ * @param $customer \Public_Customer
+ */
+function update_client_reference($data, $db, $customer) {
+
+    $reference = trim($data['reference']);
+
+
+    if ($reference != '') {
+        $sql  = "select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Customer Key`=? and `Customer Client Key`!=? and `Customer Client Code`=?  ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $customer->id,
+                $data['client_key'],
+                $data['reference']
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            echo json_encode(
+                array(
+                    'state'     => 200,
+                    'ok'        => false,
+                    'reference' => $reference
+
+                )
+            );
+            exit;
+        }
+    }
+
+    $sql = "update `Customer Client Dimension`  set `Customer Client Code`=?  where `Customer Client Customer Key`=? and `Customer Client Key`=?   ";
+    $db->prepare($sql)->execute(
+        array(
+            ($reference == '' ? null : $reference),
+            $customer->id,
+            $data['client_key'],
+        )
+    );
+
+
+    echo json_encode(
+        array(
+            'state'               => 200,
+            'ok'                  => true,
+            'reference'           => $reference,
+            'formatted_reference' => ($reference == '' ? _('Add reference') : $reference)
+
+        )
+    );
+    exit;
+
 
 }

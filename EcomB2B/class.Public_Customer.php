@@ -825,18 +825,23 @@ class Public_Customer extends DBW_Table {
                 $website_user->update(array('Website User Handle' => $value), $options);
 
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`="InBasket"', $this->id);
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $order         = get_object('Order', $row['Order Key']);
-                        $order->editor = $this->editor;
-                        $order->update(array('Order Email' => $value));
+                $sql = "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=? AND `Order State`='InBasket'";
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                            array(
+                                $this->id
+                            )
+                        );
+                if ($row = $stmt->fetch()) {
+                    $order         = get_object('Order', $row['Order Key']);
+                    $order->editor = $this->editor;
+                    $order->update(array('Order Email' => $value));
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
+
+
+
+
 
                 $this->fork_index_elastic_search();
                 break;
