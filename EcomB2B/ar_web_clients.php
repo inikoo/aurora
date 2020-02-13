@@ -23,21 +23,24 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
-$account=get_object('Account',1);
+$account = get_object('Account', 1);
 
 switch ($tipo) {
 
     case 'new_customer_client':
+    case 'order_for_new_customer':
+
         $data = prepare_values(
             $_REQUEST, array(
                          'data' => array('type' => 'json array'),
                      )
         );
-        new_customer_client($data, $customer, $account,$editor );
+        new_customer_client($data, $customer, $account, $editor);
         break;
+
     case 'customer_clients':
-        $_data=get_table_parameters();
-        $_data['parameters']['parent_key']=$customer->id;
+        $_data                             = get_table_parameters();
+        $_data['parameters']['parent_key'] = $customer->id;
         customer_clients($_data, $db);
 
 
@@ -99,10 +102,7 @@ function new_customer_client($data, $customer, $account, $editor) {
         }
 
 
-
-
         $client = $customer->create_client($customer_data);
-
 
 
         if ($customer->new_client) {
@@ -124,10 +124,11 @@ function new_customer_client($data, $customer, $account, $editor) {
 
             echo json_encode(
                 array(
-                    'state' => 200,
-                    'msg'   => 'reg',
-                    'metadata'=>[
-                        'class_html'=>[]
+                    'state'     => 200,
+                    'msg'       => 'reg',
+                    'client_id' => $client->id,
+                    'metadata'  => [
+                        'class_html' => []
                     ]
                 )
             );
@@ -162,8 +163,6 @@ function new_customer_client($data, $customer, $account, $editor) {
 function customer_clients($_data, $db) {
 
 
-
-
     include_once 'utils/currency_functions.php';
 
     $rtext_label = 'customer';
@@ -186,7 +185,7 @@ function customer_clients($_data, $db) {
      * @var string $total
      */
 
-    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
     if ($result = $db->query($sql)) {
 
@@ -194,22 +193,22 @@ function customer_clients($_data, $db) {
             $action = '<span class="like_button" onclick="window.location.href = \'/client_basket.sys?client_id='.$data['Customer Client Key'].'\';"><i class="far fa-shopping-cart padding_right_10"></i>   '._('New order').'</span>';
 
             $record_data[] = array(
-                'id'             => (integer)$data['Customer Client Key'],
-              'code'    =>  sprintf('<a href="client.sys?id=%d">%s</a>', $data['Customer Client Key'], $data['Customer Client Code']),
-                'name'           => $data['Customer Client Name'],
+                'id'   => (integer)$data['Customer Client Key'],
+                'code' => sprintf('<a href="client.sys?id=%d">%s</a>', $data['Customer Client Key'], $data['Customer Client Code']),
+                'name' => $data['Customer Client Name'],
 
                 'since'          => strftime("%e %b %y", strtotime($data['Customer Client Creation Date'].' +0:00')),
-              'location'       => $data['Customer Client Location'],
-              'pending_orders' => number($data['Customer Client Pending Orders']),
-              'invoices'       => number($data['Customer Client Number Invoices']),
-              'last_invoice'   => ($data['Customer Client Last Invoice Date'] == '' ? '' : strftime("%e %b %y", strtotime($data['Customer Client Last Invoice Date'].' +0:00'))),
+                'location'       => $data['Customer Client Location'],
+                'pending_orders' => number($data['Customer Client Pending Orders']),
+                'invoices'       => number($data['Customer Client Number Invoices']),
+                'last_invoice'   => ($data['Customer Client Last Invoice Date'] == '' ? '' : strftime("%e %b %y", strtotime($data['Customer Client Last Invoice Date'].' +0:00'))),
 
-              'total_invoiced_amount' => money($data['Customer Client Invoiced Amount'], $data['Customer Client Currency Code']),
-              'address'               => $data['Customer Client Contact Address Formatted'],
-              'email'                 => $data['Customer Client Main Plain Email'],
-              'telephone'             => $data['Customer Client Main XHTML Telephone'],
-              'mobile'                => $data['Customer Client Main XHTML Mobile'],
-                'operations'=>$action
+                'total_invoiced_amount' => money($data['Customer Client Invoiced Amount'], $data['Customer Client Currency Code']),
+                'address'               => $data['Customer Client Contact Address Formatted'],
+                'email'                 => $data['Customer Client Main Plain Email'],
+                'telephone'             => $data['Customer Client Main XHTML Telephone'],
+                'mobile'                => $data['Customer Client Main XHTML Mobile'],
+                'operations'            => $action
             );
         }
 

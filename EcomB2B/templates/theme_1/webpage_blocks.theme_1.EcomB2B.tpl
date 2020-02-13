@@ -1205,9 +1205,9 @@
 
 
 
-                                $(document).on('click', '#new_customer_for_order', function (e) {
+                                $(document).on('click', '#order_for_new_customer', function (e) {
+                                    $(this).closest('.sky-form').addClass( "hide" );
                                     $( ".reg_form" ).removeClass( "hide" );
-                                    $( ".clients" ).addClass( "hide" );
                                 });
 
                                 $("form").submit(function(e) {
@@ -1215,12 +1215,12 @@
                                     e.returnValue = false;
                                 });
 
-                                $("#new_client_form").validate(
+                                $("#order_for_new_customer_form").validate(
                                     {
                                         submitHandler: function(form)
                                         {
 
-                                            var button=$('#save_new_client_button');
+                                            var button=$('#save_order_for_new_customer_button');
 
                                             if(button.hasClass('wait')){
                                                 return;
@@ -1231,13 +1231,13 @@
 
                                             var register_data={ }
 
-                                            $("#new_client_form input:not(.ignore)").each(function(i, obj) {
+                                            $("#order_for_new_customer_form input:not(.ignore)").each(function(i, obj) {
                                                 if(!$(obj).attr('name')==''){
                                                     register_data[$(obj).attr('name')]=$(obj).val()
                                                 }
                                             });
 
-                                            $("#new_client_form select:not(.ignore)").each(function(i, obj) {
+                                            $("#order_for_new_customer_form select:not(.ignore)").each(function(i, obj) {
                                                 if(!$(obj).attr('name')==''){
                                                     register_data[$(obj).attr('name')]=$(obj).val()
                                                 }
@@ -1247,7 +1247,7 @@
 
                                             var ajaxData = new FormData();
 
-                                            ajaxData.append("tipo", 'new_customer_client')
+                                            ajaxData.append("tipo", 'order_for_new_customer')
                                             ajaxData.append("data", JSON.stringify(register_data))
 
 
@@ -1260,25 +1260,17 @@
 
 
                                                     if (data.state == '200') {
+                                                        window.location = 'client_basket.sys?client_id='+data.client_id
 
-                                                        rows.fetch({
-                                                            reset: true
-                                                        });
-
-                                                        $( ".reg_form" ).addClass( "hide" );
-                                                        $( ".clients" ).removeClass( "hide" );
-
-                                                        for (var key in data.metadata.class_html) {
-                                                            $('.' + key).html(data.metadata.class_html[key])
-                                                        }
 
                                                     } else if (data.state == '400') {
                                                         swal("{t}Error{/t}!", data.msg, "error")
+                                                        button.removeClass('wait')
+                                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
                                                     }
 
 
-                                                    button.removeClass('wait')
-                                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
                                                 }, error: function () {
                                                     button.removeClass('wait')
                                                     button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')

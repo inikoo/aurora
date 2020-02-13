@@ -397,7 +397,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         require_once __DIR__.'/utils/get_countries.php';
         $countries = get_countries($website->get('Website Locale'));
 
-        $required_fields[] = 'client_reference';
 
 
         $smarty->assign('address_labels', $address_labels);

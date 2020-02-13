@@ -17,7 +17,7 @@
 
 <style>
 .new_order_options{
-    display:flex;height:400px;
+    display:flex;min-height:400px;
 }
 .new_order_option{
     flex-grow:1;
@@ -32,32 +32,24 @@
 <div class="new_order_options">
     <div class="new_order_option" style="width: 50%;border-right:1px solid #ccc">
         <div class="table_top">
-            <span class="title" >{t}Existing customers{/t}</span>
+            <span class="title" >{t}Order for existing customers{/t}</span>
         </div>
         <div id="table_container"></div>
     </div>
     <div class="new_order_option" style="width: 50%;">
         <div class="table_top">
-            <span class="title" s>{t}Create new customer{/t}</span>
+            <span class="title" s>{t}Order for new customer{/t}</span>
         </div>
 
-        <div class="sky-form" style="width: 100%;text-align: center;box-shadow: none">
-
-
-
-
-                <button id="basket_continue_shopping"  style="display: inline;margin-top:40px" type="submit" class="button">{if !empty($data._go_shop_label)}{$data._go_shop_label}{else}{t}Create order for     new customer{/t}{/if} <i  class=" far fa-fw fa-shopping-cart" aria-hidden="true"></i> </button>
-
-
-
-
+        <div class="sky-form" style="width: 100%;text-align: center;box-shadow: none;">
+                <button id="order_for_new_customer"  style="float:none;display: inline;margin-top:40px" type="submit" class="button">{if !empty($data._order_for_new_customer)}{$data._order_for_new_customer}{else}{t}Create order for new customer{/t}{/if} <i  class=" far fa-fw fa-shopping-cart" aria-hidden="true"></i> </button>
+            <div style="clear: both"></div>
         </div>
 
 
 
         <div class="reg_form hide" style="margin-top:30px;margin-bottom:60px;" >
-            <form id="new_client_form" class="sky-form">
-                <header >{if empty($labels._new_customer_client)}{t}New customer{/t}{else}{$labels._new_customer_client}{/if}</header>
+            <form id="order_for_new_customer_form" class="sky-form">
 
                 <fieldset>
                     <section >
@@ -175,8 +167,9 @@
                 </fieldset>
 
                 <footer>
-                    <button  id="save_new_client_button" type="submit" class="button" ">{if empty($labels._new_customer_client)}{t}New customer{/t}{else}{$labels._new_customer_client}{/if} <i class="fa fa-fw fa-arrow-right"></i> </button>
+                    <button  id="save_order_for_new_customer_button" type="submit" class="button" ">{if empty($labels._new_client_order)}{t}New order{/t}{else}{$labels._new_client_order}{/if} <i class="fa fa-fw fa-arrow-right"></i> </button>
                 </footer>
+                <div style="clear: both"></div>
             </form>
         </div>
     </div>
