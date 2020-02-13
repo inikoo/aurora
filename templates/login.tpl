@@ -16,8 +16,6 @@
                 src="https://browser.sentry-cdn.com/5.11.1/bundle.min.js"
                 integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV"
                 crossorigin="anonymous"></script>
-
-        <script>
     <script>
         Sentry.init({
         dsn: '{$sentry_js}',
