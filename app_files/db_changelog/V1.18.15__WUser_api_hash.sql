@@ -1,0 +1,1 @@
+ALTER TABLE `Website User Dimension` ADD `Website User Static API Hash` VARCHAR(32) NULL DEFAULT NULL AFTER `Website User Has Login`, ADD INDEX (`Website User Static API Hash`);

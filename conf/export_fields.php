@@ -369,7 +369,7 @@ function get_export_fields($element,$account_currency_code='') {
             ),
             array(
                 'name'    => 'REPLACE(`Order Delivery Address Formatted`,"<br/>","\n") as `Order Delivery Address`',
-                'label'   => _('Billing address'),
+                'label'   => _('Delivery address'),
                 'checked' => 0
             ),
             array(
