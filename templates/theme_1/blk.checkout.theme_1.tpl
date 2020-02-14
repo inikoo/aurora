@@ -121,7 +121,7 @@
 
     </div>
 
-        {if empty($data.labels._credit_card_label) }&nbsp;{else}{$data.labels._cash_on_delivery_label}{/if}
+
 
 
         <div class="clear" style="margin-bottom: 30px"> </div>
