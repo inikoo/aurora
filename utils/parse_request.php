@@ -1761,7 +1761,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                     break;
                 }
 
-                $module = 'customers';
+                $module = 'mailroom';
 
 
                 if ($count_view_path == 0) {
