@@ -66,6 +66,7 @@ class Website_User extends DB_Table {
         }
 
 
+
         $sql = sprintf(
             "SELECT count(*) AS num  FROM `Website User Dimension` WHERE `Website User Handle`=%s AND `Website User Website Key`=%d ", prepare_mysql($base_data['Website User Handle']),
             $base_data['Website User Website Key']
@@ -90,6 +91,9 @@ class Website_User extends DB_Table {
 
         $base_data['Website User Password Hash'] = password_hash($base_data['Website User Password'], PASSWORD_DEFAULT, array('cost' => 12));
 
+        $base_data['Website User Created'] = gmdate("Y-m-d H:i:s");
+
+
 
         $keys   = '(';
         $values = 'values(';
@@ -105,8 +109,14 @@ class Website_User extends DB_Table {
 
         if ($this->db->exec($sql)) {
 
+
+
             $user_key = $this->db->lastInsertId();
+
             $this->get_data('id', $user_key);
+            $this->fast_update([
+                                       'Website User Static API Hash'=>md5(DNS_ACCOUNT_CODE.'.'.$this->id.'.'.SKEY.microtime())
+                                   ]);
 
             $sql = sprintf("INSERT INTO `Website User Data` (`Website User Key`) VALUES (%d)", $user_key);
             $this->db->exec($sql);

@@ -146,7 +146,7 @@
                     <td>
                         <div onclick="hide_export_dialog($(this).closest('.export_dialog'))" class="button disabled"><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div>
                     </td>
-                    <td colspan="2" class="aright"><i onclick="open_export_config_left_button($(this).closest('.export_dialog_container').find('.export_dialog_config'))" class="fa fa-cogs button"></i></td>
+                    <td colspan="2" class="aright"><i onclick="open_export_config_left_button($(this).closest('.export_dialog_container').find('.export_dialog_config'))" class="fa fa-cogs button "></i></td>
                 </tr>
             </table>
         </div>
@@ -220,7 +220,7 @@
             <i onclick="export_omega_invoices(this)" class="fa fa-omega fa-fw"></i>
         </div>
         <div id="show_export_dialog" class="left square_button  {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}">
-            <i onclick="show_export_dialog_left_button(this)" class="fa fa-download fa-fw"></i>
+            <i onclick="show_export_dialog_left_button_expanded(this)" class="fa fa-download fa-fw"></i>
         </div>
 
         <div style="position:absolute" class="export_dialog_container  ">
@@ -245,7 +245,7 @@
                         <td>
                             <div onclick="hide_export_dialog($(this).closest('.export_dialog'))" class="button disabled"><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div>
                         </td>
-                        <td colspan="2" class="aright"><i onclick="open_export_config_left_button($(this).closest('.export_dialog_container').find('.export_dialog_config'))" class="fa fa-cogs button"></i></td>
+                        <td colspan="2" class="aright"><i onclick="open_export_config_left_button($(this).closest('.export_dialog_container').find('.export_dialog_config'))" class="fa fa-cogs button hide"></i></td>
                     </tr>
                 </table>
             </div>
@@ -253,13 +253,16 @@
 
 
                 <div class="export_type_options ">
-                    <span data-type="excel" onclick="change_export_as(this,'Excel');export_table(this)" data-ar_url="/ar_web_export.php" class="margin_right_20 button" title="{t}Export as spreadsheet{/t}"><i
-                                class="far fa-fw fa-file-excel"></i>Excel</span>
-                    <span data-type="csv" onclick="change_export_as(this,'Excel');export_table(this)" data-ar_url="/ar_web_export.php" class=" button" title="{t}Export as CSV file{/t}"><i class="far fa-fw fa-file-csv"></i>CSV</span>
+                    <span data-type="excel" onclick="change_export_as(this,'Excel');export_table(this)" data-ar_url="/ar_web_export.php" class="margin_right_20 button" " title="{t}Export as spreadsheet{/t}"><i class="far fa-fw fa-file-excel"></i>Excel</span>
+                    <span data-type="csv" onclick="change_export_as(this,'CSV');export_table(this)" data-ar_url="/ar_web_export.php" class=" button" title="{t}Export as CSV file{/t}"><i class="far fa-fw fa-file-csv"></i>CSV</span> <a class="margin_left_20" style="cursor:pointer;font-size: x-small">{t}CSV data feed link{/t} <i class="fal fa-external-link padding_left_5"></i> </a>
+
+
+
+
                 </div>
 
                 {if isset($export_fields)}
-                    <table>
+                    <table border="0">
                         <tr class="small_row ">
                             <td></td>
                             <td style="width_20" class="field_export ">

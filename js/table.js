@@ -506,6 +506,14 @@ function change_table_element(event, item) {
 }
 
 
+function show_export_dialog_left_button_expanded(element) {
+    show_export_dialog_left_button(element)
+
+    open_export_config_left_button($(element).closest('div').next('.export_dialog_container').find('.export_dialog_config'))
+
+
+}
+
 function show_export_dialog_left_button(element) {
 
 
