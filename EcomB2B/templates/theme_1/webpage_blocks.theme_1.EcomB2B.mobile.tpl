@@ -1595,7 +1595,6 @@
 {/if}
 {/if}
 
-{if $with_client==1 or $with_thanks==1 or $with_client_basket}
     <script>
         var getUrlParameter = function getUrlParameter(sParam) {
             var sPageURL = window.location.search.substring(1),
@@ -1612,7 +1611,7 @@
             }
         };
     </script>
-{/if}
+
 
 
 
