@@ -54,7 +54,7 @@
 {/if}
 
 {if isset($button.add_item)}{include file="add_item.tpl" data=$button.add_item trigger={$button.id}}{/if}
-{if isset($button.add_item_to_portfolio)}{include file="add_item_to_portfolio.tpl" data=$button.add_item_to_portfolio trigger={$button.id}}{/if}
+{if isset($button.add_item_to_portfolio)}{include file="add_item_to_portfolio.tpl" data=$button.add_item_to_portfolio trigger=$button.id}{/if}
 {if isset($button.add_allowance_to_order_recursion_deal)}{include file="add_allowance_to_order_recursion_deal.tpl" data=$button.add_allowance_to_order_recursion_deal trigger={$button.id}}{/if}
 {if isset($button.add_bulk_deal)}{include file="add_bulk_deal.tpl" data=$button.add_bulk_deal trigger={$button.id}}{/if}
 {if isset($button.add_part_to_location)}{include file="add_part_to_location.tpl" data=$button.add_part_to_location trigger={$button.id}}{/if}

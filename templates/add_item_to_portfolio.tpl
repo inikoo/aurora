@@ -25,7 +25,6 @@
 
 </div>
 
-
 <script>
     $('#{$trigger}').on("click", function () {
         show_add_item_to_portfolio_form()

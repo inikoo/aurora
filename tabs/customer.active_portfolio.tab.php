@@ -53,10 +53,11 @@ $table_buttons[] = array(
     'add_item_to_portfolio' => array(
 
         'field_label' => _("Product").':',
+        'ar_url'     => '/ar_edit_customers.php',
         'metadata'    => base64_encode(
             json_encode(
                 array(
-                    'ar_url'     => '/ar_edit_customers.php',
+
                     'scope'      => 'product',
                     'parent'     => 'Store',
                     'parent_key' => $state['_object']->get('Store Key'),
