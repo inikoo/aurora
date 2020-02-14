@@ -1864,7 +1864,7 @@ function get_orders_element_numbers($db, $data, $user) {
         ),
 
     );
-
+/*
     if ($data['parent'] == 'account' or $data['parent'] == 'store') {
 
         $object->load_acc_data();
@@ -1879,7 +1879,9 @@ function get_orders_element_numbers($db, $data, $user) {
 
         $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
+
     } else {
+*/
         $sql = sprintf(
             "SELECT %s AS number,`Order State` AS element FROM %s %s %s GROUP BY `Order State` ", $count, $table, $where, $where_interval
         );
@@ -1888,7 +1890,7 @@ function get_orders_element_numbers($db, $data, $user) {
             $elements_numbers['state'][$row['element']] = number($row['number']);
         }
 
-    }
+//    }
 
 
     $sql = sprintf(
