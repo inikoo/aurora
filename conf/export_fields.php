@@ -327,6 +327,11 @@ function get_export_fields($element,$account_currency_code='') {
                 'checked' => 1
             ),
             array(
+                'name'    => '`Order Telephone`',
+                'label'   => _('Telephone'),
+                'checked' => 1
+            ),
+            array(
                 'name'    => '`Order Date`',
                 'label'   => _('Date'),
                 'checked' => 1
