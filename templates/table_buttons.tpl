@@ -46,7 +46,7 @@
 
 </div>
 {if $button.icon=='edit_add'}
-    <div id="inline_edit_table_items_buttons" class="hide" style="float:right;margin-right: 10px" data-object='{$edit_table_dialog.spreadsheet_edit.object}'>
+    <div id="inline_edit_table_items_buttons" class="hide" style="float:right;margin-right: 10px" data-object='{if isset($edit_table_dialog.spreadsheet_edit.object)}{$edit_table_dialog.spreadsheet_edit.object}{/if}'>
         <i id="inline_edit_table_items_save_button" onclick="save_table_items()" class="fa fa-cloud button save" aria-hidden="true"></i>
         <i id="inline_edit_table_items_close_button" class="fa fa-window-close button" onclick="close_table_edit_view(this)" style="margin-left:10px;margin-right: 10px" aria-hidden="true"></i> {t}inline editing{/t}
 

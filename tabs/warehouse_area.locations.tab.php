@@ -9,8 +9,7 @@
 
 */
 
-if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->warehouses)
-) {
+if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->warehouses)) {
     $html = '';
 } else {
 
@@ -91,11 +90,6 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     $edit_fields = $export_edit_template_fields[$objects];
 
 
-
-
-
-
-
     $smarty->assign('edit_fields', $edit_fields);
 
 
@@ -137,66 +131,26 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     );
 
 
-    /*
-
-
-
-        if ($state['warehouse']->get('Warehouse Number Locations') > 0) {
-            $table_buttons[] = array(
-                'icon'  => 'edit',
-                'title' => _("Edit locations"),
-                'id'    => 'edit_table'
-            );
-        }
-
-
-        $table_buttons[] = array(
-            'icon'      => 'plus',
-            'title'     => _('New location'),
-            'reference' => "locations/".$warehouse->id."/new"
-        );
-
-        $smarty->assign('table_buttons', $table_buttons);
-
-        $smarty->assign(
-            'upload_file', array(
-                             'tipo'       => 'edit_objects',
-                             'icon'       => 'fa-cloud-upload',
-                             'parent'     => 'warehouse',
-                             'parent_key' => $warehouse->id,
-                             'object'     => 'location',
-                             'label'      => _("Upload locations")
-
-                         )
-        );
-
-
-
-    */
-
-
     $smarty->assign('table_buttons', $table_buttons);
 
     $flags = array();
 
     $sql = sprintf(
-        'select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ',
-        $warehouse->id
+        'select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ', $warehouse->id
     );
 
-    $flags = array();
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $flags[$row['Warehouse Flag Key']] = array(
-                'color' => strtolower($row['Warehouse Flag Color']),
-                'key'   => $row['Warehouse Flag Key'],
-                'label' => $row['Warehouse Flag Label']
-            );
-        }
-    } else {
-        print_r($error_info = $this->db->errorInfo());
-        print "$sql\n";
-        exit;
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $warehouse->id
+        )
+    );
+    while ($row = $stmt->fetch()) {
+        $flags[$row['Warehouse Flag Key']] = array(
+            'color' => strtolower($row['Warehouse Flag Color']),
+            'key'   => $row['Warehouse Flag Key'],
+            'label' => $row['Warehouse Flag Label']
+        );
     }
 
 
@@ -209,4 +163,4 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     include 'utils/get_table_html.php';
 }
 
-?>
+
