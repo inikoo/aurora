@@ -241,6 +241,7 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
 if ($logged_in) {
     $smarty->assign('analytics_user_key', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], true);
+
     $smarty->assign('ws_key', md5(DNS_ACCOUNT_CODE.'-'.$_SESSION['website_key'].'-'.$_SESSION['customer_key'].'-'.crc32($_SESSION['customer_key'].'v1')), true);
 
 }
