@@ -341,6 +341,58 @@ function get_export_fields($element,$account_currency_code='') {
                 'label'   => _('Payment method'),
                 'checked' => 1
             ),
+            array(
+                'name'    => 'REPLACE(`Order Invoice Address Formatted`,"<br/>","\n") as `Order Billing Address`',
+                'label'   => _('Billing address'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Order Invoice Address Postal Label`',
+                'label'   => _('Billing address (Postal label)'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Order Invoice Address Line 1`,`Order Invoice Address Line 2`,`Order Invoice Address Sorting Code`,`Order Invoice Address Postal Code`,`Order Invoice Address Dependent Locality`,`Order Invoice Address Locality`,`Order Invoice Address Administrative Area`,`Order Invoice Address Country 2 Alpha Code`',
+                'label'   => _('Billing address (Separated fields)'),
+                'checked' => 0,
+                'labels'  => array(
+                    _('Billing address'),
+                    _('Billing address line 2'),
+                    _('Billing address sorting code'),
+                    _('Billing address postal code'),
+                    _('Billing address dependent locality'),
+                    _('Billing address locality'),
+                    _('Billing address administrative area'),
+                    _('Billing address country'),
+
+                )
+            ),
+            array(
+                'name'    => 'REPLACE(`Order Delivery Address Formatted`,"<br/>","\n") as `Order Delivery Address`',
+                'label'   => _('Billing address'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Order Delivery Address Postal Label`',
+                'label'   => _('Delivery address (Postal label)'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Order Delivery Address Line 1`,`Order Delivery Address Line 2`,`Order Delivery Address Sorting Code`,`Order Delivery Address Postal Code`,`Order Delivery Address Dependent Locality`,`Order Delivery Address Locality`,`Order Delivery Address Administrative Area`,`Order Delivery Address Country 2 Alpha Code`',
+                'label'   => _('Delivery address (Separated fields)'),
+                'checked' => 0,
+                'labels'  => array(
+                    _('Delivery address'),
+                    _('Delivery address line 2'),
+                    _('Delivery address sorting code'),
+                    _('Delivery address postal code'),
+                    _('Delivery address dependent locality'),
+                    _('Delivery address locality'),
+                    _('Delivery address administrative area'),
+                    _('Delivery address country'),
+
+                )
+            ),
 
         ),
         'delivery_notes' => array(
