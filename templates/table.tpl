@@ -383,6 +383,8 @@
 
         parseState: function (resp, queryParams, state, options) {
 
+
+
             $('#rtext').html(resp.resultset.rtext)
             $('#table_buttons').removeClass('hide')
 

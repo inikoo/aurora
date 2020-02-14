@@ -271,9 +271,6 @@ function ec_sales_list($_data, $db, $user, $account) {
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
@@ -298,7 +295,7 @@ function ec_sales_list($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
-            'total_records' => $total
+            'total_records' => $total_records
 
         )
     );
@@ -1288,11 +1285,6 @@ function intrastat($_data, $db, $user, $account) {
             );
 
         }
-    } else {
-        print "$sql\n";
-
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
@@ -1317,7 +1309,7 @@ function intrastat($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
-            'total_records' => $total
+            'total_records' => $total_records
 
         )
     );
@@ -1377,7 +1369,7 @@ function intrastat_orders($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
-            'total_records' => $total
+            'total_records' => $total_records
 
         )
     );
@@ -1453,7 +1445,7 @@ function intrastat_deliveries($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
-            'total_records' => $total
+            'total_records' => $total_records
 
         )
     );
@@ -1511,7 +1503,7 @@ function intrastat_products($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
-            'total_records' => $total
+            'total_records' => $total_records
 
         )
     );
@@ -1567,7 +1559,7 @@ function intrastat_parts($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
-            'total_records' => $total
+            'total_records' => $total_records
 
         )
     );
@@ -3227,7 +3219,7 @@ function intrastat_imports($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
-            'total_records' => $total
+            'total_records' => $total_records
 
         )
     );
