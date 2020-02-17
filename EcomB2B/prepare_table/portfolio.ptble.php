@@ -13,7 +13,7 @@
 
 include_once 'utils/date_functions.php';
 
-
+// if you change this you need to change data_feed.php
 $table          =
     " `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) 
     left join `Store Dimension` S on (`Product Store Key`=`Store Key`)

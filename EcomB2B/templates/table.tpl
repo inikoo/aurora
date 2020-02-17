@@ -254,7 +254,7 @@
 
                 <div class="export_type_options ">
                     <span data-type="excel" onclick="change_export_as(this,'Excel');export_table(this)" data-ar_url="/ar_web_export.php" class="margin_right_20 button" " title="{t}Export as spreadsheet{/t}"><i class="far fa-fw fa-file-excel"></i>Excel</span>
-                    <span data-type="csv" onclick="change_export_as(this,'CSV');export_table(this)" data-ar_url="/ar_web_export.php" class=" button" title="{t}Export as CSV file{/t}"><i class="far fa-fw fa-file-csv"></i>CSV</span> <a class="margin_left_20" style="cursor:pointer;font-size: x-small">{t}CSV data feed link{/t} <i class="fal fa-external-link padding_left_5"></i> </a>
+                    <span data-type="csv" onclick="change_export_as(this,'CSV');export_table(this)" data-ar_url="/ar_web_export.php" class=" button" title="{t}Export as CSV file{/t}"><i class="far fa-fw fa-file-csv"></i>CSV</span> <a href="data_feed.php?uid={$web_user->id}&token={$web_user->get('Website User Static API Hash')}&output=CSV&scope=portfolio_items" class="margin_left_20" style="cursor:pointer;font-size: x-small">{t}CSV data feed link{/t} <i class="fal fa-external-link padding_left_5"></i> </a>
 
 
 

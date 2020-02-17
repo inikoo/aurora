@@ -38,7 +38,7 @@ class Public_Website_User extends DBW_Table {
             $key   = $a1;
         }
 
-        $this->get_data($key, $_data, $a3);
+        $this->get_data($key, $_data);
 
         return;
     }
@@ -80,9 +80,6 @@ class Public_Website_User extends DBW_Table {
                     return;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         $base_data['Website User Created'] = gmdate("Y-m-d H:i:s");
@@ -139,7 +136,7 @@ class Public_Website_User extends DBW_Table {
             $this->error = true;
             $this->msg   = _('Unknown error').' (2)';
 
-            return;
+            return false;
         }
 
 
@@ -175,14 +172,14 @@ class Public_Website_User extends DBW_Table {
 
 
         if (!$this->id) {
-            return;
+            return false;
         }
 
 
         switch ($key) {
             case 'Website User Customer Key':
             case 'Website User Handle':
-
+            case 'Website User Static API Hash':
                 return $this->data[$key];
                 break;
 
@@ -191,6 +188,7 @@ class Public_Website_User extends DBW_Table {
 
         }
 
+        return false;
     }
 
 
@@ -246,4 +244,4 @@ class Public_Website_User extends DBW_Table {
 }
 
 
-?>
+

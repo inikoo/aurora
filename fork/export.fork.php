@@ -137,13 +137,7 @@ function fork_export($job) {
         $category
     );
 
-
     $row_index = 1;
-    //print "$sql_data\n";
-    //  return 1;
-    //exit;
-
-
 
     if (empty($fork_data['fields']) or $fork_data['fields'] == '') {
 

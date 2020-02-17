@@ -81,7 +81,7 @@ switch ($tipo) {
             'parent_key' => $data['client_id'],
 
         );
-        get_orders_table_html($data, $parameters,$db);
+        get_orders_table_html($data, $parameters, $db);
         break;
     case 'clients_orders':
         $data = prepare_values(
@@ -98,7 +98,7 @@ switch ($tipo) {
             'parent_key' => $customer->id,
 
         );
-        get_orders_table_html($data, $parameters, $customer,$db);
+        get_orders_table_html($data, $parameters, $customer, $db);
         break;
     default:
         $response = array(
@@ -126,8 +126,9 @@ function get_portfolio_table_html($data, $customer) {
     $smarty->addPluginsDir('./smarty_plugins');
 
 
-    $website = get_object('Website', $_SESSION['website_key']);
-    $store   = get_object('Store', $website->get('Website Store Key'));
+    $website  = get_object('Website', $_SESSION['website_key']);
+    $store    = get_object('Store', $website->get('Website Store Key'));
+    $web_user = get_object('website_user', $customer->get('Customer Website User Key'));
 
 
     //'html'       => $smarty->fetch('theme_1/blk.client.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
@@ -210,6 +211,10 @@ function get_portfolio_table_html($data, $customer) {
         )
 
     );
+
+
+    $smarty->assign('web_user', $web_user);
+
 
     $smarty->assign('table_buttons', $table_buttons);
 
@@ -335,7 +340,7 @@ function get_clients_table_html($data, $customer) {
 
 }
 
-function get_orders_table_html($data, $parameters,$db) {
+function get_orders_table_html($data, $parameters, $db) {
 
 
     include_once '../conf/export_fields.php';
@@ -427,7 +432,7 @@ function get_orders_table_html($data, $parameters,$db) {
             );
         }
 
-    }else{
+    } else {
 
         $table_buttons[] = array(
             'icon'  => 'plus',
