@@ -1538,11 +1538,7 @@ function get_export_fields($element,$account_currency_code='') {
                 'checked' => 1
             ),
 
-            array(
-                'name'    => '`Product Web State`',
-                'label'   => _('Web state'),
-                'checked' => 1
-            ),
+
             array(
                 'name'    => '( select group_concat(concat("[image_address]",`Image Subject Image Key`) order by `Image Subject Order`) from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  ) as images',
                 'label'   => _('Images'),

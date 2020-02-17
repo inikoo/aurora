@@ -11,6 +11,7 @@
 
  Version 2.0
 */
+
 use Elasticsearch\ClientBuilder;
 
 include_once 'class.Asset.php';
@@ -4531,8 +4532,8 @@ class Part extends Asset {
                         'Product Unit Dimensions'              => $this->get('Part Unit Dimensions'),
                         'Product Materials'                    => $this->data['Part Materials'],
                         'Product Barcode Number'               => $this->data['Part Barcode Number'],
-
-                        'Product Barcode Key' => $this->data['Part Barcode Key'],
+                        'Product Barcode Key'                  => $this->data['Part Barcode Key'],
+                        'Product Data Updated'                 => gmdate('Y-m-d H:i:s'),
 
                     )
                 );
@@ -4832,7 +4833,7 @@ class Part extends Asset {
                 );
 
 
-                $locations   = 0;
+                $locations = 0;
 
 
                 $stock_on_hand           = 0;
@@ -4852,8 +4853,8 @@ class Part extends Asset {
                 $stock_value_out_other         = 0;
 
 
-                $location_keys=[];
-                $warehouse_keys=[];
+                $location_keys  = [];
+                $warehouse_keys = [];
 
                 if ($result3 = $this->db->query($sql)) {
                     foreach ($result3 as $row3) {
@@ -4866,9 +4867,8 @@ class Part extends Asset {
                             $locations++;
 
 
-
-                            $location_keys[$part_location->location->id]=1;
-                            $warehouse_keys[$part_location->location->get('Location Warehouse Key')]=1;
+                            $location_keys[$part_location->location->id]                             = 1;
+                            $warehouse_keys[$part_location->location->get('Location Warehouse Key')] = 1;
 
                             $stock_on_hand                 += $result_update_stock_history['data']['stock_on_hand'];
                             $stock_cost                    += $result_update_stock_history['data']['stock_cost'];
@@ -4996,14 +4996,14 @@ class Part extends Asset {
                 ];
 
                 $params['body'][] = [
-                    'tenant'                  => strtolower(DNS_ACCOUNT_CODE),
-                    'date'                    => $row['Date'],
-                    '1st_day_year'            => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
-                    '1st_day_month'           => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
-                    '1st_day_quarter'         => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
-                    '1st_day_week'            => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
-                    'sku'                     => $this->sku,
-                    'locations'               => $locations,
+                    'tenant'          => strtolower(DNS_ACCOUNT_CODE),
+                    'date'            => $row['Date'],
+                    '1st_day_year'    => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
+                    '1st_day_month'   => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
+                    '1st_day_quarter' => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
+                    '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
+                    'sku'             => $this->sku,
+                    'locations'       => $locations,
 
                     'locations'  => array_keys($location_keys),
                     'warehouses' => array_keys($warehouse_keys),
@@ -5025,9 +5025,9 @@ class Part extends Asset {
                     'stock_value_out_other'         => $stock_value_out_other,
 
 
-                    'sko_cost'              => (isset($result_update_stock_history['cost_per_sko'])? $result_update_stock_history['cost_per_sko']:$this->get('Part Cost in Warehouse')),
+                    'sko_cost'              => (isset($result_update_stock_history['cost_per_sko']) ? $result_update_stock_history['cost_per_sko'] : $this->get('Part Cost in Warehouse')),
                     'stock_left_1_year_ago' => $stock_left_1_year_ago,
-                    'no_sales_1_year'       =>  ($dormant_1year == 'Yes' ? true : false),
+                    'no_sales_1_year'       => ($dormant_1year == 'Yes' ? true : false),
                     'no_sales_1_year_icon'  => $no_sales_1_year_icon,
                     'part_reference'        => $this->data['Part Reference'],
                     'part_description'      => $this->data['Part Package Description'],
@@ -5036,9 +5036,6 @@ class Part extends Asset {
 
 
                 $client->bulk($params);
-
-
-
 
 
             }

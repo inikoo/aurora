@@ -1704,18 +1704,18 @@ class Product extends Asset {
     }
 
 
-    function get_categories($output = 'keys',$scope='all',$args='') {
+    function get_categories($output = 'keys', $scope = 'all', $args = '') {
 
         $categories = array();
-        $sql = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Product' AND `Category Branch Type`!='Root'";
+        $sql        = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Product' AND `Category Branch Type`!='Root'";
 
-        $params=array(
+        $params = array(
             $this->id
         );
 
-        if($scope=='root_key'){
-            $sql.=' and C.`Category Root Key`=?';
-            $params[]=$args;
+        if ($scope == 'root_key') {
+            $sql      .= ' and C.`Category Root Key`=?';
+            $params[] = $args;
         }
 
         $stmt = $this->db->prepare($sql);
@@ -1724,14 +1724,14 @@ class Product extends Asset {
         );
         while ($row = $stmt->fetch()) {
             if ($output == 'objects') {
-                $categories[$row['Category Key']] = get_object('Category',$row['Category Key']);
+                $categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
             } else {
                 $categories[$row['Category Key']] = $row['Category Key'];
             }
         }
+
         return $categories;
     }
-
 
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
@@ -2312,8 +2312,10 @@ class Product extends Asset {
 
                 );
 
-                $this->fork_index_elastic_search();
-
+                if ($old_state != $this->data['Product Status']) {
+                    $this->fast_update(array('Product Stock Updated`' => gmdate('Y-m-d H:i:s')));
+                    $this->fork_index_elastic_search();
+                }
                 break;
 
             case('Product Web Configuration'):
@@ -2351,8 +2353,10 @@ class Product extends Asset {
                 $this->fork_index_elastic_search();
 
                 break;
-            case ('Product HTSUS Code'):
-            case('Product Tariff Code'):
+            case 'Product HTSUS Code':
+            case 'Product Tariff Code':
+            case 'Product Barcode Number':
+                $old_value = $this->get($field);
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
                     /**
@@ -2372,8 +2376,12 @@ class Product extends Asset {
 
                 }
                 $this->update_field($field, $value, $options);
-                break;
+                if ($old_value != $this->get($field)) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                }
 
+
+                break;
             case 'Product Unit Weight':
 
                 if ($value != '' and (!is_numeric($value) or $value < 0)) {
@@ -2382,6 +2390,7 @@ class Product extends Asset {
 
                     return;
                 }
+                $old_value = $this->get($field);
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
@@ -2404,8 +2413,12 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages('weight');
 
+
+                if ($old_value != $this->get($field)) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_webpages('weight');
+                }
                 break;
 
 
@@ -2423,15 +2436,13 @@ class Product extends Asset {
                     $dim = parse_dimensions($value);
                     if ($dim == '') {
                         $this->error = true;
-                        $this->msg   = sprintf(
-                            _("Dimensions can't be parsed (%s)"), $value
-                        );
+                        $this->msg   = sprintf(_("Dimensions can't be parsed (%s)"), $value);
 
                         return;
                     }
 
                 }
-
+                $old_value = $this->get($field);
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
                     /**
@@ -2457,8 +2468,10 @@ class Product extends Asset {
                 $this->fast_update(array('Product Unit XHTML Dimensions' => $this->get('Unit Dimensions')));
 
 
-                $this->update_webpages('dimensions');
-
+                if ($old_value != $this->get($field)) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_webpages('dimensions');
+                }
 
                 break;
 
@@ -2559,13 +2572,15 @@ class Product extends Asset {
 
 
                 $this->update_field('Product Materials', $materials, $options);
-                $this->fast_update(array('Product Unit XHTML Materials' => $this->get('Materials')));
-
                 $updated = $this->updated;
 
+                $this->fast_update(array('Product Unit XHTML Materials' => $this->get('Materials')));
 
-                $this->updated = $updated;
-                $this->update_webpages('materials');
+                if ($updated) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_webpages('materials');
+                }
+
                 break;
 
 
@@ -2616,15 +2631,20 @@ class Product extends Asset {
                 $updated = $this->updated;
                 $this->update_historic_object();
                 $this->updated = $updated;
-                $this->update_webpages('code');
 
-                $this->fork_index_elastic_search();
+                if ($updated) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+
+                    $this->update_webpages('code');
+
+                    $this->fork_index_elastic_search();
+                }
                 break;
 
             case 'Product Name':
                 if ($value == '') {
                     $this->error = true;
-                    $this->msg   = _('Unit name missing');
+                    $this->msg   = _('Product name missing');
 
                     return;
                 }
@@ -2633,10 +2653,17 @@ class Product extends Asset {
                 $updated = $this->updated;
                 $this->update_historic_object();
 
-                $this->update_webpages('name');
 
                 $this->updated = $updated;
-                $this->fork_index_elastic_search();
+
+
+                if ($updated) {
+                    $this->update_webpages('name');
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->fork_index_elastic_search();
+                }
+
+
                 break;
             case 'Product Unit Label':
                 if ($value == '') {
@@ -2663,18 +2690,31 @@ class Product extends Asset {
                     ),
 
                 );
-                $this->update_webpages('label');
-                $this->fork_index_elastic_search();
+
+
+                if ($this->updated) {
+                    $this->update_webpages('label');
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->fork_index_elastic_search();
+                }
+
                 break;
             case 'Product Label in Family':
 
                 $this->update_field(
                     'Product Special Characteristic', $value, $options
-                );// Migration
+                );
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages('label_in_family');
-                $this->fork_index_elastic_search();
+
+
+                if ($this->updated) {
+                    $this->update_webpages('label_in_family');
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->fork_index_elastic_search();
+                }
+
+
                 break;
 
 
@@ -2697,7 +2737,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-
+                $updated                    = $this->updated;
                 $this->other_fields_updated = array(
 
                     'Product_Unit_RRP' => array(
@@ -2709,16 +2749,19 @@ class Product extends Asset {
 
                 );
 
-                $updated = $this->updated;
+
                 $this->update_historic_object();
-
-                foreach ($this->get_parts('objects') as $part) {
-                    $part->update_commercial_value();
-                }
-
                 $this->updated = $updated;
-                $this->update_webpages('price');
-                $this->fork_index_elastic_search();
+                if ($updated) {
+
+                    foreach ($this->get_parts('objects') as $part) {
+                        $part->update_commercial_value();
+                    }
+
+                    $this->fast_update(array('Product Price Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_webpages('price');
+                    $this->fork_index_elastic_search();
+                }
                 break;
 
 
@@ -2741,7 +2784,11 @@ class Product extends Asset {
                     );
 
                 }
-                $this->update_webpages('rrp');
+                if ($this->updated) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+
+                    $this->update_webpages('rrp');
+                }
 
                 break;
 
@@ -2791,13 +2838,17 @@ class Product extends Asset {
 
                 );
 
-                $this->update_webpages('units_per_case');
-
-
                 $this->update_historic_object();
                 $this->updated = $updated;
 
-                $this->fork_index_elastic_search();
+                if ($updated) {
+                    $this->update_webpages('units_per_case');
+                    $this->fork_index_elastic_search();
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->fast_update(array('Product Price Updated' => gmdate('Y-m-d H:i:s')));
+
+                }
+
 
                 break;
 
@@ -2897,6 +2948,7 @@ class Product extends Asset {
 
             case 'Product Family Category Key':
 
+                $old_value = $this->get($field);
 
                 if ($value) {
 
@@ -2979,6 +3031,10 @@ class Product extends Asset {
                     )
                 );
 
+                if ($old_value != $this->get($field)) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                }
+
 
                 break;
             case 'Product UN Number':
@@ -2989,7 +3045,7 @@ class Product extends Asset {
             case('Product Duty Rate'):
             case('Product CPNP Number'):
 
-
+                $old_value = $this->get($field);
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
                     /**
@@ -3011,12 +3067,17 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages('mix_properties');
+
+                if ($old_value != $this->get($field)) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_webpages('mix_properties');
+
+                }
 
                 break;
             case 'Product Origin Country Code':
 
-
+                $old_value = $this->get($field);
                 if ($value == '') {
                     $this->error = true;
                     $this->msg   = _("Country of origin missing");
@@ -3036,9 +3097,7 @@ class Product extends Asset {
 
                 $value = $country->get('Country Code');
 
-                if (!preg_match('/from_part/', $options) and count(
-                        $this->get_parts()
-                    ) == 1) {
+                if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -3057,7 +3116,14 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_webpages('country_origin');
+
+                if ($old_value != $this->get($field)) {
+                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_webpages('country_origin');
+
+                }
+
+
                 break;
 
             case 'History Note':
