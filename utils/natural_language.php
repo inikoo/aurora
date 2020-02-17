@@ -297,8 +297,10 @@ function get_file_as($StartCode) {
 
 
 function smart_weight($weight,$decimals=3){
-    if ($weight < 1) {
-        return weight($weight *1000, 'g');
+    if ($weight =='' or $weight==0) {
+        return '0g';
+    }elseif ($weight < 1) {
+        return weight($weight *1000, 'g',0);
     }elseif ($weight > 1000) {
         return weight($weight /1000, 't',$decimals);
     } else {

@@ -1537,6 +1537,7 @@ function shipping_zones($_data, $db, $user) {
             $price_data = json_decode($data['Shipping Zone Price'], true);
 
 
+
             if ($data['Shipping Zone Territories'] != '') {
 
                 $territories_data = json_decode($data['Shipping Zone Territories'], true);
@@ -1571,9 +1572,38 @@ function shipping_zones($_data, $db, $user) {
 
                         $to = ($step['to'] == 'INF' ? '<i class="fal fa-infinity"></i>' : money($step['to'], $_data['parameters']['store_currency']));
 
+                        if($step['price'] =='TBC'){
+                            $amount='TBC';
+                        }else{
+                            $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
 
-                        $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
+                        }
                         $price  .= ' <div class="as_cell">'.money($step['from'], $_data['parameters']['store_currency']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
+                        $price  .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
+                        $price  .= '</div>';
+                    }
+                    $price .= '</div>';
+                    break;
+                case 'Step Order Estimated Weight':
+
+
+                    $price .= '<div class="as_table">';
+                    foreach ($price_data['steps'] as $step) {
+                        $price .= '<div class="as_row">';
+
+                        $price .= '<div class="as_cell  width_75"><span class="discreet"><i title="'._('Order weight').'" class="fal fa-weight"></i></span> </div>';
+
+                        $to = ($step['to'] == 'INF' ? '<i class="fal fa-infinity"></i>' : smart_weight($step['to']));
+
+
+
+                        if($step['price'] =='TBC'){
+                            $amount='TBC';
+                        }else{
+                            $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
+
+                        }
+                        $price  .= ' <div class="as_cell">'.smart_weight($step['from']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
                         $price  .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
                         $price  .= '</div>';
                     }

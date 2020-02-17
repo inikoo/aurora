@@ -125,12 +125,14 @@ trait OrderCalculateTotals {
         while ($row = $stmt->fetch()) {
             $data[$row['Transaction Tax Code']] = $row['net'];
             //   $base_tax_code=$row['Transaction Tax Code'];//todo <-- this is used for assign the tax code to the amount off and may not work of is different tax codes
+
+            if ($this->data['Order Deal Amount Off'] != 0) {
+                $data[$row['Transaction Tax Code']] -= $this->data['Order Deal Amount Off'];
+            }
         }
 
 
-        if ($this->data['Order Deal Amount Off'] != 0) {
-            $data[$row['Transaction Tax Code']] -= $this->data['Order Deal Amount Off'];
-        }
+
 
 
         $sql  = "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Order Key`=?  AND `Type`='Order' GROUP BY `Tax Category Code`";
