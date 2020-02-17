@@ -32,10 +32,10 @@
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}" data-order_key="{$order->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="min-height:500px;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
-    <div class="order_header  text_blocks  text_template_3">
+    <div class="order_header  text_blocks  " style="display: flex">
 
 
-        <div class="text_block '">
+        <div  style="flex-grow: 1" class="text_block '">
             <h2 class="order_number  {if !$order->id}hide{/if}">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span
                         class="order_number">{$order->get('Public ID')}</span></h2>
             <div class="text_blocks text_template_2">
@@ -62,7 +62,7 @@
 
             </div>
         </div>
-        <div class="totals text_block">
+        <div style="width: 250px" class="totals text_block">
             <table>
                 <tbody>
                 <tr >
@@ -77,7 +77,7 @@
 
 
         </div>
-                <div class="totals text_block">
+        <div  style="padding-right:0px;width: 400px"  class="totals text_block">
                     <table >
                         <tbody>
                         <tr class="order_items_gross_container {if $order->get('Order Items Discount Amount')==0 }hide{/if}">
@@ -103,7 +103,7 @@
                         </tr>
 
 
-                        <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }very_discreet{/if}">
+                        <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }hide{/if}">
                             <td><i class="button order_charges_info fa fa-info-circle padding_right_5 info {if $order->get('Order Charges Net Amount')==0 }hide{/if}"    style="color: #007fff;" onclick="show_charges_info()" ></i>  {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
 
                             <td class="text-right order_charges">{$order->get('Charges Net Amount')}</td>
@@ -153,7 +153,7 @@
 
                 </div>
 
-            </div>
+    </div>
 
                 <div class="container order basket   " style="margin-bottom: 30px">
                      <span class="basket_order_items" data-scope="client" data-scope_key="{$customer_client->id}"   >

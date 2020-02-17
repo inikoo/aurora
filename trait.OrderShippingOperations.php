@@ -238,6 +238,11 @@ trait OrderShippingOperations {
         $shipping_data = (new shipping_for_order($this->db))->get($_data);
 
 
+        if ($shipping_data['price'] == 'TBC') {
+            $shipping_data['price']  = 0;
+            $shipping_data['method'] = 'TBC';
+        }
+
         return array(
             $shipping_data['price'],
             $shipping_data['shipping_zone_key'],
