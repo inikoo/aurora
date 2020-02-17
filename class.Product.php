@@ -1325,6 +1325,7 @@ class Product extends Asset {
         );
 
         if ($old_availability_state != $this->get('Product Availability State')) {
+            $this->fast_update(array('Product Stock Updated' => gmdate('Y-m-d H:i:s')));
             $this->fork_index_elastic_search();
         }
 

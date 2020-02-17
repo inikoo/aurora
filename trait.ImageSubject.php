@@ -29,7 +29,6 @@ trait ImageSubject {
     function add_image($raw_data, $metadata = '') {
 
 
-
         include_once 'utils/units_functions.php';
         include_once 'class.Image.php';
 
@@ -46,11 +45,11 @@ trait ImageSubject {
             'editor'      => $this->editor
         );
 
-        if($this->fork){
-            $data['fork']=true;
+        if ($this->fork) {
+            $data['fork'] = true;
         }
 
-        if (!empty($raw_data['Image Subject Object Image Scope']) ) {
+        if (!empty($raw_data['Image Subject Object Image Scope'])) {
             $object_image_scope = $raw_data['Image Subject Object Image Scope'];
         } else {
             $object_image_scope = 'Default';
@@ -59,7 +58,7 @@ trait ImageSubject {
         $image = new Image('find', $data, 'create');
         if ($image->id) {
 
-            $this->link_image($image->id, $object_image_scope,$metadata);
+            $this->link_image($image->id, $object_image_scope, $metadata);
 
 
             if ($this->table_name == 'Part') {
@@ -72,7 +71,7 @@ trait ImageSubject {
 
                         if (count($product->get_parts()) == 1) {
                             $product->editor = $this->editor;
-                            $product->link_image($image->id,'Marketing');
+                            $product->link_image($image->id, 'Marketing');
                         }
 
                     }
@@ -113,8 +112,7 @@ trait ImageSubject {
     }
 
 
-    function link_image($image_key, $object_image_scope = 'Default',$metadata='') {
-
+    function link_image($image_key, $object_image_scope = 'Default', $metadata = '') {
 
 
         $image = get_object('Image', $image_key);
@@ -123,10 +121,7 @@ trait ImageSubject {
             $subject_key = $this->id;
             $subject     = $this->table_name;
 
-            $image->fork=$this->fork;
-
-
-
+            $image->fork = $this->fork;
 
 
             if ($this->table_name == 'Page') {
@@ -135,7 +130,7 @@ trait ImageSubject {
 
 
             // todo, very dangerous hack to remove Default image bridges,Remove this when all Defaults are gone
-            if($object_image_scope != 'Default') {
+            if ($object_image_scope != 'Default') {
                 $sql  = "DELETE FROM `Image Subject Bridge`  WHERE `Image Subject Object`=? AND `Image Subject Object Key`=?  AND `Image Subject Image Key`=?  AND `Image Subject Object Image Scope`='Default'";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
@@ -183,7 +178,7 @@ trait ImageSubject {
             switch ($subject) {
                 case 'Part':
                 case 'Product':
-                    if($object_image_scope=='Marketing'){
+                    if ($object_image_scope == 'Marketing') {
                         $is_public = 'Yes';
                     }
 
@@ -193,15 +188,14 @@ trait ImageSubject {
                     $is_public = 'Yes';
                     break;
                 case 'Category':
-                    if($object_image_scope=='Marketing') {
+                    if ($object_image_scope == 'Marketing') {
 
-                            $is_public = 'Yes';
+                        $is_public = 'Yes';
 
 
                     }
                     break;
             }
-
 
 
             $sql = sprintf(
@@ -210,7 +204,6 @@ trait ImageSubject {
                 ($metadata == '' ? '"{}"' : prepare_mysql(json_encode($metadata)))
 
             );
-
 
 
             $this->db->exec($sql);
@@ -266,6 +259,10 @@ trait ImageSubject {
 
             $this->updated = true;
             $this->msg     = _("Image added");
+
+            if ($this->table_name == 'Product') {
+                $this->fast_update(array('Product Images Updated' => gmdate('Y-m-d H:i:s')));
+            }
 
             return $image;
         } else {
@@ -389,7 +386,7 @@ trait ImageSubject {
             $main_image_key = 0;
         }
 
-           $this->fast_update(
+        $this->fast_update(
             array(
                 $this->table_name.' Main Image'     => $main_image_src,
                 $this->table_name.' Main Image Key' => $main_image_key
@@ -510,10 +507,11 @@ trait ImageSubject {
                 $image->delete();
 
 
-                 $this->reindex_order();
+                $this->reindex_order();
 
-
-
+                if ($this->table_name == 'Product') {
+                    $this->fast_update(array('Product Images Updated' => gmdate('Y-m-d H:i:s')));
+                }
 
             } else {
                 $this->error;
