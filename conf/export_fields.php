@@ -1444,9 +1444,6 @@ function get_export_fields($element,$account_currency_code='') {
                 'checked' => 0
             ),
 
-
-
-
             array(
                 'name'    => '`Product Price`',
                 'label'   => _('Outer price'),
@@ -1498,7 +1495,8 @@ function get_export_fields($element,$account_currency_code='') {
             array(
                 'name'    => '`Product Unit XHTML Materials`',
                 'label'   => _('Materials/Ingredients'),
-                'checked' => 1
+                'checked' => 1,
+                'type'=>'text'
             ),
             array(
                 'name'    => '`Product Published Webpage Description`',

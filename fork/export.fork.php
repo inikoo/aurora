@@ -13,6 +13,7 @@
 use Gumlet\ImageResize;
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
@@ -387,7 +388,7 @@ function fork_export($job) {
                 } else {
 
 
-                    $type = (empty($fork_data['field_set'][$char_index]['type']) ? '' : $fork_data['field_set'][$char_index]['type']);
+                    $type = (empty($fork_data['field_set'][$char_index-1]['type']) ? '' : $fork_data['field_set'][$char_index-1]['type']);
 
 
                     if ($type == 'html') {
@@ -397,15 +398,12 @@ function fork_export($job) {
 
                     }
 
-                    //print "$sql_field --> $_value\n";
 
-                    //  print_r($fork_data['field_set'][$char_index - 1]);
-
-                    // $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
 
                     if ($type == 'text') {
 
-                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
+
 
                     } else {
                         $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
@@ -518,11 +516,7 @@ function fork_export($job) {
             $output_file = $download_path.$output_filename.'.'.$output_type;
 
             $objPHPExcel->getActiveSheet()->setShowGridLines(false);
-            $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(
-                PageSetup::ORIENTATION_LANDSCAPE
-            );
-
-
+            $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
             IOFactory::createWriter($objPHPExcel, 'Pdf')->save($output_file);
             break;
 
