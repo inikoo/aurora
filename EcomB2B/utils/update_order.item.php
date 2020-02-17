@@ -155,6 +155,7 @@ function process_update_order_item($db,$order, $product_pid, $quantity, $website
 
         $class_html = array(
             'Deal_Amount_Off'         => $order->get('Deal Amount Off'),
+            'order_estimated_weight'       => $order->get('Estimated Weight'),
             'order_items_gross'       => $order->get('Items Gross Amount'),
             'order_items_discount'    => $order->get('Basket Items Discount Amount'),
             'order_items_net'         => $order->get('Items Net Amount'),

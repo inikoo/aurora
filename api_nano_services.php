@@ -55,6 +55,7 @@ switch ($_REQUEST['action']) {
 
             'Order Data' => array(
                 'Order Items Net Amount'                      => (isset($_REQUEST['items_net_amount'])?$_REQUEST['items_net_amount']:0),
+                'Order Estimated Weight'                      => (isset($_REQUEST['estimated_weight'])?$_REQUEST['estimated_weight']:0),
                 'Order Delivery Address Postal Code'          => (isset($_REQUEST['postal_code'])?$_REQUEST['postal_code']:''),
                 'Order Delivery Address Country 2 Alpha Code' => (isset($_REQUEST['country'])?$_REQUEST['country']:''), $_REQUEST['country'],
             )

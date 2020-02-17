@@ -12,6 +12,11 @@
 
 trait OrderCalculateTotals {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
+
     function update_totals() {
 
         $old_total = $this->get('Order Total Amount');
@@ -25,13 +30,12 @@ trait OrderCalculateTotals {
         $total_items_out_of_stock_amount = 0;
         $total_items_net                 = 0;
         $total_items_discounts           = 0;
-        $profit                          = 0;
-        $replacement_costs               = 0;
-        $items_cost                      = 0;
+
+        $replacement_costs = 0;
+        $items_cost        = 0;
 
 
-        $sql = sprintf(
-            "SELECT
+        $sql = "SELECT
 		count(*) AS number_items,
 		sum(`Cost Supplier`) AS cost,
 		sum(`Order Transaction Amount`) AS net ,
@@ -39,86 +43,69 @@ trait OrderCalculateTotals {
 		sum(`Order Transaction Out of Stock Amount`) AS out_of_stock ,
 		sum(if(`Order Transaction Total Discount Amount`!=0,1,0)) AS number_with_deals ,
 		sum(if(`No Shipped Due Out of Stock`!=0,1,0)) AS number_items_with_out_of_stock
-		FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Type`='Order' ", $this->id
+		FROM `Order Transaction Fact` WHERE `Order Key`=? AND `Order Transaction Type`='Order' ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $number_items                   = $row['number_items'];
+            $number_with_deals              = $row['number_with_deals'];
+            $number_items_with_out_of_stock = $row['number_items_with_out_of_stock'];
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                //print_r($row);
-
-                $number_items                   = $row['number_items'];
-                $number_with_deals              = $row['number_with_deals'];
-                $number_items_with_out_of_stock = $row['number_items_with_out_of_stock'];
-
-
-                $total_items_out_of_stock_amount = $row['out_of_stock'];
-                $total_items_gross               = $row['gross'];
-                $total_items_net                 = $row['net'];
-                $total_items_discounts           = $row['discounts'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+            $total_items_out_of_stock_amount = $row['out_of_stock'];
+            $total_items_gross               = $row['gross'];
+            $total_items_net                 = $row['net'];
+            $total_items_discounts           = $row['discounts'];
         }
 
 
         $items_net_for_profit_calculation = 0;
 
-        $sql = sprintf(
-            "SELECT sum(`Order Transaction Amount`) AS net ,sum(`Cost Supplier`) AS cost
-		
-		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
+        $sql = "SELECT sum(`Order Transaction Amount`) AS net ,sum(`Cost Supplier`) AS cost FROM `Order Transaction Fact` WHERE `Order Key`=?";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-        // print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $items_net_for_profit_calculation = $row['net'];
-                $items_cost                       = $row['cost'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+        if ($row = $stmt->fetch()) {
+            $items_net_for_profit_calculation = $row['net'];
+            $items_cost                       = $row['cost'];
         }
 
-        ////'Replacement & Shortages','Order','Replacement','Shortages','Sample','Donation'
 
-        $sql = sprintf(
-            "SELECT
-	
-		sum(`Delivery Note Items Cost`) AS replacements_cost 
-		
-		FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  AND `Delivery Note Type` IN ('Replacement & Shortages','Replacement','Shortages') ", $this->id
+        $sql  = "SELECT sum(`Delivery Note Items Cost`) AS replacements_cost FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=? AND `Delivery Note Type` IN ('Replacement & Shortages','Replacement','Shortages')";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $replacement_costs = $row['replacements_cost'];
-            }
+        if ($row = $stmt->fetch()) {
+            $replacement_costs = $row['replacements_cost'];
         }
+
 
         $profit = $items_net_for_profit_calculation - $items_cost - $replacement_costs;
 
-        $sql = sprintf(
-            "SELECT
-		count(DISTINCT `Order Transaction Fact Key`) AS number_with_problems
-		FROM `Order Post Transaction Dimension` WHERE `Order Key`=%d  ", $this->id
+        $sql = "SELECT count(DISTINCT `Order Transaction Fact Key`) AS number_with_problems FROM `Order Post Transaction Dimension` WHERE `Order Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_with_problems = $row['number_with_problems'];
-            }
+        if ($row = $stmt->fetch()) {
+            $number_with_problems = $row['number_with_problems'];
         }
-
-        //add items group by tax rate
 
 
         $total_net = 0;
@@ -126,51 +113,38 @@ trait OrderCalculateTotals {
         $data      = array();
 
 
-        //$base_tax_code='';
+        $sql = "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Order Key`=?  AND `Order Transaction Type`='Order' GROUP BY  `Transaction Tax Code`";
 
 
-        $sql = sprintf(
-            "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE
-		`Order Key`=%d  AND `Order Transaction Type`='Order' GROUP BY  `Transaction Tax Code`  ", $this->id
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-        //  print $sql;
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $data[$row['Transaction Tax Code']] = $row['net'];
-
-                //   $base_tax_code=$row['Transaction Tax Code'];//todo <-- this is used for assign the tax code to the amount off and may not work of is different taxt codes
-
-
-            }
+        while ($row = $stmt->fetch()) {
+            $data[$row['Transaction Tax Code']] = $row['net'];
+            //   $base_tax_code=$row['Transaction Tax Code'];//todo <-- this is used for assign the tax code to the amount off and may not work of is different tax codes
         }
+
 
         if ($this->data['Order Deal Amount Off'] != 0) {
             $data[$row['Transaction Tax Code']] -= $this->data['Order Deal Amount Off'];
         }
 
 
-        $sql = sprintf(
-            "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE
-		`Order Key`=%d  AND `Type`='Order' GROUP BY  `Tax Category Code`     ", $this->id
-
+        $sql  = "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Order Key`=?  AND `Type`='Order' GROUP BY `Tax Category Code`";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-        //print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if (isset($data[$row['Tax Category Code']])) {
-                    $data[$row['Tax Category Code']] += $row['net'];
-                } else {
-                    $data[$row['Tax Category Code']] = $row['net'];
-                }
-
-
+        while ($row = $stmt->fetch()) {
+            if (isset($data[$row['Tax Category Code']])) {
+                $data[$row['Tax Category Code']] += $row['net'];
+            } else {
+                $data[$row['Tax Category Code']] = $row['net'];
             }
         }
 
@@ -191,10 +165,6 @@ trait OrderCalculateTotals {
 
         }
 
-
-        //     print_r($total_net);
-
-
         $total = round($total_net + $total_tax, 2);
 
         $shipping  = 0;
@@ -211,65 +181,65 @@ trait OrderCalculateTotals {
         $total_insurance_gross_amount = 0;
 
 
-        $sql = sprintf(
-            "SELECT `Transaction Type`,  sum(`Transaction Net Amount`) AS net , sum(`Transaction Gross Amount`) AS gross ,sum(`Transaction Total Discount Amount`) AS discounts  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Type`='Order' GROUP BY  `Transaction Type`  ",
-            $this->id
+        $sql =
+            "SELECT `Transaction Type`,  sum(`Transaction Net Amount`) AS net , sum(`Transaction Gross Amount`) AS gross ,sum(`Transaction Total Discount Amount`) AS discounts  FROM `Order No Product Transaction Fact` WHERE `Order Key`=? AND `Type`='Order' GROUP BY `Transaction Type`";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+        while ($row = $stmt->fetch()) {
+            switch ($row['Transaction Type']) {
+                case 'Shipping':
+                    $shipping                    += $row['net'];
+                    $total_shipping_discounts    += $row['discounts'];
+                    $total_shipping_gross_amount += $row['gross'];
+                    break;
+                case 'Charges':
+                    $charges                    += $row['net'];
+                    $total_charges_discounts    += $row['discounts'];
+                    $total_charges_gross_amount += $row['gross'];
+                    break;
+                case 'Insurance':
+                    $insurance                    += $row['net'];
+                    $total_insurance_discounts    += $row['discounts'];
+                    $total_insurance_gross_amount += $row['gross'];
 
-                switch ($row['Transaction Type']) {
-                    case 'Shipping':
-                        $shipping                    += $row['net'];
-                        $total_shipping_discounts    += $row['discounts'];
-                        $total_shipping_gross_amount += $row['gross'];
-                        break;
-                    case 'Charges':
-                        $charges                    += $row['net'];
-                        $total_charges_discounts    += $row['discounts'];
-                        $total_charges_gross_amount += $row['gross'];
-                        break;
-                    case 'Insurance':
-                        $insurance                    += $row['net'];
-                        $total_insurance_discounts    += $row['discounts'];
-                        $total_insurance_gross_amount += $row['gross'];
-
-                        break;
-
-                }
-
+                    break;
 
             }
         }
 
+
         $payments = 0;
 
-        $sql = sprintf(
-            'SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Order Key`=%d AND `Payment Transaction Status`="Completed" ', $this->id
+        $sql  = "SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Order Key`=? AND `Payment Transaction Status`='Completed'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-        // print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $payments = round($row['amount'], 2);
-            }
+        if ($row = $stmt->fetch()) {
+            $payments = round($row['amount'], 2);
         }
 
 
         $total_refunds = 0;
 
-        $sql = sprintf('SELECT sum(`Invoice Total Amount`) AS amount FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d AND `Invoice Type`="Refund"  ', $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $total_refunds = round($row['amount'], 2);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        $sql  = "SELECT sum(`Invoice Total Amount`) AS amount FROM `Invoice Dimension` WHERE `Invoice Order Key`=? AND `Invoice Type`='Refund'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $total_refunds = round($row['amount'], 2);
         }
+
 
         $total_balance = $total + $total_refunds;
 
@@ -340,91 +310,23 @@ trait OrderCalculateTotals {
     function update_order_estimated_weight() {
 
         $order_estimated_weight = 0;
-        $sql                    = sprintf(
-            "SELECT sum(`Order Quantity`*`Product Package Weight`) as order_estimated_weight  FROM `Order Transaction Fact` OTF left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  WHERE `Order Key`=%d AND `Order Transaction Type`='Order' ", $this->id
+
+        $sql =
+            "SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Package Weight`) as order_estimated_weight  FROM `Order Transaction Fact` OTF left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  WHERE `Order Key`=? AND `Order Transaction Type`='Order'";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $order_estimated_weight = $row['order_estimated_weight'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+        if ($row = $stmt->fetch()) {
+            $order_estimated_weight = $row['order_estimated_weight'];
         }
 
         $this->fast_update(
             array(
                 'Order Estimated Weight' => $order_estimated_weight,
-
-
             )
         );
-
-
-    }
-
-    /**
-     *
-     * To be used only for fixing errors in payments (e.g. migration)
-     */
-    function update_order_payments() {
-
-
-        $total    = $this->get('Order Total Amount');
-        $payments = 0;
-
-        $sql = sprintf(
-            'SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Order Key`=%d AND `Payment Transaction Status`="Completed" ', $this->id
-        );
-
-        // print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $payments = round($row['amount'], 2);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $total_refunds = 0;
-
-        $sql = sprintf('SELECT sum(`Invoice Total Amount`) AS amount FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d AND `Invoice Type`="Refund"  ', $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $total_refunds = round($row['amount'], 2);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $total_balance = $total + $total_refunds;
-
-        $this->fast_update(
-            array(
-
-
-                'Order Payments Amount' => $payments,
-                'Order To Pay Amount'   => round($total_balance - $payments, 2),
-                'Order Total Refunds'   => $total_refunds,
-                'Order Total Balance'   => $total_balance,
-
-
-            )
-        );
-
-        $this->update_payment_state();
 
 
     }
@@ -433,4 +335,4 @@ trait OrderCalculateTotals {
 }
 
 
-?>
+

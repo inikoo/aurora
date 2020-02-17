@@ -2243,6 +2243,7 @@ trait OrderDiscountOperations {
                                     'shipping_zone_schema_key'  => $allowance_data['Shipping Zone Schema Key'],
                                     'Order Data' => array(
                                         'Order Items Net Amount'                      => $this->data['Order Items Net Amount'],
+                                        'Order Estimated Weight'                      => $this->data['Order Estimated Weight'],
                                         'Order Delivery Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
                                         'Order Delivery Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
                                     )

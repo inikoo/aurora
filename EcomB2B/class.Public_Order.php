@@ -432,7 +432,9 @@ class Public_Order extends DBW_Table {
                 } else {
                     return json_decode($this->data['Order Pinned Deal Components'], true);
                 }
+            case('Estimated Weight'):
 
+                return smart_weight($this->data['Order Estimated Weight']);
 
             default:
 

@@ -378,13 +378,16 @@ function weight($w, $unit = 'Kg', $number_decimals = 3, $simplify = false, $zero
 }
 
 
-function smart_weight($weight) {
-    if ($weight < 1) {
-        return weight($weight * 1000, 'g');
-    } elseif ($weight > 1000) {
-        return weight($weight / 1000, 't');
+function smart_weight($weight,$decimals=3){
+
+    if ($weight =='' or $weight==0) {
+        return '0g';
+    }elseif ($weight < 1) {
+        return weight($weight *1000, 'g',0);
+    }elseif ($weight > 1000) {
+        return weight($weight /1000, 't',$decimals);
     } else {
-        return weight($weight);
+        return weight($weight,'Kg',$decimals);
     }
 }
 

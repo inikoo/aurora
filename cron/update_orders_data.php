@@ -43,7 +43,6 @@ if ($result = $db->query($sql)) {
         $order->update_number_replacements(false);
         $order->update_order_estimated_weight();
 
-        // $order->update_order_payments();
 
     }
 

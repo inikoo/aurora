@@ -32,33 +32,51 @@
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}" data-order_key="{$order->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="min-height:500px;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
-    <div class="order_header  text_blocks  text_template_21">
+    <div class="order_header  text_blocks  text_template_3">
 
 
-                <div class="text_block '">
-                    <h2 class="order_number  {if !$order->id}hide{/if}">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h2>
-                    <div class="text_blocks text_template_2">
+        <div class="text_block '">
+            <h2 class="order_number  {if !$order->id}hide{/if}">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span
+                        class="order_number">{$order->get('Public ID')}</span></h2>
+            <div class="text_blocks text_template_2">
                 <div class="text_block ">
                     <h5>
                         <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
                         <i id="_delivery_address_icon" class="fa fa-fw fa-truck   " aria-hidden="true"></i>
-                        <span id="_delivery_address_label"  >{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
+                        <span id="_delivery_address_label">{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
                         </span>
 
 
                     </h5>
-                    <p ><div class="formatted_delivery_address">
+                    <p>
+                    <div class="formatted_delivery_address">
                         {if !$order->id}
                             {$customer_client->get('Customer Client Contact Address Formatted')}
                         {else}
                             {$order->get('Order Delivery Address Formatted')}
                         {/if}
-                    </div></p>
+                    </div>
+                    </p>
                 </div>
 
 
-                 </div>
-                </div>
+            </div>
+        </div>
+        <div class="totals text_block">
+            <table>
+                <tbody>
+                <tr >
+                    <td>{if !empty($labels._weight) }{$labels._weight}{else}{t}Weight{/t}{/if}</td>
+
+                    <td class="text-right order_estimated_weight ">{$order->get('Estimated Weight')}</td>
+                </tr>
+
+
+                </tbody>
+            </table>
+
+
+        </div>
                 <div class="totals text_block">
                     <table >
                         <tbody>
