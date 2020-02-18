@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 17 February 2016 at 20:36:41 GMT+8, Kuala Lumpur, Malysia
+ Created: 17 February 2016 at 20:36:41 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2016, Inikoo
 
@@ -177,6 +177,7 @@ trait ImageSubject {
 
             switch ($subject) {
                 case 'Part':
+                case 'Category':
                 case 'Product':
                     if ($object_image_scope == 'Marketing') {
                         $is_public = 'Yes';
@@ -186,14 +187,6 @@ trait ImageSubject {
                 case 'Website':
                 case 'Webpage':
                     $is_public = 'Yes';
-                    break;
-                case 'Category':
-                    if ($object_image_scope == 'Marketing') {
-
-                        $is_public = 'Yes';
-
-
-                    }
                     break;
             }
 
@@ -430,56 +423,52 @@ trait ImageSubject {
 
     }
 
-    function get_images_slidesshow() {
+    function get_images_slideshow() {
 
         include_once 'utils/natural_language.php';
 
 
         $image_subject_type = $this->table_name;
 
-
-        $sql = sprintf(
-            "SELECT `Image Subject Key`,`Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Order`,`Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
-            prepare_mysql($image_subject_type), $this->id
-        );
-        //print $sql;
         $images_slideshow = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
 
-                if ($row['Image Height'] != 0) {
-                    $ratio           = sprintf('%.5f', $row['Image Width'] / $row['Image Height']);
-                    $formatted_ratio = sprintf('%.2f', $row['Image Width'] / $row['Image Height']);
-                } else {
-                    $ratio           = 1;
-                    $formatted_ratio = '-';
-                }
-                // print_r($row);
-                $images_slideshow[] = array(
-                    'name'            => $row['Image Filename'],
-                    'small_url'       => 'image.php?id='.$row['Image Key'].'&s=320x280',
-                    'thumbnail_url'   => 'image.php?id='.$row['Image Key'].'&s=25x20',
-                    'normal_url'      => 'image.php?id='.$row['Image Key'],
-                    'filename'        => $row['Image Filename'],
-                    'ratio'           => $ratio,
-                    'formatted_ratio' => $formatted_ratio,
+        $sql =
+            "SELECT `Image Subject Key`,`Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=? AND   `Image Subject Object Key`=? ORDER BY `Image Subject Order`,`Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`";
 
-                    'caption'           => $row['Image Subject Image Caption'],
-                    'is_principal'      => $row['Image Subject Is Principal'],
-                    'id'                => $row['Image Key'],
-                    'size'              => file_size($row['Image File Size']),
-                    'width'             => $row['Image Width'],
-                    'height'            => $row['Image Height'],
-                    'image_subject_key' => $row['Image Subject Key']
-
-                );
-
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $image_subject_type,
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if ($row['Image Height'] != 0) {
+                $ratio           = sprintf('%.5f', $row['Image Width'] / $row['Image Height']);
+                $formatted_ratio = sprintf('%.2f', $row['Image Width'] / $row['Image Height']);
+            } else {
+                $ratio           = 1;
+                $formatted_ratio = '-';
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
+            $images_slideshow[] = array(
+                'name'              => $row['Image Filename'],
+                'small_url'         => 'image.php?id='.$row['Image Key'].'&s=320x280',
+                'thumbnail_url'     => 'image.php?id='.$row['Image Key'].'&s=25x20',
+                'normal_url'        => 'image.php?id='.$row['Image Key'],
+                'filename'          => $row['Image Filename'],
+                'ratio'             => $ratio,
+                'formatted_ratio'   => $formatted_ratio,
+                'caption'           => $row['Image Subject Image Caption'],
+                'is_principal'      => $row['Image Subject Is Principal'],
+                'id'                => $row['Image Key'],
+                'size'              => file_size($row['Image File Size']),
+                'width'             => $row['Image Width'],
+                'height'            => $row['Image Height'],
+                'image_subject_key' => $row['Image Subject Key']
+
+            );
         }
+
 
         return $images_slideshow;
     }

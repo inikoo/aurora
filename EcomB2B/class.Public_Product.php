@@ -978,7 +978,55 @@ class Public_Product {
         return $parent_categories;
     }
 
+    function get_images_slideshow() {
 
+        include_once __DIR__.'/utils/natural_language.php';
+
+
+        $image_subject_type = $this->table_name;
+
+        $images_slideshow = array();
+
+        $sql =
+            "SELECT `Image Subject Key`,`Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=? AND   `Image Subject Object Key`=? ORDER BY `Image Subject Order`,`Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $image_subject_type,
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if ($row['Image Height'] != 0) {
+                $ratio           = sprintf('%.5f', $row['Image Width'] / $row['Image Height']);
+                $formatted_ratio = sprintf('%.2f', $row['Image Width'] / $row['Image Height']);
+            } else {
+                $ratio           = 1;
+                $formatted_ratio = '-';
+            }
+            $images_slideshow[] = array(
+                'name'              => $row['Image Filename'],
+                'small_url'         => 'image.php?id='.$row['Image Key'].'&s=320x280',
+                'thumbnail_url'     => 'image.php?id='.$row['Image Key'].'&s=25x20',
+                'normal_url'        => 'image.php?id='.$row['Image Key'],
+                'filename'          => $row['Image Filename'],
+                'ratio'             => $ratio,
+                'formatted_ratio'   => $formatted_ratio,
+                'caption'           => $row['Image Subject Image Caption'],
+                'is_principal'      => $row['Image Subject Is Principal'],
+                'id'                => $row['Image Key'],
+                'size'              => file_size($row['Image File Size']),
+                'width'             => $row['Image Width'],
+                'height'            => $row['Image Height'],
+                'image_subject_key' => $row['Image Subject Key']
+
+            );
+        }
+
+
+        return $images_slideshow;
+    }
 
 }
 

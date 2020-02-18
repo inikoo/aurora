@@ -50,8 +50,8 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Public_Store($key);
             break;
         case 'image':
-            include_once 'class.Image.php';
-            $object = new Image($key);
+            include_once 'class.Public_Image.php';
+            $object = new Public_Image($key);
             break;
         case 'product':
         case 'service':
@@ -161,6 +161,10 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'customer_client':
             require_once "class.Public_Customer_Client.php";
             $object = new Public_Customer_Client($key);
+            break;
+        case 'category':
+            require_once "class.Public_Category.php";
+            $object = new Public_Category($key);
             break;
         default:
             exit('need to complete Pub  E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");

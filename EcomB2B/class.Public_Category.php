@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection DuplicatedCode */
 
 /*
  About:
@@ -12,6 +12,30 @@
 
 
 class Public_Category {
+
+    /**
+     * @var \PDO
+     */
+    public $db;
+
+    /**
+     * @var string|bool
+     */
+    public $id = false;
+    /**
+     * @var array
+     */
+    public $data;
+
+    /**
+     * @var string|bool
+     */
+    public $webpage = false;
+    /**
+     * @var string
+     */
+    public $table_name;
+
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
@@ -57,7 +81,7 @@ class Public_Category {
                 break;
         }
 
-       // print "$sql\n";
+        // print "$sql\n";
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Category Key'];
@@ -82,7 +106,7 @@ class Public_Category {
 
     function load_webpage() {
 
-        include_once 'class.Public_Webpage.php';
+        include_once __DIR__.'/class.Public_Webpage.php';
 
 
         $this->webpage = new Public_Webpage('scope', ($this->get('Category Subject') == 'Category' ? 'Category Categories' : 'Category Products'), $this->id);
@@ -94,6 +118,7 @@ class Public_Category {
         switch ($key) {
 
             case 'Product Category Status':
+            case 'Product Category Webpage Key':
             case 'Category Subject':
                 return $this->data[$key];
                 break;
@@ -101,6 +126,7 @@ class Public_Category {
             case 'Code':
             case 'Scope':
             case 'Label':
+            case 'Store Key':
                 return $this->data['Category '.$key];
                 break;
             case 'Description':
@@ -123,6 +149,7 @@ class Public_Category {
 
         }
 
+        return false;
     }
 
 
@@ -132,64 +159,11 @@ class Public_Category {
     }
 
 
-    function get_parent_categories($scope = 'keys') {
-
-
-        $type              = 'Category';
-        $parent_categories = array();
-
-        $sql = sprintf(
-            "SELECT `Webpage Code`,B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` 
-        FROM `Category Bridge` B 
-        LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) 
-        LEFT JOIN `Page Store Dimension` W ON (W.`Webpage Scope Key`=B.`Category Key` AND `Webpage Scope`=%s) 
-
-          WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
-
-            prepare_mysql('Category Categories'),
-
-            $this->id, prepare_mysql($type)
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'keys') {
-                    $parent_categories[$row['Category Key']] = $row['Category Key'];
-                } elseif ($scope == 'objects') {
-                    $parent_categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
-                } elseif ($scope == 'data') {
-
-
-                    $value = $row['Category Label'];
-
-                    $parent_categories[] = array(
-
-                        'label'        => $row['Category Label'],
-                        'code'         => $row['Category Code'],
-                        'value'        => $value,
-                        'category_key' => $row['Category Key'],
-                        'webpage_code' => strtolower($row['Webpage Code'])
-                    );
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $parent_categories;
-    }
-
-
     function get_deal_components($scope = 'keys', $options = 'Active') {
 
         switch ($options) {
             case 'Active':
-                $where = 'AND `Deal Component Status`=\'Active\'';
+                $where = "AND `Deal Component Status`='Active'";
                 break;
             default:
                 $where = '';
@@ -200,24 +174,23 @@ class Public_Category {
         $deal_components = array();
 
 
-        $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where", $this->id
+        $sql =
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension`  left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)   WHERE  `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=? $where";
+
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'objects') {
-                    $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
-                } else {
-                    $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
-                }
-
-
+        while ($row = $stmt->fetch()) {
+            if ($scope == 'objects') {
+                $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
+            } else {
+                $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -226,127 +199,59 @@ class Public_Category {
 
     }
 
+    function get_images_slideshow() {
 
-    function get_prev_category($scope = 'data') {
+        include_once __DIR__.'/utils/natural_language.php';
 
 
-        $prev_product = false;
+        $image_subject_type = $this->table_name;
 
-        $sql = sprintf(
-            "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND (`Product Code File As` < %s OR (`Product Code File As` = %s AND P.`Product ID` < %d)) ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
-            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
+        $images_slideshow = array();
 
+        $sql =
+            "SELECT `Image Subject Key`,`Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=? AND   `Image Subject Object Key`=? ORDER BY `Image Subject Order`,`Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $image_subject_type,
+                $this->id
+            )
         );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $prev_product = array(
-                    'webpage_code' => $row['Webpage Code'],
-                    'name'         => $row['Category Label']
-                );
+        while ($row = $stmt->fetch()) {
+            if ($row['Image Height'] != 0) {
+                $ratio           = sprintf('%.5f', $row['Image Width'] / $row['Image Height']);
+                $formatted_ratio = sprintf('%.2f', $row['Image Width'] / $row['Image Height']);
             } else {
-
-                $sql = sprintf(
-                    "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing')  AND   P.`Product ID`!=%d  ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
-                    $this->data['Product Family Category Key'], $this->id
-
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_product = array(
-                            'webpage_code' => $row['Webpage Code'],
-                            'name'         => $row['Category Label']
-                        );
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
+                $ratio           = 1;
+                $formatted_ratio = '-';
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+            $images_slideshow[] = array(
+                'name'              => $row['Image Filename'],
+                'small_url'         => 'image.php?id='.$row['Image Key'].'&s=320x280',
+                'thumbnail_url'     => 'image.php?id='.$row['Image Key'].'&s=25x20',
+                'normal_url'        => 'image.php?id='.$row['Image Key'],
+                'filename'          => $row['Image Filename'],
+                'ratio'             => $ratio,
+                'formatted_ratio'   => $formatted_ratio,
+                'caption'           => $row['Image Subject Image Caption'],
+                'is_principal'      => $row['Image Subject Is Principal'],
+                'id'                => $row['Image Key'],
+                'size'              => file_size($row['Image File Size']),
+                'width'             => $row['Image Width'],
+                'height'            => $row['Image Height'],
+                'image_subject_key' => $row['Image Subject Key']
+
+            );
         }
 
 
-        return $prev_product;
-
-
+        return $images_slideshow;
     }
 
 
-    function get_next_category($scope = 'data') {
-        $next_product = false;
-
-
-        $sql = sprintf(
-            "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Category Dimension` P ON (`Subject Key`=`Category Key`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE `Subject`='Category' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') 
-              AND (`Product Code File As` > %s OR (`Product Code File As` = %s AND P.`Product ID` > %d)) ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
-            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $next_product = array(
-                    'webpage_code' => $row['Webpage Code'],
-                    'name'         => $row['Category Label']
-                );
-            } else {
-
-                $sql = sprintf(
-                    "SELECT `Webpage Code`,`Category Label` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND   P.`Product ID`!=%d  ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
-                    $this->data['Product Family Category Key'], $this->id
-
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_product = array(
-                            'webpage_code' => $row['Webpage Code'],
-                            'name'         => $row['Category Label']
-                        );
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $next_product;
-
-    }
-    
 
 
 }
 
 
-?>

@@ -817,7 +817,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (isset($data['response_type']) and $data['response_type'] == 'upload_item_image') {
-                $response['images'] = $parent->get_images_slidesshow();
+                $response['images'] = $parent->get_images_slideshow();
 
             }
 

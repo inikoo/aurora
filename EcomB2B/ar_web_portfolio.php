@@ -280,6 +280,11 @@ function portfolio_items($_data, $db) {
 }
 
 
+/**
+ * @param $data
+ * @param $db \PDO
+ * @param $customer_key
+ */
 function category_products($data, $db, $customer_key) {
 
 
@@ -293,6 +298,7 @@ function category_products($data, $db, $customer_key) {
 
     $sql =
         "SELECT `Customer Portfolio Product ID` FROM `Customer Portfolio Fact`  left join `Website Webpage Scope Map` on (`Customer Portfolio Product ID`=`Website Webpage Scope Scope Key`)  WHERE  `Website Webpage Scope Scope`='Product' and   `Customer Portfolio Customers State`='Active'     and `Customer Portfolio Customer Key`=? and `Website Webpage Scope Webpage Key`=?";
+
 
     $stmt = $db->prepare($sql);
     $stmt->execute(
@@ -328,8 +334,11 @@ function category_products($data, $db, $customer_key) {
         $stmt->execute(
             array($data['webpage_key'])
         );
+
+
         while ($row = $stmt->fetch()) {
-            //'Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand'
+
+
 
             switch ($row['Product Availability State']) {
                 case 'OnDemand':

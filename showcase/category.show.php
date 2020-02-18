@@ -19,7 +19,7 @@ function get_category_showcase($data, $smarty) {
         return "";
     }
 
-    $images = $category->get_images_slidesshow();
+    $images = $category->get_images_slideshow();
 
     if (count($images) > 0) {
         $main_image = $images[0];

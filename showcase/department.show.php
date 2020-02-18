@@ -31,7 +31,7 @@ function get_department_showcase($data, $smarty) {
 
     $smarty->assign('category', $category);
 
-    $images = $category->get_images_slidesshow();
+    $images = $category->get_images_slideshow();
 
     if (count($images) > 0) {
         $main_image = $images[0];

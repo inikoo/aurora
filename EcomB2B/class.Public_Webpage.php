@@ -13,6 +13,11 @@
 
 class Public_Webpage {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
+
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;
