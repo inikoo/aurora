@@ -722,6 +722,9 @@
 
                                             state = data.app_state;
 
+                                            $('.images_zip').removeClass('hide').attr('href',data.images_zip_url)
+                                            $('.data_feed').removeClass('hide').attr('href',data.data_feed_url)
+
                                             $('#table_container').html(data.html)
                                         }
 

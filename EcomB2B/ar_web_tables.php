@@ -225,10 +225,13 @@ function get_portfolio_table_html($data, $customer) {
         'tab' => ''
     ];
 
+
     $response = array(
         'state'     => 200,
         'app_state' => $state,
-        'html'      => $html
+        'html'      => $html,
+        'images_zip_url'=>'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=images&scope=portfolio_images',
+        'data_feed_url'=>'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=CSV&scope=portfolio_items',
     );
     echo json_encode($response);
 

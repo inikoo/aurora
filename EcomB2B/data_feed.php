@@ -9,16 +9,14 @@
 
  Version 3.0
 */
+require_once 'utils/object_functions.php';
 
-use Gumlet\ImageResize;
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
-use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 include_once 'utils/general_functions.php';
 
@@ -36,7 +34,8 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 require_once __DIR__.'/../vendor/autoload.php';
 
 
-$sql  = "select `Customer Key` ,`Website URL` from `Customer Dimension` left join `Website User Dimension` on (`Customer Key`=`Website User Customer Key`) left join `Website Dimension` on (`Website User Website Key`=`Website Key`)    where `Website User Static API Hash`=? and `Website User Key`=?  ";
+$sql  =
+    "select `Customer Key` ,`Website URL` from `Customer Dimension` left join `Website User Dimension` on (`Customer Key`=`Website User Customer Key`) left join `Website Dimension` on (`Website User Website Key`=`Website Key`)    where `Website User Static API Hash`=? and `Website User Key`=?  ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     array(
@@ -50,11 +49,6 @@ if ($row = $stmt->fetch()) {
         case 'portfolio_items':
 
             include_once 'conf/export_fields.php';
-
-
-
-
-
 
             $objPHPExcel = new Spreadsheet();
             Cell::setValueBinder(new AdvancedValueBinder());
@@ -86,7 +80,6 @@ if ($row = $stmt->fetch()) {
             $sql = preg_replace('/,$/', ' from ', $sql);
             $sql .= " `Customer Portfolio Fact` CPF left join `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)    left join `Page Store Dimension` W on (`Product Webpage Key`=`Page Key`) ";
             $sql .= "where `Customer Portfolio Customer Key`=? and   `Customer Portfolio Customers State`='Active'";
-
 
 
             $placeholders = array(
@@ -233,9 +226,54 @@ if ($row = $stmt->fetch()) {
             }
 
 
-            exit;
             break;
-        case 'images':
+        case 'portfolio_images':
+            $counter = 1;
+            $files = array();
+
+            $sql  = "SELECT  `Customer Portfolio Product ID` FROM  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Customers State`='Active' ";
+            $stmt2 = $db->prepare($sql);
+            $stmt2->execute(
+                array(
+                    $row['Customer Key']
+                )
+            );
+            while ($row2 = $stmt2->fetch()) {
+                $product = get_object('Product', $row2['Customer Portfolio Product ID']);
+                $counter = 1;
+                foreach ($product->get_images_slideshow() as $data) {
+
+                    $files[] = array(
+                        'name'      => strtolower($product->get('Code')).sprintf('_%02d', $counter),
+                        'image_key' => $data['id'],
+                        'folder'    => ''
+                    );
+                    $counter++;
+                }
+            }
+
+
+            $zip = new ZipArchive();
+
+            $tmp_file = tempnam('server_files/tmp/', 'webpage_images_zip_');
+
+            $zip->open($tmp_file, ZipArchive::CREATE);
+
+
+            foreach ($files as $file) {
+                $image = get_object('image', $file['image_key']);
+                $zip->addFile('../'.$image->get('Image Path'), $file['folder'].basename($file['name'].'.'.$image->get('Image File Format')));
+
+            }
+
+
+            $zip->close();
+
+
+            header('Content-disposition: attachment; filename=portfolio_images.zip');
+            header('Content-type: application/zip');
+            readfile($tmp_file);
+            unlink($tmp_file);
 
             break;
         default:

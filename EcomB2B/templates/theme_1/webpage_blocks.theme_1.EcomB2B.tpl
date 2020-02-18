@@ -100,6 +100,20 @@
 
             {/if}
 
+            {if $webpage->get('Webpage Code')=='portfolio.sys' and $logged_in}
+
+                    <div style="border-bottom: 1px solid #ccc;height: 35px;line-height: 35px;padding: 0 20px">
+
+                        <a class="hide images_zip"  href=""><i class="fal fa-images"></i> {t}Portfolio Images{/t} (.zip)</a>
+                        <a class="hide data_feed" style="margin-left: 30px"  href=""><i class="fal fa-database"></i> {t}Portfolio products data feed{/t}</a>
+
+                    </div>
+
+
+
+
+            {/if}
+
             {if !empty($content.blocks) and  $content.blocks|is_array}
                 {foreach from=$content.blocks item=$block key=key}
 

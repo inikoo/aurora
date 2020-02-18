@@ -11,7 +11,6 @@
 
 
 require_once 'utils/object_functions.php';
-include_once 'utils/object_functions.php';
 
 
 if (empty($_REQUEST['scope']) or empty($_REQUEST['scope_key'])  or !in_array(strtolower($_REQUEST['scope']),['category','product'])  ) {
