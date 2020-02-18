@@ -1544,6 +1544,7 @@ function shipping_zones($_data, $db, $user) {
 
 
 
+
                 foreach ($territories_data as $territory) {
                     $territories .= '<img class="padding_left_5" style="height:12.5px" src="/art/flags/'.strtolower($territory['country_code']).'.png"> '.$territory['country_code'];
 
@@ -1565,13 +1566,17 @@ function shipping_zones($_data, $db, $user) {
 
                     $price .= '<div class="as_table">';
                     foreach ($price_data['steps'] as $step) {
+
+
                         $price .= '<div class="as_row">';
 
                         $price .= '<div class="as_cell  width_75"><span class="discreet">'._('Items').' <i class="fa fa-dollar-sign"></i></span> </div>';
 
                         $to = ($step['to'] == 'INF' ? '<i class="fal fa-infinity"></i>' : money($step['to'], $_data['parameters']['store_currency']));
 
-                        if($step['price'] =='TBC'){
+
+                        if($step['price'] ==='TBC'){
+
                             $amount='TBC';
                         }else{
                             $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
@@ -1596,7 +1601,7 @@ function shipping_zones($_data, $db, $user) {
 
 
 
-                        if($step['price'] =='TBC'){
+                        if($step['price'] ==='TBC'){
                             $amount='TBC';
                         }else{
                             $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
