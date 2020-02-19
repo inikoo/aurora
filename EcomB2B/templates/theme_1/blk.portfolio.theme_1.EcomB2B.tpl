@@ -14,7 +14,7 @@
 
 
 
-<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}    {if !$data.show}hide{/if}" style="padding-top:0;padding-bottom:{$bottom_margin}px">
+<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}    {if !$data.show}hide{/if}"  data-ar_url="/ar_web_portfolio.php" style="padding-top:0;padding-bottom:{$bottom_margin}px">
 
 
     <div class="table_top">

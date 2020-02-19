@@ -261,13 +261,11 @@ function portfolio_items($_data, $db) {
                 'price'        => money($data['Product Price'], $data['Store Currency Code']),
                 'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),
                 'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),
-
                 'amount' => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
-
                 'qty'        => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
                 'orders'     => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
                 'clients'    => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients'])),
-                'operations' => '<i class="far button fa-trash-alt" onclick="remove_item_from_portfolio(this,'.$data['Customer Portfolio Customer Key'].','.$data['Product ID'].')" ></i>'
+                'operations' => '<i class="far like_button fa-trash-alt" onclick="remove_item_from_portfolio(this,'.$data['Customer Portfolio Customer Key'].','.$data['Product ID'].')" ></i>'
 
             );
 

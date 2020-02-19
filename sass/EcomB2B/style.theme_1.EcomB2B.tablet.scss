@@ -1284,6 +1284,11 @@ i.product_stock_dot {
 @import 'square_buttons.scss';
 
 
+.table .backgrid tr td{
+  padding: 3px 4px;border:none;border-bottom: 1px solid #e0e0e0;
+}
+
+
 .table_inline_edit{
   .save.valid{
     cursor:pointer;color:$color_save;

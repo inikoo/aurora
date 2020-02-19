@@ -36,10 +36,6 @@
             s.parentNode.insertBefore(wf, s);
 
             {/if}
-
-
-
-
             $('#header_search_icon').on("click", function () {
                 window.location.href = "search.sys?q=" + encodeURIComponent($('#header_search_input').val());
             });
@@ -61,9 +57,6 @@
                 if($('#search_input').val()!=''){
                     search($('#search_input').val())
                 }
-
-
-
 
                 {/if}
                 {if $with_basket==1}
@@ -176,6 +169,7 @@
                 getScript("/assets/mobile.logged_in.min.js", function () {
                     getScript("/assets/mobile.forms.min.js", function () {
                         getScript("/assets/mobile.checkout.min.js", function () {
+
                             let checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix=tablet";
                             if(getUrlParameter('order_key')!=undefined){
                                 checkout_request+='&client_order_key='+getUrlParameter('order_key')
@@ -183,23 +177,23 @@
 
                             $.getJSON(checkout_request, function (data) {
 
-                                $('#checkout').html(data.html)
+                                $('#checkout').html(data.html);
 
 
-                                $("form").submit(function(e) {
+                                $("form").on( "submit",
+                                    function(e) {
 
-                                    e.preventDefault();
-                                    e.returnValue = false;
+                                        e.preventDefault();
+                                        e.returnValue = false;
 
-
-                                });
-
+                                    }
+                                )
 
 
                             })
                         })
                     })
-                })
+                });
 
                 {/if}
                 {if $with_favourites==1}
@@ -250,7 +244,7 @@
 
                 {/if}
                 {if $with_profile==1}
-                getScript("/assets/mobile.forms.min.js", function () {
+                    getScript("/assets/mobile.forms.min.js", function () {
                     getScript("/assets/mobile.profile.min.js", function () {
                     $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=tablet", function (data) {
 
@@ -706,28 +700,22 @@
 
                 {/if}
                 {if $with_portfolio==1}
-                getScript("/assets/datatables.min.js", function () {
+                    getScript("/assets/datatables.min.js", function () {
 
-                    const request_data ={ "tipo":'portfolio'}
+                    const request_data ={ "tipo":'portfolio',"device_prefix" :'tablet' };
                     $.ajax({
 
                         url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-                            if (data.state == 200) {
+                                if (data.state == 200) {
+                                    state = data.app_state;
+                                    $('.images_zip').removeClass('hide').attr('href',data.images_zip_url);
+                                    $('.data_feed').removeClass('hide').attr('href',data.data_feed_url);
+                                    $('#table_container').html(data.html);
+                                }
 
-                                state = data.app_state;
-
-                                $('.images_zip').removeClass('hide').attr('href',data.images_zip_url)
-                                $('.data_feed').removeClass('hide').attr('href',data.data_feed_url)
-
-                                $('#table_container').html(data.html)
                             }
-
-                        }
-                    });
-
-
-
-                })
+                        });
+                    })
                 {/if}
                 {if $with_clients==1}
                 getScript("/assets/mobile.forms.min.js", function () {
@@ -902,13 +890,7 @@
                     } );
                 })
                 {/if}
-
-
-
-
-
-
-            {if $with_login==1}
+                {if $with_login==1}
 
                 getScript("/assets/mobile.forms.min.js", function () {
 
@@ -1207,7 +1189,6 @@
 
 
                 {/if}
-
                 {if $logged_in}
                     {if $store->get('Store Type')=='Dropshipping' }
                         {if $with_products_portfolio==1}
@@ -1284,11 +1265,7 @@
                 {/if}
 
             })
-
-
         })
-
-
 
 
         {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}

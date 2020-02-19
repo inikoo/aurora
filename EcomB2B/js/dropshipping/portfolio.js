@@ -435,7 +435,7 @@ function remove_item_from_portfolio(element,customer_key,product_id) {
 
     var request = $.ajax({
 
-        url: $('#add_item_to_portfolio_form').data("ar_url"),
+        url: $('.portfolio').data("ar_url"),
         data: form_data,
         processData: false,
         contentType: false,

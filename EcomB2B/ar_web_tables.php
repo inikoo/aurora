@@ -114,6 +114,13 @@ switch ($tipo) {
 function get_portfolio_table_html($data, $customer) {
 
 
+    if(!isset($data['device_prefix'])){
+        $device_prefix='';
+    }else{
+        $device_prefix=$data['device_prefix'];
+
+    }
+
     include_once '../conf/export_fields.php';
     include_once '../conf/elements_options.php';
 
@@ -152,9 +159,14 @@ function get_portfolio_table_html($data, $customer) {
         //    'f_period'      => 'ytd',
         'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
         'elements'      => get_elements_option('customer_portfolio'),
-        'export_fields' => get_export_fields('portfolio_items')
 
     );
+
+
+    if($device_prefix==''){
+        $default['export_fields']=get_export_fields('portfolio_items');
+    }
+
 
     $table_views = array(
         'overview' => array('label' => _('Overview')),
@@ -185,33 +197,33 @@ function get_portfolio_table_html($data, $customer) {
 
 
     $table_buttons = array();
+    if($device_prefix=='') {
+        $table_buttons[] = array(
+            'icon'                  => 'plus',
+            'title'                 => _("Add product to portfolio"),
+            'id'                    => 'add_to_portfolio',
+            'class'                 => 'items_operation',
+            'add_item_to_portfolio' => array(
 
-    $table_buttons[] = array(
-        'icon'                  => 'plus',
-        'title'                 => _("Add product to portfolio"),
-        'id'                    => 'add_to_portfolio',
-        'class'                 => 'items_operation',
-        'add_item_to_portfolio' => array(
-
-            'field_label' => _("Product").':',
-            'ar_url'      => '/ar_web_portfolio.php',
-            'metadata'    => base64_encode(
-                json_encode(
-                    array(
+                'field_label' => _("Product").':',
+                'ar_url'      => '/ar_web_portfolio.php',
+                'metadata'    => base64_encode(
+                    json_encode(
+                        array(
 
 
-                        'scope'      => 'product',
-                        'parent'     => 'Store',
-                        'parent_key' => $store->id,
-                        'options'    => array('for_order'),
+                            'scope'      => 'product',
+                            'parent'     => 'Store',
+                            'parent_key' => $store->id,
+                            'options'    => array('for_order'),
+                        )
                     )
                 )
+
             )
 
-        )
-
-    );
-
+        );
+    }
 
     $smarty->assign('web_user', $web_user);
 
