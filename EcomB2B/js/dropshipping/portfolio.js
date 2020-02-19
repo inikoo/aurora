@@ -48,6 +48,28 @@ $(function () {
                 }
 
 
+                let number_items_in_family=0;
+                let number_products_in_portfolio_in_family=0;
+
+
+
+                $('.category_products.dropshipping .portfolio_row').each(function(i, obj) {
+
+
+                    number_items_in_family++
+                    let _portfolio_row=$(obj).find('.add_to_portfolio');
+                    if(_portfolio_row.hasClass('hide')){
+                        number_products_in_portfolio_in_family++
+
+                    }
+                });
+
+
+
+                $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
+                $('.number_products_in_family').html(number_items_in_family)
+
+
             }, error: function () {
 
             }
@@ -262,7 +284,6 @@ function save_add_item_to_portfolio() {
             for (var key in data.update_metadata.show) {
                 $('#' + data.update_metadata.show[key]).removeClass('hide')
             }
-
 
 
 

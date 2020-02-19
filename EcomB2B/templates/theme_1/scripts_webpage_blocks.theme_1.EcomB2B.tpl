@@ -1391,12 +1391,36 @@
                                     portfolio_row.find('.add_to_portfolio').addClass('hide')
                                     portfolio_row.find('.remove_from_portfolio').removeClass('hide')
                                 });
+
+
                                 $.each(data.stock, function (index, value) {
                                     if (value[0] != '') {
                                         $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
                                         $('.product_stock_label_' + index).html(value[1])
                                     }
+
+
                                 });
+
+
+                                let number_items_in_family=0;
+                                let number_products_in_portfolio_in_family=0;
+                                $.each(data.stock, function (index, value) {
+
+                                    if (value[2] === 'Category_Products_Item') {
+                                        number_items_in_family++
+                                        let _portfolio_row=$('.portfolio_row_' + index+' .add_to_portfolio');
+                                        if(_portfolio_row.hasClass('hide')){
+                                            number_products_in_portfolio_in_family++
+
+                                        }
+                                    }
+
+                                });
+                                $('.portfolio_in_family').removeClass('hide')
+                                $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
+                                $('.number_products_in_family').html(number_items_in_family)
+
                             });
 
                     {/if}

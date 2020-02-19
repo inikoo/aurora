@@ -89,10 +89,10 @@
             {if $webpage->get('Webpage Scope')=='Category Products'}
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
                     <div style="border-bottom: 1px solid #ccc;height: 35px;line-height: 35px;padding: 0 20px">
-                        <span class="number_products"></span>
-                        <a href="catalog_images.zip.php?scope=category&scope_key={$webpage->get('Webpage Scope Key')}"><i class="fal fa-images"></i> {t}Images (including products){/t}</a>
-                        <a style="margin-left: 30px" href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}"><i class="fal fa-database"></i> {t}Families’ products data feed{/t}</a>
 
+                        <a href="catalog_images.zip.php?scope=category&scope_key={$webpage->get('Webpage Scope Key')}"><i class="fal fa-images"></i> {t}Families' images (including products){/t}</a>
+                        <a style="margin-left: 30px" href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}"><i class="fal fa-database"></i> {t}Families’ products data feed{/t}</a>
+                        <div class="portfolio_in_family hide" style="float:right" ><i class="fa fa-store-alt "></i> <span class="number_products_in_portfolio_in_family"></span>/<span class="number_products_in_family"></span> </div>
                     </div>
 
 

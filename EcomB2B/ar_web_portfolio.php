@@ -329,7 +329,7 @@ function category_products($data, $db, $customer_key) {
         }
 
         $sql  =
-            "select `Product Availability State`,`Product Availability`,`Product ID` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
+            "select `Product Availability State`,`Product Availability`,`Product ID`,`Website Webpage Scope Type` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array($data['webpage_key'])
@@ -337,7 +337,6 @@ function category_products($data, $db, $customer_key) {
 
 
         while ($row = $stmt->fetch()) {
-
 
 
             switch ($row['Product Availability State']) {
@@ -381,7 +380,8 @@ function category_products($data, $db, $customer_key) {
 
             $stock[$row['Product ID']] = array(
                 $row['Product Availability State'],
-                $stock_label
+                $stock_label,
+                $row['Website Webpage Scope Type']
             );
 
         }
@@ -462,8 +462,9 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
             )
         );
         $customer_portfolio_key = $db->lastInsertId();
-        $sql                    = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
-        $stmt                   = $db->prepare($sql);
+
+        $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
+        $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
                 $customer_portfolio_key,
