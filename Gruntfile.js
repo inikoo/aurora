@@ -104,7 +104,7 @@ module.exports = function (grunt) {
                 options: {
 
                     sourceMap: true,
-                }, src: ['EcomB2B/js/libs/jquery.3.2.1.js', 'EcomB2B/js/libs/mobile_plugins.js', 'EcomB2B/js/au_header/search.js'],
+                }, src: [ 'EcomB2B/js/libs/mobile_plugins.js', 'EcomB2B/js/au_header/search.js'],
                 dest: 'EcomB2B/assets/mobile.min.js',
 
             }, ecom_mobile_custom: {

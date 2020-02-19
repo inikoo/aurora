@@ -129,9 +129,12 @@
     {/if}
 
     <link rel="canonical" href="{$webpage->get('URL')}"/>
-    {if $logged_in or isset($is_unsubscribe) }
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    {/if}
+
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+
     {if $logged_in and $store->get('Store Type')=='Dropshipping' }
         <script src="/assets/dropshipping.logged_in.min.js"></script>
     {/if}
