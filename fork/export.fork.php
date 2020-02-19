@@ -52,6 +52,7 @@ function fork_export($job) {
     $download_key = $fork_data['download_key'];
 
 
+
     $creator     = 'aurora.systems';
     $title       = _('Report');
     $subject     = _('Report');
@@ -174,7 +175,6 @@ function fork_export($job) {
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
-
 
             if ($row_index == 1) {
 
