@@ -326,7 +326,7 @@
 
                         $.getJSON(checkout_request, function (data) {
 
-                            $('#bottom_header  .control_panel').html('<a id="go_back_basket hide"  href="'+data.basket_url+'" class="button"><i class="far fa-arrow-alt-left  " title="{t}Go back to basket{/t}" aria-hidden="true"></i>\n' + '<span>{if empty($labels._go_back_to_basket)}{t}Go back to basket{/t}{else}{$labels._go_back_to_basket}{/if}</span></a>')
+                            $('#bottom_header .control_panel').html('<a id="go_back_basket hide"  href="'+data.basket_url+'" class="button"><i class="far fa-arrow-alt-left  " title="{t}Go back to basket{/t}" aria-hidden="true"></i>\n' + '<span>{if empty($labels._go_back_to_basket)}{t}Go back to basket{/t}{else}{$labels._go_back_to_basket}{/if}</span></a>')
 
                             $('#checkout').html(data.html)
 
@@ -371,11 +371,12 @@
 
             {/if}
             {if $with_client==1}
-                            getScript("/assets/desktop.forms.min.js", function () {
-                      $.getJSON("ar_web_client.php?tipo=get_client_html&id="+getUrlParameter('id')+"&device_prefix=", function (data) {
+                      getScript("/assets/desktop.forms.min.js", function () {
+                        $.getJSON("ar_web_client.php?tipo=get_client_html&id="+getUrlParameter('id')+"&device_prefix=", function (data) {
                           $('#client').html(data.html)
-                          $('.breadcrumbs .client_nav').html(data.client_nav.label)
-                          $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
+
+                          $('.breadcrumbs .client_nav').html(data.client_nav.label);
+                          $('.breadcrumbs .client_nav').attr('title',data.client_nav.title);
 
 
                           $(document).on('click', '#new_order', function (e) {
@@ -411,8 +412,6 @@
                       })
                    })
              {/if}
-
-
             {if $with_register==1}
             $('#register_header_button').addClass('hide')
             getScript("/assets/desktop.forms.min.js", function () {
@@ -710,9 +709,8 @@
             })
 
             {/if}
-
-             {if $with_portfolio==1}
-                            getScript("/assets/datatables.min.js", function () {
+            {if $with_portfolio==1}
+                 getScript("/assets/datatables.min.js", function () {
 
                                 const request_data ={ "tipo":'portfolio'}
                                 $.ajax({
@@ -734,7 +732,7 @@
 
 
                         })
-                            {/if}
+             {/if}
              {if $with_clients==1}
              getScript("/assets/desktop.forms.min.js", function () {
                  getScript("/assets/datatables.min.js", function () {

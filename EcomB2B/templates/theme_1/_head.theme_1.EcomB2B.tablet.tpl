@@ -128,6 +128,22 @@
     </script>
     {/if}
 
+    <link rel="canonical" href="{$webpage->get('URL')}"/>
+    {if $logged_in or isset($is_unsubscribe) }
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    {/if}
+    {if $logged_in and $store->get('Store Type')=='Dropshipping' }
+        <script src="/assets/dropshipping.logged_in.min.js"></script>
+    {/if}
+
+    {if $logged_in}
+        <script>
+            var websocket_connected = false;
+            var websocket_connected_connecting = false;
+            var ws_connection =false;
+        </script>
+    {/if}
+
     <link rel="stylesheet" type="text/css" href="assets/tablet.min.css">
 
     {assign "with_forms" false}
@@ -170,7 +186,7 @@
                 {else}
                     {assign "with_favourites" 1}
                 {/if}
-            {elseif $block.type=='portfolio' or $block.type=='clients' or $block.type=='clients_orders'}
+            {elseif $block.type=='portfolio' or $block.type=='clients'  or $block.type=='client_order_new' or $block.type=='clients_orders'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
                 {else}

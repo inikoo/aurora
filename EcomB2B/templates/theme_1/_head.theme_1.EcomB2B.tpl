@@ -142,6 +142,8 @@
             });
         </script>
     {/if}
+
+
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
     {if $logged_in or isset($is_unsubscribe) }
@@ -150,7 +152,6 @@
 
     {if $logged_in and $store->get('Store Type')=='Dropshipping' }
         <script src="/assets/dropshipping.logged_in.min.js"></script>
-
     {/if}
 
     {if $logged_in}
@@ -330,22 +331,7 @@
 
         {/if}
     {/if}
-    {if !isset($is_devel) or !$is_devel  }
-        {if  !empty($one_signal_id)}
-            <link rel="manifest" href='data:application/manifest+json,{ "gcm_sender_id": "{$one_signal_id}", "gcm_sender_id_comment": "Do not change the GCM Sender ID"}' />
 
-            <script src="OneSignalSDKWorker.js?v2" async=""></script>
-            <script>
-                var OneSignal = window.OneSignal || [];
-                OneSignal.push(function() {
-                    OneSignal.init({
-                        appId: "{$one_signal_key}",
-                });
-                });
-            </script>
-        {/if}
-
-    {/if}
 
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
