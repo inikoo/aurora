@@ -75,13 +75,15 @@ function get_portfolio_elements($db, $data,$customer_key) {
 
 
     while ($row = $stmt->fetch()) {
+
+
         if ($row['element'] == 'Error') {
             $row['element'] = 'OutofStock';
         } elseif ($row['element'] == 'Excess' or $row['element'] == 'Normal' or $row['element'] == 'OnDemand') {
             $row['element'] = 'Ok';
         }
 
-        $elements_numbers['availability_state'][$row['element']] = $row['number'];
+        $elements_numbers['availability_state'][$row['element']] += $row['number'];
     }
 
 
