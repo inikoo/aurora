@@ -32,6 +32,19 @@ $color_save: #0EBFE9;
   user-select: none;
 }
 
+
+.small {
+  font-size: 90%
+}
+
+.very_small {
+  font-size: 80%
+}
+
+.super_small {
+  font-size: 70%
+}
+
 @import 'core';
 @import 'responsive';
 @import 'header';

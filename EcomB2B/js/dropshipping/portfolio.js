@@ -70,6 +70,24 @@ $(function () {
                 $('.number_products_in_family').html(number_items_in_family)
 
 
+                if(number_items_in_family>0){
+                    $('.portfolio_in_family').removeClass('hide')
+
+                    $('.add_family_label').addClass('hide')
+                    $('.add_rest_label').addClass('hide')
+                    $('.add_all_family_to_portfolio').removeClass('hide')
+
+                    if(number_products_in_portfolio_in_family==0) {
+                        $('.add_family_label').removeClass('hide')
+                    }else if(number_products_in_portfolio_in_family<number_items_in_family){
+                        $('.add_rest_label').removeClass('hide')
+                    }else{
+                        $('.add_all_family_to_portfolio').addClass('hide')
+                    }
+                }
+
+
+
             }, error: function () {
 
             }
@@ -78,6 +96,101 @@ $(function () {
 
     });
 
+    $(document).on('click', '.add_all_family_to_portfolio', function (evt) {
+
+
+
+
+
+        if ($(this).find('i').hasClass('fa-spinner')) return;
+
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'add_category_to_portfolio')
+        ajaxData.append("webpage_key", $('#webpage_data').data('webpage_key'))
+
+        $.ajax({
+            url: 'ar_web_portfolio.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+            complete: function () {
+
+            }, success: function (data) {
+
+
+
+                data.products.forEach(function( product_id) {
+
+
+
+                    console.log(product_id)
+                    var portfolio_row=$('.portfolio_row_' + product_id);
+
+                    if(data.result=='add'){
+                        portfolio_row.find('.add_to_portfolio').addClass('hide')
+                        portfolio_row.find('.remove_from_portfolio').removeClass('hide')
+                    }else{
+                        portfolio_row.find('.add_to_portfolio').removeClass('hide')
+                        portfolio_row.find('.remove_from_portfolio').addClass('hide')
+                    }
+
+
+
+                });
+
+
+
+
+
+                let number_items_in_family=0;
+                let number_products_in_portfolio_in_family=0;
+
+
+
+                $('.category_products.dropshipping .portfolio_row').each(function(i, obj) {
+
+
+                    number_items_in_family++
+                    let _portfolio_row=$(obj).find('.add_to_portfolio');
+                    if(_portfolio_row.hasClass('hide')){
+                        number_products_in_portfolio_in_family++
+
+                    }
+                });
+
+
+
+                $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
+                $('.number_products_in_family').html(number_items_in_family)
+
+
+                if(number_items_in_family>0){
+                    $('.portfolio_in_family').removeClass('hide')
+
+                    $('.add_family_label').addClass('hide')
+                    $('.add_rest_label').addClass('hide')
+                    $('.add_all_family_to_portfolio').removeClass('hide')
+
+                    if(number_products_in_portfolio_in_family==0) {
+                        $('.add_family_label').removeClass('hide')
+                    }else if(number_products_in_portfolio_in_family<number_items_in_family){
+                        $('.add_rest_label').removeClass('hide')
+                    }else{
+                        $('.add_all_family_to_portfolio').addClass('hide')
+                    }
+                }
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+
+    });
 
 
 })

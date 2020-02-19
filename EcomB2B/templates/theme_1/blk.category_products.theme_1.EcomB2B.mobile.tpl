@@ -60,8 +60,7 @@
                             <div class="portfolio_row portfolio_row_{$item.product_id}"   >
 
                                 <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio  ">
-                                    <i class="fa fa-plus padding_right_5"></i>
-                                    {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
+                                    <i class="fa fa-plus padding_right_5"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
                                 </div>
                                 <div class="edit_portfolio_item remove_from_portfolio hide">
                                     <i class="fa fa-store-alt padding_right_5"></i>

@@ -60,7 +60,16 @@ switch ($tipo) {
         add_product_to_portfolio($data, $db, $customer, $account);
 
         break;
+    case 'add_category_to_portfolio':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'webpage_key' => array('type' => 'key'),
+                     )
+        );
 
+        add_category_to_portfolio($data, $db, $customer, $account);
+
+        break;
     case 'remove_product_from_portfolio':
         $data = prepare_values(
             $_REQUEST, array(
@@ -144,7 +153,10 @@ function update_portfolio_product_reference($data, $db, $customer) {
 
 }
 
-
+/**
+ * @param $_data
+ * @param $db \PDO
+ */
 function portfolio_items($_data, $db) {
 
 
@@ -255,7 +267,7 @@ function portfolio_items($_data, $db) {
                 'qty'        => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
                 'orders'     => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
                 'clients'    => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients'])),
-                'operations' => sprintf('<i class="far button fa-trash-alt" onclick="remove_item_from_portfolio(this,%d,%s)" ></i>', $data['Customer Portfolio Customer Key'], $data['Product ID'])
+                'operations' => '<i class="far button fa-trash-alt" onclick="remove_item_from_portfolio(this,'.$data['Customer Portfolio Customer Key'].','.$data['Product ID'].')" ></i>'
 
             );
 
@@ -581,5 +593,113 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
 
 }
 
+/**
+ * @param $data     array
+ * @param $db       \PDO
+ * @param $customer \Public_Customer
+ * @param $account  \Public_Account
+ */
+function add_category_to_portfolio($data, $db, $customer, $account) {
 
+    include_once 'utils/new_fork.php';
+
+    $webpage = get_object('Webpage', $data['webpage_key']);
+
+    if ($webpage->get('Webpage Store Key') != $customer->get('Store Key')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Webpage not in store'
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+
+    $sql  = "select `Website Webpage Scope Scope Key` as  product_id  from `Website Webpage Scope Map` where  `Website Webpage Scope Type`='Category_Products_Item' and  `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=?  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $webpage->id
+        )
+    );
+
+    $products = [];
+    while ($row = $stmt->fetch()) {
+        $products[$row['product_id']] = $row['product_id'];
+    }
+
+    $sql  =
+        "select `Customer Portfolio Product ID` as  product_id  from `Website Webpage Scope Map` left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=`Website Webpage Scope Scope Key`) where  `Website Webpage Scope Type`='Category_Products_Item' and  `Website Webpage Scope Scope`='Product'  and `Customer Portfolio Customers State`='Active' and `Website Webpage Scope Webpage Key`=?  and `Customer Portfolio Customer Key`=? ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+
+            $webpage->id,
+            $customer->id
+        )
+    );
+
+
+    while ($row = $stmt->fetch()) {
+        unset($products[$row['product_id']]);
+    }
+
+
+    $number_added_items_to_portfolio = count($products);
+
+    foreach ($products as $product_id) {
+        $date = gmdate('Y-m-d H:i:s');
+
+
+        $sql  =
+            "INSERT INTO `Customer Portfolio Fact` (`Customer Portfolio Store Key`,`Customer Portfolio Customer Key`,`Customer Portfolio Product ID`,`Customer Portfolio Creation Date`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `Customer Portfolio Customers State`='Active'";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $customer->get('Store Key'),
+                $customer->id,
+                $product_id,
+                $date
+
+            )
+        );
+        $customer_portfolio_key = $db->lastInsertId();
+
+
+        $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $customer_portfolio_key,
+                'Add',
+                $date
+
+            )
+        );
+
+
+    }
+
+
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'         => 'customer_portfolio_changed',
+        'customer_key' => $customer->id,
+    ), $account->get('Account Code')
+    );
+
+    $response = array(
+        'state'                           => 200,
+        'products'                        => array_values($products),
+        'result'                          => 'add',
+        'update_metadata'                 => [
+            'class_html' => []
+        ],
+        'number_added_items_to_portfolio' => $number_added_items_to_portfolio
+    );
+    echo json_encode($response);
+    exit;
+
+
+}
 
