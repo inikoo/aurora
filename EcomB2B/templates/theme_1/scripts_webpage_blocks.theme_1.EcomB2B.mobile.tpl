@@ -1223,7 +1223,6 @@
             {if $logged_in}
             {if $store->get('Store Type')=='Dropshipping' }
             {if $with_products_portfolio==1}
-            getScript("/assets/dropshipping.logged_in.min.js", function () {
                 $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
                     $.each(data.products_in_portfolio, function (index, value) {
                         let portfolio_row=$('.portfolio_row_' + index);
@@ -1237,7 +1236,7 @@
                         }
                     });
                 });
-            });
+
             {/if}
             getScript("/assets/mobile.logged_in.min.js", function () {
 

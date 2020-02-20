@@ -381,6 +381,7 @@ function save_add_item_to_portfolio() {
     var form_data = new FormData();
 
     form_data.append("tipo", 'add_product_to_portfolio');
+
     form_data.append("customer_key", table_metadata.parent_key);
     form_data.append("product_id", $('#add_item_to_portfolio_save').data('item_key'));
 
