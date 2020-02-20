@@ -88,6 +88,8 @@ if ($row = $stmt->fetch()) {
 
             $sql = strtr($sql, $placeholders);
 
+            
+
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 array(
@@ -96,6 +98,7 @@ if ($row = $stmt->fetch()) {
             );
 
             while ($row = $stmt->fetch()) {
+
 
                 if ($row_index == 1) {
 
@@ -188,6 +191,9 @@ if ($row = $stmt->fetch()) {
 
             $objPHPExcel->getActiveSheet()->freezePane('A2');
             $output_type = strtolower($_REQUEST['output']);
+
+
+
             switch ($output_type) {
 
                 case('csv'):

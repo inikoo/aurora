@@ -111,7 +111,7 @@
                         <a class="hide images_zip"  href=""><i class="fal fa-images"></i> {t}Portfolio Images{/t} (.zip)</a>
                         <a class="hide data_feed" style="margin-left: 30px"  href=""><i class="fal fa-database"></i> {t}Portfolio products data feed{/t}</a>
                         <div class="portfolio_right_menu small " style="float:right" >
-                            <span class="like_button open_notifications"><i class="fa fa-bell"></i> {t}Notifications{/t}</span>
+                            <span class="like_button open_notifications hide"><i class="fa fa-bell"></i> {t}Notifications{/t}</span>
                         </div>
                     </div>
 
