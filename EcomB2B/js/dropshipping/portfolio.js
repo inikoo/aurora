@@ -6,7 +6,7 @@
 
 $(function () {
 
-    $(document).on('click', '.portfolio_row .edit_portfolio_item_trigger', function (evt) {
+    $(document).on('click', '.portfolio_row .edit_portfolio_item_trigger', function () {
 
 
         var action;
@@ -16,7 +16,7 @@ $(function () {
         if ($(this).find('i').hasClass('fa-spinner')) return;
 
 
-        var product_id=$(this).closest('.product_container').data('product_id')
+        var product_id=$(this).closest('.product_container').data('product_id');
 
         if ($(this).hasClass('add_to_portfolio')) {
             action = 'add_product_to_portfolio';
@@ -27,9 +27,9 @@ $(function () {
 
         var ajaxData = new FormData();
 
-        ajaxData.append("tipo", action)
-        ajaxData.append("product_id", product_id)
-        ajaxData.append("webpage_key", $('#webpage_data').data('webpage_key'))
+        ajaxData.append("tipo", action);
+        ajaxData.append("product_id", product_id);
+        ajaxData.append("webpage_key", $('#webpage_data').data('webpage_key'));
 
         $.ajax({
             url: 'ar_web_portfolio.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
@@ -40,10 +40,10 @@ $(function () {
                 var portfolio_row=$('.portfolio_row_' + product_id);
 
                 if(data.result=='add'){
-                    portfolio_row.find('.add_to_portfolio').addClass('hide')
+                    portfolio_row.find('.add_to_portfolio').addClass('hide');
                     portfolio_row.find('.remove_from_portfolio').removeClass('hide')
                 }else{
-                    portfolio_row.find('.add_to_portfolio').removeClass('hide')
+                    portfolio_row.find('.add_to_portfolio').removeClass('hide');
                     portfolio_row.find('.remove_from_portfolio').addClass('hide')
                 }
 
@@ -56,7 +56,7 @@ $(function () {
                 $('.category_products.dropshipping .portfolio_row').each(function(i, obj) {
 
 
-                    number_items_in_family++
+                    number_items_in_family++;
                     let _portfolio_row=$(obj).find('.add_to_portfolio');
                     if(_portfolio_row.hasClass('hide')){
                         number_products_in_portfolio_in_family++
@@ -66,16 +66,16 @@ $(function () {
 
 
 
-                $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
-                $('.number_products_in_family').html(number_items_in_family)
+                $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family);
+                $('.number_products_in_family').html(number_items_in_family);
 
 
                 if(number_items_in_family>0){
-                    $('.portfolio_in_family').removeClass('hide')
+                    $('.portfolio_in_family').removeClass('hide');
 
-                    $('.add_family_label').addClass('hide')
-                    $('.add_rest_label').addClass('hide')
-                    $('.add_all_family_to_portfolio').removeClass('hide')
+                    $('.add_family_label').addClass('hide');
+                    $('.add_rest_label').addClass('hide');
+                    $('.add_all_family_to_portfolio').removeClass('hide');
 
                     if(number_products_in_portfolio_in_family==0) {
                         $('.add_family_label').removeClass('hide')
@@ -96,7 +96,7 @@ $(function () {
 
     });
 
-    $(document).on('click', '.add_all_family_to_portfolio', function (evt) {
+    $(document).on('click', '.add_all_family_to_portfolio', function () {
 
 
 
@@ -109,8 +109,8 @@ $(function () {
 
         var ajaxData = new FormData();
 
-        ajaxData.append("tipo", 'add_category_to_portfolio')
-        ajaxData.append("webpage_key", $('#webpage_data').data('webpage_key'))
+        ajaxData.append("tipo", 'add_category_to_portfolio');
+        ajaxData.append("webpage_key", $('#webpage_data').data('webpage_key'));
 
         $.ajax({
             url: 'ar_web_portfolio.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
@@ -125,14 +125,14 @@ $(function () {
 
 
 
-                    console.log(product_id)
+                    console.log(product_id);
                     var portfolio_row=$('.portfolio_row_' + product_id);
 
                     if(data.result=='add'){
-                        portfolio_row.find('.add_to_portfolio').addClass('hide')
+                        portfolio_row.find('.add_to_portfolio').addClass('hide');
                         portfolio_row.find('.remove_from_portfolio').removeClass('hide')
                     }else{
-                        portfolio_row.find('.add_to_portfolio').removeClass('hide')
+                        portfolio_row.find('.add_to_portfolio').removeClass('hide');
                         portfolio_row.find('.remove_from_portfolio').addClass('hide')
                     }
 
@@ -152,7 +152,7 @@ $(function () {
                 $('.category_products.dropshipping .portfolio_row').each(function(i, obj) {
 
 
-                    number_items_in_family++
+                    number_items_in_family++;
                     let _portfolio_row=$(obj).find('.add_to_portfolio');
                     if(_portfolio_row.hasClass('hide')){
                         number_products_in_portfolio_in_family++
@@ -162,16 +162,16 @@ $(function () {
 
 
 
-                $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
-                $('.number_products_in_family').html(number_items_in_family)
+                $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family);
+                $('.number_products_in_family').html(number_items_in_family);
 
 
                 if(number_items_in_family>0){
-                    $('.portfolio_in_family').removeClass('hide')
+                    $('.portfolio_in_family').removeClass('hide');
 
-                    $('.add_family_label').addClass('hide')
-                    $('.add_rest_label').addClass('hide')
-                    $('.add_all_family_to_portfolio').removeClass('hide')
+                    $('.add_family_label').addClass('hide');
+                    $('.add_rest_label').addClass('hide');
+                    $('.add_all_family_to_portfolio').removeClass('hide');
 
                     if(number_products_in_portfolio_in_family==0) {
                         $('.add_family_label').removeClass('hide')
@@ -193,17 +193,41 @@ $(function () {
     });
 
 
-})
+    $(document).on('click', '.open_notifications', function () {
+
+        const request_data ={ "tipo":'notifications_control_panel',"device_prefix" :'' };
+        $.ajax({
+
+            url: '/ar_web_notifications.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                if (data.state == 200) {
+                    $('.portfolio_sub_block').addClass('hide');
+                    $('.notifications_sub_block').removeClass('hide');
+                    $('.notifications_control_panel').html(data.html);
+                }
+
+            }
+        });
 
 
-$(document).on('input propertychange', "#add_item_to_portfolio_form",function (evt) {
+
+    });
+
+    $(document).on('input propertychange', "#add_item_to_portfolio_form",function () {
 
 
-    var delay = 100;
-    if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-    delayed_on_change_add_item_to_portfolio_field($(this), delay)
+        var delay = 100;
+        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+        delayed_on_change_add_item_to_portfolio_field($(this), delay)
+
+    });
+
+
+
 
 });
+
+
+
 
 function delayed_on_change_add_item_to_portfolio_field(object, timeout) {
 
@@ -217,11 +241,11 @@ function delayed_on_change_add_item_to_portfolio_field(object, timeout) {
 
 function get_items_add_to_portfolio_select() {
 
-    $('#add_item_to_portfolio_form').removeClass('invalid')
+    $('#add_item_to_portfolio_form').removeClass('invalid');
 
 
-    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_item_to_portfolio').val()) + '&scope=item' + '&metadata=' + atob($('#add_item_to_portfolio_form').data("metadata")) + '&state=' + JSON.stringify(state)
-    console.log(request)
+    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_item_to_portfolio').val()) + '&scope=item' + '&metadata=' + atob($('#add_item_to_portfolio_form').data("metadata")) + '&state=' + JSON.stringify(state);
+    console.log(request);
     $.getJSON(request, function (data) {
 
 
@@ -230,7 +254,7 @@ function get_items_add_to_portfolio_select() {
         if (data.number_results > 0) {
             $('#add_item_to_portfolio_results_container').removeClass('hide').addClass('show').offset({
                 'left':offset-$('#add_item_to_portfolio_results_container').width()
-            })
+            });
 
 
 
@@ -241,7 +265,7 @@ function get_items_add_to_portfolio_select() {
         } else {
 
 
-            $('#add_item_to_portfolio_results_container').addClass('hide').removeClass('show')
+            $('#add_item_to_portfolio_results_container').addClass('hide').removeClass('show');
 
             //console.log(data)
             if ($('#add_item_to_portfolio').val() != '') {
@@ -266,19 +290,19 @@ function get_items_add_to_portfolio_select() {
 
             var clone = $("#add_item_to_portfolio_search_result_template").clone();
             clone.prop('id', 'add_item_to_portfolio_result_' + result_key);
-            clone.addClass('result').removeClass('hide')
+            clone.addClass('result').removeClass('hide');
 
 
-            clone.data('item_key', data.results[result_key].value)
+            clone.data('item_key', data.results[result_key].value);
 
-            clone.data('formatted_value', data.results[result_key].formatted_value)
+            clone.data('formatted_value', data.results[result_key].formatted_value);
             if (first) {
-                clone.addClass('selected')
+                clone.addClass('selected');
                 first = false
             }
 
-            clone.children(".label").html(data.results[result_key].description)
-            clone.children(".code").html(data.results[result_key].code)
+            clone.children(".label").html(data.results[result_key].description);
+            clone.children(".code").html(data.results[result_key].code);
 
             $("#add_item_to_portfolio_results").append(clone)
 
@@ -286,7 +310,7 @@ function get_items_add_to_portfolio_select() {
         }
 
 
-        $('#save_add_item_to_portfolio').data('item_key', '')
+        $('#save_add_item_to_portfolio').data('item_key', '');
         $('#add_item_to_portfolio_save').addClass('super_discreet').removeClass('invalid valid button')
 
 
@@ -299,12 +323,12 @@ function get_items_add_to_portfolio_select() {
 function select_add_item_to_portfolio_option(element) {
 
 
-    $('#add_item_to_portfolio').val($(element).data('formatted_value'))
-    $('#add_item_to_portfolio_save').data('item_key', $(element).data('item_key'))
+    $('#add_item_to_portfolio').val($(element).data('formatted_value'));
+    $('#add_item_to_portfolio_save').data('item_key', $(element).data('item_key'));
 
 
 
-    $('#add_item_to_portfolio_results_container').addClass('hide').removeClass('show')
+    $('#add_item_to_portfolio_results_container').addClass('hide').removeClass('show');
 
 
     $('#add_item_to_portfolio_save').addClass('valid button changed').removeClass('super_discreet')
@@ -315,12 +339,12 @@ function select_add_item_to_portfolio_option(element) {
 
 function show_add_item_to_portfolio_form() {
 
-    $('#add_item_to_portfolio_msg').html('').removeClass('error success')
-    $('#add_item_to_portfolio_form').removeClass('hide')
-    $('.table_button').addClass('hide')
+    $('#add_item_to_portfolio_msg').html('').removeClass('error success');
+    $('#add_item_to_portfolio_form').removeClass('hide');
+    $('.table_button').addClass('hide');
 
-    $('#save_add_item_to_portfolio').data('item_key', '')
-    $('#add_item_to_portfolio').val('').focus().removeClass('invalid')
+    $('#save_add_item_to_portfolio').data('item_key', '');
+    $('#add_item_to_portfolio').val('').focus().removeClass('invalid');
     $('#add_item_to_portfolio_save').addClass('super_discreet').removeClass('invalid valid button')
 
 
@@ -332,7 +356,7 @@ function show_add_item_to_portfolio_form() {
 }
 
 function close_add_item_to_portfolio() {
-    $('#add_item_to_portfolio_form').addClass('hide')
+    $('#add_item_to_portfolio_form').addClass('hide');
     $('.table_button').removeClass('hide')
 }
 
@@ -347,7 +371,7 @@ function save_add_item_to_portfolio() {
 
 
 
-    var table_metadata = $('#table').data("metadata")
+    var table_metadata = $('#table').data("metadata");
 
 
 
@@ -356,9 +380,9 @@ function save_add_item_to_portfolio() {
 
     var form_data = new FormData();
 
-    form_data.append("tipo", 'add_product_to_portfolio')
-    form_data.append("customer_key", table_metadata.parent_key)
-    form_data.append("product_id", $('#add_item_to_portfolio_save').data('item_key'))
+    form_data.append("tipo", 'add_product_to_portfolio');
+    form_data.append("customer_key", table_metadata.parent_key);
+    form_data.append("product_id", $('#add_item_to_portfolio_save').data('item_key'));
 
 
     var request = $.ajax({
@@ -370,7 +394,7 @@ function save_add_item_to_portfolio() {
         type: 'POST',
         dataType: 'json'
 
-    })
+    });
 
 
     request.done(function (data) {
@@ -379,9 +403,9 @@ function save_add_item_to_portfolio() {
 
         if (data.state == 200) {
 
-            $('#save_add_item_to_portfolio').data('item_key', '')
-            $('#add_item_to_portfolio').val('').focus().removeClass('invalid')
-            $('#add_item_to_portfolio_save').addClass('super_discreet').removeClass('invalid valid button')
+            $('#save_add_item_to_portfolio').data('item_key', '');
+            $('#add_item_to_portfolio').val('').focus().removeClass('invalid');
+            $('#add_item_to_portfolio_save').addClass('super_discreet').removeClass('invalid valid button');
 
             rows.fetch({
                 reset: true
@@ -409,7 +433,7 @@ function save_add_item_to_portfolio() {
 
         }
 
-    })
+    });
 
 
     request.fail(function (jqXHR, textStatus) {
@@ -428,9 +452,9 @@ function remove_item_from_portfolio(element,customer_key,product_id) {
 
     var form_data = new FormData();
 
-    form_data.append("tipo", 'remove_product_from_portfolio')
-    form_data.append("customer_key", customer_key)
-    form_data.append("product_id", product_id)
+    form_data.append("tipo", 'remove_product_from_portfolio');
+    form_data.append("customer_key", customer_key);
+    form_data.append("product_id", product_id);
 
 
     var request = $.ajax({
@@ -442,7 +466,7 @@ function remove_item_from_portfolio(element,customer_key,product_id) {
         type: 'POST',
         dataType: 'json'
 
-    })
+    });
 
 
     request.done(function (data) {
@@ -450,9 +474,9 @@ function remove_item_from_portfolio(element,customer_key,product_id) {
 
 
         if (data.state == 200) {
-            $(element).closest('tr').remove()
+            $(element).closest('tr').remove();
             for (var key in data.update_metadata.class_html) {
-                console.log(key)
+                console.log(key);
                 $('.' + key).html(data.update_metadata.class_html[key])
             }
 
@@ -478,11 +502,11 @@ function remove_item_from_portfolio(element,customer_key,product_id) {
 
         }
 
-    })
+    });
 
 
     request.fail(function (jqXHR, textStatus) {
-        console.log(textStatus)
+        console.log(textStatus);
 
         console.log(jqXHR.responseText)
 

@@ -487,7 +487,6 @@
     $("#filter").append(serverSideFilter.render().el);
 
 
-    console.log(grid.el)
 
     rows.fetch({
         reset: true, success: function () {

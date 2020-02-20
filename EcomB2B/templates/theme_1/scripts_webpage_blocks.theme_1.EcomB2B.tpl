@@ -423,7 +423,7 @@
 
                     var request = "ar_web_addressing.php?tipo=address_format&country_code=" + selected.val() + '&website_key={$website->id}'
 
-                    console.log(request)
+
                     $.getJSON(request, function (data) {
                         console.log(data)
                         $.each(data.hidden_fields, function (index, value) {
@@ -712,6 +712,8 @@
             {if $with_portfolio==1}
                  getScript("/assets/datatables.min.js", function () {
 
+
+                     $('.open_notifications').trigger('click');return;
                                 const request_data ={ "tipo":'portfolio'}
                                 $.ajax({
 
@@ -724,6 +726,8 @@
                                             $('.data_feed').removeClass('hide').attr('href',data.data_feed_url)
 
                                             $('#table_container').html(data.html)
+
+
                                         }
 
                                     }

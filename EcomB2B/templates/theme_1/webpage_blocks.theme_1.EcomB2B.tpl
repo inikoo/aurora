@@ -95,7 +95,8 @@
                         <div class="portfolio_in_family hide" style="float:right" ><span title="{t}Items in portfolio{/t}"><i class="fa fa-store-alt "></i> <span class="number_products_in_portfolio_in_family"></span>/<span class="number_products_in_family"></span></span> <span data-category_key="{$webpage->get('Webpage Scope Key')}" class="add_all_family_to_portfolio small like_button  padding_left_10  "><i  class="fa  fa-plus smaller "></i>
                                 <span class="hide add_rest_label">{if empty($labels._add_rest_family_to_portfolio)}{t}Add rest of family to portfolio{/t}{else}{$labels._add_rest_family_to_portfolio}{/if}</span>
                                 <span class="hide add_family_label">{if empty($labels._add_family_to_portfolio)}{t}Add family to portfolio{/t}{else}{$labels._add_family_to_portfolio}{/if}</span>
-                            </span></div>
+                            </span>
+                        </div>
                     </div>
 
 
@@ -109,7 +110,9 @@
 
                         <a class="hide images_zip"  href=""><i class="fal fa-images"></i> {t}Portfolio Images{/t} (.zip)</a>
                         <a class="hide data_feed" style="margin-left: 30px"  href=""><i class="fal fa-database"></i> {t}Portfolio products data feed{/t}</a>
-
+                        <div class="portfolio_right_menu small " style="float:right" >
+                            <span class="like_button open_notifications"><i class="fa fa-bell"></i> {t}Notifications{/t}</span>
+                        </div>
                     </div>
 
 
