@@ -22,8 +22,6 @@
     </div>
     <div id="table_container"></div>
 </div>
-
-
 <div class="hide" close="hide" >
     <a id="trigger_new_customer" href="#new_client_form" class="modal-opener">
 
@@ -32,10 +30,6 @@
 <div class="reg_form hide" style="margin-top:30px;margin-bottom:60px;" >
     <form id="new_client_form" class="sky-form ">
         <header >{if empty($labels._new_customer_client)}{t}New customer{/t}{else}{$labels._new_customer_client}{/if}</header>
-
-
-
-
         <fieldset>
             <section >
                 <label  class="input " style="cursor:pointer" >
@@ -142,7 +136,7 @@
                         <select id="country_select" name="country">
                             <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
                             {foreach from=$countries item=country}
-                                <option value="{$country.2alpha}" {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
+                                <option value="{$country['2alpha']}" {if $country['2alpha']==$selected_country}selected{/if} >{$country.name}</option>
                             {/foreach}
 
                             <select>

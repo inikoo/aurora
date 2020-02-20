@@ -738,7 +738,7 @@
                         })
              {/if}
              {if $with_clients==1}
-             getScript("/assets/desktop.forms.min.js", function () {
+                getScript("/assets/desktop.forms.min.js", function () {
                  getScript("/assets/datatables.min.js", function () {
 
                      const request_data ={ "tipo":'clients'}
@@ -891,15 +891,8 @@
                      error.insertAfter(element.parent());
                  }
                         });
-
-
-
-
-
-
              })
-
-                            {/if}
+             {/if}
              {if $with_client_order_new==1}
                             getScript("/assets/desktop.forms.min.js", function () {
                                 getScript("/assets/datatables.min.js", function () {

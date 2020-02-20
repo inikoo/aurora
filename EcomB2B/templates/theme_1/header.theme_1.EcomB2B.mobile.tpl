@@ -111,7 +111,7 @@
             {if $store->get('Store Type')=='Dropshipping'}
                 <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-cog"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
                 <a class="default-link" href="clients_orders.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link" href="clients.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span> {if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}</span><i class="ion-record"></i></a>
                 <a class="default-link" href="portfolio.sys"><i class="icon-bg bg-orange-dark  fa fa-store-alt"></i><span>{if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}</span><i class="ion-record"></i></a>
 
             {else}

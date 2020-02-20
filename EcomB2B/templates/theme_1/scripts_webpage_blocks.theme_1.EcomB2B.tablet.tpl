@@ -718,21 +718,30 @@
                     })
                 {/if}
                 {if $with_clients==1}
-                getScript("/assets/mobile.forms.min.js", function () {
-                getScript("/assets/datatables.min.js", function () {
+                    getScript("/assets/mobile.forms.min.js", function () {
+                    getScript("/assets/datatables.min.js", function () {
 
+                        const request_data ={ "tipo":'clients',"device_prefix" :'tablet' }
 
-                    $('#clients').DataTable( {
-                        "ajax": "ar_web_clients.php?tipo=get_clients",
-                        "language": {
-                            "search": "{if empty($labels._filter_customers)}{t}Filter customers{/t}{else}{$labels._filter_customers}{/if}:"
-                        }
-                    } );
-                })
+                        $.ajax({
+                            url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
 
+                                if (data.state == 200) {
+                                    state = data.app_state;
+                                    $('#table_container').html(data.html)
+                                }
 
+                            }
+                        });
 
-                    $("form").submit(function(e) {
+                    })
+
+                    $(document).on('click', '#new_customer', function (e) {
+                        $( ".reg_form" ).removeClass( "hide" );
+                        $( ".clients" ).addClass( "hide" );
+                    });
+
+                    $("form").on('submit',function(e) {
                         e.preventDefault();
                         e.returnValue = false;
                     });
@@ -741,6 +750,7 @@
                         {
                             submitHandler: function(form)
                             {
+
                                 var button=$('#save_new_client_button');
 
                                 if(button.hasClass('wait')){
@@ -749,7 +759,6 @@
 
                                 button.addClass('wait')
                                 button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
-
 
                                 var register_data={ }
 
@@ -779,10 +788,16 @@
                                     }, success: function (data) {
 
 
-                                        $('#sky-form-modal-overlay').fadeOut();
-                                        $('.sky-form-modal').fadeOut();
+
 
                                         if (data.state == '200') {
+
+                                            rows.fetch({
+                                                reset: true
+                                            });
+
+                                            $( ".reg_form" ).addClass( "hide" );
+                                            $( ".clients" ).removeClass( "hide" );
 
                                             for (var key in data.metadata.class_html) {
                                                 $('.' + key).html(data.metadata.class_html[key])
@@ -856,41 +871,196 @@
                         error.insertAfter(element.parent());
                     }
                 });
+                })
+                {/if}
+                {if $with_client_order_new==1}
+                getScript("/assets/desktop.forms.min.js", function () {
+                    getScript("/assets/datatables.min.js", function () {
 
+                        const request_data ={ "tipo":'choose_client_for_order'}
 
+                        $.ajax({
+                            url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
 
+                                if (data.state == 200) {
+                                    state = data.app_state;
+                                    $('#table_container').html(data.html)
+                                }
 
-
-                    $('.modal-opener').on('click', function()
-                    {
-                        if( !$('#sky-form-modal-overlay').length )
-                        {
-                            $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
-                        }
-
-                        $('#sky-form-modal-overlay').on('click', function()
-                        {
-                            $('#sky-form-modal-overlay').fadeOut();
-                            $('.sky-form-modal').fadeOut();
+                            }
                         });
 
-                        form = $($(this).attr('href'));
-                        $('#sky-form-modal-overlay').fadeIn();
-                        form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
+                    })
 
-                        return false;
+
+
+                    $(document).on('click', '#order_for_new_customer', function (e) {
+                        $(this).closest('.sky-form').addClass( "hide" );
+                        $( ".reg_form" ).removeClass( "hide" );
+                    });
+
+                    $("form").submit(function(e) {
+                        e.preventDefault();
+                        e.returnValue = false;
+                    });
+
+                    $("#order_for_new_customer_form").validate(
+                        {
+                            submitHandler: function(form)
+                            {
+
+                                var button=$('#save_order_for_new_customer_button');
+
+                                if(button.hasClass('wait')){
+                                    return;
+                                }
+
+                                button.addClass('wait')
+                                button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                                var register_data={ }
+
+                                $("#order_for_new_customer_form input:not(.ignore)").each(function(i, obj) {
+                                    if(!$(obj).attr('name')==''){
+                                        register_data[$(obj).attr('name')]=$(obj).val()
+                                    }
+                                });
+
+                                $("#order_for_new_customer_form select:not(.ignore)").each(function(i, obj) {
+                                    if(!$(obj).attr('name')==''){
+                                        register_data[$(obj).attr('name')]=$(obj).val()
+                                    }
+                                });
+
+
+
+                                var ajaxData = new FormData();
+
+                                ajaxData.append("tipo", 'order_for_new_customer')
+                                ajaxData.append("data", JSON.stringify(register_data))
+
+
+                                $.ajax({
+                                    url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                    complete: function () {
+                                    }, success: function (data) {
+
+
+
+
+                                        if (data.state == '200') {
+                                            window.location = 'client_basket.sys?client_id='+data.client_id
+
+
+                                        } else if (data.state == '400') {
+                                            swal("{t}Error{/t}!", data.msg, "error")
+                                            button.removeClass('wait')
+                                            button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                        }
+
+
+
+                                    }, error: function () {
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                    }
+                                });
+
+
+                            },
+
+                            rules:
+                                {
+                    {foreach from=$required_fields item=required_field }
+                    {$required_field}: { required: true },
+                    {/foreach}
+                    {foreach from=$no_required_fields item=no_required_field }
+                    {$no_required_field}:{   required: false},
+                    {/foreach}
+
+                },
+                    messages:
+                    {
+
+
+                        administrativeArea:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        locality:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        dependentLocality:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        postalCode:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        addressLine1:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        addressLine2:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        sortingCode:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        }
+
+
+
+
+                    },
+                    errorPlacement: function(error, element)
+                    {
+                        error.insertAfter(element.parent());
+                    }
+                });
+
+
+
+
+
+
+                })
+
+                {/if}
+                {if $with_clients_orders==1}
+
+
+                $(document).on('click', '#client_order_new', function (e) {
+                    window.location = '/client_order_new.sys';
+                });
+
+
+                getScript("/assets/datatables.min.js", function () {
+
+
+
+
+                    const request_data ={ "tipo":'clients_orders'}
+
+                    $.ajax({
+                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                            if (data.state == 200) {
+                                state = data.app_state;
+                                $('#table_container').html(data.html)
+                            }
+
+                        }
                     });
 
                 })
                 {/if}
-                {if $with_clients_orders==1}
-                getScript("/assets/datatables.min.js", function () {
-                    $('#clients_orders').DataTable( {
-                        "ajax": "ar_web_clients_orders.php?tipo=get_orders"
-                    } );
-                })
-                {/if}
-                {if $with_login==1}
+
+
+            {if $with_login==1}
 
                 getScript("/assets/mobile.forms.min.js", function () {
 

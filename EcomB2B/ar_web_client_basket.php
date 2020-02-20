@@ -220,6 +220,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
 
     $order = get_object('Order', $order_key);
 
+
     if($order->id){
         $order->fast_update(
             array(

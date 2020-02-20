@@ -88,7 +88,7 @@ if ($row = $stmt->fetch()) {
 
             $sql = strtr($sql, $placeholders);
 
-            
+
 
             $stmt = $db->prepare($sql);
             $stmt->execute(

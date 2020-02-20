@@ -169,6 +169,21 @@
             })
 
             {/if}
+            {if $with_client_basket==1}
+            getScript("/assets/mobile.logged_in.min.js", function () {
+                getScript("/assets/mobile.forms.min.js", function () {
+                    getScript("/assets/desktop.client_basket.min.js", function () {
+                        $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key="+getUrlParameter('client_id')+"&device_prefix=mobile", function (data) {
+                            $('#client_basket').html(data.html);
+                            $('.breadcrumbs .client_nav').html(data.client_nav.label)
+                            $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
+                            $('.breadcrumbs .order_nav').html(data.order_nav.label)
+                            $('.breadcrumbs .order_nav').attr('title',data.order_nav.title)
+                        })
+                    })
+                })
+            });
+            {/if}
             {if $with_checkout==1}
             getScript("/assets/mobile.logged_in.min.js", function () {
                 getScript("/assets/mobile.forms.min.js", function () {
@@ -687,18 +702,27 @@
             getScript("/assets/mobile.forms.min.js", function () {
                 getScript("/assets/datatables.min.js", function () {
 
+                    const request_data ={ "tipo":'clients',"device_prefix" :'mobile' }
 
-                    $('#clients').DataTable( {
-                        "ajax": "ar_web_clients.php?tipo=get_clients",
-                        "language": {
-                            "search": "{if empty($labels._filter_customers)}{t}Filter customers{/t}{else}{$labels._filter_customers}{/if}:"
+                    $.ajax({
+                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                            if (data.state == 200) {
+                                state = data.app_state;
+                                $('#table_container').html(data.html)
+                            }
+
                         }
-                    } );
+                    });
+
                 })
 
+                $(document).on('click', '#new_customer', function (e) {
+                    $( ".reg_form" ).removeClass( "hide" );
+                    $( ".clients" ).addClass( "hide" );
+                });
 
-
-                $("form").submit(function(e) {
+                $("form").on('submit',function(e) {
                     e.preventDefault();
                     e.returnValue = false;
                 });
@@ -707,6 +731,7 @@
                     {
                         submitHandler: function(form)
                         {
+
                             var button=$('#save_new_client_button');
 
                             if(button.hasClass('wait')){
@@ -715,7 +740,6 @@
 
                             button.addClass('wait')
                             button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
-
 
                             var register_data={ }
 
@@ -745,10 +769,16 @@
                                 }, success: function (data) {
 
 
-                                    $('#sky-form-modal-overlay').fadeOut();
-                                    $('.sky-form-modal').fadeOut();
+
 
                                     if (data.state == '200') {
+
+                                        rows.fetch({
+                                            reset: true
+                                        });
+
+                                        $( ".reg_form" ).addClass( "hide" );
+                                        $( ".clients" ).removeClass( "hide" );
 
                                         for (var key in data.metadata.class_html) {
                                             $('.' + key).html(data.metadata.class_html[key])
@@ -822,39 +852,35 @@
                     error.insertAfter(element.parent());
                 }
             });
-
-
-
-
-
-                $('.modal-opener').on('click', function()
-                {
-                    if( !$('#sky-form-modal-overlay').length )
-                    {
-                        $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
-                    }
-
-                    $('#sky-form-modal-overlay').on('click', function()
-                    {
-                        $('#sky-form-modal-overlay').fadeOut();
-                        $('.sky-form-modal').fadeOut();
-                    });
-
-                    form = $($(this).attr('href'));
-                    $('#sky-form-modal-overlay').fadeIn();
-                    form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
-
-                    return false;
-                });
-
             })
             {/if}
 
             {if $with_clients_orders==1}
+
+
+            $(document).on('click', '#client_order_new', function (e) {
+                window.location = '/client_order_new.sys';
+            });
+
+
             getScript("/assets/datatables.min.js", function () {
-                $('#clients_orders').DataTable( {
-                    "ajax": "ar_web_clients_orders.php?tipo=get_orders"
-                } );
+
+
+
+
+                const request_data ={ "tipo":'clients_orders'}
+
+                $.ajax({
+                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                        if (data.state == 200) {
+                            state = data.app_state;
+                            $('#table_container').html(data.html)
+                        }
+
+                    }
+                });
+
             })
             {/if}
 

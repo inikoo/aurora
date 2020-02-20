@@ -69,8 +69,8 @@
             {assign "with_client_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
-            {assign "with_client" false}
             {assign "with_favourites" false}
+            {assign "with_client" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
             {assign "with_clients" false}
