@@ -61,6 +61,8 @@ $(function () {
         ajaxData.append("channel", container.data('channel'));
         ajaxData.append("protocol", container.data('protocol'));
         ajaxData.append("endpoint", container.find('input').val());
+        ajaxData.append("sns_key", container.data('sns_key'));
+
         $.ajax({
             url: 'ar_web_notifications.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
 

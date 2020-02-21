@@ -334,10 +334,22 @@ class Public_Customer extends DBW_Table {
                     }
                 }
                 break;
-            case 'SNS Subscription Data':
-                $customer_sns_key = $this->metadata('sns_key');
+            case 'SNS Subscriptions':
+                $customer_sns_keys = $this->metadata('sns_keys');
+                if($customer_sns_keys==''){
+                    $customer_sns_keys=[];
+                }else{
+                    $customer_sns_keys=json_decode($customer_sns_keys);
+                }
 
-                if($customer_sns_key>0) {
+
+                $subscriptions=[
+                    'email'=>[],
+                    'https'=>[]
+                ];
+
+
+                foreach($customer_sns_keys as $customer_sns_key ) {
                     $sql  = "select * from `Customer SNS Fact` where `Customer SNS Key`=? ";
                     $stmt = $this->db->prepare($sql);
                     $stmt->execute(
@@ -346,11 +358,11 @@ class Public_Customer extends DBW_Table {
                         )
                     );
                     if ($row = $stmt->fetch()) {
-                    return $row;
+                        $subscriptions[$row['Customer SNS Subscription Protocol']][]=$row;
                     }
-                }else{
-                    return false;
                 }
+
+                return $subscriptions;
 
                 break;
             default:

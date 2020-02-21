@@ -55,6 +55,9 @@ switch ($tipo) {
                          ),
                          'endpoint' => array(
                              'type' => 'string',
+                         ),
+                         'sns_key'  => array(
+                             'type' => 'string',
                          )
                      )
         );
@@ -94,40 +97,44 @@ function subscribe($data, $db, $customer, $website) {
     $protocol = $data['protocol'];
     $endpoint = $data['endpoint'];
     switch ($data['channel']) {
-        case 'price_notification':
+        case 'ds_notifications':
             $topic = AWS_SNS_DS_NOTIFICATION['arn'];
             break;
+        default:
+            echo json_encode(
+                array(
+                    'state' => 400,
+                    'msg'   => 'Unknown channel '.$data['channel']
+                )
+            );
+            exit;
     }
 
 
-
+    $subscription_data = [
+        'Attributes'            => array(
+            'FilterPolicy' => json_encode(
+                array(
+                    'account_code' => [DNS_ACCOUNT_CODE],
+                    'customer_key' => [$customer->id],
+                    'website_key'  => [$website->id],
+                    'store_key'    => [$website->get('Website Store Key')],
+                )
+            )
+        ),
+        'Protocol'              => $protocol,
+        'Endpoint'              => $endpoint,
+        'ReturnSubscriptionArn' => true,
+        'TopicArn'              => $topic,
+    ];
 
 
     try {
-        $result = $SnSclient->subscribe(
-            [
-                'Attributes'            => array(
-                    'FilterPolicy' => json_encode(
-                        array(
-                            'account_code' => [DNS_ACCOUNT_CODE],
-                            'customer_key' => [$customer->id],
-                            'website_key'  => [$website->id],
-                            'store_key'    => [$website->get('Website Store Key')],
-                        )
-                    )
-                ),
-                'Protocol'              => $protocol,
-                'Endpoint'              => $endpoint,
-                'ReturnSubscriptionArn' => true,
-                'TopicArn'              => $topic,
-            ]
-        );
+        $result = $SnSclient->subscribe($subscription_data);
 
         $sql = "insert into `Customer SNS Fact` (`Customer SNS Created Date`,`Customer SNS Customer Key`,`Customer SNS Store Key`,`Customer SNS Subscription ARN`,`Customer SNS Subscription Protocol`,`Customer SNS Subscription Endpoint`,`Customer SNS Subscription Status`,`Customer SNS Settings`)
             values (?,?,?,?,?,?,?,?)   ON DUPLICATE KEY UPDATE `Customer SNS Key`=LAST_INSERT_ID(`Customer SNS Key`)
             ";
-
-
 
 
         $db->prepare($sql)->execute(
@@ -147,27 +154,63 @@ function subscribe($data, $db, $customer, $website) {
         $customer_sns_key = $db->lastInsertId();
 
 
-        $customer->fast_update_json_field('Customer Metadata', 'sns_key', $customer_sns_key);
+        $sns_keys = $customer->metadata('sns_keys');
+        if ($sns_keys == '') {
+            $sns_keys = [];
+        } else {
+            $sns_keys = json_decode($sns_keys, true);
+        }
+        $sns_keys[] = $customer_sns_key;
+        $customer->fast_update_json_field('Customer Metadata', 'sns_keys', json_encode($sns_keys));
 
-        echo json_encode(
+
+        $smarty = new Smarty();
+        $smarty->setTemplateDir('templates');
+        $smarty->setCompileDir('server_files/smarty/templates_c');
+        $smarty->setCacheDir('server_files/smarty/cache');
+        $smarty->setConfigDir('server_files/smarty/configs');
+        $smarty->addPluginsDir('./smarty_plugins');
+
+        $smarty->assign('customer', $customer);
+
+        $sql  = "select * from `Customer SNS Fact` where `Customer SNS Key`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
             array(
-                'state' => 200,
-                'subscription_data'=>$customer->get('SNS Subscription Data')
-
+                $customer_sns_key
             )
         );
+        if ($row = $stmt->fetch()) {
+            $smarty->assign('subscription', $row);
+            echo json_encode(
+                array(
+                    'state'     => 200,
+                    'subs_html' => $smarty->fetch('theme_1/_notifications.'.$protocol.'.theme_1.EcomDS.tpl')
+
+                )
+            );
+        } else {
+            echo json_encode(
+                array(
+                    'state'     => 200,
+                    'subs_html' => ''
+
+                )
+            );
+        }
+
 
     } catch (AwsException $e) {
         // output error message if fails
-       // print_r($e->getMessage());
+        // print_r($e->getMessage());
 
-         echo json_encode(
-             array(
-                 'state' => 400,
-                 'msg'=>'Error'
+        echo json_encode(
+            array(
+                'state' => 400,
+                'msg'   => 'Error'
 
-             )
-         );
+            )
+        );
 
     }
 
@@ -178,7 +221,6 @@ function subscribe($data, $db, $customer, $website) {
 
         )
     );
-
 
 
 }
@@ -199,7 +241,7 @@ function notifications_control_panel($data, $customer) {
     $smarty->addPluginsDir('./smarty_plugins');
 
     $smarty->assign('customer', $customer);
-    $smarty->assign('settings', $customer->metadata('notifications_settings'));
+
 
     echo json_encode(
         array(

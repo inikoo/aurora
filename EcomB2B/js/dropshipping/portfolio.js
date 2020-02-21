@@ -193,24 +193,7 @@ $(function () {
     });
 
 
-    $(document).on('click', '.open_notifications', function () {
 
-        const request_data ={ "tipo":'notifications_control_panel',"device_prefix" :'' };
-        $.ajax({
-
-            url: '/ar_web_notifications.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-                if (data.state == 200) {
-                    $('.portfolio_sub_block').addClass('hide');
-                    $('.notifications_sub_block').removeClass('hide');
-                    $('.notifications_control_panel').html(data.html);
-                }
-
-            }
-        });
-
-
-
-    });
 
     $(document).on('input propertychange', "#add_item_to_portfolio_form",function () {
 

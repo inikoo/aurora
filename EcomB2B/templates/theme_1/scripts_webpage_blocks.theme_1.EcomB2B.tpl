@@ -1563,7 +1563,6 @@
     {/if}
 
 </script>
-
 {if $with_gallery==1}
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="pswp__bg"></div>
@@ -1618,11 +1617,8 @@
     </script>
 {/if}
 
-
-
-
 <script>
-    var getUrlParameter = function getUrlParameter(sParam) {
+    function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),
     sURLVariables = sPageURL.split('&'),
     sParameterName,
@@ -1638,8 +1634,7 @@
     };
 </script>
 
-
-{if !empty($firebase)}
+{if !empty($firebase) and false}
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
     <script>
