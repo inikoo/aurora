@@ -149,7 +149,7 @@
 
     <script>
         function getUrlParameter(sParam) {
-            let sPageURL = window.location.search.substring(1), sURLVariables = sPageURL.split('&'), sParameterName, i;
+            var sPageURL = window.location.search.substring(1), sURLVariables = sPageURL.split('&'), sParameterName, i;
 
             for (i = 0; i < sURLVariables.length; i++) {
                 sParameterName = sURLVariables[i].split('=');
@@ -158,7 +158,8 @@
                     return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
                 }
             }
-        }    </script>
+        }
+    </script>
 
     <link rel="stylesheet" type="text/css" href="assets/tablet.min.css">
 
