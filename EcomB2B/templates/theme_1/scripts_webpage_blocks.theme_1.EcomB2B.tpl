@@ -713,7 +713,7 @@
                  getScript("/assets/datatables.min.js", function () {
 
 
-                   //  $('.open_notifications').trigger('click');return;
+                    $('.open_notifications').trigger('click');return;
                                 const request_data ={ "tipo":'portfolio'}
                                 $.ajax({
 

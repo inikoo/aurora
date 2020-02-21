@@ -53,7 +53,7 @@ $(function () {
 
 
 
-        const container=$(this).closest('tr')
+        const container=$(this).closest('table')
 
         var ajaxData = new FormData();
 

@@ -334,6 +334,25 @@ class Public_Customer extends DBW_Table {
                     }
                 }
                 break;
+            case 'SNS Subscription Data':
+                $customer_sns_key = $this->metadata('sns_key');
+
+                if($customer_sns_key>0) {
+                    $sql  = "select * from `Customer SNS Fact` where `Customer SNS Key`=? ";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $customer_sns_key
+                        )
+                    );
+                    if ($row = $stmt->fetch()) {
+                    return $row;
+                    }
+                }else{
+                    return false;
+                }
+
+                break;
             default:
 
                 if (array_key_exists($key, $this->data)) {
