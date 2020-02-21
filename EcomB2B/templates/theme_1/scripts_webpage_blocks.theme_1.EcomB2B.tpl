@@ -491,7 +491,7 @@
                         $('#register_button').addClass('wait');
                         $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin');
 
-                        let register_data = { }
+                        var register_data = { }
 
                         $("#registration_form input:not(.ignore)").each(function (i, obj) {
                             if (!$(obj).attr('name') == '') {
@@ -1382,7 +1382,7 @@
                     {if $with_products_portfolio==1}
                             $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
                                 $.each(data.products_in_portfolio, function (index, value) {
-                                    let portfolio_row=$('.portfolio_row_' + index);
+                                    var portfolio_row=$('.portfolio_row_' + index);
                                     portfolio_row.find('.add_to_portfolio').addClass('hide')
                                     portfolio_row.find('.remove_from_portfolio').removeClass('hide')
                                 });
@@ -1398,13 +1398,13 @@
                                 });
 
 
-                                let number_items_in_family=0;
-                                let number_products_in_portfolio_in_family=0;
+                                var number_items_in_family=0;
+                                var number_products_in_portfolio_in_family=0;
                                 $.each(data.stock, function (index, value) {
 
                                     if (value[2] === 'Category_Products_Item') {
                                         number_items_in_family++
-                                        let _portfolio_row=$('.portfolio_row_' + index+' .add_to_portfolio');
+                                        var _portfolio_row=$('.portfolio_row_' + index+' .add_to_portfolio');
                                         if(_portfolio_row.hasClass('hide')){
                                             number_products_in_portfolio_in_family++
 
@@ -1457,7 +1457,7 @@
                 });
 
                 $.each(data.out_of_stock_reminders, function (index, value) {
-                    let reminder_icon = $('.out_of_stock_reminders_' + index);
+                    var reminder_icon = $('.out_of_stock_reminders_' + index);
                     reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
                 });
 

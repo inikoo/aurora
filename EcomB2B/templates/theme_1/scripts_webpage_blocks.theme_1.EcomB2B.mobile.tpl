@@ -188,7 +188,7 @@
             getScript("/assets/mobile.logged_in.min.js", function () {
                 getScript("/assets/mobile.forms.min.js", function () {
                     getScript("/assets/mobile.checkout.min.js", function () {
-                        let checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile";
+                        var checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile";
                         if(getUrlParameter('order_key')!=undefined){
                             checkout_request+='&client_order_key='+getUrlParameter('order_key')
                         }
@@ -1200,9 +1200,7 @@
                 $ps.each(function() {
                     totalHeight += $(this).outerHeight();
                 });
-
-
-
+                
                 h=$(this).closest('.asset_description').find('.asset_description_wrap').outerHeight();
 
                 $up.css({
@@ -1225,7 +1223,7 @@
             {if $with_products_portfolio==1}
                 $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
                     $.each(data.products_in_portfolio, function (index, value) {
-                        let portfolio_row=$('.portfolio_row_' + index);
+                        var portfolio_row=$('.portfolio_row_' + index);
                         portfolio_row.find('.add_to_portfolio').addClass('hide')
                         portfolio_row.find('.remove_from_portfolio').removeClass('hide')
                     });
