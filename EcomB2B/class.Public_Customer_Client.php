@@ -459,10 +459,10 @@ class Public_Customer_Client extends DBW_Table {
                         $order->editor = $this->editor;
 
 
-                        $_value = $this->get('Customer Client Contact Address');
+                        ;
 
 
-                        $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+                        $order->update(array('Order Delivery Address' => $this->get('Customer Client Contact Address')), 'no_history', array('no_propagate_customer' => true));
 
                     }
                 }
