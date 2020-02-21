@@ -392,7 +392,9 @@ function customers_dropshipping($_data, $db, $user) {
                     break;
                 case 'Prospect':
                     $customer_status = sprintf('<i class="fal success fa-user-circle" title="%s"></i>', _('Prospect'));
-
+                    break;
+                case 'Rejected':
+                    $customer_status = sprintf('<i class="fal  very_discreet fa-hand-middle-finger" title="%s"></i>', _('Rejected'));
                     break;
                 default:
                     $customer_status = $data['Customer Type by Activity'];
