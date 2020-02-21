@@ -148,6 +148,20 @@
             var ws_connection =false;
         </script>
     {/if}
+
+    <script>
+        function getUrlParameter(sParam) {
+            let sPageURL = window.location.search.substring(1), sURLVariables = sPageURL.split('&'), sParameterName, i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        }    </script>
+
     <link rel="stylesheet" type="text/css" href="/assets/mobile.min.css">
 
     {assign "with_forms" false}

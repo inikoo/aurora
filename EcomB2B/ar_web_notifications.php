@@ -243,6 +243,7 @@ function notifications_control_panel($data, $customer) {
     $smarty->assign('customer', $customer);
 
 
+
     echo json_encode(
         array(
             'state' => 200,

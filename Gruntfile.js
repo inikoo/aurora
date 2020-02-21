@@ -19,7 +19,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 },
-                src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js'],
+                src: ['EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js'],
                 dest: 'EcomB2B/assets/desktop.out.min.js'
             }, ecom_desktop_logged_in: {
                 options: {

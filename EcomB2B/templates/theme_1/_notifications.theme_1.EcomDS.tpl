@@ -12,6 +12,17 @@
 
 
 {assign 'subscriptions' $customer->get('SNS Subscriptions')}
-{foreach from=$subscriptions item=subscription key=subscription_protocol}
-    {include file="theme_1/_notifications.$subscription_protocol.theme_1.EcomDS.tpl" subscription=$subscription}
+{foreach from=$subscriptions item=_subscriptions key=subscription_protocol}
+
+    {if $_subscriptions|@count gt 0}
+        {foreach from=$_subscriptions item=subscription }
+            {include file="theme_1/_notifications.$subscription_protocol.theme_1.EcomDS.tpl" subscription=$subscription}
+        {/foreach}
+    {else}
+        {include file="theme_1/_notifications.$subscription_protocol.theme_1.EcomDS.tpl" subscription=$_subscriptions}
+    {/if}
+
+
+
+
 {/foreach}
