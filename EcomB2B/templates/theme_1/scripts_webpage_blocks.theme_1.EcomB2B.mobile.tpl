@@ -1200,7 +1200,7 @@
                 $ps.each(function() {
                     totalHeight += $(this).outerHeight();
                 });
-                
+
                 h=$(this).closest('.asset_description').find('.asset_description_wrap').outerHeight();
 
                 $up.css({

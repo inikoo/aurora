@@ -125,7 +125,7 @@ $(function () {
 
 
 
-                    console.log(product_id);
+
                     var portfolio_row=$('.portfolio_row_' + product_id);
 
                     if(data.result=='add'){
@@ -217,7 +217,6 @@ function delayed_on_change_add_item_to_portfolio_field(object, timeout) {
     window.clearTimeout(object.data("timeout"));
 
     object.data("timeout", setTimeout(function () {
-
         get_items_add_to_portfolio_select()
     }, timeout));
 }

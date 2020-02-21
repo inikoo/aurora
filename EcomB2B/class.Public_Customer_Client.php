@@ -200,16 +200,16 @@ class Public_Customer_Client extends DBW_Table {
 
                 $address_fields = array(
 
-                    'Address Recipient'            => $this->get('Contact Client Address Recipient'),
-                    'Address Organization'         => $this->get('Contact Client Address Organization'),
-                    'Address Line 1'               => $this->get('Contact Client Address Line 1'),
-                    'Address Line 2'               => $this->get('Contact Client Address Line 2'),
-                    'Address Sorting Code'         => $this->get('Contact Client Address Sorting Code'),
-                    'Address Postal Code'          => $this->get('Contact Client Address Postal Code'),
-                    'Address Dependent Locality'   => $this->get('Contact Client Address Dependent Locality'),
-                    'Address Locality'             => $this->get('Contact Client Address Locality'),
-                    'Address Administrative Area'  => $this->get('Contact Client Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $this->get('Contact Client Address Country 2 Alpha Code'),
+                    'Address Recipient'            => $this->get('Customer Client Contact Address Recipient'),
+                    'Address Organization'         => $this->get('Customer Client Contact Address Organization'),
+                    'Address Line 1'               => $this->get('Customer Client Contact Address Line 1'),
+                    'Address Line 2'               => $this->get('Customer Client Contact Address Line 2'),
+                    'Address Sorting Code'         => $this->get('Customer Client Contact Address Sorting Code'),
+                    'Address Postal Code'          => $this->get('Customer Client Contact Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get('Customer Client Contact Address Dependent Locality'),
+                    'Address Locality'             => $this->get('Customer Client Contact Address Locality'),
+                    'Address Administrative Area'  => $this->get('Customer Client Contact Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get('Customer Client Contact Address Country 2 Alpha Code'),
 
 
                 );
@@ -403,7 +403,9 @@ class Public_Customer_Client extends DBW_Table {
                         $_value = $this->get('Customer Client Contact Address');
 
 
-                        $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+
+
+                       $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
 
                     }
                 }

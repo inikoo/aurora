@@ -289,7 +289,11 @@ trait OrderBasketOperations {
             $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
         }
 
+
+
         foreach ($fields as $field => $value) {
+
+
             $this->update_field(
                 $this->table_name.' '.$type.' '.$field, $value, 'no_history'
             );
