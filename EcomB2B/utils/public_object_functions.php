@@ -15,7 +15,7 @@
  * @param      $key
  * @param bool $load_other_data
  *
- * @return bool|\Image|\Public_Account|\Public_Customer|\Public_Product|\Public_Store|\Public_Website_User|\Public_Website
+ * @return bool|\Image|\Public_Account|\Public_Customer|\Public_Product|\Public_Store|\Public_Website_User|\Public_Website|\Public_Order
  */
 function get_object($object_name, $key, $load_other_data = false) {
 

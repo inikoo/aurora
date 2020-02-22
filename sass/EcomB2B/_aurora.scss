@@ -1648,83 +1648,7 @@ i.product_stock_dot {
   }
 }
 
-.basket{
-  border-top: none;
-  .operations{
-    border-bottom: 1px solid #ccc;
-    td {
-      border-bottom: none;
-      border-top:0px
-    }
 
-    .invalid{
-      color:tomato;
-    }
-
-    .valid.changed{
-      color:mediumseagreen;
-    }
-
-  }
-
-
-  .search_results_container {
-    z-index: 100;
-    position: absolute;
-    width: 750px;
-
-
-  .add_item_results{
-    background:white;font-size:90%
-  }
-
-
-
-
-.add_item_results{
-  td{text-align: left}
-}
-
-    table {
-      border: 1px solid #ccc;
-      background: #FFF;
-      width: 100%;
-      tr {
-        cursor: pointer;
-        border-bottom: 1px solid #eee;
-
-        &:hover{
-          color: #222;
-        }
-
-        &.out_of_stock{
-          cursor: default;
-          background-color: #fff7f8;
-          color:#777;
-          &:hover{
-            color:#777;
-          }
-        }
-
-        &:last-of-type {
-          border-bottom: none;
-        }
-      }
-      td.label {
-        padding-left: 20px;
-      }
-
-      tr:hover, tr.selected {
-      }
-    }
-
-  }
-
-
-
-
-
-}
 
 ul.clean{
   list-style-type:none
@@ -1742,7 +1666,6 @@ ul.clean{
 
   }
 
-  // .results_container {
 
   table {
     border: 1px solid #ccc;
@@ -1763,5 +1686,4 @@ ul.clean{
       background: $color_background_selected;
     }
   }
-  //  }
 }

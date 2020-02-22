@@ -21,7 +21,6 @@
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
 
 
-
             {if $navigation.show }
 
             <table style="margin:0px; " >
@@ -29,9 +28,17 @@
                 <tr>
                     <td style="text-align: left;padding-left: 5px">
 
-                        {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
-                            <span class="breadcrumbs" ><a href="{$breadcrumb.link}"style="color:#1f2f1f" title="{$breadcrumb.title}">{$breadcrumb.label}</a> {if !$smarty.foreach.breadcrumbs.last}<i class="fas  padding_right_5 fa-angle-double-right"></i>{/if}</span>
-                        {/foreach}
+                        <div class="breadcrumbs">
+                            {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
+                                <span class="breadcrumb {if isset($breadcrumb.class)}{$breadcrumb.class}{/if} "><a href="{$breadcrumb.link}"  title="{$breadcrumb.title}">{$breadcrumb.label}</a> </span>
+                                {if !$smarty.foreach.breadcrumbs.last}
+                                    <i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>
+                                {/if}
+                            {/foreach}
+                        </div>
+
+
+
 
 
                     </td>

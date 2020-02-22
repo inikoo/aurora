@@ -22,9 +22,15 @@
             {if $navigation.show}
             <div class="menu-bar" style="margin:0px;height:50px;position: relative;top:-5px;border-bottom:1px solid #ccc">
                 <em class="menu-bar-text-1   ">
-                    {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
-                        <span class="breadcrumbs"><a href="{$breadcrumb.link}"style="color:#1f2f1f" title="{$breadcrumb.title}">{$breadcrumb.label}</a> {if !$smarty.foreach.breadcrumbs.last}<i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>{/if}</span>
-                    {/foreach}
+
+                    <div class="breadcrumbs">
+                        {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
+                            <span class="breadcrumb {if isset($breadcrumb.class)}{$breadcrumb.class}{/if} "><a  href="{$breadcrumb.link}" title="{$breadcrumb.title}">{$breadcrumb.label}</a> </span>
+                            {if !$smarty.foreach.breadcrumbs.last}
+                                <i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>
+                            {/if}
+                        {/foreach}
+                    </div>
                 </em>
                 <em class="menu-bar-text-2   " >
                     {if $navigation.prev}<a style="color:#1f2f1f" href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a style="color:#1f2f1f" href="{$navigation.next.link}" title="{$navigation.next.title}"><i style="margin-left:20px" class="fas fa-arrow-right next"></i></a>{/if}

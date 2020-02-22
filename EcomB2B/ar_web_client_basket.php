@@ -228,16 +228,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
             )
         );
     }else{
-
-
         $order=$customer_client->create_order();
-
-
-        //$order->currency_code=$store->get('Store Currency Code');
-
-
-
-
     }
 
 
@@ -286,7 +277,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
         'empty' => false,
         'html'  => $smarty->fetch($theme.'/blk.client_basket.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         'client_nav' => [
-            'label' => $customer_client->get('Customer Client Code'),
+            'label' => '<a href="/client.sys?id='.$customer_client->id.'">'.$customer_client->get('Customer Client Code').'</a>',
             'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
 
         ],

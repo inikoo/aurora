@@ -193,6 +193,15 @@ p.strong {
   margin-bottom: 8px;
 }
 
+.order_items{
+  .mobile_ordering {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    z-index: auto;
+
+  }
+
+}
 .mobile_ordering .fa {
 
   margin-left: 2px;
@@ -202,6 +211,8 @@ p.strong {
   top: 5px;
 
 }
+
+
 
 .mobile_ordering input {
   border: 1px solid #ccc;
@@ -1282,6 +1293,7 @@ i.product_stock_dot {
 @import 'table_title';
 @import 'table';
 @import 'square_buttons.scss';
+@import 'basket_tablet';
 
 
 .table .backgrid tr td{
@@ -1307,3 +1319,6 @@ i.product_stock_dot {
   }
 }
 
+.breadcrumbs a{
+  color:#1f2f1f;
+}

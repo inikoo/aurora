@@ -215,6 +215,95 @@ function save_item_qty_change(element) {
 }
 
 
+function post_save_change_item_in_basket(data){
+
+
+    if (data.order_empty) {
+        $('#basket_go_to_checkout').css({
+            display: 'none'
+        })
+    } else {
+        $('#basket_go_to_checkout').css({
+            display: 'block'
+        })
+    }
+
+
+    for (var key in data.metadata.class_html) {
+        $('.' + key).html(data.metadata.class_html[key])
+    }
+    for (var key in data.metadata.hide) {
+        $('.' + data.metadata.hide[key]).addClass('hide')
+    }
+
+    for (var key in data.metadata.show) {
+        $('.' + data.metadata.show[key]).removeClass('hide')
+    }
+    for (var key in data.metadata.add_class) {
+
+        $('.' + key).addClass(data.metadata.add_class[key])
+    }
+    for (var key in data.metadata.remove_class) {
+        $('.' + key).removeClass(data.metadata.remove_class[key])
+    }
+
+
+
+    if (data.quantity == 0) data.quantity = ''
+
+
+
+    for (var key in data.discounts_data) {
+
+        $('#transaction_deal_info_' + key).html(data.discounts_data[key]['deal_info'])
+        $('#transaction_item_net_' + key).html(data.discounts_data[key]['item_net'])
+
+    }
+
+
+    if (data.analytics.action != '') {
+
+
+        ga('auTracker.ec:addProduct', data.analytics.product_data);
+        ga('auTracker.ec:setAction', data.analytics.action);
+        ga('auTracker.send', 'event', 'UX', 'click', data.analytics.event);
+    }
+
+
+    for (var key in data.metadata.deleted_otfs) {
+        $('#transaction_item_net_' + data.metadata.deleted_otfs[key]).closest('tr').remove()
+    }
+
+
+
+    if (data.metadata.new_otfs.length > 0 || data.metadata.deleted_otfs.length > 0) {
+
+        const scope= $('.basket_order_items').data('scope')
+
+
+        if(scope=='client'){
+
+            var request = 'ar_web_client_basket.php?tipo=get_client_order_items_html&client_key='+$('.basket_order_items').data('scope_key')+'&device_prefix=' + $('body').data('device_prefix')
+
+        }else{
+            var request = 'ar_web_basket.php?tipo=get_items_html&device_prefix=' + $('body').data('device_prefix')
+
+        }
+
+
+        $.getJSON(request, function (data2) {
+
+
+            if (data2.state == 200) {
+
+                $('.basket_order_items').html(data2.html)
+            }
+
+        })
+
+    }
+}
+
 
 
 

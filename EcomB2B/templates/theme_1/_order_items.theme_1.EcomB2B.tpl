@@ -24,7 +24,7 @@
             <div style="" class="add_item_form" >
                 <span class="hide add_item_invalid_msg">{t}Invalid value{/t}</span>
                 <span class="discreet">{if !empty($labels._add_product_to_basket)}{$labels._add_product_to_basket}{else}{t}Add product{/t}{/if}</span>
-                <input style="margin-right:2px;margin-left: 5px"  class="item " value="" placeholder="{if !empty($labels._add_product_to_basket_code_placeholder)}{$labels._add_product_to_basket_code_placeholder}{else}{t}Product code{/t}{/if}"/>
+                <input  data-device="Desktop" style="margin-right:2px;margin-left: 5px"  class="item " value="" placeholder="{if !empty($labels._add_product_to_basket_code_placeholder)}{$labels._add_product_to_basket_code_placeholder}{else}{t}Product code{/t}{/if}"/>
                 <input style="margin-right:2px;width: 150px" class="qty  " value="" placeholder="{if !empty($labels._add_product_to_basket_qty_placeholder)}{$labels._add_product_to_basket_qty_placeholder}{else}{t}Quantity{/t}{/if}"/>
                 <div  class="search_results_container hide" >
                     <table class="add_item_results" >

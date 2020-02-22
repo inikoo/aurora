@@ -15,18 +15,12 @@
 {assign "items_data" $order->get_items()}
 {assign "interactive_charges_data" $order->get_interactive_charges_data()}
 {assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
+{assign "voucher_info" $order->voucher_formatted_info()}
 
 <div id="block_{$key}"  class="clear content {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
-
-
-
-
     <div class="content">
-
         <h4>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h4>
-
-
-                <div class="one-third-responsive">
+        <div class="one-third-responsive">
                     <h5 style="position: relative;left:-10px;font-size: 90%;font-weight: 800;color: #333">
 
                         <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
@@ -60,8 +54,6 @@
                    <div class="formatted_invoice_address single_line_height">{$order->get('Order Invoice Address Formatted')}</div>
 
                 </div>
-
-
         <div class="one-third-responsive last-column">
             <table class="order_totals">
 
@@ -140,18 +132,7 @@
                 </tbody>
             </table>
         </div>
-
-
-                <div class="clear"></div>
-
-
-
-
-
-
-
-        {assign "voucher_info" $order->voucher_formatted_info()}
-
+        <div class="clear"></div>
         <div class="container order basket   " style="margin-bottom: 20px">
             <span class="basket_order_items" data-scope="customer">
             {include file="theme_1/_order_items.theme_1.EcomB2B.tablet.tpl" edit=true hide_title=true   items_data=$items_data }
@@ -163,15 +144,8 @@
 
 
         </div>
-
-
-
-
-            </div>
-
-
-
-         <div class="content">
+    </div>
+    <div class="content">
 
                 <div class="one-half-responsive">
 
@@ -251,10 +225,7 @@
 
 
             </div>
-
-
-<div class="clear"></div>
-
+    <div class="clear"></div>
 </div>
 
 <div style="z-index: 3001" class="address_form" >
@@ -520,9 +491,6 @@
         </footer>
     </form>
 </div>
-
-
-
 
 <script>
 

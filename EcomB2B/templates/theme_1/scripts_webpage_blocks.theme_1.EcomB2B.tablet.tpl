@@ -156,6 +156,7 @@
                         getScript("/assets/desktop.client_basket.min.js", function () {
                             $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key="+getUrlParameter('client_id')+"&device_prefix=tablet", function (data) {
                                 $('#client_basket').html(data.html);
+
                                 $('.breadcrumbs .client_nav').html(data.client_nav.label)
                                 $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
                                 $('.breadcrumbs .order_nav').html(data.order_nav.label)

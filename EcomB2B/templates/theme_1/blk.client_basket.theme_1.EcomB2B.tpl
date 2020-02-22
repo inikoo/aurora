@@ -36,18 +36,28 @@
 
 
         <div  style="flex-grow: 1" class="text_block '">
-            <h2 class="order_number  {if !$order->id}hide{/if}">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span
-                        class="order_number">{$order->get('Public ID')}</span></h2>
+
+
+
+
+            <h4  >
+                <span class="discreet">{t}Customer{/t}:</span>
+                <span >
+                   <span style="background-color: black;color:white;padding:2px 12px" class="Customer_Client_Code">{$customer_client->get('Customer Client Code')}</span>
+
+                </span>
+            </h4>
+
+            <h5  >
+                <span class="discreet">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if}:</span>
+                <span>{$order->get('Public ID')}</span>
+            </h5>
+
+
+
             <div class="text_blocks text_template_2">
                 <div class="text_block ">
-                    <h5>
-                        <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
-                        <i id="_delivery_address_icon" class="fa fa-fw fa-truck   " aria-hidden="true"></i>
-                        <span id="_delivery_address_label">{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
-                        </span>
 
-
-                    </h5>
                     <p>
                     <div class="formatted_delivery_address">
                         {if !$order->id}

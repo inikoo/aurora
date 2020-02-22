@@ -108,7 +108,15 @@ function get_items_select_for_add_item_to_order(element) {
                 var search_results_container=element.find('.search_results_container');
 
                 item_input.removeClass('invalid')
-                search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top-14, left: save_button.offset().left-search_results_container.width()   })
+
+                if(item_input.data('device')=='Desktop'){
+                    search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top-14, left: save_button.offset().left-search_results_container.width()   })
+
+                }else if(item_input.data('device')=='Tablet'){
+                    search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top+30, left: save_button.offset().left-search_results_container.width()+20   })
+
+                }
+
 
 
             } else {
@@ -218,14 +226,14 @@ function validate_add_item(form) {
     }
 
     if (invalid) {
-        save_button.addClass('invalid').removeClass('super_discreet valid button changed')
+        save_button.addClass('invalid').removeClass('super_discreet valid  changed')
     } else {
         save_button.removeClass('invalid')
 
         if (save_button.data('item_key') != '' && input_item.val() != '' && input_qty.val() != '') {
-            save_button.addClass('valid button changed').removeClass('super_discreet')
+            save_button.addClass('valid  changed').removeClass('super_discreet')
         } else {
-            save_button.removeClass('valid button changed').addClass('super_discreet')
+            save_button.removeClass('valid  changed').addClass('super_discreet')
         }
 
     }
@@ -253,6 +261,9 @@ function save_add_item(save_button) {
     form_data.append("tipo", 'update_client_order_item')
     form_data.append("webpage_key", $('#webpage_data').data('webpage_key'))
     form_data.append("client_key", $('.client_basket').data('client_key'))
+
+    form_data.append("order_key", $('.client_basket').data('order_key'))
+
 
     form_data.append("page_section_type", 'Add_Basket')
 
@@ -282,7 +293,7 @@ function save_add_item(save_button) {
             $(save_button).data('item_historic_key', '')
             form.find('.item').val('').trigger('focus').removeClass('invalid')
             form.find('.qty').val('').removeClass('invalid')
-            $(save_button).addClass('super_discreet').removeClass('invalid valid button')
+            $(save_button).addClass('super_discreet').removeClass('invalid valid ')
 
 
             var transaction_tr=$('.order_item_otf_'+data.otf_key)

@@ -44,10 +44,10 @@ switch ($tipo) {
 
 /**
  * @param $_data
- * @param $website
+ * @param $website \Public_Website
  * @param $customer_key
  * @param $editor
- * @param $db \PDO
+ * @param $db      \PDO
  */
 function update_client_order_item($_data, $website, $customer_key, $editor, $db) {
 
@@ -80,12 +80,13 @@ function update_client_order_item($_data, $website, $customer_key, $editor, $db)
 
     if (!$order_key) {
 
-        $order_data = array(
-            'editor' => $editor
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Order not found'
         );
+        echo json_encode($response);
+        exit;
 
-        $order = $customer_client->create_customer_client_order($order_data);
-        $order->fast_update(array('Order Website Key' => $website->id));
 
     } else {
         $order = get_object('Order', $order_key);

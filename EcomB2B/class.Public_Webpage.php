@@ -168,7 +168,7 @@ class Public_Webpage {
                             [
                                 'link'  => 'https://'.$website->get('Website URL').'/clients.sys',
                                 'title' => _('Customers'),
-                                'label' => '<i class="fal fa-user"></i> '._('Customers')
+                                'label' => '<i class="fal fa-user"></i> <span class="hide_mobile">'._('Customers').'</span>'
                             ],
                             [
                                 'link'  => '',
@@ -196,7 +196,7 @@ class Public_Webpage {
                             [
                                 'link'  => '',
                                 'title' => _('Customers'),
-                                'label' => '<i class="fal fa-user"></i> '._('Customers')
+                                'label' => '<i class="fal fa-user"></i> <span class="hide_mobile">'._('Customers').'</span>'
                             ]
 
 
@@ -288,7 +288,7 @@ class Public_Webpage {
                             [
                                 'link'  => 'https://'.$website->get('Website URL').'/clients.sys',
                                 'title' => _('Customers'),
-                                'label' => '<i class="fal fa-user"></i> '._('Customers')
+                                'label' => '<i class="fal fa-user"></i> <span class="hide_mobile">'._('Customers').'</span>'
                             ],
                             [
                                 'link'  => '',
