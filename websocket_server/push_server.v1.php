@@ -1,35 +1,35 @@
 <?php
-require 'vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
-use Ratchet\Session\SessionProvider;
-use Symfony\Component\HttpFoundation\Session\Session;
+use App\Publishers\Pusher;
 
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler;
-$memcache_ip = '127.0.0.1';
-$memcached   = new Memcached();
-$memcached->addServer($memcache_ip, 11211);
-$storage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-//$session = new Session($storage);
-//$session->start();
+use React\ZMQ\Context;
+
+
+use Ratchet\Server\IoServer;
+use Ratchet\Http\HttpServer;
+use Ratchet\WebSocket\WsServer;
+use Ratchet\Wamp\WampServer;
+
+
 $loop   = React\EventLoop\Factory::create();
-$pusher = new App\Publishers\Pusher;
-$context = new React\ZMQ\Context($loop);
+$pusher = new Pusher;
+$context = new Context($loop);
 $pull    = $context->getSocket(ZMQ::SOCKET_PULL);
 $pull->bind('tcp://127.0.0.1:5555');
 $pull->on(
     'message', array(
                  $pusher,
-                 'onBlogEntry2'
+                 'broadcast'
              )
 );
 $webSock   = new React\Socket\Server('0.0.0.0:8081', $loop);
-$webServer = new Ratchet\Server\IoServer(
-    new Ratchet\Http\HttpServer(
-        new Ratchet\Session\SessionProvider(
-            new Ratchet\WebSocket\WsServer(new Ratchet\Wamp\WampServer($pusher)),
-            new Handler\MemcachedSessionHandler($memcached)
+
+
+$webServer = new IoServer(
+    new HttpServer(
+        new WsServer(
+            new WampServer($pusher)
         )
     )
     , $webSock

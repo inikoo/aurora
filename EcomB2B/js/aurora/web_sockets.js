@@ -46,8 +46,6 @@ function connect_websocket() {
         websocket_connected_connecting = false;
         websocket_connected = true;
 
-        console.log($('body').data('ws_key'))
-
         ws_connection.subscribe( $('body').data('ws_key'), function (topic, _data) {
 
 
