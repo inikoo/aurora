@@ -28,15 +28,13 @@
 {assign "interactive_charges_data" $order->get_interactive_charges_data()}
 {assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
-<div style="width: 100%;background-color: tomato;color:white;text-align: center;line-height: 40px">
-    <h2>Under construction please use the desktop version</h2>
-</div>
+
 
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}" data-order_key="{$order->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="min-height:500px;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
     <div class="content">
-    <div class="one-half-responsive " >
+        <div class="one-half-responsive " >
 
 
             <h5  >
@@ -56,9 +54,7 @@
 
 
     </div>
-
-
-    <div class="one-half-responsive last-column">
+        <div class="one-half-responsive last-column">
 
         <table class="order_totals" style="border-top:none;margin-top: 0px;" >
 
@@ -142,8 +138,8 @@
         </table>
 
     </div>
-    <div class="clear"></div>
-    <div class="container order basket   " style="margin-bottom: 20px">
+        <div class="clear"></div>
+        <div class="container order basket   " style="margin-bottom: 20px">
             <span class="basket_order_items" data-scope="customer">
             {include file="theme_1/_order_items.theme_1.EcomB2B.tablet.tpl" edit=true hide_title=true   items_data=$items_data }
             </span>
@@ -153,8 +149,46 @@
     </div>
 
     </div>
+    <div class="content">
+
+        <div class="one-half-responsive">
+
+            <form action="" method="post" enctype="multipart/form-data"  class="sky-form"  style="box-shadow: none">
 
 
+            <section style="border: none">
+                <label class="textarea">
+
+                    <textarea id="special_instructions" rows="5" name="comment" placeholder="{$data._special_instructions}">{$order->get('Order Customer Message')}</textarea>
+                </label>
+            </section>
+
+
+            </form>
+
+
+
+        </div>
+
+        <div class="one-half-responsive last-column">
+
+            <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
+
+                <section class="col">
+                    <button id="basket_go_to_checkout"   style="margin:0px;{if $order->get('Products')==0 }display:none{/if}" type="submit" class="button"><b>{$data._go_checkout_label}</b> <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+
+                </section>
+
+
+            </form>
+
+        </div>
+
+
+
+
+    </div>
+    <div class="clear"></div>
     <div class="hide">
 
     <div class="order_header  text_blocks  " style="display: flex">

@@ -150,7 +150,7 @@
                 <div class="one-half-responsive">
 
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
-                    style="box-shadow: none"
+                    style="box-shadow: none">
 
 
 

@@ -216,7 +216,7 @@
                 {else}
                     {assign "with_thanks" 1} {assign "with_order" 1}
                 {/if}
-            {elseif $block.type=='basket'}
+            {elseif $block.type=='basket' or $block.type=='client_basket'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
                 {else}
