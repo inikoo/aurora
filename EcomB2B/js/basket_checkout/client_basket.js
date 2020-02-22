@@ -115,6 +115,9 @@ function get_items_select_for_add_item_to_order(element) {
                 }else if(item_input.data('device')=='Tablet'){
                     search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top+30, left: save_button.offset().left-search_results_container.width()+20   })
 
+                }else if(item_input.data('device')=='Mobile'){
+                    search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top+30, left: save_button.offset().left-search_results_container.width()+20   })
+
                 }
 
 

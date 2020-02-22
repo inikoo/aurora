@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  24 November 2019  14:15::38  +0100, Mijas Coasta, Spain
+ Created:   23 February 2020  01:40::18  +0800, Kuala Lumpur, Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -35,20 +35,17 @@
 
     <div class="content">
         <div class="one-half-responsive " >
-
-
             <h5  >
                 <span class="discreet">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if}:</span>
                 <span>{$order->get('Public ID')}</span>
             </h5>
-        <h4  >
+            <h4  >
             <span class="discreet">{t}Customer{/t}:</span>
             <span >
                    <span style="background-color: black;color:white;padding:2px 12px" class="Customer_Client_Code">{$customer_client->get('Customer Client Code')}</span>
 
                 </span>
         </h4>
-
         <div style="margin-top: 10px" class="formatted_delivery_address single_line_height">{$order->get('Order Delivery Address Formatted')}</div>
 
 
@@ -141,7 +138,7 @@
         <div class="clear"></div>
         <div class="container order basket   " style="margin-bottom: 20px">
             <span class="basket_order_items" data-scope="customer">
-            {include file="theme_1/_order_items.theme_1.EcomB2B.tablet.tpl" edit=true hide_title=true   items_data=$items_data }
+            {include file="theme_1/_order_items.theme_1.EcomB2B.tablet.tpl" edit=true hide_title=true   items_data=$items_data client_key=$customer_client->id }
             </span>
 
 

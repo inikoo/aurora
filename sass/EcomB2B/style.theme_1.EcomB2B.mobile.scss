@@ -183,6 +183,16 @@ $color_save: #0EBFE9;
   z-index: 3000
 }
 
+.order_items{
+  .mobile_ordering {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    z-index: auto;
+
+  }
+
+}
+
 .mobile_ordering .fa {
 
   margin-left: 2px;
@@ -755,7 +765,8 @@ i.product_stock_dot {
 @import 'tabs';
 @import 'table_title';
 @import 'table';
-@import 'square_buttons.scss';
+@import 'square_buttons';
+@import 'basket_mobile';
 
 
 .table .backgrid tr td{

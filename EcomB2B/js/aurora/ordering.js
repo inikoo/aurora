@@ -214,7 +214,6 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
 
 function save_item_qty_change(element,options) {
 
-    console.log(options)
 
     if ($(element).hasClass('fa-exclamation-circle')) {
         return;
@@ -275,11 +274,11 @@ function save_item_qty_change(element,options) {
         ajaxData.append("tipo", 'update_client_order_item');
         ajaxData.append("client_key",options.client_key);
         ajaxData.append("order_key",options.order_key);
-        ar_file="/ar_web_update_client_order_item.php";
+         ar_file="/ar_web_update_client_order_item.php";
 
     }else{
         ajaxData.append("tipo", 'update_order_item');
-        ar_file="/ar_web_update_order_item.php";
+         ar_file="/ar_web_update_order_item.php";
     }
 
 

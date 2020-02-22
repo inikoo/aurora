@@ -15,16 +15,9 @@
 {assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
 <div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;margin-top: 10px" >
-
-
-
-
     <div class="content" style="padding: 0px 10px">
-
         <h4>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h4>
-
-
-                <div class="one-half">
+        <div class="one-half">
                     <h5 style="font-size: 90%;font-weight: 800;color: #333">
 
                         <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
@@ -45,7 +38,7 @@
 
 
                 </div>
-                <div class="one-half last-column">
+        <div class="one-half last-column">
                     <h5 style="position: relative;left:-5px;;font-size: 90%;font-weight: 800;color: #333">
                         <i id="_invoice_address_icon" class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                         <span id="_invoice_address_label"  >{if !empty($labels._invoice_address_label) }{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
@@ -58,10 +51,8 @@
                     <div class="formatted_invoice_address single_line_height">{$order->get('Order Invoice Address Formatted')}</div>
 
                 </div>
-                <div class="clear"></div>
-
-
-                    <table class="order_totals">
+        <div class="clear"></div>
+        <table class="order_totals">
 
 
 
@@ -136,8 +127,6 @@
 
                         </tbody>
                     </table>
-
-
         {assign "voucher_info" $order->voucher_formatted_info()}
 
         <div class="container order basket   " style="margin-bottom: 20px">
@@ -151,24 +140,11 @@
 
 
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class="container" >
+        <div class="container" >
 
                 <div class="one_half">
 
-                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
-                    style="box-shadow: none"
+                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form"  style="box-shadow: none">
 
 
 
@@ -178,7 +154,7 @@
 
 
 
-                    <section s>
+                    <section >
 
                         <div class="row"  id="voucher"  >
 
@@ -267,13 +243,8 @@
 
 
             </div>
-
     </div>
-
-
 </div>
-
-
 
 <div style="z-index: 3001" class="address_form" >
     <form id="order_delivery_address_form" class="sky-form sky-form-modal">
@@ -540,9 +511,6 @@
         </footer>
     </form>
 </div>
-
-
-
 
 <script>
 
@@ -978,6 +946,3 @@
     ga('auTracker.send', 'pageview');
 
 </script>
-
-
-
