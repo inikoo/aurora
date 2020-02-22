@@ -87,11 +87,15 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-
-$order_key = $customer->get_order_in_process_key();
-$order     = get_object('Order', $order_key);
-
 $website = get_object('Website', $_SESSION['website_key']);
+
+if($website->get('Website Type')!='EcomDS'){
+    $order_key = $customer->get_order_in_process_key();
+    $order     = get_object('Order', $order_key);
+    $order->editor=$editor;
+}
+
+
 
 if (!empty($_SESSION['website_locale'])) {
     $website_locale = $_SESSION['website_locale'];

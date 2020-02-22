@@ -31,6 +31,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'product_id'        => array('type' => 'key'),
                          'client_key'        => array('type' => 'key'),
+                         'order_key'         => array('type' => 'key'),
                          'qty'               => array('type' => 'string'),
                          'webpage_key'       => array('type' => 'numeric'),
                          'page_section_type' => array('type' => 'string')
@@ -71,9 +72,10 @@ function update_client_order_item($_data, $website, $customer_key, $editor, $db)
     }
 
 
+    $order_key = $customer_client->get_order_in_process_key();
+
 
     $customer_client->editor = $editor;
-    $order_key = $customer_client->get_order_in_process_key();
 
 
     if (!$order_key) {
@@ -85,12 +87,12 @@ function update_client_order_item($_data, $website, $customer_key, $editor, $db)
         $order = $customer_client->create_customer_client_order($order_data);
         $order->fast_update(array('Order Website Key' => $website->id));
 
-    }else{
-        $order=get_object('Order',$order_key);
+    } else {
+        $order = get_object('Order', $order_key);
     }
 
 
-    $response=process_update_order_item($db,$order,$_data['product_id'],$_data['qty'],$website,$_data['webpage_key'],$_data['page_section_type']);
+    $response = process_update_order_item($db, $order, $_data['product_id'], $_data['qty'], $website, $_data['webpage_key'], $_data['page_section_type']);
     echo json_encode($response);
 
 }

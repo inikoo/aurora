@@ -79,6 +79,33 @@ switch ($tipo) {
         );
 
 
+        if ($website->get('Website Type') == 'EcomDS') {
+
+            $order         = get_object('Order', $data['order_key']);
+            $order->editor = $editor;
+
+            if ($order->get('Order Customer Key') != $customer->id) {
+                $response = array(
+                    'state' => 400,
+                    'resp'  => 'Error C_not_M'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+        }
+
+
+        if ($order->get('Order State') != 'InBasket') {
+            $response = array(
+                'state' => 400,
+                'resp'  => 'Error order not in basket'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
         $store = get_object('Store', $order->get('Order Store Key'));
 
 
@@ -145,15 +172,43 @@ switch ($tipo) {
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-                         //  'order_key'           => array('type' => 'key'),
+                         'order_key'           => array('type' => 'key'),
                          'amount'              => array('type' => 'string'),
-                         //  'currency'            => array('type' => 'string'),
                          'nonce'               => array('type' => 'string'),
 
 
                      )
         );
         $website = get_object('Website', $_SESSION['website_key']);
+
+        if ($website->get('Website Type') == 'EcomDS') {
+
+            $order         = get_object('Order', $data['order_key']);
+            $order->editor = $editor;
+
+            if ($order->get('Order Customer Key') != $customer->id) {
+                $response = array(
+                    'state' => 400,
+                    'resp'  => 'Error C_not_M'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+        }
+
+
+        if ($order->get('Order State') != 'InBasket') {
+            $response = array(
+                'state' => 400,
+                'resp'  => 'Error order not in basket'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
         $store   = get_object('Store', $order->get('Order Store Key'));
         $account = get_object('Account', 1);
 
@@ -166,12 +221,42 @@ switch ($tipo) {
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-
+                         'order_key'           => array('type' => 'key'),
                          'data' => array('type' => 'json array'),
 
                      )
         );
         $website = get_object('Website', $_SESSION['website_key']);
+
+
+        if ($website->get('Website Type') == 'EcomDS') {
+
+            $order         = get_object('Order', $data['order_key']);
+            $order->editor = $editor;
+
+            if ($order->get('Order Customer Key') != $customer->id) {
+                $response = array(
+                    'state' => 400,
+                    'resp'  => 'Error C_not_M'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+        }
+
+
+        if ($order->get('Order State') != 'InBasket') {
+            $response = array(
+                'state' => 400,
+                'resp'  => 'Error order not in basket'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
         $store   = get_object('Store', $order->get('Order Store Key'));
         $account = get_object('Account', 1);
         place_order_pay_braintree($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
@@ -183,12 +268,40 @@ switch ($tipo) {
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-
+                         'order_key'           => array('type' => 'key'),
                          'data' => array('type' => 'json array'),
 
                      )
         );
         $website = get_object('Website', $_SESSION['website_key']);
+
+        if ($website->get('Website Type') == 'EcomDS') {
+
+            $order         = get_object('Order', $data['order_key']);
+            $order->editor = $editor;
+
+            if ($order->get('Order Customer Key') != $customer->id) {
+                $response = array(
+                    'state' => 400,
+                    'resp'  => 'Error C_not_M'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+        }
+
+
+        if ($order->get('Order State') != 'InBasket') {
+            $response = array(
+                'state' => 400,
+                'resp'  => 'Error order not in basket'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
         $store   = get_object('Store', $order->get('Order Store Key'));
         $account = get_object('Account', 1);
         place_order_pay_braintree_using_saved_card($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
@@ -532,7 +645,7 @@ function get_checkout_html($data, $website, $customer, $smarty) {
                 'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided</div>'
 
 
-        );
+            );
             echo json_encode($response);
             exit;
         }
@@ -550,7 +663,7 @@ function get_checkout_html($data, $website, $customer, $smarty) {
             exit;
         }
 
-        if ($order->get('Order State')!='InBasket') {
+        if ($order->get('Order State') != 'InBasket') {
             $response = array(
                 'state' => 200,
                 'html'  => '<div style="margin:100px auto;text-align: center">Order not in basket</div>'

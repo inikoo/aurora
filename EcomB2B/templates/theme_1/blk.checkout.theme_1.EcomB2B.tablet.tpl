@@ -655,6 +655,7 @@
                                     ajaxData.append("tipo", 'place_order_pay_braintree_using_saved_card')
                                     ajaxData.append("payment_account_key",BTree_account_key )
                                     ajaxData.append("data", JSON.stringify(register_data))
+                                    ajaxData.append("order_key",'{$order->id}' )
 
 
 
@@ -793,6 +794,7 @@
                                     ajaxData.append("tipo", 'place_order_pay_braintree')
                                     ajaxData.append("payment_account_key",BTree_account_key )
                                     ajaxData.append("data", JSON.stringify(register_data))
+                                    ajaxData.append("order_key",'{$order->id}' )
 
 
 
@@ -891,6 +893,8 @@
 
                                         ajaxData.append("payment_account_key",BTreePaypal_account_key )
                                         ajaxData.append("amount",'{$order->get('Order Basket To Pay Amount')}' )
+                                        ajaxData.append("order_key",'{$order->id}' )
+
                                         ajaxData.append("nonce",payload.nonce )
 
                                         $.ajax({
