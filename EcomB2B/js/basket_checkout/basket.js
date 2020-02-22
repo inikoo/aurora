@@ -550,7 +550,7 @@ function select_add_item_option(element) {
         return;
     }
 
-    let form=$(element).closest('.add_item_form')
+    var form=$(element).closest('.add_item_form')
     form.find('.item').val($(element).data('formatted_value'))
     form.find('.add_item_save').data('item_key', $(element).data('item_key')).data('item_historic_key', $(element).data('item_historic_key'))
     form.find('.search_results_container').addClass('hide').removeClass('show')
@@ -613,7 +613,7 @@ function save_add_item(save_button) {
 
 
 
-    let form=$(save_button).closest('.add_item_form')
+    var form=$(save_button).closest('.add_item_form')
 
 
     $(save_button).addClass('fa-spinner fa-spin');
