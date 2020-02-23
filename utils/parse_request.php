@@ -117,17 +117,32 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
                                 if (isset($view_path[2])) {
+                                    $parent     = 'store';
+                                    $parent_key = $key;
                                     if ($view_path[2] == 'new') {
 
                                         $module     = 'products';
-                                        $parent     = 'store';
-                                        $parent_key = $key;
+
                                         $key        = '';
                                         $section    = 'website.new';
                                         $object     = 'website';
 
 
+                                    }elseif(is_numeric($view_path[2])){
+                                        $module  = 'websites';
+                                        $section = 'analytics';
+                                        $object  = 'website';
+                                        $key     = $view_path[2];
+
                                     }
+
+                                }else{
+                                    $parent     = 'store';
+                                    $parent_key = $key;
+                                    $module  = 'websites';
+                                    $section = 'analytics';
+                                    $object  = 'website';
+                                    $key     = '';
 
                                 }
 
