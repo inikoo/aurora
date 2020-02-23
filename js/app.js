@@ -195,8 +195,8 @@ function change_menu_view(module) {
             }
             break;
         case 'websites':
-            if (state.current_website) {
-                change_view('website/' + state.current_website)
+            if (state.current_store) {
+                change_view('store/' + state.current_store+'/website')
             } else {
                 change_view('websites')
             }

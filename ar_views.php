@@ -192,6 +192,10 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             $state['current_store'] = $_parent->id;
             $store                  = $_parent;
 
+            if ($state['object'] == 'website' and $state['key'] == '') {
+                $state['key'] = $store->get('Store Website Key');
+            }
+
 
             break;
         case 'customer':
@@ -212,7 +216,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             $_parent = get_object('Website', $state['parent_key']);
             $website = $_parent;
-            //$state['current_website'] = $_parent->id;
 
 
             $store                    = get_object('Store', $_parent->get('Website Store Key'));
@@ -224,13 +227,14 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             $_parent                  = get_object('Webpage', $state['parent_key']);
             $website                  = get_object('Website', $_parent->get('Webpage Website Key'));
             $state['current_website'] = $website->id;
+            $state['current_store']   = $website->get('Website Store Key');
 
             break;
         case 'webpage_type':
             $_parent                  = get_object('Webpage_Type', $state['parent_key']);
             $website                  = get_object('Website', $_parent->get('Webpage Type Website Key'));
             $state['current_website'] = $website->id;
-
+            $state['current_store']   = $website->get('Website Store Key');
 
             if (!$_parent->id) {
                 $state = array(
@@ -298,7 +302,18 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             $_parent = get_object($state['parent'], $state['parent_key']);
 
 
-            if (preg_match('/_server/', $state['module'])) {
+            if (in_array(
+                $state['module'], [
+                                    'customers_server',
+                                    'mailroom_server',
+                                    'products_server',
+                                    'offers_server',
+                                    'websites_server',
+                                    'orders_server'
+
+                                ]
+
+            )) {
                 $state['current_store'] = '';
             }
 
@@ -398,9 +413,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         if (is_numeric($_object->get('Website Key'))) {
 
 
-            include_once 'class.Website.php';
-            $website                  = new Website($_object->get('Website Key'));
+            $website                  = get_object('Website', $_object->get('Website Key'));
             $state['current_website'] = $website->id;
+            $state['current_store']   = $website->get('Website Store Key');
         }
 
 
@@ -471,6 +486,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
             $state['current_website'] = $state['key'];
+            $state['current_store']   = $store->id;
             if ($state['_parent'] == 'store' and !$state['_parent']->get('Store Website Key')) {
                 $state = array(
                     'old_state'  => $state,
@@ -856,9 +872,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
-    if ($data['old_state']['module'] != $state['module'] or
-        $data['old_state']['section'] != $state['section'] or
-        $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key'] != $state['key'] or $reload or isset(
+    if ($data['old_state']['module'] != $state['module'] or $data['old_state']['section'] != $state['section'] or $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key'] != $state['key'] or $reload or isset(
             $data['metadata']['reload_showcase']
 
         )
@@ -1357,8 +1371,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $response['state'] = 200;
 
     $response['app_state'] = $state;
-
-
 
 
     $encoded = json_encode($response);

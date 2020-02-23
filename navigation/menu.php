@@ -95,6 +95,7 @@ if ($user->can_view('orders')) {
         ''
     );
 
+    $store_blocks = count($nav_menu);
 
     $nav_menu[] = array(
         '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
@@ -108,22 +109,7 @@ if ($user->can_view('orders')) {
 }
 
 
-if ($user->can_view('orders')) {
 
-
-    $nav_menu[] = array(
-        '<i class="button fal fa-abacus fa-fw"></i>',
-        _('Accounting'),
-        'invoices/per_store',
-        'accounting',
-        'module',
-        ''
-    );
-
-
-}
-
-$store_blocks = count($nav_menu);
 
 
 if ($user->can_view('locations')) {
@@ -251,6 +237,21 @@ if ($user->can_view('staff')) {
         'module',
         ''
     );
+}
+
+if ($user->can_view('orders')) {
+
+
+    $nav_menu[] = array(
+        '<i class="button fal fa-abacus fa-fw"></i>',
+        _('Accounting'),
+        'invoices/per_store',
+        'accounting',
+        'module',
+        ''
+    );
+
+
 }
 
 
