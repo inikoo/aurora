@@ -67,22 +67,54 @@ switch ($tipo) {
         break;
 
 
-    case 'special_instructions':
+    case 'update_special_instructions':
         $data = prepare_values(
             $_REQUEST, array(
-                         'value' => array('type' => 'string'),
+                         'value'     => array('type' => 'string'),
+                         'order_key' => array(
+                             'type' => 'key',
+                         ),
 
                      )
         );
-        update_special_instructions($data, $order, $editor);
+        update_special_instructions($data, $customer->id, $editor);
         break;
+    default:
+        $response = array(
+            'state' => 407,
+            'resp'  => 'Non acceptable tipo'
+        );
+        echo json_encode($response);
+        exit;
 
 
 }
 
+/**
+ * @param $data
+ * @param $customer_key
+ * @param $editor
+ *
+ */
+function update_special_instructions($data, $customer_key, $editor) {
 
-function update_special_instructions($data, $order, $editor) {
-
+    $order = get_object('Order', $data['order_key']);
+    if (!$order->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Order not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    if ($order->get('Order Customer Key') != $customer_key) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
 
     $order->editor = $editor;
 
@@ -137,8 +169,6 @@ function get_client_order_items_html($data, $customer_key) {
     $smarty->setCacheDir('server_files/smarty/cache');
     $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
-
-
 
 
     $website = get_object('Website', $_SESSION['website_key']);
@@ -210,30 +240,24 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
     $smarty->addPluginsDir('./smarty_plugins');
 
 
-
     $theme = $website->get('Website Theme');
     $store = get_object('Store', $website->get('Website Store Key'));
 
     $order_key = $customer_client->get_order_in_process_key();
 
 
-
     $order = get_object('Order', $order_key);
 
 
-    if($order->id){
+    if ($order->id) {
         $order->fast_update(
             array(
                 'Order Available Credit Amount' => $customer_client->get('Customer Account Balance')
             )
         );
-    }else{
-        $order=$customer_client->create_order();
+    } else {
+        $order = $customer_client->create_order();
     }
-
-
-
-
 
 
     $webpage = $website->get_webpage('client_basket.sys');
@@ -273,20 +297,20 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
 
 
     $response = array(
-        'state' => 200,
-        'empty' => false,
-        'html'  => $smarty->fetch($theme.'/blk.client_basket.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        'state'      => 200,
+        'empty'      => false,
+        'html'       => $smarty->fetch($theme.'/blk.client_basket.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         'client_nav' => [
             'label' => '<a href="/client.sys?id='.$customer_client->id.'">'.$customer_client->get('Customer Client Code').'</a>',
             'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
 
         ],
-        'order_nav' => [
+        'order_nav'  => [
             'label' => $order->get('Public ID'),
             'title' => htmlspecialchars($order->get('Public ID'))
 
         ]
-        );
+    );
 
 
     echo json_encode($response);

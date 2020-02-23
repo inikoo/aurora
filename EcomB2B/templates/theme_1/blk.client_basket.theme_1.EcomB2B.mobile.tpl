@@ -153,7 +153,7 @@
                 <section style="border: none">
                 <label class="textarea">
 
-                    <textarea id="special_instructions" rows="5" style="height: 60px" name="comment" placeholder="{$data._special_instructions}">{$order->get('Order Customer Message')}</textarea>
+                    <textarea id="special_instructions"  data-order_key="{$order->id}" rows="5" style="height: 60px" name="comment" placeholder="{$data._special_instructions}">{$order->get('Order Customer Message')}</textarea>
                 </label>
             </section>
             </form>

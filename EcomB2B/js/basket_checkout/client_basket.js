@@ -15,17 +15,20 @@ $(document).on('input propertychange', "#special_instructions", function(ev){
 
     if (special_instructions_timeout) clearTimeout(special_instructions_timeout);
 
-    value= $(this).val()
+
+    var value=$(this).val();
+    var order_key=$(this).data('order_key');
 
     special_instructions_timeout = setTimeout(function () {
 
         var ajaxData = new FormData();
 
-        ajaxData.append("tipo", 'special_instructions')
-        ajaxData.append("value",value)
+        ajaxData.append("tipo", 'update_special_instructions');
+        ajaxData.append("value",value);
+        ajaxData.append("order_key",order_key);
 
         $.ajax({
-            url: "/ar_web_basket.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            url: "/ar_web_client_basket.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
             complete: function () {
             }, success: function (data) {
 
