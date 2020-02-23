@@ -112,6 +112,8 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
         $where_stores = ' and false';
     }
 
+
+
     $store    = new Store($parameters['parent_key']);
     $currency = $store->data['Store Currency Code'];
     $where    .= $where_stores;

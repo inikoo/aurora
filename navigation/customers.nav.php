@@ -803,6 +803,8 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     $customer = $data['_object'];
     $store    = $data['store'];
 
+
+
     if (!$customer->id) {
         return;
     }
@@ -837,6 +839,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         }
 
 
+
         if (isset($_SESSION['table_state'][$tab])) {
             $number_results  = $_SESSION['table_state'][$tab]['nr'];
             $start_from      = 0;
@@ -853,11 +856,13 @@ function get_customer_navigation($data, $smarty, $user, $db) {
             $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
             $f_value                  = '';
             $parameters               = $default;
-            $parameters['parent']     = $data['parent'];
-            $parameters['parent_key'] = $data['parent_key'];
-        }
 
+        }
+        $parameters['parent']     = $data['parent'];
+        $parameters['parent_key'] = $data['parent_key'];
         include_once 'prepare_table/'.$tab.'.ptble.php';
+
+
 
         $_order_field       = $order;
         $order              = preg_replace('/^.*\.`/', '', $order);
@@ -933,6 +938,8 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         $sections    = get_sections('customers', $customer->data['Customer Store Key']);
 
 
+
+
         if ($data['parent'] == 'list') {
 
             include_once 'class.List.php';
@@ -979,7 +986,8 @@ function get_customer_navigation($data, $smarty, $user, $db) {
             }
 
 
-        } elseif ($data['parent'] == 'category') {
+        }
+        elseif ($data['parent'] == 'category') {
 
 
             include_once 'class.Category.php';
@@ -1122,6 +1130,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
                 'title'     => _("Customers").' '.$store->data['Store Code'],
                 'reference' => 'customers/'.$store->id
             );
+
 
             if ($prev_key) {
                 $left_buttons[] = array(
