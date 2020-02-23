@@ -193,6 +193,7 @@ switch ($tab) {
     case 'product.customers.favored':
     case 'poll_query_option.customers':
     case 'sales_representative.customers':
+    case 'customers_dropshipping':
 
         $data = prepare_values(
             $_REQUEST, array(
