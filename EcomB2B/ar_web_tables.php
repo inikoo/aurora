@@ -100,6 +100,28 @@ switch ($tipo) {
         );
         get_orders_table_html($data, $parameters, $customer, $db);
         break;
+    case 'order_items':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key'     => array('type' => 'keys'),
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+
+        $order=get_object('Order',$data['order_key']);
+
+        if($order->get('Order Customer Key'))
+
+        $parameters = array(
+            'parent'     => 'order',
+            'parent_key' => $order->id,
+
+        );
+        get_orders_table_html($data, $parameters, $customer, $db);
+        break;
     default:
         $response = array(
             'state' => 405,

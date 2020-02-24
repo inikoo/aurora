@@ -201,8 +201,11 @@
     {assign "with_order" false}
     {assign "with_datatables" false}
 
+
+
     {if !empty($content.blocks) and  $content.blocks|is_array}
     {foreach from=$content.blocks item=$block }
+
         {if $block.show}
         {if $block.type=='profile'}
             {if !$logged_in}
@@ -451,8 +454,8 @@
         }
     {/if}
 
-        {if $with_order}
-        .order_header{
+        {if $with_order==1}
+        .order_header caca{
             padding:0px 30px
         }
 

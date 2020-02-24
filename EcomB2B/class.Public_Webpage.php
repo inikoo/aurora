@@ -274,7 +274,7 @@ class Public_Webpage {
                         'prev'        => false,
 
                     );
-                } elseif ($this->data['Webpage Code'] == 'client_basket.sys') {
+                } elseif ($this->data['Webpage Code'] == 'client_basket.sys' or $this->data['Webpage Code'] == 'client_order.sys') {
                     $website = get_object('Website', $this->get('Webpage Website Key'));
 
                     $navigation_data = array(
@@ -299,7 +299,7 @@ class Public_Webpage {
                             [
                                 'link'  => '',
                                 'title' => '',
-                                'label' => 'xxx',
+                                'label' => '',
                                 'class' => 'order_nav'
                             ]
 

@@ -172,6 +172,9 @@ class Public_Customer_Client extends DBW_Table {
 
 
         switch ($key) {
+            case 'Formatted Client Code':
+                return ($this->data['Customer Client Code']==''?'<span class="italic">'.sprintf('%05d',$this->id):$this->data['Customer Client Code']);
+                break;
             case 'Phone':
 
                 $phone = $this->data['Customer Client Main XHTML Mobile'];

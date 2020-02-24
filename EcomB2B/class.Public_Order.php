@@ -18,13 +18,14 @@ include_once __DIR__.'/trait.OrderPayments.php';
 include_once __DIR__.'/trait.OrderCalculateTotals.php';
 include_once __DIR__.'/trait.OrderBasketOperations.php';
 include_once __DIR__.'/trait.OrderTax.php';
+include_once __DIR__.'/trait.OrderGet.php';
 
 
 include_once 'class.DBW_Table.php';
 
 
 class Public_Order extends DBW_Table {
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax,OrderGet;
 
 
     var $amount_off_allowance_data = false;
@@ -340,9 +341,29 @@ class Public_Order extends DBW_Table {
                 }
 
                 return $state;
-            case 'Date':
-                return strftime("%e %B %Y", strtotime($this->data['Order Date'].' +0:00'));
-            case 'Currency Code':
+
+
+            case('Date'):
+            case('Last Updated Date'):
+            case('Cancelled Date'):
+            case('Created Date'):
+            case('Send to Warehouse Date'):
+            case('Suspended Date'):
+            case('Checkout Submitted Payment Date'):
+            case('Checkout Completed Payment Date'):
+            case('Submitted by Customer Date'):
+            case('Dispatched Date'):
+            case('Post Transactions Dispatched Date'):
+            case('Packed Done Date'):
+            case('Invoiced Date'):
+                if ($this->data['Order '.$key] == '') {
+                    return '';
+                } else {
+                    return strftime("%e %b %y %H:%M", strtotime($this->data['Order '.$key].' +0:00'));
+                }
+
+
+                case 'Currency Code':
                 return $this->data['Order Currency'];
             case 'Order Invoice Address':
             case 'Order Delivery Address':
@@ -617,9 +638,8 @@ class Public_Order extends DBW_Table {
 
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
+
+
 
 
 

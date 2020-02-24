@@ -12,6 +12,10 @@
 
 trait OrderTax {
 
+    /**
+     * @var PDO
+     */
+    public $db;
 
     function update_tax_number($value, $options = '', $updated_from_invoice = false) {
 

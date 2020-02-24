@@ -264,6 +264,9 @@ function update_customer_client_details($data, $customer_key, $editor) {
                     'Customer_Client_Name' => $customer_client->get('Customer Client Name'),
                     'Customer_Client_Contact_Address' => $customer_client->get('Contact Address Formatted'),
                     'Customer_Client_Company_Name'=> $customer_client->get('Customer Client Company Name'),
+                    'Formatted_Client_Code'=> $customer_client->get('Formatted Client Code'),
+                    '.client_nav'=>$customer_client->get('Formatted Client Code')
+
                 ],
                 'hide'=>$hide,
                 'show'=>$show,
@@ -357,7 +360,7 @@ function get_client_html($data, $customer) {
         'state'      => 200,
         'html'       => $smarty->fetch('theme_1/blk.client.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         'client_nav' => [
-            'label' => $customer_client->get('Customer Client Code'),
+            'label' => '<a href="/client.sys?id='.$customer_client->id.'">'.($customer_client->get('Customer Client Code')==''?'<span class="italic">'.sprintf('%05d',$customer_client->id).'</span>':$customer_client->get('Customer Client Code')).'</a>',
             'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
 
         ]

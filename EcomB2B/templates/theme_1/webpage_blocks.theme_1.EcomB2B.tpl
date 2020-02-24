@@ -75,6 +75,7 @@
             {assign "with_products_portfolio" false}
             {assign "with_clients" false}
             {assign "with_clients_orders" false}
+            {assign "with_client_order" false}
             {assign "with_client_order_new" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
@@ -232,7 +233,21 @@
                             {if $logged_in}
                                 {assign "with_client_order_new" 1}
                                 {assign "with_datatables" 1}
-                                {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+
+                            {else}
+                                {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                            {/if}
+                        {elseif $block.type=='client_order'}
+
+                            {if $logged_in}
+                                {assign "with_client_order" 1}
+                                {assign "with_datatables" 1}
+                                <div id="client_order">
+                                    <div style="text-align: center">
+                                        <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                    </div>
+                                </div>
 
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }

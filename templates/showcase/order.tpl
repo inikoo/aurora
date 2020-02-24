@@ -2,7 +2,6 @@
 {assign returns $order->get_returns('objects')}
 
 {assign invoices $order->get_invoices('objects')}
-{assign deleted_invoices $order->get_deleted_invoices('objects')}
 
 {assign payments $order->get_payments('objects','Completed')}
 
@@ -1128,8 +1127,3 @@
     </table>
 
 </div>
-
-<script>
-
-
-</script>

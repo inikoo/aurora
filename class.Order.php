@@ -22,11 +22,12 @@ include_once 'trait.OrderPayments.php';
 include_once 'trait.OrderCalculateTotals.php';
 include_once 'trait.OrderBasketOperations.php';
 include_once 'trait.OrderTax.php';
+include_once 'trait.OrderGet.php';
 
 
 class Order extends DB_Table {
 
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax, OrderGet;
 
 
     var $amount_off_allowance_data = false;
@@ -1015,41 +1016,7 @@ class Order extends DB_Table {
         return false;
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
 
-    function get_deliveries($scope = 'keys') {
-
-
-        $deliveries = array();
-        $sql        = sprintf(
-            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d ORDER BY `Delivery Note Key` DESC ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Delivery Note Key'] == '') {
-                    continue;
-                }
-
-                if ($scope == 'objects') {
-
-                    $deliveries[$row['Delivery Note Key']] = get_object('DeliveryNote', $row['Delivery Note Key']);
-
-                } else {
-                    $deliveries[$row['Delivery Note Key']] = $row['Delivery Note Key'];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $deliveries;
-
-    }
 
     function post_operation_order_totals_changed() {
 
@@ -2374,37 +2341,7 @@ class Order extends DB_Table {
 
     }
 
-    function get_returns($scope = 'keys') {
 
-
-        $returns = array();
-        $sql     = sprintf(
-            "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`='Order' and `Supplier Delivery Parent Key`=%d ORDER BY `Supplier Delivery Key` DESC ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Supplier Delivery Key'] == '') {
-                    continue;
-                }
-
-                if ($scope == 'objects') {
-
-                    $returns[$row['Supplier Delivery Key']] = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
-
-                } else {
-                    $returns[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $returns;
-
-    }
 
     function send_review_invitation() {
 
