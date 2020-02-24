@@ -16,8 +16,8 @@ class Pusher implements WampServerInterface {
     protected $subscribed_channels = array();
 
     public function onSubscribe(ConnectionInterface $conn, $channel) {
-        print_r($conn);
-        print "somebody subscribed to ".$channel."\n";
+        //print_r($conn);
+        //print "somebody subscribed to ".$channel."\n";
         $this->subscribed_channels[$channel->getId()] = $channel;
     }
 
@@ -36,7 +36,7 @@ class Pusher implements WampServerInterface {
     }
 
     public function onUnSubscribe(ConnectionInterface $conn, $topic) {
-        print "somebody un_subscribed to ".$topic;
+      //  print "somebody un_subscribed to ".$topic;
     }
 
     public function onOpen(ConnectionInterface $conn) {
