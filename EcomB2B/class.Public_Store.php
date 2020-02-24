@@ -436,6 +436,10 @@ class Public_Store {
         }
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
+
 
 }
 

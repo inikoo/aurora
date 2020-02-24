@@ -14,7 +14,6 @@
       data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}" {if $logged_in} data-ws_key="{$ws_key}" {/if}>
 {include file="analytics.tpl"}
 
-
 {if $logged_in}
     <span id="ordering_settings" class="hide" data-website_key="{$website->id}" data-labels='{
     "zero_money":"{$zero_money}",

@@ -90,7 +90,7 @@ class Public_Delivery_Note extends DBW_Table {
                     case 'Picked':
                         return 30;
                         break;
-                        case 'Packing':
+                    case 'Packing':
                         return 40;
                         break;
                     case 'Packed':
@@ -265,48 +265,85 @@ class Public_Delivery_Note extends DBW_Table {
                         break;
                 }
                 break;
-            case ('Abbreviated State'):
+            case 'Abbreviated State':
                 switch ($this->data['Delivery Note State']) {
 
                     case 'Ready to be Picked':
-                        return _('Waiting');
-                        break;
                     case 'Picker Assigned':
-                        return _('Picker assigned');
-                        break;
                     case 'Picking':
+
                         return _('Picking');
-                        break;
+
                     case 'Picked':
-                        return _('Picked');
-                        break;
                     case 'Packing':
-                        return _('Packing');
-                        break;
+                        return _('Picked');
+
+
+
                     case 'Packed':
+
+
                         return _('Packed');
-                        break;
-                    case 'Approved':
-                        return _('Approved');
-                        break;
-                    case 'Dispatched':
-                        return _('Dispatched');
-                        break;
-                    case 'Cancelled':
-                        return _('Cancelled');
-                        break;
-                    case 'Cancelled to Restock':
-                        return _('Cancelled to restock');
-                        break;
+
+
                     case 'Packed Done':
                         return _('Packed & Closed');
-                        break;
+
+                    case 'Approved':
+
+                        return _('Ready to dispatch');
+
+                    case 'Dispatched':
+                        return _('Dispatched');
+
+                    case 'Cancelled':
+                    case 'Cancelled to Restock':
+
+                        return _('Cancelled');
+
+
+
                     default:
                         return $this->data['Delivery Note State'];
-                        break;
+
                 }
                 break;
+            case 'Icon':
+                switch ($this->data['Delivery Note State']) {
 
+                    case 'Ready to be Picked':
+                    case 'Picker Assigned':
+                    case 'Picking':
+
+                        return '<i class="far fa-box-open"></i>';
+
+                    case 'Picked':
+                    case 'Packing':
+                        return '<i class="far fa-box-full"></i>';
+
+
+                    case 'Packed':
+                    case 'Packed Done':
+
+                    return '<i class="far fa-box-alt"></i>';
+                    case 'Approved':
+
+                        return '<i class="far fa-box-check"></i>';
+                    case 'Dispatched':
+                        return '<i class="far fa-truck-loading"></i>';
+
+                    case 'Cancelled':
+                    case 'Cancelled to Restock':
+
+                    return '<i class="fa error  fa-minus-circle"></i>';
+
+
+
+                    default:
+                        return '';
+
+                }
+                break;
 
             case 'Order Date Placed':
             case 'Date Created':

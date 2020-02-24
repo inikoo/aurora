@@ -32,7 +32,7 @@
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" data-client_key="{$customer_client->id}" data-order_key="{$order->id}"  class="{$data.type}   {if !$data.show}hide{/if}"  style="min-height:500px;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
-    <div class="order_header  text_blocks  " style="display: flex">
+    <div class="order_header  text_blocks  " style="padding-left:20px;padding-right:20px;display: flex">
 
 
         <div  style="flex-grow: 1" class="text_block '">

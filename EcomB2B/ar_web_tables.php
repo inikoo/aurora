@@ -113,7 +113,7 @@ switch ($tipo) {
 
         $order=get_object('Order',$data['order_key']);
 
-        if($order->get('Order Customer Key')!=$customer-id){
+        if($order->get('Order Customer Key')!=$customer->id){
             $response = array(
                 'state' => 400,
                 'resp'  => 'Wrong order key'
@@ -139,6 +139,102 @@ switch ($tipo) {
 
 }
 
+function get_order_items_table_html($data,$parameters ,$customer,$db) {
+
+
+    if(!isset($data['device_prefix'])){
+        $device_prefix='';
+    }else{
+        $device_prefix=$data['device_prefix'];
+
+    }
+
+    include_once '../conf/export_fields.php';
+    include_once '../conf/elements_options.php';
+
+
+    $smarty = new Smarty();
+    $smarty->setTemplateDir('templates');
+    $smarty->setCompileDir('server_files/smarty/templates_c');
+    $smarty->setCacheDir('server_files/smarty/cache');
+    $smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->addPluginsDir('./smarty_plugins');
+
+
+    $website  = get_object('Website', $_SESSION['website_key']);
+    $store    = get_object('Store', $website->get('Website Store Key'));
+    $web_user = get_object('website_user', $customer->get('Customer Website User Key'));
+
+
+
+
+    $tab     = 'order_items';
+    $ar_file = 'ar_web_order.php';
+    $tipo    = 'order_items';
+
+
+    $default = array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => [
+            500,
+            100
+        ],
+        'f_field'       => 'code',
+
+
+    );
+
+
+
+
+
+    $table_views = array(
+        'overview' => array('label' => _('Overview')),
+        //    'performance' => array('label' => _('Performance')),
+        //   'sales'       => array('label' => _('Sales')),
+        //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
+        //   'sales_q'     => array('label' => _('Invoiced amount (Qs)')),
+
+    );
+
+    $table_filters = array(
+        'code' => array(
+            'label' => _('Code'),
+            'title' => _('Product code')
+        ),
+
+
+    );
+
+
+
+
+    $table_buttons = array();
+
+    $smarty->assign('web_user', $web_user);
+
+
+    $smarty->assign('table_buttons', $table_buttons);
+
+
+    include 'utils/get_table_html.php';
+
+    $state = [
+        'tab' => ''
+    ];
+
+
+    $response = array(
+        'state'     => 200,
+        'app_state' => $state,
+        'html'      => $html,
+       );
+    echo json_encode($response);
+
+}
 
 function get_portfolio_table_html($data, $customer) {
 
@@ -507,7 +603,6 @@ function get_orders_table_html($data, $parameters, $db) {
     echo json_encode($response);
 
 }
-
 
 function get_choose_client_for_order_table_html($data, $customer) {
 

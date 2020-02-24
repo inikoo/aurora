@@ -238,7 +238,12 @@
                 {assign "with_datatables" 1}
                 {assign "with_forms" 1}
             {/if}
-
+        {elseif  $block.type=='client_order'}
+            {if !$logged_in}
+                {assign "with_not_found" 1}
+            {else}
+                {assign "with_datatables" 1}
+            {/if}
         {elseif $block.type=='reviews'}
             {assign "with_reviews" 1}
         {elseif $block.type=='thanks'}
