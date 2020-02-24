@@ -113,14 +113,21 @@ switch ($tipo) {
 
         $order=get_object('Order',$data['order_key']);
 
-        if($order->get('Order Customer Key'))
+        if($order->get('Order Customer Key')!=$customer-id){
+            $response = array(
+                'state' => 400,
+                'resp'  => 'Wrong order key'
+            );
+            echo json_encode($response);
+            exit;
+        }
 
         $parameters = array(
             'parent'     => 'order',
             'parent_key' => $order->id,
 
         );
-        get_orders_table_html($data, $parameters, $customer, $db);
+        get_order_items_table_html($data, $parameters, $customer, $db);
         break;
     default:
         $response = array(
@@ -129,7 +136,7 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
 
 
@@ -160,7 +167,6 @@ function get_portfolio_table_html($data, $customer) {
     $web_user = get_object('website_user', $customer->get('Customer Website User Key'));
 
 
-    //'html'       => $smarty->fetch('theme_1/blk.client.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
 
 
     $tab     = 'portfolio';
