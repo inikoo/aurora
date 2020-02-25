@@ -73,7 +73,6 @@
     function get_dashboard_customers_data(parent,  currency) {
 
         var request = "/ar_dashboard.php?tipo=customers&parent=" + parent + '&currency=' + currency
-        console.log(request)
         $.getJSON(request, function (r) {
 
 
@@ -81,8 +80,7 @@
 
             for (var record in r.data) {
 
-                console.log(record)
-                console.log(r.data[record].value)
+
 
                 $('.' + record).html(r.data[record].value)
 

@@ -15,7 +15,7 @@
     <input id="pending_orders_currency" type="hidden" value="{$currency}">
     <input id="pending_orders_parent" type="hidden" value="{$parent}">
 
-<table style="width:100%">
+   <table style="width:100%">
     <tr class="main_title small_row">
         <td colspan="9">
             <div class="widget_types">
@@ -53,7 +53,7 @@
 
 <h2 class="hide dashboard" style="margin-top: 10px">Orders in process</h2>
 
-<ul class="flex-container">
+<ul class="flex-container dashboard_pending_orders_container  {$object->get_object_name()} ">
 
     <li class="flex-item">
 

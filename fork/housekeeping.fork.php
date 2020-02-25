@@ -1091,8 +1091,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
                                 'update_metadata' => array(
                                     'class_html' => array(
-                                        'Orders_In_Basket_Number' => $account->get('Orders In Basket Number'),
-                                        'Orders_In_Basket_Amount' => $account->get('DC Orders In Basket Amount'),
+                                        'Account .Orders_In_Basket_Number' => $account->get('Orders In Basket Number'),
+                                        'Account .Orders_In_Basket_Amount' => $account->get('DC Orders In Basket Amount'),
                                     )
                                 )
 

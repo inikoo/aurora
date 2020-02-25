@@ -19,7 +19,7 @@
         <tr class="main_title small_row">
             <td colspan="9">
                 <div class="widget_types">
-                    <div id="store_" onclick="change_pending_orders_parent('')" class="widget  left  {if $parent==''}selected{/if}">
+                    <div id="store_" class="widget  left  {if $parent==''}selected{/if}">
                         <span class="label"> {t}All warehouses{/t} </span>
                     </div>
 

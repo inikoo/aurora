@@ -48,14 +48,17 @@ function toggle_pending_orders_currency() {
 function change_pending_orders_parent(parent) {
 
 
+
     $('.widget_types .widget').removeClass('selected')
     $('#store_' + parent).addClass('selected')
 
     if (parent == '') {
         $('#pending_orders_currency_container').addClass('hide')
+        $('.dashboard_pending_orders_container').removeClass('Store').addClass('Account')
 
     } else {
         $('#pending_orders_currency_container').removeClass('hide')
+        $('.dashboard_pending_orders_container').addClass('Store').removeClass('Account')
 
     }
 
@@ -69,7 +72,7 @@ function change_pending_orders_parent(parent) {
 function get_dashboard_pending_orders_data(parent,  currency) {
 
     var request = "/ar_dashboard.php?tipo=pending_orders&parent=" + parent + '&currency=' + currency
-    console.log(request)
+
     $.getJSON(request, function (r) {
 
 
@@ -77,8 +80,7 @@ function get_dashboard_pending_orders_data(parent,  currency) {
 
         for (var record in r.data) {
 
-            console.log(record)
-            console.log(r.data[record].value)
+
 
             $('.' + record).html(r.data[record].value)
 
