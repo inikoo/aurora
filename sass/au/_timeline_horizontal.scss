@@ -1,21 +1,44 @@
+.ecom{
+  .timeline_horizontal {
+    padding-bottom: 0px;
+  }
+}
+
+.tablet{
+  .timeline {
+    font-size: 11px;
+  }
+}
+
 .timeline_horizontal {
 
-  padding: 10px 0 5px;
+ ul{
+   padding-left: 0px;margin-bottom:12px;line-height: normal;
+ }
+
+
   border-bottom: 1px solid #ccc;
   font-size: 80%;
+  padding-top: 0px;
+
+  padding-bottom: 25px;
+
+
+
 
   .timeline {
     list-style-type: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    top: -20px;
-    left: -20px
+
+    padding-top: 0px;
+    margin-top: 0px;
   }
 
   .li {
     transition: all 200ms ease-in;
+    line-height: normal;margin-bottom: 0px;
   }
 
   .timestamp {
@@ -231,4 +254,10 @@
     }
   }
 
+}
+
+.ecom{
+  .timeline_horizontal {
+    padding-bottom: 0px;
+  }
 }

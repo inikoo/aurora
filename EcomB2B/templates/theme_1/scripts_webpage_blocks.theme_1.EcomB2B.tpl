@@ -286,7 +286,7 @@
                             });
             {/if}
             {if $with_client_order==1}
-                            getScript("/assets/desktop.logged_in.min.js", function () {
+                getScript("/assets/desktop.logged_in.min.js", function () {
 
                                     getScript("/assets/desktop.client_basket.min.js", function () {
                                         $.getJSON("ar_web_client_order.php?tipo=get_client_order_html&order_key="+getUrlParameter('id')+"&device_prefix=", function (data) {
@@ -315,7 +315,7 @@
                                     })
 
                             });
-                            {/if}
+            {/if}
             {if $with_thanks==1}
                             getScript("/assets/desktop.logged_in.min.js", function () {
 

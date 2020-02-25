@@ -10,7 +10,7 @@
 *}
 
 {include file="theme_1/_head.theme_1.EcomB2B.tpl"}
-<body xmlns="http://www.w3.org/1999/html" data-device_prefix="" class="{$website->get('background_type')}"
+<body xmlns="http://www.w3.org/1999/html" data-device_prefix="" class="pweb desktop {$website->get('background_type')}"
       data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}" {if $logged_in} data-ws_key="{$ws_key}" {/if}>
 {include file="analytics.tpl"}
 

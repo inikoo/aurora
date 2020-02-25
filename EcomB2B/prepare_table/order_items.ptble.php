@@ -20,7 +20,7 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'code') {
+if ($order == 'code' or $order=='item') {
     $order = '`Product History Code`';
 } elseif ($order == 'created') {
     $order = '`Order Date`';

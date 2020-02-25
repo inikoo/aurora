@@ -168,7 +168,7 @@ function get_order_items_table_html($data,$parameters ,$customer,$db) {
 
 
 
-    $tab     = 'order_items';
+
     $ar_file = 'ar_web_order.php';
     $tipo    = 'order_items';
 
@@ -187,7 +187,12 @@ function get_order_items_table_html($data,$parameters ,$customer,$db) {
 
     );
 
+    if($device_prefix=='mobile'){
+        $tab     = 'order_items_mobile';
 
+    }else{
+        $tab     = 'order_items';
+    }
 
 
 

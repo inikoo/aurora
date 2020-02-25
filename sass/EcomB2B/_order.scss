@@ -300,3 +300,20 @@
 
 
 }
+
+.tablet,.mobile{
+  .order_showcase_container{
+    a,img{
+      display: inline;
+
+    }
+  }
+
+  table{
+    margin-bottom: 0px;
+  }
+
+  td{
+    border: none;
+  }
+}

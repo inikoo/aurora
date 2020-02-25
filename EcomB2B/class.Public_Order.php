@@ -362,7 +362,6 @@ class Public_Order extends DBW_Table {
                     return strftime("%e %b %y %H:%M", strtotime($this->data['Order '.$key].' +0:00'));
                 }
 
-
                 case 'Currency Code':
                 return $this->data['Order Currency'];
             case 'Order Invoice Address':

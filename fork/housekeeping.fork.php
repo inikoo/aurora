@@ -3371,6 +3371,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
 
         case 'create_elastic_index_object':
+
+           //
+
             $object = get_object($data['object'], $data['object_key']);
             if ($object->id) {
                 $object->index_elastic_search($ES_hosts, false, $data['indices']);

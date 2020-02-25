@@ -24,6 +24,10 @@ $color_dark_font: #ddd;
 $color_dark: #656565;
 $height_row: 32px;
 $color_save: #0EBFE9;
+$color_font: #555;
+$color_font_soft: #5f5f5f;
+$color_background: #fcfcfc;
+
 @mixin unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -31,6 +35,15 @@ $color_save: #0EBFE9;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.aright{
+  text-align: right;
+}
+.aleft{
+  text-align: left;
+}
+.acenter{
+  text-align: center;
 }
 
 .small {
@@ -767,7 +780,9 @@ i.product_stock_dot {
 @import 'table';
 @import 'square_buttons';
 @import 'basket_mobile';
-
+@import 'notifications_control_panel';
+@import 'timeline_horizontal';
+@import 'order';
 
 .table .backgrid tr td{
   padding: 3px 4px;border:none;border-bottom: 1px solid #e0e0e0;

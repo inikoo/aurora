@@ -81,6 +81,7 @@ switch ($tipo) {
 
 function get_client_order_items_html($data, $customer_key) {
 
+
     $customer_client = get_object('Customer_Client', $data['client_key']);
     if (!$customer_client->id) {
         $response = array(
@@ -222,7 +223,6 @@ function get_client_order_html($data, $website, $customer, $editor) {
 
 
     $smarty->assign('labels', $website->get('Localised Labels'));
-
 
     $response = array(
         'state'      => 200,

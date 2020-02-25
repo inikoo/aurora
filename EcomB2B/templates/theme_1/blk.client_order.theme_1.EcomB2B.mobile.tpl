@@ -21,19 +21,19 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="order_showcase_container   {$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
+<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="order_showcase_container {$data.type} {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
     <div class="table_top">
         <span class="title">{t}Order{/t} <span class="Order_Public_ID"></span> </span>
     </div>
 
-    <div style="clear:both;" class="timeline_horizontal with_time   {if $order->get('State Index')<0}hide{/if}  ">
+    <div style="clear:both;" class="timeline_horizontal with_time hide  {if $order->get('State Index')<0}hide{/if}  ">
 
         <ul class="timeline">
             <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
                 <div class="label">
                     <span class="state ">{t}Submitted{/t}</span>
                 </div>
-                <div class="timestamp">
+                <div class="timestamp" >
                     <span class="Order_Submitted_Date">&nbsp;{$order->get('Submitted by Customer Date')}</span> <span class="start_date">{$order->get('Created Date')}</span>
                 </div>
                 <div class="dot"></div>
@@ -89,14 +89,14 @@
 
     </div>
 
-    <div class="timeline_horizontal  {if $order->get('State Index')>0}hide{/if}">
+    <div class="timeline_horizontal hide  {if $order->get('State Index')>0}hide{/if}">
         <ul class="timeline" id="timeline">
             <li id="submitted_node" class="li complete">
                 <div class="label">
                     <span class="state ">{t}Submitted{/t}</span>
                 </div>
                 <div class="timestamp">
-                    <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span class="start_date">{$order->get('Created Date')} </span>
+                    <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date Compact')}</span> <span class="start_date">{$order->get('Created Date Compact')} </span>
                 </div>
                 <div class="dot"></div>
             </li>
@@ -158,7 +158,7 @@
 
                 <div class="data_field small {if $customer_client->get('Customer Client Main Plain Email')==''}hide{/if}" style="margin-top:5px">
                     <div >
-                        <i class="fal fa-envelope fa-fw" title="{t}Email{/t}"></i> {if $customer_client->get('Customer Client Main Plain Email')!=''}{mailto address=$customer_client->get('Customer Client Main Plain Email')}{/if}
+                        <i class="fal fa-envelope fa-fw" title="{t}Email{/t}"></i>  {if $customer_client->get('Customer Client Main Plain Email')!=''}{mailto address=$customer_client->get('Customer Client Main Plain Email')}{/if}
                     </div>
                 </div>
                 <div class="data_field small Order_Tax_Number_display {if $order->get('Order Tax Number')==''}hide{/if} " style="margin-top:5px">
@@ -267,10 +267,6 @@
                 </tr>
             </table>
 
-
-        </div>
-        <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px ">
-
             <div id="delivery_notes" class="delivery_notes {if $deliveries|@count == 0}hide{/if}" style="position:relative;;">
 
 
@@ -329,8 +325,7 @@
                 </div>
             </div>
 
-            <div style="margin-bottom: 0px"
-                 class="payments order_payments_list {if $order->get('Order Number Items')==0  or $order->get('State Index')<0   or ($order->get('Order State')=='InBasket' and empty($payments)  )  }hide{/if}  ">
+            <div style="margin-bottom: 0px"  class="payments order_payments_list {if $order->get('Order Number Items')==0  or $order->get('State Index')<0   or ($order->get('Order State')=='InBasket' and empty($payments)  )  }hide{/if}  ">
 
 
                 {assign expected_payment $order->get('Expected Payment')}
@@ -364,7 +359,7 @@
             <div style="clear:both"></div>
 
 
-            <table class="totals  payment_overview  {if $order->get('Order State')=='InBasket' and empty($payments) }hide{/if}" style="width: 100%">
+            <table class="totals  payment_overview  {if $order->get('Order State')=='InBasket' and empty($payments) }hide{/if}" style="width: 100%;margin-top: 10px">
 
 
                 <tbody id="total_payments" class="{if $order->get('State Index')<0}hide{/if}">
@@ -397,8 +392,7 @@
             </table>
 
 
-        </div>
-        <div class="block " style="align-items: stretch;flex: 1 ">
+
             <table class="totals" style="position:relative;top:-5px">
 
                 <tr class="{if $order->get('Order Total Net Amount')==$order->get('Order Items Net Amount')  and $order->get('Order Charges Net Amount')==0  and  $order->get('Order Shipping Net Amount')==0 and $order->get('Order Items Discount Amount')==0 }hide{/if}">
@@ -408,7 +402,7 @@
                 </tr>
 
 
-                <tr class="{if $order->get('Order Charges Net Amount')==0}hide{/if}">
+                <tr class="{if $order->get('Order Charges Net Amount')==0 }hide{/if}">
                     <td class="label" id="Charges_Net_Amount_label">{t}Charges{/t}</td>
                     <td class="aright "><span  id="Charges_Net_Amount" class="Charges_Net_Amount ">{$order->get('Charges Net Amount')}<span></td>
                 </tr>

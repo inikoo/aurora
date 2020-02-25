@@ -9,7 +9,7 @@
 -->
 *}
 {include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
-<body data-device_prefix="mobile"  data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}"  {if $logged_in}   data-ws_key="{$ws_key}" {/if}>
+<body data-device_prefix="mobile" class="pweb mobile" data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}"  {if $logged_in}   data-ws_key="{$ws_key}" {/if}>
 {include file="analytics.tpl"}
 
 {if $logged_in}
@@ -93,6 +93,7 @@
             {assign "with_products_portfolio" false}
             {assign "with_clients" false}
             {assign "with_clients_orders" false}
+            {assign "with_client_order" false}
             {assign "with_client_order_new" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
@@ -127,7 +128,7 @@
 
                             </div>
                         {else}
-                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
                         {/if}
                     {elseif $block.type=='profile'}
                         {if $logged_in}
@@ -212,9 +213,22 @@
                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
 
                         {else}
-                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
                         {/if}
+                    {elseif $block.type=='client_order'}
 
+                        {if $logged_in}
+                            {assign "with_client_order" 1}
+                            {assign "with_datatables" 1}
+                            <div id="client_order">
+                                <div style="text-align: center">
+                                    <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
+                        {/if}
                     {elseif $block.type=='thanks'}
                         {if $logged_in}{assign "with_thanks" 1}
                             <div id="thanks">

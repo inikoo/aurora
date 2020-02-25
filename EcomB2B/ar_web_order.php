@@ -211,6 +211,9 @@ function orders_items($_data, $db) {
                 'code'      => $code,
                 'name'      => $name,
                 'reference' => $reference,
+
+                'item'=>$code.' '.$reference.'<br>'.$name,
+
                 'net'       => sprintf('<span>%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
                 'ordered'   => $ordered,
                 'qty'       => $qty

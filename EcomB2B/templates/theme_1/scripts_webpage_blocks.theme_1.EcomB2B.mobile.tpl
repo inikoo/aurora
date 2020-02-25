@@ -184,6 +184,37 @@
                 })
             });
             {/if}
+            {if $with_client_order==1}
+            getScript("/assets/desktop.logged_in.min.js", function () {
+
+                getScript("/assets/desktop.client_basket.min.js", function () {
+                    $.getJSON("ar_web_client_order.php?tipo=get_client_order_html&order_key="+getUrlParameter('id')+"&device_prefix=mobile", function (data) {
+                        $('#client_order').html(data.html);
+                        $('.breadcrumbs .client_nav').html(data.client_nav.label);
+                        $('.breadcrumbs .client_nav').attr('title',data.client_nav.title);
+                        $('.breadcrumbs .order_nav').html(data.order_nav.label);
+                        $('.breadcrumbs .order_nav').attr('title',data.order_nav.title);
+                        $('.Order_Public_ID').html(data.order_nav.label);
+                        getScript("/assets/datatables.min.js", function () {
+                            const request_data ={ "tipo":'order_items','order_key':getUrlParameter('id'),"device_prefix":'mobile'}
+                            $.ajax({
+                                url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                                    if (data.state == 200) {
+                                        state = data.app_state;
+                                        $('#table_container').html(data.html)
+                                    }
+
+
+
+                                }
+                            });
+
+                        })
+                    })
+                })
+
+            });
+            {/if}
             {if $with_checkout==1}
             getScript("/assets/mobile.logged_in.min.js", function () {
                 getScript("/assets/mobile.forms.min.js", function () {
