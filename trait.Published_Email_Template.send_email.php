@@ -454,8 +454,8 @@ trait Send_Email {
             }
         }
 
-
         if (!$email_tracking->get('Email Tracking Email Mailshot Key') > 0) {
+
 
             include_once 'utils/new_fork.php';
             new_housekeeping_fork(

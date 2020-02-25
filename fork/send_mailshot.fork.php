@@ -95,10 +95,6 @@ function fork_send_mailshot($job) {
 
                     }
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
             $recipient=get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']);
@@ -114,7 +110,7 @@ function fork_send_mailshot($job) {
 
             $time_end = microtime_float();
 
-            if (($time_end - $time_start_tier_1) > 5) {
+            if (($time_end - $time_start_tier_1) > 15000) {
 
 
                 new_housekeeping_fork(
@@ -131,7 +127,7 @@ function fork_send_mailshot($job) {
             }
 
 
-            if (($time_end - $time_start_tier_2) > 1) {
+            if (($time_end - $time_start_tier_2) > 5000 or  mt_rand(1, 1000)==1000  ) {
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
@@ -146,11 +142,8 @@ function fork_send_mailshot($job) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
+
 
     new_housekeeping_fork(
         'au_housekeeping', array(
