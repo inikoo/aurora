@@ -719,9 +719,6 @@
                     url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
                         if (data.state == 200) {
                             state = data.app_state;
-                            $('.images_zip').removeClass('hide').attr('href',data.images_zip_url);
-                            $('.data_feed').removeClass('hide').attr('href',data.data_feed_url);
-                            $('#table_container').html(data.html);
                         }
 
                     }

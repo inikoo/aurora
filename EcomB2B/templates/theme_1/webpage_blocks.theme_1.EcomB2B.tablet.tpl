@@ -82,8 +82,12 @@
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
                     <div class="top_menu" >
 
-                        <i class="fal fa-database"></i>   {t}Families’ products data feed{/t} <a href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">(csv)</a>
-                        <span style="margin-left: 30px"><i class="fal fa-images"></i> {t}Images{/t} <a   href="catalog_images.zip.php?scope=category&scope_key={$webpage->get('Webpage Scope Key')}">(zip)</a></span>
+                      <span><i class="fal fa-database"></i> {t}Families’ products data feed{/t}  (
+                            <a href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.cvs</a>,
+                            <a href="catalog_data_feed.php?output=XLS&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.xls</a>,
+                            <a href="catalog_data_feed.php?output=Json&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">json</a>
+                            )</span>
+                        <span style="margin-left: 30px" title="{t}Families' images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a href="catalog_images.zip.php?scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.zip</a> )
 
                         <div class="portfolio_in_family hide" style="float:right" ><span title="{t}Items in portfolio{/t}"><i class="fa fa-store-alt "></i> <span class="number_products_in_portfolio_in_family"></span>/<span class="number_products_in_family"></span></span> <span data-category_key="{$webpage->get('Webpage Scope Key')}" class="add_all_family_to_portfolio small like_button  padding_left_10  "><i  class="fa  fa-plus smaller "></i>
                                 <span class="hide add_rest_label">{if empty($labels._add_rest_family_to_portfolio)}{t}Add rest of family to portfolio{/t}{else}{$labels._add_rest_family_to_portfolio}{/if}</span>

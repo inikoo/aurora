@@ -9,10 +9,10 @@
 
 */
 
-function get_export_fields($element,$account_currency_code='') {
+function get_export_fields($element, $account_currency_code = '') {
 
     $export_fields = array(
-        'customers' => array(
+        'customers'              => array(
             array(
                 'name'    => 'C.`Customer Key`',
                 'label'   => _('ID'),
@@ -246,7 +246,7 @@ function get_export_fields($element,$account_currency_code='') {
             ),
 
         ),
-        'prospects' => array(
+        'prospects'              => array(
 
             array(
                 'name'    => '`Prospect Name`',
@@ -1419,56 +1419,71 @@ function get_export_fields($element,$account_currency_code='') {
 
             array(
                 'name'    => '`Product Status`',
+                'code'    => 'product_status',
                 'label'   => _('Status'),
                 'checked' => 1
             ),
 
             array(
                 'name'    => '`Product Code`',
-                'label'   => _('Code'),
+                'code'    => 'product_code',
+                'label'   => _('Product code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Customer Portfolio Reference`',
+                'code'    => 'product_user_reference',
+                'label'   => _("Product user reference"),
                 'checked' => 1
             ),
             array(
                 'name'    => '( select `Category Code` from `Category Dimension` where `Category Key`=`Product Family Category Key`)',
+                'code'    => 'family',
                 'label'   => _('Family'),
                 'checked' => 0
             ),
             array(
                 'name'    => '`Product Barcode Number`',
+                'code'    => 'product_barcode',
                 'label'   => _('Barcode'),
                 'checked' => 1
             ),
             array(
                 'name'    => '`Product CPNP Number`',
+                'code'    => 'product_cpnp',
                 'label'   => _('CPNP number'),
                 'checked' => 0
             ),
 
             array(
                 'name'    => '`Product Price`',
-                'label'   => _('Outer price'),
+                'code'    => 'product_price',
+                'label'   => _(' Price'),
                 'checked' => 1
             ),
             array(
                 'name'    => '`Product Units Per Case`',
+                'code'    => 'units_per_outer',
                 'label'   => _('Units per outer'),
                 'checked' => 1
             ),
             array(
                 'name'    => '`Product Unit Type`',
+                'code'    => 'product_unit_type',
                 'label'   => _('Unit label'),
                 'checked' => 1
             ),
             array(
                 'name'    => '`Product Price`/`Product Units Per Case`',
+                'code'    => 'product_unit_price',
                 'label'   => _('Unit price'),
                 'checked' => 0
             ),
 
 
-
             array(
                 'name'    => '`Product Name`',
+                'code'    => 'product_unit_name',
                 'label'   => _('Unit Name'),
                 'checked' => 1
             ),
@@ -1476,30 +1491,35 @@ function get_export_fields($element,$account_currency_code='') {
 
             array(
                 'name'    => '`Product RRP`/`Product Units Per Case`',
+                'code'    => 'product_unit_rrp',
                 'label'   => _('Unit RRP'),
                 'checked' => 1
             ),
 
             array(
                 'name'    => '`Product Unit Weight`',
+                'code'    => 'product_unit_weight',
                 'label'   => _('Unit weight (marketing)'),
                 'checked' => 1
             ),
 
             array(
                 'name'    => '`Product Unit XHTML Dimensions`',
+                'code'    => 'product_unit_dimensions',
                 'label'   => _('Unit dimensions'),
                 'checked' => 1
             ),
 
             array(
                 'name'    => '`Product Unit XHTML Materials`',
+                'code'    => 'product_materials',
                 'label'   => _('Materials/Ingredients'),
                 'checked' => 1,
-                'type'=>'text'
+                'type'    => 'text'
             ),
             array(
                 'name'    => '`Product Published Webpage Description`',
+                'code'    => 'webpage_product_description_html',
                 'label'   => _('Webpage description (html)'),
                 'checked' => 0,
                 'type'    => 'html'
@@ -1507,33 +1527,43 @@ function get_export_fields($element,$account_currency_code='') {
 
             array(
                 'name'    => '(`Product Published Webpage Description`) as plain',
+                'code'    => 'webpage_product_description_text',
                 'label'   => _('Webpage description (plain text)'),
                 'checked' => 0,
             ),
 
 
             array(
-                'name'    => '`Product Origin Country Code`',
+                'name' => '`Product Origin Country Code`',
+                'code' => 'product_origin_country',
+
                 'label'   => _('Country of origin'),
                 'checked' => 1
             ),
             array(
-                'name'    => '`Product Tariff Code`',
+                'name' => '`Product Tariff Code`',
+                'code' => 'product_tariff_code',
+
                 'label'   => _('Tariff code'),
                 'checked' => 0
             ),
             array(
-                'name'    => '`Product Duty Rate`',
+                'name' => '`Product Duty Rate`',
+                'code' => 'product_duty_rate',
+
                 'label'   => _('Duty rate'),
                 'checked' => 0
             ),
             array(
-                'name'    => '`Product HTSUS Code`',
+                'name' => '`Product HTSUS Code`',
+                'code' => 'product_hts_us',
+
                 'label'   => 'HTS US',
                 'checked' => 0
             ),
             array(
                 'name'    => '`Product Availability State`',
+                'code'    => 'product_stock',
                 'label'   => _('Stock'),
                 'checked' => 1
             ),
@@ -1542,26 +1572,34 @@ function get_export_fields($element,$account_currency_code='') {
             array(
                 'name'    => '( select group_concat(concat("[image_address]",`Image Subject Image Key`) order by `Image Subject Order`) from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  ) as images',
                 'label'   => _('Images'),
-                'checked' => 0
+                'checked' => 0,
+                'type'    => 'array',
             ),
             array(
                 'name'    => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 0) as img1',
                 'label'   => _('1st image'),
-                'checked' => 0
+                'checked' => 0,
             ),
             array(
                 'name'    => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 1) as img2',
                 'label'   => _('2nd image'),
-                'checked' => 0
+                'checked' => 0,
             ),
             array(
-                'name'    => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
-                'label'   => _('3rd image'),
-                'checked' => 0
+                'name'  => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
+                'label' => _('3rd image'),
             ),
             array(
                 'name'    => '`Product Data Updated`,`Product Stock Updated`,`Product Price Updated`,`Product Images Updated`',
-                'label'=>_('Last updated'),
+                'label'   => _('Last updated'),
+                'codes'   => array(
+                    'data_last_updated_datetime',
+                    'stock_last_updated_datetime',
+                    'price_last_updated_datetime',
+                    'images__updated_datetime',
+
+
+                ),
                 'labels'  => array(
                     _('Data updated'),
                     _('Stock updated'),
@@ -1576,7 +1614,7 @@ function get_export_fields($element,$account_currency_code='') {
 
         ),
 
-        'intrastat'           => array(
+        'intrastat' => array(
             array(
                 'name'    => 'date_format( min(`Delivery Note Date`),\'%y%m\')',
                 'label'   => _('Period'),
@@ -1883,9 +1921,9 @@ function get_export_fields($element,$account_currency_code='') {
 
     );
 
-    if(isset($export_fields[$element])){
+    if (isset($export_fields[$element])) {
         return $export_fields[$element];
-    }else{
+    } else {
         return [];
     }
 
