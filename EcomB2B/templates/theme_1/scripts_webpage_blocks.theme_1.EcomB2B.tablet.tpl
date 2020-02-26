@@ -16,7 +16,7 @@
             };
             head.appendChild(script);
         }
-        
+
         getScript("/assets/mobile.min.js", function () {
 
             {if $website->get('Website Text Font')!=''  and !$logged_in}

@@ -89,7 +89,6 @@
             {if $webpage->get('Webpage Scope')=='Category Products'}
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
                     <div class="top_bar" >
-
                         <span><i class="fal fa-database"></i> {t}Families’ products data feed{/t}  (
                             <a href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.cvs</a>,
                             <a href="catalog_data_feed.php?output=XLS&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.xls</a>,
