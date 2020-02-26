@@ -76,6 +76,57 @@
             {assign "with_product" false}
             {assign "with_unsubscribe" false}
             {assign "with_category_products" false}
+            {assign "with_datatables" false}
+
+            {if $webpage->get('Webpage Scope')=='Category Products'}
+                {if $website->get('Website Type')=='EcomDS' and $logged_in}
+                    <div class="top_menu" >
+
+                      <span><i class="fal fa-database"></i> {t}Families’ products data feed{/t}  (
+                            <a href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.cvs</a>,
+                            <a href="catalog_data_feed.php?output=XLS&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.xls</a>,
+                            <a href="catalog_data_feed.php?output=Json&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">json</a>
+                            )</span>
+                        <span style="margin-left: 30px" title="{t}Families' images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a href="catalog_images.zip.php?scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.zip</a> )
+
+                        <div class="portfolio_in_family hide" style="float:right" ><span title="{t}Items in portfolio{/t}"><i class="fa fa-store-alt "></i> <span class="number_products_in_portfolio_in_family"></span>/<span class="number_products_in_family"></span></span> <span data-category_key="{$webpage->get('Webpage Scope Key')}" class="add_all_family_to_portfolio small like_button  padding_left_10  "><i  class="fa  fa-plus smaller "></i>
+                                <span class="hide add_rest_label">{if empty($labels._add_rest_family_to_portfolio)}{t}Add rest of family to portfolio{/t}{else}{$labels._add_rest_family_to_portfolio}{/if}</span>
+                                <span class="hide add_family_label">{if empty($labels._add_family_to_portfolio)}{t}Add family to portfolio{/t}{else}{$labels._add_family_to_portfolio}{/if}</span>
+                            </span>
+                        </div>
+                    </div>
+
+                {/if}
+
+            {/if}
+
+            {if $webpage->get('Webpage Code')=='portfolio.sys' and $logged_in}
+
+                <div class="top_menu" >
+
+
+
+                    <div class="portfolio_data_feeds hide">
+                        <span><i class="fal fa-database"></i> {t}Portfolio products data feed{/t}  (
+                            <a class="csv" href="">.cvs</a>,
+                            <a class="xls" href="">.xls</a>,
+                            <a class="json" href="">json</a>
+                            )</span>
+                        <span style="margin-left: 30px" title="{t}Portfolio images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a class="images_zip" href="">.zip</a> )
+                    </div>
+
+
+
+                    <div class="portfolio_right_menu small " style="float:right" >
+                        <span class="like_button open_notifications hide"><i class="fa fa-bell"></i> {t}Notifications{/t}</span>
+                    </div>
+                </div>
+
+
+
+
+            {/if}
+
 
             {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}

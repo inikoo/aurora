@@ -104,7 +104,24 @@
             {assign "with_reset_password" false}
             {assign "with_unsubscribe" false}
             {assign "with_category_products" false}
+            {assign "with_datatables" false}
 
+            {if $webpage->get('Webpage Scope')=='Category Products'}
+                {if $website->get('Website Type')=='EcomDS' and $logged_in}
+                    <div class="top_menu" >
+
+
+                        <div class="portfolio_in_family hide" style="float:right" ><span title="{t}Items in portfolio{/t}"><i class="fa fa-store-alt "></i> <span class="number_products_in_portfolio_in_family"></span>/<span class="number_products_in_family"></span></span> <span data-category_key="{$webpage->get('Webpage Scope Key')}" class="add_all_family_to_portfolio small like_button  padding_left_10  "><i  class="fa  fa-plus smaller "></i>
+                                <span class="hide add_rest_label">{if empty($labels._add_rest_family_to_portfolio)}{t}Add rest of family to portfolio{/t}{else}{$labels._add_rest_family_to_portfolio}{/if}</span>
+                                <span class="hide add_family_label">{if empty($labels._add_family_to_portfolio)}{t}Add family to portfolio{/t}{else}{$labels._add_family_to_portfolio}{/if}</span>
+                            </span>
+                        </div>
+
+                    </div>
+                    <div style="clear: both"></div>
+                {/if}
+
+            {/if}
             {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}

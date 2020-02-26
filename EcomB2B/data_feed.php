@@ -47,6 +47,25 @@ if ($row = $stmt->fetch()) {
 
     switch ($_REQUEST['scope']) {
         case 'portfolio_items':
+            $output_type = strtolower($_REQUEST['output']);
+
+            if (in_array(
+                $output_type, [
+                                'csv',
+                                'xlsx',
+                                'xls',
+                                'pdf'
+                            ]
+            )) {
+                $use_php_excel = true;
+
+            } elseif (in_array($output_type, ['json'])) {
+                $use_php_excel = false;
+
+            } else {
+                header("HTTP/1.0 400 Bad Request");
+                exit;
+            }
 
             include_once 'conf/export_fields.php';
 
@@ -70,7 +89,6 @@ if ($row = $stmt->fetch()) {
 
 
             $export_fields = get_export_fields('portfolio_items');
-            // print_r($export_fields);
 
 
             $sql = "select ";
@@ -97,137 +115,226 @@ if ($row = $stmt->fetch()) {
                 )
             );
 
-            while ($row = $stmt->fetch()) {
+            if ($use_php_excel) {
+                while ($row = $stmt->fetch()) {
 
 
-                if ($row_index == 1) {
+                    if ($row_index == 1) {
 
 
-                    $char_index = 1;
+                        $char_index = 1;
 
-                    foreach ($export_fields as $field) {
+                        foreach ($export_fields as $field) {
 
 
-                        if (isset($field['labels'])) {
+                            if (isset($field['labels'])) {
 
-                            foreach ($field['labels'] as $label) {
+                                foreach ($field['labels'] as $label) {
+                                    $char = number2alpha($char_index);
+                                    $objPHPExcel->getActiveSheet()->setCellValue(
+                                        $char.$row_index, strip_tags($label)
+                                    );
+                                    $char_index++;
+                                }
+
+
+                            } else {
                                 $char = number2alpha($char_index);
                                 $objPHPExcel->getActiveSheet()->setCellValue(
-                                    $char.$row_index, strip_tags($label)
+                                    $char.$row_index, strip_tags($field['label'])
                                 );
                                 $char_index++;
                             }
 
 
+                        }
+
+                        $row_index++;
+                    }
+
+
+                    $char_index = 1;
+                    foreach ($row as $sql_field => $value) {
+                        $char = number2alpha($char_index);
+
+
+                        $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
+
+
+                        if ($type == 'html') {
+                            $_value = $value;
                         } else {
-                            $char = number2alpha($char_index);
-                            $objPHPExcel->getActiveSheet()->setCellValue(
-                                $char.$row_index, strip_tags($field['label'])
-                            );
-                            $char_index++;
+                            $_value = strip_tags($value);
+
                         }
 
 
-                    }
+                        if ($type == 'text') {
 
+                            $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
+
+                        } else {
+                            $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+                        }
+
+
+                        $char_index++;
+                    }
                     $row_index++;
                 }
 
 
-                $char_index = 1;
-                foreach ($row as $sql_field => $value) {
-                    $char = number2alpha($char_index);
+                try {
+                    $sheet = $objPHPExcel->getActiveSheet();
 
+                    $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+                    $cellIterator->setIterateOnlyExistingCells(true);
 
-                    $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
+                    foreach ($cellIterator as $cell) {
 
+                        // print_r($cell->getColumn());
+                        if (in_array($cell->getColumn(), $columns_no_resize)) {
+                            $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
+                        } else {
+                            $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-                    if ($type == 'html') {
-                        $_value = $value;
-                    } else {
-                        $_value = strip_tags($value);
-
-                    }
-
-
-                    if ($type == 'text') {
-
-                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
-
-                    } else {
-                        $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
-                    }
-
-
-                    $char_index++;
-                }
-                $row_index++;
-            }
-
-
-            try {
-                $sheet = $objPHPExcel->getActiveSheet();
-
-                $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(true);
-
-                foreach ($cellIterator as $cell) {
-
-                    // print_r($cell->getColumn());
-                    if (in_array($cell->getColumn(), $columns_no_resize)) {
-                        $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
-                    } else {
-                        $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+                        }
 
                     }
+
+
+                } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
 
                 }
 
 
-            } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
-
-            }
-
-
-            $objPHPExcel->getActiveSheet()->freezePane('A2');
-            $output_type = strtolower($_REQUEST['output']);
+                $objPHPExcel->getActiveSheet()->freezePane('A2');
+                $output_type = strtolower($_REQUEST['output']);
 
 
+                switch ($output_type) {
 
-            switch ($output_type) {
-
-                case('csv'):
-                    header("Content-type: text/csv");
-                    header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.csv"');
-                    header('Cache-Control: max-age=0');
-                    IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('"')->setLineEnding("\r\n")->setSheetIndex(0)->save('php://output');
+                    case('csv'):
+                        header("Content-type: text/csv");
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.csv"');
+                        header('Cache-Control: max-age=0');
+                        IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('"')->setLineEnding("\r\n")->setSheetIndex(0)->save('php://output');
 
 
-                    break;
-                case('xlsx'):
-                    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                    header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.xlsx"');
+                        break;
+                    case('xlsx'):
+                        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.xlsx"');
 
-                    header('Cache-Control: max-age=0');
+                        header('Cache-Control: max-age=0');
 
-                    IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save('php://output');
-                    break;
-                case('xls'):
-                    header('Content-Type: application/vnd.ms-excel');
-                    header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.xls"');
+                        IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save('php://output');
+                        break;
+                    case('xls'):
+                        header('Content-Type: application/vnd.ms-excel');
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.xls"');
 
-                    header('Cache-Control: max-age=0');
-                    IOFactory::createWriter($objPHPExcel, 'Xls')->save('php://output');
-                    break;
-                case('pdf'):
-                    header("Content-type:application/pdf");
-                    header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.pdf"');
+                        header('Cache-Control: max-age=0');
+                        IOFactory::createWriter($objPHPExcel, 'Xls')->save('php://output');
+                        break;
+                    case('pdf'):
+                        header("Content-type:application/pdf");
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.pdf"');
 
-                    header('Cache-Control: max-age=0');
-                    $objPHPExcel->getActiveSheet()->setShowGridLines(false);
-                    $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
-                    IOFactory::createWriter($objPHPExcel, 'Pdf')->save('php://output');
-                    break;
+                        header('Cache-Control: max-age=0');
+                        $objPHPExcel->getActiveSheet()->setShowGridLines(false);
+                        $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+                        IOFactory::createWriter($objPHPExcel, 'Pdf')->save('php://output');
+                        break;
+
+                }
+
+            }else{
+
+                $data_header = [];
+                $data_rows   = [];
+                $row_index   = 1;
+                while ($row = $stmt->fetch()) {
+
+                    if ($row_index == 1) {
+                        $char_index = 1;
+
+
+                        foreach ($export_fields as $field) {
+
+
+                            if (isset($field['labels'])) {
+
+                                foreach ($field['labels'] as $_key => $label) {
+                                    $data_header[] = [
+                                        'field_code'        => (isset($field['codes'][$_key]) ? $field['codes'][$_key] : strtolower(preg_replace('/\s*/', '_', strip_tags($label)))),
+                                        'field_description' => strip_tags($label)
+                                    ];
+
+                                }
+
+
+                            } else {
+                                $data_header[] =
+
+                                    [
+                                        'field_code'        => (isset($field['code']) ? $field['code'] : strtolower(preg_replace('/\s/', '_', strip_tags($field['label'])))),
+                                        'field_description' => strip_tags($field['label'])
+                                    ];
+                            }
+
+
+                        }
+
+                        $row_index++;
+                    }
+
+
+                    $char_index = 1;
+                    $_row       = [];
+                    foreach ($row as $sql_field => $value) {
+                        $char = number2alpha($char_index);
+
+
+                        $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
+
+
+                        if ($type == 'html') {
+                            $_value = $value;
+                        } else {
+                            if ($type == 'array') {
+                                $_value = preg_split('/,/', $value);
+
+                            } else {
+                                $_value = strip_tags($value);
+
+                            }
+                        }
+
+
+                        $_row[] = $_value;
+
+                        $char_index++;
+                    }
+                    $data_rows[] = $_row;
+                    $row_index++;
+                }
+
+                $data = array(
+                    'schema' => $data_header,
+                    'data'   => $data_rows
+                );
+
+                switch ($output_type) {
+
+                    case('json'):
+                        header("Content-type: application/json; charset=utf-8");
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'_json.txt"');
+
+                        header('Cache-Control: max-age=0');
+                        print json_encode($data);
+
+                }
 
             }
 
@@ -237,7 +344,7 @@ if ($row = $stmt->fetch()) {
             $counter = 1;
             $files = array();
 
-            $sql  = "SELECT  `Customer Portfolio Product ID` FROM  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Customers State`='Active' ";
+            $sql  = "SELECT `Customer Portfolio Product ID` FROM  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Customers State`='Active' ";
             $stmt2 = $db->prepare($sql);
             $stmt2->execute(
                 array(

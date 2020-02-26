@@ -719,9 +719,6 @@
                     url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
                         if (data.state == 200) {
                             state = data.app_state;
-                            $('.images_zip').removeClass('hide').attr('href',data.images_zip_url);
-                            $('.data_feed').removeClass('hide').attr('href',data.data_feed_url);
-                            $('#table_container').html(data.html);
                         }
 
                     }
@@ -1264,6 +1261,40 @@
                             $('.product_stock_label_' + index).html(value[1])
                         }
                     });
+
+                    var number_items_in_family=0;
+                    var number_products_in_portfolio_in_family=0;
+                    $.each(data.stock, function (index, value) {
+
+                        if (value[2] === 'Category_Products_Item') {
+                            number_items_in_family++
+                            var _portfolio_row=$('.portfolio_row_' + index+' .add_to_portfolio');
+                            if(_portfolio_row.hasClass('hide')){
+                                number_products_in_portfolio_in_family++
+
+                            }
+                        }
+
+                    });
+
+                    $('.top_menu .number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
+                    $('.top_menu .number_products_in_family').html(number_items_in_family)
+                    if(number_items_in_family>0){
+                        $('.top_menu .portfolio_in_family').removeClass('hide')
+                        $('.top_menu .add_family_label').addClass('hide')
+                        $('.top_menu .add_rest_label').addClass('hide')
+                        $('.top_menu .add_all_family_to_portfolio').removeClass('hide')
+
+                        if(number_products_in_portfolio_in_family==0) {
+                            $('.top_menu .add_family_label').removeClass('hide')
+                        }else if(number_products_in_portfolio_in_family<number_items_in_family){
+                            $('.top_menu .add_rest_label').removeClass('hide')
+                        }else{
+                            $('.top_menu .add_all_family_to_portfolio').addClass('hide')
+                        }
+                    }
+
+
                 });
 
             {/if}
