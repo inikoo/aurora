@@ -102,10 +102,20 @@ function fork_housekeeping($job) {
 
                 if ($row['Webpage Code'] == 'home.sys') {
                     $webpage_label = '<i class="fal fa-home"></i> '._('Home');
-                } elseif ($row['Webpage Code'] == 'basket.sys') {
+                } elseif ($row['Webpage Code'] == 'basket.sys' or $row['Webpage Code'] == 'client_basket.sys' or $row['Webpage Code']=='client_order_new.sys' ) {
                     $webpage_label = '<i class="fal fa-shopping-basket"></i> '._('Basket');
                 } elseif ($row['Webpage Code'] == 'profile.sys') {
                     $webpage_label = '<i class="fal fa-user"></i> '._('Profile');
+                }elseif ($row['Webpage Code'] == 'portfolio.sys') {
+                    $webpage_label = '<i class="fal fa-store-alt"></i> '._('Portfolio');
+                }elseif ($row['Webpage Code'] == 'client.sys') {
+                    $webpage_label = '<i class="fal fa-user"></i> '._('Client');
+                }elseif ($row['Webpage Code'] == 'shipping.sys') {
+                    $webpage_label = '<i class="fal fa-shipping-fast"></i> '._('Shipping');
+                }elseif ($row['Webpage Code'] == 'faq') {
+                    $webpage_label = '<i class="fal fa-question"></i> '._('FAQ');
+                }elseif ($row['Webpage Code'] == 'clients.sys') {
+                    $webpage_label = '<i class="fal fa-user"></i> '._('Clients');
                 } elseif ($row['Webpage Code'] == 'checkout.sys') {
                     $webpage_label = '<i class="fal fa-scanner-keyboard"></i> '._('Checkout');
                 } elseif ($row['Webpage Code'] == 'thanks.sys') {
