@@ -514,19 +514,19 @@ module.exports = function (grunt) {
             }
 
             , ecom_desktop_in: {
-                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.in.\.*min.js"/g, to: 'desktop.in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_desktop_logged_in: {
-                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.logged_in.\.*min.js"/g, to: 'desktop.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             },ecom_dropshipping_logged_in: {
-                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /dropshipping.logged_in.\.*min.js"/g, to: 'dropshipping.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_desktop_out: {
-                src: ['EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.out.\.*min.js"/g, to: 'desktop.out.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_image_gallery: {
@@ -538,11 +538,11 @@ module.exports = function (grunt) {
                     from: /datatables.\.*min.js"/g, to: 'datatables.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             },ecom_desktop_forms: {
-                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.forms.\.*min.js"/g, to: 'desktop.forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_basket_checkout: {
-                src: ['EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /desktop.basket.\.*min.js"/g, to: 'desktop.basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 },{
                     from: /mobile.basket.\.*min.js"/g, to: 'mobile.basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
@@ -558,32 +558,32 @@ module.exports = function (grunt) {
 
                 ]
             }, ecom_desktop_client_basket: {
-                src: ['EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /desktop.client_basket.\.*min.js"/g, to: 'desktop.client_basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }
 
                 ]
             }, ecom_mobile_in: {
-                src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /mobile.logged_in.\.*min.js"/g, to: 'mobile.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_mobile_forms: {
-                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /mobile.forms.\.*min.js"/g, to: 'mobile.forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             },
             ecom_mobile_custom: {
-                src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /mobile_custom.\.*min.js"/g, to: 'mobile_custom.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             },
             ecom_mobile: {
-                src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /mobile.\.*min.js"/g, to: 'mobile.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             },
             ecom_css: {
-                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/scripts.webpage_blocks.theme_1.EcomB2B.*tpl','theme_1/_head.theme_1.mobile.tpl','theme_1/_head.theme_1.tpl'], overwrite: true, replacements: [
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl','theme_1/_head.theme_1.mobile.tpl','theme_1/_head.theme_1.tpl'], overwrite: true, replacements: [
                     {
                         from: /desktop.\.*min.css"/g, to: 'desktop.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
                     },
