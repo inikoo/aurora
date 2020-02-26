@@ -5,9 +5,6 @@
 
 
 
-
-
-
 var special_instructions_timeout
 
 $(document).on('input propertychange', "#special_instructions", function(ev){
@@ -35,8 +32,6 @@ $(document).on('input propertychange', "#special_instructions", function(ev){
 
 
                 if (data.state == '200') {
-
-
 
                 } else if (data.state == '400') {
                 }
@@ -470,7 +465,6 @@ function  web_toggle_selected_by_customer_charge(element){
                 swal("Error!",'', "error")
 
 
-                console.log(element)
                 $(element).removeClass('fa-spinner fa-spin');
 
                 if(operation=='remove_charge'){
@@ -489,7 +483,6 @@ function  web_toggle_selected_by_customer_charge(element){
             }else{
                 $(element).addClass('fa-toggle-off')
             }
-
 
         }
     });
