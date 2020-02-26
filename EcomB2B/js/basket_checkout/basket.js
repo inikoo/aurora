@@ -125,13 +125,11 @@ $(document).on('change', "#order_delivery_country_select", function(){
 
 
     var selected=$( "#order_delivery_country_select option:selected" )
-    // console.log(selected.val())
 
     var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key='+$('#ordering_settings').data('website_key')
 
     $.getJSON(request, function( data ) {
         $.each(data.hidden_fields, function(index, value) {
-
 
 
             $('#order_delivery_'+value).addClass('hide')

@@ -448,7 +448,6 @@ function  web_toggle_selected_by_customer_charge(element){
                     $('.' + key).html(data.metadata.class_html[key])
                 }
 
-
                 for (var key in data.metadata.hide) {
                     $('#' + data.metadata.hide[key]).addClass('hide')
                 }
