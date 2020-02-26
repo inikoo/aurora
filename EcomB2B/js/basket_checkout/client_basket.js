@@ -427,7 +427,6 @@ function  web_toggle_selected_by_customer_charge(element){
                 } else {
                     $('.Order_Paid').removeClass('hide')
                 }
-
                 if (data.metadata.to_pay <= 0) {
                     $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
                 } else {

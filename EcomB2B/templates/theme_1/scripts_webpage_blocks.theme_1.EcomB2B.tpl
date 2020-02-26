@@ -270,6 +270,7 @@
                 })
             })
             {/if}
+
             {if $with_client_basket==1}
                             getScript("/assets/desktop.logged_in.min.js", function () {
                                 getScript("/assets/desktop.forms.min.js", function () {

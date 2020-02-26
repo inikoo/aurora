@@ -21,8 +21,6 @@
     }
 
 
-
-
     getScript("/assets/mobile.min.js", function () {
 
 
