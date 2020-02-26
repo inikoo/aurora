@@ -1,4 +1,7 @@
 <?php
+
+use Mpdf\Mpdf;
+
 chdir('../');
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -29,7 +32,7 @@ $smarty->assign('css', $css);
 if(isset($_REQUEST['with_labels'])) {
 
 
-    $mpdf = new \Mpdf\Mpdf(
+    $mpdf = new Mpdf(
         [
             'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
             'mode'          => 'utf-8',
@@ -43,7 +46,7 @@ if(isset($_REQUEST['with_labels'])) {
     );
 
 }else{
-    $mpdf = new \Mpdf\Mpdf(
+    $mpdf = new Mpdf(
         [
             'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
             'mode'          => 'utf-8',
@@ -74,7 +77,7 @@ $smarty->assign('delivery_note', $delivery_note);
 
 
 $dangerous_goods=array();
-$sql=sprintf(' select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!="" or `Part Packing Group`!="Noe" ) group by `Part UN Number`,`Part Packing Group`  ');
+$sql="select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!='' or `Part Packing Group`!='No' ) group by `Part UN Number`,`Part Packing Group`";
 
 $stmt = $db->prepare($sql);
 $stmt->execute(
