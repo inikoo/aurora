@@ -298,8 +298,42 @@
             {/if}
             {if $with_client==1}
             getScript("/assets/mobile.forms.min.js", function () {
-                $.getJSON("ar_web_client.php?tipo=get_client_html&device_prefix=mobile", function (data) {
-                    $('#client').html(data.html)
+                $.getJSON("ar_web_client.php?tipo=get_client_html&id="+getUrlParameter('id')+"&device_prefix=mobile", function (data) {
+                    $('#client').html(data.html);
+                    $('.breadcrumbs .client_nav').html(data.client_nav.label);
+                    $('.breadcrumbs .client_nav').attr('title',data.client_nav.title);
+
+
+                    $(document).on('click', '#new_order', function (e) {
+                        window.location = '/client_basket.sys?client_id='+getUrlParameter('id');
+                    });
+
+
+                    getScript("/assets/datatables.min.js", function () {
+
+                        const request_data ={ "tipo":'client_orders','client_id':getUrlParameter('id')}
+
+                        $.ajax({
+                            url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                                if (data.state == 200) {
+                                    state = data.app_state;
+                                    $('#table_container').html(data.html)
+
+
+
+
+
+                                }
+
+
+
+                            }
+                        });
+
+                    })
+
+
                 })
             })
             {/if}

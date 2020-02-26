@@ -287,9 +287,10 @@
                 })
                 {/if}
                 {if $with_client==1}
-                getScript("/assets/mobile.forms.min.js", function () {
-                    $.getJSON("ar_web_client.php?tipo=get_client_html&device_prefix=tablet", function (data) {
-                        $('#client').html(data.html);
+                getScript("/assets/desktop.forms.min.js", function () {
+                    $.getJSON("ar_web_client.php?tipo=get_client_html&id="+getUrlParameter('id')+"&device_prefix=tablet", function (data) {
+                        $('#client').html(data.html)
+
                         $('.breadcrumbs .client_nav').html(data.client_nav.label);
                         $('.breadcrumbs .client_nav').attr('title',data.client_nav.title);
 

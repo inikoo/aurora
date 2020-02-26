@@ -189,7 +189,6 @@ function get_order_items_table_html($data,$parameters ,$customer,$db) {
 
     if($device_prefix=='mobile'){
         $tab     = 'order_items_mobile';
-
     }else{
         $tab     = 'order_items';
     }
@@ -384,6 +383,12 @@ function get_portfolio_table_html($data, $customer) {
 
 function get_clients_table_html($data, $customer) {
 
+    if(!isset($data['device_prefix'])){
+        $device_prefix='';
+    }else{
+        $device_prefix=$data['device_prefix'];
+
+    }
 
     include_once '../conf/export_fields.php';
     include_once '../conf/elements_options.php';
@@ -403,9 +408,15 @@ function get_clients_table_html($data, $customer) {
     $store = get_object('Store', $website->get('Website Store Key'));
 
 
-    $tab     = 'customer_clients';
     $ar_file = 'ar_web_clients.php';
     $tipo    = 'customer_clients';
+
+
+    if($device_prefix=='mobile'){
+        $tab     = 'customer_clients_mobile';
+    }else{
+        $tab     = 'customer_clients';
+    }
 
 
     $default = array(

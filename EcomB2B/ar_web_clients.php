@@ -197,12 +197,14 @@ function customer_clients($_data, $db) {
                     '<span id="portfolio_ref_%d" class="table_inline_edit edit_object_reference_container" data-object="Client"  data-object_key="%d"><span class="very_discreet italic like_button edit_object_reference">%s</span> <span class="editor hide">
 <input class="" data-old_value="" />  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Client Key'], $data['Customer Client Key'], _('Add reference')
                 );
+                $reference_mobile='';
             } else {
                 $reference = sprintf(
                     '<span id="portfolio_ref_%d" class="table_inline_edit edit_object_reference_container  "  data-object="Client"  data-object_key="%d"><span class="  like_button edit_object_reference">%s</span> <span class="editor hide">
 <input class="" data-old_value="%s" value="%s"/>  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Client Key'], $data['Customer Client Key'], $data['Customer Client Code'], $data['Customer Client Code'],
                     $data['Customer Client Code']
                 );
+                $reference_mobile=' ('.$data['Customer Client Code'].')';
             }
 
 
@@ -212,6 +214,7 @@ function customer_clients($_data, $db) {
                 'code' => $reference,
                 'name' => $data['Customer Client Name'],
 
+                'customer'=>sprintf('<a style="display:inline"  href="client.sys?id=%d">%05d</a>', $data['Customer Client Key'], $data['Customer Client Key']).$reference_mobile.'<br>'.$data['Customer Client Name'],
                 'since'          => strftime("%e %b %y", strtotime($data['Customer Client Creation Date'].' +0:00')),
                 'location'       => $data['Customer Client Location'],
                 'pending_orders' => number($data['Customer Client Pending Orders']),

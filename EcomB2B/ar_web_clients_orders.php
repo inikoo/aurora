@@ -134,7 +134,7 @@ function clients_orders($_data, $db) {
                 'public_id' => $public_id,
                 'state'     => $state,
 
-                'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+                'date'           => strftime("%e %b %Y", strtotime($data['Order Date'].' +0:00')),
                 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
                 'customer'       => sprintf('<a href="client.sys?id=%d">%s</a>',  $data['Order Customer Client Key'], $data['Customer Client Name']),
                // 'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
