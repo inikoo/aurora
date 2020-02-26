@@ -558,7 +558,7 @@ class Public_Order extends DBW_Table {
 
                     'description' => $row['Charge Description'].' ('.money($row['Charge Metadata'], $this->get('Currency Code')).')',
 
-                    'quantity_edit' => '<i onclick="web_toggle_selected_by_customer_charge(this)"  data-charge_key="'.$row['Charge Key'].'" data-onptf_key="'.$onptf_key.'"    class="'.($onptf_key > 0 ? 'fa-toggle-on' : 'fa-toggle-off')
+                    'quantity_edit' => '<i onclick="web_toggle_selected_by_customer_charge(this)"  data-order_key="'.$this->id.'"  data-charge_key="'.$row['Charge Key'].'" data-onptf_key="'.$onptf_key.'"    class="'.($onptf_key > 0 ? 'fa-toggle-on' : 'fa-toggle-off')
                         .' far  " style="cursor: pointer" ></i>',
 
 

@@ -333,3 +333,167 @@ function save_add_item(save_button) {
 }
 
 
+
+function  web_toggle_selected_by_customer_charge(element){
+
+
+    if($(element).hasClass('wait')){
+        return;
+    }
+
+    if($(element).hasClass('fa-toggle-on')){
+        var operation='remove_charge';
+    }else{
+        var operation='add_charge';
+    }
+
+
+    $(element).addClass('wait fa-spin fa-spinner').removeClass('fa-toggle-on fa-toggle-off')
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo",'web_toggle_charge')
+    ajaxData.append("operation",operation)
+    ajaxData.append("charge_key", $(element).data('charge_key'))
+    ajaxData.append("order_key",$(element).data('order_key'));
+
+
+
+
+
+    $.ajax({
+        url: "/ar_web_client_basket.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+
+
+            $(element).removeClass('wait')
+
+
+
+
+            if (data.state == '200') {
+
+
+                if(data.charges){
+                    $('.order_charges_container').removeClass('hide')
+
+                }else{
+                    $('.order_charges_container').addClass('hide')
+
+                }
+
+
+
+
+                if(data.operation=='add_charge' ) {
+                    $(element).addClass('fa-toggle-on').removeClass('fa-spinner fa-spin');
+                    $(element).closest('tr').find('.selected_by_customer_charge').html(data.transaction_data.amount)
+
+
+                    $('.Order_Priority_Icon').removeClass('hide')
+                    $('.priority_label').removeClass('hide')
+
+
+                }else{
+
+                    $(element).addClass('fa-toggle-off').removeClass('fa-spinner fa-spin');
+                    $(element).closest('tr').find('.selected_by_customer_charge').html('')
+
+                    $('.Order_Priority_Icon').addClass('hide')
+                    $('.priority_label').addClass('hide')
+
+                }
+
+
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue', data.metadata.shipping)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+                } else {
+                    $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+
+            }
+            else {
+
+                swal("Error!",'', "error")
+
+
+                console.log(element)
+                $(element).removeClass('fa-spinner fa-spin');
+
+                if(operation=='remove_charge'){
+                    $(element).addClass('fa-toggle-on')
+                }else{
+                    $(element).addClass('fa-toggle-off')
+                }
+            }
+
+
+        }, error: function () {
+            $(element).removeClass('fa-spinner fa-spin');
+
+            if(operation=='remove_charge'){
+                $(element).addClass('fa-toggle-on')
+            }else{
+                $(element).addClass('fa-toggle-off')
+            }
+
+
+        }
+    });
+
+
+
+}

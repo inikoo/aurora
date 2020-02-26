@@ -79,6 +79,20 @@ switch ($tipo) {
         );
         update_special_instructions($data, $customer->id, $editor);
         break;
+    case 'web_toggle_charge':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'charge_key' => array('type' => 'key'),
+                         'order_key' => array('type' => 'key'),
+                         'operation'  => array('type' => 'string'),
+
+                     )
+        );
+        web_toggle_charge($data, $customer->id, $website,$editor);
+        break;
+
+
     default:
         $response = array(
             'state' => 407,
@@ -317,3 +331,168 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
 
 }
 
+
+
+function web_toggle_charge($data,$customer_key,  $website,$editor) {
+
+
+    $order = get_object('Order', $data['order_key']);
+    if (!$order->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Order not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    if ($order->get('Order Customer Key') != $customer_key) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    $order->editor = $editor;
+
+    $charge = get_object('Charge', $data['charge_key']);
+    if (!$charge->id) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Charge not found',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($charge->get('Store Key') != $order->get('Store Key')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Charge not in same store as order',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+
+    if ($data['operation'] == 'add_charge') {
+
+        $transaction_data = $order->add_charge($charge);
+
+
+    } else {
+        $transaction_data = $order->remove_charge($charge);
+
+
+    }
+
+
+    if ($order->get('Order State') == 'InBasket') {
+        $order->fast_update(
+            array(
+
+                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
+            )
+        );
+    }
+
+
+    $new_discounted_products = $order->get_discounted_products();
+    foreach ($new_discounted_products as $key => $value) {
+        $discounted_products[$key] = $value;
+    }
+
+
+    $hide         = array();
+    $show         = array();
+    $add_class    = array();
+    $remove_class = array();
+
+    $labels = $website->get('Localised Labels');
+
+    if ($order->get('Shipping Net Amount') == 'TBC') {
+        $shipping_amount = sprintf('<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>%s</small>', (!empty($labels['_we_will_contact_you']) ? $labels['_we_will_contact_you'] : _('We will contact you')));
+    } else {
+        $shipping_amount = $order->get('Shipping Net Amount');
+    }
+
+    if ($order->get('Order Charges Net Amount') == 0) {
+
+        $add_class['order_charges_container'] = 'very_discreet';
+
+        $hide[] = 'order_charges_info';
+    } else {
+        $remove_class['order_charges_container'] = 'very_discreet';
+
+        $show[] = 'order_charges_info';
+    }
+
+
+    if ($order->get('Order Items Discount Amount') == 0) {
+
+        $hide[] = 'order_items_gross_container';
+        $hide[] = 'order_items_discount_container';
+    } else {
+        $show[] = 'order_items_gross_container';
+        $show[] = 'order_items_discount_container';
+    }
+
+
+    if ($order->get('Order Deal Amount Off') == 0) {
+        $hide[] = 'Deal_Amount_Off_tr';
+    } else {
+        $show[] = 'Deal_Amount_Off_tr';
+    }
+
+
+    $class_html = array(
+        'Deal_Amount_Off'         => $order->get('Deal Amount Off'),
+        'order_items_gross'       => $order->get('Items Gross Amount'),
+        'order_items_discount'    => $order->get('Basket Items Discount Amount'),
+        'order_items_net'         => $order->get('Items Net Amount'),
+        'order_net'               => $order->get('Total Net Amount'),
+        'order_tax'               => $order->get('Total Tax Amount'),
+        'order_charges'           => $order->get('Charges Net Amount'),
+        'order_credits'           => $order->get('Net Credited Amount'),
+        'available_credit_amount' => $order->get('Available Credit Amount'),
+        'order_shipping'          => $shipping_amount,
+        'order_total'             => $order->get('Total Amount'),
+        'to_pay_amount'           => $order->get('Basket To Pay Amount'),
+        'ordered_products_number' => $order->get('Products'),
+        'order_amount'            => ((!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net') ? $order->get('Items Net Amount') : $order->get('Total'))
+    );
+
+
+    $response = array(
+        'state' => 200,
+
+
+        'metadata' => array(
+            'class_html'   => $class_html,
+            'hide'         => $hide,
+            'show'         => $show,
+            'add_class'    => $add_class,
+            'remove_class' => $remove_class,
+            'new_otfs'     => $order->new_otfs,
+            'deleted_otfs' => $order->deleted_otfs,
+
+        ),
+
+
+        'discounts' => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
+        'charges'   => ($order->data['Order Charges Net Amount'] != 0 ? true : false),
+
+        'order_empty' => ($order->get('Products') == 0 ? true : false),
+
+        'operation'        => $data['operation'],
+        'transaction_data' => $transaction_data
+
+    );
+
+    echo json_encode($response);
+
+
+}

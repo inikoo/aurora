@@ -84,7 +84,7 @@
             <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }hide{/if}">
                 <td>
 
-                    {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}  <i class=" order_charges_info fa fa-info-circle padding_left_5  info {if $order->get('Order Charges Net Amount')==0 }hide{/if}"    style="color: #007fff;" onclick="show_charges_info()" ></i>
+                    {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}  <i class=" order_charges_info fa fa-info-circle padding_left_5 hide  info {if $order->get('Order Charges Net Amount')==0 }hide{/if}"    style="color: #007fff;" onclick="show_charges_info()" ></i>
                 </td>
 
                 <td class="text-right order_charges">{$order->get('Charges Net Amount')}</td>
