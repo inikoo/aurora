@@ -106,6 +106,8 @@ function fork_housekeeping($job) {
                     $webpage_label = '<i class="fal fa-shopping-basket"></i> '._('Basket');
                 } elseif ($row['Webpage Code'] == 'profile.sys') {
                     $webpage_label = '<i class="fal fa-user"></i> '._('Profile');
+                }elseif ($row['Webpage Code'] == 'clients_orders.sys') {
+                    $webpage_label = '<i class="fal fa-shopping-cart"></i> '._('Orders');
                 }elseif ($row['Webpage Code'] == 'portfolio.sys') {
                     $webpage_label = '<i class="fal fa-store-alt"></i> '._('Portfolio');
                 }elseif ($row['Webpage Code'] == 'client.sys') {
