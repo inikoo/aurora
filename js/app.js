@@ -24,13 +24,13 @@ $(function () {
 
     state = {
         module: '', section: '', parent: '', parent_key: '', object: '', key: ''
-    }
-    structure = {}
+    };
+    structure = {};
 
-    change_view($('#_request').val())
+    change_view($('#_request').val());
     $(document).on("keydown", function (e) {
         key_press(e)
-    })
+    });
 
     connect_websocket();
     setInterval(function () {
@@ -50,7 +50,7 @@ $(function () {
     }, 97500);
 
 
-})
+});
 
 
 function change_browser_history_state(request) {
@@ -85,7 +85,7 @@ function change_browser_history_state(request) {
         }
 
         //console.log(request)
-        window.top.history.pushState({request: request}, '', request)
+        window.top.history.pushState({request: request}, '', request);
 
 
         old_state_request = request
@@ -109,8 +109,8 @@ window.addEventListener('popstate', function (event) {
 function change_tab(tab, metadata) {
 
 
-    $('#maintabs .tab').removeClass('selected')
-    $('#tab_' + tab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected')
+    $('#maintabs .tab').removeClass('selected');
+    $('#tab_' + tab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected');
 
 
     change_view(state.request + '&tab=' + tab, metadata)
@@ -118,8 +118,8 @@ function change_tab(tab, metadata) {
 
 
 function change_subtab(subtab) {
-    $('#maintabs .subtab').removeClass('selected')
-    $('#subtab_' + subtab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected')
+    $('#maintabs .subtab').removeClass('selected');
+    $('#subtab_' + subtab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected');
     change_view(state.request + '&subtab=' + subtab)
 }
 
@@ -130,10 +130,10 @@ function get_widget_details(element, widget, metadata) {
         metadata = {};
     }
 
-    $('.widget').css('opacity', .4)
-    $(element).css('opacity', 1)
+    $('.widget').css('opacity', .4);
+    $(element).css('opacity', 1);
 
-    var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
+    var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata);
 
     //console.log(request)
 
@@ -151,7 +151,7 @@ function change_menu_view(module) {
 
     switch (module) {
         case '_dashboard':
-            change_view('/dashboard')
+            change_view('/dashboard');
             break;
         case 'customers':
             if (state.current_store && jQuery.inArray(state.current_store, state.stores) !== -1) {
@@ -170,7 +170,7 @@ function change_menu_view(module) {
 
         case 'delivery_notes':
 
-            change_view('delivery_notes/all/')
+            change_view('delivery_notes/all/');
             break;
 
         case 'products':
@@ -209,13 +209,13 @@ function change_menu_view(module) {
             }
             break;
         case 'accounting':
-            change_view('invoices/per_store')
+            change_view('invoices/per_store');
             break;
         case 'inventory':
-            change_view('inventory/dashboard')
+            change_view('inventory/dashboard');
             break;
         case 'suppliers':
-            change_view('suppliers/dashboard')
+            change_view('suppliers/dashboard');
             break;
         case 'production':
             if (state.current_production) {
@@ -232,19 +232,19 @@ function change_menu_view(module) {
         case 'users':
         case 'agent_parts':
             // console.log(module)
-            change_view(module)
+            change_view(module);
             break;
         case 'agent_client_orders':
-            change_view('orders')
+            change_view('orders');
             break;
         case 'agent_client_deliveries':
-            change_view('agent_deliveries')
+            change_view('agent_deliveries');
             break;
         case 'agent_suppliers':
-            change_view('suppliers')
+            change_view('suppliers');
             break;
         case 'agent_profile':
-            change_view('profile')
+            change_view('profile');
             break;
 
     }
@@ -261,7 +261,7 @@ function change_view_if_has_link_class(element, _request, metadata) {
 
 function change_view(_request, metadata) {
 
-    close_search('move')
+    close_search('move');
 
     $.urlParam = function (name, str) {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);
@@ -270,16 +270,16 @@ function change_view(_request, metadata) {
         } else {
             return results[1] || 0;
         }
-    }
+    };
 
-    var tmp = '?__R__=' + _request
+    var tmp = '?__R__=' + _request;
 
-    $('#tabs').removeClass('hide')
+    $('#tabs').removeClass('hide');
 
 
-    _request = $.urlParam('__R__', tmp)
-    var tab = $.urlParam('tab', tmp)
-    var subtab = $.urlParam('subtab', tmp)
+    _request = $.urlParam('__R__', tmp);
+    var tab = $.urlParam('tab', tmp);
+    var subtab = $.urlParam('subtab', tmp);
 
     if (metadata == undefined || !metadata) {
         metadata = {};
@@ -288,7 +288,7 @@ function change_view(_request, metadata) {
 
     var request_data = {
         tipo: 'views', request: _request, metadata: JSON.stringify(metadata), old_state: JSON.stringify(state)
-    }
+    };
 
 
     if (tab != null) {
@@ -319,18 +319,18 @@ function change_view(_request, metadata) {
 
 
                     if (typeof (data.nav[0]) != undefined) {
-                        let display_search = data.nav[0].show
-                        let search_placeholder= data.nav[0].placeholder
+                        let display_search = data.nav[0].show;
+                        let search_placeholder= data.nav[0].placeholder;
 
 
 
                         if (display_search) {
-                            $('.smart_search_input label').removeClass('hide')
-                            $('.smart_search_input form').removeClass('hide')
+                            $('.smart_search_input label').removeClass('hide');
+                            $('.smart_search_input form').removeClass('hide');
                             $('.smart_search_input input').attr("placeholder", search_placeholder);
 
                         } else {
-                            $('.smart_search_input label').addClass('hide')
+                            $('.smart_search_input label').addClass('hide');
                             $('.smart_search_input form').addClass('hide')
                         }
 
@@ -386,7 +386,7 @@ function change_view(_request, metadata) {
                         $('#object_showcase').addClass('hide').html('')
                     } else {
 
-                        $('#object_showcase').removeClass('hide')
+                        $('#object_showcase').removeClass('hide');
                         $('#object_showcase').html(data.object_showcase);
                     }
                 }
@@ -407,13 +407,13 @@ function change_view(_request, metadata) {
 
                 if (metadata.post_operations == 'delivery_note.fast_track_packing') {
 
-                    $('#maintabs .tab').addClass('hide')
+                    $('#maintabs .tab').addClass('hide');
 
 
                     $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
                 } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
 
-                    $('#maintabs .tab').removeClass('hide')
+                    $('#maintabs .tab').removeClass('hide');
 
 
                     $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
@@ -426,8 +426,8 @@ function change_view(_request, metadata) {
                 }
 
 
-                change_browser_history_state(data.app_state.request)
-                show_side_content($('#notifications').data('current_side_view'))
+                change_browser_history_state(data.app_state.request);
+                show_side_content($('#notifications').data('current_side_view'));
 
                 if (typeof data.current_store_code === 'undefined' || data.current_store_code == '') {
                     $('.current_store_label').addClass('invisible')
