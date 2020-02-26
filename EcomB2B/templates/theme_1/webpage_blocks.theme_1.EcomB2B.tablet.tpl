@@ -100,6 +100,33 @@
 
             {/if}
 
+            {if $webpage->get('Webpage Code')=='portfolio.sys' and $logged_in}
+
+                <div class="top_menu" >
+
+
+
+                    <div class="portfolio_data_feeds hide">
+                        <span><i class="fal fa-database"></i> {t}Portfolio products data feed{/t}  (
+                            <a class="csv" href="">.cvs</a>,
+                            <a class="xls" href="">.xls</a>,
+                            <a class="json" href="">json</a>
+                            )</span>
+                        <span style="margin-left: 30px" title="{t}Portfolio images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a class="images_zip" href="">.zip</a> )
+                    </div>
+
+
+
+                    <div class="portfolio_right_menu small " style="float:right" >
+                        <span class="like_button open_notifications hide"><i class="fa fa-bell"></i> {t}Notifications{/t}</span>
+                    </div>
+                </div>
+
+
+
+
+            {/if}
+
 
             {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}

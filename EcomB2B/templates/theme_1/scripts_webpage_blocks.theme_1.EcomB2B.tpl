@@ -759,7 +759,6 @@
                                             $('.portfolio_data_feeds .json').attr('href',data.json_url);
 
                                             $('.portfolio_data_feeds').removeClass('hide')
-                                            $('#table_container').html(data.html);
 
                                             $('#table_container').html(data.html)
 

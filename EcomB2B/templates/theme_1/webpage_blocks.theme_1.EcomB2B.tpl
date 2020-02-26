@@ -111,7 +111,7 @@
 
             {if $webpage->get('Webpage Code')=='portfolio.sys' and $logged_in}
 
-                    <div class="top_bar" >
+                    <div class="top_menu" >
 
 
 
