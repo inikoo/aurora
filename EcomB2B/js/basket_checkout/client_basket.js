@@ -444,7 +444,6 @@ function  web_toggle_selected_by_customer_charge(element){
                 }
 
 
-
                 for (var key in data.metadata.class_html) {
                     $('.' + key).html(data.metadata.class_html[key])
                 }

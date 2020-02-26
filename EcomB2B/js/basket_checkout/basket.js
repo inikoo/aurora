@@ -172,7 +172,6 @@ $(document).on('change', "#order_delivery_country_select", function(){
 
 
 
-
 function  web_toggle_selected_by_customer_charge(element){
 
 
