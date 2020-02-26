@@ -815,3 +815,12 @@ i.product_stock_dot {
 .hide_mobile{
   display:none;
 }
+
+.top_menu{
+  border-bottom: 1px solid #ccc;height: 30px;line-height: 30px;padding: 0 20px;border-top:1px solid #ccc;
+  font-size: small;
+  a{
+    display: inline;
+
+  }
+}

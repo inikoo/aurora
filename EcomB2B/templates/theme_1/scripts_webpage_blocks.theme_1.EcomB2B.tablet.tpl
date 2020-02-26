@@ -1404,7 +1404,41 @@
                             }
                         });
 
-                });
+
+                            var number_items_in_family=0;
+                            var number_products_in_portfolio_in_family=0;
+                            $.each(data.stock, function (index, value) {
+
+                                if (value[2] === 'Category_Products_Item') {
+                                    number_items_in_family++
+                                    var _portfolio_row=$('.portfolio_row_' + index+' .add_to_portfolio');
+                                    if(_portfolio_row.hasClass('hide')){
+                                        number_products_in_portfolio_in_family++
+
+                                    }
+                                }
+
+                            });
+
+                            $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
+                            $('.number_products_in_family').html(number_items_in_family)
+                            if(number_items_in_family>0){
+                                $('.portfolio_in_family').removeClass('hide')
+                                $('.add_family_label').addClass('hide')
+                                $('.add_rest_label').addClass('hide')
+                                $('.add_all_family_to_portfolio').removeClass('hide')
+
+                                if(number_products_in_portfolio_in_family==0) {
+                                    $('.add_family_label').removeClass('hide')
+                                }else if(number_products_in_portfolio_in_family<number_items_in_family){
+                                    $('.add_rest_label').removeClass('hide')
+                                }else{
+                                    $('.add_all_family_to_portfolio').addClass('hide')
+                                }
+                            }
+
+
+                        });
                 {/if}
                         getScript("/assets/mobile.logged_in.min.js", function () {
 

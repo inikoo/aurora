@@ -65,7 +65,6 @@ $(function () {
                 });
 
 
-
                 $('.number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family);
                 $('.number_products_in_family').html(number_items_in_family);
 
