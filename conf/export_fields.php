@@ -1588,6 +1588,7 @@ function get_export_fields($element, $account_currency_code = '') {
             array(
                 'name'  => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
                 'label' => _('3rd image'),
+                'checked' => 0,
             ),
             array(
                 'name'    => '`Product Data Updated`,`Product Stock Updated`,`Product Price Updated`,`Product Images Updated`',

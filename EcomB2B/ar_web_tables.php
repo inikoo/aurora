@@ -291,9 +291,9 @@ function get_portfolio_table_html($data, $customer) {
     );
 
 
-    if($device_prefix==''){
-        $default['export_fields']=get_export_fields('portfolio_items');
-    }
+    //if($device_prefix==''){
+    //    $default['export_fields']=get_export_fields('portfolio_items');
+    //}
 
 
     $table_views = array(
