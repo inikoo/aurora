@@ -39,7 +39,7 @@ function parse_email_status_code($type,$code){
             $parsed_code=_('Delivery time expired');
             break;
         case '5.7.1':
-            $parsed_code=_('Delivery not authorized, message refused');
+            $parsed_code=_('Email rejected per SPAM policy');
             break;
         case '5.3.0':
             $parsed_code=_('Other or undefined mail system status');
