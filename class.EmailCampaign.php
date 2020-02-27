@@ -348,7 +348,7 @@ class EmailCampaign extends DB_Table {
                 return $formatted_value;
                 break;
             case 'Email Campaign Cool Down Days':
-                return ($this->metadata('Cool_Down_Days')==''?180:$this->metadata('Cool_Down_Days'));
+                return ($this->metadata('Cool_Down_Days') == '' ? 180 : $this->metadata('Cool_Down_Days'));
             case 'Cool Down Days':
                 return (is_numeric($this->metadata('Cool_Down_Days')) ? number($this->metadata('Cool_Down_Days')) : 180);
 
@@ -704,11 +704,6 @@ class EmailCampaign extends DB_Table {
                         "select count(*)  as num from `Prospect Dimension` where `Prospect Store Key`=? and `Prospect Main Plain Email`!='' and  ( `Prospect Status`='NoContacted'  or  ( `Prospect Status`='Contacted' and  `Prospect Last Contacted Date`<= CURRENT_DATE - INTERVAL ? DAY   )  )  ";
 
 
-
-
-
-
-
                     $stmt = $this->db->prepare($sql);
                     $stmt->execute(
                         array(
@@ -719,8 +714,8 @@ class EmailCampaign extends DB_Table {
                     if ($row = $stmt->fetch()) {
                         $estimated_recipients = $row['num'];
 
-                        if(is_numeric($this->metadata('Max_Number_Emails'))  and $this->metadata('Max_Number_Emails')>=0 ){
-                            $estimated_recipients=min($estimated_recipients,$this->metadata('Max_Number_Emails'));
+                        if (is_numeric($this->metadata('Max_Number_Emails')) and $this->metadata('Max_Number_Emails') >= 0) {
+                            $estimated_recipients = min($estimated_recipients, $this->metadata('Max_Number_Emails'));
                         }
 
 
@@ -1592,9 +1587,9 @@ class EmailCampaign extends DB_Table {
                     $this->data['Email Campaign Store Key'], (empty($metadata['Cool_Down_Days']) ? 180 : $metadata['Cool_Down_Days'])
                 );
 
-                if(is_numeric($this->metadata('Max_Number_Emails'))  and $this->metadata('Max_Number_Emails')>=0 ){
-                    $sql.=sprintf(' limit %d',$this->metadata('Max_Number_Emails'));
-                    }
+                if (is_numeric($this->metadata('Max_Number_Emails')) and $this->metadata('Max_Number_Emails') >= 0) {
+                    $sql .= sprintf(' limit %d', $this->metadata('Max_Number_Emails'));
+                }
 
                 return $sql;
 
@@ -1641,13 +1636,6 @@ class EmailCampaign extends DB_Table {
         $hard_bounces = 0;
         $soft_bounces = 0;
         $spam         = 0;
-
-
-        //'Send to SES',Send',Read
-        //'Sent','Sent to SES','Ready',,'Rejected by SES',','','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
-
-
-        //     'Ready','Sent to SES','Rejected by SES','Sent','Soft Bounce','Hard Bounce','Delivered','Spam','Opened','Clicked','Error'
 
 
         $sql = sprintf('select count(*) as num ,`Email Tracking State` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d group by `Email Tracking State` ', $this->id);
@@ -1707,25 +1695,24 @@ class EmailCampaign extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $delivered = $sent - $hard_bounces - $errors - $soft_bounces;
 
 
-        $sql = sprintf('select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking Spam`="Yes" ', $this->id);
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $spam = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        $sql  = "select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=? and `Email Tracking Spam`='Yes'";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $spam = $row['num'];
         }
+
 
         $sql = sprintf('select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking Unsubscribed`="Yes" ', $this->id);
         if ($result = $this->db->query($sql)) {
@@ -1733,6 +1720,7 @@ class EmailCampaign extends DB_Table {
                 $unsubscribed = $row['num'];
             }
         }
+
 
 
         $this->fast_update(

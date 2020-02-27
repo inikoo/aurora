@@ -1360,7 +1360,7 @@ function mailshots($_data, $db, $user) {
                     '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Delivered'] == 0 ? 'super_discreet' : ''), number($data['Email Campaign Clicked']), percentage($data['Email Campaign Clicked'], $data['Email Campaign Delivered'])
                 ),
                 'spam'    => sprintf(
-                    '<span class="%s " title="%s">%s</span>', ($data['Email Campaign Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Spams'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Spams']),
+                    '<span class="%s " title="%s">%s</span>', ($data['Email Campaign Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Spams'] == 0 ? ' super_discreet' : 'error discreet')), number($data['Email Campaign Spams']),
                     percentage($data['Email Campaign Spams'], $data['Email Campaign Delivered'])
                 ),
 

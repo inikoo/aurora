@@ -32,6 +32,18 @@ print date('l jS \of F Y h:i:s A')."\n";
 $account = new Account();
 
 
+$sql = sprintf("SELECT `Email Campaign Key` FROM `Email Campaign Dimension` ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $mailshot = get_object('Email Campaign', $row['Email Campaign Key']);
+
+        $mailshot->update_sent_emails_totals();
+
+    }
+
+}
+
+
 $sql = sprintf("SELECT `Email Campaign Type Key` FROM `Email Campaign Type Dimension`");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -42,9 +54,5 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 
-?>
