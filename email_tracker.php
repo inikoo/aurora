@@ -301,10 +301,21 @@ if ($validator->isValid($sns)) {
                     $sql = "update `Email Tracking Dimension` set `Email Tracking Delivery Status Code`=? where `Email Tracking Key`=?";
                     $db->prepare($sql)->execute(
                         array(
-                            $row['Email Tracking Key'],
-                            $bounce_status_code
+
+                            $bounce_status_code,
+                            $row['Email Tracking Key']
                         )
                     );
+
+                    if($bounce_status_code=='5.7.1'){
+                        $sql = "update `Email Tracking Dimension` set `Email Tracking Spam`='Yes' where `Email Tracking Key`=?";
+                        $db->prepare($sql)->execute(
+                            array(
+                                $row['Email Tracking Key']
+                            )
+                        );
+
+                    }
 
 
                     $sql = sprintf('select `Bounced Email Key`,`Bounced Email Bounce Type`,`Bounced Email Count` from `Bounced Email Dimension` where `Bounced Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email')));
