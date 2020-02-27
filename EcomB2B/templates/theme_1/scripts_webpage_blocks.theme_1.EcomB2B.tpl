@@ -941,6 +941,10 @@
 
                                             if (data.state == 200) {
                                                 state = data.app_state;
+
+
+
+
                                                 $('#table_container').html(data.html)
                                             }
 
