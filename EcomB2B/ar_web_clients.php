@@ -198,6 +198,7 @@ function customer_clients($_data, $db) {
 <input class="" data-old_value="" />  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Client Key'], $data['Customer Client Key'], _('Add reference')
                 );
                 $reference_mobile='';
+                $code_plain=sprintf('<span class="italic discreet">%05d</span>', $data['Customer Client Key'], $data['Customer Client Key']);
             } else {
                 $reference = sprintf(
                     '<span id="portfolio_ref_%d" class="table_inline_edit edit_object_reference_container  "  data-object="Client"  data-object_key="%d"><span class="  like_button edit_object_reference">%s</span> <span class="editor hide">
@@ -205,6 +206,7 @@ function customer_clients($_data, $db) {
                     $data['Customer Client Code']
                 );
                 $reference_mobile=' ('.$data['Customer Client Code'].')';
+                $code_plain=$data['Customer Client Code'];
             }
 
 
@@ -212,6 +214,8 @@ function customer_clients($_data, $db) {
             $record_data[] = array(
                 'id'   => sprintf('<a href="client.sys?id=%d">%05d</a>', $data['Customer Client Key'], $data['Customer Client Key']),
                 'code' => $reference,
+                'code_plain' => $code_plain,
+
                 'name' => $data['Customer Client Name'],
 
                 'customer'=>sprintf('<a style="display:inline"  href="client.sys?id=%d">%05d</a>', $data['Customer Client Key'], $data['Customer Client Key']).$reference_mobile.'<br>'.$data['Customer Client Name'],

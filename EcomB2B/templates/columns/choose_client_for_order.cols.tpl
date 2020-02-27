@@ -17,11 +17,11 @@ renderable: false,
 cell: "string",
 
 },{
-name: "code",
+name: "code_plain",
 label: "{t}ID{/t}",
 editable: false,
 sortType: "toggle",
-{if $sort_key=='code'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='code_plain'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({ })
 
