@@ -934,7 +934,7 @@
                             getScript("/assets/desktop.forms.min.js", function () {
                                 getScript("/assets/datatables.min.js", function () {
 
-                                    const request_data ={ "tipo":'choose_client_for_order'}
+                                    const request_data ={ "tipo":'choose_client_for_order',"origin":'client_order_new',"device_prefix":'desktop'}
 
                                     $.ajax({
                                         url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
