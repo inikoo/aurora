@@ -424,20 +424,21 @@
             <div ><span class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</span> <span class="padding_left_10 Email_Campaign_Delivered_Percentage">{$email_campaign->get('Delivered Percentage')}</span></div>
 
         </div>
-        <div>
-            <label>{t}Spam{/t}</label>
-            <div ><span class="Email_Campaign_Spams">{$email_campaign->get('Spams')}</span> <span class="padding_left_10 Email_Campaign_Spams_Percentage">{$email_campaign->get('Spams Percentage')}</span></div>
-        </div>
+
         <div>
             <label> {t}Opened{/t}</label>
             <div ><span class="Email_Campaign_Open">{$email_campaign->get('Open')}</span> <span class="padding_left_10 Email_Campaign_Open_Percentage">{$email_campaign->get('Open Percentage')}</span></div>
 
         </div>
-        <div>
+        <div >
             <label>{t}Clicked{/t}</label>
             <div ><span class="Email_Campaign_Clicked">{$email_campaign->get('Clicked')}</span> <span class="padding_left_10 Email_Campaign_Clicked_Percentage">{$email_campaign->get('Clicked Percentage')}</span></div>
         </div>
-
+        <div></div>
+        <div >
+            <label>{t}Spam{/t}</label>
+            <div ><span class="Email_Campaign_Spams">{$email_campaign->get('Spams')}</span> <span class="padding_left_10 Email_Campaign_Spams_Percentage">{$email_campaign->get('Spams Percentage')}</span></div>
+        </div>
         <div>
             <label>{t}Unsubscribed{/t}</label>
             <div ><span class="Email_Campaign_Unsubscribed">{$email_campaign->get('Unsubscribed')}</span> <span class="padding_left_10 Email_Campaign_Unsubscribed_Percentage">{$email_campaign->get('Unsubscribed Percentage')}</span></div>
