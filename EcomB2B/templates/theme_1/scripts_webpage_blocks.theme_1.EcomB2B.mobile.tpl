@@ -938,6 +938,20 @@
                 $(document).on('click', '#order_for_new_customer', function (e) {
                     $(this).closest('.sky-form').addClass( "hide" );
                     $( ".reg_form" ).removeClass( "hide" );
+                    $('.type_new_order_chooser').addClass('hide')
+
+                    $('.new_order_options .order_for_new_customer').removeClass( "hide" );
+                    $('.new_order_options .order_for_existing_customer').addClass( "hide" );
+                });
+
+                $(document).on('click', '#order_for_existing_customer', function (e) {
+
+                    $('.type_new_order_chooser').addClass('hide')
+
+
+                    $('.new_order_options .order_for_new_customer').addClass('hide')
+                    $('.new_order_options .order_for_existing_customer').removeClass( "hide" );
+
                 });
 
                 $("form").submit(function(e) {
