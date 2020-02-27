@@ -344,7 +344,7 @@
         </div>
 
 
-        {include file="theme_1/footer.theme_1.EcomB2B.tpl"}
+        {include file="theme_1/footer.theme_1.EcomB2B.tpl" }
 
 
     </div>

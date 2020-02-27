@@ -9,7 +9,17 @@
 -->
 *}
 {if !empty($footer_data.rows) and  $footer_data.rows|is_array}
-<footer>
+
+    {if $logged_in==1}
+    <div style="border-top:1px solid #ccc;padding:10px ;text-align: center" >
+        Bugs <i class="fa fa-bug " style="margin-right: 20px"></i>  Suggestions <i class="far fa-lightbulb-on " style="margin-right: 20px"></i>  Technical questions <i class="far fa-user-headset" style="margin-right: 20px"></i> Platform integrations <i class="far fa-handshake-alt" style="margin-right: 30px"></i> Feel free to submit a ticket  <a style="color:black;font-weight: 700" href="https://aiku.atlassian.net/servicedesk/customer/portal/1">here</a>
+    </div>
+        {/if}
+    <footer>
+
+
+    <div style="clear: both"></div>
+
     {foreach from=$footer_data.rows item=row}
         {if !empty($row.type)}
             {if $row.type=='main_4'}
