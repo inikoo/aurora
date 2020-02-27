@@ -14,8 +14,9 @@
         <div class="sidebar-header sidebar-header-image bg-1">
             <div class="overlay "></div>
             <div class="sidebar-socials" >
+                {if $store->get('Telephone')!=''}
                 <a  class="invisible"  href="tel:{$store->get('Telephone')}"><i class="ion-ios-telephone"></i></a>
-
+                {/if}
                 <a class="invisible" href="#"><i class="ion-social-facebook"></i></a>
                 <a class="invisible" href="#"><i class="ion-social-twitter"></i></a>
                 <a class="invisible" href="#"><i class="ion-android-mail"></i></a>
@@ -126,20 +127,22 @@
             <a class="default-link" href="register.sys"><i class="icon-bg bg-orange-light fa fa-plus-circle"></i><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span><i class="ion-record"></i></a>
             {/if}
 
+            {if $store->get('Telephone')!='' or $store->get('Email')!=''}
+                <em class="menu-divider" style="margin-top:40px">{t}Get in touch with us{/t}</em>
 
+                <em class="menu-divider" style="text-transform:none">
+                    {if $store->get('Telephone')!=''}
+                        <a style="color:black" href="tel:{$store->get('Telephone')}"><em class="fa fa-phone "></em>
+                        {$store->get('Telephone')}
+                        </a>
+                    {/if}
+                    {if $store->get('Email')!=''}
+                        <a style="color:black" href="mailto:{$store->get('Email')}"><em  class="fa fa-envelope "></em>
+                        {$store->get('Email')}</a>
+                    {/if}
 
-
-
-
-                        <em class="menu-divider" style="margin-top:40px">Get in touch with us</em>
-
-            <em class="menu-divider">
-                <a href="tel:{$store->get('Telephone')}"><em class="fa fa-phone color-black" style="font-size: 25px;margin-right: 20px;;position: relative;top:-2px" aria-hidden="true"></em></a>
-                <a href="mailto:{$store->get('Email')}"><em class="fa fa-envelope-o color-black" style="font-size: 25px;position: relative;top:-4px" aria-hidden="true"></em></a>
-
-
-            </em>
-
+                </em>
+            {/if}
                   <em class="menu-divider"></em>
             {if $logged_in}
                 <a class="default-link" href="#" id="logout"><span style="padding-left: 20px">{t}Log out{/t}</span><i class="ion-record"></i></a>
