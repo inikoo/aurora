@@ -29,26 +29,41 @@
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type} {if !$data.show}hide{/if}" style="padding-top:0;padding-bottom:{$bottom_margin}px">
 
+    <div class="type_new_order_chooser">
+    <div class="sky-form" style="width: 100%;text-align: center;box-shadow: none;">
+        <button id="order_for_new_customer"  style="float:none;display: inline;margin-top:40px" type="submit" class="button">{if !empty($data._order_for_new_customer)}{$data._order_for_new_customer}{else}{t}Create order for new customer{/t}{/if} <i  class=" far fa-fw fa-shopping-cart" aria-hidden="true"></i> </button>
+        <div style="clear: both"></div>
+    </div>
+
+    <div class="acenter italic" >
+        {t}or{/t}
+    </div>
+
+    <div class="sky-form" style="width: 100%;text-align: center;box-shadow: none;">
+        <button id="order_for_existing_customer"  style="float:none;display: inline;margin-top:5px" type="submit" class="button">{if !empty($data._order_for_existing_customers)}{$data._order_for_existing_customers}{else}{t}Create order for existing customer{/t}{/if} <i  class=" far fa-fw fa-users" aria-hidden="true"></i> </button>
+        <div style="clear: both"></div>
+    </div>
+    </div>
+
+
 <div class="new_order_options">
-    <div class="new_order_option" style="width: 50%;border-right:1px solid #ccc">
+    <div class="new_order_option order_for_existing_customer hide" >
         <div class="table_top">
             <span class="title" >{t}Order for existing customers{/t}</span>
         </div>
         <div id="table_container"></div>
     </div>
-    <div class="new_order_option" style="width: 50%;">
+
+    <div class="new_order_option hide order_for_new_customer" >
         <div class="table_top">
             <span class="title" s>{t}Order for new customer{/t}</span>
         </div>
 
-        <div class="sky-form" style="width: 100%;text-align: center;box-shadow: none;">
-                <button id="order_for_new_customer"  style="float:none;display: inline;margin-top:40px" type="submit" class="button">{if !empty($data._order_for_new_customer)}{$data._order_for_new_customer}{else}{t}Create order for new customer{/t}{/if} <i  class=" far fa-fw fa-shopping-cart" aria-hidden="true"></i> </button>
-            <div style="clear: both"></div>
-        </div>
 
 
 
-        <div class="reg_form hide" style="margin-top:30px;margin-bottom:60px;" >
+
+        <div class="reg_form hide" style="margin-top:0px;margin-bottom:60px;" >
             <form id="order_for_new_customer_form" class="sky-form">
 
                 <fieldset>
