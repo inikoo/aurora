@@ -920,8 +920,6 @@
                      }
 
 
-
-
                  },
                         errorPlacement: function(error, element)
                             {

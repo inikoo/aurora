@@ -248,8 +248,7 @@
                                 {assign "with_client_order_new" 1}
                                 {assign "with_datatables" 1}
                                 {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
-
-
+                                
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                             {/if}
