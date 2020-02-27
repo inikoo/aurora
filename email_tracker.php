@@ -8,7 +8,7 @@
  Version 3
 
 */
-
+require_once 'keyring/dns.php';
 require 'vendor/autoload.php';
 require_once 'utils/sentry.php';
 
@@ -28,7 +28,7 @@ if ('POST' !== $_SERVER['REQUEST_METHOD']) {
 }
 
 require_once 'utils/general_functions.php';
-require_once 'keyring/dns.php';
+
 
 require_once 'utils/object_functions.php';
 
@@ -267,11 +267,21 @@ if ($validator->isValid($sns)) {
                 }
 
 
-                $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`,`Email Tracking Event Note`,`Email Tracking Event Status Code`) 
-                  values (%d,%s,%s,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)), prepare_mysql($sns_id), prepare_mysql($note), prepare_mysql($status_code)
+                $sql = "insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`,`Email Tracking Event Note`,`Email Tracking Event Status Code`) 
+                  values (?,?,?, ?,?,?,?)";
+
+
+                $db->prepare($sql)->execute(
+                    array(
+                        $row['Email Tracking Key'],
+                        $event_type,
+                        $date,
+                        json_encode($event_data),
+                        $sns_id,
+                        $note,
+                        $status_code
+                    )
                 );
-                $db->exec($sql);
 
 
                 $event_key = $db->lastInsertId();
@@ -287,6 +297,14 @@ if ($validator->isValid($sns)) {
                     $bounce_type        = $event_type;
                     $bounce_status_code = $status_code;
                     $bounce_note        = $note;
+
+                    $sql = "update `Email Tracking Dimension` set `Email Tracking Delivery Status Code`=? where `Email Tracking Key`=?";
+                    $db->prepare($sql)->execute(
+                        array(
+                            $row['Email Tracking Key'],
+                            $bounce_status_code
+                        )
+                    );
 
 
                     $sql = sprintf('select `Bounced Email Key`,`Bounced Email Bounce Type`,`Bounced Email Count` from `Bounced Email Dimension` where `Bounced Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email')));
@@ -431,10 +449,16 @@ if ($validator->isValid($sns)) {
 
                 }
                 if ($email_tracking->get('Email Tracking Email Mailshot Key') > 0) {
+                    /**
+                     * @var $email_campaign \EmailCampaign
+                     */
                     $email_campaign = get_object('email_campaign', $email_tracking->get('Email Tracking Email Mailshot Key'));
                     $email_campaign->update_sent_emails_totals();
                 }
                 if ($email_tracking->get('Email Tracking Email Template Key') > 0) {
+                    /**
+                     * @var $email_template \Email_Template
+                     */
                     $email_template = get_object('email_template', $email_tracking->get('Email Tracking Email Template Key'));
                     $email_template->update_sent_emails_totals();
                 }

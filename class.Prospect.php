@@ -1409,7 +1409,7 @@ class Prospect extends Subject {
     }
 
 
-    function update_prospect_data() {
+    public function update_prospect_data() {
 
         $calls          = 0;
         $emails_sent    = 0;

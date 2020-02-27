@@ -827,22 +827,14 @@ function sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
 
-
-
     $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
-
-
-
     if ($_data['parameters']['parent'] == 'mailshot' or $_data['parameters']['parent'] == 'email_campaign') {
         $email_campaign_type = get_object('email_campaign_type', $parent->get('Email Campaign Email Template Type Key'));
     } elseif ($_data['parameters']['parent'] == 'customer') {
         $_parent = get_object('customer', $_data['parameters']['parent_key']);
     }
 
-
     include_once 'prepare_table/init.php';
-
-
     include_once 'utils/parse_email_status_codes.php';
 
 
@@ -867,6 +859,8 @@ function sent_emails($_data, $db, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+  //          print_r($data);
+//exit;
             switch ($data['Email Campaign Type Code']) {
                 case 'Newsletter':
                     $_type = _('Newsletter');

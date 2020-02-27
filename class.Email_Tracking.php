@@ -97,8 +97,6 @@ class Email_Tracking extends DB_Table {
 
     function update_state($event) {
 
-        // Events: 'Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Send to SES Error'
-        // 'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
         switch ($event) {
 
             case 'Sent':
@@ -111,11 +109,10 @@ class Email_Tracking extends DB_Table {
                 )) {
                     $this->fast_update(
                         array(
-                            'Email Tracking State'=>'Sent',
-                            'Email Tracking Sent Date'=>gmdate('Y-m-d H:i:s')
+                            'Email Tracking State'     => 'Sent',
+                            'Email Tracking Sent Date' => gmdate('Y-m-d H:i:s')
                         )
                     );
-
 
 
                 }
@@ -135,7 +132,7 @@ class Email_Tracking extends DB_Table {
 
                     $this->fast_update(
                         array(
-                            'Email Tracking State'=>'Delivered',
+                            'Email Tracking State' => 'Delivered',
                         )
                     );
 
@@ -163,7 +160,7 @@ class Email_Tracking extends DB_Table {
 
                         $this->fast_update(
                             array(
-                                'Email Tracking First Read Date'=>gmdate('Y-m-d H:i:s'),
+                                'Email Tracking First Read Date' => gmdate('Y-m-d H:i:s'),
                             )
                         );
 
@@ -318,7 +315,8 @@ class Email_Tracking extends DB_Table {
                 }
 
                 return '<span title="'.strftime(
-                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Email Tracking '.$key].' +0:00')).'">'.strftime("%a, %e %b %Y %R:%S", strtotime($this->data['Email Tracking '.$key].' +0:00')).'</span>';
+                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Email Tracking '.$key].' +0:00')
+                    ).'">'.strftime("%a, %e %b %Y %R:%S", strtotime($this->data['Email Tracking '.$key].' +0:00')).'</span>';
                 break;
 
             default:
