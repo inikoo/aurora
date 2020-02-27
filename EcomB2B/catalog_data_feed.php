@@ -190,7 +190,7 @@ if ($use_php_excel) {
             if ($type == 'html') {
                 $_value = $value;
             } else {
-                $_value = strip_tags($value);
+                $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
             }
 
@@ -329,7 +329,7 @@ if ($use_php_excel) {
                     $_value = preg_split('/,/', $value);
 
                 } else {
-                    $_value = strip_tags($value);
+                    $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
                 }
             }

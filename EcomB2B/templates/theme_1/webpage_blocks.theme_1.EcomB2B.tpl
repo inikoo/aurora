@@ -93,7 +93,7 @@
                             <a href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.cvs</a>,
                             <a href="catalog_data_feed.php?output=XLS&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.xls</a>,
                             <a href="catalog_data_feed.php?output=Json&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">json</a>
-                            )</span>
+                            )</span> <span style="font-size: xx-small" class=" discreet">UTF-8 encoding</span>
                         <span style="margin-left: 30px" title="{t}Families' images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a href="catalog_images.zip.php?scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.zip</a> )
 
                         <div class="portfolio_in_family hide" style="float:right" ><span title="{t}Items in portfolio{/t}"><i class="fa fa-store-alt "></i> <span class="number_products_in_portfolio_in_family"></span>/<span class="number_products_in_family"></span></span> <span data-category_key="{$webpage->get('Webpage Scope Key')}" class="add_all_family_to_portfolio small like_button  padding_left_10  "><i  class="fa  fa-plus smaller "></i>
@@ -119,7 +119,7 @@
                             <a class="csv" href="">.cvs</a>,
                             <a class="xls" href="">.xls</a>,
                             <a class="json" href="">json</a>
-                            )</span>
+                            )</span>  <span style="font-size: xx-small" class=" discreet">UTF-8 encoding</span>
                         <span style="margin-left: 30px" title="{t}Portfolio images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a class="images_zip" href="">.zip</a> )
                         </div>
 
@@ -248,7 +248,7 @@
                                 {assign "with_client_order_new" 1}
                                 {assign "with_datatables" 1}
                                 {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
-                                
+
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                             {/if}

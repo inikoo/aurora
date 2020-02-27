@@ -3263,12 +3263,15 @@ class Page extends DB_Table {
         } elseif ($this->get('Webpage Scope') == 'Product') {
 
 
-            if (isset($content_data['description_block']['content'])) {
-                $web_text = $content_data['description_block']['content'];
-            } else {
-                $web_text = '';
-            }
+            $web_text = '';
 
+            if (isset($content_data['blocks']) and is_array($content_data['blocks'])) {
+                foreach ($content_data['blocks'] as $block) {
+                    if ($block['type'] == 'product') {
+                        $web_text .= $block['text'];
+                    }
+                }
+            }
 
             $product = get_object('Product', $this->get('Webpage Scope Key'));
             $product->fast_update(array('Product Published Webpage Description' => $web_text));

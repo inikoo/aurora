@@ -29,7 +29,9 @@ $editor = array(
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-update_fields_from_parts($db);
+update_products_data($db);
+
+//update_fields_from_parts($db);
 //update_fields_from_parts($db);
 //print "updated fiels from parts\n";
 //update_web_state($db);
@@ -97,17 +99,26 @@ function update_products_data($db) {
             // print_r(array('Product XHTML Parts'=>$product->get('Parts')));
 
             $product->fast_update(array('Product XHTML Parts' => $product->get('Parts')));
-            $product->fast_update(array('Product Unit XHTML Dimensions' => $product->get('Unit Dimensions')));
+            //$product->fast_update(array('Product Unit XHTML Dimensions' => $product->get('Unit Dimensions')));
             $product->fast_update(array('Product Unit XHTML Materials' => $product->get('Materials')));
 
             $webpage = get_object('Webpage', $product->get('Product Webpage Key'));
 
+
             $web_text = '';
             if ($webpage->id) {
                 $content_data = $webpage->get('Content Data');
-                if (isset($content_data['description_block']['content'])) {
-                    $web_text = $content_data['description_block']['content'];
+
+                if (isset($content_data['blocks']) and is_array($content_data['blocks'])) {
+
+                    foreach ($content_data['blocks'] as $block) {
+                        if ($block['type'] == 'product') {
+                            $web_text .= $block['text'];
+                        }
+                    }
                 }
+
+
             }
 
 
@@ -197,7 +208,7 @@ function update_fields_from_parts($db) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $part = get_object('Part',$row['Part SKU']);
+            $part = get_object('Part', $row['Part SKU']);
             print $part->id."\r";
             $part->updated_linked_products();
 
