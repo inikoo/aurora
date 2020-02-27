@@ -394,6 +394,7 @@ switch ($tab) {
         get_purged_orders_elements($db, $data['parameters'], $user);
         break;
     case 'email_campaign.sent_emails':
+    case 'mailshot.sent_emails':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_email_campaign_sent_emails_elements($db, $data['parameters'], $user);
         break;
@@ -468,17 +469,17 @@ switch ($tab) {
         break;
 }
 
-function get_delivery_notes_elements($db, $data,$user) {
+function get_delivery_notes_elements($db, $data, $user) {
 
     $elements_numbers = array(
         'type' => array(
-            'Ready'  => 0,
+            'Ready'    => 0,
             'Picking'  => 0,
             'Packing'  => 0,
-            'Packed' => 0,
-            'Done'=>0,
-            'Sent'  => 0,
-            'Returned'   => 0,
+            'Packed'   => 0,
+            'Done'     => 0,
+            'Sent'     => 0,
+            'Returned' => 0,
         ),
     );
 
@@ -496,10 +497,9 @@ function get_delivery_notes_elements($db, $data,$user) {
         }
 
 
-    }else{
-        $where='';
+    } else {
+        $where = '';
     }
-
 
 
     $sql  = "select count(*) as number,`Delivery Note State` as element from `Delivery Note Dimension` $where group by `Delivery Note State` ";
@@ -549,6 +549,7 @@ function get_delivery_notes_elements($db, $data,$user) {
     );
     echo json_encode($response);
 }
+
 /**
  * @param $db \PDO
  * @param $data
@@ -1865,33 +1866,33 @@ function get_orders_element_numbers($db, $data, $user) {
         ),
 
     );
-/*
-    if ($data['parent'] == 'account' or $data['parent'] == 'store') {
+    /*
+        if ($data['parent'] == 'account' or $data['parent'] == 'store') {
 
-        $object->load_acc_data();
+            $object->load_acc_data();
 
-        $elements_numbers['state']['InBasket']    = $object->get('Orders In Basket Number');
-        $elements_numbers['state']['InProcess']   = $object->get('Orders In Process Number');
-        $elements_numbers['state']['InWarehouse'] = $object->get('Orders In Warehouse Number');
+            $elements_numbers['state']['InBasket']    = $object->get('Orders In Basket Number');
+            $elements_numbers['state']['InProcess']   = $object->get('Orders In Process Number');
+            $elements_numbers['state']['InWarehouse'] = $object->get('Orders In Warehouse Number');
 
-        $elements_numbers['state']['PackedDone'] = $object->get('Orders Packed Number');
-        $elements_numbers['state']['Approved']   = $object->get('Orders Dispatch Approved Number');
-        $elements_numbers['state']['Dispatched'] = $object->get('Orders Dispatched Number');
+            $elements_numbers['state']['PackedDone'] = $object->get('Orders Packed Number');
+            $elements_numbers['state']['Approved']   = $object->get('Orders Dispatch Approved Number');
+            $elements_numbers['state']['Dispatched'] = $object->get('Orders Dispatched Number');
 
-        $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
+            $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
 
-    } else {
-*/
-        $sql = sprintf(
-            "SELECT %s AS number,`Order State` AS element FROM %s %s %s GROUP BY `Order State` ", $count, $table, $where, $where_interval
-        );
-        foreach ($db->query($sql) as $row) {
+        } else {
+    */
+    $sql = sprintf(
+        "SELECT %s AS number,`Order State` AS element FROM %s %s %s GROUP BY `Order State` ", $count, $table, $where, $where_interval
+    );
+    foreach ($db->query($sql) as $row) {
 
-            $elements_numbers['state'][$row['element']] = number($row['number']);
-        }
+        $elements_numbers['state'][$row['element']] = number($row['number']);
+    }
 
-//    }
+    //    }
 
 
     $sql = sprintf(
@@ -2065,14 +2066,11 @@ function get_invoices_element_numbers($db, $parameters) {
     );
 
 
-
-
     $parent_key = $parameters['parent_key'];
 
 
     $where_interval = prepare_mysql_dates($from, $to, '`Invoice Date`');
     $where_interval = $where_interval['mysql'];
-
 
 
     $elements_numbers = array(
@@ -3704,7 +3702,7 @@ function get_prospects_elements($db, $data) {
 
         'status' => array(
             'Contacted'     => 0,
-            'Bounced'     => 0,
+            'Bounced'       => 0,
             'NoContacted'   => 0,
             'NotInterested' => 0,
             'Registered'    => 0,
@@ -3825,6 +3823,7 @@ function get_email_campaign_sent_emails_elements($db, $data) {
     $elements_numbers = array(
 
         'state' => array(
+            'Rejected by SES'   => 0,
             'Sending'   => 0,
             'Delivered' => 0,
             'Opened'    => 0,
@@ -3898,8 +3897,6 @@ function get_account_mailshots_elements($db, $data) {
 
         )
     );
-
-
 
 
     $sql = sprintf(
