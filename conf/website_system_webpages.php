@@ -858,7 +858,24 @@ function website_system_webpages_config($website_type) {
             'Webpage Code'             => 'catalogue.sys',
             //'Webpage Browser Title'    => _('Catalogue'),
             'Webpage Name'             => _('Catalogue'),
-            'Webpage Meta Description' => ''
+            'Webpage Meta Description' => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'catalogue',
+                            'label'         => _('Catalogue'),
+                            'icon'          => 'fa-apple-crate',
+                            'show'          => 1,
+                            'top_margin'    => 20,
+                            'bottom_margin' => 20,
+                            'labels'        => array()
+
+                        )
+                    )
+
+                )
+            )
         ),
         'tac.sys'        => array(
             'Webpage Scope'            => 'TandC',

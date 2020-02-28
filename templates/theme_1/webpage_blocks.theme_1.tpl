@@ -1070,6 +1070,25 @@
                         labels: content_data
                     })
                     break;
+                case 'catalogue':
+
+                    var content_data = {
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'catalogue',
+                        label: '{t}Catalogue{/t}',
+                        icon: 'fa-apple-crate',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+                    })
+                    break;
                 case 'clients':
 
                     var content_data = {

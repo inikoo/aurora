@@ -188,10 +188,6 @@
     {if !empty($content.blocks) and  $content.blocks|is_array}
     {foreach from=$content.blocks item=$block }
         {if $block.show}
-
-
-
-
             {if $block.type=='profile'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
@@ -216,13 +212,15 @@
                 {else}
                     {assign "with_favourites" 1}
                 {/if}
+            {elseif $block.type=='catalogue'}
+                {assign "with_datatables" 1}
+
             {elseif $block.type=='portfolio' or $block.type=='clients'  or $block.type=='client_order_new' or $block.type=='clients_orders'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
                 {else}
                     {assign "with_datatables" 1}
                     {assign "with_forms" 1}
-
                 {/if}
             {elseif  $block.type=='client_order'}
                 {if !$logged_in}

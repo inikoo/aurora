@@ -110,7 +110,7 @@
             {if $webpage->get('Webpage Code')=='catalogue.sys' and $logged_in}
 
                     <div class="top_menu" >
-                        <span><i class="fal fa-database"></i> {t}Products data feed{/t}  (
+                        <span><i class="fal fa-database"></i> {t}All products data feed{/t}  (
                             <a href="catalog_data_feed.php?output=CSV&scope=website&scope_key={$website->id}">.cvs</a>,
                             <a href="catalog_data_feed.php?output=XLS&scope=website&scope_key={$website->id}">.xls</a>,
                             <a href="catalog_data_feed.php?output=Json&scope=website&scope_key={$website->id}">json</a>
@@ -237,6 +237,13 @@
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                             {/if}
+                        {elseif $block.type=='catalogue'}
+                            {assign "with_datatables" 1}
+                            {assign "with_catalogue" 1}
+
+                                {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+
                         {elseif $block.type=='clients'}
 
                             {if $logged_in}

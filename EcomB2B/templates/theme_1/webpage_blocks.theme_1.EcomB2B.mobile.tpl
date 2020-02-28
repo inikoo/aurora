@@ -201,6 +201,11 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
                         {/if}
+                    {elseif $block.type=='catalogue'}
+                        {assign "with_datatables" 1}
+                        {assign "with_catalogue" 1}
+
+                        {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
                     {elseif $block.type=='clients'}
 
                         {if $logged_in}
