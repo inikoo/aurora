@@ -111,9 +111,9 @@ switch ($tipo) {
                      )
         );
 
-        $order=get_object('Order',$data['order_key']);
+        $order = get_object('Order', $data['order_key']);
 
-        if($order->get('Order Customer Key')!=$customer->id){
+        if ($order->get('Order Customer Key') != $customer->id) {
             $response = array(
                 'state' => 400,
                 'resp'  => 'Wrong order key'
@@ -129,6 +129,21 @@ switch ($tipo) {
         );
         get_order_items_table_html($data, $parameters, $customer, $db);
         break;
+    case 'catalogue':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'         => array('type' => 'string'),
+                         'parent_key'     => array('type' => 'string'),
+                         'scope'     => array('type' => 'string'),
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+
+        get_catalogue_table_html($data, $customer);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -139,13 +154,13 @@ switch ($tipo) {
 
 }
 
-function get_order_items_table_html($data,$parameters ,$customer,$db) {
+function get_order_items_table_html($data, $parameters, $customer, $db) {
 
 
-    if(!isset($data['device_prefix'])){
-        $device_prefix='';
-    }else{
-        $device_prefix=$data['device_prefix'];
+    if (!isset($data['device_prefix'])) {
+        $device_prefix = '';
+    } else {
+        $device_prefix = $data['device_prefix'];
 
     }
 
@@ -166,33 +181,29 @@ function get_order_items_table_html($data,$parameters ,$customer,$db) {
     $web_user = get_object('website_user', $customer->get('Customer Website User Key'));
 
 
-
-
-
     $ar_file = 'ar_web_order.php';
     $tipo    = 'order_items';
 
 
     $default = array(
-        'view'          => 'overview',
-        'sort_key'      => 'code',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => [
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => [
             500,
             100
         ],
-        'f_field'       => 'code',
+        'f_field'     => 'code',
 
 
     );
 
-    if($device_prefix=='mobile'){
-        $tab     = 'order_items_mobile';
-    }else{
-        $tab     = 'order_items';
+    if ($device_prefix == 'mobile') {
+        $tab = 'order_items_mobile';
+    } else {
+        $tab = 'order_items';
     }
-
 
 
     $table_views = array(
@@ -214,8 +225,6 @@ function get_order_items_table_html($data,$parameters ,$customer,$db) {
     );
 
 
-
-
     $table_buttons = array();
 
     $smarty->assign('web_user', $web_user);
@@ -235,7 +244,7 @@ function get_order_items_table_html($data,$parameters ,$customer,$db) {
         'state'     => 200,
         'app_state' => $state,
         'html'      => $html,
-       );
+    );
     echo json_encode($response);
 
 }
@@ -243,10 +252,10 @@ function get_order_items_table_html($data,$parameters ,$customer,$db) {
 function get_portfolio_table_html($data, $customer) {
 
 
-    if(!isset($data['device_prefix'])){
-        $device_prefix='';
-    }else{
-        $device_prefix=$data['device_prefix'];
+    if (!isset($data['device_prefix'])) {
+        $device_prefix = '';
+    } else {
+        $device_prefix = $data['device_prefix'];
 
     }
 
@@ -268,8 +277,13 @@ function get_portfolio_table_html($data, $customer) {
 
 
 
+    if ($device_prefix == 'mobile') {
+        $tab = 'portfolio_mobile';
+    } else {
+        $tab = 'portfolio';
+    }
 
-    $tab     = 'portfolio';
+
     $ar_file = 'ar_web_portfolio.php';
     $tipo    = 'portfolio_items';
 
@@ -325,7 +339,7 @@ function get_portfolio_table_html($data, $customer) {
 
 
     $table_buttons = array();
-    if($device_prefix=='') {
+    if ($device_prefix == '') {
         $table_buttons[] = array(
             'icon'                  => 'plus',
             'title'                 => _("Add product to portfolio"),
@@ -367,13 +381,13 @@ function get_portfolio_table_html($data, $customer) {
 
 
     $response = array(
-        'state'     => 200,
-        'app_state' => $state,
-        'html'      => $html,
-        'images_zip_url'=>'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=images&scope=portfolio_images',
-        'csv_url'=>'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=CSV&scope=portfolio_items',
-        'xls_url'=>'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=XLS&scope=portfolio_items',
-        'json_url'=>'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=Json&scope=portfolio_items',
+        'state'          => 200,
+        'app_state'      => $state,
+        'html'           => $html,
+        'images_zip_url' => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=images&scope=portfolio_images',
+        'csv_url'        => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=CSV&scope=portfolio_items',
+        'xls_url'        => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=XLS&scope=portfolio_items',
+        'json_url'       => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=Json&scope=portfolio_items',
 
 
     );
@@ -383,10 +397,10 @@ function get_portfolio_table_html($data, $customer) {
 
 function get_clients_table_html($data, $customer) {
 
-    if(!isset($data['device_prefix'])){
-        $device_prefix='';
-    }else{
-        $device_prefix=$data['device_prefix'];
+    if (!isset($data['device_prefix'])) {
+        $device_prefix = '';
+    } else {
+        $device_prefix = $data['device_prefix'];
 
     }
 
@@ -412,10 +426,10 @@ function get_clients_table_html($data, $customer) {
     $tipo    = 'customer_clients';
 
 
-    if($device_prefix=='mobile'){
-        $tab     = 'customer_clients_mobile';
-    }else{
-        $tab     = 'customer_clients';
+    if ($device_prefix == 'mobile') {
+        $tab = 'customer_clients_mobile';
+    } else {
+        $tab = 'customer_clients';
     }
 
 
@@ -716,6 +730,189 @@ function get_choose_client_for_order_table_html($data, $customer) {
         'state'     => 200,
         'app_state' => $state,
         'html'      => $html
+    );
+    echo json_encode($response);
+
+}
+
+function get_catalogue_table_html($data, $customer) {
+
+
+    if (!isset($data['device_prefix'])) {
+        $device_prefix = '';
+    } else {
+        $device_prefix = $data['device_prefix'];
+
+    }
+
+    include_once '../conf/export_fields.php';
+    include_once '../conf/elements_options.php';
+
+
+    $smarty = new Smarty();
+    $smarty->setTemplateDir('templates');
+    $smarty->setCompileDir('server_files/smarty/templates_c');
+    $smarty->setCacheDir('server_files/smarty/cache');
+    $smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->addPluginsDir('./smarty_plugins');
+
+
+
+
+    switch ($data['scope']){
+        case 'departments':
+            $tab     = 'departments';
+            $ar_file = 'ar_web_catalogues.php';
+            $tipo    = 'departments';
+
+
+            $default = array(
+                'view'          => 'overview',
+                'sort_key'      => 'name',
+                'sort_order'    => 1,
+                'rpp'           => 100,
+                'rpp_options'   => [
+                    500,
+                    100
+                ],
+                'f_field'       => 'name',
+
+            );
+            $table_views = array(
+                'overview' => array('label' => _('Overview')),
+
+
+            );
+
+            $table_filters = array(
+
+                'name' => array(
+                    'label' => _('Name'),
+                    'title' => _('Department name')
+                ),
+
+            );
+
+            $parameters = array(
+                'parent'     => 'store',
+                'parent_key' => $customer->get(''),
+
+            );
+            break;
+        case 'families':
+            $tab     = 'portfolio';
+            $ar_file = 'ar_web_portfolio.php';
+            $tipo    = 'portfolio_items';
+
+
+            $default = array(
+                'view'          => 'overview',
+                'sort_key'      => 'code',
+                'sort_order'    => 1,
+                'rpp'           => 100,
+                'rpp_options'   => [
+                    500,
+                    100
+                ],
+                'f_field'       => 'code',
+                'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
+                'elements'      => get_elements_option('customer_portfolio'),
+
+            );
+            $table_views = array(
+                'overview' => array('label' => _('Overview')),
+
+
+            );
+
+            $table_filters = array(
+                'code' => array(
+                    'label' => _('Code'),
+                    'title' => _('Product code')
+                ),
+                'name' => array(
+                    'label' => _('Name'),
+                    'title' => _('Product name')
+                ),
+
+            );
+
+            $parameters = array(
+                'parent'     => 'customer',
+                'parent_key' => $customer->id,
+
+            );
+            break;
+        case 'products':
+            $tab     = 'portfolio';
+            $ar_file = 'ar_web_portfolio.php';
+            $tipo    = 'portfolio_items';
+
+
+            $default = array(
+                'view'          => 'overview',
+                'sort_key'      => 'code',
+                'sort_order'    => 1,
+                'rpp'           => 100,
+                'rpp_options'   => [
+                    500,
+                    100
+                ],
+                'f_field'       => 'code',
+                'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
+                'elements'      => get_elements_option('customer_portfolio'),
+
+            );
+            $table_views = array(
+                'overview' => array('label' => _('Overview')),
+
+
+            );
+
+            $table_filters = array(
+                'code' => array(
+                    'label' => _('Code'),
+                    'title' => _('Product code')
+                ),
+                'name' => array(
+                    'label' => _('Name'),
+                    'title' => _('Product name')
+                ),
+
+            );
+
+            $parameters = array(
+                'parent'     => 'customer',
+                'parent_key' => $customer->id,
+
+            );
+            break;
+    }
+
+
+
+
+
+    $table_buttons = array();
+
+
+
+    $smarty->assign('table_buttons', $table_buttons);
+
+
+    include 'utils/get_table_html.php';
+
+    $state = [
+        'tab' => ''
+    ];
+
+
+    $response = array(
+        'state'          => 200,
+        'app_state'      => $state,
+        'html'           => $html,
+
+
     );
     echo json_encode($response);
 

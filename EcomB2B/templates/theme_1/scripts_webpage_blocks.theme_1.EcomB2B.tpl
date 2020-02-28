@@ -743,11 +743,68 @@
 
             {/if}
             {if $with_catalogue==1}
+
+
+                            function isNumeric(n) {
+                                return !isNaN(parseFloat(n)) && isFinite(n);
+                            }
+
+                            var scope = getUrlParameter('scope');
+                            var parent = getUrlParameter('parent');
+                            var parent_key = getUrlParameter('parent_key');
+
+
+                            if (parent === 'department' && isNumeric(parent_key) && parent_key>0 ) {
+                                $('.catalogue_tabs .departments').addClass('hide');
+                                $('.catalogue_tabs .families').removeClass('hide');
+                                $('.catalogue_tabs .products').removeClass('hide');
+
+                                if (scope === 'families'){
+
+                                }else {
+                                    scope='products';
+
+                                }
+
+
+
+
+                            } else if (parent === 'family' && isNumeric(parent_key) && parent_key>0) {
+                                $('.catalogue_tabs .departments').addClass('hide')
+                                $('.catalogue_tabs .families').addClass('hide')
+                                $('.catalogue_tabs .products').removeClass('hide')
+
+                                scope='products';
+
+                            } else {
+                                parent = 'store';
+                                parent_key='';
+                                $('.catalogue_tabs .departments').removeClass('hide')
+                                $('.catalogue_tabs .families').removeClass('hide')
+                                $('.catalogue_tabs .products').removeClass('hide')
+
+                                if (scope === 'products'){
+
+                                }else if (scope === 'families'){
+
+                                }else {
+                                    scope='departments';
+
+                                }
+
+
+
+                            }
+                            $('.catalogue_tabs span').removeClass('selected')
+                            console.log(scope)
+                            $('.catalogue_tabs .'+scope).addClass('selected')
+
+
                             getScript("/assets/datatables.min.js", function () {
 
 
                                 //$('.open_notifications').trigger('click');return;
-                                const request_data ={ "tipo":'portfolio'}
+                                const request_data ={ "tipo":'catalogue',"parent":parent,"parent_key":parent_key,"scope":scope}
                                 $.ajax({
 
                                     url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {

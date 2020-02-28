@@ -233,7 +233,7 @@ function portfolio_items($_data, $db) {
                 $code = sprintf('<span title="%s">%s</span>', $name, $data['Product Code']);
 
             } else {
-                $code = sprintf('<a class="link" href="%s" title="%s">%s</a>', $data['Webpage URL'], $name, $data['Product Code']);
+                $code = sprintf('<a class="link" style="display: inline" href="%s" title="%s">%s</a>', $data['Webpage URL'], $name, $data['Product Code']);
 
             }
 
@@ -242,12 +242,14 @@ function portfolio_items($_data, $db) {
                     '<span id="portfolio_ref_%d" class="table_inline_edit edit_object_reference_container  " data-object="Portfolio_Item"  data-object_key="%d"><span class="very_discreet italic like_button edit_object_reference">%s</span> <span class="editor hide">
 <input class="" data-old_value="" />  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Portfolio Key'], $data['Customer Portfolio Key'], _('Add reference')
                 );
+                $reference_mobile='';
             } else {
                 $reference = sprintf(
                     '<span id="portfolio_ref_%d" class="table_inline_edit edit_object_reference_container  "  data-object="Portfolio_Item"  data-object_key="%d"><span class="  like_button edit_object_reference">%s</span> <span class="editor hide">
 <input class="" data-old_value="%s" value="%s"/>  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Portfolio Key'], $data['Customer Portfolio Key'], $data['Customer Portfolio Reference'], $data['Customer Portfolio Reference'],
                     $data['Customer Portfolio Reference']
                 );
+                $reference_mobile=' ('.$data['Customer Portfolio Reference'].')';
             }
 
 
@@ -258,6 +260,7 @@ function portfolio_items($_data, $db) {
                 'name'         => $name,
                 'reference'    => $reference,
                 'stock_status' => $stock_status.$status_icon,
+                'description'=>$code.$status_icon.' '.$reference_mobile.'<br>'.$name.' <b>'.money($data['Product Price'], $data['Store Currency Code']).'</b>',
                 'price'        => money($data['Product Price'], $data['Store Currency Code']),
                 'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),
                 'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),

@@ -751,6 +751,8 @@
                     url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
                         if (data.state == 200) {
                             state = data.app_state;
+                            $('#table_container').html(data.html);
+
                         }
 
                     }

@@ -1,3 +1,5 @@
+
+
 #tabs {
   margin-top: 2px;
   border-top:1px solid #ccc;
@@ -16,6 +18,8 @@
   }
 }
 
+
+
 .tabs, .subtabs {
   @include unselectable;
 
@@ -23,7 +27,7 @@
   line-height: $height_short_row;
   clear: both;
   border-bottom: 1px solid #ccc;
-  color: #666;
+  color: #888;
   font-size: $height_short_row*.6;
   background-color: #fff;
 
@@ -110,4 +114,23 @@
       border-left: 1px solid #ccc;
     }
   }
+}
+
+.mobile {
+  .tabs, .subtabs {
+
+
+    .tab, .element {
+      padding: 0 5px;
+    }
+  }
+
+  #element_type {
+
+
+    i {
+      margin-right: 0px;
+    }
+  }
+
 }
