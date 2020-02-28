@@ -60,11 +60,16 @@
         {if $store->get('Store Type')=='Dropshipping' and $logged_in}
         <div style="float:right;padding-right: 40px;font-weight: 800;font-size: 14px">
 
-
             <a href="#" id="logout" class="button">
                 <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
                 <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
             </a>
+
+            <a href="/client_order_new.sys"  class="super_button" style="color:black;;margin-left: 30px">
+                <i class="fa fa-shopping-cart  " title="{t}New order{/t}" aria-hidden="true"></i>
+                <span >{t}New order{/t}</span>
+            </a>
+
         </div>
         {/if}
         <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i></div>

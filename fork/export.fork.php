@@ -394,7 +394,12 @@ function fork_export($job) {
                     if ($type == 'html') {
                         $_value = $value;
                     } else {
-                        $_value = strip_tags($value);
+
+
+ $value=str_replace("\xc2\xa0",' ',$value);
+
+
+                        $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
                     }
 

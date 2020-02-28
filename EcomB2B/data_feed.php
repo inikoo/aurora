@@ -108,6 +108,7 @@ if ($row = $stmt->fetch()) {
 
 
 
+
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 array(
@@ -154,7 +155,11 @@ if ($row = $stmt->fetch()) {
 
 
                     $char_index = 1;
+
+
                     foreach ($row as $sql_field => $value) {
+
+
                         $char = number2alpha($char_index);
 
 
@@ -164,7 +169,8 @@ if ($row = $stmt->fetch()) {
                         if ($type == 'html') {
                             $_value = $value;
                         } else {
-                            $_value = strip_tags($value);
+                            $value=str_replace("\xc2\xa0",' ',$value);
+                            $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
                         }
 
@@ -306,7 +312,8 @@ if ($row = $stmt->fetch()) {
                                 $_value = preg_split('/,/', $value);
 
                             } else {
-                                $_value = strip_tags($value);
+                                $value=str_replace("\xc2\xa0",' ',$value);
+                                $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
                             }
                         }

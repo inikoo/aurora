@@ -176,7 +176,7 @@
                             $('.breadcrumbs .order_nav').attr('title',data.order_nav.title);
                             $('.Order_Public_ID').html(data.order_nav.label);
                             getScript("/assets/datatables.min.js", function () {
-                                const request_data ={ "tipo":'order_items','order_key':getUrlParameter('id'),"device_prefix":'mobile'}
+                                const request_data ={ "tipo":'order_items','order_key':getUrlParameter('id'),"device_prefix":'tablet'}
                                 $.ajax({
                                     url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
                                         if (data.state == 200) {
@@ -910,7 +910,7 @@
                 getScript("/assets/desktop.forms.min.js", function () {
                     getScript("/assets/datatables.min.js", function () {
 
-                        const request_data ={ "tipo":'choose_client_for_order'}
+                        const request_data ={ "tipo":'choose_client_for_order',"origin":'client_order_new',"device_prefix":'tablet'}
 
                         $.ajax({
                             url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {

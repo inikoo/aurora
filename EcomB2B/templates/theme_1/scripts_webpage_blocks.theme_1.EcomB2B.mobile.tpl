@@ -914,6 +914,177 @@
             });
             })
             {/if}
+            {if $with_client_order_new==1}
+            getScript("/assets/desktop.forms.min.js", function () {
+                getScript("/assets/datatables.min.js", function () {
+
+                    const request_data ={ "tipo":'choose_client_for_order',"origin":'client_order_new',"device_prefix":'tablet'}
+
+                    $.ajax({
+                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+
+                            if (data.state == 200) {
+                                state = data.app_state;
+                                $('#table_container').html(data.html)
+                            }
+
+                        }
+                    });
+
+                })
+
+
+
+                $(document).on('click', '#order_for_new_customer', function (e) {
+                    $(this).closest('.sky-form').addClass( "hide" );
+                    $( ".reg_form" ).removeClass( "hide" );
+                    $('.type_new_order_chooser').addClass('hide')
+
+                    $('.new_order_options .order_for_new_customer').removeClass( "hide" );
+                    $('.new_order_options .order_for_existing_customer').addClass( "hide" );
+                });
+
+                $(document).on('click', '#order_for_existing_customer', function (e) {
+
+                    $('.type_new_order_chooser').addClass('hide')
+
+
+                    $('.new_order_options .order_for_new_customer').addClass('hide')
+                    $('.new_order_options .order_for_existing_customer').removeClass( "hide" );
+
+                });
+
+                $("form").submit(function(e) {
+                    e.preventDefault();
+                    e.returnValue = false;
+                });
+
+                $("#order_for_new_customer_form").validate(
+                    {
+                        submitHandler: function(form)
+                        {
+
+                            var button=$('#save_order_for_new_customer_button');
+
+                            if(button.hasClass('wait')){
+                                return;
+                            }
+
+                            button.addClass('wait')
+                            button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                            var register_data={ }
+
+                            $("#order_for_new_customer_form input:not(.ignore)").each(function(i, obj) {
+                                if(!$(obj).attr('name')==''){
+                                    register_data[$(obj).attr('name')]=$(obj).val()
+                                }
+                            });
+
+                            $("#order_for_new_customer_form select:not(.ignore)").each(function(i, obj) {
+                                if(!$(obj).attr('name')==''){
+                                    register_data[$(obj).attr('name')]=$(obj).val()
+                                }
+                            });
+
+
+
+                            var ajaxData = new FormData();
+
+                            ajaxData.append("tipo", 'order_for_new_customer')
+                            ajaxData.append("data", JSON.stringify(register_data))
+
+
+                            $.ajax({
+                                url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                complete: function () {
+                                }, success: function (data) {
+
+
+
+
+                                    if (data.state == '200') {
+                                        window.location = 'client_basket.sys?client_id='+data.client_id
+
+
+                                    } else if (data.state == '400') {
+                                        swal("{t}Error{/t}!", data.msg, "error")
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                    }
+
+
+
+                                }, error: function () {
+                                    button.removeClass('wait')
+                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                }
+                            });
+
+
+                        },
+
+                        rules:
+                            {
+                {foreach from=$required_fields item=required_field }
+                {$required_field}: { required: true },
+                {/foreach}
+                {foreach from=$no_required_fields item=no_required_field }
+                {$no_required_field}:{   required: false},
+                {/foreach}
+
+            },
+                messages:
+                {
+
+
+                    administrativeArea:
+                    {
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    },
+                    locality:
+                    {
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    },
+                    dependentLocality:
+                    {
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    },
+                    postalCode:
+                    {
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    },
+                    addressLine1:
+                    {
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    },
+                    addressLine2:
+                    {
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    },
+                    sortingCode:
+                    {
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    }
+
+
+
+
+                },
+                errorPlacement: function(error, element)
+                {
+                    error.insertAfter(element.parent());
+                }
+            });
+
+
+
+
+
+
+            })
+
+            {/if}
 
             {if $with_clients_orders==1}
 
