@@ -105,6 +105,7 @@
             {assign "with_unsubscribe" false}
             {assign "with_category_products" false}
             {assign "with_datatables" false}
+            {assign "with_catalogue" false}
 
             {if $webpage->get('Webpage Scope')=='Category Products'}
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}

@@ -77,6 +77,7 @@
             {assign "with_unsubscribe" false}
             {assign "with_category_products" false}
             {assign "with_datatables" false}
+            {assign "with_catalogue" false}
 
             {if $webpage->get('Webpage Scope')=='Category Products'}
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
@@ -99,6 +100,24 @@
                 {/if}
 
             {/if}
+
+            {if $webpage->get('Webpage Code')=='catalogue.sys' and $logged_in}
+
+                <div class="top_bar" >
+                        <span><i class="fal fa-database"></i> {t}Products data feed{/t}  (
+                          <a href="catalog_data_feed.php?output=CSV&scope=website&scope_key={$website->id}">.cvs</a>,
+                            <a href="catalog_data_feed.php?output=XLS&scope=website&scope_key={$website->id}">.xls</a>,
+                            <a href="catalog_data_feed.php?output=Json&scope=website&scope_key={$website->id}">json</a>
+                            )</span>
+
+
+                </div>
+
+
+
+
+            {/if}
+
 
             {if $webpage->get('Webpage Code')=='portfolio.sys' and $logged_in}
 
