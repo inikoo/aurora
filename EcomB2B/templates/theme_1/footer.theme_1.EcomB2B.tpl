@@ -10,9 +10,9 @@
 *}
 {if !empty($footer_data.rows) and  $footer_data.rows|is_array}
 
-    {if $logged_in==1}
+    {if $logged_in==1 and $website->get('Website Type')=='EcomDS' and isset($smarty.const.DS_HELP_PORTAL)}
     <div style="border-top:1px solid #ccc;padding:10px ;text-align: center" >
-        Bugs <i class="fa fa-bug " style="margin-right: 20px"></i>  Suggestions <i class="far fa-lightbulb-on " style="margin-right: 20px"></i>  Technical questions <i class="far fa-user-headset" style="margin-right: 20px"></i> Platform integrations <i class="far fa-handshake-alt" style="margin-right: 30px"></i> Feel free to submit a ticket  <a style="color:black;font-weight: 700" href="https://aiku.atlassian.net/servicedesk/customer/portal/1">here</a>
+        Bugs <i class="fa fa-bug " style="margin-right: 20px"></i>  Suggestions <i class="far fa-lightbulb-on " style="margin-right: 20px"></i>  Technical questions <i class="far fa-user-headset" style="margin-right: 20px"></i> Platform integrations <i class="far fa-handshake-alt" style="margin-right: 30px"></i> Feel free to submit a ticket  <a style="color:black;font-weight: 700" href="{$smarty.const.DS_HELP_PORTAL}">here</a>
     </div>
         {/if}
     <footer>
