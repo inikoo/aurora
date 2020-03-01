@@ -406,6 +406,13 @@
             {if $with_client==1}
                       getScript("/assets/desktop.forms.min.js", function () {
                         $.getJSON("ar_web_client.php?tipo=get_client_html&id="+getUrlParameter('id')+"&device_prefix=", function (data) {
+
+
+                            if(data.state==404){
+                                window.location.replace("404.php?url="+'/client.sys?id='+getUrlParameter('id'));
+
+                            }
+
                           $('#client').html(data.html)
 
                           $('.breadcrumbs .client_nav').html(data.client_nav.label);

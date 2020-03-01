@@ -9661,7 +9661,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             } elseif ($state['section'] == 'deleted.user') {
                 $branch[] = array(
-                    'label'     => _('Deteted users'),
+                    'label'     => _('Deleted users'),
                     'icon'      => '',
                     'reference' => 'account/deleted_users'
                 );

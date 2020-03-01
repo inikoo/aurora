@@ -20,14 +20,14 @@ include_once 'trait.OrderDiscountOperations.php';
 include_once 'trait.OrderItems.php';
 include_once 'trait.OrderPayments.php';
 include_once 'trait.OrderCalculateTotals.php';
-include_once 'trait.OrderBasketOperations.php';
+include_once 'trait.OrderOperations.php';
 include_once 'trait.OrderTax.php';
 include_once 'trait.OrderGet.php';
 
 
 class Order extends DB_Table {
 
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax, OrderGet;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderOperations, OrderTax, OrderGet;
 
 
     var $amount_off_allowance_data = false;
@@ -1976,175 +1976,6 @@ class Order extends DB_Table {
         }
 
     }
-
-    function cancel($note = '', $fork = true) {
-
-        if ($this->data['Order State'] == 'Dispatched') {
-            $this->error = true;
-            $this->msg   = _('Order can not be cancelled, because has already been dispatched');
-
-            return false;
-        }
-
-        if ($this->data['Order State'] == 'Cancelled') {
-            $this->error = true;
-            $this->msg   = _('Order is already cancelled');
-
-            return false;
-        }
-
-
-        if ($this->data['Order Payments Amount'] != 0) {
-
-            $this->error = true;
-            $this->msg   = _('Payments must be refunded or voided before cancel the order');
-
-            return false;
-
-        }
-
-        $date = gmdate('Y-m-d H:i:s');
-
-        $this->data['Order Cancelled Date'] = $date;
-        $this->data['Order Cancel Note']    = $note;
-        $this->data['Order Payment State']  = 'NA';
-        $this->data['Order State']          = 'Cancelled';
-
-
-        $this->data['Order Invoiced Balance Net Amount']               = 0;
-        $this->data['Order Invoiced Balance Tax Amount']               = 0;
-        $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
-        $this->data['Order Invoiced Outstanding Balance Net Amount']   = 0;
-        $this->data['Order Invoiced Outstanding Balance Tax Amount']   = 0;
-        $this->data['Order Balance Net Amount']                        = 0;
-        $this->data['Order Balance Tax Amount']                        = 0;
-        $this->data['Order Balance Total Amount']                      = 0;
-
-
-        $this->data['Order To Pay Amount'] = round(
-            $this->data['Order Balance Total Amount'] - $this->data['Order Payments Amount'], 2
-        );
-
-        $sql = sprintf(
-            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order State`=%s,`Order Payment State`='NA',`Order To Pay Amount`=%.2f,`Order Cancel Note`=%s,
-				`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order Items Cost`=0,
-				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0
-				WHERE `Order Key`=%d", prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'], prepare_mysql($this->data['Order Cancel Note']),
-
-            $this->id
-        );
-
-
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,`Invoice Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ", prepare_mysql('Cancelled'), $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-
-            "UPDATE `Order Transaction Fact` SET   `Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Transaction Out of Stock Amount`=0 WHERE `Order Key`=%d ",
-
-            $this->id
-        );
-        $this->db->exec($sql);
-
-
-        $sql = sprintf(
-            "UPDATE `Order No Product Transaction Fact` SET `Delivery Note Date`=NULL,`Delivery Note Key`=NULL,`State`=%s ,`Consolidated`='Yes' WHERE `Order Key`=%d ", prepare_mysql('Cancelled'), $this->id
-        );
-        $this->db->exec($sql);
-
-
-        $history_data = array(
-            'History Abstract' => _('Order cancelled').($note != '' ? ', '.$note : ''),
-            'History Details'  => '',
-        );
-        $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-
-        $account = get_object('Account', '');
-
-        if ($fork) {
-
-            require_once 'utils/new_fork.php';
-            new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'      => 'order_cancelled',
-                'order_key' => $this->id,
-
-
-                'editor' => $this->editor
-            ), $account->get('Account Code'), $this->db
-            );
-        } else {
-
-
-            $customer = get_object('Customer', $this->get('Order Customer Key'));
-            $store    = get_object('Store', $this->get('Order Store Key'));
-
-            $sql = sprintf("SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`='Charges' AND   `Order Key`=%d  ", $this->id);
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    /**
-                     * @var $charge \Charge
-                     */
-                    $charge = get_object('Charge', $row['Transaction Type Key']);
-                    $charge->update_charge_usage();
-
-                }
-            }
-
-
-            $customer->update_orders();
-            $store->update_orders();
-            $account->update_orders();
-
-            $deals     = array();
-            $campaigns = array();
-            $sql       = sprintf(
-                "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    /**
-                     * @var $component \DealComponent
-                     */
-                    $component = get_object('DealComponent', $row['Deal Component Key']);
-                    $component->update_usage();
-                    $deals[$row['Deal Key']]              = $row['Deal Key'];
-                    $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
-                }
-            }
-
-
-            foreach ($deals as $deal_key) {
-                /**
-                 * @var $deal \Deal
-                 */
-                $deal = get_object('Deal', $deal_key);
-                $deal->update_usage();
-            }
-
-            foreach ($campaigns as $campaign_key) {
-                $campaign = get_object('DealCampaign', $campaign_key);
-                $campaign->update_usage();
-            }
-
-
-        }
-
-        $this->fork_index_elastic_search();
-
-        return true;
-
-    }
-
 
     function create_invoice($date) {
 

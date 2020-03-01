@@ -28,11 +28,25 @@
 
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
+{assign "orders_submitted" $customer_client->get_number_of_orders('All Submitted')}
 
-<div id="block_{$key}" data-block_key="{$key}" data-client_key="{$customer_client->id}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
-    <div class="table_top" style="margin-top: 4px">
-        <span class="title"> <span class="margin_right_10">{t}Customer{/t}:</span> <span class="Customer_Client_Name">{$customer_client->get('Customer Client Name')}</span>
-            <span style="font-size: 15px;position: relative;bottom: 1px">(<span class="Formatted_Client_Code">{$customer_client->get('Formatted Client Code')}</span>)</span> </span>
+
+<div id="block_{$key}" data-block_key="{$key}" data-client_key="{$customer_client->id}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px"  >
+    <div class="table_top" style="margin-top: 0px">
+        <span class="title">
+            <span class="margin_right_10">{t}Customer{/t}:</span>
+            <span class="Customer_Client_Name">{$customer_client->get('Customer Client Name')}</span>
+            <span style="font-size: 15px;position: relative;bottom: 1px">(<span class="Formatted_Client_Code">{$customer_client->get('Formatted Client Code')}</span>)</span>
+        </span>
+
+
+        <div class="square_button right text error  delete_customer_client " >
+            {if $orders_submitted==0}
+            <i class="fal fa-fw fa-user-slash" title="{t}Delete customer{/t}"></i> {t}Delete{/t}
+            {else}
+                <i class="fal fa-fw fa-user-slash" title="{t}Remove customer{/t}"></i> <span class="very_discreet error">{t}Remove{/t}</span>
+            {/if}
+        </div>
     </div>
 
     <div class="client_showcase" style="padding-top:10px">

@@ -16,7 +16,7 @@ include_once __DIR__.'/trait.OrderDiscountOperations.php';
 include_once __DIR__.'/trait.OrderItems.php';
 include_once __DIR__.'/trait.OrderPayments.php';
 include_once __DIR__.'/trait.OrderCalculateTotals.php';
-include_once __DIR__.'/trait.OrderBasketOperations.php';
+include_once __DIR__.'/trait.OrderOperations.php';
 include_once __DIR__.'/trait.OrderTax.php';
 include_once __DIR__.'/trait.OrderGet.php';
 
@@ -25,7 +25,7 @@ include_once 'class.DBW_Table.php';
 
 
 class Public_Order extends DBW_Table {
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax,OrderGet;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderOperations, OrderTax,OrderGet;
 
 
     var $amount_off_allowance_data = false;

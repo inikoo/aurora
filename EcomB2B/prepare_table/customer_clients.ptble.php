@@ -16,7 +16,7 @@ $group_by = '';
 
 
 
-$where=sprintf('where `Customer Client Customer Key`=%d',$parameters['parent_key']);
+$where=sprintf('where  `Customer Client Status`="Active"  and `Customer Client Customer Key`=%d',$parameters['parent_key']);
 
 
 

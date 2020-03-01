@@ -72,12 +72,21 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'reference'              => array('type' => 'string'),
+                         'reference'  => array('type' => 'string'),
                          'client_key' => array('type' => 'key'),
                      )
         );
 
         update_client_reference($data, $db, $customer);
+    case 'delete_client':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'client_key' => array('type' => 'key'),
+                     )
+        );
+
+        delete_client($data, $db, $customer);
     default:
         $response = array(
             'state' => 405,
@@ -157,13 +166,12 @@ function update_contact_address($data, $customer_key, $editor) {
     $customer_client->update(array('Customer Client Contact Address' => json_encode($address_data)));
 
 
-
     echo json_encode(
         array(
             'state'    => 200,
             'metadata' => array(
                 'class_html' => [
-                        'Customer_Client_Contact_Address' => $customer_client->get('Contact Address Formatted'),
+                    'Customer_Client_Contact_Address' => $customer_client->get('Contact Address Formatted'),
 
                 ]
             )
@@ -222,54 +230,55 @@ function update_customer_client_details($data, $customer_key, $editor) {
     $customer_client->editor = $editor;
     $customer_client->update($update_data);
 
-    $hide=[];
-    $show=[];
+    $hide = [];
+    $show = [];
 
-    if($customer_client->get('Customer Client Company Name')==''){
-        $hide[]='Customer_Client_Company_Name_display';
-    }else{
-        $show[]='Customer_Client_Company_Name_display';
+    if ($customer_client->get('Customer Client Company Name') == '') {
+        $hide[] = 'Customer_Client_Company_Name_display';
+    } else {
+        $show[] = 'Customer_Client_Company_Name_display';
     }
-    if($customer_client->get('Customer Client Main Contact Name')==''){
-        $hide[]='Customer_Client_Main_Contact_Name_display';
-    }else{
-        $show[]='Customer_Client_Main_Contact_Name_display';
+    if ($customer_client->get('Customer Client Main Contact Name') == '') {
+        $hide[] = 'Customer_Client_Main_Contact_Name_display';
+    } else {
+        $show[] = 'Customer_Client_Main_Contact_Name_display';
     }
-    if($customer_client->get('Customer Client Main Plain Email')==''){
-        $hide[]='Subject_Email_display';
-    }else{
-        $show[]='Subject_Email_display';
+    if ($customer_client->get('Customer Client Main Plain Email') == '') {
+        $hide[] = 'Subject_Email_display';
+    } else {
+        $show[] = 'Subject_Email_display';
     }
-    if($customer_client->get('Main XHTML Mobile')==''){
-        $hide[]='Subject_Mobile_display';
-    }else{
-        $show[]='Subject_Mobile_display';
+    if ($customer_client->get('Main XHTML Mobile') == '') {
+        $hide[] = 'Subject_Mobile_display';
+    } else {
+        $show[] = 'Subject_Mobile_display';
     }
-    if($customer_client->get('Main XHTML Telephone')==''){
-        $hide[]='Subject_Telephone_display';
-    }else{
-        $show[]='Subject_Telephone_display';
+    if ($customer_client->get('Main XHTML Telephone') == '') {
+        $hide[] = 'Subject_Telephone_display';
+    } else {
+        $show[] = 'Subject_Telephone_display';
     }
 
     echo json_encode(
         array(
-            'state'    => 200,
-            'metadata' => array(
+            'state'      => 200,
+            'metadata'   => array(
                 'class_html' => [
-                    'Customer_Client_Main_Plain_Mobile' => $customer_client->get('Main XHTML Mobile'),
+                    'Customer_Client_Main_Plain_Mobile'    => $customer_client->get('Main XHTML Mobile'),
                     'Customer_Client_Main_Plain_Telephone' => $customer_client->get('Main XHTML Telephone'),
-                    'Subject_Email' => ($customer_client->get('Customer Client Main Plain Email')==''?'':'<a href="'.$customer_client->get('Customer Client Main Plain Email').'">'.$customer_client->get('Customer Client Main Plain Email').'</a>'),
-                    'Customer_Client_Main_Contact_Name' => $customer_client->get('Customer Client Main Contact Name'),
-                    'Customer_Client_Code' => $customer_client->get('Customer Client Code'),
-                    'Customer_Client_Name' => $customer_client->get('Customer Client Name'),
-                    'Customer_Client_Contact_Address' => $customer_client->get('Contact Address Formatted'),
-                    'Customer_Client_Company_Name'=> $customer_client->get('Customer Client Company Name'),
-                    'Formatted_Client_Code'=> $customer_client->get('Formatted Client Code'),
-                    '.client_nav'=>$customer_client->get('Formatted Client Code')
+                    'Subject_Email'                        => ($customer_client->get('Customer Client Main Plain Email') == ''
+                        ? '' : '<a href="'.$customer_client->get('Customer Client Main Plain Email').'">'.$customer_client->get('Customer Client Main Plain Email').'</a>'),
+                    'Customer_Client_Main_Contact_Name'    => $customer_client->get('Customer Client Main Contact Name'),
+                    'Customer_Client_Code'                 => $customer_client->get('Customer Client Code'),
+                    'Customer_Client_Name'                 => $customer_client->get('Customer Client Name'),
+                    'Customer_Client_Contact_Address'      => $customer_client->get('Contact Address Formatted'),
+                    'Customer_Client_Company_Name'         => $customer_client->get('Customer Client Company Name'),
+                    'Formatted_Client_Code'                => $customer_client->get('Formatted Client Code'),
+                    '.client_nav'                          => $customer_client->get('Formatted Client Code')
 
                 ],
-                'hide'=>$hide,
-                'show'=>$show,
+                'hide'       => $hide,
+                'show'       => $show,
             ),
             'client_nav' => [
                 'label' => $customer_client->get('Customer Client Code'),
@@ -300,6 +309,18 @@ function get_client_html($data, $customer) {
     $store           = get_object('Store', $website->get('Website Store Key'));
     $customer_client = get_object('Customer_Client', $data['id']);
 
+
+
+
+    if(!$customer_client->id){
+        $response = array(
+            'state' => 404,
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+
     //print_r($customer_client);
 
 
@@ -320,7 +341,7 @@ function get_client_html($data, $customer) {
 
     if (!$block_found) {
         $response = array(
-            'state' => 200,
+            'state' => 400,
             'html'  => '',
             'msg'   => 'no profile in webpage'
         );
@@ -360,7 +381,7 @@ function get_client_html($data, $customer) {
         'state'      => 200,
         'html'       => $smarty->fetch('theme_1/blk.client.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         'client_nav' => [
-            'label' => '<a href="/client.sys?id='.$customer_client->id.'">'.($customer_client->get('Customer Client Code')==''?'<span class="italic">'.sprintf('%05d',$customer_client->id).'</span>':$customer_client->get('Customer Client Code')).'</a>',
+            'label' => '<a href="/client.sys?id='.$customer_client->id.'">'.($customer_client->get('Customer Client Code') == '' ? '<span class="italic">'.sprintf('%05d', $customer_client->id).'</span>' : $customer_client->get('Customer Client Code')).'</a>',
             'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
 
         ]
@@ -373,7 +394,7 @@ function get_client_html($data, $customer) {
 
 /**
  * @param $data
- * @param $db \PDO
+ * @param $db       \PDO
  * @param $customer \Public_Customer
  */
 function update_client_reference($data, $db, $customer) {
@@ -420,6 +441,54 @@ function update_client_reference($data, $db, $customer) {
             'ok'                  => true,
             'reference'           => $reference,
             'formatted_reference' => ($reference == '' ? _('Add reference') : $reference)
+
+        )
+    );
+    exit;
+
+
+}
+
+/**
+ * @param $data
+ * @param $db       \PDO
+ * @param $customer \Public_Customer
+ */
+function delete_client($data, $db, $customer) {
+
+
+    $customer_client = get_object('Customer_Client', $data['client_key']);
+    if (!$customer_client->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    if ($customer_client->get('Customer Client Customer Key') != $customer->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+
+    if ($customer_client->get_number_of_orders('All Submitted including Cancelled') == 0) {
+        $customer_client->delete();
+    }else{
+        $customer_client->deactivate();
+    }
+
+
+    echo json_encode(
+        array(
+            'state'               => 200,
+            'ok'                  => true,
+
 
         )
     );

@@ -69,7 +69,6 @@ class Public_Customer_Client extends DBW_Table {
     function create($raw_data, $address_raw_data) {
 
 
-
         $sql  = "select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Code`=? and `Customer Client Customer Key`=?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -173,7 +172,7 @@ class Public_Customer_Client extends DBW_Table {
 
         switch ($key) {
             case 'Formatted Client Code':
-                return ($this->data['Customer Client Code']==''?'<span class="italic">'.sprintf('%05d',$this->id):$this->data['Customer Client Code']);
+                return ($this->data['Customer Client Code'] == '' ? '<span class="italic">'.sprintf('%05d', $this->id) : $this->data['Customer Client Code']);
                 break;
             case 'Phone':
 
@@ -331,8 +330,6 @@ class Public_Customer_Client extends DBW_Table {
                 $this->fork_index_elastic_search();
 
 
-
-
                 return true;
             case 'Customer Client Preferred Contact Number':
 
@@ -406,9 +403,7 @@ class Public_Customer_Client extends DBW_Table {
                         $_value = $this->get('Customer Client Contact Address');
 
 
-
-
-                       $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
+                        $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
 
                     }
                 }
@@ -459,10 +454,7 @@ class Public_Customer_Client extends DBW_Table {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order         = get_object('Order', $row['Order Key']);
-                        $order->editor = $this->editor;
-
-
-                        ;
+                        $order->editor = $this->editor;;
 
 
                         $order->update(array('Order Delivery Address' => $this->get('Customer Client Contact Address')), 'no_history', array('no_propagate_customer' => true));
@@ -619,16 +611,37 @@ class Public_Customer_Client extends DBW_Table {
 
     }
 
-    function get_number_of_orders() {
-        $sql    = sprintf(
-            "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Client Key`=%d ", $this->id
-        );
-        $number = 0;
+    function get_number_of_orders($type = '') {
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number = $row['number'];
-            }
+        $sql = "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Client Key`=? ";
+
+        switch ($type) {
+            case 'Basket':
+                $sql .= " and `Order State`='InBasket'";
+                break;
+            case 'Cancelled':
+                $sql .= " and `Order State`='Cancelled'";
+                break;
+            case 'All Submitted':
+                $sql .= " and `Order State` not in ('InBasket','Cancelled')";
+                break;
+            case 'All Submitted including Cancelled':
+                $sql .= " and `Order State` not in ('InBasket')";
+                break;
+
+        }
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $number = $row['number'];
+        } else {
+            $number = 0;
         }
 
 
@@ -732,6 +745,140 @@ class Public_Customer_Client extends DBW_Table {
 
     }
 
+
+    function delete() {
+
+
+        $this->deleted = false;
+
+
+        $sql  = "SELECT `Order Key`  FROM `Order Dimension` WHERE `Order State` in  ('InBasket') and  `Order Customer Client Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $order = get_object('Order', $row['Order Key']);
+            $order->editor;
+            $order->cancel(_('Cancelled because client was deleted'));
+            $order->fast_update_json_field('Order Metadata','cancel_reason', 'client_deleted');
+
+        }
+
+        $number_orders = 0;
+
+        $sql  = "SELECT count(*) AS num  FROM `Order Dimension` WHERE `Order State`!='Cancelled' and  `Order Customer Client Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $number_orders = $row['num'];
+        }
+
+
+        if ($number_orders > 0) {
+            $this->deactivate();
+            return;
+        }
+
+
+        $history_data = array(
+            'History Abstract' => _('Customer client deleted'),
+            'History Details'  => '',
+            'Action'           => 'deleted'
+        );
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+
+        $sql = sprintf(
+            "DELETE FROM `Customer Client Dimension` WHERE `Customer Client Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'                => 'customer_client_deleted',
+            'store_key'           => $this->data['Customer Client Store Key'],
+            'customer_key'        => $this->data['Customer Client Customer Key'],
+            'customer_client_key' => $this->id,
+            'editor'              => $this->editor
+        ), DNS_ACCOUNT_CODE, $this->db
+        );
+
+        $this->fork_index_elastic_search('delete_elastic_index_object');
+
+        $this->deleted = true;
+    }
+
+
+    function deactivate() {
+
+
+        $this->deleted = false;
+
+
+        $sql  = "SELECT `Order Key`  FROM `Order Dimension` WHERE `Order State` in  ('InBasket') and  `Order Customer Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $order = get_object('Order', $row['Order Key']);
+            $order->editor;
+            $order->cancel(_('Cancelled because client was deleted'));
+            $order->fast_update_json_field('Order Metadata'.'cancel_reason', 'client_deactivated');
+        }
+
+
+        $history_data = array(
+            'History Abstract' => _('Customer client deactivated'),
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+
+
+
+        $this->fast_update_json_field('Customer Client Metadata', 'deactivated_date', gmdate('Y-m-d H:i:s'));
+        $this->fast_update_json_field('Order Metadata','client_reference', $this->get('Customer Client Code'));
+
+        $this->fast_update(
+            [
+                'Customer Client Status' => 'Inactive',
+                'Customer Client Code' => ''
+            ]
+        );
+
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'                => 'customer_client_deactivated',
+            'store_key'           => $this->data['Customer Client Store Key'],
+            'customer_key'        => $this->data['Customer Client Customer Key'],
+            'customer_client_key' => $this->id,
+            'editor'              => $this->editor
+        ), DNS_ACCOUNT_CODE, $this->db
+        );
+
+        $this->fork_index_elastic_search('delete_elastic_index_object');
+
+        $this->deleted = true;
+    }
 
 }
 

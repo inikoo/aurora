@@ -318,7 +318,6 @@ $(document).ready(function(){
 			});
 		},10);
 		
-		//Activating the Submenu when active-item class is detetected
 		if($('.menu-options a').hasClass('active-item')){
 			var sidebar_sub_data = $('.active-item').data('sub');
 			var sidebar_sub_id = '#' + sidebar_sub_data;

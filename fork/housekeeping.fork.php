@@ -1375,6 +1375,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             break;
         case 'customer_client_created':
+        case 'customer_client_deleted':
             $customer = get_object('Customer', $data['customer_key']);
 
             $customer->update_clients_data();
