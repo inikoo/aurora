@@ -90,11 +90,28 @@ if ($row = $stmt->fetch()) {
 
             $export_fields = get_export_fields('portfolio_items');
 
+            foreach ($export_fields as $key=>$field) {
+
+                if ($use_php_excel and isset($field['type']) and $field['type']=='array') {
+                    unset($export_fields[$key]);
+                }
+                if (!$use_php_excel and isset($field['ignore_json']) ) {
+                    unset($export_fields[$key]);
+                }
+
+              ;
+            }
+
+
 
             $sql = "select ";
             foreach ($export_fields as $field) {
+
+
+
                 $sql .= $field['name'].',';
             }
+
             $sql = preg_replace('/,$/', ' from ', $sql);
             $sql .= " `Customer Portfolio Fact` CPF left join `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)    left join `Page Store Dimension` W on (`Product Webpage Key`=`Page Key`) ";
             $sql .= "where `Customer Portfolio Customer Key`=? and   `Customer Portfolio Customers State`='Active'";
@@ -159,10 +176,7 @@ if ($row = $stmt->fetch()) {
 
                     foreach ($row as $sql_field => $value) {
 
-
                         $char = number2alpha($char_index);
-
-
                         $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
 
 
@@ -300,8 +314,6 @@ if ($row = $stmt->fetch()) {
                     $_row       = [];
                     foreach ($row as $sql_field => $value) {
                         $char = number2alpha($char_index);
-
-
                         $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
 
 

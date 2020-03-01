@@ -1579,16 +1579,25 @@ function get_export_fields($element, $account_currency_code = '') {
                 'name'    => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 0) as img1',
                 'label'   => _('1st image'),
                 'checked' => 0,
+                'ignore_json'=>true
             ),
             array(
                 'name'    => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 1) as img2',
                 'label'   => _('2nd image'),
                 'checked' => 0,
+                'ignore_json'=>true
             ),
             array(
                 'name'  => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
                 'label' => _('3rd image'),
                 'checked' => 0,
+                'ignore_json'=>true
+            ),
+            array(
+                'name'  => '(select concat("[image_address]",`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 3) as img4',
+                'label' => _('4th image'),
+                'checked' => 0,
+                'ignore_json'=>true
             ),
             array(
                 'name'    => '`Product Data Updated`,`Product Stock Updated`,`Product Price Updated`,`Product Images Updated`',

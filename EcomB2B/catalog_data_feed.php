@@ -90,6 +90,18 @@ switch ($_REQUEST['scope']) {
         include_once 'conf/export_fields.php';
         $export_fields = get_export_fields('portfolio_items');
 
+        foreach ($export_fields as $key=>$field) {
+
+            if ($use_php_excel and isset($field['type']) and $field['type']=='array') {
+                unset($export_fields[$key]);
+            }
+            if (!$use_php_excel and isset($field['ignore_json']) ) {
+                unset($export_fields[$key]);
+            }
+
+            ;
+        }
+
         $sql = "select ";
         foreach ($export_fields as $field) {
             $sql .= $field['name'].',';
@@ -153,6 +165,7 @@ if ($use_php_excel) {
             foreach ($export_fields as $field) {
 
 
+
                 if (isset($field['labels'])) {
 
                     foreach ($field['labels'] as $label) {
@@ -181,31 +194,27 @@ if ($use_php_excel) {
 
         $char_index = 1;
         foreach ($row as $sql_field => $value) {
-            $char = number2alpha($char_index);
-
 
             $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
 
 
-            if ($type == 'html') {
-                $_value = $value;
-            } else {
-                $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
+                if ($type == 'html') {
+                    $_value = $value;
+                } else {
+                    $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
-            }
+                }
+                $char = number2alpha($char_index);
+                if ($type == 'text') {
+                    $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
 
+                } else {
+                    $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+                }
 
-            if ($type == 'text') {
-
-                $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
-
-            } else {
-                $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
-            }
-
-
-            $char_index++;
+                $char_index++;
         }
+
         $row_index++;
     }
 
@@ -285,7 +294,9 @@ if ($use_php_excel) {
 
             foreach ($export_fields as $field) {
 
-
+                if (isset($field['ignore_json'])) {
+                    continue;
+                }
                 if (isset($field['labels'])) {
 
                     foreach ($field['labels'] as $_key => $label) {
@@ -316,9 +327,10 @@ if ($use_php_excel) {
         $char_index = 1;
         $_row       = [];
         foreach ($row as $sql_field => $value) {
+
+
+
             $char = number2alpha($char_index);
-
-
             $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
 
 
