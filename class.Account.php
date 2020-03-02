@@ -1876,6 +1876,9 @@ class Account extends DB_Table {
         include_once 'utils/date_functions.php';
         list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
 
+
+       // print "$db_interval  $from_date, $to_date, $from_date_1yb, $to_date_1yb\n";
+
         if ($this_year) {
 
             $sales_data = $this->get_sales_data($from_date, $to_date);

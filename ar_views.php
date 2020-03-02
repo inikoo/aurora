@@ -1396,11 +1396,16 @@ function utf8ize($mixed) {
     return $mixed;
 }
 
+
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
 
     global $session;
 
     $html = '';
+
+    if ($state['section'] == 'customer' and $state['store']->get('Store Type') == 'Dropshipping' and $state['_object']->get('Customer Type by Activity')=='ToApprove' ) {
+        return '';
+    }
 
 
     $_tab    = $tab;
@@ -1601,7 +1606,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'customer':
             include_once 'showcase/customer.show.php';
-            $html         = get_customer_showcase($data, $smarty, $user, $db, $redis, $account);
+            $html         = get_customer_showcase($data, $smarty, $db, $redis, $account);
             $title        = 'C'.$data['_object']->get('Formatted ID');
             $web_location = '<i class="fal fa-fw fa-user"></i> '.$title;
 
@@ -3756,8 +3761,17 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     if ($data['section'] == 'customer') {
+
+
         if ($data['store']->get('Store Type') == 'Dropshipping') {
-            $_content['tabs']['customer.clients']['class'] = '';
+
+            if ($data['_object']->get('Customer Type by Activity')=='ToApprove') {
+                $_content['tabs'] = [];
+            } else {
+                $_content['tabs']['customer.clients']['class'] = '';
+
+            }
+
 
         } else {
             $_content['tabs']['customer.clients']['class'] = 'hide';

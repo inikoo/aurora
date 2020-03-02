@@ -10,7 +10,16 @@
  Version 3.0
 */
 
-function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
+/**
+ * @param $data
+ * @param $smarty \Smarty
+ * @param $db \PDO
+ * @param $redis \Redis
+ * @param $account \Account
+ *
+ * @return string
+ */
+function get_customer_showcase($data, $smarty, $db, $redis,$account) {
 
 
     include_once 'utils/real_time_functions.php';
@@ -19,18 +28,22 @@ function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
         return "";
     }
 
-
+    $smarty->assign('customer', $customer);
+    $smarty->assign('store', $data['store']);
 
     if ($customer->deleted) {
         $smarty->assign('customer', $customer);
 
         return $smarty->fetch('showcase/deleted_customer.tpl');
 
-    } else {
+    } elseif($data['store']->get('Store Type')=='Dropshipping' and $customer->get('Customer Type by Activity')=='ToApprove' ) {
+        return $smarty->fetch('showcase/customer_to_approve.tpl');
 
-        $customer->update_account_balance();
-        $customer->update_credit_account_running_balances();
-        $customer->update_portfolio();
+    }else {
+
+        //$customer->update_account_balance();
+        //$customer->update_credit_account_running_balances();
+        //$customer->update_portfolio();
 
         //$customer->update_orders();
         //$customer->update_last_dispatched_order_key();
@@ -41,8 +54,7 @@ function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
 
         //$customer->update_clients_data();
 
-        $smarty->assign('customer', $customer);
-        $smarty->assign('store', $data['store']);
+
 
         $website_key = $data['store']->get('Store Website Key');
 

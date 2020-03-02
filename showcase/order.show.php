@@ -24,6 +24,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
     $store = get_object('store', $order->get('Order Store Key'));
 
 
+
     //$order->update_totals();
     /*
             $order->update_totals();
