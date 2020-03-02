@@ -42,11 +42,9 @@ trait Address {
             $this->updated = true;
         }
 
-
         if ($this->updated) {
 
             $this->update_address_formatted_fields($type);
-
 
             if (!preg_match('/no([ _])history|nohistory/i', $options)) {
 
@@ -221,18 +219,13 @@ trait Address {
                     $this->update_field_switcher('Customer Contact Address', $_value, 'no_history', $metadata);
 
                     if ($this->data['Customer Delivery Address Link'] == 'Contact') {
-
                         $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
-
                     }
 
 
                 }
                 if ($this->data['Customer Delivery Address Link'] == 'Billing') {
-
-
                     $metadata['no_propagate_addresses'] = true;
-
                     $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
                 }
 

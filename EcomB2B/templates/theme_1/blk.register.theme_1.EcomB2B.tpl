@@ -50,14 +50,14 @@
 
             <fieldset>
 
+
                 <section>
                     <label class="input">
-                        <i class="icon-append far fa-mobile" ></i>
-                        <input class="register_field" type="text" autocomplete="tel"  name="tel" placeholder="{$data.labels._mobile_placeholder}">
-                        <b id="_mobile_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
+                        <i class="icon-append far fa-store-alt"></i>
+                        <input class="register_field" type="text" autocomplete="organization" name="organization"  placeholder="{$data.labels._company_placeholder}">
+                        <b id="_company_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
                     </label>
                 </section>
-
                 <section>
                     <label class="input">
                         <i class="icon-append far fa-user"></i>
@@ -68,9 +68,9 @@
 
                 <section>
                     <label class="input">
-                        <i class="icon-append far fa-store-alt"></i>
-                        <input class="register_field" type="text" autocomplete="organization" name="organization"  placeholder="{$data.labels._company_placeholder}">
-                        <b id="_company_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
+                        <i class="icon-append far fa-mobile" ></i>
+                        <input class="register_field" type="text" autocomplete="tel"  name="tel" placeholder="{$data.labels._mobile_placeholder}">
+                        <b id="_mobile_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
                     </label>
                 </section>
 

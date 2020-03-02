@@ -553,7 +553,6 @@ abstract class DBW_Table extends stdClass {
             prepare_mysql($data['Metadata'])
         );
 
-        //    print "$sql\n";
 
 
         $this->db->exec($sql);
@@ -625,10 +624,6 @@ abstract class DBW_Table extends stdClass {
             if ($row = $result->fetch()) {
                 $number = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 

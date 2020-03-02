@@ -36,7 +36,7 @@ switch ($tipo) {
                          'store_key' => array('type' => 'key')
                      )
         );
-        register($db, $website, $data, $editor, $account);
+        register($db, $website, $data, $editor);
         break;
 
 
@@ -55,11 +55,10 @@ switch ($tipo) {
  * @param $website \Public_Website
  * @param $data
  * @param $editor
- * @param $account \Public_Account
  *
  * @throws \Exception
  */
-function register($db, $website, $data, $editor, $account) {
+function register($db, $website, $data, $editor) {
 
     include_once 'utils/new_fork.php';
     include_once 'class.Public_Store.php';
@@ -194,7 +193,7 @@ function register($db, $website, $data, $editor, $account) {
                 'type'         => 'customer_registered',
                 'customer_key' => $customer->id,
                 'website_key'  => $website->id
-            ), $account->get('Account Code')
+            ),DNS_ACCOUNT_CODE
             );
 
 

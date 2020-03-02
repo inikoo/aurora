@@ -362,10 +362,7 @@ class Public_Store {
             unset($data['Customer Contact Address administrativeArea']);
         }
 
-        //print_r($address_fields);
-        // print_r($data);
 
-        //exit;
 
         $customer     = new Public_Customer('new', $data, $address_fields);
         $website_user = '';
@@ -376,6 +373,7 @@ class Public_Store {
 
                 include_once 'utils/network_functions.php';
 
+
                 $website = get_object('website', $this->get('Store Website Key'));
 
                 $user_data['Website User Handle']       = $customer->get('Customer Main Plain Email');
@@ -384,7 +382,6 @@ class Public_Store {
 
                 include_once 'utils/new_fork.php';
 
-                $account=get_object('Account',1);
 
                 $this->new_customer = true;
 
@@ -416,7 +413,7 @@ class Public_Store {
                     'customer_key'     => $customer->id,
                     'website_user_key' => $website_user->id,
                     'editor'           => $this->editor
-                ), $account->get('Account Code')
+                ), DNS_ACCOUNT_CODE
                 );
 
 

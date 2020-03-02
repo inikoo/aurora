@@ -425,7 +425,7 @@ class Subject extends DB_Table {
 
                 if ($field == $this->table_name.' Main Plain Mobile' or $field == $this->table_name.' Main Plain Telephone') {
 
-                    $this->update_field_switcher($this->table_name.' Preferred Contact Number', '');
+                    $this->update_field_switcher($this->table_name.' Preferred Contact Number', '',$options);
 
                     $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile']    = array(
                         'field'           => $this->table_name.'_Main_Plain_Mobile',

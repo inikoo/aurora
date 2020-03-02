@@ -173,13 +173,13 @@ class Public_Customer extends DBW_Table {
             } else {
                 $customer_name = $this->data['Customer Main Contact Name'];
             }
+
             $this->update_field('Customer Name', $customer_name, 'no_history');
 
 
             $this->update_address('Contact', $address_raw_data, 'no_history');
             $this->update_address('Invoice', $address_raw_data, 'no_history');
             $this->update_address('Delivery', $address_raw_data, 'no_history');
-
 
             $this->update(
                 array(
@@ -540,7 +540,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Delivery Address':
 
 
-                $this->update_address('Delivery', json_decode($value, true));
+                $this->update_address('Delivery', json_decode($value, true),$options);
 
                 $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
                 if ($result = $this->db->query($sql)) {
@@ -604,7 +604,7 @@ class Public_Customer extends DBW_Table {
 
                 if ($field == 'Customer Main Plain Mobile' or $field == 'Customer Main Plain Telephone') {
 
-                    $this->update_field_switcher('Customer Preferred Contact Number', '');
+                    $this->update_field_switcher('Customer Preferred Contact Number', '',$options);
 
 
                 }
