@@ -33,6 +33,11 @@
   &:hover {
     color: #000;
     background: #FFF;
+
+    &.error{
+      color:tomato;
+    }
+
   }
 
   &.left {

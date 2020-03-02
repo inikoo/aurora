@@ -16,7 +16,17 @@ editable: false,
 renderable: false,
 cell: "string",
 
-},{
+},
+{
+name: "status",
+label: "",
+editable: false,
+sortable:false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
+},
+{
 name: "code",
 label: "{t}ID{/t}",
 editable: false,

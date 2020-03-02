@@ -38,13 +38,21 @@ function get_table_parameters() {
     );
 }
 
-
+/**
+ * @param        $db \PDO
+ * @param        $sql_totals
+ * @param string $wheref
+ * @param string $record_label
+ * @param string $metadata
+ *
+ * @return array
+ */
 function get_table_totals($db, $sql_totals, $wheref = '', $record_label = '', $metadata = '') {
 
-
+    $filtered =0;
     if ($sql_totals) {
+        $total=0;
         $sql = trim($sql_totals." $wheref");
-        //print $sql;
 
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {

@@ -21,7 +21,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
 
     $order = $data['_object'];
-    $store = get_object('store', $order->get('Store Key'));
+    $store = get_object('store', $order->get('Order Store Key'));
 
 
     //$order->update_totals();
@@ -38,12 +38,17 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);
-    $smarty->assign('customer', get_object('customer', $order->get('Customer Key')));
+    $smarty->assign('customer', get_object('customer', $order->get('Order Customer Key')));
     if ($order->get('Order Delivery Note Key')) {
         $smarty->assign('delivery_note', get_object('DeliveryNote', $order->get('Order Delivery Note Key')));
     }
 
-    $smarty->assign(
+    if ($store->get('Store Type')=='Dropshipping') {
+        $smarty->assign('customer_client', get_object('customer_client', $order->get('Order Customer Client Key')));
+
+    }
+
+        $smarty->assign(
         'object_data', json_encode(
                          array(
                              'object'              => $data['object'],

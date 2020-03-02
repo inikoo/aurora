@@ -3436,7 +3436,7 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
 
 
     $sql = sprintf(
-        "select `Customer Client Code` object_name,`Customer Client Key` as object_key from $table   $where $wheref
+        "select `Customer Client Code` object_name,`Customer Client Key` as object_key from $table $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND C.`Customer Client Key` < %d))  order by $_order_field desc , C.`Customer Client Key` desc limit 1",
 
         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $client->id
@@ -3532,8 +3532,11 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title = '<i class="far fa-address-book"></i> <span class="id Customer_Client_Code">['.$client->get('Code').']</span> <span class="Name_Truncated">'.$client->get('Name Truncated').'</span>';
-    $title.=' <span class="very_small button padding_left_10" onclick="change_view(\'customers/'.$customer->get('Customer Store Key').'/'.$customer->id.'\')"><i class="fal fa-level-up"></i> <i class="fal fa-user"></i> '.$customer->get('Formatted ID').'</span>';
+    $title = '<i class="far fa-address-book"></i> <span class="id Formatted_Client_Code">['.$client->get('Formatted Client Code').']</span> <span class="Name_Truncated">'.$client->get('Name Truncated').'</span>';
+    if($client->get('Customer Client Status')=='Inactive'){
+        $title.=' <span class="warning"><i class="fal fa-eye-slash"></i> '._('Removed').'</span>';
+    }
+    $title.=' <span class="very_small button padding_left_20" onclick="change_view(\'customers/'.$customer->get('Customer Store Key').'/'.$customer->id.'\')"><i class="fal fa-level-up"></i> <i class="fal fa-user"></i> '.$customer->get('Formatted ID').'</span>';
 
     $_content = array(
         'sections_class' => '',

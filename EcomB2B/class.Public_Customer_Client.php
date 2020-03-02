@@ -172,8 +172,8 @@ class Public_Customer_Client extends DBW_Table {
 
         switch ($key) {
             case 'Formatted Client Code':
-                return ($this->data['Customer Client Code'] == '' ? '<span class="italic">'.sprintf('%05d', $this->id) : $this->data['Customer Client Code']);
-                break;
+                return ($this->data['Customer Client Code'] == '' ? '<span class="italic">'.sprintf('%05d', $this->id).'</span>' : $this->data['Customer Client Code']);
+
             case 'Phone':
 
                 $phone = $this->data['Customer Client Main XHTML Mobile'];
@@ -759,11 +759,15 @@ class Public_Customer_Client extends DBW_Table {
                 $this->id
             )
         );
+        $orders_in_basket=[];
         while ($row = $stmt->fetch()) {
             $order = get_object('Order', $row['Order Key']);
             $order->editor;
             $order->cancel(_('Cancelled because client was deleted'));
+
             $order->fast_update_json_field('Order Metadata','cancel_reason', 'client_deleted');
+            $orders_in_basket[]=$order;
+
 
         }
 
@@ -786,6 +790,9 @@ class Public_Customer_Client extends DBW_Table {
             return;
         }
 
+        foreach($orders_in_basket as $order){
+            $order->fast_update(['Order Customer Client Key'=>null]);
+        }
 
         $history_data = array(
             'History Abstract' => _('Customer client deleted'),

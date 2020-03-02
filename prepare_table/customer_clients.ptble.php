@@ -73,7 +73,7 @@ if ($order == 'name') {
 $sql_totals = "select count(Distinct `Customer Client Key`) as num from $table $where";
 
 
-$fields = '`Customer Client Key`,`Customer Client Code`,`Customer Client Name`,`Customer Client Creation Date`,`Customer Client Location`,
+$fields = '`Customer Client Key`,`Customer Client Code`,`Customer Client Name`,`Customer Client Creation Date`,`Customer Client Location`,`Customer Client Status`,
 `Customer Client Customer Key`,`Customer Client Store Key`,`Customer Client Number Invoices`,`Customer Client Invoiced Amount`,`Customer Client Currency Code`,
 `Customer Client Pending Orders`,`Customer Client Main Plain Email`,`Customer Client Contact Address Formatted`,
 `Customer Client Main XHTML Telephone`,`Customer Client Main XHTML Mobile`,`Customer Client Last Invoice Date`     

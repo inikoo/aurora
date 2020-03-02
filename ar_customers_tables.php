@@ -2305,9 +2305,23 @@ function customer_clients($_data, $db, $user) {
         foreach ($result as $data) {
 
 
+            if($data['Customer Client Code']==''){
+                $code=sprintf('<span class="italic">%05d</span>',$data['Customer Client Key']);
+            }else{
+                $code=$data['Customer Client Code'];
+            }
+
+            if($data['Customer Client Status']=='Active'){
+                $status='';
+            }else{
+                $status='<i class="warning fa fa-eye-slash fa-fw" title="'._('Removed').'"></i>';
+            }
+
+
             $table_data[] = array(
                 'id'             => (integer)$data['Customer Client Key'],
-                'code'           => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/client/%d\')">%s</span>', $data['Customer Client Store Key'], $data['Customer Client Customer Key'], $data['Customer Client Key'], $data['Customer Client Code']),
+                'status'=>$status,
+                'code'           => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/client/%d\')">%s</span>', $data['Customer Client Store Key'], $data['Customer Client Customer Key'], $data['Customer Client Key'], $code),
                 'name'           => $data['Customer Client Name'],
                 'since'          => strftime("%e %b %y", strtotime($data['Customer Client Creation Date'].' +0:00')),
                 'location'       => $data['Customer Client Location'],

@@ -1,7 +1,7 @@
 {*/*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 2:28 pm Monday, 2 March 2020 (MYT), Kuala Lumpur, Malaysia
+ Created: 2:29 pm Monday, 2 March 2020 (MYT), Kuala Lumpur, Malaysia
  Copyright (c) 2019, Inikoo
 
  Version 3
@@ -33,6 +33,12 @@ sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
+}, {
+name: "client",
+label: "{t}Client{/t}",
+sortType: "toggle",
+editable: false,
+cell: Backgrid.HtmlCell.extend({})
 }, {
 name: "state",
 label: "{t}State{/t}",

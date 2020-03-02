@@ -353,6 +353,19 @@ $tab_defaults = array(
         'elements_type' => array_keys(get_elements_option('orders'))[0],
         'elements'      => get_elements_option('orders')
     ),
+    'customer.orders_dropshipping'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys(get_elements_option('orders'))[0],
+        'elements'      => get_elements_option('orders')
+    ),
     'customer.invoices'             => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

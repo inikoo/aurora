@@ -576,6 +576,7 @@ trait OrderOperations {
 				WHERE `Order Key`=?";
 
 
+
         $this->db->prepare($sql)->execute(
             array(
                 $this->data['Order Cancelled Date'],

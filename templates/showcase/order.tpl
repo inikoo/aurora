@@ -233,9 +233,15 @@
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address   ">
                     <div class="small" style="margin-bottom:7px">
                         <span class="deliver_to_label {if $order->get('Order For Collection')=='Yes'}hide{/if}">
-                             {if $order->get('Order Customer Client Key')>0}
+                             {if $store->get('Store Type')=='Dropshipping'}
                                  <i class="far fa-parachute-box"></i>
                                  {t}Drop ship to{/t}
+                                    <br/>
+                                 {if $customer_client->id>0}
+                                 <span class="link" style="margin-left:30px" onclick="change_view('/customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}/client/{$order->get('Order Customer Client Key')}')">{$customer_client->get('Formatted Client Code')}</span>
+                                {else}
+                                    <span style="margin-left:30px" class="very_discreet">{if $order->get('State Index')<0}{t}Deleted client{/t}{else}{t}Anonymous{/t}{/if}</span>
+                                {/if}
                               {else}
 
                                  <i class="fa fa-truck fa-flip-horizontal"></i>

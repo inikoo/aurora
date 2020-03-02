@@ -10,9 +10,7 @@
     {$_content.avatar}
 {/if}
 
-<span id="nav_title" class="title">
-		{$_content.title}
-	</span>
+<span id="nav_title" class="title">{$_content.title}</span>
 
 {if isset($_content.skip) and $_content.skip }
     <span id="skip" class="title button skip" onClick="skip()">
@@ -20,9 +18,6 @@
 	</span>
 {/if}
 
-<div class="pseudo_sections">
-
-</div>
 
 
 {foreach from=$_content.right_buttons name=right_buttons item=button }

@@ -9,7 +9,13 @@
 
 */
 
-$tab     = 'customer.orders';
+if($state['store']->get('Store Type')=='Dropshipping'){
+    $tab     = 'customer.orders_dropshipping';
+
+}else {
+    $tab = 'customer.orders';
+}
+
 $ar_file = 'ar_orders_tables.php';
 $tipo    = 'orders';
 

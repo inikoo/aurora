@@ -55,13 +55,13 @@
         <div class="data_container">
 
             <div class="data_field" style="min-width: 270px;">
-                <i title="{t}Customer code{/t}" class="fa fa-fw  fa-fingerprint padding_right_10"></i> <span style="font-weight: 800" class="Customer_Client_Code">{$customer_client->get('Customer Client Code')}</span>
+                <i title="{t}Customer code{/t}" class="fa fa-fw fa-fingerprint padding_right_10"></i> <span style="font-weight: 800" class="Customer_Client_Code">{$customer_client->get('Customer Client Code')}</span>
             </div>
             <div class="data_field Customer_Client_Company_Name_display {if !$customer_client->get('Customer Client Company Name')}hide{/if}" style="min-width: 270px;">
-                <i title="{t}Company name{/t}" class="fa fa-fw  fa-store padding_right_10"></i> <span class="Customer_Client_Company_Name">{$customer_client->get('Customer Client Company Name')}</span>
+                <i title="{t}Company name{/t}" class="fa fa-fw fa-store padding_right_10"></i> <span class="Customer_Client_Company_Name">{$customer_client->get('Customer Client Company Name')}</span>
             </div>
             <div class="data_field  Customer_Client_Main_Contact_Name_display {if !$customer_client->get('Customer Client Main Contact Name')}hide{/if}" style="min-width: 270px;">
-                <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male padding_right_10"></i> <span class="Customer_Client_Main_Contact_Name">{$customer_client->get('Customer Client Main Contact Name')}</span>
+                <i title="{t}Contact name{/t}" class="fa fa-fw fa-male padding_right_10"></i> <span class="Customer_Client_Main_Contact_Name">{$customer_client->get('Customer Client Main Contact Name')}</span>
             </div>
 
 

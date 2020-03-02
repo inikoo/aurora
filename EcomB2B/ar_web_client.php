@@ -477,11 +477,8 @@ function delete_client($data, $db, $customer) {
 
 
 
-    if ($customer_client->get_number_of_orders('All Submitted including Cancelled') == 0) {
+
         $customer_client->delete();
-    }else{
-        $customer_client->deactivate();
-    }
 
 
     echo json_encode(

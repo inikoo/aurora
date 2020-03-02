@@ -1011,9 +1011,14 @@ function orders($_data, $db, $user) {
     $adata = array();
 
 
-    if ($parameters['parent'] == 'store') {
+
+    if ($parameters['parent'] == 'store' ) {
         $link_format = '/orders/%d/%d';
-    } else {
+    }  else   if ($parameters['parent'] == 'customer_client' ){
+        $customer_client=get_object('customer_client',$parameters['parent_key']);
+        $parameters['parent_key']=$customer_client->get('Customer Client Customer Key');
+        $link_format = '/customer/%d/order/%d';
+    }else {
         $link_format = '/'.$parameters['parent'].'/%d/order/%d';
     }
 
@@ -1047,6 +1052,18 @@ function orders($_data, $db, $user) {
 
             }
 
+            if($data['Order Customer Client Key']>0){
+
+                if($data['Customer Client Code']!=''){
+                    $client_code=$data['Customer Client Code'];
+                }else{
+                    $client_code=sprintf('<span class="italic">%05d</span>',$data['Order Customer Client Key']);
+                }
+                $client=sprintf('<span class="link" onClick="change_view(\'customers/%d/%d/client/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Client Key'],$client_code);
+            }else{
+                $client='<span class="very_discreet italic">'._('Not set').'</span>>';
+            }
+
 
             $adata[] = array(
                 'id' => (integer)$data['Order Key'],
@@ -1057,6 +1074,8 @@ function orders($_data, $db, $user) {
                 'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
                 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
                 'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                'client'       => $client,
+
                 'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
                 'payment_state'  => get_order_formatted_payment_state($data),
                 'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),

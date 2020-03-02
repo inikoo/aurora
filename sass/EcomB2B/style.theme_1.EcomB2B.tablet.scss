@@ -431,7 +431,7 @@ input:-ms-input-placeholder {
   display: none
 }
 
-.error {
+.error ,error:hover{
   color: red;
 }
 

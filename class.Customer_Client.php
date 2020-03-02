@@ -174,6 +174,9 @@ class Customer_Client extends Subject {
 
 
         switch ($key) {
+            case 'Formatted Client Code':
+                return ($this->data['Customer Client Code'] == '' ? '<span class="italic">'.sprintf('%05d', $this->id).'</span>' : $this->data['Customer Client Code']);
+
             case 'Phone':
 
                 $phone = $this->data['Customer Client Main XHTML Mobile'];
