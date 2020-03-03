@@ -117,10 +117,10 @@
 
             </table>
             <div style="margin-top:20px;padding-top:20px;clear: both">
-            <span data-data='{ "object": "Customer", "key":"{$customer->id}"}' onClick="approve_object(this)" class="button success" style="border:1px solid darkseagreen;padding:5px 20px">{t}Approve{/t}</span>
+                <span data-data='{ "object": "Customer", "key":"{$customer->id}"}' onClick="approve_object(this)" class="button success" style="border:1px solid darkseagreen;padding:5px 20px"><i class="fa fa-fw fa-check"></i>  {t}Approve{/t}</span>
             </div>
             <div style="margin-top:20px;padding-top:20px;clear: both">
-                <span data-data='{ "object": "Customer", "key":"{$customer->id}"}' onClick="reject_object(this)" class="button error" style="border:1px solid indianred;padding:5px 20px">{t}Reject{/t}</span>
+                <span data-data='{ "object": "Customer", "key":"{$customer->id}"}' onClick="reject_object(this)" class="button error" style="border:1px solid indianred;padding:5px 20px"><i class="fa fa-fw fa-times"></i>  {t}Reject{/t}</span>
             </div>
 
         </div>
