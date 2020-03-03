@@ -12,14 +12,14 @@
 
 /**
  * @param $data
- * @param $smarty \Smarty
- * @param $db \PDO
- * @param $redis \Redis
+ * @param $smarty  \Smarty
+ * @param $db      \PDO
+ * @param $redis   \Redis
  * @param $account \Account
  *
  * @return string
  */
-function get_customer_showcase($data, $smarty, $db, $redis,$account) {
+function get_customer_showcase($data, $smarty, $db, $redis, $account) {
 
 
     include_once 'utils/real_time_functions.php';
@@ -36,10 +36,71 @@ function get_customer_showcase($data, $smarty, $db, $redis,$account) {
 
         return $smarty->fetch('showcase/deleted_customer.tpl');
 
-    } elseif($data['store']->get('Store Type')=='Dropshipping' and $customer->get('Customer Type by Activity')=='ToApprove' ) {
+    } elseif ($data['store']->get('Store Type') == 'Dropshipping' and $customer->get('Customer Type by Activity') == 'ToApprove') {
+        $poll_data = array();
+
+        $sql = "SELECT `Customer Poll Query Key` FROM `Customer Poll Query Dimension` WHERE `Customer Poll Query Store Key`=?";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $customer->get('Store Key')
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            /**
+             * @var $poll_query \Customer_Poll_Query
+             */
+            $poll_query = get_object('Customer_Poll_Query', $row['Customer Poll Query Key']);
+            if ($poll_query->get('Customer Poll Query Type') == 'Open') {
+
+
+                $poll_data[] = array(
+                    'label'  => $poll_query->get('Customer Poll Query Label'),
+                    'answer' => $poll_query->get_answer($customer->id)[1],
+                    'link'   => sprintf(
+                        '<span class="link" onclick="change_view(\'customers/%d/poll_query/%d\')" >%s</span>', $poll_query->get('Store Key'), $poll_query->id, $poll_query->get('Customer Poll Query Name')
+                    )
+                );
+
+
+            } else {
+
+
+                $options = array();
+
+
+                $sql = sprintf('SELECT `Customer Poll Query Option Key`,`Customer Poll Query Option Name`,`Customer Poll Query Option Label`  FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Query Key`=%d ', $poll_query->id);
+
+                if ($result2 = $db->query($sql)) {
+                    foreach ($result2 as $row2) {
+
+                        $options[$row2['Customer Poll Query Option Key']] = $row2['Customer Poll Query Option Label'];
+
+                    }
+                } 
+
+                $answer = $poll_query->get_answer($customer->id);
+
+                $poll_data[] = array(
+                    'label'  => $poll_query->get('Customer Poll Query Label'),
+                    'answer' => $answer[1],
+                    'link'   => sprintf(
+                    '<span class="link" onclick="change_view(\'customers/%d/poll_query/%d\')" >%s</span>', $poll_query->get('Store Key'), $poll_query->id, $poll_query->get('Customer Poll Query Name')
+                )
+                );
+
+                
+
+            }
+        }
+
+
+        $smarty->assign('poll_data', $poll_data);
+
         return $smarty->fetch('showcase/customer_to_approve.tpl');
 
-    }else {
+    } else {
 
         //$customer->update_account_balance();
         //$customer->update_credit_account_running_balances();
@@ -53,7 +114,6 @@ function get_customer_showcase($data, $smarty, $db, $redis,$account) {
 
 
         //$customer->update_clients_data();
-
 
 
         $website_key = $data['store']->get('Store Website Key');

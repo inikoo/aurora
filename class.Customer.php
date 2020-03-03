@@ -633,10 +633,15 @@ class Customer extends Subject {
                 return money(
                     -1 * $this->data['Customer Refunded Net Amount'], $this->store->get('Store Currency Code')
                 );
-                break;
+
             case 'Name Truncated':
                 return (strlen($this->get('Customer Name')) > 50 ? substrwords($this->get('Customer Name'), 55) : $this->get('Customer Name'));
-                break;
+            case 'First Contacted Date With Time':
+                return strftime(
+                    "%e %b %Y %H:%M %Z", strtotime(
+                                           $this->data['Customer First Contacted Date'].' +0:00'
+                                       )
+                );
 
             default:
 
@@ -1556,7 +1561,7 @@ class Customer extends Subject {
 
     function validate_customer_tax_number() {
 
-        if(!empty($this->skip_validate_tax_number)){
+        if (!empty($this->skip_validate_tax_number)) {
             return;
         }
 
@@ -2162,6 +2167,9 @@ class Customer extends Subject {
 
     function update_poll_answer($poll_key, $value, $options) {
 
+        /**
+         * @var $poll \Customer_Poll_Query
+         */
         $poll = get_object('Customer_Poll_Query', $poll_key);
         $poll->add_customer($this, $value, $options);
 
@@ -3526,7 +3534,6 @@ class Customer extends Subject {
 
     function approve() {
         include_once 'utils/new_fork.php';
-        $account = get_object('Account', 1);
 
         $this->update(array('Customer Type by Activity' => 'Active'));
 
@@ -3535,25 +3542,55 @@ class Customer extends Subject {
             'type'                => 'customer_approval_done',
             'email_template_code' => 'Registration Approved',
             'customer_key'        => $this->id,
-        ), $account->get('Account Code')
+        ), DNS_ACCOUNT_CODE
         );
+
+        $sql  = "select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`='ToApprove' and `Customer Store Key`=? order by `Customer First Contacted Date` desc  limit 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->data['Customer Store Key']
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            return 'customers/'.$this->data['Customer Store Key'].'/'.$row['Customer Key'];
+        }else{
+            return 'customers/'.$this->data['Customer Store Key'];
+
+        }
+
+
 
 
     }
 
     function reject() {
         include_once 'utils/new_fork.php';
-        $account = get_object('Account', 1);
 
         $this->update(array('Customer Type by Activity' => 'Rejected'));
+
 
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'                => 'customer_approval_done',
             'email_template_code' => 'Registration Rejected',
             'customer_key'        => $this->id,
-        ), $account->get('Account Code')
+        ), DNS_ACCOUNT_CODE
         );
+
+        $sql  = "select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`='ToApprove' and `Customer Store Key`=? order by `Customer First Contacted Date` desc  limit 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->data['Customer Store Key']
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            return 'customers/'.$this->data['Customer Store Key'].'/'.$row['Customer Key'];
+        }else{
+            return 'customers/'.$this->data['Customer Store Key'];
+
+        }
     }
 
     function update_last_dispatched_order_key() {

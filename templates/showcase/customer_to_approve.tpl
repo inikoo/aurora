@@ -105,112 +105,38 @@
 
     <div style="float: right;width: 300px;">
         <div id="overviews">
-            <table class="overview" >
-                <tr id="account_balance_tr" class="main">
-                    <td id="account_balance_label">{t}Account Balance{/t}
 
-                        {if $user->can_supervisor('accounting')}
-                            <span  onclick="show_edit_credit_dialog('add_funds')" class="button margin_left_5  " title="{t}Add money to customer balance{/t}">
-                                <i class="fal fa-upload"></i>
-                            </span>
-                            <span  onclick="show_edit_credit_dialog('remove_funds')" class="button margin_left_5  " title="{t}Withdraw money to customer balance{/t}">
-                                <i class="fal fa-download"></i>
-                            </span>
-
-                    {else}
-                    <span data-labels='{ "footer":"{t}Authorised users{/t}: ","title":"{t}Restricted operation{/t}","text":"{t}Please ask an authorised user to add funds to customer account{/t}"}'  onclick="unauthorized_open_fund_credit(this)" class="button margin_left_5  " title="{t}Add money to customer balance{/t} ({t}locked{/t})">
-                        <i class="fal fa-upload very_discreet"></i> <i class="fal fa-download very_discreet"></i>
-                    </span>
-
-                    {/if}
-
-                    </td>
-
-
-                    <td id="account_balance" class="aright "><span onclick="change_tab('customer.credit_blockchain')" class="very_discreet_on_hover small padding_right_10 button"><i class="fal fa-code-commit "></i> {$customer->get('Customer Number Credit Transactions')}</span>
-
-                    {if $customer->get('Customer Account Balance')>0}
-                        <span   onclick="show_transfer_credit_to({$customer->get('Customer Account Balance')})"   class=" button   highlight">{$customer->get('Account Balance')}</span>
-                        {else}
-                        <span      class="    highlight">{$customer->get('Account Balance')}</span>
-
-                        {/if}
-
-                    </td>
-                </tr>
-
-            </table>
             <table class="overview">
 
-                <tr class="Customer_Sales_Representative_tr {if !$customer->get('Customer Sales Representative Key')>0}hide{/if}" >
-                    <td>{t}Account manager{/t} </td>
-                    <td class="Sales_Representative aright">{$customer->get('Sales Representative')}</td>
+                <tr>
+                    <td>{t}Registered{/t}:</td>
+                    <td class="aright">{$customer->get('First Contacted Date With Time')}</td>
                 </tr>
 
-                {if $customer->get('Customer Type by Activity')=='Losing'}
-                    <tr>
-                        <td colspan="2">{t}Losing Customer{/t}</td>
-                    </tr>
-                {elseif $customer->get('Customer Type by Activity')=='Lost'}
-                    <tr>
-                        <td>{t}Lost Customer{/t}</td>
-                        <td class="aright">{$customer->get('Lost Date')}</td>
-                    </tr>
-                {/if}
-                <tr>
-                    <td>{t}Contact since{/t}:</td>
-                    <td class="aright">{$customer->get('First Contacted Date')}</td>
-                </tr>
-                {if $store->get('Store Type')=='Dropshipping'}
-                <tr>
-                    <td>{t}Customer's clients{/t}:</td>
-                    <td class="aright">{$customer->get('Number Clients')}</td>
-                </tr>
-                {/if}
-                <tr>
-                    <td>{t}Subscriptions{/t}:</td>
-                    <td style="text-align: right">
-                        <i title="{t}Newsletters{/t}" style="margin-right: 10px;position: relative;top:1px" class="Customer_Send_Newsletter {if $customer->get('Customer Send Newsletter')=='No' }discreet error {/if} far fa-fw fa-newspaper" aria-hidden="true"></i> <i title="{t}Marketing by email{/t}" style="margin-right: 10px"  class="Customer_Send_Email_Marketing {if $customer->get('Customer Send Email Marketing')=='No' }discreet error {/if} far fa-fw fa-envelope" aria-hidden="true"></i>  <i title="{t}Marketing by post{/t}" class="Customer_Send_Postal_Marketing {if $customer->get('Customer Send Postal Marketing')=='No' }discreet error {/if} far fa-fw fa-person-carry" aria-hidden="true"></i>
-                    </td>
-                </tr>
+
 
             </table>
-
-
+            <div style="margin-top:20px;padding-top:20px;clear: both">
+            <span data-data='{ "object": "Customer", "key":"{$customer->id}"}' onClick="approve_object(this)" class="button success" style="border:1px solid darkseagreen;padding:5px 20px">{t}Approve{/t}</span>
+            </div>
+            <div style="margin-top:20px;padding-top:20px;clear: both">
+                <span data-data='{ "object": "Customer", "key":"{$customer->id}"}' onClick="reject_object(this)" class="button error" style="border:1px solid indianred;padding:5px 20px">{t}Reject{/t}</span>
+            </div>
 
         </div>
     </div>
     <div style="float: right;width: 310px;margin-right: 20px">
 
             <table class="overview">
-                {if $customer->get('Customer Type by Activity')=='Lost'}
-                    <tr>
-                        <td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span>
-                        </td>
-                    </tr>
-                {/if} {if $customer->get('Customer Type by Activity')=='Losing'}
-                    <tr>
-                        <td>
-                            <span style="color:white;background:black;padding:1px 10px">{t}Warning!, loosing customer{/t}</span>
-                        </td>
-                    </tr>
-                {/if}
-                <tr>
-                    <td class="text"> {if $customer->get('Customer Number Invoices')==1}
-                        <p>
-                            {$customer->get('Name')} {t}has been invoiced once{/t}.
-                        </p>
-                        {elseif $customer->get('Customer Number Invoices')>1 } {$customer->get('Name')} {t}has been invoiced{/t}
-                        <b>{$customer->get('Orders Invoiced')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}times{/t}{else}{t}times so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Invoiced Net Amount')}</b> <span class="very_discreet error {if $customer->get('Customer Refunded Net Amount')==0}hide{/if} ">({$customer->get('Absolute Refunded Net Amount')} {t}refunded{/t})</span> {t}plus tax{/t}
-                        ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}
-                        ). {if $customer->get('Customer Orders')}
-                        </p>
-                        <p>
-                            {if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}
-                            .{/if} {else} Customer has not place any order yet. {/if}
-                        </p>
-                    </td>
-                </tr>
+               {foreach from=$poll_data item=$poll_item }
+                   <tr style="height: initial">
+                       <td class="small very_discreet" style="padding-top: 8px">{$poll_item.label}</td>
+                   </tr>
+                   <tr style="height: initial">
+                       <td style="padding-top:3px">{if $poll_item.answer==''}<span class="error  italic">{t}No answer{/t}</span>{else}{$poll_item.answer}{/if}</td>
+                   </tr>
+               {/foreach}
+
             </table>
 
 

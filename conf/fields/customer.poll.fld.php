@@ -23,6 +23,9 @@ $stmt->execute(
     )
 );
 while ($row = $stmt->fetch()) {
+    /**
+     * @var $poll_query \Customer_Poll_Query
+     */
     $poll_query = get_object('Customer_Poll_Query', $row['Customer Poll Query Key']);
     if ($poll_query->get('Customer Poll Query Type') == 'Open') {
 

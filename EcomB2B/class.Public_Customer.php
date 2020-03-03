@@ -995,6 +995,9 @@ class Public_Customer extends DBW_Table {
 
     function update_poll_answer($poll_key, $value, $options) {
 
+        /**
+         * @var $poll \Public_Customer_Poll_Query
+         */
         $poll = get_object('Customer_Poll_Query', $poll_key);
 
         $poll->add_customer($this, $value, $options);

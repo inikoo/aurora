@@ -129,7 +129,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'customer poll query':
         case 'customerpollquery':
             require_once "class.Public_Customer_Poll_Query.php";
-            $object = new Customer_Poll_Query($key);
+            $object = new Public_Customer_Poll_Query($key);
             break;
         case 'customer_poll_query_option':
         case 'customer poll query option':
