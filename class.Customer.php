@@ -3545,7 +3545,7 @@ class Customer extends Subject {
         ), DNS_ACCOUNT_CODE
         );
 
-        $sql  = "select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`='ToApprove' and `Customer Store Key`=? order by `Customer First Contacted Date` desc  limit 1";
+        $sql  = "select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`='ToApprove' and `Customer Store Key`=? order by `Customer First Contacted Date`   limit 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -3578,7 +3578,7 @@ class Customer extends Subject {
         ), DNS_ACCOUNT_CODE
         );
 
-        $sql  = "select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`='ToApprove' and `Customer Store Key`=? order by `Customer First Contacted Date` desc  limit 1";
+        $sql  = "select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`='ToApprove' and `Customer Store Key`=? order by `Customer First Contacted Date`   limit 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
