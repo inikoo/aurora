@@ -69,7 +69,6 @@ switch ($tipo) {
     case 'intrastat_imports':
         intrastat_imports(get_table_parameters(), $db, $user, $account);
         break;
-
     case 'intrastat':
         intrastat(get_table_parameters(), $db, $user, $account);
         break;
@@ -312,7 +311,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
     $adata = array();
 
-
+    $total=0;
     //print $sql;
 
     $sum_invoices = 0;
@@ -324,7 +323,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
-
+            $total++;
 
             switch ($data['Invoice Billing Region']) {
                 case 'EU':
@@ -369,9 +368,6 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
             $sum_total    += $data['total'];
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
@@ -408,9 +404,6 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
             }
 
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
         $excluded_stores = preg_replace('/, $/', '', $excluded_stores);
@@ -418,6 +411,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
         $rtext .= ' ('._('Excluding').': '.$excluded_stores.')';
     }
+
 
 
     $response = array(
@@ -2042,10 +2036,6 @@ function sales($_data, $db, $user, $account) {
             $number_stores++;
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
@@ -2134,14 +2124,13 @@ function sales($_data, $db, $user, $account) {
             $totals['revenue']           += $data['revenue'];
             $totals['profit']            += $data['profit'];
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
     $sql = "select $fields from $table $where $where_dates_1yb $wheref $group_by limit $start_from,$number_results";
 
+  //  print $sql;
+//exit;
 
     if ($result = $db->query($sql)) {
 
