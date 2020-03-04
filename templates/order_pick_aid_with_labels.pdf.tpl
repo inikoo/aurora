@@ -126,7 +126,9 @@
 		<td style="width:78mm;height:45mm;font-size:9pt;padding:15px 10px 15px 0px">
 			<table>
 				<tr>
-					<td><barcode style="float:left;margin-right: 20px;border:0px solid #ccc" code="{$qr_data}" type="QR" /></td>
+					<td>
+						<barcode style="float:left;margin-right: 20px;border:0px solid #ccc" code="{$qr_data}" type="QR" />
+					</td>
 
 					<td>
 						<div> <b>{$delivery_note->get('Delivery Note ID')}</b></div>

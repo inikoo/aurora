@@ -1093,6 +1093,7 @@ class Order extends DB_Table {
         $invoices_xhtml    = '';
         $number_invoices   = 0;
 
+
         if ($old_value != $value) {
 
             switch ($value) {
@@ -1472,7 +1473,7 @@ class Order extends DB_Table {
 
 
                     $delivery_note = new DeliveryNote('create', $data_dn, $this);
-                    //059-645919
+                    $delivery_note_key_send_to_warehouse=$delivery_note->id;
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
@@ -1972,7 +1973,14 @@ class Order extends DB_Table {
 
         if ($old_value != $this->get('Order State')) {
             $this->fork_index_elastic_search();
+            if(isset($delivery_note_key_send_to_warehouse)){
+                return $delivery_note_key_send_to_warehouse;
+            }else{
+                return true;
+            }
 
+        }else{
+            return false;
         }
 
     }

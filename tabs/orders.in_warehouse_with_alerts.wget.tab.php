@@ -29,9 +29,7 @@ $parameters = array(
 );
 
 
-
-//$smarty->assign('table_top_lower_template', 'orders_process.edit.tpl');
-
+$smarty->assign('table_top_lower_template', 'orders_in_warehouse.edit.tpl');
 
 include('utils/get_table_html.php');
 

@@ -139,10 +139,6 @@ switch ($tipo) {
         break;
 
 
-
-
-
-
     case 'set_state':
         $data = prepare_values(
             $_REQUEST, array(
@@ -269,7 +265,7 @@ switch ($tipo) {
 
                      )
         );
-        edit_item_in_order($db,  $editor, $data);
+        edit_item_in_order($db, $editor, $data);
         break;
 
 
@@ -340,14 +336,65 @@ switch ($tipo) {
         );
         cancel_purchase_order_submitted_item($data, $db);
         break;
+    case 'send_orders_to_warehouse':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'order_keys' => array('type' => 'json array'),
+                     )
+        );
+        send_orders_to_warehouse($data, $editor);
+        break;
     default:
         $response = array(
             'state' => 405,
             'resp'  => 'Tipo not found '.$tipo
         );
         echo json_encode($response);
-        exit;
+
         break;
+}
+
+
+function send_orders_to_warehouse($data, $editor) {
+
+    $updated = [];
+    foreach ($data['order_keys'] as $order_key) {
+        $order         = get_object('Order', $order_key);
+        $order->editor = $editor;
+
+
+        if ($delivery_key=$order->update_state('InWarehouse')) {
+            $updated[] = $delivery_key;
+        }
+
+    }
+
+    $number_updated=count($updated);
+
+    if($number_updated>0){
+        $html='<i class="fa fa-check success  padding_left_5"></i>';
+
+    }else{
+        $html='';
+    }
+
+    $html.=' '.number($number_updated).' '.ngettext('order send to warehouse', 'orders send to warehouse',$number_updated);
+
+    if($number_updated>0){
+        $html.=' <a target="_blank" href="/pdf/order_pick_aid.pdf.php?ids='.join(',',$updated).'"><i class="fal fa-fw fa-clipboard-list-check"></i></a>';
+        $html.=' <a target="_blank"  href="/pdf/order_pick_aid.pdf.php?with_labels&ids='.join(',',$updated).'"><i class="fal fa-fw fa-pager"></i></a>';
+
+    }
+
+    $response = array(
+        'state' => 200,
+        'msg'  => $html
+    );
+    echo json_encode($response);
+
+
+
 }
 
 /**
@@ -581,7 +628,7 @@ function update_po_item_note($data, $editor, $smarty, $db, $account, $user) {
  * @param $editor
  * @param $data
  */
-function edit_item_in_order($db,  $editor, $data) {
+function edit_item_in_order($db, $editor, $data) {
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
@@ -897,7 +944,6 @@ function set_hanging_charges_as_auto($data, $editor) {
 
 
 }
-
 
 
 function set_order_handler($type, $data, $editor, $smarty, $db) {
@@ -2160,7 +2206,6 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
 
 
             $description .= ' <span style="color:#777">['.$stock.']</span> '.$deal_info;
-
 
 
             $sql = "update `Order Transaction Fact` set `Product ID`=?,`Product Key`=?,`OTF Category Family Key`=?,`OTF Category Department Key`=?  where `Order Transaction Fact Key`=?";

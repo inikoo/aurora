@@ -27,4 +27,6 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 );
 
+$smarty->assign('table_top_lower_template', 'orders_in_warehouse.edit.tpl');
+
 include('utils/get_table_html.php');

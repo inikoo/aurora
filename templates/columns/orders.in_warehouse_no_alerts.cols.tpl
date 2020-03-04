@@ -19,6 +19,19 @@ renderable: false
 
 },
 
+{
+name: "checked",
+label:'',
+html_label: '',
+headerCell: HeaderHtmlCell,
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
+
+
+},
 
 
 {
