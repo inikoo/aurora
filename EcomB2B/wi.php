@@ -12,7 +12,6 @@
 include_once 'keyring/dns.php';
 chdir('../');
 
-
 if (empty($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or $_REQUEST['id'] <= 0) {
     header("HTTP/1.0 404 Not Found");
     echo "Image not found (invalid id)";
@@ -87,6 +86,8 @@ if ($row = $stmt->fetch()) {
 
 
     $image_path = preg_replace('/img\/db/', 'img/public_db/', $row['Image Path']);
+
+
 
 
     if (!file_exists($image_path)) {
@@ -211,8 +212,6 @@ if ($row = $stmt->fetch()) {
         exit();
     }
 
-    //print $cached_image_path;
-    // exit;
 
 
 } else {
