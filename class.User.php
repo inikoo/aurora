@@ -226,10 +226,12 @@ class User extends DB_Table {
             )
         );
         if ($row = $stmt->fetch()) {
-            $this->error = true;
-            $this->msg   = _('Duplicate user login');
+            if($row['num']>0) {
+                $this->error = true;
+                $this->msg   = _('Duplicate user login');
 
-            return false;
+                return false;
+            }
 
         }
 
