@@ -1403,7 +1403,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
     $html = '';
 
-    if ($state['section'] == 'customer' and $state['store']->get('Store Type') == 'Dropshipping' and $state['_object']->get('Customer Type by Activity')=='ToApprove' ) {
+    if ( isset($state['section']) and  $state['section'] == 'customer' and $state['store']->get('Store Type') == 'Dropshipping' and $state['_object']->get('Customer Type by Activity')=='ToApprove' ) {
         return '';
     }
 
