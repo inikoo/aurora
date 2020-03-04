@@ -191,15 +191,26 @@ trait ImageSubject {
             }
 
 
-            $sql = sprintf(
-                "INSERT INTO `Image Subject Bridge` (`Image Subject Object Image Scope`,`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`, `Image Subject Metadata`) VALUES (%s,%s,%d,%d,%s,'',%s,%d,%s,%s)",
-                prepare_mysql($object_image_scope), prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1), prepare_mysql($is_public),
-                ($metadata == '' ? '"{}"' : prepare_mysql(json_encode($metadata)))
+            $sql =
+                "INSERT INTO `Image Subject Bridge` (`Image Subject Object Image Scope`,`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Image File Format`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`, `Image Subject Metadata`) VALUES (?,?,?,?,?,?,'',?,?,?,?)";
 
+
+            $this->db->prepare($sql)->execute(
+                array(
+                    $object_image_scope,
+                    $subject,
+                    $subject_key,
+                    $image->id,
+                    $image->get('Image File Format'),
+                    $principal,
+                    gmdate('Y-m-d H:i:s'),
+                    ($number_images + 1),
+                    $is_public,
+                    ($metadata == '' ? '{}' : json_encode($metadata))
+                )
             );
 
 
-            $this->db->exec($sql);
             $image_subject_key = $this->db->lastInsertId();
 
 

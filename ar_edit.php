@@ -3840,7 +3840,7 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
 
 
                         $sql = sprintf(
-                            'SELECT `Product ID` FROM `Product Dimension` WHERE  `Category Code`=%s  ', prepare_mysql($object->get('Reference'))
+                            'SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Code`=%s  ', prepare_mysql($object->get('Reference'))
                         );
 
 
