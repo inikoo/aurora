@@ -232,7 +232,7 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
 
         $adata[] = array(
             'id'        => (integer)$data['Order Key'],
-            'checked'   => sprintf('<i class="far fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>',$data['Order Key']),
             'store_key' => (integer)$data['Order Store Key'],
             'public_id' => $public_id,
             'date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),

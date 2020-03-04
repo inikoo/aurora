@@ -17,20 +17,7 @@ cell: "integer",
 renderable: false
 
 
-}, {
-name: "store_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string"
-},{
-name: "customer_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string"
 },
-
 {
 name: "checked",
 label:'',
