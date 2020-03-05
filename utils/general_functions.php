@@ -134,7 +134,7 @@ function percentage($a, $b, $fixed = 1, $error_txt = 'NA', $psign = '%', $plus_s
 
     $locale_info = localeconv();
 
-    $per       = '';
+
     $error_txt = _($error_txt);
     if ($b > 0) {
         if ($plus_sing and $a > 0) {
@@ -197,11 +197,6 @@ function ParseFloat($floatString) {
 }
 
 
-function money_cents($amount) {
-    $amount = sprintf("%02d", 100 * ($amount - floor($amount)));
-
-    return $amount;
-}
 
 
 function endmonth($m, $y) {
@@ -250,8 +245,6 @@ function average($array) {
     return $sum / $count;
 }
 
-
-//The average function can be use independently but the deviation function uses the average function.
 
 function deviation($array) {
 

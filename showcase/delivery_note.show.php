@@ -10,10 +10,8 @@
  Version 3.0
 */
 
-function get_delivery_note_showcase($data) {
+function get_delivery_note_showcase($data, $smarty) {
 
-
-    global $smarty, $user;
 
     if (!$data['_object']->id) {
         return "";
@@ -24,13 +22,13 @@ function get_delivery_note_showcase($data) {
     $delivery_note = $data['_object'];
 
 
-    //  $delivery_note->update_totals();
+    $delivery_note->update_totals();
 
 
-    $order = new Order('id', $delivery_note->get('Delivery Note Order Key'));
+    $order = get_object('Order', $delivery_note->get('Delivery Note Order Key'));
 
 
-    $store = new Store('id', $delivery_note->get('Delivery Note Store Key'));
+    $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
 
 
     $parcels     = $delivery_note->get('Parcels');
@@ -52,15 +50,14 @@ function get_delivery_note_showcase($data) {
 
 
     $smarty->assign(
-        'object_data',
-                         json_encode(
-                             array(
-                                 'object' => $data['object'],
-                                 'key'    => $data['key'],
+        'object_data', json_encode(
+                         array(
+                             'object' => $data['object'],
+                             'key'    => $data['key'],
 
-                                 'tab' => $data['tab']
-                             )
+                             'tab' => $data['tab']
                          )
+                     )
 
     );
 
@@ -68,17 +65,14 @@ function get_delivery_note_showcase($data) {
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);
 
-if($delivery_note->get('Delivery Note Type')=='Order'){
-    return $smarty->fetch('showcase/delivery_note.tpl');
+    if ($delivery_note->get('Delivery Note Type') == 'Order') {
+        return $smarty->fetch('showcase/delivery_note.tpl');
 
-}else{
-    return $smarty->fetch('showcase/replacement.tpl');
+    } else {
+        return $smarty->fetch('showcase/replacement.tpl');
+
+    }
+
 
 }
 
-
-
-}
-
-
-?>

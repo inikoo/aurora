@@ -42,13 +42,18 @@ if ($_data['type'] == 'excel') {
 
 
 
-$_sql = sprintf(
-    "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Creator Key`) VALUES (%s,%s,%d) ",
-    prepare_mysql(gmdate('Y-m-d H:i:s')),
-    prepare_mysql($output),
+$sql ="INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Creator Type`,`Download Creator Key`) VALUES (?,?,?,?) ";
+
+$db->prepare($sql)->execute(
+array(
+    gmdate('Y-m-d H:i:s'),
+    $output,
+    'User',
     $user->id
+)
 );
-$db->exec($_sql);
+
+
 $download_key = $db->lastInsertId();
 
 

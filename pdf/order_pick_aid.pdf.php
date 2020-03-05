@@ -142,7 +142,7 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
             }
 
-            $qty    = $row['qty'];
+            $qty    = number($row['qty']);
             $carton = $row['carton'];
 
 

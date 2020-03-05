@@ -345,8 +345,8 @@
 
 
                     <td>
-                    <span ><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
-                          <span class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
+                    <span ><i class="fal fa-bars fa-fw discreet" title="{t}Items{/t}"></i><i class="fal fa-box small fa-fw discreet" title="{t}Items{/t}"></i>
+                          <span title="{t}Distinct items{/t}" class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span title="{t}Required{/t}" class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
 
                <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
                            class="Order_Number_Items_with_Out_of_Stock">{$delivery_note->get('Number Items Out of Stock')}</span></span>
