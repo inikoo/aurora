@@ -244,9 +244,6 @@ function fork_export_edit_template($job) {
         if ($row = $result->fetch()) {
             $number_rows = $row['num'];
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
     $context = new ZMQContext();
@@ -311,6 +308,7 @@ function fork_export_edit_template($job) {
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
+
 
 
             switch ($objects) {
@@ -412,7 +410,6 @@ function fork_export_edit_template($job) {
 
                     switch ($parent) {
 
-
                         case 'category':
                         case 'part_family':
 
@@ -437,137 +434,135 @@ function fork_export_edit_template($job) {
                             break;
 
                         case 'part_category':
-                            $object = new Part($row['id']);
-                            if ($object->get('Part Status') == 'Not In Use') {
-                                continue 3;
-                            }
-
-
-                           // print $object->get('Part Reference')."\n";
-
+                            $object = get_object('Part',$row['id']);
                             $data_rows      = array();
-                            $product_exists = false;
-                            $sql            = "SELECT count(*) as num FROM `Product Dimension` WHERE `Product Status`!='Discontinued' AND `Product Store Key`=? AND `Product Code`=? ";
-                            $stmt           = $db->prepare($sql);
-                            $stmt->execute(
-                                array(
-                                    $store->id,
-                                    $object->get('Part Reference')
-                                )
-                            );
-                            if ($row = $stmt->fetch()) {
-                                if ($row['num'] > 0) {
-                                    $product_exists = true;
-                                }
-                            }
+                            if ($object->get('Part Status') != 'Not In Use' and $object->id) {
 
 
-                          //  print "xx $product_exists xxx\n";
-
-                            if (!$product_exists) {
-                                $op = 'NEW';
-
-                                if ($object->get('Part Status') == 'In Process') {
-                                    $op = 'NOT READY (';
-
-                                    if (!$object->get('Part Main Image Key') > 0) {
-                                        $op .= 'NO PIC, ';
-
-                                    }
-                                    if (!$object->get('Part Current On Hand Stock') > 0) {
-                                        $op .= 'NO STOCK, ';
-
-                                    }
-
-                                    $op = preg_replace('/,\s*$/', '', $op).")";
+                                // print $object->get('Part Reference')."\n";
 
 
-                                }
-
-
-                                $data_rows[] = array(
-                                    'cell_type' => 'auto',
-                                    'value'     => $op
+                                $product_exists = false;
+                                $sql            = "SELECT count(*) as num FROM `Product Dimension` WHERE `Product Status`!='Discontinued' AND `Product Store Key`=? AND `Product Code`=? ";
+                                $stmt           = $db->prepare($sql);
+                                $stmt->execute(
+                                    array(
+                                        $store->id,
+                                        $object->get('Part Reference')
+                                    )
                                 );
-
-
-                                if (is_numeric($object->get('Part Recommended Packages Per Selling Outer')) and $object->get('Part Recommended Packages Per Selling Outer') > 0) {
-                                    $skos_per_outer = $object->get('Part Recommended Packages Per Selling Outer');
-                                } else {
-                                    $skos_per_outer = 1;
+                                if ($row = $stmt->fetch()) {
+                                    if ($row['num'] > 0) {
+                                        $product_exists = true;
+                                    }
                                 }
 
-                                foreach ($fields as $field) {
+
+                                if (!$product_exists) {
+
+                                    $op = 'NEW';
+
+                                    if ($object->get('Part Status') == 'In Process') {
+                                        $op = 'NOT READY (';
+
+                                        if (!$object->get('Part Main Image Key') > 0) {
+                                            $op .= 'NO PIC, ';
+
+                                        }
+                                        if (!$object->get('Part Current On Hand Stock') > 0) {
+                                            $op .= 'NO STOCK, ';
+
+                                        }
+
+                                        $op = preg_replace('/,\s*$/', '', $op).")";
 
 
-                                    switch ($field['name']) {
-                                        case 'Product Code':
-                                            $value = $object->get('Reference');
-                                            break;
-                                        case 'Parts':
-
-                                            $value = $skos_per_outer.'x '.$object->get('Reference');
-                                            break;
-                                        case 'Product Name':
-                                            $value = $object->get('Part Recommended Product Unit Name');
-                                            break;
-                                        case 'Product Inner':
-                                            $value = $object->get('Part Units Per Package');
-                                            break;
-                                        case 'Product Family Category Code':
-                                            $value = $family->get('Code');
-                                            break;
-                                        case 'Product Label in Family':
-                                            $value = $object->get('Part Label in Family');
-                                            break;
-                                        case 'Product Units Per Case':
-                                            $value = $object->get('Part Units Per Package') * $skos_per_outer;
-                                            break;
-                                        case 'Product Unit Label':
-                                            $value = $object->get('Part Unit Label');
-                                            break;
-                                        case 'Product Price':
-                                            if ($object->get('Part Unit Price') == '') {
-                                                $value = '';
-                                            } else {
-                                                $value = round($skos_per_outer * $exchange * $object->get('Part Unit Price') * $object->get('Part Units Per Package'), 2);
-                                            }
-                                            break;
-                                        case 'Product Unit Price':
-                                            if ($object->get('Part Unit Price') == '') {
-                                                $value = '';
-                                            } else {
-                                                $value = round($exchange * $object->get('Part Unit Price'), 2);
-                                            }
-                                            break;
-                                        case 'Product Unit RRP':
-
-                                            if ($object->get('Part Unit RRP') == '') {
-                                                $value = '';
-                                            } else {
-                                                $value = round($exchange * $object->get('Part Unit RRP'), 2);
-                                            }
-                                            break;
-
-
-                                        // case 'Product Units Per Case':
-                                        //    $value = $object->get('Part Units Per Package') * $skos_per_outer;
-                                        //   break;
-                                        default:
-                                            $value = $object->get($field['name']);
-                                            break;
                                     }
 
 
                                     $data_rows[] = array(
-                                        'cell_type' => (isset($field['cell_type']) ? $field['cell_type'] : 'auto'),
-                                        'value'     => $value,
-                                        'field'     => $field['name']
+                                        'cell_type' => 'auto',
+                                        'value'     => $op
                                     );
+
+
+                                    if (is_numeric($object->get('Part Recommended Packages Per Selling Outer')) and $object->get('Part Recommended Packages Per Selling Outer') > 0) {
+                                        $skos_per_outer = $object->get('Part Recommended Packages Per Selling Outer');
+                                    } else {
+                                        $skos_per_outer = 1;
+                                    }
+
+                                    foreach ($fields as $field) {
+
+
+                                        switch ($field['name']) {
+                                            case 'Product Code':
+                                                $value = $object->get('Reference');
+                                                break;
+                                            case 'Parts':
+
+                                                $value = $skos_per_outer.'x '.$object->get('Reference');
+                                                break;
+                                            case 'Product Name':
+                                                $value = $object->get('Part Recommended Product Unit Name');
+                                                break;
+                                            case 'Product Inner':
+                                                $value = $object->get('Part Units Per Package');
+                                                break;
+                                            case 'Product Family Category Code':
+                                                $value = $family->get('Code');
+                                                break;
+                                            case 'Product Label in Family':
+                                                $value = $object->get('Part Label in Family');
+                                                break;
+                                            case 'Product Units Per Case':
+                                                $value = $object->get('Part Units Per Package') * $skos_per_outer;
+                                                break;
+                                            case 'Product Unit Label':
+                                                $value = $object->get('Part Unit Label');
+                                                break;
+                                            case 'Product Price':
+                                                if ($object->get('Part Unit Price') == '') {
+                                                    $value = '';
+                                                } else {
+                                                    $value = round($skos_per_outer * $exchange * $object->get('Part Unit Price') * $object->get('Part Units Per Package'), 2);
+                                                }
+                                                break;
+                                            case 'Product Unit Price':
+                                                if ($object->get('Part Unit Price') == '') {
+                                                    $value = '';
+                                                } else {
+                                                    $value = round($exchange * $object->get('Part Unit Price'), 2);
+                                                }
+                                                break;
+                                            case 'Product Unit RRP':
+
+                                                if ($object->get('Part Unit RRP') == '') {
+                                                    $value = '';
+                                                } else {
+                                                    $value = round($exchange * $object->get('Part Unit RRP'), 2);
+                                                }
+                                                break;
+
+
+                                            // case 'Product Units Per Case':
+                                            //    $value = $object->get('Part Units Per Package') * $skos_per_outer;
+                                            //   break;
+                                            default:
+                                                $value = $object->get($field['name']);
+                                                break;
+                                        }
+
+
+                                        $data_rows[] = array(
+                                            'cell_type' => (isset($field['cell_type']) ? $field['cell_type'] : 'auto'),
+                                            'value'     => $value,
+                                            'field'     => $field['name']
+                                        );
+                                    }
                                 }
+
                             }
-
-
 
                             break;
                         default:
@@ -583,6 +578,7 @@ function fork_export_edit_template($job) {
 
                     break;
             }
+
 
 
             if ($row_index == 1) {
@@ -635,84 +631,86 @@ function fork_export_edit_template($job) {
                 $row_index++;
             }
 
+            if(count($data_rows)>0) {
 
-            $char_index = 1;
-            foreach ($data_rows as $data_row) {
-                $char = number2alpha($char_index);
+                $char_index = 1;
+                foreach ($data_rows as $data_row) {
+                    $char = number2alpha($char_index);
 
 
-                if ($data_row['cell_type'] == 'string' or $char_index == 1) {
+                    if ($data_row['cell_type'] == 'string' or $char_index == 1) {
 
-                    $objPHPExcel->getActiveSheet()->setCellValueExplicit(
-                        $char.$row_index, strip_tags($data_row['value']), DataType::TYPE_STRING
-                    );
-                } else {
-                    $objPHPExcel->getActiveSheet()->setCellValue(
-                        $char.$row_index, strip_tags($data_row['value'])
-                    );
+                        $objPHPExcel->getActiveSheet()->setCellValueExplicit(
+                            $char.$row_index, strip_tags($data_row['value']), DataType::TYPE_STRING
+                        );
+                    } else {
+                        $objPHPExcel->getActiveSheet()->setCellValue(
+                            $char.$row_index, strip_tags($data_row['value'])
+                        );
 
+                    }
+
+
+                    $char_index++;
                 }
 
+                $row_index++;
 
-                $char_index++;
-            }
-
-            $row_index++;
-
-            if (microtime(true) > $show_feedback) {
-                //  print 'xx '.microtime(true) ." -> $show_feedback\n";
+                if (microtime(true) > $show_feedback) {
+                    //  print 'xx '.microtime(true) ." -> $show_feedback\n";
 
 
-                $sql = sprintf(
-                    'select `Download State` from  `Download Dimension` where `Download Key`=%d  ', $download_key
+                    $sql = sprintf(
+                        'select `Download State` from  `Download Dimension` where `Download Key`=%d  ', $download_key
 
-                );
+                    );
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        if ($row['Download State'] == 'Cancelled') {
-                            return 1;
+                    if ($result = $db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            if ($row['Download State'] == 'Cancelled') {
+                                return 1;
+                            }
                         }
                     }
-                }
 
 
-                $socket->send(
-                    json_encode(
-                        array(
-                            'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
-                            'progress_bar' => array(
-                                array(
-                                    'id'    => 'download_'.$download_key,
-                                    'state' => 'In Process',
+                    $socket->send(
+                        json_encode(
+                            array(
+                                'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
+                                'progress_bar' => array(
+                                    array(
+                                        'id'    => 'download_'.$download_key,
+                                        'state' => 'In Process',
 
-                                    'progress_info' => percentage($row_index, $number_rows),
-                                    'progress'      => sprintf(
-                                        '%s/%s (%s)', number($row_index), number($number_rows), percentage(
-                                                        $row_index, $number_rows
-                                                    )
-                                    ),
-                                    'percentage'    => percentage($row_index, $number_rows),
+                                        'progress_info' => percentage($row_index, $number_rows),
+                                        'progress'      => sprintf(
+                                            '%s/%s (%s)', number($row_index), number($number_rows), percentage(
+                                                            $row_index, $number_rows
+                                                        )
+                                        ),
+                                        'percentage'    => percentage($row_index, $number_rows),
 
-                                )
+                                    )
 
-                            ),
+                                ),
 
 
+                            )
                         )
-                    )
-                );
+                    );
 
 
-                $show_feedback = (float)microtime(true) + .400;
+                    $show_feedback = (float)microtime(true) + .400;
 
 
+                }
             }
-
 
         }
     }
 
+   
 
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
