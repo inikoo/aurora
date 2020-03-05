@@ -4681,7 +4681,18 @@ class Part extends Asset {
                     $sales = $invoiced * $product_data['Product Part Ratio'];
 
                 } else {
-                    $sales = $product->get('Product 1 Year Acc Quantity Invoiced') * $product_data['Product Part Ratio'];
+
+
+                    $sales_1q=$product->get('Product 1 Year Acc Quantity Invoiced');
+                    if($sales_1q==''){
+                        $sales_1q=0;
+                    }
+                    $product_ratio= $product_data['Product Part Ratio'];
+                    if(!is_numeric($product_ratio) or $product_ratio<0){
+                        $product_ratio=1;
+                    }
+
+                    $sales = $sales_1q*$product_ratio;
 
                 }
 
