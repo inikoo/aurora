@@ -296,7 +296,7 @@ class Customer_Client extends Subject {
     }
 
 
-    function create_customer_client_order() {
+    function create_order() {
 
         $account = get_object('Account', 1);
 
