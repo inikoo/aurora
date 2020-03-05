@@ -428,6 +428,9 @@ class DeliveryNote extends DB_Table {
 
 
                 break;
+            case 'Number Ordered Items':
+                return     number($this->data['Delivery Note Number Ordered Items']);
+
 
             case 'Packed Percentage or Datetime':
                 if ($this->get('State Index') < 0) {

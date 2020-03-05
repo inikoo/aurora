@@ -1646,7 +1646,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'delivery_note':
             include_once 'showcase/delivery_note.show.php';
-            $html         = get_delivery_note_showcase($data, $smarty, $user, $db);
+            $html         = get_delivery_note_showcase($data, $smarty);
             $title        = $data['_object']->get('ID');
             $web_location = '<i class="fal fa-fw fa-truck"></i> '.$title;
 

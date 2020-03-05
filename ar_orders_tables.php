@@ -2063,9 +2063,7 @@ function deleted_invoice_items($_data, $db, $user) {
 
 function delivery_note_fast_track_packing($_data, $db, $user) {
 
-    //print_r($_data);
 
-    //include_once('class.DeliveryNote.php');
     include_once('utils/order_handing_functions.php');
 
 
@@ -2091,14 +2089,15 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+
         $currency_code = $data['Order Currency Code'];
 
         $total_number_items++;
 
-        $pending = $data['required'];
+        $pending = $data['Required']+$data['Given'];
 
 
-        $available = $data['required'] - $data['cant_pick'];
+        $available = $pending - $data['cant_pick'];
 
         if ($data['Location Key'] == 1) {
 
@@ -2120,11 +2119,11 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
         //$description=$data['Part Current On Hand Stock'];
 
-        if ($data['required'] != $available) {
-            $_quantity = '<span class="strikethrough  discreet">'.number($data['required']).'</span> <span class="error discreet item_quantity_fast_track_packing button  "  qty="'.$available.'" >'.number($available).'</error>';
+        if ($pending != $available) {
+            $_quantity = '<span class="strikethrough  discreet">'.number($pending).'</span> <span class="error discreet item_quantity_fast_track_packing button  "  qty="'.$available.'" >'.number($available).'</error>';
 
         } else {
-            $_quantity = sprintf('<span class="item_quantity_fast_track_packing button" qty="%s"   >%s</span>', $data['required'], number($data['required']));
+            $_quantity = sprintf('<span class="item_quantity_fast_track_packing button" qty="%s"   >%s</span>', $pending, number($pending));
 
         }
         $quantity = '<div class="quantity_components">'.$_quantity.'</div>';
@@ -2151,7 +2150,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 */
 
 
-        $total_pending = $data['required'];
+        $total_pending = $pending;
 
 
         $total_amount += $data['Order Transaction Amount'];
@@ -2186,7 +2185,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
 
         $picked_offline_input = '<div class="picked_quantity_components" data-pending="'.$pending.'">'.get_delivery_note_fast_track_packing_input(
-                ($data['pl_ok'] == '' ? 'No' : 'Yes'), $data['required'], 0, 0, $data['required'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Part Current On Hand Stock'], $data['Location Key']
+                ($data['pl_ok'] == '' ? 'No' : 'Yes'), $pending, 0, 0, $pending, $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Part Current On Hand Stock'], $data['Location Key']
 
             ).'</div>';
 
