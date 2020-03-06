@@ -3247,12 +3247,7 @@ class Product extends Asset {
         $this->get_data('id', $this->id);
 
 
-        $this->update_part_numbers();
-
         $this->update_weight();
-
-        $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
-
         $this->update_metadata = array(
             'class_html' => array(
                 'Package_Weight' => $this->get('Package Weight'),
@@ -3261,44 +3256,13 @@ class Product extends Asset {
         );
 
 
-        $account = get_object('Account', 1);
-
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'       => 'product_part_list_updated',
             'product_id' => $this->id,
             'editor'     => $this->editor
-        ), $account->get('Account Code'), $this->db
-        );
-
-
-    }
-
-    function update_part_numbers() {
-
-        $number_parts = 0;
-
-        $sql = sprintf(
-            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_parts = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->fast_update(
-            array(
-                'Product Number of Parts' => $number_parts,
-
-
-            )
+        ), DNS_ACCOUNT_CODE, $this->db
         );
 
 
@@ -3306,32 +3270,25 @@ class Product extends Asset {
 
     function update_weight() {
 
+        $old_weight=$this->data['Product Package Weight'];
+
         $weight = 0;
 
-        $sql = sprintf(
-            'SELECT `Part Package Weight`,`Product Part Ratio` FROM `Product Part Bridge`  left join `Part Dimension` on (`Product Part Part SKU`=`Part SKU`)  WHERE `Product Part Product ID`=%d', $this->id
+        $sql = "SELECT `Part Package Weight`,`Product Part Ratio` FROM `Product Part Bridge`  left join `Part Dimension` on (`Product Part Part SKU`=`Part SKU`)  WHERE `Product Part Product ID`=?";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if (is_numeric($row['Part Package Weight']) and $row['Part Package Weight'] > 0) {
+                $weight += $row['Part Package Weight'] * $row['Product Part Ratio'];
 
-
-        //  print $sql;
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                //  print_r($row);
-
-                if (is_numeric($row['Part Package Weight']) and $row['Part Package Weight'] > 0) {
-                    $weight += $row['Part Package Weight'] * $row['Product Part Ratio'];
-
-                }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-
 
         $this->fast_update(
             array(
@@ -3341,6 +3298,10 @@ class Product extends Asset {
             )
         );
 
+        if ($old_weight != $weight) {
+            $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+            $this->update_webpages('weight');
+        }
 
     }
 
@@ -3401,6 +3362,35 @@ class Product extends Asset {
 
 
         return $category_data;
+    }
+
+    function update_part_numbers() {
+
+        $number_parts = 0;
+
+        $sql = sprintf(
+            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Product Number of Parts' => $number_parts,
+
+
+            )
+        );
+
+
     }
 
     function update_cost() {

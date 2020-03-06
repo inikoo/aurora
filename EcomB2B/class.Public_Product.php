@@ -237,6 +237,7 @@ class Public_Product {
             case 'Product Cost':
             case 'Product Price':
             case 'Product Unit Weight':
+            case 'Product Package Weight':
             case 'Product Barcode Number':
             case 'Product Code':
             case 'Product Family Category Key':
@@ -478,10 +479,14 @@ class Public_Product {
                 break;
             case 'Unit Weight':
                 include_once 'utils/natural_language.php';
-
-
                 return weight($this->data['Product Unit Weight']);
-                break;
+            case 'Package Weight':
+                include_once 'utils/natural_language.php';
+                return weight($this->data['Product Package Weight']);
+
+            case 'Unit Weight Formatted':
+                include_once 'utils/natural_language.php';
+                return weight($this->data['Product Unit Weight']).' <span class="small discreet">/'.$this->data['Product Unit Label'].'</span>';
 
             case 'Unit Dimensions':
 

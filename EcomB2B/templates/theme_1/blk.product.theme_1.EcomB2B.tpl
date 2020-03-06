@@ -127,7 +127,8 @@
 
         </div>
         {assign 'origin' $product->get('Origin')}
-        {assign 'weight' $product->get('Unit Weight')}
+        {assign 'weight' $product->get('Unit Weight Formatted')}
+        {assign 'weight_gross' $product->get('Package Weight')}
         {assign 'dimensions' $product->get('Unit Dimensions')}
         {assign 'materials' $product->get('Materials')}
         {assign 'barcode' $product->get('Barcode Number')}
@@ -137,30 +138,34 @@
 
         <table class="properties" >
         <tr class="{if $origin==''}hide{/if}">
-            <td>{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</td>
+            <td class="small">{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</td>
             <td>{$origin}</td>
         </tr>
 
         <tr class="{if $weight==''}hide{/if}">
-            <td>{if empty($labels._product_weight)}{t}Weight{/t}{else}{$labels._product_weight}{/if}</td>
+            <td class="small">{if empty($labels._product_weight)}{t}Net weight{/t}{else}{$labels._product_weight}{/if}</td>
             <td>{$weight}</td>
         </tr>
+            <tr class="{if $weight_gross==''}hide{/if}">
+                <td class="small">{if empty($labels._product_weight_gross)}{t}Shipping weight{/t}{else}{$labels._product_weight_gross}{/if}</td>
+                <td>{$weight_gross}</td>
+            </tr>
         <tr class="{if $dimensions==''}hide{/if}">
-            <td>{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</td>
+            <td class="small">{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</td>
             <td>{$dimensions}</td>
         </tr>
         <tr class="{if $materials==''}hide{/if}">
-            <td>{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
+            <td class="small">{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
             <td>
                 {$materials}
             </td>
         </tr>
         <tr class="{if $cpnp==''}hide{/if}">
-            <td title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
+            <td class="small" title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
             <td>{$cpnp}</td>
         </tr>
         <tr class="{if $barcode==''}hide{/if}">
-            <td>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
+            <td class="small">{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
             <td>{$barcode}</td>
 
         </tr>

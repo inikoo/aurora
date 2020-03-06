@@ -710,7 +710,7 @@ function fork_export_edit_template($job) {
         }
     }
 
-   
+
 
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();

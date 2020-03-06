@@ -1502,7 +1502,12 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => _('Unit weight (marketing)'),
                 'checked' => 1
             ),
-
+            array(
+                'name'    => '`Product Package Weight`',
+                'code'    => 'product_package_weight',
+                'label'   => _('Package weight (shipping)'),
+                'checked' => 1
+            ),
             array(
                 'name'    => '`Product Unit XHTML Dimensions`',
                 'code'    => 'product_unit_dimensions',
