@@ -107,7 +107,7 @@ class Public_Product {
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->historic_id = $this->data['Product Key'];
                 $this->id          = $this->data['Product ID'];
-                $this->properties  = json_decode($this->data['Product Properties'], true);
+
 
 
                 $sql = sprintf("SELECT * FROM `Product Dimension` WHERE `Product ID`=%d", $this->data['Product ID']);
@@ -117,7 +117,7 @@ class Public_Product {
                         $this->data[$key] = $value;
                     }
                 }
-
+                $this->properties  = json_decode($this->data['Product Properties'], true);
 
             }
         } else {
