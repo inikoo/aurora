@@ -134,7 +134,7 @@
 
     <div class="clear"></div>
     <div class="container order basket   " style="margin-bottom: 20px">
-            <span class="basket_order_items" data-scope="customer">
+            <span class="basket_order_items"  data-scope="client" data-scope_key="{$customer_client->id}">
             {include file="theme_1/_order_items.theme_1.EcomB2B.mobile.tpl" edit=true hide_title=true   items_data=$items_data  client_key=$customer_client->id  }
             </span>
 

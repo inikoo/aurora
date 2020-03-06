@@ -203,8 +203,19 @@ function save_item_qty_change(element,options) {
                 if(data.metadata.new_otfs.length>0 ||  data.metadata.deleted_otfs.length>0){
 
 
+                    const scope= $('.basket_order_items').data('scope')
 
-                    var request = 'ar_web_basket.php?tipo=get_items_html&device_prefix=' + $('body').data('device_prefix')
+
+
+                    if(scope=='client'){
+
+                        var request = 'ar_web_client_basket.php?tipo=get_client_order_items_html&client_key='+$('.basket_order_items').data('scope_key')+'&device_prefix=' + $('body').data('device_prefix')
+
+                    }else{
+                        var request = 'ar_web_basket.php?tipo=get_items_html&device_prefix=' + $('body').data('device_prefix')
+
+                    }
+
 
 
                     $.getJSON(request, function (data2) {
@@ -308,6 +319,8 @@ function post_save_change_item_in_basket(data){
     if (data.metadata.new_otfs.length > 0 || data.metadata.deleted_otfs.length > 0) {
 
         const scope= $('.basket_order_items').data('scope')
+
+
 
 
         if(scope=='client'){

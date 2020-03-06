@@ -196,8 +196,9 @@ function get_client_order_items_html($data, $customer_key) {
     $smarty->assign('hide_title', true);
     $smarty->assign('items_data', $order->get_items());
     $smarty->assign('interactive_charges_data', $order->get_interactive_charges_data());
+    $smarty->assign('client_key', $customer_client->id);
 
-    // print_r( $order->get_interactive_deal_component_data());
+
 
     $smarty->assign('interactive_deal_component_data', $order->get_interactive_deal_component_data());
 
