@@ -541,7 +541,7 @@ class Page extends DB_Table {
                 break;
             case 'Product':
                 $product = get_object('Product', $this->data['Webpage Scope Key']);
-
+                $parent_webpage_key='';
                 if ($product->get('Product Family Category Key')) {
                     $parent         = get_object('Category', $product->get('Product Family Category Key'));
                     $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));

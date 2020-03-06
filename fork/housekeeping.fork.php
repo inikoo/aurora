@@ -2702,7 +2702,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'product_part_list_updated':
 
             $product = get_object('product', $data['product_id']);
-            $product->update_part_numbers();
+
 
             $product->fast_update(array('Product XHTML Parts' => $product->get('Parts')));
 

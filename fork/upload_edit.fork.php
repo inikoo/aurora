@@ -668,7 +668,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             break;
     }
 
-print $object->get('Code')."\n";
+    //print $object->get('Code')."\n";
     if ($error) {
 
         $sql = sprintf(
@@ -679,7 +679,6 @@ print $object->get('Code')."\n";
 
 
         $db->exec($sql);
-        exit;
         return false;
 
 
@@ -691,7 +690,6 @@ print $object->get('Code')."\n";
         );
         $db->exec($sql);
 
-        exit;
 
         return $object->id;
     }

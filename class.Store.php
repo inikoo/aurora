@@ -3878,27 +3878,21 @@ class Store extends DB_Table {
                 set_time_limit(90);
 
                 if ($product_parts_data) {
-
-
-
                     $product->update_part_list($product_parts_data, 'no_history');
-
-
                 }
 
-
+                $product->update_status_from_parts();
+                if ($family_key) {
+                    $product->update(array('Product Family Category Key' => $family_key), 'no_history');
+                }
 
                 foreach ($this->get_websites('objects') as $website) {
                     $website->create_product_webpage($product->id);
                 }
 
-                if ($family_key) {
-                    $product->update(array('Product Family Category Key' => $family_key), 'no_history');
-                }
 
-                $product->update_status_from_parts();
+$product->update_web_state();
 
-                $account = get_object('Account', 1);
 
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
@@ -3906,7 +3900,7 @@ class Store extends DB_Table {
                     'type'       => 'product_created',
                     'product_id' => $product->id,
                     'editor'     => $product->editor
-                ), $account->get('Account Code'), $this->db
+                ), DNS_ACCOUNT_CODE, $this->db
                 );
 
 

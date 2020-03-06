@@ -1357,6 +1357,9 @@ class Product extends Asset {
 
     function update_web_state($use_fork = true) {
 
+
+
+
         $store = get_object('Store', $this->get('Product Store Key'));
 
         if ($store->get('Store Type') == 'External') {
@@ -1375,6 +1378,7 @@ class Product extends Asset {
         }
 
         $web_state = $this->get_web_state();
+
 
 
         $this->update_field('Product Web State', $web_state, 'no_history');
@@ -1527,6 +1531,7 @@ class Product extends Asset {
     }
 
     function get_web_state() {
+
 
 
         if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0)) {
@@ -3246,13 +3251,14 @@ class Product extends Asset {
 
 
         $this->update_weight();
+        $this->update_part_numbers();
+
         $this->update_metadata = array(
             'class_html' => array(
                 'Package_Weight' => $this->get('Package Weight'),
             )
 
         );
-// todo update product availavility
 
         $parts = $this->get_parts();
 
