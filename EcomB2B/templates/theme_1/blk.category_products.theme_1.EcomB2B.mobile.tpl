@@ -92,7 +92,6 @@
                             {/if}
                         {/if}
                     {else}
-
                         <div class="log_out_prod_info" >
                             {if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}
                         </div>
@@ -103,9 +102,6 @@
 
                     {/if}
                 </div>
-
-
-
             </div>
         {/if}
     {/foreach}

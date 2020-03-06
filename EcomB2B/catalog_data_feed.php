@@ -114,7 +114,7 @@ switch ($_REQUEST['scope']) {
 
 
         $placeholders = array(
-            '[image_address]' => 'https://'.$row['Website URL'].'/img/'
+            '[image_address]' => 'https://'.$row['Website URL'].'/wi/'
         );
 
         $sql = strtr($sql, $placeholders);

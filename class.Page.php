@@ -1397,38 +1397,36 @@ class Page extends DB_Table {
 
             $items = array();
 
-            $sql = sprintf(
-                "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,B.`Category Key` ,`Product Category Key`
-                  FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ORDER BY  `Category Label`  ",
-                $this->get('Webpage Scope Key')
+            $sql ="SELECT  `Image File Format`,`Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,B.`Category Key` ,`Product Category Key`
+                  FROM    `Category Bridge` B  LEFT JOIN  `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) 
+                      LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`) 
+                      LEFT JOIN `Image Dimension` I ON (`Category Main Image Key`=I.`Image Key`) 
 
+                    WHERE  B.`Category Key`=? AND `Product Category Public`='Yes' AND `Webpage State` IN ('Online','Ready') ORDER BY `Category Label`";
 
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->get('Webpage Scope Key')
+                )
             );
+            while ($row = $stmt->fetch()) {
+                $items[] = array(
+                    'type'                 => 'category',
+                    'category_key'         => $row['Product Category Key'],
+                    'header_text'          => trim(strip_tags($row['Category Label'])),
+                    'image_src'            => ($row['Category Main Image Key'] ? 'wi/'.$row['Category Main Image Key'].'.'.$row['Image File Format'] : '/art/nopic.png'),
+                    'image_mobile_website' => '',
+                    'image_website'        => '',
+                    'webpage_key'          => $row['Page Key'],
+                    'webpage_code'         => strtolower($row['Webpage Code']),
+                    'item_type'            => 'Subject',
+                    'category_code'        => $row['Category Code'],
+                    'number_products'      => $row['Product Category Active Products'],
+                    'link'                 => $row['Webpage URL']
+                );
+               }
 
-            //   print $sql;
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $items[] = array(
-                        'type'                 => 'category',
-                        'category_key'         => $row['Product Category Key'],
-                        'header_text'          => trim(strip_tags($row['Category Label'])),
-                        'image_src'            => ($row['Category Main Image Key'] ? 'wi.php?id='.$row['Category Main Image Key'] : '/art/nopic.png'),
-                        'image_mobile_website' => '',
-                        'image_website'        => '',
-                        'webpage_key'          => $row['Page Key'],
-                        'webpage_code'         => strtolower($row['Webpage Code']),
-                        'item_type'            => 'Subject',
-                        'category_code'        => $row['Category Code'],
-                        'number_products'      => $row['Product Category Active Products'],
-                        'link'                 => $row['Webpage URL']
-                    );
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
 
 
             $sections = array(
@@ -2817,8 +2815,12 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
-                FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')  ORDER BY  `Category Label` DESC   ",
+            "SELECT  `Image File Format`,`Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
+                FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    
+                        LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) 
+                        LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
+                        LEFT JOIN `Image Dimension` I ON (`Category Main Image Key`=I.`Image Key`) 
+                        WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')  ORDER BY  `Category Label` DESC   ",
             $this->get('Webpage Scope Key')
 
 
@@ -2933,11 +2935,24 @@ class Page extends DB_Table {
 
         foreach ($items_category_key_index as $index) {
             $item_data = $items[$index];
+
+            if($item_data['Category Main Image Key']>0){
+
+                if($item_data['Category Main Image Key']!=''){
+                    $img='wi/'.$item_data['Category Main Image Key'].'.'.$item_data['Category Main Image Key'];
+                }else {
+                    $img='wi.php?id='.$item_data['Category Main Image Key'];
+                }
+
+            }else{
+                $img='/art/nopic.png';
+            }
+
             $item      = array(
                 'type'                 => 'category',
                 'category_key'         => $item_data['Category Key'],
                 'header_text'          => trim(strip_tags($item_data['Category Label'])),
-                'image_src'            => ($item_data['Category Main Image Key'] ? 'wi.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
+                'image_src'            => $img,
                 'image_mobile_website' => '',
                 'image_website'        => '',
                 'webpage_key'          => $item_data['Page Key'],
@@ -3077,7 +3092,7 @@ class Page extends DB_Table {
         $block_found  = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'product') {
-                $block       = $_block;
+               // $block       = $_block;
                 $block_key   = $_block_key;
                 $block_found = true;
                 break;
@@ -3090,6 +3105,8 @@ class Page extends DB_Table {
 
         $product    = get_object('Public_Product', $this->get('Webpage Scope Key'));
         $image_data = $product->get('Image Data');
+
+       // print_r($image_data);
 
         $image_gallery = array();
         foreach ($product->get_image_gallery() as $image_item) {

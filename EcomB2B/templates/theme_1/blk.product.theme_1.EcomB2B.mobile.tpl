@@ -138,7 +138,8 @@
         <div class="clear"></div>
 
         {assign 'origin' $product->get('Origin')}
-        {assign 'weight' $product->get('Unit Weight')}
+    {assign 'weight' $product->get('Unit Weight Formatted')}
+    {assign 'weight_gross' $product->get('Package Weight')}
         {assign 'dimensions' $product->get('Unit Dimensions')}
         {assign 'materials' $product->get('Materials')}
         {assign 'barcode' $product->get('Barcode Number')}
@@ -151,8 +152,12 @@
                 <td class="origin">{$origin}</td>
             </tr>
             <tr class="{if $weight==''}hide{/if}">
-                <td>{if empty($labels._product_weight)}{t}Weight{/t}{else}{$labels._product_weight}{/if}</td>
+                <td>{if empty($labels._product_weight)}{t}Net weight{/t}{else}{$labels._product_weight}{/if}</td>
                 <td class="origin">{$weight}</td>
+            </tr>
+            <tr class="{if $weight_gross==''}hide{/if}">
+                <td>{if empty($labels._product_weight_gross)}{t}Shipping weight{/t}{else}{$labels._product_weight_gross}{/if}</td>
+                <td class="origin">{$weight_gross}</td>
             </tr>
 
             <tr class="{if $dimensions==''}hide{/if}">

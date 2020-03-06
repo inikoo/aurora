@@ -160,15 +160,16 @@
                         </div>
 
                         <div class="one-half-responsive last-column ">
-                        {assign 'origin' $product->get('Origin')}
-                        {assign 'weight' $product->get('Unit Weight')}
-                        {assign 'dimensions' $product->get('Unit Dimensions')}
-                        {assign 'materials' $product->get('Materials')}
-                        {assign 'barcode' $product->get('Barcode Number')}
-                        {assign 'cpnp' $product->get('CPNP Number')}
+                            {assign 'origin' $product->get('Origin')}
+                            {assign 'weight' $product->get('Unit Weight Formatted')}
+                            {assign 'weight_gross' $product->get('Package Weight')}
+                            {assign 'dimensions' $product->get('Unit Dimensions')}
+                            {assign 'materials' $product->get('Materials')}
+                            {assign 'barcode' $product->get('Barcode Number')}
+                            {assign 'cpnp' $product->get('CPNP Number')}
 
 
-                        <div >
+                            <div >
 
                             <div class="activity-item {if $origin==''}hide{/if}">
                                 <div class=" one-half-responsive ">
@@ -184,13 +185,23 @@
                             <div class="activity-item {if $weight=='' or $weight=='0Kg'}hide{/if}">
                                 <div class=" one-half-responsive ">
                                     <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_weight)}{t}Weight{/t}{else}{$labels._product_weight}{/if}</strong>
+                                    <strong>{if empty($labels._product_weight)}{t}Net weight{/t}{else}{$labels._product_weight}{/if}</strong>
                                 </div>
                                 <div class="one-half-responsive last-column"  >
 
                                     <span style="float:right" class="origin">{$weight}</span>
                                 </div>
                             </div>
+                                <div class="activity-item {if $weight_gross=='' or $weight_gross=='0Kg'}hide{/if}">
+                                    <div class=" one-half-responsive ">
+                                        <i class="ion-record color-green-dark"></i>
+                                        <strong>{if empty($labels._product_weight_gross)}{t}Shipping weight{/t}{else}{$labels._product_weight_gross}{/if}</strong>
+                                    </div>
+                                    <div class="one-half-responsive last-column"  >
+
+                                        <span style="float:right" class="origin">{$weight_gross}</span>
+                                    </div>
+                                </div>
 
                             <div class="activity-item {if $dimensions==''}hide{/if}">
                                 <div class=" one-half-responsive ">

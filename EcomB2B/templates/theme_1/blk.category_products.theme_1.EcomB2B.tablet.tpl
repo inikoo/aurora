@@ -33,7 +33,6 @@
                         <div class="product_header_text fr-view" >
                             {$item.header_text}
                         </div>
-
                         <div class="wrap_to_center product_image" >
                             <a href="{$item.link}"
                                data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'

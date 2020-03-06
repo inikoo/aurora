@@ -22,7 +22,6 @@
         {counter start=-1 print=false assign="counter"}
         {foreach from=$data.items item=item  name=items}
 
-
             <div class="product_wrap
                 {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if}
                 wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">

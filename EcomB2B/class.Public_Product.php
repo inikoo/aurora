@@ -85,6 +85,8 @@ class Public_Product {
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];
+                $this->properties  = json_decode($this->data['Product Properties'], true);
+
             }
         } elseif ($key == 'store_code') {
             $sql = sprintf(
@@ -93,6 +95,8 @@ class Public_Product {
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];
+                $this->properties  = json_decode($this->data['Product Properties'], true);
+
             }
         } elseif ($key == 'historic_key') {
             $sql = sprintf(
@@ -103,6 +107,7 @@ class Public_Product {
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->historic_id = $this->data['Product Key'];
                 $this->id          = $this->data['Product ID'];
+                $this->properties  = json_decode($this->data['Product Properties'], true);
 
 
                 $sql = sprintf("SELECT * FROM `Product Dimension` WHERE `Product ID`=%d", $this->data['Product ID']);
@@ -132,9 +137,6 @@ class Public_Product {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         $sql = sprintf(
@@ -273,7 +275,7 @@ class Public_Product {
 
                 include_once 'utils/image_functions.php';
 
-                $sql = "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` 
+                $sql = "SELECT  `Image Subject Image File Format`,`Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` 
                     FROM `Image Dimension`    LEFT JOIN `Image Subject Bridge`   ON (`Image Subject Image Key`=`Image Key`)  WHERE `Image key`=?";
 
                 $stmt = $this->db->prepare($sql);
@@ -284,14 +286,13 @@ class Public_Product {
                 );
                 if ($row = $stmt->fetch()) {
 
-                    $image_website = 'wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], 330, 330, 'fit_highest');
 
-                    // $image_website = 'rimg/'.get_image_size($row['Image Key'], 330, 330, 'fit_highest').'_'.$row['Image Key'].'.'.;
-
+                    $image_website = 'rwi/'.get_image_size($row['Image Key'], 330, 330, 'fit_highest').'_'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
+                    $img           = '/wi/'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
 
                     $image_data = array(
                         'key'           => $row['Image Key'],
-                        'src'           => $img = '/wi.php?&id='.$row['Image Key'],
+                        'src'           => $img,
                         'caption'       => $row['Image Subject Image Caption'],
                         'width'         => $row['Image Width'],
                         'height'        => $row['Image Height'],
@@ -314,12 +315,48 @@ class Public_Product {
                 break;
 
             case 'Image':
+            case 'Image Mobile In Family Webpage':
 
+                if($key=='Image'){
+                    $size='320x280';
+                }else{
+                    $size='340x214';
+
+                }
 
                 $image_key = $this->data['Product Main Image Key'];
 
                 if ($image_key) {
-                    $img = '/wi.php?s=320x280&id='.$image_key;
+
+                    $image_format = $this->properties('wi_ext');
+
+                    if ($image_format == '') {
+                        $sql  = "SELECT `Image File Format` from  `Image Dimension` where `Image Key`=?";
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $image_key
+                            )
+                        );
+                        if ($row = $stmt->fetch()) {
+                            $image_format = $row['Image File Format'];
+
+                            $sql =  "UPDATE `Product Dimension` SET `Product Properties`= JSON_SET(`Product Properties`,'$.wi_ext',?) WHERE `Product ID`=?";
+                            $stmt = $this->db->prepare($sql);
+                            $stmt->bindParam(1, $image_format);
+                            $stmt->bindParam(2, $this->id);
+                            $stmt->execute();
+                        }
+
+
+                    }
+                    if ($image_format == '') {
+                        $img = '/wi.php?s='.$size.'&id='.$image_key;
+
+                    }else{
+                        $img = 'rwi/'.$size.'_'.$image_key.'.'.$image_format;
+
+                    }
 
 
                 } else {
@@ -329,19 +366,6 @@ class Public_Product {
 
                 return $img;
 
-                break;
-
-            case 'Image Mobile In Family Webpage':
-
-                $image_key = $this->data['Product Main Image Key'];
-
-                if ($image_key) {
-                    return '/wi.php?id='.$image_key.'&s=340x214';
-                } else {
-                    return '/art/nopic.png';
-                }
-
-                break;
 
 
             case 'Webpage Key':
@@ -772,6 +796,10 @@ class Public_Product {
         return '';
     }
 
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
     function load_webpage() {
 
         $this->webpage = get_object('public_webpage-scope_product', $this->id);
@@ -812,41 +840,40 @@ class Public_Product {
 
     }
 
-
     function get_image_gallery() {
 
         include_once 'utils/image_functions.php';
 
-
-        $sql = sprintf(
-            "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
-            prepare_mysql('Product'), $this->id
-        );
-
-
         $gallery = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+        $sql     =
+            "SELECT `Image Subject Image File Format`,`Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=? AND `Image Subject Object Key`=? ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`";
 
-                if ($row['Image Key']) {
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                'Product',
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if ($row['Image Key']) {
+
+                $image_website = 'rwi/'.get_image_size($row['Image Key'], '', 50, 'height').'_'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
+                $img           = 'wi/'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
 
 
-                    $image_website = 'wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], '', 50, 'height');
+                $gallery[] = array(
+                    'src'           => $img,
+                    'caption'       => $row['Image Subject Image Caption'],
+                    'key'           => $row['Image Key'],
+                    'width'         => $row['Image Width'],
+                    'height'        => $row['Image Height'],
+                    'image_website' => $image_website
 
-
-                    $gallery[] = array(
-                        'src'           => 'wi.php?id='.$row['Image Key'],
-                        'caption'       => $row['Image Subject Image Caption'],
-                        'key'           => $row['Image Key'],
-                        'width'         => $row['Image Width'],
-                        'height'        => $row['Image Height'],
-                        'image_website' => $image_website
-
-                    );
-                }
-
+                );
             }
         }
+
 
         return $gallery;
 
@@ -1030,6 +1057,5 @@ class Public_Product {
 
         return $images_slideshow;
     }
-
 }
 

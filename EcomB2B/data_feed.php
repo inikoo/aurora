@@ -118,7 +118,7 @@ if ($row = $stmt->fetch()) {
 
 
             $placeholders = array(
-                '[image_address]' => 'https://'.$row['Website URL'].'/img/'
+                '[image_address]' => 'https://'.$row['Website URL'].'/wi/'
             );
 
             $sql = strtr($sql, $placeholders);

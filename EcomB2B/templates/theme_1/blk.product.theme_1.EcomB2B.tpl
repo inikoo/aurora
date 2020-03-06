@@ -17,9 +17,7 @@
     <div class="product product_container" data-product_id="{$product->id}" style="display: flex; justify-content: space-evenly" itemscope itemtype="http://schema.org/Product">
         <div class="images" style="flex-grow:1;padding-left: 20px;min-width: 350px;flex-basis: auto;flex-grow: 1;">
 
-
             <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-
                 <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
                     <img style="max-width: 330px;max-height: 330px" src="{if $data.image.image_website=='' }{$data.image.src}{else}{$data.image.image_website}{/if}" itemprop="image" title="{$data.image.caption}" alt="{$data.image.caption}">
                 </a>
@@ -34,11 +32,7 @@
                         </a>
                     </figure>
                 {/foreach}
-
-
             </div>
-
-
         </div>
         <div class="information product_information" >
             <h1 style="padding-top:5px;margin:2px 0;font-size:150%" itemprop="name">
