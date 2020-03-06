@@ -45,14 +45,13 @@ class Public_Product {
      */
     public $msg;
     /**
-     * @var bool|\PDO
-     */
-    private $db;
-
-    /**
      * @var integer
      */
     public $historic_id;
+    /**
+     * @var bool|\PDO
+     */
+    private $db;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
@@ -232,7 +231,6 @@ class Public_Product {
                 break;
 
 
-
             case 'Product Name':
             case 'Product Cost':
             case 'Product Price':
@@ -259,57 +257,55 @@ class Public_Product {
                 break;
 
             case 'Origin':
-                if ($this->data['Product Origin Country Code']!='') {
+                if ($this->data['Product Origin Country Code'] != '') {
                     include_once 'class.Country.php';
                     $country = new Country('code', $this->data['Product Origin Country Code']);
-                    if(trim($country->get('Country Name'))!=''){
+                    if (trim($country->get('Country Name')) != '') {
                         return '<img alt="" data-country_key="'.$country->id.'"   src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.png" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
                     }
 
                 }
-                    return '';
 
+                return '';
 
 
             case 'Image Data':
 
                 include_once 'utils/image_functions.php';
 
-                $sql = sprintf(
-                    "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` 
-                    FROM `Image Dimension`    LEFT JOIN `Image Subject Bridge`   ON (`Image Subject Image Key`=`Image Key`)  WHERE `Image key`=%d ", $this->data['Product Main Image Key']
+                $sql = "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` 
+                    FROM `Image Dimension`    LEFT JOIN `Image Subject Bridge`   ON (`Image Subject Image Key`=`Image Key`)  WHERE `Image key`=?";
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->data['Product Main Image Key']
+                    )
                 );
+                if ($row = $stmt->fetch()) {
+
+                    $image_website = 'wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], 330, 330, 'fit_highest');
+
+                    // $image_website = 'rimg/'.get_image_size($row['Image Key'], 330, 330, 'fit_highest').'_'.$row['Image Key'].'.'.;
 
 
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-
-                        $image_website = 'wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], 330, 330, 'fit_highest');
-
-
-                        $image_data = array(
-                            'key'           => $row['Image Key'],
-                            'src'           => $img = '/wi.php?&id='.$row['Image Key'],
-                            'caption'       => $row['Image Subject Image Caption'],
-                            'width'         => $row['Image Width'],
-                            'height'        => $row['Image Height'],
-                            'image_website' => $image_website
-                        );
-                    } else {
-                        $image_data = array(
-                            'key'           => 0,
-                            'src'           => '/art/nopic.png',
-                            'caption'       => '',
-                            'width'         => 190,
-                            'height'        => 130,
-                            'image_website' => '/art/nopic.png'
-                        );
-                    }
+                    $image_data = array(
+                        'key'           => $row['Image Key'],
+                        'src'           => $img = '/wi.php?&id='.$row['Image Key'],
+                        'caption'       => $row['Image Subject Image Caption'],
+                        'width'         => $row['Image Width'],
+                        'height'        => $row['Image Height'],
+                        'image_website' => $image_website
+                    );
                 } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
+                    $image_data = array(
+                        'key'           => 0,
+                        'src'           => '/art/nopic.png',
+                        'caption'       => '',
+                        'width'         => 190,
+                        'height'        => 130,
+                        'image_website' => '/art/nopic.png'
+                    );
                 }
 
 
@@ -479,13 +475,16 @@ class Public_Product {
                 break;
             case 'Unit Weight':
                 include_once 'utils/natural_language.php';
+
                 return weight($this->data['Product Unit Weight']);
             case 'Package Weight':
                 include_once 'utils/natural_language.php';
+
                 return weight($this->data['Product Package Weight']);
 
             case 'Unit Weight Formatted':
                 include_once 'utils/natural_language.php';
+
                 return weight($this->data['Product Unit Weight']).' <span class="small discreet">/'.$this->data['Product Unit Label'].'</span>';
 
             case 'Unit Dimensions':
@@ -681,7 +680,6 @@ class Public_Product {
                             break;
 
 
-
                         default:
                             $dimensions = '';
                     }
@@ -768,8 +766,9 @@ class Public_Product {
 
             default:
 
-            return '';
+                return '';
         }
+
         return '';
     }
 
@@ -814,8 +813,6 @@ class Public_Product {
     }
 
 
-
-
     function get_image_gallery() {
 
         include_once 'utils/image_functions.php';
@@ -850,6 +847,7 @@ class Public_Product {
 
             }
         }
+
         return $gallery;
 
     }

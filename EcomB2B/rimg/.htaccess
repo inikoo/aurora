@@ -1,0 +1,4 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteRule ^(\d+x\d+)_([^\.]+)\.(png|jpg|jpeg|ico|gif)$    ../wi.php?s=$1&id=$2 [NC,L]
