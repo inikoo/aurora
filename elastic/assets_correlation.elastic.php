@@ -41,7 +41,14 @@ function get_elastic_sales_correlated_assets($object_key,$scope_prefix,$period_s
         'size'    => 1
     ];
 
-    $result= $client->search($params);
-    return $result['aggregations']['assets'];
+    try {
+        $result= $client->search($params);
+        return $result['aggregations']['assets'];
+    } catch (Exception $e) {
+        return ['buckets'=>[]];
+    }
+
+
+
 
 }

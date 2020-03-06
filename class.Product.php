@@ -830,14 +830,12 @@ class Product extends Asset {
             $this->fast_update(array('Product Properties' => '{}'));
 
             $this->update_product_targeted_marketing_customers();
-
             $this->update_product_spread_marketing_customers();
 
 
             $this->update_historic_object();
             $this->get_data('id', $this->id);
 
-            //  $store=new Store($this->get())
 
             $this->fork_index_elastic_search();
 
@@ -847,7 +845,7 @@ class Product extends Asset {
 
             // print "\n\n$sql\n\n";
 
-            $this->msg = 'Error inserting Product record $sql';
+            $this->msg = 'Error inserting Product record';
         }
 
 
@@ -3254,6 +3252,48 @@ class Product extends Asset {
             )
 
         );
+// todo update product availavility
+
+        $parts = $this->get_parts();
+
+        if (count($parts) == 1) {
+
+
+            $part = get_object('Part', array_pop($parts));
+            $this->fast_update(
+                array(
+                    'Product Tariff Code'                  => $part->get('Part Tariff Code'),
+                    'Product HTSUS Code'                   => $part->get('Part HTSUS Code'),
+                    'Product Duty Rate'                    => $part->get('Part Duty Rate'),
+                    'Product Origin Country Code'          => $part->get('Part Origin Country Code'),
+                    'Product UN Number'                    => $part->get('Part UN Number'),
+                    'Product UN Class'                     => $part->get('Part UN Class'),
+                    'Product Packing Group'                => $part->get('Part Packing Group'),
+                    'Product Proper Shipping Name'         => $part->get('Part Proper Shipping Name'),
+                    'Product Hazard Identification Number' => $part->get('Part Hazard Identification Number'),
+                    'Product Unit Weight'                  => $part->get('Part Unit Weight'),
+                    'Product Unit Dimensions'              => $part->get('Part Unit Dimensions'),
+                    'Product Materials'                    => $part->data['Part Materials'],
+                    'Product Barcode Number'               => $part->data['Part Barcode Number'],
+                    'Product Barcode Key'                  => $part->data['Part Barcode Key'],
+                    'Product Data Updated'                 => gmdate('Y-m-d H:i:s'),
+
+                )
+            );
+
+
+            $sql = "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`='Part' AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`='Marketing' ORDER BY `Image Subject Order` ";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array($part->id)
+            );
+            while ($row = $stmt->fetch()) {
+                $this->link_image($row['Image Subject Image Key'], 'Marketing');
+            }
+            $this->update_webpages('weight');
+
+        }
 
 
         require_once 'utils/new_fork.php';
@@ -3270,7 +3310,7 @@ class Product extends Asset {
 
     function update_weight() {
 
-        $old_weight=$this->data['Product Package Weight'];
+        $old_weight = $this->data['Product Package Weight'];
 
         $weight = 0;
 

@@ -445,6 +445,8 @@ module.exports = function (grunt) {
                     expand: true, src: ['trait.*.php'], dest: '../fork/'
                 }, {
                     expand: true, src: ['conf/*.php'], dest: '../fork/'
+                },{
+                    expand: true, src: ['elastic/*.php'], dest: '../fork/'
                 }, {
                     expand: true, src: ['nano_services/*.php'], dest: '../fork/'
                 }, {

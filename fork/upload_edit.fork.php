@@ -520,7 +520,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             $parent->fork=true;
 
             $object = $parent->create_product($data['fields_data']);
-            //print_r($object);
+
 
             if ($parent->error) {
                 $error          = $parent->error;
@@ -528,13 +528,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
                 $error_code     = $parent->error_code;
                 // print_r($parent);
 
-            } else {
-
             }
-
-
-            //print_r($parent);
-
 
             break;
         case 'supplier_part':
@@ -674,7 +668,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             break;
     }
 
-
+print $object->get('Code')."\n";
     if ($error) {
 
         $sql = sprintf(
@@ -685,7 +679,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
 
         $db->exec($sql);
-
+        exit;
         return false;
 
 
@@ -696,6 +690,8 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             prepare_mysql(gmdate('Y-m-d H:i:s')), $object->id, $data['upload_record_key']
         );
         $db->exec($sql);
+
+        exit;
 
         return $object->id;
     }
