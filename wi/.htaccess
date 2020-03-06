@@ -1,0 +1,4 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteRule ^([^\.]+)\.(png|jpg|jpeg|ico|gif)$    ../wi.php?id=$1 [NC,L]
