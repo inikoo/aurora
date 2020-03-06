@@ -1499,7 +1499,7 @@ function get_export_fields($element, $account_currency_code = '') {
             array(
                 'name'    => '`Product Unit Weight`',
                 'code'    => 'product_unit_weight',
-                'label'   => _('Unit weight (marketing)'),
+                'label'   => _('Unit net weight'),
                 'checked' => 1
             ),
             array(
