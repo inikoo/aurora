@@ -63,11 +63,11 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
 
 
 $fields
-       = "`Product ID`, `Webpage URL`,`Product Webpage Key`,`Product Code`,`Product Name`,`Product Units per Case`
+       = "`Product ID`, `Webpage URL`,`Product Webpage Key`,`Product Code`,`Product Name`,`Product Units per Case`,`Image Key`,`Image File Format`
       
 
         ";
-$table = '`Product Dimension` P left join `Page Store Dimension` W on (`Page Key`=`Product Webpage Key`) ';
+$table = '`Product Dimension` P left join `Page Store Dimension` W on (`Page Key`=`Product Webpage Key`) left join `Image Dimension` on (`Image Key`=`Product Main Image Key`) ';
 
 $sql_totals = "select count(distinct `Product ID`) as num from $table $where";
 

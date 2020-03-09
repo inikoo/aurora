@@ -10,6 +10,7 @@
 *}
 
 
+
 var columns = [{
 name: "id",
 label: "",
@@ -22,8 +23,8 @@ renderable: false
 {
 name: "code",
 label: "{t}Code{/t}   ",
-editable: false,
 renderable: false,
+editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ })
 },
@@ -56,9 +57,17 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 
-}
+},
 
+{
+name: "webpage",
+label: "{t}Webpage{/t}",
+editable: false,
+sortable:false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
 
+},
 
 ]
 

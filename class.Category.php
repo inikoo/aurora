@@ -2214,7 +2214,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     if ($value) {
 
 
-                        if ($this->data['Product Category Department Category Key'] != $value or true) {
+                        if ($this->data['Product Category Department Category Key'] != $value ) {
 
 
                             $old_parent_category = get_object('Category', $this->data['Product Category Department Category Key']);

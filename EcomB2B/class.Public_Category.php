@@ -91,12 +91,12 @@ class Public_Category {
 
             if ($result2 = $this->db->query($sql)) {
                 if ($row = $result2->fetch()) {
+
+
                     $this->data = array_merge($this->data, $row);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
+
 
 
         }
@@ -120,6 +120,7 @@ class Public_Category {
             case 'Product Category Status':
             case 'Product Category Webpage Key':
             case 'Category Subject':
+            case 'Product Category Department Category Key':
                 return $this->data[$key];
                 break;
             case 'Subject':

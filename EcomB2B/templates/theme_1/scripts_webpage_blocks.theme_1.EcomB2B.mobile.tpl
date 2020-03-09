@@ -740,7 +740,50 @@
             })
 
             {/if}
+            {if $with_catalogue==1}
 
+
+
+
+            getScript("/assets/catalogue.min.js", function () {
+
+                getScript("/assets/datatables.min.js", function () {
+
+                    console.log(parent_key)
+                    const request_data = {  "tipo": 'catalogue', "parent": parent, "parent_key": parent_key, "scope": scope, "device_prefix":'mobile'}
+                    $.ajax({
+
+                        url: {if $logged_in}'/ar_web_tables.php'{else}'/ar_web_tables_logged_out.php'{/if}, type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                            if (data.state == 200) {
+
+                                state = data.app_state;
+
+                                $('.breadcrumbs .department_nav').html(data.department_nav.label);
+                                $('.breadcrumbs .department_nav').attr('title',data.department_nav.title);
+                                $('.breadcrumbs .family_nav').html(data.family_nav.label);
+                                $('.breadcrumbs .family_nav').attr('title',data.family_nav.title);
+
+                                $('.table_top .title').html(data.title)
+
+                                $('.portfolio_data_feeds .images_zip').attr('href', data.images_zip_url);
+                                $('.portfolio_data_feeds .csv').attr('href', data.csv_url);
+                                $('.portfolio_data_feeds .xls').attr('href', data.xls_url);
+                                $('.portfolio_data_feeds .json').attr('href', data.json_url);
+
+                                $('.portfolio_data_feeds').removeClass('hide')
+
+                                $('#table_container').html(data.html)
+
+
+                            }
+
+                        }
+                    });
+
+
+                })
+            })
+            {/if}
             {if $with_portfolio==1}
 
             getScript("/assets/datatables.min.js", function () {

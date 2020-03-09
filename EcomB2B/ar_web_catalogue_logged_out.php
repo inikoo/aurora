@@ -165,13 +165,14 @@ function families($_data, $db) {
         foreach ($result as $data) {
 
 
-            $code = sprintf('<a href="%s">%s</a>', $data['Webpage URL'], $data['Category Code']);
-            $name = sprintf('<a href="%s">%s</a>', $data['Webpage URL'], $data['Category Label']);
-
+            $code = sprintf('<a href="catalogue.sys?scope=products&parent=family&parent_key=%d">%s</a>', $data['Category Key'], $data['Category Code']);
+            $name = $data['Category Label'];
+            $webpage='<a href="'.$data['Webpage URL'].'"><i class="far fa-browser fa-fw "></i> <i class="fal fa-fw fa-external-link"></i></a>';
             $record_data[] = array(
                 'id'       => $data['Category Key'],
                 'code'     => $code,
                 'name'     => $name,
+                'webpage'=>$webpage,
                 'products' => sprintf('<a href="catalogue.sys?scope=products&parent=family&parent_key=%d">%s</a>', $data['Category Key'], number($data['Category Number Subjects']))
 
             );
@@ -228,16 +229,14 @@ function departments($_data, $db, $website) {
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
-
-
-            $code = sprintf('<a href="%s">%s</a>', $data['Webpage URL'], $data['Category Code']);
-            $name = sprintf('<a href="%s">%s</a>', $data['Webpage URL'], $data['Category Label']);
+            $name = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], $data['Category Label']);
+            $webpage='<a href="'.$data['Webpage URL'].'"><i class="far fa-browser fa-fw "></i> <i class="fal fa-fw fa-external-link"></i></a>';
 
             $record_data[] = array(
                 'id'   => $data['Category Key'],
-                'code' => $code,
-                'name' => $name,
 
+                'name' => $name,
+                'webpage'=>$webpage,
                 'families' => sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], number($data['Category Number Subjects'])),
                 'products' => sprintf('<a href="catalogue.sys?scope=products&parent=department&parent_key=%d">%s</a>', $data['Category Key'], number($data['products']))
 
@@ -300,6 +299,14 @@ function products($_data, $db) {
 
         foreach ($result as $data) {
 
+            if ($data['Image Key'] != 0) {
+                $image = sprintf(
+                    '<img src="/rwi/50x50_%d.%s" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Image Key'],$data['Image File Format']
+                );
+            } else {
+                $image = 'x';
+            }
+
 
             $code = sprintf('<a href="%s">%s</a>', $data['Webpage URL'], $data['Product Code']);
             $name = $data['Product Units per Case'].'x '.$data['Product Name'];
@@ -308,7 +315,7 @@ function products($_data, $db) {
                 'id'   => $data['Product ID'],
                 'code' => $code,
                 'name' => $name,
-
+                'image' => $image,
 
             );
         }

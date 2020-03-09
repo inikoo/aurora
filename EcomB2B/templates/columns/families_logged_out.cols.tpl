@@ -10,6 +10,7 @@
 *}
 
 
+
 var columns = [{
 name: "id",
 label: "",
@@ -45,14 +46,20 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 
-}
+},
+{
+name: "webpage",
+label: "{t}Webpage{/t}",
+editable: false,
+sortable:false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
 
 
 
 ]
-
-
-
 
 function change_table_view(view, save_state) {
 

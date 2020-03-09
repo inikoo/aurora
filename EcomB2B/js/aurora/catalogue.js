@@ -73,7 +73,7 @@ if (parent === 'department' && isNumeric(parent_key) && parent_key > 0) {
 
     scope = 'products';
 
-    $('.breadcrumbs .arrows_3').addClass('hide')
+   // $('.breadcrumbs .arrows_3').addClass('hide')
 
 
 } else {

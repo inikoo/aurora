@@ -234,9 +234,6 @@ function departments($_data, $db, $website) {
 
         foreach ($result as $data) {
 
-
-
-
             $name = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], $data['Category Label']);
             $webpage='<a href="'.$data['Webpage URL'].'"><i class="far fa-browser fa-fw "></i> <i class="fal fa-fw fa-external-link"></i></a>';
 
