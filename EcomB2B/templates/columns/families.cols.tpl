@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  29 February 2020  00:57::43  +0800  +0800, Kuala Lumpur Malaysia
+ Created:   08 March 2020  22:39::42  +0800, Kuala Lumpur Malaysia
  Copyright (c) 2020, Inikoo
 
  Version 3
@@ -22,7 +22,6 @@ renderable: false
 {
 name: "code",
 label: "{t}Code{/t}   ",
-renderable: false,
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ })
@@ -38,16 +37,6 @@ cell: "html"
 
 
 {
-name: "families",
-label: "{t}Families{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-
-headerCell: integerHeaderCell
-
-},
-{
 name: "products",
 label: "{t}Products{/t}",
 editable: false,
@@ -57,7 +46,6 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
-
 {
 name: "webpage",
 label: "{t}Webpage{/t}",
@@ -67,6 +55,8 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
+
+
 
 ]
 

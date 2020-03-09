@@ -20,6 +20,15 @@ renderable: false
 
 },
 {
+name: "image",
+label: "{t}Image{/t}",
+editable: false,
+sortable: false,
+
+cell: "html"
+
+},
+{
 name: "code",
 label: "{t}Code{/t}   ",
 editable: false,

@@ -32,7 +32,7 @@
                         {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
                             <span class="breadcrumb {if isset($breadcrumb.class)}{$breadcrumb.class}{/if} "><a href="{$breadcrumb.link}" title="{$breadcrumb.title}">{$breadcrumb.label}</a> </span>
                             {if !$smarty.foreach.breadcrumbs.last}
-                                <i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>
+                                <i class="fas padding_left_10 padding_right_10 fa-angle-double-right arrows_{$smarty.foreach.breadcrumbs.iteration}"></i>
                             {/if}
                         {/foreach}
                     </div>
@@ -102,23 +102,19 @@
                             </span>
                         </div>
                     </div>
-
-
                 {/if}
-
             {/if}
             {if $webpage->get('Webpage Code')=='catalogue.sys' and $logged_in}
 
                     <div class="top_menu" >
-                        <span><i class="fal fa-database"></i> {t}All products data feed{/t}  (
-                            <a href="catalog_data_feed.php?output=CSV&scope=website&scope_key={$website->id}">.cvs</a>,
-                            <a href="catalog_data_feed.php?output=XLS&scope=website&scope_key={$website->id}">.xls</a>,
-                            <a href="catalog_data_feed.php?output=Json&scope=website&scope_key={$website->id}">json</a>
+                        <span><i class="fal fa-database"></i> <span class="catalogue_data_feed_title">{t}All products data feed{/t}</span>  (
+                            <a class="catalogue_data_feed_csv" href="catalog_data_feed.php?output=CSV&scope=website&scope_key={$website->id}">.cvs</a>,
+                            <a class="catalogue_data_feed_xls" href="catalog_data_feed.php?output=XLS&scope=website&scope_key={$website->id}">.xls</a>,
+                            <a class="catalogue_data_feed_json" href="catalog_data_feed.php?output=Json&scope=website&scope_key={$website->id}">json</a>
                             )</span>
 
 
                     </div>
-
 
 
 

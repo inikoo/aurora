@@ -154,7 +154,7 @@ class Public_Webpage {
             case 'Navigation Data':
 
 
-                if ($this->data['Webpage Code'] == 'client.sys') {
+                if ($this->data['Webpage Code'] == 'catalogue.sys') {
                     $website = get_object('Website', $this->get('Webpage Website Key'));
 
                     $navigation_data = array(
@@ -166,15 +166,21 @@ class Public_Webpage {
                                 'label' => '<i class="fa fa-home"></i>'
                             ],
                             [
-                                'link'  => 'https://'.$website->get('Website URL').'/clients.sys',
+                                'link'  => 'https://'.$website->get('Website URL').'/catalogue.sys',
                                 'title' => _('Customers'),
-                                'label' => '<i class="fal fa-user"></i> <span class="hide_mobile">'._('Customers').'</span>'
+                                'label' => '<i class="fal fa-books"></i> <span class="hide_mobile">'._('Catalogue').'</span>'
                             ],
                             [
                                 'link'  => '',
                                 'title' => '',
                                 'label' => '',
-                                'class' => 'client_nav'
+                                'class' => 'department_nav'
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => '',
+                                'label' => '',
+                                'class' => 'family_nav'
                             ]
 
                         ],
@@ -182,7 +188,35 @@ class Public_Webpage {
                         'prev'        => false,
 
                     );
-                } elseif ($this->data['Webpage Code'] == 'clients.sys') {
+                }elseif ($this->data['Webpage Code'] == 'client.sys') {
+                $website = get_object('Website', $this->get('Webpage Website Key'));
+
+                $navigation_data = array(
+                    'show'        => true,
+                    'breadcrumbs' => [
+                        [
+                            'link'  => 'https://'.$website->get('Website URL'),
+                            'title' => _('Home'),
+                            'label' => '<i class="fa fa-home"></i>'
+                        ],
+                        [
+                            'link'  => 'https://'.$website->get('Website URL').'/clients.sys',
+                            'title' => _('Customers'),
+                            'label' => '<i class="fal fa-user"></i> <span class="hide_mobile">'._('Customers').'</span>'
+                        ],
+                        [
+                            'link'  => '',
+                            'title' => '',
+                            'label' => '',
+                            'class' => 'client_nav'
+                        ]
+
+                    ],
+                    'next'        => false,
+                    'prev'        => false,
+
+                );
+            } elseif ($this->data['Webpage Code'] == 'clients.sys') {
                     $website = get_object('Website', $this->get('Webpage Website Key'));
 
                     $navigation_data = array(

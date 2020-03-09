@@ -1,7 +1,6 @@
 <div class="no_department_warning {if $category->get('Product Category Department Category Key')!=''}hide{/if}" style="background-color: indianred;color: whitesmoke;padding: 30px;font-size: large;font-weight: 800">
     <i class="fa fa-exclamation-circle padding_right_5"></i> {t}No department{/t}
 </div>
-
 <div class="sticky_notes" style="border-top: 1px solid #ccc">
     {include file="sticky_note.tpl" value=$category->get('Sticky Note') object="Category" key="{$category->id}" field="Category_Sticky_Note"  }
 </div>

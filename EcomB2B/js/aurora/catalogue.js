@@ -8,10 +8,13 @@ $(function () {
 
     $(document).on('click', '.catalogue_tabs .tab', function () {
 
+        var parent=  $('.catalogue_table').data('parent');
 
         $('.catalogue_table').data('scope', $(this).data('scope'));
+        $('.catalogue_tabs .tab').removeClass('selected')
+        $(this).addClass('selected')
 
-        const request_data = {"tipo": 'catalogue', "parent": $('.catalogue_table').data('parent'), "parent_key": $('.catalogue_table').data('parent_key'), "scope": $('.catalogue_table').data('scope')}
+        const request_data = {"tipo": 'catalogue', "parent": parent, "parent_key": $('.catalogue_table').data('parent_key'), "scope": $('.catalogue_table').data('scope')}
         $.ajax({
 
             url: $(this).closest('div.catalogue_tabs').data('ar_url'), type: 'GET', dataType: 'json', data: request_data, success: function (data) {
@@ -28,7 +31,7 @@ $(function () {
 
                     $('#table_container').html(data.html)
 
-
+                    $('.table_top .title').html(data.title)
                 }
 
             }
@@ -46,7 +49,6 @@ var scope = getUrlParameter('scope');
 var parent = getUrlParameter('parent');
 var parent_key = getUrlParameter('parent_key');
 
-console.log(parent_key)
 
 
 if (parent === 'department' && isNumeric(parent_key) && parent_key > 0) {
@@ -60,6 +62,8 @@ if (parent === 'department' && isNumeric(parent_key) && parent_key > 0) {
         scope = 'products';
 
     }
+    $('.breadcrumbs .arrows_3').addClass('hide')
+
 
 
 } else if (parent === 'family' && isNumeric(parent_key) && parent_key > 0) {
@@ -68,6 +72,9 @@ if (parent === 'department' && isNumeric(parent_key) && parent_key > 0) {
     $('.catalogue_tabs .products').removeClass('hide')
 
     scope = 'products';
+
+    $('.breadcrumbs .arrows_3').addClass('hide')
+
 
 } else {
     parent = 'store';
@@ -87,6 +94,9 @@ if (parent === 'department' && isNumeric(parent_key) && parent_key > 0) {
         scope = 'departments';
 
     }
+
+    $('.breadcrumbs .arrows_2').addClass('hide')
+    $('.breadcrumbs .arrows_3').addClass('hide')
 
 
 }

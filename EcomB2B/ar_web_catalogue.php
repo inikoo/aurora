@@ -12,6 +12,7 @@
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/table_functions.php';
 
+
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 407,
@@ -29,20 +30,98 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
     case 'departments':
-        $_data                             = get_table_parameters();
-        $_data['parameters']['parent_key'] = $customer->id;
-        portfolio_items($_data, $db);
+        $_data = get_table_parameters();
+
+
+        $sql  = "select `Store Department Category Key` from `Store Dimension` where `Store Key`=?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $website->get('Website Store Key')
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $_data['parameters']['parent']       = 'category';
+            $_data['parameters']['parent_key']   = $row['Store Department Category Key'];
+            $_data['parameters']['customer_key'] = $customer->id;
+            departments($_data, $db, $website);
+
+        } else {
+            $response = array(
+                'state' => 400,
+                'resp'  => 'departments not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        break;
+    case 'families':
+        $_data = get_table_parameters();
+
+        if ($_data['parameters']['parent'] == 'store') {
+            $sql  = "select `Store Family Category Key` from `Store Dimension` where `Store Key`=?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $website->get('Website Store Key')
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $_data['parameters']['parent']       = 'category';
+                $_data['parameters']['parent_key']   = $row['Store Family Category Key'];
+                $_data['parameters']['store_key']    = $website->get('Website Store Key');
+                $_data['parameters']['customer_key'] = $customer->id;
+                families($_data, $db);
+
+            } else {
+                $response = array(
+                    'state' => 400,
+                    'resp'  => 'departments not found'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        } elseif ($_data['parameters']['parent'] == 'department') {
+            $_data['parameters']['store_key'] = $website->get('Website Store Key');
+            families($_data, $db);
+
+
+        }
 
         break;
 
 
     case 'products':
-        $_data                             = get_table_parameters();
-        $_data['parameters']['parent_key'] = $customer->id;
-        portfolio_items($_data, $db);
+        $_data = get_table_parameters();
+
+
+        if ($_data['parameters']['parent'] == 'store') {
+
+            $_data['parameters']['parent']       = 'store';
+            $_data['parameters']['parent_key']   = $website->get('Website Store Key');
+            $_data['parameters']['customer_key'] = $customer->id;
+            products($_data, $db);
+
+
+        } elseif ($_data['parameters']['parent'] == 'department') {
+
+            $_data['parameters']['store_key']    = $website->get('Website Store Key');
+            $_data['parameters']['customer_key'] = $customer->id;
+            products($_data, $db);
+
+
+        } elseif ($_data['parameters']['parent'] == 'family') {
+
+            $_data['parameters']['store_key']    = $website->get('Website Store Key');
+            $_data['parameters']['customer_key'] = $customer->id;
+            products($_data, $db);
+
+
+        }
 
         break;
-
 
 
     default:
@@ -54,130 +133,257 @@ switch ($tipo) {
         exit;
 }
 
+/**
+ * @param $data
+ * @param $db \PDO
+ * @param $website
+ */
+function families($_data, $db) {
 
 
+    $rtext_label = 'family';
 
 
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $code = sprintf('<a href="catalogue.sys?scope=products&parent=family&parent_key=%d">%s</a>', $data['Category Key'], $data['Category Code']);
+            $name = $data['Category Label'];
+            $webpage='<a href="'.$data['Webpage URL'].'"><i class="far fa-browser fa-fw "></i> <i class="fal fa-fw fa-external-link"></i></a>';
+            $record_data[] = array(
+                'id'       => $data['Category Key'],
+                'code'     => $code,
+                'name'     => $name,
+                'webpage'=>$webpage,
+                'products' => sprintf('<a href="catalogue.sys?scope=products&parent=family&parent_key=%d">%s</a>', $data['Category Key'], number($data['Category Number Subjects']))
+
+            );
+        }
+
+
+        $response = array(
+            'resultset' => array(
+                'state'         => 200,
+                'data'          => $record_data,
+                'rtext'         => $rtext,
+                'sort_key'      => $_order,
+                'sort_dir'      => $_dir,
+                'total_records' => $total
+
+            )
+        );
+        echo json_encode($response);
+
+    }
+
+
+}
 
 /**
  * @param $data
  * @param $db \PDO
- * @param $customer_key
+ * @param $website
  */
-function products($data, $db, $customer_key) {
+function departments($_data, $db, $website) {
+
+    $rtext_label = 'department';
+
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
 
 
-    $website = get_object('Website', $_SESSION['website_key']);
-    $labels  = $website->get('Localised Labels');
 
 
-    $products_in_portfolio = array();
-    $stock                 = array();
+            $name = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], $data['Category Label']);
+            $webpage='<a href="'.$data['Webpage URL'].'"><i class="far fa-browser fa-fw "></i> <i class="fal fa-fw fa-external-link"></i></a>';
 
+            $record_data[] = array(
+                'id'   => $data['Category Key'],
 
-    $sql =
-        "SELECT `Customer Portfolio Product ID` FROM `Customer Portfolio Fact`  left join `Website Webpage Scope Map` on (`Customer Portfolio Product ID`=`Website Webpage Scope Scope Key`)  WHERE  `Website Webpage Scope Scope`='Product' and   `Customer Portfolio Customers State`='Active'     and `Customer Portfolio Customer Key`=? and `Website Webpage Scope Webpage Key`=?";
+                'name' => $name,
+                'webpage'=>$webpage,
+                'families' => sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], number($data['Category Number Subjects'])),
+                'products' => sprintf('<a href="catalogue.sys?scope=products&parent=department&parent_key=%d">%s</a>', $data['Category Key'], number($data['products']))
 
-
-    $stmt = $db->prepare($sql);
-    $stmt->execute(
-        array(
-            $customer_key,
-            $data['webpage_key']
-        )
-    );
-    while ($row = $stmt->fetch()) {
-        $products_in_portfolio[$row['Customer Portfolio Product ID']] = true;
-
-    }
-
-
-    if (isset($data['with_category_products']) and $data['with_category_products'] == 'Yes') {
-        $with_category_products = true;
-    } else {
-        $with_category_products = false;
-    }
-
-
-    if (($with_category_products and ($website->settings('Display Stock Levels in Category') == 'Hint_Bar' or $website->settings('Display Stock Levels in Category') == 'Dot')) or (!$with_category_products and $website->settings('Display Stock Levels in Product')
-            == 'Yes')) {
-
-        $show_stock_value = $website->settings('Display Stock Quantity');
-        if ($show_stock_value == '') {
-            $show_stock_value = 'No';
-        }
-
-        $sql  =
-            "select `Product Availability State`,`Product Availability`,`Product ID`,`Website Webpage Scope Type` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array($data['webpage_key'])
-        );
-
-
-        while ($row = $stmt->fetch()) {
-
-
-            switch ($row['Product Availability State']) {
-                case 'OnDemand':
-                    $stock_label = (!empty($labels['_stock_OnDemand']) ? $labels['_stock_OnDemand'] : _('Product made on demand'));
-                    break;
-                case 'Excess':
-                    $stock_label = (!empty($labels['_stock_Excess']) ? $labels['_stock_Excess'] : _('Plenty of stock'));
-                    if ($show_stock_value == 'Yes') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
-                case 'Normal':
-                    $stock_label = (!empty($labels['_stock_Normal']) ? $labels['_stock_Normal'] : _('Plenty of stock'));
-                    if ($show_stock_value == 'Yes') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
-                case 'Low':
-                    $stock_label = (!empty($labels['_stock_Low']) ? $labels['_stock_Low'] : _('Limited stock'));
-                    if ($show_stock_value == 'Yes') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
-                case 'VeryLow':
-                    $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Very low stock'));
-                    if ($show_stock_value == 'Yes' or $show_stock_value == 'Only_if_very_low') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
-
-                case 'OutofStock':
-                case 'Error':
-
-                    $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Out of stock'));
-                    break;
-                default:
-                    $stock_label = $row['Product Availability State'];
-            }
-
-
-            $stock[$row['Product ID']] = array(
-                $row['Product Availability State'],
-                $stock_label,
-                $row['Website Webpage Scope Type']
             );
-
         }
+
+
+        $response = array(
+            'resultset' => array(
+                'state'         => 200,
+                'data'          => $record_data,
+                'rtext'         => $rtext,
+                'sort_key'      => $_order,
+                'sort_dir'      => $_dir,
+                'total_records' => $total
+
+            )
+        );
+        echo json_encode($response);
+
     }
-
-
-    echo json_encode(
-        array(
-            'state'                 => 200,
-            'products_in_portfolio' => $products_in_portfolio,
-            'stock'                 => $stock,
-
-        )
-    );
-    exit;
 
 
 }
 
 
+/**
+ * @param $data
+ * @param $db \PDO
+ */
+
+function products($_data, $db) {
+
+    $rtext_label = 'product';
+
+
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            switch ($data['Product Availability State']) {
+                case 'Excess':
+                case 'Normal':
+
+
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('Active'));
+                    break;
+                case 'OnDemand':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('On demand'));
+                    break;
+                case 'Error':
+                case 'OutofStock':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#F25056" title="%s"></i>', _('Out of stock'));
+                    break;
+                case 'VeryLow':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#ff7c00" title="%s"></i>', _('Very low stock'));
+                    break;
+                case 'Low':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#FCBE07" title="%s"></i>', _('Low stock'));
+                    break;
+
+                default:
+                    $stock_status = $data['Product Availability State'];
+                    break;
+            }
+
+
+            if ($data['Product Status'] == 'Discontinued') {
+                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
+
+            } elseif ($data['Product Status'] == 'Discontinuing') {
+                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
+            } else {
+                $status_icon = '';
+            }
+
+
+
+            if ($data['Image Key'] != 0) {
+                $image = sprintf(
+                    '<img src="/rwi/50x50_%d.%s" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Image Key'],$data['Image File Format']
+                );
+            } else {
+                $image = 'x';
+            }
+
+            $code = sprintf('<a href="%s">%s</a>', $data['Webpage URL'], $data['Product Code']);
+            $name = $data['Product Units per Case'].'x '.$data['Product Name'];
+
+            $record_data[] = array(
+                'id'   => $data['Product ID'],
+                'code' => $code,
+                'name' => $name,
+                'image' => $image,
+                'stock_status' => $stock_status.$status_icon,
+
+                'price'        => money($data['Product Price'], $data['Store Currency Code']),
+                'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),
+
+
+            );
+        }
+
+
+        $response = array(
+            'resultset' => array(
+                'state'         => 200,
+                'data'          => $record_data,
+                'rtext'         => $rtext,
+                'sort_key'      => $_order,
+                'sort_dir'      => $_dir,
+                'total_records' => $total
+
+            )
+        );
+        echo json_encode($response);
+
+    }
+
+
+}

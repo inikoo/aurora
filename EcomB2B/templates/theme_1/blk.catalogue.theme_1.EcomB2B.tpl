@@ -17,7 +17,7 @@
 
     <div class="portfolio_sub_block " >
         <div class="table_top">
-            <span class="title">{if empty($data.labels.title)}{t}Catalogue{/t}{else}{$data.labels.title}{/if}</span>
+            <span class="title"></span>
         </div>
         <div class="tabs catalogue_tabs" data-ar_url="{if $logged_in}/ar_web_tables.php{else}/ar_web_tables_logged_out.php{/if}" >
             <span  data-scope="departments" class="hide tab departments">{if empty($data.labels.departements)}{t}Departments{/t}{else}{$data.labels.departements}{/if}</span>

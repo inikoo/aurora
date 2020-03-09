@@ -189,7 +189,6 @@ function portfolio_items($_data, $db) {
 
         foreach ($result as $data) {
 
-            //'Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand'
             switch ($data['Product Availability State']) {
                 case 'Excess':
                 case 'Normal':
@@ -216,11 +215,10 @@ function portfolio_items($_data, $db) {
                     break;
             }
 
-
-            if ($data['Product Availability State'] == 'Discontinued') {
+            if ($data['Product Status'] == 'Discontinued') {
                 $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
 
-            } elseif ($data['Product Availability State'] == 'Discontinuing') {
+            } elseif ($data['Product Status'] == 'Discontinuing') {
                 $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
             } else {
                 $status_icon = '';
@@ -253,6 +251,15 @@ function portfolio_items($_data, $db) {
             }
 
 
+            if ($data['Image Key'] != 0) {
+                $image = sprintf(
+                    '<img src="/rwi/50x50_%d.%s" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Image Key'],$data['Image File Format']
+                );
+            } else {
+                $image = 'x';
+            }
+
+
             $record_data[] = array(
 
                 'id'           => (integer)$data['Product ID'],
@@ -260,6 +267,7 @@ function portfolio_items($_data, $db) {
                 'name'         => $name,
                 'reference'    => $reference,
                 'stock_status' => $stock_status.$status_icon,
+                'image' => $image,
                 'description'=>$code.$status_icon.' '.$reference_mobile.'<br>'.$name.' <b>'.money($data['Product Price'], $data['Store Currency Code']).'</b>',
                 'price'        => money($data['Product Price'], $data['Store Currency Code']),
                 'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),

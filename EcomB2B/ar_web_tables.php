@@ -132,16 +132,15 @@ switch ($tipo) {
     case 'catalogue':
         $data = prepare_values(
             $_REQUEST, array(
-                         'parent'         => array('type' => 'string'),
-                         'parent_key'     => array('type' => 'string'),
-                         'scope'     => array('type' => 'string'),
+                         'parent'        => array('type' => 'string'),
+                         'parent_key'    => array('type' => 'string'),
+                         'scope'         => array('type' => 'string'),
                          'device_prefix' => array(
                              'type'     => 'string',
                              'optional' => true
                          )
                      )
         );
-
         get_catalogue_table_html($data, $customer);
         break;
     default:
@@ -181,53 +180,136 @@ function get_order_items_table_html($data, $parameters, $customer, $db) {
     $web_user = get_object('website_user', $customer->get('Customer Website User Key'));
 
 
-    $ar_file = 'ar_web_order.php';
-    $tipo    = 'order_items';
+    switch ($data['scope']) {
+        case 'departments':
+            $tab     = 'departments';
+            $ar_file = 'ar_web_catalogue.php';
+            $tipo    = 'departments';
 
 
-    $default = array(
-        'view'        => 'overview',
-        'sort_key'    => 'code',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => [
-            500,
-            100
-        ],
-        'f_field'     => 'code',
+            $default     = array(
+                'view'        => 'overview',
+                'sort_key'    => 'label',
+                'sort_order'  => 0,
+                'rpp'         => 100,
+                'rpp_options' => [
+                    500,
+                    100
+                ],
+                'f_field'     => 'name',
+
+            );
+            $table_views = array(
+                'overview' => array('label' => _('Overview')),
 
 
-    );
+            );
 
-    if ($device_prefix == 'mobile') {
-        $tab = 'order_items_mobile';
-    } else {
-        $tab = 'order_items';
+            $table_filters = array(
+
+                'name' => array(
+                    'label' => _('Name'),
+                    'title' => _('Department name')
+                ),
+
+            );
+
+            $parameters = array(
+                'parent'     => 'store',
+                'parent_key' => $website->get('Website Store Key')
+
+            );
+            break;
+        case 'families':
+            $tab     = 'families';
+            $ar_file = 'ar_web_catalogue.php';
+            $tipo    = 'families';
+
+
+            $default     = array(
+                'view'        => 'overview',
+                'sort_key'    => 'code',
+                'sort_order'  => 0,
+                'rpp'         => 100,
+                'rpp_options' => [
+                    500,
+                    100
+                ],
+                'f_field'     => 'code',
+
+
+            );
+            $table_views = array(
+                'overview' => array('label' => _('Overview')),
+
+
+            );
+
+            $table_filters = array(
+                'code' => array(
+                    'label' => _('Code'),
+                    'title' => _('Family code')
+                ),
+                'name' => array(
+                    'label' => _('Name'),
+                    'title' => _('Family name')
+                ),
+
+            );
+
+            $parameters = array(
+                'parent'     => $data['parent'],
+                'parent_key' => $data['parent_key'],
+
+            );
+            break;
+        case 'products':
+            $tab     = 'products';
+            $ar_file = 'ar_web_catalogue.php';
+            $tipo    = 'products';
+
+
+            $default     = array(
+                'view'        => 'overview',
+                'sort_key'    => 'code',
+                'sort_order'  => 1,
+                'rpp'         => 100,
+                'rpp_options' => [
+                    500,
+                    100
+                ],
+                'f_field'     => 'code',
+
+            );
+            $table_views = array(
+                'overview' => array('label' => _('Overview')),
+
+
+            );
+
+            $table_filters = array(
+                'code' => array(
+                    'label' => _('Code'),
+                    'title' => _('Product code')
+                ),
+                'name' => array(
+                    'label' => _('Name'),
+                    'title' => _('Product name')
+                ),
+
+            );
+
+
+            $parameters = array(
+                'parent'     => $data['parent'],
+                'parent_key' => $data['parent_key'],
+
+            );
+            break;
     }
 
 
-    $table_views = array(
-        'overview' => array('label' => _('Overview')),
-        //    'performance' => array('label' => _('Performance')),
-        //   'sales'       => array('label' => _('Sales')),
-        //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
-        //   'sales_q'     => array('label' => _('Invoiced amount (Qs)')),
-
-    );
-
-    $table_filters = array(
-        'code' => array(
-            'label' => _('Code'),
-            'title' => _('Product code')
-        ),
-
-
-    );
-
-
     $table_buttons = array();
-
-    $smarty->assign('web_user', $web_user);
 
 
     $smarty->assign('table_buttons', $table_buttons);
@@ -244,8 +326,11 @@ function get_order_items_table_html($data, $parameters, $customer, $db) {
         'state'     => 200,
         'app_state' => $state,
         'html'      => $html,
+
+
     );
     echo json_encode($response);
+
 
 }
 
@@ -274,7 +359,6 @@ function get_portfolio_table_html($data, $customer) {
     $website  = get_object('Website', $_SESSION['website_key']);
     $store    = get_object('Store', $website->get('Website Store Key'));
     $web_user = get_object('website_user', $customer->get('Customer Website User Key'));
-
 
 
     if ($device_prefix == 'mobile') {
@@ -756,26 +840,31 @@ function get_catalogue_table_html($data, $customer) {
     $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
+    $department_nav_label = '';
+    $department_nav_title = '';
+    $family_nav_label     = '';
+    $family_nav_title     = '';
+    $title                = '';
 
-
-
-    switch ($data['scope']){
+    switch ($data['scope']) {
         case 'departments':
+
+            $title   = _('Departments');
             $tab     = 'departments';
             $ar_file = 'ar_web_catalogue.php';
             $tipo    = 'departments';
 
 
-            $default = array(
-                'view'          => 'overview',
-                'sort_key'      => 'name',
-                'sort_order'    => 1,
-                'rpp'           => 100,
-                'rpp_options'   => [
+            $default     = array(
+                'view'        => 'overview',
+                'sort_key'    => 'name',
+                'sort_order'  => 1,
+                'rpp'         => 100,
+                'rpp_options' => [
                     500,
                     100
                 ],
-                'f_field'       => 'name',
+                'f_field'     => 'name',
 
             );
             $table_views = array(
@@ -795,28 +884,36 @@ function get_catalogue_table_html($data, $customer) {
 
             $parameters = array(
                 'parent'     => 'store',
-                'parent_key' => $customer->get(''),
+                'parent_key' => $customer->get('Customer Store Key')
 
             );
             break;
         case 'families':
-            $tab     = 'portfolio';
-            $ar_file = 'ar_web_portfolio.php';
-            $tipo    = 'portfolio_items';
+            if ($data['parent'] == 'department') {
+                $department           = get_object('Category', $data['parent_key']);
+                $department_nav_label = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $department->id, $department->get('Label'));
+                $title                = sprintf(_('Department: %s'), $department->get('Label'));
+            } elseif ($data['parent'] == 'store') {
+
+                $title = _('Families');
+            }
 
 
-            $default = array(
-                'view'          => 'overview',
-                'sort_key'      => 'code',
-                'sort_order'    => 1,
-                'rpp'           => 100,
-                'rpp_options'   => [
+            $tab     = 'families';
+            $ar_file = 'ar_web_catalogue.php';
+            $tipo    = 'families';
+
+
+            $default     = array(
+                'view'        => 'overview',
+                'sort_key'    => 'code',
+                'sort_order'  => 1,
+                'rpp'         => 100,
+                'rpp_options' => [
                     500,
                     100
                 ],
-                'f_field'       => 'code',
-                'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
-                'elements'      => get_elements_option('customer_portfolio'),
+                'f_field'     => 'code',
 
             );
             $table_views = array(
@@ -828,39 +925,63 @@ function get_catalogue_table_html($data, $customer) {
             $table_filters = array(
                 'code' => array(
                     'label' => _('Code'),
-                    'title' => _('Product code')
+                    'title' => _('Family code')
                 ),
                 'name' => array(
                     'label' => _('Name'),
-                    'title' => _('Product name')
+                    'title' => _('Family name')
                 ),
 
             );
 
             $parameters = array(
-                'parent'     => 'customer',
-                'parent_key' => $customer->id,
+                'parent'     => $data['parent'],
+                'parent_key' => $data['parent_key'],
 
             );
             break;
         case 'products':
-            $tab     = 'portfolio';
-            $ar_file = 'ar_web_portfolio.php';
-            $tipo    = 'portfolio_items';
+            if ($data['parent'] == 'department') {
+                $department           = get_object('Category', $data['parent_key']);
+                $department_nav_label = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $department->id, $department->get('Label'));
+                $title                = sprintf(_('Department: %s'), $department->get('Label'));
+            }
+            elseif ($data['parent'] == 'family') {
+                $family          = get_object('Category', $data['parent_key']);
+                $family_nav_label = sprintf('<a href="catalogue.sys?scope=products&parent=family&parent_key=%d">%s</a>', $family->id, $family->get('Code'));
+                $family_nav_title=htmlspecialchars($family->get('Label'));
 
 
-            $default = array(
-                'view'          => 'overview',
-                'sort_key'      => 'code',
-                'sort_order'    => 1,
-                'rpp'           => 100,
-                'rpp_options'   => [
+                $department           = get_object('Category', $family->get('Product Category Department Category Key'));
+
+                $department_nav_label = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $department->id, $department->get('Label'));
+
+
+
+
+                $title                = sprintf(_('Family: %s'), $family->get('Label')).' <span class="small margin_left_10">('.$family->get('Code').')</span>';
+            } elseif ($data['parent'] == 'store') {
+
+                $title = _('Products');
+            }
+
+
+            $tab     = 'products';
+            $ar_file = 'ar_web_catalogue.php';
+            $tipo    = 'products';
+
+
+            $default     = array(
+                'view'        => 'overview',
+                'sort_key'    => 'code',
+                'sort_order'  => 1,
+                'rpp'         => 100,
+                'rpp_options' => [
                     500,
                     100
                 ],
-                'f_field'       => 'code',
-                'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
-                'elements'      => get_elements_option('customer_portfolio'),
+                'f_field'     => 'code',
+
 
             );
             $table_views = array(
@@ -882,19 +1003,15 @@ function get_catalogue_table_html($data, $customer) {
             );
 
             $parameters = array(
-                'parent'     => 'customer',
-                'parent_key' => $customer->id,
+                'parent'     => $data['parent'],
+                'parent_key' => $data['parent_key'],
 
             );
             break;
     }
 
 
-
-
-
     $table_buttons = array();
-
 
 
     $smarty->assign('table_buttons', $table_buttons);
@@ -911,6 +1028,17 @@ function get_catalogue_table_html($data, $customer) {
         'state'          => 200,
         'app_state'      => $state,
         'html'           => $html,
+        'scope'          => $data['scope'],
+        'department_nav' => array(
+            'label' => $department_nav_label,
+            'title' => $department_nav_title
+        ),
+        'family_nav'     => array(
+            'label' => $family_nav_label,
+            'title' => $family_nav_title
+        ),
+
+        'title' => $title,
 
 
     );
