@@ -762,7 +762,7 @@ function get_catalogue_table_html($data, $customer) {
     switch ($data['scope']){
         case 'departments':
             $tab     = 'departments';
-            $ar_file = 'ar_web_catalogues.php';
+            $ar_file = 'ar_web_catalogue.php';
             $tipo    = 'departments';
 
 

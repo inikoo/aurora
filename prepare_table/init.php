@@ -56,7 +56,6 @@ if (isset($_data['parameters']['invoices_no_vat'])) {
 if (isset($_data['parameters']['invoices_null'])) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_null'] = $_data['parameters']['invoices_null'];
 }
-
 if (file_exists('prepare_table/'.$_data['parameters']['tab'].'.ptble.php')) {
     include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 

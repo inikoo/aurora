@@ -28,6 +28,12 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+    case 'departments':
+        $_data                             = get_table_parameters();
+        $_data['parameters']['parent_key'] = $customer->id;
+        portfolio_items($_data, $db);
+
+        break;
 
 
     case 'products':
@@ -38,7 +44,7 @@ switch ($tipo) {
         break;
 
 
-        break;
+
     default:
         $response = array(
             'state' => 405,

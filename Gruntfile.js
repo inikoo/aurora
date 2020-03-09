@@ -26,6 +26,11 @@ module.exports = function (grunt) {
                     sourceMap: true,},
                 src: ['EcomB2B/js/aurora/validation.EcomB2B.js', 'EcomB2B/js/aurora/aurora.logged_in.js', 'EcomB2B/js/aurora/ordering.js','EcomB2B/js/aurora/logout.js',
                 ], dest: 'EcomB2B/assets/desktop.logged_in.min.js',
+            }, ecom_catalogue: {
+                options: {
+                    sourceMap: true,},
+                src: ['EcomB2B/js/aurora/catalogue.js',
+                ], dest: 'EcomB2B/assets/catalogue.min.js',
             }, ecom_dropshipping_logged_in: {
                 options: {
                     sourceMap: true,},
@@ -331,6 +336,13 @@ module.exports = function (grunt) {
                     }
                 }]
             },
+            ecom_catalogue: {
+                files: [{
+                    expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: ['catalogue.min.js'], rename: function (dest, src) {
+                        return dest + src.replace('.min', '.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min');
+                    }
+                }]
+            },
             ecom_desktop_forms: {
                 files: [{
                     expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: ['desktop.forms.min.js'], rename: function (dest, src) {
@@ -523,6 +535,10 @@ module.exports = function (grunt) {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.logged_in.\.*min.js"/g, to: 'desktop.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
+            }, ecom_catalogue: {
+                src: ['EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                    from: /catalogue.\.*min.js"/g, to: 'catalogue.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
+                }]
             },ecom_dropshipping_logged_in: {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /dropshipping.logged_in.\.*min.js"/g, to: 'dropshipping.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
@@ -635,6 +651,7 @@ module.exports = function (grunt) {
     grunt.registerTask('ecom_mobile', ['terser:ecom_mobile', 'copy:ecom_mobile', 'replace:ecom_mobile']);
     grunt.registerTask('ecom_mobile_custom', ['terser:ecom_mobile_custom', 'copy:ecom_mobile_custom', 'replace:ecom_mobile_custom']);
     grunt.registerTask('ecom_datatables', ['terser:ecom_datatables', 'copy:ecom_datatables', 'replace:ecom_datatables']);
+    grunt.registerTask('ecom_catalogue', ['terser:ecom_catalogue', 'copy:ecom_datatables', 'replace:ecom_catalogue']);
 
 
 
@@ -687,7 +704,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('pweb', ['copy:fa_webfonts', 'sass:ecom_css', 'cssmin:ecom_css',
-            'terser:ecom_desktop_in','terser:ecom_desktop_out','terser:ecom_desktop_forms','terser:ecom_mobile_forms','terser:ecom_mobile','terser:ecom_mobile_custom','terser:ecom_datatables',
+            'terser:ecom_desktop_in','terser:ecom_desktop_out','terser:ecom_desktop_forms','terser:ecom_mobile_forms','terser:ecom_mobile','terser:ecom_mobile_custom','terser:ecom_datatables','terser:ecom_catalogue',
             'terser:ecom_desktop_logged_in', 'terser:ecom_dropshipping_logged_in','terser:ecom_image_gallery','terser:ecom_desktop_basket','terser:ecom_desktop_client_basket', 'terser:ecom_desktop_checkout', 'terser:ecom_desktop_profile',
         'terser:ecom_mobile_basket', 'terser:ecom_mobile_profile', 'terser:ecom_mobile_checkout','terser:ecom_mobile_in'
 

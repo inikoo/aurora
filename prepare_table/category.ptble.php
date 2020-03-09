@@ -171,4 +171,4 @@ $table = '`Category Dimension` C  left join `Invoice Category Data` on (`Categor
 $sql_totals = "select count(distinct `Category Key`) as num from $table $where";
 
 
-?>
+

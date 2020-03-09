@@ -192,4 +192,4 @@ $sql_totals
     = "select count(distinct C.`Category Key`) as num from $table $where";
 
 
-?>
+

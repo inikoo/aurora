@@ -752,90 +752,38 @@
             {if $with_catalogue==1}
 
 
-                            function isNumeric(n) {
-                                return !isNaN(parseFloat(n)) && isFinite(n);
-                            }
-
-                            var scope = getUrlParameter('scope');
-                            var parent = getUrlParameter('parent');
-                            var parent_key = getUrlParameter('parent_key');
 
 
-                            if (parent === 'department' && isNumeric(parent_key) && parent_key>0 ) {
-                                $('.catalogue_tabs .departments').addClass('hide');
-                                $('.catalogue_tabs .families').removeClass('hide');
-                                $('.catalogue_tabs .products').removeClass('hide');
+                            getScript("/assets/catalogue.min.js", function () {
 
-                                if (scope === 'families'){
+                                getScript("/assets/datatables.min.js", function () {
 
-                                }else {
-                                    scope='products';
+                                    console.log(parent_key)
+                                    const request_data = {  "tipo": 'catalogue', "parent": parent, "parent_key": parent_key, "scope": scope}
+                                    $.ajax({
 
-                                }
+                                        url: {if $logged_in}'/ar_web_tables.php'{else}'/ar_web_tables_logged_out.php'{/if}, type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                                            if (data.state == 200) {
 
+                                                state = data.app_state;
 
+                                                $('.portfolio_data_feeds .images_zip').attr('href', data.images_zip_url);
+                                                $('.portfolio_data_feeds .csv').attr('href', data.csv_url);
+                                                $('.portfolio_data_feeds .xls').attr('href', data.xls_url);
+                                                $('.portfolio_data_feeds .json').attr('href', data.json_url);
 
+                                                $('.portfolio_data_feeds').removeClass('hide')
 
-                            } else if (parent === 'family' && isNumeric(parent_key) && parent_key>0) {
-                                $('.catalogue_tabs .departments').addClass('hide')
-                                $('.catalogue_tabs .families').addClass('hide')
-                                $('.catalogue_tabs .products').removeClass('hide')
-
-                                scope='products';
-
-                            } else {
-                                parent = 'store';
-                                parent_key='';
-                                $('.catalogue_tabs .departments').removeClass('hide')
-                                $('.catalogue_tabs .families').removeClass('hide')
-                                $('.catalogue_tabs .products').removeClass('hide')
-
-                                if (scope === 'products'){
-
-                                }else if (scope === 'families'){
-
-                                }else {
-                                    scope='departments';
-
-                                }
+                                                $('#table_container').html(data.html)
 
 
-
-                            }
-                            $('.catalogue_tabs span').removeClass('selected')
-                            console.log(scope)
-                            $('.catalogue_tabs .'+scope).addClass('selected')
-
-
-                            getScript("/assets/datatables.min.js", function () {
-
-
-                                //$('.open_notifications').trigger('click');return;
-                                const request_data ={ "tipo":'catalogue',"parent":parent,"parent_key":parent_key,"scope":scope}
-                                $.ajax({
-
-                                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-                                        if (data.state == 200) {
-
-                                            state = data.app_state;
-
-                                            $('.portfolio_data_feeds .images_zip').attr('href',data.images_zip_url);
-                                            $('.portfolio_data_feeds .csv').attr('href',data.csv_url);
-                                            $('.portfolio_data_feeds .xls').attr('href',data.xls_url);
-                                            $('.portfolio_data_feeds .json').attr('href',data.json_url);
-
-                                            $('.portfolio_data_feeds').removeClass('hide')
-
-                                            $('#table_container').html(data.html)
-
+                                            }
 
                                         }
-
-                                    }
-                                });
+                                    });
 
 
-
+                                })
                             })
                             {/if}
             {if $with_portfolio==1}

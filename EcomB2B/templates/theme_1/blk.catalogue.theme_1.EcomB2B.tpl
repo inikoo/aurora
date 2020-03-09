@@ -19,13 +19,13 @@
         <div class="table_top">
             <span class="title">{if empty($data.labels.title)}{t}Catalogue{/t}{else}{$data.labels.title}{/if}</span>
         </div>
-        <div class="tabs catalogue_tabs">
-            <span  data-scope="departments" class="hide tab  departments">{if empty($data.labels.departements)}{t}Departments{/t}{else}{$data.labels.departements}{/if}</span>
+        <div class="tabs catalogue_tabs" data-ar_url="{if $logged_in}/ar_web_tables.php{else}/ar_web_tables_logged_out.php{/if}" >
+            <span  data-scope="departments" class="hide tab departments">{if empty($data.labels.departements)}{t}Departments{/t}{else}{$data.labels.departements}{/if}</span>
             <span  data-scope="families" class="hide tab families">{if empty($data.labels.families)}{t}Families{/t}{else}{$data.labels.families}{/if}</span>
             <span  data-scope="products" class="hide tab products">{if empty($data.labels.products)}{t}Products{/t}{else}{$data.labels.products}{/if}</span>
         </div>
 
-        <div id="table_container"></div>
+        <div id="table_container" class="catalogue_table" data-scope=""  data-parent="" data-parent_key="" ></div>
     </div>
 
 
