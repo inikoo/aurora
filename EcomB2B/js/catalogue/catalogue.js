@@ -92,7 +92,6 @@ if (parent === 'department' && isNumeric(parent_key) && parent_key > 0) {
 
     } else {
         scope = 'departments';
-
     }
 
     $('.breadcrumbs .arrows_2').addClass('hide')

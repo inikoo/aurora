@@ -651,7 +651,7 @@ module.exports = function (grunt) {
     grunt.registerTask('ecom_mobile', ['terser:ecom_mobile', 'copy:ecom_mobile', 'replace:ecom_mobile']);
     grunt.registerTask('ecom_mobile_custom', ['terser:ecom_mobile_custom', 'copy:ecom_mobile_custom', 'replace:ecom_mobile_custom']);
     grunt.registerTask('ecom_datatables', ['terser:ecom_datatables', 'copy:ecom_datatables', 'replace:ecom_datatables']);
-    grunt.registerTask('ecom_catalogue', ['terser:ecom_catalogue', 'copy:ecom_datatables', 'replace:ecom_catalogue']);
+    grunt.registerTask('ecom_catalogue', ['terser:ecom_catalogue', 'copy:ecom_catalogue', 'replace:ecom_catalogue']);
 
 
 
