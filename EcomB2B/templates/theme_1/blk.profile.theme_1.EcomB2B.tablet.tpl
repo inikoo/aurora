@@ -16,7 +16,9 @@
 
 <div id="block_{$key}" class="{if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
 
-
+    <div class="table_top">
+        <span class="title"><span class="Customer_Name">{$customer->get('Customer Name')}</span> <span class="small italic padding_left_10">{t}Customer ID{/t}: {$customer->id}</span></span>
+    </div>
 
 
             <div class="menu-bottom-bar menu-bottom-bar-{if empty($poll_queries)}three{else}four{/if} color-menu-bar menu-bottom-bar-text flat-menu-bar">
@@ -679,7 +681,6 @@
                     complete: function () {
                     }, success: function (data) {
 
-                        console.log(data)
 
                         if (data.state == '200') {
 
@@ -766,12 +767,13 @@
                     complete: function () {
                     }, success: function (data) {
 
-                        console.log(data)
 
                         if (data.state == '200') {
 
 
-
+                            for (var key in data.metadata.class_html) {
+                                $('.' + key).html(data.metadata.class_html[key])
+                            }
 
 
                         } else if (data.state == '400') {

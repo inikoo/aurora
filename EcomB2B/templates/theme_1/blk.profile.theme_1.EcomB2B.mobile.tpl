@@ -10,6 +10,10 @@
 *}
 
 
+<div class="table_top" style="height: auto;line-height: initial;border-top:1px solid #ccc">
+    <span class="title"><span class="Customer_Name">{$customer->get('Customer Name')}</span><br> <span class="small italic padding_left_10">{t}Customer ID{/t}: {$customer->id}</span></span>
+</div>
+
 <div class="menu-bottom-bar menu-bottom-bar-three color-menu-bar menu-bottom-bar-text flat-menu-bar">
 
 
@@ -683,10 +687,13 @@
                     url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
                     }, success: function (data) {
 
-                        console.log(data)
 
                         if (data.state == '200') {
 
+
+                            for (var key in data.metadata.class_html) {
+                                $('.' + key).html(data.metadata.class_html[key])
+                            }
 
                         } else if (data.state == '400') {
                             swal("{t}Error{/t}!", data.msg, "error")

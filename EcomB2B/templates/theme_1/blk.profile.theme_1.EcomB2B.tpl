@@ -15,9 +15,14 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
+<div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
 
-    <div class="text_blocks container ">
+
+    <div class="table_top">
+        <span class="title"><span class="Customer_Name">{$customer->get('Customer Name')}</span> <span class="small italic padding_left_10">{t}Customer ID{/t}: {$customer->id}</span></span>
+    </div>
+
+    <div class="text_blocks container "  style="padding-top:{$top_margin}px;">
 
         <div style="width: 250px" id="profile_menu" class="text_block ">
 
@@ -748,7 +753,6 @@
 
             ajaxData.append("tipo", 'contact_details')
             ajaxData.append("data", JSON.stringify(register_data))
-
 
             $.ajax({
                 url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {

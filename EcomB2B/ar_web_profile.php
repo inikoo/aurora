@@ -282,6 +282,8 @@ function contact_details($db, $data, $customer, $editor) {
             'metadata' => array(
                 'class_html' => array(
                     'Tax_Number_Valid' => $customer->get('Tax Number Valid'),
+                    'Customer_Name' => $customer->get('Customer Name'),
+
                 )
             )
         )
