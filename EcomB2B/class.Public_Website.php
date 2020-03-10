@@ -257,7 +257,8 @@ class Public_Website {
             case 'Website Text Font':
             case 'Website Registration Type':
                 return $this->data[$key];
-
+            case 'Store Key':
+                return $this->data['Website '.$key];
             case 'Website Settings Browser Title Format':
 
 

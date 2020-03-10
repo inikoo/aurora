@@ -141,7 +141,7 @@ switch ($tipo) {
                          )
                      )
         );
-        get_catalogue_table_html($data, $customer);
+        get_catalogue_table_html($data, $customer,$website);
         break;
     default:
         $response = array(
@@ -819,7 +819,7 @@ function get_choose_client_for_order_table_html($data, $customer) {
 
 }
 
-function get_catalogue_table_html($data, $customer) {
+function get_catalogue_table_html($data, $customer,$website) {
 
 
     if (!isset($data['device_prefix'])) {
@@ -845,6 +845,15 @@ function get_catalogue_table_html($data, $customer) {
     $family_nav_label     = '';
     $family_nav_title     = '';
     $title                = '';
+
+    $data_feeds=array(
+        'title'=>_('All products data feed'),
+        'urls'=>[
+            'csv'=>'/catalog_data_feed.php?output=CSV&scope=website&scope_key='.$website->id,
+            'xls'=>'/catalog_data_feed.php?output=XLS&scope=website&scope_key='.$website->id,
+            'json'=>'/catalog_data_feed.php?output=Json&scope=website&scope_key='.$website->id
+        ]
+    );
 
     switch ($data['scope']) {
         case 'departments':
@@ -887,12 +896,30 @@ function get_catalogue_table_html($data, $customer) {
                 'parent_key' => $customer->get('Customer Store Key')
 
             );
+
             break;
         case 'families':
             if ($data['parent'] == 'department') {
                 $department           = get_object('Category', $data['parent_key']);
                 $department_nav_label = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $department->id, $department->get('Label'));
-                $title                = sprintf(_('Department: %s'), $department->get('Label'));
+
+
+                if($device_prefix=='mobile'){
+                    $title                = $department->get('Label');
+                }else{
+                    $title                = sprintf(_('Department: %s'), $department->get('Label'));
+                }
+
+                $data_feeds=array(
+                    'title'=>_('Products in department data feed'),
+                    'urls'=>[
+                        'csv'=>'/catalog_data_feed.php?output=CSV&scope=department&scope_key='.$department->id,
+                        'xls'=>'/catalog_data_feed.php?output=XLS&scope=department&scope_key='.$department->id,
+                        'json'=>'/catalog_data_feed.php?output=Json&scope=department&scope_key='.$department->id
+                    ]
+                );
+
+
             } elseif ($data['parent'] == 'store') {
 
                 $title = _('Families');
@@ -939,12 +966,29 @@ function get_catalogue_table_html($data, $customer) {
                 'parent_key' => $data['parent_key'],
 
             );
+
+
+
             break;
         case 'products':
             if ($data['parent'] == 'department') {
                 $department           = get_object('Category', $data['parent_key']);
                 $department_nav_label = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $department->id, $department->get('Label'));
-                $title                = sprintf(_('Department: %s'), $department->get('Label'));
+                if($device_prefix=='mobile'){
+                    $title                = $department->get('Label');
+                }else{
+                    $title                = sprintf(_('Department: %s'), $department->get('Label'));
+                }
+
+                $data_feeds=array(
+                    'title'=>_('Products in department data feed'),
+                    'urls'=>[
+                        'csv'=>'/catalog_data_feed.php?output=CSV&scope=department&scope_key='.$department->id,
+                        'xls'=>'/catalog_data_feed.php?output=XLS&scope=department&scope_key='.$department->id,
+                        'json'=>'/catalog_data_feed.php?output=Json&scope=department&scope_key='.$department->id
+                    ]
+                );
+
             }
             elseif ($data['parent'] == 'family') {
                 $family          = get_object('Category', $data['parent_key']);
@@ -956,10 +1000,20 @@ function get_catalogue_table_html($data, $customer) {
 
                 $department_nav_label = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $department->id, $department->get('Label'));
 
+                $data_feeds=array(
+                    'title'=>_('Products in family data feed'),
+                    'urls'=>[
+                        'csv'=>'/catalog_data_feed.php?output=CSV&scope=family&scope_key='.$family->id,
+                        'xls'=>'/catalog_data_feed.php?output=XLS&scope=family&scope_key='.$family->id,
+                        'json'=>'/catalog_data_feed.php?output=Json&scope=family&scope_key='.$family->id
+                    ]
+                );
+                if($device_prefix=='mobile'){
+                    $title                = $family->get('Label').' <span class="small ">('.$family->get('Code').')</span>';
+                }else{
+                    $title                = sprintf(_('Family: %s'), $family->get('Label')).' <span class="small margin_left_10">('.$family->get('Code').')</span>';
+                }
 
-
-
-                $title                = sprintf(_('Family: %s'), $family->get('Label')).' <span class="small margin_left_10">('.$family->get('Code').')</span>';
             } elseif ($data['parent'] == 'store') {
 
                 $title = _('Products');
@@ -1039,6 +1093,9 @@ function get_catalogue_table_html($data, $customer) {
         ),
 
         'title' => $title,
+        'data_feed' =>$data_feeds
+
+
 
 
     );

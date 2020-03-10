@@ -29,7 +29,7 @@ module.exports = function (grunt) {
             }, ecom_catalogue: {
                 options: {
                     sourceMap: true,},
-                src: ['EcomB2B/js/aurora/catalogue.js',
+                src: ['EcomB2B/js/catalogue/catalogue.js',
                 ], dest: 'EcomB2B/assets/catalogue.min.js',
             }, ecom_dropshipping_logged_in: {
                 options: {

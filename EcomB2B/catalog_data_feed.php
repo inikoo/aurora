@@ -19,11 +19,13 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 include_once 'utils/general_functions.php';
 include_once 'utils/object_functions.php';
-
 if (empty($_REQUEST['output']) or empty($_REQUEST['scope']) or !in_array(
         strtolower($_REQUEST['scope']), [
                                           'category',
-                                          'product'
+                                          'product',
+                                          'department',
+                                          'family',
+                                          'website'
                                       ]
     ) or empty($_REQUEST['scope_key']) or !is_numeric($_REQUEST['scope_key'])) {
     header("HTTP/1.0 400 Bad Request");
@@ -50,7 +52,18 @@ $website = get_object('Website', $_SESSION['website_key']);
 
 $files = array();
 
-$object = get_object($_REQUEST['scope'], $_REQUEST['scope_key']);
+
+switch ($_REQUEST['scope']) {
+    case 'department':
+    case 'family':
+
+        $object = get_object('category', $_REQUEST['scope_key']);
+
+        break;
+    default:
+        $object = get_object($_REQUEST['scope'], $_REQUEST['scope_key']);
+
+}
 
 
 if (!$object->id) {
@@ -58,13 +71,20 @@ if (!$object->id) {
     exit;
 }
 
-
 if ($object->get('Store Key') != $website->get('Website Store Key')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
 $output_type = strtolower($_REQUEST['output']);
+
+if ($website->get('Website Type') == 'EcomDS') {
+    $export_fields_type = 'portfolio_items';
+} else {
+    $export_fields_type = 'website_catalogue_items';
+
+}
+
 
 if (in_array(
     $output_type, [
@@ -84,59 +104,100 @@ if (in_array(
     exit;
 }
 
+include_once 'conf/export_fields.php';
+$export_fields = get_export_fields($export_fields_type);
+
+foreach ($export_fields as $key => $field) {
+
+    if ($use_php_excel and isset($field['type']) and $field['type'] == 'array') {
+        unset($export_fields[$key]);
+    }
+    if (!$use_php_excel and isset($field['ignore_json'])) {
+        unset($export_fields[$key]);
+    };
+}
+
+$sql = "select ";
+foreach ($export_fields as $field) {
+    $sql .= $field['name'].',';
+}
+$sql = preg_replace('/,$/', ' from ', $sql);
+
+
 switch ($_REQUEST['scope']) {
     case 'category':
 
-        include_once 'conf/export_fields.php';
-        $export_fields = get_export_fields('portfolio_items');
 
-        foreach ($export_fields as $key=>$field) {
-
-            if ($use_php_excel and isset($field['type']) and $field['type']=='array') {
-                unset($export_fields[$key]);
-            }
-            if (!$use_php_excel and isset($field['ignore_json']) ) {
-                unset($export_fields[$key]);
-            }
-
-            ;
+        $sql .= "`Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) ";
+        if ($website->get('Website Type') == 'EcomDS') {
+            $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=`Website Webpage Scope Scope Key`)";
         }
+        $sql .= "    where `Website Webpage Scope Scope`='Product'  and `Website Webpage Scope Type`='Category_Products_Item'  and `Website Webpage Scope Webpage Key`=? ";
 
-        $sql = "select ";
-        foreach ($export_fields as $field) {
-            $sql .= $field['name'].',';
-        }
-        $sql = preg_replace('/,$/', ' from ', $sql);
-
-        $sql .= "`Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) 
-        left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=`Website Webpage Scope Scope Key`)
-        where `Website Webpage Scope Scope`='Product'  and `Website Webpage Scope Type`='Category_Products_Item'  and `Website Webpage Scope Webpage Key`=? ";
-
-
-        $placeholders = array(
-            '[image_address]' => 'https://'.$row['Website URL'].'/wi/'
+        $sql_args = array(
+            $object->get('Product Category Webpage Key')
         );
-
-        $sql = strtr($sql, $placeholders);
-
-
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array(
-                $object->get('Product Category Webpage Key')
-            )
-        );
-
-
-        $title   = 'Category items';
-        $subject = 'Data feed';
 
         break;
+    case 'department':
+    case 'family':
 
+
+        $sql .= "`Product Dimension` P left join `Page Store Dimension` W on (W.`Page Key`=`Product Webpage Key`) ";
+        if ($website->get('Website Type') == 'EcomDS') {
+            $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
+        }
+
+        if ($_REQUEST['scope'] == 'department') {
+            $sql .= "where `Product Department Category Key`=?  and `Webpage State`='Online' ";
+
+        } else {
+            $sql .= "where `Product Family Category Key`=?  and `Webpage State`='Online' ";
+
+        }
+
+        $sql_args = array(
+            $object->id
+        );
+
+
+        break;
+    case 'website':
+
+
+        $sql .= "`Product Dimension` P left join `Page Store Dimension` W on (W.`Page Key`=`Product Webpage Key`) ";
+        if ($website->get('Website Type') == 'EcomDS') {
+            $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
+        }
+
+        $sql .= "where `Webpage Website Key`=?  and `Webpage State`='Online' ";
+
+
+        $sql_args = array(
+            $object->id
+        );
+
+
+        break;
     default:
         header("HTTP/1.0 400 Bad Request");
         exit;
 }
+
+
+$placeholders = array(
+    '[image_address]' => 'https://'.$website->get('Website URL').'/wi/'
+);
+
+$sql = strtr($sql, $placeholders);
+
+$stmt = $db->prepare($sql);
+$stmt->execute($sql_args);
+
+
+$title   = 'Category items';
+$subject = 'Data feed';
+
 
 if ($use_php_excel) {
 
@@ -163,7 +224,6 @@ if ($use_php_excel) {
         if ($row_index == 1) {
             $char_index = 1;
             foreach ($export_fields as $field) {
-
 
 
                 if (isset($field['labels'])) {
@@ -198,21 +258,21 @@ if ($use_php_excel) {
             $type = (empty($export_fields[$char_index - 1]['type']) ? '' : $export_fields[$char_index - 1]['type']);
 
 
-                if ($type == 'html') {
-                    $_value = $value;
-                } else {
-                    $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
+            if ($type == 'html') {
+                $_value = $value;
+            } else {
+                $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
-                }
-                $char = number2alpha($char_index);
-                if ($type == 'text') {
-                    $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
+            }
+            $char = number2alpha($char_index);
+            if ($type == 'text') {
+                $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
 
-                } else {
-                    $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
-                }
+            } else {
+                $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+            }
 
-                $char_index++;
+            $char_index++;
         }
 
         $row_index++;
@@ -227,7 +287,6 @@ if ($use_php_excel) {
 
         foreach ($cellIterator as $cell) {
 
-            // print_r($cell->getColumn());
             if (in_array($cell->getColumn(), $columns_no_resize)) {
                 $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
             } else {
@@ -263,6 +322,7 @@ if ($use_php_excel) {
             IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save('php://output');
             break;
         case('xls'):
+
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.xls"');
 
@@ -327,7 +387,6 @@ if ($use_php_excel) {
         $char_index = 1;
         $_row       = [];
         foreach ($row as $sql_field => $value) {
-
 
 
             $char = number2alpha($char_index);

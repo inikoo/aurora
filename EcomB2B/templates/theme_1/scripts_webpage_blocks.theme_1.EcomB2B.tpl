@@ -772,15 +772,21 @@
                                                 $('.breadcrumbs .family_nav').html(data.family_nav.label);
                                                 $('.breadcrumbs .family_nav').attr('title',data.family_nav.title);
 
-                                                    $('.table_top .title').html(data.title)
+                                                $('.table_top .title').html(data.title)
 
                                                 $('.portfolio_data_feeds .images_zip').attr('href', data.images_zip_url);
                                                 $('.portfolio_data_feeds .csv').attr('href', data.csv_url);
                                                 $('.portfolio_data_feeds .xls').attr('href', data.xls_url);
                                                 $('.portfolio_data_feeds .json').attr('href', data.json_url);
 
-                                                $('.portfolio_data_feeds').removeClass('hide')
 
+                                                {if $logged_in}
+                                                $('.portfolio_data_feeds').removeClass('hide')
+                                                $('.catalogue_data_feed_title').html(data.data_feed.title)
+                                                $('.catalogue_data_feed_csv').attr('href',data.data_feed.urls.csv)
+                                                $('.catalogue_data_feed_xls').attr('href',data.data_feed.urls.xls)
+                                                $('.catalogue_data_feed_json').attr('href',data.data_feed.urls.json)
+                                                {/if}
                                                 $('#table_container').html(data.html)
 
 

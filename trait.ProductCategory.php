@@ -328,41 +328,42 @@ trait ProductCategory {
     function get_product_ids() {
 
         $product_ids = '';
-        $sql         = sprintf(
-            'SELECT `Subject Key` FROM `Category Bridge` WHERE `Category Key`=%d AND `Subject Key`>0 ', $this->id
-        );
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $product_ids .= $row['Subject Key'].',';
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
+        $sql         = "SELECT `Subject Key` FROM `Category Bridge` WHERE `Category Key`=? AND `Subject Key`>0";
 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $product_ids .= $row['Subject Key'].',';
+
+        }
 
         $product_ids = preg_replace('/,$/', '', $product_ids);
 
         if ($product_ids != '' and $this->get('Category Subject') == 'Category') {
             $category_ids = $product_ids;
             $product_ids  = '';
-            $sql          = sprintf(
-                'SELECT `Subject Key`  FROM `Category Bridge` WHERE `Category Key` IN (%s) AND `Subject Key`>0 ', $category_ids
+
+            $sql = "SELECT `Subject Key`  FROM `Category Bridge` WHERE `Category Key` IN (?) AND `Subject Key`>0";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $category_ids
+                )
             );
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $product_ids .= $row['Subject Key'].',';
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
+            while ($row = $stmt->fetch()) {
+                $product_ids .= $row['Subject Key'].',';
             }
+
+
             $product_ids = preg_replace('/,$/', '', $product_ids);
 
         }
 
-        //print $product_ids;
 
         return $product_ids;
 
@@ -859,18 +860,18 @@ trait ProductCategory {
 
     }
 
-    function get_categories($output = 'keys',$scope='all',$args='') {
+    function get_categories($output = 'keys', $scope = 'all', $args = '') {
 
         $categories = array();
-        $sql = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Category' AND `Category Branch Type`!='Root'";
+        $sql        = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Category' AND `Category Branch Type`!='Root'";
 
-        $params=array(
+        $params = array(
             $this->id
         );
 
-        if($scope=='root_key'){
-            $sql.=' and C.`Category Root Key`=?';
-            $params[]=$args;
+        if ($scope == 'root_key') {
+            $sql      .= ' and C.`Category Root Key`=?';
+            $params[] = $args;
         }
 
         $stmt = $this->db->prepare($sql);
@@ -879,11 +880,12 @@ trait ProductCategory {
         );
         while ($row = $stmt->fetch()) {
             if ($output == 'objects') {
-                $categories[$row['Category Key']] = get_object('Category',$row['Category Key']);
+                $categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
             } else {
                 $categories[$row['Category Key']] = $row['Category Key'];
             }
         }
+
         return $categories;
     }
 
