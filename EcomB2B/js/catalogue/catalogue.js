@@ -106,4 +106,3 @@ $('.catalogue_tabs .' + scope).addClass('selected')
 
 $('.catalogue_table').data('scope', scope).data('parent', parent).data('parent_key', parent_key)
 
-console.log(parent_key)
