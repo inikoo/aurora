@@ -1,0 +1,1 @@
+ALTER TABLE `Product Dimension` ADD `Product Status Availability State` ENUM('OK','Low','VeryLow','OutofStock','Discontinuing','Discontinued') NOT NULL DEFAULT 'OutofStock' AFTER `Product Status`, ADD INDEX (`Product Status Availability State`);
