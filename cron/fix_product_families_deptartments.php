@@ -12,7 +12,7 @@
 include 'common.php';
 
 
-$sql         = "select `Store Key` from `Store Dimension` where `Store Key`=19";
+$sql         = "select `Store Key` from `Store Dimension` ";
 $stmt_stores = $db->prepare($sql);
 $stmt_stores->execute(
     array()
@@ -27,7 +27,7 @@ while ($row_stores = $stmt_stores->fetch()) {
 
     $sql =
         "select F.`Category Store Key`,`Category Code`, `Product Category Department Category Key`,`Product Category Key` from `Category Dimension` F left join `Product Category Dimension` PC on (PC.`Product Category Key`=F.`Category Key`)  
-        where `Category Root Key`=? and `Category Branch Type`='Head'  and `Category Code`='ABB' ";
+        where `Category Root Key`=? and `Category Branch Type`='Head'  ";
 
     $stmt = $db->prepare($sql);
     $stmt->execute(
