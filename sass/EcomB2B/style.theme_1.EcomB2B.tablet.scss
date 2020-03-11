@@ -84,6 +84,15 @@ p.strong {
   margin-bottom: 30px;
 
 }
+i.fa{
+  &.discontinuing{
+    opacity:0.5;
+  }
+  &.discontinued{
+    opacity:0.75;
+    color:red;
+  }
+}
 
 .asset_description .read-more {
   position: absolute;

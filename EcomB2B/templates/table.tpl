@@ -7,7 +7,6 @@
 {if isset($period)  and   !isset($hide_period) }
     {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  }
 {/if}
-
 {if isset($elements) and count($elements)>0     }
     <div id="elements" class="elements tabs ">
         <div id="element_type" class="{if count($elements)<2}hide {/if}" onClick="show_elements_types()"><i id="element_type_select_icon" class="fa fa-bars""></i></div>
@@ -16,7 +15,9 @@
                 {foreach from=$element_group['items']|@array_reverse item=element key=id}
                     <div id="element_{$id}" item_key="{$id}" class="element right  {if isset($element.selected) and $element.selected}selected{/if}"  data-item="{$id}"
                          title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title|strip_tags}{elseif isset($element.label)}{$element.label|strip_tags}{/if}">
-                        <i id="element_checkbox_{$id}" class="far element_checkbox {if $element.selected}fa-check-square{else}fa-square{/if}"></i> <span class="label"> {$element.label}  </span>
+                        <i id="element_checkbox_{$id}" class="far element_checkbox {if $element.selected}fa-check-square{else}fa-square{/if}"></i>
+                        <span class="label"> {$element.label}  </span>
+                        {if !empty($element.suffix_icon)}<i class="{$element.suffix_icon}"></i>{/if}
                         <span class="qty" id="element_qty_{$id}"></span>
                     </div>
                 {/foreach}
@@ -24,6 +25,7 @@
         {/foreach}
     </div>
 {/if}
+
 {if isset($edit_table_dialog)}
     <div id="edit_table_dialog" class="hide edit_table_dialog"  data-metadata="{ }" >
         <div class="small button discreet" onclick="$('#edit_table_dialog').addClass('hide')" style="float:right;margin-left: 30px"><i class="fa fa-times"></i> {t}Close{/t}</div>

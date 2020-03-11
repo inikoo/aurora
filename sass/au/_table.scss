@@ -96,12 +96,16 @@ section.table_block {
         padding: 0 10px
       }
 
-      .fa,.far,.fas,.fab,.fab,.fal {
-        font-size: 75%;
-        color: #888;
-        position: relative;
-        top: -1px;
+      &.element_checkbox{
+        &.fa,&.far,&.fas,&.fab,&.fal {
+          font-size: 75%;
+          color: #888;
+          position: relative;
+          top: -1px;
+        }
       }
+
+
     }
     .tab {
       &:hover, &.selected {
@@ -130,9 +134,15 @@ section.table_block {
       &.selected > .qty {
         color: #111;
       }
-      &:hover, &.selected > .fa,.far,.fas,.fab,.fal {
-        color: #000;
+
+      .element_checkbox{
+        &:hover, &.selected > .fa,.far,.fas,.fab,.fal {
+          color: #000;
+        }
       }
+
+
+
       .fa,.far,.fas,.fab,.fal {
         font-size: 100%;
         position: relative;

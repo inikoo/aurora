@@ -32,7 +32,7 @@ switch ($tab) {
                          'parameters' => array('type' => 'json array')
                      )
         );
-        get_portfolio_elements($db, $data['parameters'],$customer->id);
+        get_portfolio_elements($db, $data['parameters'], $customer->id);
         break;
     default:
         $response = array(
@@ -45,16 +45,24 @@ switch ($tab) {
 }
 
 
-
 /**
  * @param $db \PDO
  * @param $data
  */
-function get_portfolio_elements($db, $data,$customer_key) {
+function get_portfolio_elements($db, $data, $customer_key) {
 
+    //todo remove availability_state, still here becuse old sessions still need it 11 March 2020
 
     $elements_numbers = array(
-        'availability_state' => array(
+        'status_availability_state' => array(
+            'OutofStock'    => 0,
+            'VeryLow'       => 0,
+            'Low'           => 0,
+            'Ok'            => 0,
+            'Discontinuing' => 0,
+            'Discontinued'  => 0
+        ),
+        'availability_state'        => array(
             'OutofStock' => 0,
             'VeryLow'    => 0,
             'Low'        => 0,
@@ -76,12 +84,16 @@ function get_portfolio_elements($db, $data,$customer_key) {
 
     while ($row = $stmt->fetch()) {
 
+        if ($row['element'] == '') {
+            continue;
+        }
 
         if ($row['element'] == 'Error') {
             $row['element'] = 'OutofStock';
         } elseif ($row['element'] == 'Excess' or $row['element'] == 'Normal' or $row['element'] == 'OnDemand') {
             $row['element'] = 'Ok';
         }
+
 
         $elements_numbers['availability_state'][$row['element']] += $row['number'];
     }
@@ -91,6 +103,21 @@ function get_portfolio_elements($db, $data,$customer_key) {
 
         $elements_numbers['availability_state'][$key] = number($value);
 
+    }
+
+    $sql  =
+        "select count(*) as number,`Product Status Availability State` as element from  `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) where  `Customer Portfolio Customer Key`=? and  `Customer Portfolio Customers State`='Active' group by `Product Status Availability State` ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $customer_key
+        )
+    );
+
+
+    while ($row = $stmt->fetch()) {
+
+        $elements_numbers['availability_state'][$row['element']] = number($row['number']);
     }
 
 

@@ -73,6 +73,17 @@ $color_font_soft: #5f5f5f;
 @import 'aurora';
 
 
+i.fa{
+  &.discontinuing{
+    opacity:0.5;
+  }
+  &.discontinued{
+    opacity:0.75;
+    color:red;
+  }
+}
+
+
 .table_inline_edit{
   .save.valid{
     cursor:pointer;color:$color_save;

@@ -35,7 +35,30 @@ if (isset($parameters['elements_type'])) {
 
 
     switch ($parameters['elements_type']) {
+        case 'status_availability_state':
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
 
+                        $_elements .= ','.prepare_mysql($_key);
+
+
+
+                }
+            }
+            $_elements = preg_replace('/^\,/', '', $_elements);
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 6) {
+                $where .= ' and P.`Product Status Availability State` in ('.$_elements.')';
+            }
+
+
+            break;
         case 'availability_state':
             $_elements      = '';
             $count_elements = 0;

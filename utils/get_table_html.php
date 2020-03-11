@@ -13,8 +13,6 @@
 include_once 'utils/date_functions.php';
 
 
-//print_r($default);
-
 
 if (isset($_SESSION['table_state'][$tab])) {
     $table_state = $_SESSION['table_state'][$tab];
@@ -197,11 +195,14 @@ if (array_key_exists('frequency', $parameters)) {
     $smarty->assign('frequencies',array());
 }
 
+
 if (array_key_exists('elements', $parameters)) {
     $smarty->assign('elements', $parameters['elements']);
 }else{
     $smarty->assign('elements', array());
 }
+
+
 
 if (array_key_exists('elements_type', $parameters)) {
     $smarty->assign('elements_type', $parameters['elements_type']);

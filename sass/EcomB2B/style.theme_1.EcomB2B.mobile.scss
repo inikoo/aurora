@@ -88,6 +88,16 @@ $color_background: #fcfcfc;
   /* "transparent" only works here because == rgba(0,0,0,0) */
   background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), white);
 }
+i.fa{
+  &.discontinuing{
+    opacity:0.5;
+  }
+  &.discontinued{
+    opacity:0.75;
+    color:red;
+  }
+}
+
 
 .asset_description .read-more span {
   position: relative;

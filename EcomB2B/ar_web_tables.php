@@ -372,6 +372,7 @@ function get_portfolio_table_html($data, $customer) {
     $tipo    = 'portfolio_items';
 
 
+ //   print_r( get_elements_option('customer_portfolio'));
     $default = array(
         'view'          => 'overview',
         'sort_key'      => 'code',
@@ -387,7 +388,6 @@ function get_portfolio_table_html($data, $customer) {
         'elements'      => get_elements_option('customer_portfolio'),
 
     );
-
 
     //if($device_prefix==''){
     //    $default['export_fields']=get_export_fields('portfolio_items');

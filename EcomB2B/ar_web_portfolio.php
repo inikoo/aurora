@@ -217,10 +217,10 @@ function portfolio_items($_data, $db) {
 
             if ($data['Product Status'] == 'Discontinued') {
                 $stock_status='';
-                $status_icon = ' <i class="fa fa-skull error" title="'._('Discontinued').'"></i>';
+                $status_icon = ' <i class="fa fa-skull discontinued" title="'._('Discontinued').'"></i>';
 
             } elseif ($data['Product Status'] == 'Discontinuing') {
-                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
+                $status_icon = ' <i class="far discontinuing  fa-skull" title="'._('Discontinuing').'"></i>';
             } else {
                 $status_icon = '';
             }

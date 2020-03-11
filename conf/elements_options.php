@@ -1900,27 +1900,35 @@ function get_elements_option($option) {
         ),
 
         'customer_portfolio' => array(
-            'availability_state' => array(
+            'status_availability_state' => array(
                 'label' => _('Stock state'),
                 'items' => array(
-                    'Ok'         => array(
+                    'Ok'            => array(
                         'label'    => _('Good stock'),
                         'selected' => true
                     ),
-                    'Low'        => array(
+                    'Low'           => array(
                         'label'    => _('Low'),
                         'selected' => true
                     ),
-                    'VeryLow'    => array(
+                    'VeryLow'       => array(
                         'label'    => _('Very low'),
                         'selected' => true
                     ),
-                    'OutofStock' => array(
+                    'OutofStock'    => array(
                         'label'    => _('Out of Stock'),
                         'selected' => true
                     ),
-
-
+                    'Discontinuing' => array(
+                        'label'    => _('Discontinuing'),
+                        'selected' => true,
+                        'suffix_icon'=>'far fa-skull discontinuing'
+                    ),
+                    'Discontinued'  => array(
+                        'label'    => _('Discontinued'),
+                        'selected' => true,
+                        'suffix_icon'=>'fa fa-skull discontinued'
+                    ),
 
 
                 )
@@ -1930,9 +1938,9 @@ function get_elements_option($option) {
         ),
     );
 
-    if(isset($elements_options[$option])){
+    if (isset($elements_options[$option])) {
         return $elements_options[$option];
-    }else{
+    } else {
         return [];
     }
 
