@@ -51,6 +51,10 @@ $color_font_soft: #5f5f5f;
   font-size: 70%
 }
 
+.strikethrough{
+  text-decoration: line-through;
+}
+
 @import 'core';
 @import 'responsive';
 @import 'header';

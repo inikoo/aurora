@@ -216,7 +216,8 @@ function portfolio_items($_data, $db) {
             }
 
             if ($data['Product Status'] == 'Discontinued') {
-                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
+                $stock_status='';
+                $status_icon = ' <i class="fa fa-skull error" title="'._('Discontinued').'"></i>';
 
             } elseif ($data['Product Status'] == 'Discontinuing') {
                 $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
@@ -228,10 +229,10 @@ function portfolio_items($_data, $db) {
             $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
             if ($data['Webpage URL'] == '') {
-                $code = sprintf('<span title="%s">%s</span>', $name, $data['Product Code']);
+                $code = sprintf('<span  class="%s"  title="%s">%s</span>', ($data['Product Status'] == 'Discontinued'?'strikethrough':''),  $name, $data['Product Code']);
 
             } else {
-                $code = sprintf('<a class="link" style="display: inline" href="%s" title="%s">%s</a>', $data['Webpage URL'], $name, $data['Product Code']);
+                $code = sprintf('<a class="link %s " style="display: inline" href="%s" title="%s">%s</a>',  ($data['Product Status'] == 'Discontinued'?'strikethrough':''),$data['Webpage URL'], $name, $data['Product Code']);
 
             }
 
