@@ -47,7 +47,7 @@ $available_locales = array(
         'Language Name'          => _('French'),
         'Language Original Name' => 'Français'
     ),
-    /*
+
     'hi_IN.UTF-8' => array(
         'Locale'                 => 'hi_IN.UTF-8',
         'Flag'                   => 'in',
@@ -56,7 +56,7 @@ $available_locales = array(
         'Language Original Name' => 'हिन्दी'
 
     ),
-    */
+    
     'hu_HU.UTF-8' => array(
         'Locale'                 => 'hu_HU.UTF-8',
         'Flag'                   => 'hu',
