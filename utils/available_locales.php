@@ -57,6 +57,14 @@ $available_locales = array(
 
     ),
     */
+    'hu_HU.UTF-8' => array(
+        'Locale'                 => 'hu_HU.UTF-8',
+        'Flag'                   => 'hu',
+        'Language Code'          => 'hu',
+        'Language Name'          => _('Hungarian'),
+        'Language Original Name' => 'Magyar'
+
+    ),
     'id_ID.UTF-8' => array(
         'Locale'                 => 'id_ID.UTF-8',
         'Flag'                   => 'id',
