@@ -9,6 +9,12 @@
 
  Version 3.0
 */
+
+require_once __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/keyring/dns.php';
+require_once 'utils/sentry.php';
+
+
 require_once 'utils/object_functions.php';
 
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
@@ -26,12 +32,10 @@ if (empty($_REQUEST['uid']) or !is_numeric($_REQUEST['uid']) or empty($_REQUEST[
 }
 
 
-require __DIR__.'/keyring/dns.php';
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-require_once __DIR__.'/../vendor/autoload.php';
 
 
 $sql  =

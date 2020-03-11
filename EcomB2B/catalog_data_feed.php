@@ -16,6 +16,10 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+require_once __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/keyring/dns.php';
+
+require_once 'utils/sentry.php';
 
 include_once 'utils/general_functions.php';
 include_once 'utils/object_functions.php';
@@ -35,12 +39,10 @@ if (empty($_REQUEST['output']) or empty($_REQUEST['scope']) or !in_array(
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
 
-require __DIR__.'/keyring/dns.php';
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-require_once __DIR__.'/../vendor/autoload.php';
 
 
 if (empty($_SESSION['website_key'])) {
