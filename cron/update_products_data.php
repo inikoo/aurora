@@ -29,7 +29,8 @@ $editor = array(
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-update_products_data($db);
+update_products_status_availability_state($db);
+//update_products_data($db);
 
 //update_fields_from_parts($db);
 //update_fields_from_parts($db);
@@ -77,6 +78,32 @@ function update_products_next_shipment_date($db) {
     }
 
 }
+
+function update_products_status_availability_state($db) {
+
+    $sql = sprintf(
+        "SELECT `Product ID` FROM `Product Dimension` where `Product Code`='JBB-25' "
+    );
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            $product = new Product($row['Product ID']);
+            $product->update_status_availability_state();
+
+
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+}
+
+
 
 function update_products_data($db) {
 
