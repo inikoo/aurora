@@ -1322,6 +1322,8 @@ class Product extends Asset {
             )
         );
 
+        $this->update_status_availability_state();
+
         if ($old_availability_state != $this->get('Product Availability State')) {
             $this->fast_update(array('Product Stock Updated' => gmdate('Y-m-d H:i:s')));
             $this->fork_index_elastic_search();
@@ -1358,8 +1360,6 @@ class Product extends Asset {
     function update_web_state($use_fork = true) {
 
 
-
-
         $store = get_object('Store', $this->get('Product Store Key'));
 
         if ($store->get('Store Type') == 'External') {
@@ -1378,7 +1378,6 @@ class Product extends Asset {
         }
 
         $web_state = $this->get_web_state();
-
 
 
         $this->update_field('Product Web State', $web_state, 'no_history');
@@ -1531,7 +1530,6 @@ class Product extends Asset {
     }
 
     function get_web_state() {
-
 
 
         if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0)) {
@@ -1707,7 +1705,6 @@ class Product extends Asset {
 
     }
 
-
     function get_categories($output = 'keys', $scope = 'all', $args = '') {
 
         $categories = array();
@@ -1737,6 +1734,41 @@ class Product extends Asset {
         return $categories;
     }
 
+    function update_status_availability_state() {
+
+
+
+        switch ($this->data['Product Status']) {
+            case 'Discontinuing':
+            case 'Discontinued':
+                $status_availability_state = $this->data['Product Status'];
+                break;
+            default:
+                if (in_array(
+                    $this->data['Product Availability State'], [
+                    'Excess',
+                    'Normal',
+                    'OnDemand'
+                ]
+                )) {
+                    $status_availability_state = 'OK';
+                } elseif (in_array(
+                    $this->data['Product Availability State'], [
+                    'OutofStock',
+                    'Error'
+                ]
+                )) {
+                    $status_availability_state = 'OutofStock';
+                } else {
+                    $status_availability_state = $this->data['Product Availability State'];
+
+                }
+
+        }
+
+        $this->fast_update(['Product Status Availability State'=>$status_availability_state]);
+
+    }
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
@@ -3351,6 +3383,35 @@ class Product extends Asset {
 
     }
 
+    function update_part_numbers() {
+
+        $number_parts = 0;
+
+        $sql = sprintf(
+            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Product Number of Parts' => $number_parts,
+
+
+            )
+        );
+
+
+    }
+
     function get_category_data() {
 
 
@@ -3408,35 +3469,6 @@ class Product extends Asset {
 
 
         return $category_data;
-    }
-
-    function update_part_numbers() {
-
-        $number_parts = 0;
-
-        $sql = sprintf(
-            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_parts = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->fast_update(
-            array(
-                'Product Number of Parts' => $number_parts,
-
-
-            )
-        );
-
-
     }
 
     function update_cost() {
