@@ -82,7 +82,7 @@ function update_products_next_shipment_date($db) {
 function update_products_status_availability_state($db) {
 
     $sql = sprintf(
-        "SELECT `Product ID` FROM `Product Dimension` where `Product Code`='JBB-25' "
+        "SELECT `Product ID` FROM `Product Dimension`  "
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
