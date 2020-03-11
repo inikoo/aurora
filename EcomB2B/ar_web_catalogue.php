@@ -331,13 +331,16 @@ function products($_data, $db) {
 
 
             if ($data['Product Status'] == 'Discontinued') {
-                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
+                $stock_status='';
+                $status_icon = ' <i class="fa fa-skull error" title="'._('Discontinued').'"></i>';
 
             } elseif ($data['Product Status'] == 'Discontinuing') {
                 $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
             } else {
                 $status_icon = '';
             }
+
+            $name = $data['Product Units per Case'].'x '.$data['Product Name'];
 
 
 
@@ -349,8 +352,8 @@ function products($_data, $db) {
                 $image = 'x';
             }
 
-            $code = sprintf('<a href="%s">%s</a>', $data['Webpage URL'], $data['Product Code']);
-            $name = $data['Product Units per Case'].'x '.$data['Product Name'];
+            $code = sprintf('<a class="link %s " style="display: inline" href="%s" title="%s">%s</a>',  ($data['Product Status'] == 'Discontinued'?'strikethrough':''),$data['Webpage URL'], $name, $data['Product Code']);
+
 
             $record_data[] = array(
                 'id'   => $data['Product ID'],
