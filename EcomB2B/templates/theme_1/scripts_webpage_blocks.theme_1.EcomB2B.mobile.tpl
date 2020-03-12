@@ -775,7 +775,7 @@
                                 $('.portfolio_data_feeds').removeClass('hide')
                                 $('.catalogue_data_feed_title').html(data.data_feed.title)
                                 $('.catalogue_data_feed_csv').attr('href',data.data_feed.urls.csv)
-                                $('.catalogue_data_feed_xls').attr('href',data.data_feed.urls.xls)
+                                $('.catalogue_data_feed_xlsx').attr('href',data.data_feed.urls.xlsx)
                                 $('.catalogue_data_feed_json').attr('href',data.data_feed.urls.json)
                                 {/if}
                                 $('#table_container').html(data.html)

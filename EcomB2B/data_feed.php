@@ -252,7 +252,7 @@ if ($row = $stmt->fetch()) {
 
                         header('Cache-Control: max-age=0');
 
-                        IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save('php://output');
+                        IOFactory::createWriter($objPHPExcel, 'Xlsx')->save('php://output');
                         break;
                     case('xls'):
                         header('Content-Type: application/vnd.ms-excel');

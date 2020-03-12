@@ -242,7 +242,7 @@ while ($row3 = $stmt_3->fetch()) {
                 $objPHPExcel->getActiveSheet()->freezePane('A2');
 
                 IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('"')->setLineEnding("\r\n")->setSheetIndex(0)->save('EcomB2B/data_feeds/data_feed_department_'.$department->id.'.csv');
-                IOFactory::createWriter($objPHPExcel, 'Xls')->save('EcomB2B/data_feeds/data_feed_department_'.$department->id.'.xls');
+                IOFactory::createWriter($objPHPExcel, 'Xlsx')->save('EcomB2B/data_feeds/data_feed_department_'.$department->id.'.xlsx');
 
 
                 $use_php_excel = false;

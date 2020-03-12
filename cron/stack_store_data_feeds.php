@@ -13,7 +13,8 @@ use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+
+
 
 require_once 'common.php';
 
@@ -56,7 +57,7 @@ $stmt_3->execute();
 while ($row3 = $stmt_3->fetch()) {
     $store = get_object('Store', $row3['Stack Object Key']);
 
-    if ($store->id) {
+    if ($store->id and $store->get('Store Type')!='External' and $store->get('Store State')=='Normal') {
 
         $sql = "select `Stack Key` from `Stack Dimension` where `Stack Key`=?";
 
@@ -123,9 +124,7 @@ while ($row3 = $stmt_3->fetch()) {
                 }
                 $sql = preg_replace('/,$/', ' from ', $sql);
                 $sql .= "`Product Dimension` P left join `Page Store Dimension` W on (W.`Page Key`=`Product Webpage Key`) ";
-                if ($website->get('Website Type') == 'EcomDS') {
-                    $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
-                }
+
                 $sql .= "where `Webpage Website Key`=?  and `Webpage State`='Online' ";
 
 
@@ -242,7 +241,7 @@ while ($row3 = $stmt_3->fetch()) {
                 $objPHPExcel->getActiveSheet()->freezePane('A2');
 
                 IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('"')->setLineEnding("\r\n")->setSheetIndex(0)->save('EcomB2B/data_feeds/data_feed_website_'.$website->id.'.csv');
-                IOFactory::createWriter($objPHPExcel, 'Xls')->save('EcomB2B/data_feeds/data_feed_website_'.$website->id.'.xls');
+                IOFactory::createWriter($objPHPExcel, 'Xlsx')->save('EcomB2B/data_feeds/data_feed_website_'.$website->id.'.xlsx');
 
 
                 $use_php_excel=false;
@@ -253,9 +252,7 @@ while ($row3 = $stmt_3->fetch()) {
                 }
                 $sql = preg_replace('/,$/', ' from ', $sql);
                 $sql .= "`Product Dimension` P left join `Page Store Dimension` W on (W.`Page Key`=`Product Webpage Key`) ";
-                if ($website->get('Website Type') == 'EcomDS') {
-                    $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
-                }
+
                 $sql .= "where `Webpage Website Key`=?  and `Webpage State`='Online' ";
                 $sql = strtr($sql, $placeholders);
                 $stmt = $db->prepare($sql);

@@ -741,7 +741,7 @@ function fork_export_edit_template($job) {
             break;
         case('xlsx'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
-            IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save($output_file);
+            IOFactory::createWriter($objPHPExcel, 'Xlsx')->save($output_file);
             break;
         case('xls'):
             $output_file = $download_path.$output_filename.'.'.$output_type;

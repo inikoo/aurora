@@ -41,6 +41,8 @@ cron/add_new_system_webpage.php
 app_files/po_sources_from_smarty/au.php
 app_files/po_sources_from_smarty/web.php
 cron/shipping_zones.oneoff.php
-/EcomB2B/data_feed/*.csv
-/EcomB2B/data_feed/*.xls
-/EcomB2B/data_feed/*.txt
+
+EcomB2B/data_feeds/*.csv
+EcomB2B/data_feeds/*.xls
+EcomB2B/data_feeds/*.xlsx
+EcomB2B/data_feeds/*.txt
