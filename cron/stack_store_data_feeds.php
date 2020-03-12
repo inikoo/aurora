@@ -67,8 +67,8 @@ while ($row3 = $stmt_3->fetch()) {
             )
         );
         if ($row2 = $stmt2->fetch()) {
-            //$sql = "delete from `Stack Dimension`  where `Stack Key`=?";
-            //$db->prepare($sql)->execute([$row3['Stack Key']]);
+            $sql = "delete from `Stack Dimension`  where `Stack Key`=?";
+            $db->prepare($sql)->execute([$row3['Stack Key']]);
 
             $export_fields_type = 'website_catalogue_items';
             $use_php_excel=true;
