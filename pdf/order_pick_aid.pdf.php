@@ -249,7 +249,8 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
     }
 
     if($_key>0) {
-        $mpdf->AddPage();
+
+        $mpdf->AddPage('P','',1);
     }
 
     $mpdf->WriteHTML($html);
