@@ -1325,7 +1325,7 @@ class Product extends Asset {
         $this->update_status_availability_state();
 
         if ($old_availability_state != $this->get('Product Availability State')) {
-            $this->fast_update(array('Product Stock Updated' => gmdate('Y-m-d H:i:s')));
+            $this->update_updated_markers('Stock');
             $this->fork_index_elastic_search();
         }
 
@@ -2349,7 +2349,7 @@ class Product extends Asset {
                 );
 
                 if ($old_state != $this->data['Product Status']) {
-                    $this->fast_update(array('Product Stock Updated`' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Stock');
                     $this->fork_index_elastic_search();
                 }
                 break;
@@ -2413,7 +2413,7 @@ class Product extends Asset {
                 }
                 $this->update_field($field, $value, $options);
                 if ($old_value != $this->get($field)) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                 }
 
 
@@ -2452,7 +2452,7 @@ class Product extends Asset {
 
 
                 if ($old_value != $this->get($field)) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->update_webpages('weight');
                 }
                 break;
@@ -2505,7 +2505,7 @@ class Product extends Asset {
 
 
                 if ($old_value != $this->get($field)) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->update_webpages('dimensions');
                 }
 
@@ -2613,7 +2613,7 @@ class Product extends Asset {
                 $this->fast_update(array('Product Unit XHTML Materials' => $this->get('Materials')));
 
                 if ($updated) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->update_webpages('materials');
                 }
 
@@ -2669,7 +2669,7 @@ class Product extends Asset {
                 $this->updated = $updated;
 
                 if ($updated) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
 
                     $this->update_webpages('code');
 
@@ -2695,7 +2695,7 @@ class Product extends Asset {
 
                 if ($updated) {
                     $this->update_webpages('name');
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->fork_index_elastic_search();
                 }
 
@@ -2730,7 +2730,7 @@ class Product extends Asset {
 
                 if ($this->updated) {
                     $this->update_webpages('label');
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->fork_index_elastic_search();
                 }
 
@@ -2746,7 +2746,7 @@ class Product extends Asset {
 
                 if ($this->updated) {
                     $this->update_webpages('label_in_family');
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->fork_index_elastic_search();
                 }
 
@@ -2794,7 +2794,7 @@ class Product extends Asset {
                         $part->update_commercial_value();
                     }
 
-                    $this->fast_update(array('Product Price Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Price');
                     $this->update_webpages('price');
                     $this->fork_index_elastic_search();
                 }
@@ -2821,7 +2821,7 @@ class Product extends Asset {
 
                 }
                 if ($this->updated) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
 
                     $this->update_webpages('rrp');
                 }
@@ -2880,8 +2880,8 @@ class Product extends Asset {
                 if ($updated) {
                     $this->update_webpages('units_per_case');
                     $this->fork_index_elastic_search();
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
-                    $this->fast_update(array('Product Price Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
+                    $this->update_updated_markers('Price');
 
                 }
 
@@ -3068,7 +3068,7 @@ class Product extends Asset {
                 );
 
                 if ($old_value != $this->get($field)) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                 }
 
 
@@ -3105,7 +3105,7 @@ class Product extends Asset {
                 $this->update_field($field, $value, $options);
 
                 if ($old_value != $this->get($field)) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->update_webpages('mix_properties');
 
                 }
@@ -3154,7 +3154,7 @@ class Product extends Asset {
                 $this->update_field($field, $value, $options);
 
                 if ($old_value != $this->get($field)) {
-                    $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Data');
                     $this->update_webpages('country_origin');
 
                 }
@@ -3314,11 +3314,11 @@ class Product extends Asset {
                     'Product Materials'                    => $part->data['Part Materials'],
                     'Product Barcode Number'               => $part->data['Part Barcode Number'],
                     'Product Barcode Key'                  => $part->data['Part Barcode Key'],
-                    'Product Data Updated'                 => gmdate('Y-m-d H:i:s'),
 
                 )
             );
 
+            $this->update_updated_markers('Data');
 
             $sql = "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`='Part' AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`='Marketing' ORDER BY `Image Subject Order` ";
 
@@ -3377,7 +3377,7 @@ class Product extends Asset {
         );
 
         if ($old_weight != $weight) {
-            $this->fast_update(array('Product Data Updated' => gmdate('Y-m-d H:i:s')));
+            $this->update_updated_markers('Data');
             $this->update_webpages('weight');
         }
 
@@ -3862,6 +3862,48 @@ class Product extends Asset {
         $this->fast_update_json_field('Product Properties', 'donut_marketing_customers_last_updated', gmdate('U'));
 
 
+    }
+
+    function update_updated_markers($marker){
+
+        $date=gmdate('Y-m-d H:i:s');
+
+        $this->fast_update(array('Product '.$marker.' Updated' => $date));
+
+
+
+        $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+
+        $this->db->prepare($sql)->execute(
+            [
+                $date,
+                $date,
+                'store_data_feed',
+                $this->get('Product Store Key'),
+                $date,
+
+            ]
+        );
+
+        if($this->data['Product Department Category Key']>0){
+            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+
+            $this->db->prepare($sql)->execute(
+                [
+                    $date,
+                    $date,
+                    'department_data_feed',
+                    $this->data['Product Department Category Key'],
+                    $date,
+
+                ]
+            );
+
+        }
+
+        
     }
 
 }

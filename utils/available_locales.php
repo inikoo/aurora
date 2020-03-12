@@ -56,7 +56,7 @@ $available_locales = array(
         'Language Original Name' => 'हिन्दी'
 
     ),
-    
+
     'hu_HU.UTF-8' => array(
         'Locale'                 => 'hu_HU.UTF-8',
         'Flag'                   => 'hu',

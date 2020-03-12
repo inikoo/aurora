@@ -14,13 +14,13 @@ $group_by = '';
 
 if($parameters['parent']=='category'){
     $where = sprintf(
-        "where `Category Parent Key`=%d and `Webpage State`='Online' and `Category Store Key`=%d ", $parameters['parent_key'], $parameters['store_key']
+        "where `Category Parent Key`=%d and `Webpage State`='Online' and `Category Store Key`=%d and `Product Category Status`='Active' and `Product Category Public`='Yes'", $parameters['parent_key'], $parameters['store_key']
     );
     $table = '`Category Dimension` C   left join `Product Category Dimension` PCD on (C.`Category Key`=PCD.`Product Category Key`)  left join `Page Store Dimension` W on (`Page Key`=`Product Category Webpage Key`) ';
 
 }elseif($parameters['parent']=='department'){
     $where = sprintf(
-        "where B.`Category Key`=%d and `Webpage State`='Online' and `Category Store Key`=%d ", $parameters['parent_key'], $parameters['store_key']
+        "where B.`Category Key`=%d and `Webpage State`='Online' and `Category Store Key`=%d and `Product Category Status`='Active' and `Product Category Public`='Yes'", $parameters['parent_key'], $parameters['store_key']
     );
     $table = ' `Category Bridge` B left join    `Category Dimension` C   on (B.`Subject Key`=C.`Category Key` and `Subject`="Category")    left join `Product Category Dimension` PCD on (C.`Category Key`=PCD.`Product Category Key`)  left join `Page Store Dimension` W on (`Page Key`=`Product Category Webpage Key`) ';
 

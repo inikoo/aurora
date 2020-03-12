@@ -14,7 +14,7 @@ $group_by = '';
 
 
 $where = sprintf(
-    "where `Category Parent Key`=%d and `Webpage State`='Online' ", $parameters['parent_key']
+    "where `Category Parent Key`=%d and `Webpage State`='Online' and `Product Category Status`='Active' and `Product Category Public`='Yes' ", $parameters['parent_key']
 );
 
 $filter_msg = '';

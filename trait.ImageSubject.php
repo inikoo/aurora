@@ -265,7 +265,8 @@ trait ImageSubject {
             $this->msg     = _("Image added");
 
             if ($this->table_name == 'Product') {
-                $this->fast_update(array('Product Images Updated' => gmdate('Y-m-d H:i:s')));
+                $this->update_updated_markers('Images');
+
             }
 
             return $image;
@@ -510,7 +511,7 @@ trait ImageSubject {
                 $this->reindex_order();
 
                 if ($this->table_name == 'Product') {
-                    $this->fast_update(array('Product Images Updated' => gmdate('Y-m-d H:i:s')));
+                    $this->update_updated_markers('Images');
                 }
 
             } else {
