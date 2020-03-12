@@ -16,6 +16,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+
 require_once __DIR__.'/../vendor/autoload.php';
 require __DIR__.'/keyring/dns.php';
 
@@ -44,6 +45,7 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+$use_cache = true;
 
 if (empty($_SESSION['website_key'])) {
     include_once('utils/find_website_key.include.php');
@@ -80,12 +82,15 @@ if ($object->get('Store Key') != $website->get('Website Store Key')) {
 
 $output_type = strtolower($_REQUEST['output']);
 
+/*
 if ($website->get('Website Type') == 'EcomDS') {
     $export_fields_type = 'portfolio_items';
 } else {
     $export_fields_type = 'website_catalogue_items';
 
 }
+*/
+$export_fields_type = 'website_catalogue_items';
 
 
 if (in_array(
@@ -104,6 +109,60 @@ if (in_array(
 } else {
     header("HTTP/1.0 400 Bad Request");
     exit;
+}
+
+
+if ($use_cache) {
+
+    switch ($_REQUEST['scope']) {
+        case 'department':
+        case 'website':
+            switch ($output_type) {
+                case 'csv':
+                    $filename = 'data_feeds/data_feed_'.$_REQUEST['scope'].'_'.$object->id.'.csv';
+                    if (file_exists($filename)) {
+                        header("Content-type: text/csv");
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.csv"');
+                        header('Cache-Control: max-age=0');
+
+                        echo file_get_contents($filename);
+                        exit;
+                    }
+
+                    break;
+                case 'xls':
+                    $filename = 'data_feeds/data_feed_'.$_REQUEST['scope'].'_'.$object->id.'.xls';
+
+                    if (file_exists($filename)) {
+                        header('Content-Type: application/vnd.ms-excel');
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.xls"');
+                        header('Cache-Control: max-age=0');
+
+                        echo file_get_contents($filename);
+                        exit;
+                    }
+
+                    break;
+                case 'json':
+                    $filename = 'data_feeds/data_feed_'.$_REQUEST['scope'].'_'.$object->id.'_json.txt';
+
+
+                    if (file_exists($filename)) {
+                        header("Content-type: application/json; charset=utf-8");
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'_json.txt"');
+                        header('Cache-Control: max-age=0');
+
+
+                        echo file_get_contents($filename);
+                        exit;
+                    }
+
+                    break;
+            }
+
+            break;
+
+    }
 }
 
 include_once 'conf/export_fields.php';
@@ -131,9 +190,11 @@ switch ($_REQUEST['scope']) {
 
 
         $sql .= "`Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) ";
+        /*
         if ($website->get('Website Type') == 'EcomDS') {
             $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=`Website Webpage Scope Scope Key`)";
         }
+        */
         $sql .= "    where `Website Webpage Scope Scope`='Product'  and `Website Webpage Scope Type`='Category_Products_Item'  and `Website Webpage Scope Webpage Key`=? ";
 
         $sql_args = array(
@@ -146,10 +207,11 @@ switch ($_REQUEST['scope']) {
 
 
         $sql .= "`Product Dimension` P left join `Page Store Dimension` W on (W.`Page Key`=`Product Webpage Key`) ";
-        if ($website->get('Website Type') == 'EcomDS') {
-            $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
-        }
-
+        /*
+      if ($website->get('Website Type') == 'EcomDS') {
+          $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
+      }
+    */
         if ($_REQUEST['scope'] == 'department') {
             $sql .= "where `Product Department Category Key`=?  and `Webpage State`='Online' ";
 
@@ -168,10 +230,11 @@ switch ($_REQUEST['scope']) {
 
 
         $sql .= "`Product Dimension` P left join `Page Store Dimension` W on (W.`Page Key`=`Product Webpage Key`) ";
-        if ($website->get('Website Type') == 'EcomDS') {
-            $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
-        }
-
+        /*
+     if ($website->get('Website Type') == 'EcomDS') {
+         $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
+     }
+ */
         $sql .= "where `Webpage Website Key`=?  and `Webpage State`='Online' ";
 
 
@@ -197,7 +260,7 @@ $stmt = $db->prepare($sql);
 $stmt->execute($sql_args);
 
 
-$title   = 'Category items';
+$title   = 'Catalogue items';
 $subject = 'Data feed';
 
 
@@ -321,7 +384,7 @@ if ($use_php_excel) {
 
             header('Cache-Control: max-age=0');
 
-            IOFactory::createWriter($objPHPExcel, 'Xlsx')->setSheetIndex(0)->save('php://output');
+            IOFactory::createWriter($objPHPExcel, 'Xlsx')->save('php://output');
             break;
         case('xls'):
 
