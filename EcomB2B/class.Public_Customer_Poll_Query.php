@@ -54,7 +54,6 @@ class Public_Customer_Poll_Query extends DBW_Table {
     function add_customer($customer, $value) {
 
 
-         $account=get_object('Account',1);
 
         if ($customer->get('Customer Store Key') != $this->get('Store Key')) {
 
@@ -85,7 +84,7 @@ class Public_Customer_Poll_Query extends DBW_Table {
                 'type'     => 'update_poll_data',
                 'poll_key' => $this->id,
                 'editor'   => $this->editor
-            ), $account->get('Account Code'), $this->db
+            ), DNS_ACCOUNT_CODE, $this->db
             );
 
 
@@ -138,7 +137,7 @@ class Public_Customer_Poll_Query extends DBW_Table {
                             'type'            => 'update_poll_option_data',
                             'poll_option_key' => $row2['Customer Poll Query Option Key'],
                             'editor'          => $this->editor
-                        ), $account->get('Account Code'), $this->db
+                        ), DNS_ACCOUNT_CODE, $this->db
                         );
 
                     } else {

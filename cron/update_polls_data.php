@@ -16,12 +16,8 @@ $sql = sprintf('SELECT `Customer Poll Query Option Key` FROM `Customer Poll Quer
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $poll_option = get_object('Customer_Poll_Query_Option', $row['Customer Poll Query Option Key']);
-        $poll_option->update_customers();
+        $poll_option->update_poll_query_option_customers();
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
 
 
@@ -31,11 +27,6 @@ if ($result = $db->query($sql)) {
         $poll_query = get_object('Customer_Poll_Query', $row['Customer Poll Query Key']);
         $poll_query->update_answers();
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
 
 
-?>

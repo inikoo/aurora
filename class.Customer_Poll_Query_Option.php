@@ -45,7 +45,9 @@ class Customer_Poll_Query_Option extends DB_Table {
         } elseif ($key == 'deleted') {
             $this->get_deleted_data($tag);
 
-            return;
+            return false;
+        }else{
+            return false;
         }
 
 
@@ -53,7 +55,7 @@ class Customer_Poll_Query_Option extends DB_Table {
             $this->id = $this->data['Customer Poll Query Option Key'];
         }
 
-
+        return true;
     }
 
 
@@ -93,21 +95,24 @@ class Customer_Poll_Query_Option extends DB_Table {
             }
         }
 
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($base_data as $key => $value) {
-            $keys   .= "`$key`,";
-            $values .= prepare_mysql($value).",";
 
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Customer Poll Query Option Dimension` %s %s", $keys, $values
+
+        $sql = sprintf(
+            "INSERT INTO `Customer Poll Query Option Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
 
+        $stmt = $this->db->prepare($sql);
 
-        if ($this->db->exec($sql)) {
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
+
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Option for customer poll created");
             $this->get_data('id', $this->id);
@@ -166,6 +171,10 @@ class Customer_Poll_Query_Option extends DB_Table {
     function update_website(){
         $store=get_object('Public_Store',$this->data['Customer Poll Query Option Store Key']);
         $website=get_object('Website',$store->get('Store Website Key'));
+
+        /**
+         * @var $registration_webpage \Page
+         */
         $registration_webpage=$website->get_webpage('register.sys');
 
         $registration_webpage->reindex_items();
@@ -194,25 +203,25 @@ class Customer_Poll_Query_Option extends DB_Table {
 
     }
 
-    function update_customers() {
+    function update_poll_query_option_customers() {
 
         $number_customers = 0;
         $last_answered    = '';
 
 
-        $sql = sprintf('SELECT count(DISTINCT `Customer Poll Customer Key`) AS number , max(`Customer Poll Date`)  last_answered FROM `Customer Poll Fact` WHERE `Customer Poll Query Key`=%d', $this->id);
+        $sql = "SELECT count(DISTINCT `Customer Poll Customer Key`) AS number , max(`Customer Poll Date`)  last_answered FROM `Customer Poll Fact` WHERE `Customer Poll Query Option Key`=?";
 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_customers = $row['number'];
-                $last_answered    = $row['last_answered'];
+            $number_customers = $row['number'];
+            $last_answered    = $row['last_answered'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
 
         $this->fast_update(
             array(
@@ -250,7 +259,6 @@ class Customer_Poll_Query_Option extends DB_Table {
         $data['Replies'] = $replies;
 
 
-        //prepare_mysql(gzcompress(json_encode($data), 9))
         $sql = sprintf(
             'INSERT INTO `Customer Poll Query Option Deleted Dimension`  (`Customer Poll Query Option Deleted Key`,`Customer Poll Query Option Deleted Date`,`Customer Poll Query Option Deleted Name`,`Customer Poll Query Option Deleted Label`,`Customer Poll Query Option Deleted Metadata`) VALUES (%d,%s,%s,%s,%s) ',
             $this->id, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->get('Customer Poll Query Option Name')), prepare_mysql($this->get('Customer Poll Query Option Label')), prepare_mysql(gzcompress(json_encode($data), 9))
@@ -327,4 +335,3 @@ class Customer_Poll_Query_Option extends DB_Table {
 }
 
 
-?>

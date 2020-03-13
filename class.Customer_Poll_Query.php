@@ -548,7 +548,7 @@ class Customer_Poll_Query extends DB_Table {
 
                 }
 
-                $poll_option->update_customers();
+                $poll_option->update_poll_query_option_customers();
 
                 $this->update_answers();
             } else {

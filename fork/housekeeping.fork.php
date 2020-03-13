@@ -1811,9 +1811,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'update_poll_option_data':
 
-
+            /**
+             * @var $poll_option \Customer_Poll_Query_Option
+             */
             $poll_option = get_object('Customer_Poll_Query_Option', $data['poll_option_key']);
-            $poll_option->update_customers();
+            $poll_option->update_poll_query_option_customers();
             $poll = get_object('Customer_Poll_Query', $poll_option->get('Customer Poll Query Option Query Key'));
             $poll->update_answers();
             break;
