@@ -60,7 +60,6 @@ if ($category->get('Category Scope') == 'Product') {
 
         );
 
-        //======
 
         include_once 'conf/export_edit_template_fields.php';
 
@@ -88,7 +87,6 @@ if ($category->get('Category Scope') == 'Product') {
 
         $smarty->assign('edit_fields', $edit_fields);
 
-        //=====
 
 
 
@@ -468,4 +466,4 @@ elseif ($category->get('Category Scope') == 'Invoice') {
 include 'utils/get_table_html.php';
 
 
-?>
+

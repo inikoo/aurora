@@ -32,6 +32,19 @@ label:"{t}Label{/t}",
 editable: false,
 cell: "string"
 },
+{
+name: "webpage_state",
+label:'',
+html_label:'<i class="fa fa-retweet fa-fw" style="opacity:.8" aria-hidden="true"></i><i class="far fa-globe fa-fw" style="position:relative;left:-25px;opacity:.3" aria-hidden="true"></i> ',
+title:"{t}Webpage state{/t}",
+
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+
+}),
+headerCell: HeaderHtmlCell
+
+},
 
 {
 name: "products",
@@ -60,19 +73,6 @@ headerCell: integerHeaderCell
 
 },
 
-{
-name: "webpage_state",
-label:'',
-html_label:'<i class="fa fa-retweet fa-fw" style="opacity:.8" aria-hidden="true"></i><i class="far fa-globe fa-fw" style="position:relative;left:-25px;opacity:.3" aria-hidden="true"></i> ',
-title:"{t}Webpage state{/t}",
-
-editable: false,
-cell: Backgrid.HtmlCell.extend({
-
-}),
-headerCell: HeaderHtmlCell
-
-},
 
 {
 name: "online",
@@ -417,10 +417,11 @@ if(view=='overview'){
 grid.columns.findWhere({ name: 'label'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'webpage_state'} ).set("renderable", true)
+
 }
 if(view=='webpages'){
-//grid.columns.findWhere({ name: 'products'} ).set("renderable", true)
-//grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
+
 
 grid.columns.findWhere({ name: 'webpage_state'} ).set("renderable", true)
 

@@ -592,6 +592,15 @@ trait ProductCategory {
             'Discontinuing' => 0,
             'Discontinued'  => 0
         );
+        $elements_availability_numbers = array(
+            'Excess'    => 0,
+            'Normal'        => 0,
+            'Low'     => 0,
+            'VeryLow' => 0,
+            'OutofStock'  => 0,
+            'Error'  => 0,
+              'OnDemand'  => 0
+        );
 
         $elements_active_web_status_numbers = array(
             'For Sale'     => 0,
@@ -622,7 +631,7 @@ trait ProductCategory {
             }
 
 
-          //  print_r($elements_status_numbers);
+            //  print_r($elements_status_numbers);
 
 
             if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0 and $elements_status_numbers['In Process'] == 0 and $elements_status_numbers['Suspended'] == 0) {
@@ -643,7 +652,6 @@ trait ProductCategory {
             }
 
 
-            //'For Sale','Out of Stock','Discontinued','Offline'
 
             $sql = "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product ID` IN (".str_pad('', count($product_ids) * 2 - 1, '?,').") AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ";
 
@@ -656,9 +664,17 @@ trait ProductCategory {
                 $elements_active_web_status_numbers[$row['web_state']] += $row['num'];
             }
 
+            $sql = "SELECT count(*) AS num ,`Product Availability State` AS availability_state FROM  `Product Dimension` P WHERE `Product ID` IN (".str_pad('', count($product_ids) * 2 - 1, '?,').")  GROUP BY  `Product Availability State`   ";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($product_ids);
+            while ($row = $stmt->fetch()) {
+
+                $elements_availability_numbers[$row['availability_state']] += $row['num'];
+            }
+
 
         }
-
 
         $update_data = array(
             'Product Category Status'                  => $category_status,
@@ -669,32 +685,58 @@ trait ProductCategory {
             'Product Category Discontinued Products'   => $elements_status_numbers['Discontinued'],
             'Product Category Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
             'Product Category Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
-            'Product Category Active Web Offline'      => $elements_active_web_status_numbers['Offline']
+            'Product Category Active Web Offline'      => $elements_active_web_status_numbers['Offline'],
+            'Product Category Excess Availability Products'=>$elements_availability_numbers['Excess'],
+            'Product Category Normal Availability Products'=>$elements_availability_numbers['Normal'],
+            'Product Category Low Availability Products'=>$elements_availability_numbers['Low'],
+            'Product Category Vary Low Availability Products'=>$elements_availability_numbers['VeryLow'],
+            'Product Category Out of Stock Availability Products'=>$elements_availability_numbers['OutofStock'],
+            'Product Category Error Availability Products'=>$elements_availability_numbers['Error'],
+            'Product Category On Demand Availability Products'=>$elements_availability_numbers['OnDemand'],
         );
 
 
         $this->fast_update($update_data, 'Product Category Dimension');
 
 
+        $active_web_families = 0;
+
+        if ($this->data['Category Subject'] == 'Category') {
+            $sql = "select count(*) as num from `Product Category Dimension` left join `Page Store Dimension` on (`Product Category Webpage Key`=`Page Key`)  where `Webpage State`='Online' and  `Product Category Department Category Key`=?";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $active_web_families = $row['num'];
+            }
+
+            $this->fast_update(['Product Category Active Web Families'=>$active_web_families], 'Product Category Dimension');
+        }
+
+
         $this->get_data('id', $this->id);
+        $sql = "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=? AND B.`Subject`='Category'";
 
-
-        $type = 'Category';
-        $sql  = sprintf(
-            "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s", $this->id, prepare_mysql($type)
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Category Key'] != $this->id) {
-                    $parent_category = new Category($row['Category Key']);
-                    $parent_category->update_product_category_products_data();
-                }
+        while ($row = $stmt->fetch()) {
+            if ($row['Category Key'] != $this->id) {
+                $parent_category = get_object('Category', $row['Category Key']);
+                $parent_category->update_product_category_products_data();
             }
         }
 
+
         $this->fork_index_elastic_search();
+
 
     }
 

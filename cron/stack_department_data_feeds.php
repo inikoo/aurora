@@ -111,7 +111,7 @@ while ($row3 = $stmt_3->fetch()) {
             $sql_args     = array(
                 $department->id
             );
-            if ($department->id and $department->get('Product Category Status') == 'Active' and $department->get('Product Category Public')=='Yes') {
+            if ($department->id and in_array($department->get('Product Category Status') ,['Active','Discontinuing']) and $department->get('Product Category Public')=='Yes') {
 
 
                 $use_php_excel = true;

@@ -172,7 +172,7 @@ function families($_data, $db) {
 
             $code = sprintf('<a href="catalogue.sys?scope=products&parent=family&parent_key=%d">%s</a>', $data['Category Key'], $data['Category Code']);
             $name = $data['Category Label'];
-            $webpage='<a href="'.$data['Webpage URL'].'"><i class="far fa-browser fa-fw "></i> <i class="fal fa-fw fa-external-link"></i></a>';
+            $webpage='<a href="'.$data['Webpage URL'].'"><i class="fal fa-fw fa-external-link"></i></a>';
             $record_data[] = array(
                 'id'       => $data['Category Key'],
                 'code'     => $code,
@@ -235,14 +235,14 @@ function departments($_data, $db, $website) {
         foreach ($result as $data) {
 
             $name = sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], $data['Category Label']);
-            $webpage='<a href="'.$data['Webpage URL'].'"><i class="far fa-browser fa-fw "></i> <i class="fal fa-fw fa-external-link"></i></a>';
+            $webpage='<a href="'.$data['Webpage URL'].'"><i class="fal fa-fw fa-external-link"></i></a>';
 
             $record_data[] = array(
                 'id'   => $data['Category Key'],
 
                 'name' => $name,
                 'webpage'=>$webpage,
-                'families' => sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], number($data['Category Number Subjects'])),
+                'families' => sprintf('<a href="catalogue.sys?scope=families&parent=department&parent_key=%d">%s</a>', $data['Category Key'], number($data['families'])),
                 'products' => sprintf('<a href="catalogue.sys?scope=products&parent=department&parent_key=%d">%s</a>', $data['Category Key'], number($data['products']))
 
             );

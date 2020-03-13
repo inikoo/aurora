@@ -14,7 +14,7 @@ $group_by = '';
 
 
 $where = sprintf(
-    "where `Category Parent Key`=%d and `Webpage State`='Online' and `Product Category Status`='Active' and `Product Category Public`='Yes'   ", $parameters['parent_key']
+    "where `Category Parent Key`=%d and `Webpage State`='Online' and `Product Category Status` in ('Active','Discontinuing') and `Product Category Public`='Yes'   ", $parameters['parent_key']
 );
 
 $filter_msg = '';
@@ -41,7 +41,7 @@ if ($order == 'code') {
 } elseif ($order == 'label') {
     $order = '`Category Label`';
 } elseif ($order == 'families') {
-    $order = '`Category Number Subjects`';
+    $order = '`Product Category Active Web Families`';
 } elseif ($order == 'products') {
     $order = '(`Product Category Active Products`+`Product Category Discontinuing Products`)';
 }  else {
@@ -50,7 +50,7 @@ if ($order == 'code') {
 
 $fields
        = " `Webpage URL`,`Category Number No Active Subjects`,`Category Number Active Subjects`,`Category Key`,`Category Branch Type`,`Category Children`,`Category Subject`,`Category Store Key`,`Category Warehouse Key`,`Category Code`,`Category Label`,`Category Number Subjects`,`Category Subjects Not Assigned`,
-       (`Product Category Active Products`+`Product Category Discontinuing Products`) as products
+       (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,`Product Category Active Web Families` as families
       
 
         ";
