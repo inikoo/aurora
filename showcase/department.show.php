@@ -18,7 +18,8 @@ function get_department_showcase($data, $smarty) {
     $category = $data['_object'];
 
 
-    //$category->update_product_category_products_data();
+    $category->update_product_category_products_data();
+
 
     if (!$category->id) {
         return "";

@@ -33,9 +33,6 @@ function update_products_categories_products_data($db, $print_est) {
         } else {
             $total = 0;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
     $lap_time0 = date('U');
@@ -63,9 +60,6 @@ function update_products_categories_products_data($db, $print_est) {
 
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
@@ -74,4 +68,3 @@ function update_products_categories_products_data($db, $print_est) {
 }
 
 
-?>

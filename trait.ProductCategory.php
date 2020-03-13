@@ -338,27 +338,20 @@ trait ProductCategory {
         );
         while ($row = $stmt->fetch()) {
             $product_ids .= $row['Subject Key'].',';
-
         }
 
         $product_ids = preg_replace('/,$/', '', $product_ids);
 
+
         if ($product_ids != '' and $this->get('Category Subject') == 'Category') {
-            $category_ids = $product_ids;
+            $category_ids = preg_split('/\,/', $product_ids);
             $product_ids  = '';
-
-            $sql = "SELECT `Subject Key`  FROM `Category Bridge` WHERE `Category Key` IN (?) AND `Subject Key`>0";
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $category_ids
-                )
-            );
+            $sql          = "SELECT `Subject Key`  FROM `Category Bridge` WHERE `Category Key` IN (".str_pad('', count($category_ids) * 2 - 1, '?,').") AND `Subject Key`>0";
+            $stmt         = $this->db->prepare($sql);
+            $stmt->execute($category_ids);
             while ($row = $stmt->fetch()) {
                 $product_ids .= $row['Subject Key'].',';
             }
-
 
             $product_ids = preg_replace('/,$/', '', $product_ids);
 
@@ -574,7 +567,8 @@ trait ProductCategory {
         if ($product_ids != '') {
 
             $sql = sprintf(
-                'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Id` IN (%s) AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $product_ids
+                'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product ID
+                ` IN (%s) AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $product_ids
 
             );
             if ($result = $this->db->query($sql)) {
@@ -590,8 +584,6 @@ trait ProductCategory {
 
     function update_product_category_products_data() {
 
-
-        $old_active_products = $this->get('Product Category Active Products');
 
         $elements_status_numbers = array(
             'In Process'    => 0,
@@ -613,27 +605,25 @@ trait ProductCategory {
 
         $product_ids = $this->get_product_ids();
 
-        //  print  $product_ids;
 
         if ($product_ids != '') {
 
-            $sql = sprintf(
-                "SELECT count(*) AS num ,`Product Status` AS status FROM  `Product Dimension` P WHERE `Product ID` IN (%s)  GROUP BY  `Product Status`   ", $product_ids
 
-            );
+            $product_ids = preg_split('/\,/', $product_ids);
 
-            //   print "$sql\n";
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $elements_status_numbers[$row['status']] = $row['num'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
+            $sql = "SELECT count(*) AS num ,`Product Status` AS status FROM  `Product Dimension` P WHERE `Product ID` IN (".str_pad('', count($product_ids) * 2 - 1, '?,').")  GROUP BY  `Product Status`   ";
+
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($product_ids);
+            while ($row = $stmt->fetch()) {
+                $elements_status_numbers[$row['status']] = $row['num'];
             }
 
-            //  print_r($elements_status_numbers);
+
+          //  print_r($elements_status_numbers);
+
 
             if ($elements_status_numbers['Discontinued'] > 0 and $elements_status_numbers['Active'] == 0 and $elements_status_numbers['Discontinuing'] == 0 and $elements_status_numbers['In Process'] == 0 and $elements_status_numbers['Suspended'] == 0) {
                 $category_status = 'Discontinued';
@@ -655,24 +645,17 @@ trait ProductCategory {
 
             //'For Sale','Out of Stock','Discontinued','Offline'
 
-            $sql = sprintf(
-                "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product ID` IN (%s) AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ", $product_ids
+            $sql = "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product ID` IN (".str_pad('', count($product_ids) * 2 - 1, '?,').") AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ";
 
-            );
-
-            //  print "$sql\n";
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['web_state'] == 'Discontinued') {
-                        $row['web_state'] = 'Offline';
-                    }
-                    $elements_active_web_status_numbers[$row['web_state']] += $row['num'];
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($product_ids);
+            while ($row = $stmt->fetch()) {
+                if ($row['web_state'] == 'Discontinued') {
+                    $row['web_state'] = 'Offline';
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
+                $elements_active_web_status_numbers[$row['web_state']] += $row['num'];
             }
+
 
         }
 
