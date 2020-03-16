@@ -17,7 +17,7 @@ $data = base64_encode(
     json_encode(
         array(
             'valid_from'   => $store->get('Store Valid From'),
-            'valid_to'     => ($store->get('Store State') == 'Closed' ? $store->get('Store Valid To') : gmdate("Y-m-d H:i:s")),
+            'valid_to'     => (($store->get('Store Status') == 'Closed' or  $store->get('Store Status') == 'ClosingDown' )? $store->get('Store Valid To') : gmdate("Y-m-d H:i:s")),
             'parent'       => 'store',
             'parent_key'   => $state['key'],
             'title_value'  => _('Sales'),
@@ -31,4 +31,4 @@ $smarty->assign('data', $data);
 $html = $smarty->fetch('asset_sales.chart.tpl');
 
 
-?>
+

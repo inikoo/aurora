@@ -346,13 +346,12 @@ function sales_overview($_data, $db, $user, $account) {
         }
 
         $sql = sprintf(
-            "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`)LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`)", $fields
+            "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`)LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`)  where `Store Status` in ('Normal','ClosingDown')", $fields
         );
 
     }
 
 
-    //print $sql;
 
 
     $sum_invoices = 0;
@@ -633,9 +632,6 @@ function sales_overview($_data, $db, $user, $account) {
 
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 

@@ -36,7 +36,7 @@ function prepare_smarty_for_dashboard($db, $account, $user, $smarty, $parent, $c
 
 
     $stores = array();
-    $sql    = "SELECT `Store Key`,`Store Code` FROM `Store Dimension` WHERE `Store State`='Normal'";
+    $sql    = "SELECT `Store Key`,`Store Code` FROM `Store Dimension` WHERE `Store Status`='Normal'  or `Store Status`='ClosingDown' ";
     $stmt   = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {

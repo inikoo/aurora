@@ -1,0 +1,1 @@
+ALTER TABLE `Invoice Category Dimension` ADD `Invoice Category Status` ENUM('InProcess','Normal','ClosingDown','Closed') NOT NULL DEFAULT 'InProcess' AFTER `Invoice Category Key`, ADD INDEX (`Invoice Category Status`);

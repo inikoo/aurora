@@ -139,16 +139,12 @@ if ($auth->is_authenticated()) {
 
     $store_key = '';
 
-    $sql = sprintf('SELECT `Store Key`,count(*) as num FROM `Store Dimension` WHERE `Store State`="Normal" ');
+    $sql = sprintf('SELECT `Store Key`,count(*) as num FROM `Store Dimension` WHERE `Store Sttus`="Normal" ');
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch() and $row['num'] == 1) {
             $store_key = $row['Store Key'];
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
     $session->set('current_store', $store_key);
 

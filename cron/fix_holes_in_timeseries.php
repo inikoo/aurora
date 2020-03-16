@@ -38,7 +38,7 @@ $date2 = '2018-09-01';
 
 
 $sql = sprintf(
-    'SELECT `Store Key` FROM `Store Dimension` WHERE `Store State`="Normal"   '
+    'SELECT `Store Key` FROM `Store Dimension` WHERE `Store Status`="Normal"   '
 );
 
 if ($result = $db->query($sql)) {

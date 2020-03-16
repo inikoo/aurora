@@ -59,7 +59,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
     $sum_in_dispatch_area_amount    = 0;
 
     $fields = "
-	`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
+	`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,`Store Status`,
 	`Store Orders In Process Paid Number`,`Store Orders In Process Paid Amount`,`Store DC Orders In Process Paid Amount`,
 	`Store Orders In Process Not Paid Number`,`Store Orders In Process Not Paid Amount`,`Store DC Orders In Process Not Paid Amount`,
 
@@ -76,7 +76,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
     }
 
     $sql = sprintf(
-        "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`) LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`)", $fields
+        "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`) LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`) where `Store Status` in ('Normal','ClosingDown')", $fields
     );
 
 
@@ -121,7 +121,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
                 'class' => 'record store '.($type == 'invoice_categories' ? 'hide' : ''),
                 'id'    => $row['Store Key'],
                 'label' => array(
-                    'label' => $row['Store Name'],
+                    'label' => $row['Store Name'].($row['Store Status']=='ClosingDown'?'<i class="padding_left_5 discontinuing fa fa-skull"></i>':''),
                     'title' => $row['Store Name'],
                     'short_label' => $row['Store Code'],
                     'view'  => 'store/'.$row['Store Key']

@@ -689,7 +689,7 @@ class Account extends DB_Table {
         $number_stores   = 0;
         $number_websites = 0;
         $sql             = sprintf(
-            'SELECT count(*) AS num FROM `Store Dimension` WHERE `Store State`="Normal"'
+            'SELECT count(*) AS num FROM `Store Dimension` WHERE `Store Status`="Normal"'
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_stores = $row['num'];

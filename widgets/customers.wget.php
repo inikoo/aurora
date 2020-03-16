@@ -36,7 +36,7 @@ function get_dashboard_customers($db, $account, $user, $smarty, $parent = '', $c
 
 
     $stores = array();
-    $sql    = sprintf('SELECT `Store Key`,`Store Code` FROM `Store Dimension` WHERE `Store State`="Normal" ');
+    $sql    = sprintf('SELECT `Store Key`,`Store Code` FROM `Store Dimension` WHERE `Store Status`="Normal" or  `Store Status`="ClosingDown" ');
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $stores[] = array(

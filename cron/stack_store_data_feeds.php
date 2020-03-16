@@ -57,7 +57,7 @@ $stmt_3->execute();
 while ($row3 = $stmt_3->fetch()) {
     $store = get_object('Store', $row3['Stack Object Key']);
 
-    if ($store->id and $store->get('Store Type')!='External' and $store->get('Store State')=='Normal') {
+    if ($store->id and $store->get('Store Type')!='External' and $store->get('Store Status')=='Normal') {
 
         $sql = "select `Stack Key` from `Stack Dimension` where `Stack Key`=?";
 

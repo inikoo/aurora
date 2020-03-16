@@ -35,7 +35,7 @@ $date = gmdate('Y-m-d', strtotime('yesterday'));
 
 
 $sql = sprintf(
-    'SELECT `Store Key` FROM `Store Dimension` WHERE (`Store State`="Normal"  OR ( `Store State`="Closed" AND DATE(`Store Valid To`)=%s ) ) ', $date
+    'SELECT `Store Key` FROM `Store Dimension` WHERE (`Store Status`="Normal"  OR ( `Store Status`="Closed" AND DATE(`Store Valid To`)=%s ) ) ', $date
 );
 
 if ($result = $db->query($sql)) {

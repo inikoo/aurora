@@ -592,15 +592,19 @@ class Store extends DB_Table {
 
 
             case 'State':
-                switch ($this->data['Store State']) {
+            case 'Status':
+                switch ($this->data['Store Status']) {
                     case 'Normal':
                         return _('Open');
 
                     case 'Closed':
                         return _('Closed');
-
+                    case 'InProcess':
+                        return _('In construction');
+                    case 'ClosingDown':
+                        return _('Recently closed');
                     default:
-                        return '';
+                        return $this->data['Store Status'];
 
                 }
 
@@ -1141,7 +1145,7 @@ class Store extends DB_Table {
                 $from = '';
             }
 
-            if ($this->get('Store State') == 'Closed') {
+            if ($this->get('Store Status') == 'Closed' or $this->get('Store Status') == 'ClosingDown') {
                 $to = $this->get('Valid To');
             } else {
                 $to = date('Y-m-d');
@@ -4714,7 +4718,7 @@ $product->update_web_state();
             [
                 'code'       => $this->data['Store Code'],
                 'name'       => $this->data['Store Name'],
-                'state'      => $this->data['Store State'],
+                'state'      => $this->data['Store Status'],
                 'type'       => $this->data['Store Type'],
                 'locale'     => $this->data['Store Locale'],
                 'timezone'   => $this->data['Store Timezone'],
