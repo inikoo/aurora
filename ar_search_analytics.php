@@ -30,7 +30,7 @@ $query_data = prepare_values(
 );
 
 
-$now   = DateTime::createFromFormat('U.u', microtime(true));
+$now   = DateTime::createFromFormat('U.u', sprintf('%.f', microtime(true)));
 $mtime = $now->format("U.u");
 
 $time_diff = $mtime - $query_data['mtime'];

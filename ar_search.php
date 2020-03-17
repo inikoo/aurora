@@ -408,7 +408,7 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
     }
 
 
-    $now = DateTime::createFromFormat('U.u', microtime(true));
+    $now = DateTime::createFromFormat('U.u', sprintf('%.f', microtime(true)));
 
 
 
