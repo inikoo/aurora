@@ -98,7 +98,7 @@ class Customer_Poll_Query extends DB_Table {
         $stmt = $this->db->prepare($sql);
 
         $i = 1;
-        foreach ($this->data as $key => $value) {
+        foreach ($base_data as $key => $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
