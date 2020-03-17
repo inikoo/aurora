@@ -2266,17 +2266,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                             $this->db->exec($sql);
 
-
+                            $this->fast_update(
+                                [
+                                    'Product Category Department Category Key' => $new_parent_category->id
+                                ], 'Product Category Dimension'
+                            );
                         }
 
 
                         $hide = array('no_department_warning');
 
-                        $this->fast_update(
-                            [
-                                'Product Category Department Category Key' => $new_parent_category->id
-                            ], 'Product Category Dimension'
-                        );
+
 
                     } else {
                         if ($this->data['Product Category Department Category Key'] != '') {
