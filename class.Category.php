@@ -2224,11 +2224,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
 
 
-                            $old_parent_category->update_product_category_products_data();
                             $new_parent_category->update_product_category_products_data();
 
 
                             if ($old_parent_category->id) {
+                                $old_parent_category->update_product_category_products_data();
+
                                 $webpage = $old_parent_category->get_webpage();
                                 if ($webpage->id) {
                                     $webpage->reindex_items();

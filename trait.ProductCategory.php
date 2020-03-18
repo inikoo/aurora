@@ -701,6 +701,10 @@ trait ProductCategory {
 
         $active_web_families = 0;
 
+
+
+
+
         if ($this->data['Category Subject'] == 'Category') {
             $sql = "select count(*) as num from `Product Category Dimension` left join `Page Store Dimension` on (`Product Category Webpage Key`=`Page Key`)  where `Webpage State`='Online' and  `Product Category Department Category Key`=?";
 
@@ -716,6 +720,7 @@ trait ProductCategory {
 
             $this->fast_update(['Product Category Active Web Families'=>$active_web_families], 'Product Category Dimension');
         }
+
 
 
         $this->get_data('id', $this->id);
