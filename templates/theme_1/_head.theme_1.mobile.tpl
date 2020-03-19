@@ -21,6 +21,13 @@
 
     <link rel="stylesheet" type="text/css" href="EcomB2B/assets/mobile.min.css">
 
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+
+    <style>
+
     {assign "with_forms" false}
     {assign "with_not_found" 0}
     {assign "with_offline" 0}
@@ -123,7 +130,9 @@
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
     {/if}
-    <style>
+
+
+
 
 
          .header-logo{

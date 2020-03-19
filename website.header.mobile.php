@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 29 August 2018 at 20:47:47 GMT+8, Kuala Lumpur, Malaysis
+ Created: 29 August 2018 at 20:47:47 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
@@ -20,7 +20,7 @@ if(!isset($_REQUEST['website_key']) or !is_numeric($_REQUEST['website_key'])){
     exit;
 }
 
-if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
+if (!isset($_REQUEST['theme']) or !preg_match('/^theme_\d+$/', $_REQUEST['theme'])) {
     print 'no theme set up:->'.$_REQUEST['theme'].'<';
     return;
 }
@@ -108,14 +108,7 @@ foreach ($website->mobile_style as $key => $value) {
 }
 
 
-
-
-
 $smarty->assign('mobile_style_values', $mobile_style_values);
-
-
-
-
 $template = $theme.'/website.header.mobile.'.$theme.'.tpl';
 
 if (file_exists('templates/'.$template)) {
@@ -124,4 +117,4 @@ if (file_exists('templates/'.$template)) {
     printf("template %s not found",$template);
 }
 
-?>
+
