@@ -345,6 +345,7 @@ function update_deals_index($db) {
  * @param $db \PDO
  */
 function update_isf_index($db) {
+    return;
 
     global $params, $client;
     global $global_counter;
@@ -585,7 +586,7 @@ from `Inventory Spanshot Fact` ISF
  * @param $db \PDO
  */
 function update_wisf_index($db) {
-
+    return;
     global $params, $client;
     global $global_counter;
 

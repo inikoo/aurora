@@ -1469,7 +1469,7 @@ class PartLocation extends DB_Table {
 
             $params['body'][] = [
                 'index' => [
-                    '_index' => 'au_part_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                    '_index' => 'au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE),
                     '_id'    => DNS_ACCOUNT_CODE.'.'.$this->part_sku.'_'.$this->location_key.'.'.$date,
 
                 ]

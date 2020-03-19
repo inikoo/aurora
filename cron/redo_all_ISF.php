@@ -47,7 +47,7 @@ if ($result = $db->query($sql)) {
         $where = '  true';
 
         $sql   = sprintf(
-            'SELECT `Part SKU` FROM `Part Dimension` WHERE %s  ORDER BY `Part SKU` desc ', $where
+            'SELECT `Part SKU` FROM `Part Dimension` WHERE %s  ORDER BY `Part SKU`  ', $where
         );
 
         // print "$sql\n";
@@ -62,6 +62,7 @@ if ($result = $db->query($sql)) {
 
 
                 print $row['Date'].' '.$part->id.' '.$part->get('Reference')."                          \r";
+               // exit;
 
             }
         }
