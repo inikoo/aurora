@@ -46,3 +46,5 @@ EcomB2B/data_feeds/*.csv
 EcomB2B/data_feeds/*.xls
 EcomB2B/data_feeds/*.xlsx
 EcomB2B/data_feeds/*.txt
+app_files/po_sources_from_smarty/au.php
+app_files/po_sources_from_smarty/web.php
