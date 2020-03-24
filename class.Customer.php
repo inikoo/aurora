@@ -4040,7 +4040,7 @@ class Customer extends Subject {
 
         $data['Customer Client Store Key']     = $this->data['Customer Store Key'];
         $data['Customer Client Customer Key']  = $this->id;
-        $data['Customer Client Currency Code'] = $this->data['Customer Currency Code'];
+        $data['Customer Client Currency Code'] = $this->metadata('cur');
 
 
         $address_fields = array(

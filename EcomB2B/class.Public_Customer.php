@@ -220,6 +220,8 @@ class Public_Customer extends DBW_Table {
 
         switch ($key) {
 
+            case 'Account Balance':
+                return money($this->data['Customer Account Balance'],$this->metadata('cur'));
             case $this->table_name.' Contact Address':
             case $this->table_name.' Invoice Address':
             case $this->table_name.' Delivery Address':
@@ -1453,7 +1455,7 @@ class Public_Customer extends DBW_Table {
 
         $data['Customer Client Store Key']     = $this->data['Customer Store Key'];
         $data['Customer Client Customer Key']  = $this->id;
-        $data['Customer Client Currency Code'] = $this->data['Customer Currency Code'];
+        $data['Customer Client Currency Code'] = $this->metadata('cur');
 
 
         $address_fields = array(

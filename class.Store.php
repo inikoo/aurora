@@ -3385,6 +3385,8 @@ class Store extends DB_Table {
             $this->new_customer_msg = $customer->msg;
 
             if ($customer->new) {
+
+                $customer->fast_update_json_field('Customer Metadata','cur',$this->get('Store Currency Code'));
                 $this->new_customer = true;
 
                 include_once 'utils/new_fork.php';

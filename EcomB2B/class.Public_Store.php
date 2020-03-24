@@ -371,9 +371,9 @@ class Public_Store {
 
             if ($customer->new) {
 
+                $customer->fast_update_json_field('Customer Metadata','cur',$this->data['Store Currency Code']);
+
                 include_once 'utils/network_functions.php';
-
-
                 $website = get_object('website', $this->get('Store Website Key'));
 
                 $user_data['Website User Handle']       = $customer->get('Customer Main Plain Email');
