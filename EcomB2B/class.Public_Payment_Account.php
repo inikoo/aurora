@@ -158,7 +158,8 @@ class Public_Payment_Account {
 
 
 
-                } elseif ($this->data['Payment Account Block'] = 'BTree') {
+                }
+                elseif ($this->data['Payment Account Block'] == 'BTree') {
 
 
                     $gateway = new Braintree_Gateway(
