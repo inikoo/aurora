@@ -101,7 +101,7 @@ function get_fire_navigation($data) {
         'sections'       => array(),
         'left_buttons'   => array(),
         'right_buttons'  => array(),
-        'title'          => _('Fire evacuation roll call'),
+        'title'          => _('Attendance'),
         'search'         => array(
             'show'        => false,
             'placeholder' => ''
@@ -113,4 +113,4 @@ function get_fire_navigation($data) {
     return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 }
 
-?>
+

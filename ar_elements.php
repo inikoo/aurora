@@ -459,6 +459,10 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_delivery_notes_elements($db, $data['parameters'], $user);
         break;
+    case 'attendance':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_attendance_elements($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -4247,6 +4251,54 @@ function get_customer_active_portfolio_elements($db, $data) {
         $elements_numbers['availability_state'][$key] = number($value);
 
     }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+/**
+ * @param $db \PDO
+ * @param $data
+ */
+function get_attendance_elements($db, $data) {
+
+
+    $elements_numbers = array(
+        'status' => array(
+            'Work       ' => 0,
+            'Home'    => 0,
+            'Outside'        => 0,
+            'Break'         => 0,
+            'Off'         => 0,
+        ),
+
+    );
+
+
+
+
+    $sql  =
+        "select count(*) as number,`Staff Attendance Status` as element from `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) where   date(`Timesheet Date`)=?  and `Staff Currently Working`='Yes'  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            gmdate('Y-m-d')
+        )
+    );
+    while ($row = $stmt->fetch()) {
+
+
+        $elements_numbers['status'][$row['element']] = number($row['number']);
+    }
+
+
+
 
 
     $response = array(

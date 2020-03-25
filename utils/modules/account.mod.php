@@ -77,12 +77,8 @@ function get_account_module() {
 
                 'tabs' => array(
                     'account.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'title' => _(
-                            'Account details'
-                        )
+                        'label' => _('Data'),
+                        'title' => _('Account details')
                     ),
                 )
             ),

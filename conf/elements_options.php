@@ -1936,6 +1936,38 @@ function get_elements_option($option) {
 
             ),
         ),
+        'attendance' => array(
+            'status' => array(
+                'label' => _('Working status'),
+                'items' => array(
+                    'Work'            => array(
+                        'label'    => _('On premises'),
+                        'selected' => true
+                    ),
+                    'Home'           => array(
+                        'label'    => _('Working at home'),
+                        'selected' => true
+                    ),
+                    'Outside'       => array(
+                        'label'    => _('Working outside'),
+                        'selected' => true
+                    ),
+                    'Break'    => array(
+                        'label'    => _('Break'),
+                        'selected' => true
+                    ),
+
+                    'Off'    => array(
+                        'label'    => _('Off'),
+                        'selected' => true
+                    )
+
+
+                )
+
+
+            ),
+        ),
     );
 
     if (isset($elements_options[$option])) {

@@ -134,7 +134,7 @@ class Timesheet extends DB_Table {
         $values = '';
 
         foreach ($this->data as $key => $value) {
-            $keys .= ",`".$key."`";
+            $keys   .= ",`".$key."`";
             $values .= ','.prepare_mysql($value, false);
         }
         $values = preg_replace('/^,/', '', $values);
@@ -169,8 +169,7 @@ class Timesheet extends DB_Table {
 
 
         $data['Timesheet Record Timesheet Key'] = $this->id;
-        $data['Timesheet Record Staff Key']
-                                                = $this->data['Timesheet Staff Key'];
+        $data['Timesheet Record Staff Key']     = $this->data['Timesheet Staff Key'];
         $data['editor']                         = $this->editor;
         $timesheet_record                       = new Timesheet_Record('new', $data);
 
@@ -201,33 +200,36 @@ class Timesheet extends DB_Table {
         $clocking_records         = 0;
         $ignored_clocking_records = 0;
 
-        $sql = sprintf(
-            'SELECT count(*) num,`Timesheet Record Ignored` FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=%d AND `Timesheet Record Type`="ClockingRecord" GROUP BY `Timesheet Record Ignored`  ',
-            $this->id
+        $sql = "SELECT count(*) num,`Timesheet Record Ignored` FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=? AND `Timesheet Record Type`='ClockingRecord' GROUP BY `Timesheet Record Ignored` ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-        if ($result = $this->db->query($sql)) {
-
-            while ($row = $result->fetch()) {
-                if ($row['Timesheet Record Ignored'] == 'Yes') {
-                    $ignored_clocking_records = $row['num'];
-                } else {
-                    $clocking_records = $row['num'];
-                }
+        if ($row = $stmt->fetch()) {
+            if ($row['Timesheet Record Ignored'] == 'Yes') {
+                $ignored_clocking_records = $row['num'];
+            } else {
+                $clocking_records = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-
         }
 
-        $this->update(
-            array('Timesheet Clocking Records' => $clocking_records), 'no_history'
-        );
-        $this->update(
-            array('Timesheet Ignored Clocking Records' => $ignored_clocking_records), 'no_history'
+
+        $this->fast_update(
+            [
+                'Timesheet Clocking Records' => $clocking_records,
+                'Timesheet Ignored Clocking Records' => $ignored_clocking_records
+            ]
         );
 
+
+
+        if($this->data['Timesheet Date']==gmdate('Y-m-d')){
+            $staff=get_object('Staff',$this->data['Timesheet Staff Key']);
+            $staff->update_attendance();
+        }
 
     }
 
@@ -242,8 +244,7 @@ class Timesheet extends DB_Table {
         $action_type = 'Start';
 
         $sql = sprintf(
-            'SELECT `Timesheet Record Date`,`Timesheet Record Key` FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=%d AND `Timesheet Record Ignored`="No"  AND `Timesheet Record Type`="ClockingRecord" ORDER BY `Timesheet Record Date`',
-            $this->id
+            'SELECT `Timesheet Record Date`,`Timesheet Record Key` FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=%d AND `Timesheet Record Ignored`="No"  AND `Timesheet Record Type`="ClockingRecord" ORDER BY `Timesheet Record Date`', $this->id
 
         );
 
@@ -287,8 +288,7 @@ class Timesheet extends DB_Table {
         $missing_records = 0;
 
         $sql = sprintf(
-            'SELECT count(*) AS num  FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=%d AND `Timesheet Record Ignored`="No"  AND  `Timesheet Record Ignored Due Missing End`="Yes" ',
-            $this->id
+            'SELECT count(*) AS num  FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=%d AND `Timesheet Record Ignored`="No"  AND  `Timesheet Record Ignored Due Missing End`="Yes" ', $this->id
 
         );
 
@@ -340,16 +340,16 @@ class Timesheet extends DB_Table {
         );
 
         include_once 'class.Staff.php';
-        $employee=new Staff($this->get('Timesheet Staff Key'));
-        $positions=preg_split('/,/', $employee->get('Staff Position'));
-        if(   in_array('PICK', $positions)  or  in_array('WAHSC', $positions) ){
-           // print "$clocked_seconds\n";
+        $employee  = new Staff($this->get('Timesheet Staff Key'));
+        $positions = preg_split('/,/', $employee->get('Staff Position'));
+        if (in_array('PICK', $positions) or in_array('WAHSC', $positions)) {
+            // print "$clocked_seconds\n";
             $this->update(
-            array('Timesheet Warehouse Clocked Time' => ($clocked_seconds)), 'no_history'
+                array('Timesheet Warehouse Clocked Time' => ($clocked_seconds)), 'no_history'
             );
         }
 
-        if(   in_array('PRODM', $positions)  or  in_array('PRODO', $positions) ){
+        if (in_array('PRODM', $positions) or in_array('PRODO', $positions)) {
             // print "$clocked_seconds\n";
 
             $this->update(
@@ -542,7 +542,7 @@ class Timesheet extends DB_Table {
 
 
                     $working_seconds += $row['date'] - $start;
-                    $clocked_in = false;
+                    $clocked_in      = false;
                     continue;
 
 
@@ -1041,7 +1041,7 @@ class Timesheet extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-              //  print_r($row);
+                //  print_r($row);
 
                 if ($action_type == 'Start' or $action_type == '') {
                     $start_date  = $row['date'];
@@ -1083,14 +1083,13 @@ class Timesheet extends DB_Table {
             $this->id
         );
 
-      //   print $sql;
+        //   print $sql;
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
 
-
-                    $start_date  = $row['date'];
-                    $action_type = 'End';
+                $start_date  = $row['date'];
+                $action_type = 'End';
 
 
             }

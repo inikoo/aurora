@@ -3330,6 +3330,17 @@ $tab_defaults = array(
         'f_field'     => 'name',
 
     ),
+    'attendance'                  => array(
+        'view'        => 'overview',
+        'sort_key'    => 'status',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+        'elements_type' => array_keys(get_elements_option('attendance'))[0],
+        'elements'      => get_elements_option('attendance'),
+
+    ),
 
     'employees.timesheets'         => array(
         'view'        => 'overview',

@@ -54,6 +54,9 @@
         {/if}
 
     </div>
+
+    'ClockingMachine','Manual','API','System','SelfCheck'
+
     <div id="buffer_zone" style="text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
     </div>
     <div id="search_header" style="padding-top:5px;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" >

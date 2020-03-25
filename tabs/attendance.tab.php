@@ -2,16 +2,16 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 8 December 2015 at 12:26:22 GMT Sheffield UK
+ Created:  25 March 2020  16:03::29  +0800, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'fire';
+$tab     = 'attendance';
 $ar_file = 'ar_attendance_tables.php';
-$tipo    = 'fire';
+$tipo    = 'attendance';
 
 
 $default = $user->get_tab_defaults($tab);
@@ -39,8 +39,6 @@ $parameters = array(
 
 
 );
-
-$smarty->assign('js_code', 'js/injections/fire.'.(_DEVEL ? '' : 'min.').'js');
 
 include 'utils/get_table_html.php';
 

@@ -27,7 +27,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-
+    case 'attendance':
+        attendance(get_table_parameters(), $db, $user);
+        break;
     case 'fire':
         fire(get_table_parameters(), $db, $user);
         break;
@@ -41,6 +43,86 @@ switch ($tipo) {
         break;
 }
 
+
+function attendance($_data, $db, $user) {
+
+    $rtext_label = 'employee';
+    include_once 'prepare_table/init.php';
+    include_once 'utils/natural_language.php';
+
+    $sql
+           = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            switch ($data['status']) {
+                case 'Work':
+                    $status = sprintf(
+                        '<span class="success padding_right_10">%s</span>', _('On Premises')
+                    );
+
+                    break;
+                case 'Home':
+                    $status = sprintf(
+                        '<span class="error padding_right_10">%s</span>', _('Working at home')
+                    );
+                    break;
+                case 'Outside':
+                    $status = sprintf(
+                        '<span class="error padding_right_10">%s</span>', _('Working outside')
+                    );
+                    break;
+                case 'Outside':
+                    $status = sprintf(
+                        '<span class="error padding_right_10">%s</span>', _('Working outside')
+                    );
+                    break;
+                case 'Off':
+                    $status = sprintf(
+                        '<span class="disabled padding_right_10">%s</span>', _('Off')
+                    );
+                    break;
+                default:
+                    $status = $data['status'];
+                    break;
+            }
+
+
+
+            $adata[] = array(
+                'staff_key'        => $data['Timesheet Staff Key'],
+                'name'             => $data['Staff Name'],
+                'clocking_records' => number($data['clocking_records']),
+                'status'           => $status,
+
+
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function fire($_data, $db, $user) {
 
@@ -75,7 +157,7 @@ function fire($_data, $db, $user) {
                     );
                     break;
                 default:
-                    $status = $data['statud'];
+                    $status = $data['status'];
                     $used   = '';
                     break;
             }
@@ -117,4 +199,4 @@ function fire($_data, $db, $user) {
 }
 
 
-?>
+

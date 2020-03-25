@@ -1307,7 +1307,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             case 'utils':
                 switch ($state['section']) {
                     case 'fire':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-fire"></i> '._('Fire'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-chess-clock"></i> '._('Attendance'));
                         break;
 
                     default:

@@ -29,8 +29,8 @@
   },
   "homepage": "https://github.com/inikoo/aurora#readme",
   "devDependencies": {
-    "@fortawesome/fontawesome-pro": "^5.12.0",
-    "grunt": "^1.0.4",
+    "@fortawesome/fontawesome-pro": "^5.13.0",
+    "grunt": "^1.1.0",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
@@ -41,7 +41,5 @@
     "grunt-terser": "^1.0.0",
     "grunt-text-replace": "^0.4.0"
   },
-  "dependencies": {
-    "@fortawesome/fontawesome-pro": "^5.12.0"
-  }
+  "dependencies": {}
 }

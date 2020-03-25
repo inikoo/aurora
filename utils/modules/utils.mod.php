@@ -36,12 +36,20 @@ function get_utils_module() {
 
             'fire' => array(
                 'type'  => 'object',
-                'label' => _('Fire'),
-                'icon'  => 'file',
+                'label' => _('Attendance'),
+                'icon'  => 'chess-clock',
                 'id'    => 'fire',
 
                 'tabs' => array(
-                    'fire' => array(),
+                    'attendance' => array(
+                        'label' => _('Attendance'),
+                        'title' => _('Attendance'),
+                        'icon'=>'chess-clock'
+                    ),
+                    'fire' => array(
+                        'label' => '<i class="fa fa-fire " style="color:orange"></i> '._('Fire'),
+                        'title' => _('Fire evacuation roll call')
+                    ),
                 )
             ),
 

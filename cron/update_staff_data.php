@@ -18,5 +18,6 @@ $stmt->execute();
 while ($row = $stmt->fetch()) {
     $staff = get_object('Staff', $row['Staff Key']);
     $staff->update_attachments_data();
+    $staff->update_attendance();
 }
 

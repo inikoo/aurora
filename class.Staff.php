@@ -1108,9 +1108,7 @@ class Staff extends DB_Table {
     function create_timesheet_record($data) {
 
         $data['Timesheet Record Staff Key'] = $this->id;
-        $this->timesheet_record             = new Timesheet_Record(
-            'new', $data
-        );
+        $this->timesheet_record             = new Timesheet_Record('new', $data);
 
         $this->create_timesheet_record_error      = $this->timesheet_record->error;
         $this->create_timesheet_record_duplicated = $this->timesheet_record->duplicated;
@@ -2096,13 +2094,62 @@ class Staff extends DB_Table {
      *
      * @return bool
      */
-    public function can_edit_field($user,$field=''){
+    public function can_edit_field($user, $field = '') {
 
-        if($user->can_edit('Staff')){
+        if ($user->can_edit('Staff')) {
             return true;
-        }else{
+        } else {
             return false;
         }
+    }
+
+
+    function update_attendance() {
+
+        $attendance_status = 'Off';
+        $timesheet_key=0;
+
+        $number_clockings = 0;
+        $sql              = 'select `Timesheet Clocking Records`,`Timesheet Key` from `Timesheet Dimension` where  date(`Timesheet Date`)=?  ';
+        $stmt             = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                gmdate('Y-m-d')
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $number_clockings = $row['Timesheet Clocking Records'];
+            $timesheet_key    = $row['Timesheet Key'];
+        }
+        if ($timesheet_key>0 and $number_clockings > 0 and ($number_clockings % 2) != 0) {
+
+            $sql = "select `Timesheet Record Source` from `Timesheet Record Dimension` where  `Timesheet Record Timesheet Key`=? and `Timesheet Record Type`='ClockingRecord' and `Timesheet Record Ignored`='No'  order by `Timesheet Record Date` desc  limit 1";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $timesheet_key
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                if($row['Timesheet Record Source']=='WorkHome'){
+                    $attendance_status='Home';
+                }elseif($row['Timesheet Record Source']=='WorkOutside'){
+                    $attendance_status='Outside';
+                }elseif($row['Timesheet Record Source']=='Break'){
+                    $attendance_status='Break';
+                }else{
+                    $attendance_status='Work';
+                }
+
+            }
+
+
+        }
+
+
+        $this->fast_update(['Staff Attendance Status'=>$attendance_status]);
+
     }
 
 }
