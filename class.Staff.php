@@ -2110,16 +2110,20 @@ class Staff extends DB_Table {
         $timesheet_key=0;
 
         $number_clockings = 0;
-        $sql              = 'select `Timesheet Clocking Records`,`Timesheet Key` from `Timesheet Dimension` where  date(`Timesheet Date`)=?  ';
+        $sql              = 'select `Timesheet Clocking Records`,`Timesheet Key` from `Timesheet Dimension` where  date(`Timesheet Date`)=?  and `Timesheet Staff Key`=?  ';
         $stmt             = $this->db->prepare($sql);
         $stmt->execute(
             array(
-                gmdate('Y-m-d')
+                gmdate('Y-m-d'),
+                $this->id
             )
         );
-        while ($row = $stmt->fetch()) {
+        if ($row = $stmt->fetch()) {
             $number_clockings = $row['Timesheet Clocking Records'];
             $timesheet_key    = $row['Timesheet Key'];
+
+
+
         }
         if ($timesheet_key>0 and $number_clockings > 0 and ($number_clockings % 2) != 0) {
 
