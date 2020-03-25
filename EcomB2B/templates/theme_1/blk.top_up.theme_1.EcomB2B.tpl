@@ -2,8 +2,8 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 27 July 2017 at 17:26:03 CEST, Tranava, Slovakia
- Copyright (c) 2017, Inikoo
+ Created:  24 March 2020  14:57::10  +0800, Kuala Lumpur, Malaysia
+ Copyright (c) 2020, Inikoo
 
  Version 3
 -->
@@ -15,148 +15,30 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
-
-    <div class="container">
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  data-amount_to_top_up="20"  >
 
 
 
 
-        <div class="order_header  text_blocks  text_template_21">
-
-            <div class="text_block '">
-                <h2>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h2>
-                <div class="text_blocks text_template_2">
-            <div class="text_block ">
-                <h5 >
-
-                        <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
-                        <i id="_delivery_address_icon" class="fa fa-fw fa-truck   " aria-hidden="true"></i>
-                        <span id="_delivery_address_label">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
-                        </span>
-                    <span id="collection_label" class="{if $order->get('Order For Collection')=='No'}hide{/if} "">
-                    <i id="_delivery_address_icon" class="far fa-fw fa-hand-rock  aria-hidden=" true"></i>
-                    <span id="_delivery_address_label">{if isset($labels._for_collecion_label) and $labels._for_collecion_label!=''}{$labels._for_collecion_label}{else}{t}To be collected at:{/t}{/if}</span>
-
-                    </span>
 
 
-                </h5>
-                <p>
-                <div class="formatted_delivery_address">{$order->get('Order Delivery Address Formatted')}</div>
-                </p>
-            </div>
-
-            <div class="text_block">
-                <h5 style="position: relative;left:-10px">
-                    <i id="_invoice_address_icon" class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
-                    <span id="_invoice_address_label">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
-
-
-                </h5>
-                <p>
-                <div class="formatted_invoice_address">{$order->get('Order Invoice Address Formatted')}</div>
-                </p>
-            </div>
-                </div>
-            </div>
-
-            <div class="totals text_block">
-
-
-                <table class="table">
-
-
-                    <tbody>
-
-
-                    <tr>
-                        <td>{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
-
-                        <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
-                    </tr>
-                    <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }hide{/if}">
-                        <td><i class="button fa fa-info-circle padding_right_5 info" style="color: #007fff;" onclick="show_charges_info()" ></i>  {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
-
-                        <td class="text-right order_charges">{$order->get('Charges Net Amount')}</td>
-                    </tr>
-                    <tr>
-                        <td>{if isset($labels._items_shipping) and $labels._items_shipping!=''}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
-
-                        <td class="text-right order_shipping">{if $order->get('Shipping Net Amount')=='TBC'}<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>{if !empty($labels._we_will_contact_you)}{$labels._we_will_contact_you}{else}{t}We will contact you{/t}{/if}</small>{else}{$order->get('Shipping Net Amount')}    {/if}  </td>
-                    </tr>
-
-
-
-                    <tr>
-                        <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>
-
-                        <td class="text-right order_net">{$order->get('Total Net Amount')}</td>
-                    </tr>
-                    <tr>
-                        <td>{if isset($labels._total_tax) and $labels._total_tax!=''}{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
-
-                        <td class="text-right order_tax">{$order->get('Total Tax Amount')}</td>
-                    </tr>
-                    <tr class="total">
-                        <td>{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}</td>
-
-                        <td class="text-right order_total">{$order->get('Total')}</td>
-                    </tr>
-                    <tr class="payments_amount_tr {if $order->get('Order Payments Amount')==0}hide{/if}">
-                        <td>{if isset($labels._order_paid_amount) and $labels._order_paid_amount!=''}{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
-
-                        <td class="text-right payments_amount">{$order->get('Basket Payments Amount')}</td>
-                    </tr>
-                    <tr class="available_credit_amount_tr {if $order->get('Order Available Credit Amount')==0}hide{/if}">
-                        <td>{if isset($labels._order_available_credit_amount) and $labels._order_available_credit_amount!=''}{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
-
-                        <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
-                    </tr>
-                    <tr class="to_pay_amount_tr total {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}">
-                        <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amount._total!=''}{$labels._order_to_pay_amount}{else}{t}To pay{/t}{/if}</td>
-
-                        <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
-                    </tr>
-
-                    </tbody>
-                </table>
-
-
-            </div>
-
-        </div>
-
-
-        <form action="" method="post" enctype="multipart/form-data" class="sky-form {if $order->get('Order Basket To Pay Amount')!=0}hide{/if}" style="box-shadow: none">
-
-            <footer>
-                <button data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$store->get('Store Customer Payment Account Key')}", "order_key":"{$order->id}"}' onclick="place_order(this)"
-                        class="button" >{$data.labels._place_order_from_bank} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i></button>
-            </footer>
-
-        </form>
-
-    </div>
-
-    <div class="clear" style="margin-bottom: 30px"> </div>
-
-    <div class="container clear  {if $order->get('Order Basket To Pay Amount')==0}hide{/if}">
-
-                {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
+    <div class="container clear" style="margin-top:30px;" >
+                {assign "payment_accounts" $website->get_payment_accounts($customer->get('Customer Delivery Address Country 2 Alpha Code'))  }
 
                 <ul class="tabs3">
 
                     {foreach from=$payment_accounts item=payment_account key=key}
+
+                        {if $payment_account.object->get('Block')=='BTree' or  $payment_account.object->get('Block')=='BTreePaypal'  }
                         <li>
                             <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self" data-analytics_label="{$payment_account.analytics_label}" class="payment_option_chooser" >
 
 
                                 <i class="{$payment_account.icon}" aria-hidden="true"></i>
-                                <span>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</span>
+                                <span>{$payment_account.tab_label}</span>
                             </a>
                         </li>
-
+                    {/if}
                     {/foreach}
 
                 </ul>
@@ -168,7 +50,7 @@
                         {assign "block" $payment_account.object->get("Block")  }
                         {if $block=='BTree' or  $block=='BTreePaypal'}
                             {if $braintree_data==''}
-                            {assign "braintree_data" $payment_account.object->get('Block Data',$order->get('Order Customer Key'))  }
+                            {assign "braintree_data" $payment_account.object->get('Block Data',$customer->id)  }
                             {/if}
                         {/if}
 
@@ -185,7 +67,7 @@
                     {/foreach}
 
                     {foreach from=$payment_accounts item=payment_account key=key}
-
+                        {if $payment_account.object->get('Block')=='BTree' or  $payment_account.object->get('Block')=='BTreePaypal'  }
                         {assign "block" $payment_account.object->get("Block")  }
 
 
@@ -197,7 +79,7 @@
 
 
                                 <form id="BTree_saved_credit_cards_form" action="" class="sky-form {if $braintree_data.number_saved_credit_cards==0}hide{/if}" style="max-width: 500px;">
-                                    <header>{$data.labels._form_title_credit_card}</header>
+                                    <header>{$checkout_labels._form_title_credit_card}</header>
 
 
                                     <fieldset  class="credit_cards_list " >
@@ -249,7 +131,7 @@
 
                                             </section>
                                             <section class="col col-11 like_button "  onclick="use_other_credit_card()" >
-                                                 {if isset($data.labels._pay_with_other_card) and $labels._pay_with_other_card!=''}{$labels._pay_with_other_card}{else}{t}Pay with other card{/t}{/if}
+                                                 {if isset($checkout_labels._pay_with_other_card) and $labels._pay_with_other_card!=''}{$labels._pay_with_other_card}{else}{t}Pay with other card{/t}{/if}
                                             </section>
 
 
@@ -262,16 +144,16 @@
                                     <footer>
 
                                         <section  class="col col-5  "  >
-                                            <span class="like_button show_saved_cards_list hide" style="color:#666" onclick="show_saved_cards()" >{if isset($data.labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
+                                            <span class="like_button show_saved_cards_list hide" style="color:#666" onclick="show_saved_cards()" >{if isset($checkout_labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
                                         </section>
-                                        <button id="place_order_saved_card_braintree" type="submit" class="button state-disabled">{$data.labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
+                                        <button id="place_order_saved_card_braintree" type="submit" class="button state-disabled">{$checkout_labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
                                     </footer>
                                 </form>
 
                                 <form id="BTree_credit_card_form" action="" class="sky-form  {if $braintree_data.number_saved_credit_cards>0}hide{/if}" style="max-width: 500px;">
-                                <header>{$data.labels._form_title_credit_card}</header>
+                                <header>{$checkout_labels._form_title_credit_card}</header>
 
-                                {assign "saved_cards" $customer->get_saved_credit_cards($order->get('Order Delivery Address Checksum'),$order->get('Order Invoice Address Checksum'))}
+                                {assign "saved_cards" $customer->get_saved_credit_cards($customer->get('Customer Delivery Address Checksum'),$customer->get('Customer Invoice Address Checksum'))}
                                 {assign "number_saved_cards" count($saved_cards)  }
 
 
@@ -294,7 +176,7 @@
                                     </div>
 
                                     <div class="row">
-                                        <label class="label col col-4">{$data.labels._credit_card_expiration_date}</label>
+                                        <label class="label col col-4">{$checkout_labels._credit_card_expiration_date}</label>
                                         <section class="col col-5">
                                             <label class="select">
                                                 <div id="credit_card_valid_until" style="border:1px solid #ccc;height: 36px">
@@ -314,7 +196,7 @@
 
                                         <section class="col col-5" >
                                             <label class="checkbox"><input type="checkbox"  id="save_card"><i></i> </label>
-                                            <span style="margin-left:27px;position:relative;bottom:2px	" >{$data.labels._credit_card_save}</span>
+                                            <span style="margin-left:27px;position:relative;bottom:2px	" >{$checkout_labels._credit_card_save}</span>
 
                                         </section>
 
@@ -331,10 +213,10 @@
                                 <footer>
 
                                     <section  class="col col-5  "   >
-                                        <span class="like_button show_saved_cards_list {if $braintree_data.number_saved_credit_cards==0}hide{/if}"" style="color:#666" onclick="show_saved_cards()" >{if isset($data.labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
+                                        <span class="like_button show_saved_cards_list {if $braintree_data.number_saved_credit_cards==0}hide{/if}"" style="color:#666" onclick="show_saved_cards()" >{if isset($checkout_labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
 
                                     </section>
-                                    <button id="place_order_braintree" type="submit" class="button  {if $braintree_data.number_saved_credit_cards>0} state-disabled{/if}  ">{$data.labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
+                                    <button id="place_order_braintree" type="submit" class="button  {if $braintree_data.number_saved_credit_cards>0} state-disabled{/if}  ">{$checkout_labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
                                     </footer>
                             </form>
 
@@ -407,17 +289,17 @@
 
 
                                 <form id="Sofort_form" action="" class="sky-form" style="max-width: 500px;">
-                                    <header >{$data.labels._form_title_online_bank_transfer}</header>
+                                    <header >{$checkout_labels._form_title_online_bank_transfer}</header>
 
 
                                     <div style="padding:20px">
-                                        <p id="_online_bank_transfer_text" contenteditable="true" >{if !empty($data.labels._online_bank_transfer_text)}{{$data.labels._online_bank_transfer_text}}{else}Pay with Sofort{/if}</p>
+                                        <p id="_online_bank_transfer_text" contenteditable="true" >{if !empty($checkout_labels._online_bank_transfer_text)}{{$checkout_labels._online_bank_transfer_text}}{else}Pay with Sofort{/if}</p>
 
                                     </div>
 
 
                                     <footer>
-                                        <button   class="button" id="place_order_from_Sofort">{$data.labels._place_order_from_online_bank_transfer} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                                        <button   class="button" id="place_order_from_Sofort">{$checkout_labels._place_order_from_online_bank_transfer} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
                                     </footer>
                                 </form>
 
@@ -511,7 +393,7 @@
 
 
                                 <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header >{if isset($data.labels._form_title_paypal) }{$data.labels._form_title_paypal}{else}{t}Checkout form{/t}{/if}</header>
+                                    <header >{if isset($checkout_labels._form_title_paypal) }{$checkout_labels._form_title_paypal}{else}{t}Checkout form{/t}{/if}</header>
 
 
                                     <fieldset style="min-height: 280px">
@@ -538,53 +420,12 @@
 
 
 
-                            {elseif $block=='Bank'}
-                                <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header id="_form_title_bank">{$data.labels._form_title_bank}</header>
 
-
-                                    <div style="padding:20px">
-
-                                        {include  file='payment_bank_details.inc.tpl'  bank_payment_account=$payment_account.object content=$data.labels}
-
-
-                                    </div>
-
-
-                                    <footer>
-                                        <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$payment_account.object->id}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_bank">{$data.labels._place_order_from_bank} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
-                                    </footer>
-                                </form>
-
-
-
-
-
-
-
-                            {elseif $block=='ConD'}
-
-
-                            <form action="" class="sky-form" style="max-width: 500px;">
-
-                                <header id="_form_title_bank">{$data.labels._form_title_cash_on_delivery}</header>
-
-
-                                <div style="padding:20px">
-
-                                    {if isset($data.labels._cash_on_delivery_text)}{{$data.labels._cash_on_delivery_text}}{else}Pay on delivery{/if}
-
-                                </div>
-
-
-                                <footer>
-                                    <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$payment_account.object->id}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_cash_on_delivery">{$data.labels._place_order_from_cash_on_delivery} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
-                                </footer>
-                            </form>
 
                             {/if}
 
                         </div>
+                        {/if}
                     {/foreach}
 
 
@@ -620,7 +461,7 @@
 
                                             cvv: {
                                                 selector: '#saved_credit_card_ccv',
-                                                placeholder: '{$data.labels._credit_card_ccv}'
+                                                placeholder: '{$checkout_labels._credit_card_ccv}'
                                             },
 
                                         }
@@ -712,10 +553,9 @@
 
                                                 var ajaxData = new FormData();
 
-                                                ajaxData.append("tipo", 'place_order_pay_braintree_using_saved_card')
+                                                ajaxData.append("tipo", 'top_up_pay_braintree_using_saved_card')
                                                 ajaxData.append("payment_account_key",BTree_account_key )
                                                 ajaxData.append("data", JSON.stringify(register_data))
-                                                ajaxData.append("order_key",'{$order->id}' )
 
 
                                                 $.ajax({
@@ -731,15 +571,7 @@
 
 
 
-                                                            $('.ordered_products_number').html('0')
-                                                            $('.order_total').html('')
 
-                                                            var d = new Date();
-                                                            var timestamp=d.getTime()
-                                                            d.setTime(timestamp + 300000);
-                                                            var expires = "expires="+ d.toUTCString();
-                                                            document.cookie = "au_pu_"+ data.order_key+"=" + data.order_key + ";" + expires + ";path=/";
-                                                            window.location.replace("thanks.sys?order_key="+data.order_key+'&t='+timestamp);
 
 
                                                         } else if (data.state == '400') {
@@ -784,15 +616,15 @@
                                         fields: {
                                             number: {
                                                 selector: '#credit_card_number',
-                                                placeholder: '{$data.labels._credit_card_number}'
+                                                placeholder: '{$checkout_labels._credit_card_number}'
                                             },
                                             cvv: {
                                                 selector: '#credit_card_ccv',
-                                                placeholder: '{$data.labels._credit_card_ccv}'
+                                                placeholder: '{$checkout_labels._credit_card_ccv}'
                                             },
                                             expirationDate: {
                                                 selector: '#credit_card_valid_until',
-                                                placeholder: '{$data.labels._credit_card_expiration_date_month_label}/{$data.labels._credit_card_expiration_date_year_label}'
+                                                placeholder: '{$checkout_labels._credit_card_expiration_date_month_label}/{$checkout_labels._credit_card_expiration_date_year_label}'
                                             }
                                         }
                                     },
@@ -849,10 +681,9 @@
 
                                                 var ajaxData = new FormData();
 
-                                                ajaxData.append("tipo", 'place_order_pay_braintree')
+                                                ajaxData.append("tipo", 'top_up_pay_braintree')
                                                 ajaxData.append("payment_account_key",BTree_account_key )
                                                 ajaxData.append("data", JSON.stringify(register_data))
-                                                ajaxData.append("order_key",'{$order->id}' )
 
 
                                                 $.ajax({
@@ -864,16 +695,6 @@
 
 
                                                         if (data.state == '200') {
-                                                            $('.ordered_products_number').html('0')
-                                                            $('.order_total').html('')
-
-
-                                                            var d = new Date();
-                                                            var timestamp=d.getTime()
-                                                            d.setTime(timestamp + 300000);
-                                                            var expires = "expires="+ d.toUTCString();
-                                                            document.cookie = "au_pu_"+ data.order_key+"=" + data.order_key + ";" + expires + ";path=/";
-                                                            window.location.replace("thanks.sys?order_key="+data.order_key+'&t='+timestamp);
 
 
                                                         } else if (data.state == '400') {
@@ -923,10 +744,8 @@
                                         payment: function () {
                                             return paypalCheckoutInstance.createPayment({
                                                 flow: 'checkout', // Required
-                                                amount: '{$order->get('Order Basket To Pay Amount')}', // Required
-                                                currency: '{$order->get('Order Currency')}', // Required
-                                                // Your PayPal options here. For available options, see
-                                                // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
+                                                amount: $('.top_up').data('amount_to_top_up'),
+                                                currency: '{$customer->metadata('cur')}'
                                             });
                                         },
 
@@ -945,8 +764,7 @@
                                                 ajaxData.append("tipo", 'place_order_pay_braintree_paypal')
 
                                                 ajaxData.append("payment_account_key",BTreePaypal_account_key )
-                                                ajaxData.append("amount",'{$order->get('Order Basket To Pay Amount')}' )
-                                                ajaxData.append("order_key",'{$order->id}' )
+                                                ajaxData.append("amount",$('.top_up').data('amount_to_top_up') )
                                                 ajaxData.append("nonce",payload.nonce )
 
                                                 $.ajax({
@@ -1045,30 +863,6 @@
 
                 </div>
 
-    <div class="clear"> </div>
+    <div class="clear" style="margin-bottom: 30px"> </div>
 </div>
 
-<script>
-
-
-    $( ".payment_option_chooser" ).click(function() {
-
-        ga('auTracker.ec:setAction', 'checkout_option', {
-            'step': 2,
-            'option': $(this).data('analytics_label')
-        });
-
-    });
-
-    ga('auTracker.send', 'event', 'Order', 'checkout');
-
-
-
-    {foreach from=$order->get_items() item="item" }
-        ga('auTracker.ec:addProduct',{$item.analytics_data} );
-    {/foreach}
-    ga('auTracker.ec:setAction','checkout', {
-        'step': 2,
-    });
-    ga('auTracker.send', 'pageview');
-</script>

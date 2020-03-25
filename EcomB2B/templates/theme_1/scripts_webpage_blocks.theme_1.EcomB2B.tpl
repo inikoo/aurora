@@ -393,6 +393,49 @@
 
 
             {/if}
+            {if $with_top_up==1}
+                            getScript("/assets/desktop.logged_in.min.js", function () {
+                                getScript("/assets/desktop.forms.min.js", function () {
+                                    getScript("/assets/desktop.checkout.min.js", function () {
+
+                                        let top_up_request="ar_web_top_up.php?tipo=get_top_up_html&device_prefix";
+
+
+                                        $.getJSON(top_up_request, function (data) {
+
+
+                                            $('#top_up').html(data.html)
+
+                                            $("form").on('submit',function(e) {
+                                                e.preventDefault();
+                                                e.returnValue = false;
+                                            });
+
+
+                                            function jQueryTabs3() {
+                                                $(".tabs3").each(function () {
+                                                    $(".tabs-panel3").not(":first").hide(), $("li", this).removeClass("active"), $("li:first-child", this).addClass("active"), $(".tabs-panel:first-child").show(), $("li", this).on( 'click',function (t){
+                                                        var i=$("a",this).attr("href");
+                                                        $(this).siblings().removeClass("active"),$(this).addClass("active"),$(i).siblings().hide(),$(i).fadeIn(400),t.preventDefault()}), $(window).width() < 100 && $(".tabs-panel3").show()
+                                                })
+                                            }
+                                            jQueryTabs3();
+                                            $(".tabs3 li a").each(function(){
+                                                var t=$(this).attr("href"),i=$(this).html();$(t+" .tab-title3").prepend("<p><strong>"+i+"</strong></p>")})
+                                            $(window).resize(function (){
+                                                jQueryTabs3()
+
+                                            })
+
+
+
+                                        })
+                                    })
+                                })
+                            })
+
+
+                            {/if}
             {if $with_profile==1}
             getScript("/assets/desktop.forms.min.js", function () {
                 getScript("/assets/desktop.profile.min.js", function () {
@@ -1530,6 +1573,9 @@
                     getScript("/assets/desktop.logged_in.min.js", function () {
                         $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
                     })
+                    $.getJSON("ar_web_customer_products.php?tipo=customer_balance ", function (data) {
+                        $('.DS_top_buttons .Customer_Balance').html(data.customer_balance)
+                    });
              {else}
                     {if $with_product_order_input==1}
 

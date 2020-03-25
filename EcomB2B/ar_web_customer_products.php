@@ -49,10 +49,11 @@ switch ($tipo) {
         category_products($data, $db, $customer->id, $order);
         break;
 
-
     case 'total_basket':
-
         total_basket($order);
+        break;
+    case 'customer_balance':
+        customer_balance($customer);
         break;
     case 'out_of_stock_reminders':
 
@@ -71,6 +72,16 @@ switch ($tipo) {
         break;
 }
 
+function customer_balance($customer) {
+
+    echo json_encode(
+        array(
+            'state' => 200,
+            'customer_balance' => $customer->get('Account Balance'),
+        )
+    );
+
+}
 
 function total_basket($order) {
 

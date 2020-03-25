@@ -219,7 +219,7 @@
                 {else}
                     {assign "with_datatables" 1} {assign "with_forms" 1}
                 {/if}
-        {elseif $block.type=='checkout'}
+        {elseif $block.type=='checkout'  or $block.type=='top_up' }
             {if !$logged_in}
                 {assign "with_not_found" 1}
             {else}

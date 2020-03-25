@@ -1,0 +1,1 @@
+ALTER TABLE `Customer Dimension` DROP `Customer Currency Code`;

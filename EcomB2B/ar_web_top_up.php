@@ -3,7 +3,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 30 July 2017 at 16:44:58 CEST, Trnava, Slavakia
+ Created:  24 March 2020  15:53::50  +0800. Kuala Lumpur, Malysia
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -51,120 +51,19 @@ if (!$customer->id) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-    case 'get_checkout_html':
+
+    case 'get_top_up_html':
         $data = prepare_values(
             $_REQUEST, array(
                          'device_prefix'    => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         ),
-                         'client_order_key' => array(
                              'type'     => 'string',
                              'optional' => true
                          )
                      )
         );
 
-        get_checkout_html($data, $website, $customer, $smarty);
+        get_top_up_html($data, $website, $customer, $smarty);
 
-
-        break;
-    case 'place_order_pay_later':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key')
-
-                     )
-        );
-
-
-        if ($website->get('Website Type') == 'EcomDS') {
-
-            $order         = get_object('Order', $data['order_key']);
-            $order->editor = $editor;
-
-            if ($order->get('Order Customer Key') != $customer->id) {
-                $response = array(
-                    'state' => 400,
-                    'resp'  => 'Error C_not_M'
-                );
-                echo json_encode($response);
-                exit;
-            }
-
-
-        }
-
-
-        if ($order->get('Order State') != 'InBasket') {
-            $response = array(
-                'state' => 400,
-                'resp'  => 'Error order not in basket'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        $store = get_object('Store', $order->get('Order Store Key'));
-
-
-        $exchange = currency_conversion(
-            $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
-        );
-
-
-        $to_pay = $order->get('Order To Pay Amount');
-
-        $payment_account_key = $data['payment_account_key'];
-
-        $credits = $customer->get('Customer Account Balance');
-        if ($credits > 0) {
-
-            if ($to_pay < $credits) {
-                $to_pay_credits = $to_pay;
-
-                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
-
-
-                $payment_account_key = $credit_payment_account->id;
-
-
-            } else {
-                $to_pay_credits = $credits;
-                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
-
-            }
-
-
-        }
-
-        $website = get_object('Website', $_SESSION['website_key']);
-
-        place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db);
-
-
-        $analytics_items = array();
-        foreach ($items = $order->get_items() as $item) {
-            $analytics_items[] = $item['analytics_data'];
-        }
-
-        $response = array(
-            'state'          => 200,
-            'order_key'      => $order->id,
-            'analytics_data' => array(
-                'id'          => $order->get('Public ID'),
-                'affiliation' => $store->get('Name'),
-                'revenue'     => $order->get('Order Total Amount'),
-                'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
-                'tax'         => $order->get('Order Total Tax Amount'),
-                'shipping'    => $order->get('Order Shipping Net Amount'),
-                'items'       => $analytics_items
-            )
-        );
-
-
-        echo json_encode($response);
 
         break;
 
@@ -309,21 +208,6 @@ switch ($tipo) {
 
         break;
 
-    case 'delete_braintree_saved_card':
-
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
-
-                         'token' => array('type' => 'string'),
-
-
-                     )
-        );
-
-        delete_braintree_saved_card($data, $editor);
-
-        break;
 }
 
 
@@ -407,35 +291,6 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
 }
 
-
-function place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db) {
-
-
-    $order->update(
-        array(
-            'Order State'                              => 'InProcess',
-            'Order Checkout Block Payment Account Key' => $payment_account_key
-        ), 'no_history'
-    );
-
-
-    include_once 'utils/new_fork.php';
-    new_housekeeping_fork(
-        'au_housekeeping', array(
-        'type'         => 'order_submitted_by_client',
-        'order_key'    => $order->id,
-        'customer_key' => $customer->id,
-
-        'editor'      => $editor,
-        'website_key' => $website->id,
-        'order_info'  => get_pay_info($order, $website, $smarty),
-        'pay_info'    => get_order_info($order),
-
-    ), $account->get('Account Code')
-    );
-
-
-}
 
 
 function get_error_message($code, $original_message) {
@@ -628,89 +483,22 @@ function pay_credit($order, $amount, $editor, $db, $account) {
  *
  * @throws \SmartyException
  */
-function get_checkout_html($data, $website, $customer, $smarty) {
+function get_top_up_html($data, $website, $customer, $smarty) {
 
 
     require_once __DIR__.'/utils/aes.php';
 
-    $theme = $website->get('Website Theme');
-
-
-    if ($website->get('Website Type') == 'EcomDS') {
-
-        if (empty($data['client_order_key']) or !is_numeric($data['client_order_key']) or $data['client_order_key'] <= 0) {
-
-            $response = array(
-                'state' => 400,
-                'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided</div>'
-
-
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        $order = get_object('Order', $data['client_order_key']);
-
-        if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
-            $response = array(
-                'state' => 200,
-                'html'  => '<div style="margin:100px auto;text-align: center">Incorrect order id</div>'
-
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        if ($order->get('Order State') != 'InBasket') {
-            $response = array(
-                'state' => 200,
-                'html'  => '<div style="margin:100px auto;text-align: center">Order not in basket</div>'
-
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-    } else {
-        $order = get_object('Order', $customer->get_order_in_process_key());
-    }
-
-
-    $order->fast_update(
-        array(
-            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
-        )
-    );
-
-
-    if (!$order->id or ($order->get('Products') == 0)) {
-
-        $response = array(
-            'state' => 200,
-            'html'  => $smarty->fetch('theme_1/checkout_no_order.'.$theme.'.EcomB2B.tpl'),
-        );
-        echo json_encode($response);
-        exit;
-    }
-//
-
-    $order->update_totals();
-
 
     $store = get_object('Store', $website->get('Website Store Key'));
 
-    $webpage = $website->get_webpage('checkout.sys');
+    $webpage = $website->get_webpage('top_up.sys');
 
     $content = $webpage->get('Content Data');
-
     $block       = array();
     $block_found = false;
     $block_key   = false;
     foreach ($content['blocks'] as $_block_key => $_block) {
-        if ($_block['type'] == 'checkout') {
+        if ($_block['type'] == 'top_up') {
             $block       = $_block;
             $block_key   = $_block_key;
             $block_found = true;
@@ -729,22 +517,12 @@ function get_checkout_html($data, $website, $customer, $smarty) {
     }
 
 
-    $placeholders = array(
-
-        '[Order Number]' => $order->get('Public ID'),
-        '[Order Amount]' => $order->get('Basket To Pay Amount'),
-
-    );
-
-    if (isset($block['labels']['_bank_header'])) {
-        $block['labels']['_bank_header'] = strtr($block['labels']['_bank_header'], $placeholders);
-    }
-    if (isset($block['labels']['_bank_footer'])) {
-        $block['labels']['_bank_footer'] = strtr($block['labels']['_bank_footer'], $placeholders);
-    }
 
 
-    $smarty->assign('order', $order);
+
+    
+
+
     $smarty->assign('customer', $customer);
     $smarty->assign('website', $website);
     $smarty->assign('store', $store);
@@ -753,16 +531,36 @@ function get_checkout_html($data, $website, $customer, $smarty) {
     $smarty->assign('data', $block);
     $smarty->assign('labels', $website->get('Localised Labels'));
 
-    if ($website->get('Website Type') == 'EcomDS') {
-        $basket_url = '/client_basket.sys?client_id='.$order->get('Order Customer Client Key');
-    } else {
-        $basket_url = '/basket.sys';
+    $webpage_checkout = $website->get_webpage('checkout.sys');
+
+    $content_checkout = $webpage_checkout->get('Content Data');
+    $block_checkout       = array();
+    $block_found_checkout = false;
+    $block_key_checkout   = false;
+
+    foreach ($content_checkout['blocks'] as $_block_key => $_block) {
+        if ($_block['type'] == 'checkout') {
+            $block_checkout       = $_block;
+            $block_key_checkout   = $_block_key;
+            $block_found_checkout = true;
+            break;
+        }
     }
+
+    if ($block_found) {
+        $smarty->assign('checkout_labels', $block_checkout['labels']);
+
+    }
+
+
+
+
+
+
 
     $response = array(
         'state'      => 200,
-        'html'       => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
-        'basket_url' => $basket_url
+        'html'       => $smarty->fetch('theme_1/blk.top_up.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
     );
 
 
@@ -1227,71 +1025,6 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
         return $response;
 
         //echo 'Message: ' .$e->getMessage();
-    }
-
-
-}
-
-
-function delete_braintree_saved_card($_data, $editor) {
-
-
-    $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
-    $payment_account->editor = $editor;
-
-    $gateway = new Braintree_Gateway(
-        [
-            'environment' => 'production',
-            'merchantId'  => $payment_account->get('Payment Account ID'),
-            'publicKey'   => $payment_account->get('Payment Account Login'),
-            'privateKey'  => $payment_account->get('Payment Account Password')
-        ]
-    );
-
-    try {
-
-        $token_data = json_decode(AESDecryptCtr($_data['token'], md5('CCToken'.CKEY), 256), true);
-        $token      = $token_data['t'];
-
-        $result = $gateway->paymentMethod()->delete($token);
-
-        if ($result->success) {
-
-            $response = array(
-
-                'state' => 200,
-
-            );
-            echo json_encode($response);
-            exit;
-        } else {
-            $msg = _('There was a problem deleting your card please try again later');
-
-            $response = array(
-
-                'state' => 400,
-                'msg'   => $msg
-
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-    } catch (Exception $e) {
-
-
-        $msg = _('There was a problem deleting your card please try again later');
-
-        $response = array(
-
-            'state' => 400,
-            'msg'   => $msg
-
-        );
-        echo json_encode($response);
-        exit;
-
     }
 
 

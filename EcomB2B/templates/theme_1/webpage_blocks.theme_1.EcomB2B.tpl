@@ -85,6 +85,7 @@
             {assign "with_category_products" false}
             {assign "with_datatables" false}
             {assign "with_catalogue" false}
+            {assign "with_top_up" false}
 
             {if $webpage->get('Webpage Scope')=='Category Products'}
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
@@ -203,6 +204,16 @@
                         {elseif $block.type=='checkout'}
                             {if $logged_in}{assign "with_checkout" 1}
                                 <div id="checkout">
+                                    <div style="text-align: center">
+                                        <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                    </div>
+                                </div>
+                            {else}
+                                {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                            {/if}
+                        {elseif $block.type=='top_up'}
+                            {if $logged_in}{assign "with_top_up" 1}
+                                <div id="top_up">
                                     <div style="text-align: center">
                                         <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
                                     </div>

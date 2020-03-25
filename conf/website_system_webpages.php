@@ -1154,6 +1154,35 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
+        'top_up.sys' => array(
+            'Webpage Scope'            => 'Top_Up',
+            'Webpage Scope Metadata'   => '',
+            'Webpage Type'             => 'Ordering',
+            'Webpage Code'             => 'top_up.sys',
+            'Webpage Name'             => _("Top up"),
+            'Webpage Meta Description' => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'locked'              => true,
+                            'type'                => 'top_up',
+                            'label'               => _('Top up'),
+                            'icon'                => 'fa-piggy-bank',
+                            'show'                => 1,
+
+
+
+                        )
+
+
+                    )
+
+
+                )
+            )
+
+        ),
     );
     $website_system_webpages = array(
 

@@ -84,7 +84,6 @@ function change_browser_history_state(request) {
 
         }
 
-        //console.log(request)
         window.top.history.pushState({request: request}, '', request);
 
 

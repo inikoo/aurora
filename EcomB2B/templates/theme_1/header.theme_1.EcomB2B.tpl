@@ -58,7 +58,7 @@
     </div>
     <div id="search_header" style="padding-top:5px;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" >
         {if $store->get('Store Type')=='Dropshipping' and $logged_in}
-        <div style="float:right;padding-right: 40px;font-weight: 800;font-size: 14px">
+        <div class="DS_top_buttons"  style="float:right;padding-right: 40px;font-weight: 800;font-size: 14px">
 
             <a href="#" id="logout" class="button">
                 <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
@@ -68,6 +68,12 @@
             <a href="/client_order_new.sys"  class="super_button" style="color:black;;margin-left: 30px">
                 <i class="fa fa-shopping-cart  " title="{t}New order{/t}" aria-hidden="true"></i>
                 <span >{t}New order{/t}</span>
+            </a>
+
+
+            <a href="/top_up.sys"  class="super_button" style="color:black;;margin-left: 20px">
+                <i class="fa fa-piggy-bank  " title="{t}Top up{/t}" aria-hidden="true"></i>
+                <span class="Customer_Balance"></span>
             </a>
 
         </div>

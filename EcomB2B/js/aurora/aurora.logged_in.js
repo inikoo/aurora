@@ -8,7 +8,6 @@
 
 $(function() {
 
-
     $(document).on('click', '.reminder', function (e) {
 
    
@@ -53,7 +52,6 @@ $(function() {
 
     });
 
-
     $(document).on('click', '.favourite', function (e) {
 
         var icon = $(this)
@@ -97,8 +95,6 @@ $(function() {
 
     });
 
-
-
     $(".label_when_log_out").each(function (index) {
 
 
@@ -137,7 +133,6 @@ $(function() {
 
     });
 
-
     $(".item_name").each(function (index) {
 
 
@@ -158,8 +153,6 @@ $(function() {
         }
 
     });
-
-
 
     function validate_integer(value, min_value,max_value) {
 
@@ -196,8 +189,5 @@ $(function() {
 
         return false
     }
-
-
-
 
 });

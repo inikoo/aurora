@@ -102,7 +102,7 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 },
                 src: [
-                    'bower_components/braintree-web/paypal-checkout.js', 'bower_components/braintree-web/client.js','bower_components/braintree-web//hosted-fields.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
+                    'bower_components/braintree-web/paypal-checkout.js', 'bower_components/braintree-web/client.js','bower_components/braintree-web//hosted-fields.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/credit_cards.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
                 dest: 'EcomB2B/assets/mobile.checkout.min.js'
 
             }, ecom_mobile: {
