@@ -71,7 +71,7 @@
             </a>
 
 
-            <a href="/top_up.sys"  class="super_button" style="color:black;;margin-left: 20px">
+            <a href="/top_up.sys"  class="super_button hide" style="color:black;;margin-left: 20px">
                 <i class="fa fa-piggy-bank  " title="{t}Top up{/t}" aria-hidden="true"></i>
                 <span class="Customer_Balance"></span>
             </a>
