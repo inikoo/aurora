@@ -59,32 +59,45 @@ function attendance($_data, $db, $user) {
 
         foreach ($result as $data) {
 
+
+
+            $end='';
             switch ($data['status']) {
                 case 'Work':
                     $status = sprintf(
-                        '<span class="success padding_right_10">%s</span>', _('On Premises')
+                        '<span class=" padding_right_10">%s</span>', _('On Premises')
                     );
 
                     break;
                 case 'Home':
                     $status = sprintf(
-                        '<span class="error padding_right_10">%s</span>', _('Working at home')
+                        '<span class=" padding_right_10">%s</span>', _('Working at home')
                     );
                     break;
                 case 'Outside':
                     $status = sprintf(
-                        '<span class="error padding_right_10">%s</span>', _('Working outside')
+                        '<span class=" padding_right_10">%s</span>', _('Working outside')
                     );
                     break;
-                case 'Outside':
+                case 'Break':
                     $status = sprintf(
-                        '<span class="error padding_right_10">%s</span>', _('Working outside')
+                        '<span class="discreet padding_right_10">%s</span>', _('On break')
                     );
+                    $end=($data['Staff Attendance End']==''?'':strftime("%H:%M %Z", strtotime($data['Staff Attendance End'].' +0:00')));
+                    $end='<span class="very_discreet italic"><i class="fal  fa-toilet-paper-alt"></i> '._('since').' '.$end.'</span>';
                     break;
                 case 'Off':
                     $status = sprintf(
                         '<span class="disabled padding_right_10">%s</span>', _('Off')
                     );
+
+                    break;
+                case 'Finish':
+                    $status = sprintf(
+                        '<span class=" padding_right_10">%s</span>', _('Finish')
+                    );
+                    $end=($data['Staff Attendance End']==''?'':strftime("%H:%M %Z", strtotime($data['Staff Attendance End'].' +0:00')));
+
                     break;
                 default:
                     $status = $data['status'];
@@ -93,9 +106,13 @@ function attendance($_data, $db, $user) {
 
 
 
+
+
             $adata[] = array(
                 'staff_key'        => $data['Timesheet Staff Key'],
                 'name'             => $data['Staff Name'],
+                'start'=>($data['Staff Attendance Start']==''?'':strftime("%H:%M %Z", strtotime($data['Staff Attendance Start'].' +0:00'))),
+                'end'=>$end,
                 'clocking_records' => number($data['clocking_records']),
                 'status'           => $status,
 

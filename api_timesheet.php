@@ -46,6 +46,7 @@ function post_timesheet($db, $editor, $api_key_key) {
 
     }
     $source = 'API';
+    $staff->editor = $editor;
 
     if (isset($_REQUEST['Source'])) {
         if (in_array($_REQUEST['Source'], array('ClockingMachine'))) {
@@ -61,7 +62,6 @@ function post_timesheet($db, $editor, $api_key_key) {
     );
 
     $staff->create_timesheet_record($data);
-    $staff->editor = $editor;
     if ($staff->create_timesheet_record_error) {
 
         if ($staff->create_timesheet_record_duplicated) {

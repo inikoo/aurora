@@ -84,6 +84,7 @@ class Staff extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Staff Key'];
+            $this->properties = json_decode($this->data['Staff Properties'], true);
 
         }
 
@@ -176,6 +177,7 @@ class Staff extends DB_Table {
         include_once 'class.Timesheet.php';
         require_once 'utils/date_functions.php';
 
+        $data['Staff Properties'] = '{}';
 
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
@@ -1107,6 +1109,9 @@ class Staff extends DB_Table {
 
     function create_timesheet_record($data) {
 
+        include_once 'class.Timesheet.php';
+        include_once 'class.Timesheet_Record.php';
+
         $data['Timesheet Record Staff Key'] = $this->id;
         $this->timesheet_record             = new Timesheet_Record('new', $data);
 
@@ -1137,6 +1142,8 @@ class Staff extends DB_Table {
             $timesheet->update_clocked_time();
             $timesheet->update_working_time();
             $timesheet->update_unpaid_overtime();
+
+            $this->get_data('id',$this->id);
 
 
         }
@@ -2107,7 +2114,7 @@ class Staff extends DB_Table {
     function update_attendance() {
 
         $attendance_status = 'Off';
-        $timesheet_key=0;
+        $timesheet_key     = 0;
 
         $number_clockings = 0;
         $sql              = 'select `Timesheet Clocking Records`,`Timesheet Key` from `Timesheet Dimension` where  date(`Timesheet Date`)=?  and `Timesheet Staff Key`=?  ';
@@ -2123,39 +2130,100 @@ class Staff extends DB_Table {
             $timesheet_key    = $row['Timesheet Key'];
 
 
-
         }
-        if ($timesheet_key>0 and $number_clockings > 0 and ($number_clockings % 2) != 0) {
 
-            $sql = "select `Timesheet Record Source` from `Timesheet Record Dimension` where  `Timesheet Record Timesheet Key`=? and `Timesheet Record Type`='ClockingRecord' and `Timesheet Record Ignored`='No'  order by `Timesheet Record Date` desc  limit 1";
 
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $timesheet_key
-                )
-            );
-            if ($row = $stmt->fetch()) {
-                if($row['Timesheet Record Source']=='WorkHome'){
-                    $attendance_status='Home';
-                }elseif($row['Timesheet Record Source']=='WorkOutside'){
-                    $attendance_status='Outside';
-                }elseif($row['Timesheet Record Source']=='Break'){
-                    $attendance_status='Break';
-                }else{
-                    $attendance_status='Work';
+        $last_attendance_status  = '';
+        $last_clocking_datetime  = '';
+        $first_clocking_datetime = '';
+
+        $sql = "select `Timesheet Record Source`,`Timesheet Record Date`  from `Timesheet Record Dimension` where  `Timesheet Record Timesheet Key`=? and `Timesheet Record Type`='ClockingRecord' and `Timesheet Record Ignored`='No'  order by `Timesheet Record Date` desc ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $timesheet_key
+            )
+        );
+        while ($row = $stmt->fetch()) {
+
+
+            if ($last_clocking_datetime == '') {
+                $last_clocking_datetime = $row['Timesheet Record Date'];
+            }
+            $first_clocking_datetime = $row['Timesheet Record Date'];
+            if ($last_attendance_status == '') {
+
+
+
+
+                if ($row['Timesheet Record Source'] == 'WorkHome') {
+                    $last_attendance_status = 'Home';
+                } elseif ($row['Timesheet Record Source'] == 'WorkOutside') {
+                    $last_attendance_status = 'Outside';
+                } elseif ($row['Timesheet Record Source'] == 'Break') {
+                    $last_attendance_status = 'Break';
+                } else {
+                    $last_attendance_status = 'Work';
                 }
 
+
+
             }
-
-
         }
 
 
-        $this->fast_update(['Staff Attendance Status'=>$attendance_status]);
+        if ($number_clockings > 0) {
+
+            if (($number_clockings % 2) == 0) {
+
+                if($last_attendance_status!='Break'){
+                    $last_attendance_status = '';
+                }
+
+
+
+
+            } else {
+                $last_clocking_datetime = '';
+
+
+
+            }
+        }
+
+
+
+        if ($last_attendance_status != '') {
+            $attendance_status = $last_attendance_status;
+        }
+
+
+
+        if($attendance_status=='Off' and $number_clockings>0){
+            $attendance_status='Finish';
+        }
+
+
+        $this->fast_update(
+            [
+                'Staff Attendance Status' => $attendance_status,
+                'Staff Attendance Start'  => $first_clocking_datetime,
+                'Staff Attendance End'    => $last_clocking_datetime,
+            ]
+        );
+
+
+        if(in_array($attendance_status,['Home','Outside','Work'])){
+            $this->fast_update_json_field('Staff Properties','current_attendance_source',$attendance_status);
+        }
 
     }
 
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
 }
 
 

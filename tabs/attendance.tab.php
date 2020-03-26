@@ -18,7 +18,7 @@ $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'overview'    => array('label' => _('Overview')),
+    'overview' => array('label' => _('Overview')),
 );
 
 $table_filters = array(
@@ -39,6 +39,17 @@ $parameters = array(
 
 
 );
+
+
+if ($staff_key = $user->get_staff_key()) {
+    $staff = get_object('Staff', $staff_key);
+    if($staff->id and $staff->get('Staff Currently Working')=='Yes'){
+        $smarty->assign('staff', $staff);
+
+    }
+}
+
+$smarty->assign('table_top_template', 'attendance.tpl');
 
 include 'utils/get_table_html.php';
 

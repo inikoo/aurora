@@ -43,7 +43,7 @@ switch ($parameters['elements_type']) {
         $_elements = preg_replace('/^\,/', '', $_elements);
         if ($_elements == '') {
             $where .= ' and false';
-        } elseif ($count_elements < 5) {
+        } elseif ($count_elements < 6) {
             $where .= ' and `Staff Attendance Status` in ('.$_elements.')';
         }
         break;
@@ -66,6 +66,10 @@ if ($order == 'alias') {
     $order = '`Timesheet Staff Key`';
 } elseif ($order == 'clocking_records') {
     $order = '`clocking_records`';
+}elseif ($order == 'start') {
+    $order = '`Staff Attendance Start`';
+}elseif ($order == 'end') {
+    $order = '`Staff Attendance End`';
 } elseif ($order == 'status') {
     $order           = "`Staff Attendance Status` $order_direction, `Staff Name`";
     $order_direction = '';
@@ -85,7 +89,7 @@ $fields
     = "
 
 `Staff Attendance Status` as status,
-`Timesheet Clocking Records` clocking_records,
+`Timesheet Clocking Records` clocking_records,`Staff Attendance Start`,`Staff Attendance End`,
 
 `Timesheet Ignored Clocking Records` clocking_ignored_records,
 `Staff Alias`,

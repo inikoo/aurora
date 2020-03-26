@@ -143,10 +143,9 @@
                 {/if}
 
 
-                {if  $user->can_view('users_reports')  }
                     <li onclick="change_view('/fire')"><i class="fa fa-chess-clock fa-fw"  title="{t}Attendance{/t}"></i>
                     </li>
-                {/if}
+
 
 
             </ul>
@@ -250,11 +249,10 @@
                 <i class="fa fa-user-circle fa-fw  "></i>
             </div>
 
-            {if  $user->can_view('users_reports')  }
                 <div data-type="fire" onclick="change_view('/fire')" title="{t}Attendance{/t}"  class=" right_bookmarks side_content_icon square_button">
                     <i class="fa fa-chess-clock fa-fw "></i>
                 </div>
-            {/if}
+
 
 
             <div style="clear:both"></div>

@@ -12,7 +12,7 @@
 require_once 'common.php';
 
 
-$sql  = sprintf('SELECT `Staff Key` FROM `Staff Dimension`  ');
+$sql  = sprintf('SELECT `Staff Key` FROM `Staff Dimension` where `Staff Key`=365 ');
 $stmt = $db->prepare($sql);
 $stmt->execute();
 while ($row = $stmt->fetch()) {

@@ -21,7 +21,7 @@ name: "status",
 label: "{t}Status{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.HtmlCell.extend({ className: " width_100 padding_right_10"} ),
+cell: Backgrid.HtmlCell.extend({ className: "  padding_right_10"} ),
 },
 
 {
@@ -39,7 +39,26 @@ className: "padding_left_10 "
 })
 
 },
-
+{
+name: "start",
+label: "{t}Start{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='start'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "end",
+label: "{t}Finish{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='start'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
 
 {
 name: "clocking_records",

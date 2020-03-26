@@ -208,13 +208,17 @@ class Timesheet extends DB_Table {
                 $this->id
             )
         );
-        if ($row = $stmt->fetch()) {
+        while ($row = $stmt->fetch()) {
+
+
             if ($row['Timesheet Record Ignored'] == 'Yes') {
                 $ignored_clocking_records = $row['num'];
             } else {
                 $clocking_records = $row['num'];
             }
         }
+
+
 
 
         $this->fast_update(

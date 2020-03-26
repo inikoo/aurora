@@ -1956,7 +1956,10 @@ function get_elements_option($option) {
                         'label'    => _('Break'),
                         'selected' => true
                     ),
-
+                    'Finish'    => array(
+                        'label'    => _('Finish'),
+                        'selected' => true
+                    ),
                     'Off'    => array(
                         'label'    => _('Off'),
                         'selected' => true

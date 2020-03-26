@@ -4275,6 +4275,7 @@ function get_attendance_elements($db, $data) {
             'Home'    => 0,
             'Outside'        => 0,
             'Break'         => 0,
+            'Finish'         => 0,
             'Off'         => 0,
         ),
 
@@ -4284,7 +4285,7 @@ function get_attendance_elements($db, $data) {
 
 
     $sql  =
-        "select count(*) as number,`Staff Attendance Status` as element from `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) where   date(`Timesheet Date`)=?  and `Staff Currently Working`='Yes'  ";
+        "select count(*) as number,`Staff Attendance Status` as element from `Timesheet Dimension` as TD left join `Staff Dimension` SD on (SD.`Staff Key`=TD.`Timesheet Staff Key`) where   date(`Timesheet Date`)=?  and `Staff Currently Working`='Yes' group by `Staff Attendance Status`  ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
