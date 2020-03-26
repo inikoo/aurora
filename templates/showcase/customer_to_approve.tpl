@@ -127,13 +127,13 @@
     </div>
     <div style="float: right;width: 310px;margin-right: 20px">
 
-            <table class="overview">
+            <table class="overview" style="table-layout:fixed">
                {foreach from=$poll_data item=$poll_item }
                    <tr style="height: initial">
                        <td class="small very_discreet" style="padding-top: 8px">{$poll_item.label}</td>
                    </tr>
                    <tr style="height: initial">
-                       <td style="padding-top:3px">{if $poll_item.answer==''}<span class="error  italic">{t}No answer{/t}</span>{else}{$poll_item.answer}{/if}</td>
+                       <td style="padding-top:3px;max-width: 300px;">{if $poll_item.answer==''}<span class="error  italic">{t}No answer{/t}</span>{else}{$poll_item.answer}{/if}</td>
                    </tr>
                {/foreach}
 
