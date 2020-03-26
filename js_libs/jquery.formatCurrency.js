@@ -14,6 +14,7 @@
 //    the jQuery formatCurrency Plugin.  If not, see <http://www.gnu.org/licenses/>.
 
 
+
 ;(function ($) {
 	$.formatCurrency = {};
 	$.formatCurrencyLive = {};

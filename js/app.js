@@ -99,7 +99,6 @@ window.addEventListener('popstate', function (event) {
         change_view(event.state.request)
     }
 
-
 });
 
 
