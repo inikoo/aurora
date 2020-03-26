@@ -18,7 +18,6 @@ function place_order(element) {
     button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin');
 
 
-
     const settings=$(element).data('settings');
 
     let ajaxData = new FormData();

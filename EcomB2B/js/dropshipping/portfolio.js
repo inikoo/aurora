@@ -12,7 +12,6 @@ $(function () {
         var action;
 
 
-
         if ($(this).find('i').hasClass('fa-spinner')) return;
 
 
