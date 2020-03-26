@@ -93,8 +93,6 @@ function change_browser_history_state(request) {
 
 window.addEventListener('popstate', function (event) {
 
-    // console.log(event)
-
     if (event.state == null) {
         console.log('null state!!!!!!')
     } else {
@@ -106,7 +104,6 @@ window.addEventListener('popstate', function (event) {
 
 
 function change_tab(tab, metadata) {
-
 
     $('#maintabs .tab').removeClass('selected');
     $('#tab_' + tab.replace(/(:|\.|\[|\])/g, "\$1")).addClass('selected');
