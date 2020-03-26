@@ -103,7 +103,7 @@
     </div>
 
 
-    <div style="float: right;width: 300px;">
+    <div style="float: right;width: 300px;z-index: 1000">
         <div id="overviews">
 
             <table class="overview">
