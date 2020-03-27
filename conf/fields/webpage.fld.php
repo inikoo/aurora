@@ -501,7 +501,7 @@ $operations = array(
 
         array(
             'id'        => 'unpublish_webpage',
-            'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Online' ? true : false),
+            'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Online' and ($object->get('Webpage Scope')=='Info' or $object->get('Webpage Scope')=='Product' or $object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products'   )   ? true : false),
             'class'     => 'operation',
             'value'     => '',
             'label'     => ' <span style="margin-left:40px" webpage_key="'.$object->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page")
