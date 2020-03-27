@@ -107,7 +107,10 @@
 <div id="bottom_header">
     {foreach from=$header_data.menu.columns item=column key=key}
         {if $column.show}
-        <a id="menu_{$key}" class="menu {if $column.type=='nothing'}only_link{else}dropdown{/if}  {if !empty($column.link)}real_link{/if} " href="{if !empty($column.link)}{$column.link}{/if}" data-key="{$key}"><i class="far  {$column.icon} "></i> <span>{$column.label|strip_tags}</span> <i  class="down_cadet {if $column.type=='nothing'}hide{/if}  fal fa-angle-down   "></i></a>
+        <a id="menu_{$key}" class="menu {if $column.type=='nothing'}only_link{else}dropdown{/if}  {if !empty($column.link)}real_link{/if} " href="{if !empty($column.link)}{$column.link}{/if}" data-key="{$key}">
+            {if !empty($column.icon)}<i class="far  {$column.icon} "></i>{/if}
+            <span>{$column.label|strip_tags}</span> <i  class="down_cadet {if $column.type=='nothing'}hide{/if}  fal fa-angle-down   "></i>
+        </a>
         {/if}
     {/foreach}
 
@@ -168,7 +171,10 @@
                     <div class="vertical-menu  ">
                         {foreach from=$sub_column.items item=item}
                             {if !empty($item.url) and !empty($item.label) }
-                                <a href="{$item.url}"><i class="item_icon fa-fw {$item.icon}"></i> <span class="_item_label">{$item.label}</span></a>
+                                <a href="{$item.url}">
+                                        {if !empty($column.icon)}<i class="item_icon fa-fw {$item.icon}"></i> {/if}
+                                    <span class="_item_label">{$item.label}</span>
+                                </a>
                             {/if}
                         {/foreach}
                     </div>
