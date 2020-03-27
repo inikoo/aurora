@@ -15,11 +15,14 @@ require_once 'utils/new_fork.php';
 
 $time = gmdate('H:i');
 
-real_time_users_operations($db,$redis,$account) ;
+real_time_users_operations($db, $redis, $account);
 send_periodic_email_mailshots($time, $db, $account);
 
 switch ($time) {
     case '00:00':
+
+
+
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type' => 'redo_day_ISF',
@@ -41,6 +44,9 @@ switch ($time) {
 
         ), $account->get('Account Code')
         );
+
+
+        update_staff_attendance($db);
 
         $account->load_acc_data();
         $account->update_orders();
@@ -350,7 +356,10 @@ switch ($time) {
 
         }
         break;
-
+    case '01:30':
+        //just in case
+        update_staff_attendance($db);
+        break;
     case '03:00':
         new_housekeeping_fork(
             'au_housekeeping', array(
@@ -361,40 +370,40 @@ switch ($time) {
         );
         break;
     case '04:00':
-        $sql="select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`!='Lost' ";
+        $sql  = "select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`!='Lost' ";
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array()
         );
         while ($row = $stmt->fetch()) {
-            $customer = get_object('Customer', $row['Customer Key'] );
+            $customer = get_object('Customer', $row['Customer Key']);
             $customer->update_orders();
             $customer->update_activity();
 
         }
-        $sql="select `Store Key` from `Store Dimension`   ";
+        $sql  = "select `Store Key` from `Store Dimension`   ";
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array()
         );
         while ($row = $stmt->fetch()) {
-            $store = get_object('Store', $row['Store Key'] );
+            $store = get_object('Store', $row['Store Key']);
             $store->update_customers_data();
 
         }
 
-        $sql="select `Website Key` from `Website Dimension`   ";
+        $sql  = "select `Website Key` from `Website Dimension`   ";
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array()
         );
         while ($row = $stmt->fetch()) {
-            $website = get_object('Website', $row['Website Key'] );
+            $website = get_object('Website', $row['Website Key']);
             $website->update_sitemap();
 
         }
-
         break;
+
     case '05:00':
 
         new_housekeeping_fork(
@@ -421,13 +430,13 @@ switch ($time) {
 
 
 /**
- * @param $db \PDO
- * @param $redis \Redis
+ * @param $db      \PDO
+ * @param $redis   \Redis
  * @param $account \Account
  *
  * @throws \ZMQSocketException
  */
-function real_time_users_operations($db,$redis,$account) {
+function real_time_users_operations($db, $redis, $account) {
 
     $context = new ZMQContext();
     $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
@@ -515,13 +524,13 @@ function real_time_users_operations($db,$redis,$account) {
 
 
 /**
- * @param $time string
- * @param $db \PDO
+ * @param $time    string
+ * @param $db      \PDO
  * @param $account \Account
  */
 function send_periodic_email_mailshots($time, $db, $account) {
 
-    $sql="select `Email Campaign Type Code`,`Email Campaign Type Metadata`,`Email Campaign Type Key` from `Email Campaign Type Dimension` where `Email Campaign Type Status`='Active' ";
+    $sql  = "select `Email Campaign Type Code`,`Email Campaign Type Metadata`,`Email Campaign Type Key` from `Email Campaign Type Dimension` where `Email Campaign Type Status`='Active' ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array()
@@ -560,9 +569,6 @@ function send_periodic_email_mailshots($time, $db, $account) {
     }
 
 
-
-
-
 }
 
 
@@ -595,4 +601,14 @@ function iso_860_to_day_name($num) {
 }
 
 
+function update_staff_attendance($db) {
+    $sql  = "SELECT `Staff Key` FROM `Staff Dimension` where `Staff Currently Working`='Yes'";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $staff = get_object('Staff', $row['Staff Key']);
+        $staff->update_attendance();
+    }
 
+
+}
