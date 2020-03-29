@@ -82,6 +82,7 @@ if ($user->can_view('stores')) {
 
 }
 
+$store_blocks = count($nav_menu);
 
 if ($user->can_view('orders')) {
 
@@ -95,7 +96,7 @@ if ($user->can_view('orders')) {
         ''
     );
 
-    $store_blocks = count($nav_menu);
+    $store_blocks++;
 
     $nav_menu[] = array(
         '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
@@ -107,9 +108,6 @@ if ($user->can_view('orders')) {
     );
 
 }
-
-
-
 
 
 if ($user->can_view('locations')) {
