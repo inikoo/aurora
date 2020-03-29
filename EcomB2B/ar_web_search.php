@@ -58,6 +58,7 @@ function search($db, $website, $data, $smarty, $template_suffix, $order_key) {
 
 
     $smarty->assign('results', $results['results']);
+    $smarty->assign('website', $website);
 
 
     $response = array(
@@ -269,119 +270,122 @@ function process_search($q, $db, $website, $order_key) {
             }
 
             $sql = sprintf(
-                'SELECT %s `Product Currency`,`Category Code`,`Product Price`,`Product ID`,`Product Web State`, `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
+                "SELECT %s `Product Currency`,`Category Code`,`Product Price`,`Product ID`,`Product Web State`, `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
      FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)  left join  `Category Dimension`  on (`Category Key`=`Product Family Category Key`)
 
 
-		 WHERE `Webpage Website Key`=%d AND `Product Name`  REGEXP \'[[:<:]]%s\'   AND  `Webpage State`="Online"   AND `Product Status` IN ("Active","Discontinuing")  ', $ordered, $website->id, $_q
+		 WHERE `Webpage Website Key`=? AND `Product Name`  REGEXP ?   AND  `Webpage State`='Online'   AND `Product Status` IN ('Active','Discontinuing')  ", $ordered
             );
 
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Product Main Image Key'] > 0) {
-                        $image        = sprintf('wi.php?s=320x280&id=%d', $row['Product Main Image Key']);
-                        $image_mobile = get_image_mobile($row['Product Main Image Key']);
-
-                    } else {
-                        $image        = 'art/nopic.png';
-                        $image_mobile = 'art/nopic.png';
-
-                    }
-
-                    if ($row['Product Web State'] == 'Out of Stock') {
-                        $score_match_product_code = 0.7 * $score_match_product_code;
-                    }
 
 
-                    $page_scores[$row['Page Key']]                = $score_match_product_code;
-                    $candidates[$row['Page Key']]                 = array();
-                    $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
-                    $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $website->id,
+                    '[[:<:]]'.$_q
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                if ($row['Product Main Image Key'] > 0) {
+                    $image        = sprintf('wi.php?s=320x280&id=%d', $row['Product Main Image Key']);
+                    $image_mobile = get_image_mobile($row['Product Main Image Key']);
 
-                    $candidates[$row['Page Key']]['scope']       = 'Product';
-                    $candidates[$row['Page Key']]['image']       = $image;
-                    $candidates[$row['Page Key']]['score']       = $score_match_product_code;
-                    $candidates[$row['Page Key']]['url']         = '/'.strtolower($row['Webpage Code']);
-                    $candidates[$row['Page Key']]['key']         = $row['Product ID'];
-                    $candidates[$row['Page Key']]['code']        = $row['Product Code'];
-                    $candidates[$row['Page Key']]['name']        = ($row['Product Units Per Case'] > 1 ? $row['Product Units Per Case'].'x ' : '').$row['Product Name'];
-                    $candidates[$row['Page Key']]['price']       = money($row['Product Price'], $row['Product Currency']);
-                    $candidates[$row['Page Key']]['ordered']     = $row['ordered'];
-                    $candidates[$row['Page Key']]['family_code'] = $row['Category Code'];
-                    $candidates[$row['Page Key']]['raw_price']   = $row['Product Price'];
-
-
-                    $candidates[$row['Page Key']]['web_state'] = $row['Product Web State'];
-                    // todo a proper way to do this class
-                    $candidates[$row['Page Key']]['out_of_stock_class'] = 'out_of_stock';
-                    $candidates[$row['Page Key']]['out_of_stock_label'] = _('Out of stock');
-
-
-                    $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
-                    $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
-                    $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
+                } else {
+                    $image        = 'art/nopic.png';
+                    $image_mobile = 'art/nopic.png';
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
+
+                if ($row['Product Web State'] == 'Out of Stock') {
+                    $score_match_product_code = 0.7 * $score_match_product_code;
+                }
 
 
-            $sql = sprintf(
-                'SELECT   `Webpage Code`,`Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`
+                $page_scores[$row['Page Key']]                = $score_match_product_code;
+                $candidates[$row['Page Key']]                 = array();
+                $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
+                $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
+
+                $candidates[$row['Page Key']]['scope']       = 'Product';
+                $candidates[$row['Page Key']]['image']       = $image;
+                $candidates[$row['Page Key']]['score']       = $score_match_product_code;
+                $candidates[$row['Page Key']]['url']         = '/'.strtolower($row['Webpage Code']);
+                $candidates[$row['Page Key']]['key']         = $row['Product ID'];
+                $candidates[$row['Page Key']]['code']        = $row['Product Code'];
+                $candidates[$row['Page Key']]['name']        = ($row['Product Units Per Case'] > 1 ? $row['Product Units Per Case'].'x ' : '').$row['Product Name'];
+                $candidates[$row['Page Key']]['price']       = money($row['Product Price'], $row['Product Currency']);
+                $candidates[$row['Page Key']]['ordered']     = $row['ordered'];
+                $candidates[$row['Page Key']]['family_code'] = $row['Category Code'];
+                $candidates[$row['Page Key']]['raw_price']   = $row['Product Price'];
+
+
+                $candidates[$row['Page Key']]['web_state'] = $row['Product Web State'];
+                // todo a proper way to do this class
+                $candidates[$row['Page Key']]['out_of_stock_class'] = 'out_of_stock';
+                $candidates[$row['Page Key']]['out_of_stock_label'] = _('Out of stock');
+
+
+                $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];
+                $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
+                $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Product Code'].'</span> '.$row['Product Name'];
+                }
+
+
+
+
+            $sql = "SELECT   `Webpage Code`,`Page Key` ,`Category Main Image Key`,`Webpage URL`,`Webpage Name`,`Category Label`,`Category Code`,`Webpage Meta Description`
 		     FROM   `Product Category Dimension` PC LEFT JOIN    `Category Dimension` C    ON (PC.`Product Category Key`=C.`Category Key`)  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=PC.`Product Category Webpage Key`)
-            WHERE `Webpage Website Key`=%d AND  `Category Label`  REGEXP \'[[:<:]]%s\'    AND  `Webpage State`="Online"   ', $website->id, $_q
-            );
-            //print $sql;
-            //print "$sql\n";
+            WHERE `Webpage Website Key`=? AND  `Category Label`  REGEXP ?    AND  `Webpage State`='Online'   ";
 
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Category Main Image Key'] > 0) {
-                        $image = sprintf('wi.php?s=320x280&id=%d', $row['Category Main Image Key']);
+           $stmt = $db->prepare($sql);
+           $stmt->execute(
+                       array(
+                       $website->id,  '[[:<:]]'.$_q
+                       )
+                   );
+           while ($row = $stmt->fetch()) {
+               if ($row['Category Main Image Key'] > 0) {
+                   $image = sprintf('wi.php?s=320x280&id=%d', $row['Category Main Image Key']);
 
-                        $image_mobile = get_image_mobile($row['Category Main Image Key']);
-
-
-                    } else {
-                        $image        = 'art/nopic.png';
-                        $image_mobile = 'art/nopic.png';
-                    }
-
-
-                    if (array_key_exists($row['Page Key'], $candidates)) {
-                        $candidates[$row['Page Key']]['score'] += $score_match_family_code;
-                        $page_scores[$row['Page Key']]         += $score_match_family_code;
-                    } else {
-                        $candidates[$row['Page Key']]                 = array();
-                        $candidates[$row['Page Key']]['scope']        = 'Category';
-                        $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
-                        $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
+                   $image_mobile = get_image_mobile($row['Category Main Image Key']);
 
 
-                        $candidates[$row['Page Key']]['image'] = $image;
-                        $candidates[$row['Page Key']]['score'] = $score_match_family_code;
-                        $page_scores[$row['Page Key']]         = $score_match_family_code;
-                        $candidates[$row['Page Key']]['url']   = '/'.strtolower($row['Webpage Code']);
-                        $candidates[$row['Page Key']]['title'] = $row['Webpage Name'];
-                        $candidates[$row['Page Key']]['code']  = $row['Category Code'];
-                        $candidates[$row['Page Key']]['key']   = '';
+               } else {
+                   $image        = 'art/nopic.png';
+                   $image_mobile = 'art/nopic.png';
+               }
 
-                        $candidates[$row['Page Key']]['name']              = $row['Category Label'];
-                        $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
-                        $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Category Code'].'</span> '.$row['Category Label'];
 
-                    }
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
+               if (array_key_exists($row['Page Key'], $candidates)) {
+                   $candidates[$row['Page Key']]['score'] += $score_match_family_code;
+                   $page_scores[$row['Page Key']]         += $score_match_family_code;
+               } else {
+                   $candidates[$row['Page Key']]                 = array();
+                   $candidates[$row['Page Key']]['scope']        = 'Category';
+                   $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
+                   $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
+
+
+                   $candidates[$row['Page Key']]['image'] = $image;
+                   $candidates[$row['Page Key']]['score'] = $score_match_family_code;
+                   $page_scores[$row['Page Key']]         = $score_match_family_code;
+                   $candidates[$row['Page Key']]['url']   = '/'.strtolower($row['Webpage Code']);
+                   $candidates[$row['Page Key']]['title'] = $row['Webpage Name'];
+                   $candidates[$row['Page Key']]['code']  = $row['Category Code'];
+                   $candidates[$row['Page Key']]['key']   = '';
+
+                   $candidates[$row['Page Key']]['name']              = $row['Category Label'];
+                   $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
+                   $candidates[$row['Page Key']]['asset_description'] = '<span class="code">'.$row['Category Code'].'</span> '.$row['Category Label'];
+
+               }
+               }
+
+
+
 
 
         }

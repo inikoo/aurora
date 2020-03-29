@@ -30,7 +30,7 @@
             {if $result.scope=='Product'}
             <div style="clear:both">
 
-            {if $logged_in}
+            {if $logged_in }
 
                 {if $result.web_state=='Out of Stock'}
 
@@ -39,7 +39,7 @@
                     <div style="margin-top:10px;"><span style="padding:5px 10px" class="{if $result.out_of_stock_class=='launching_soon'}highlight-green color-white{else}highlight-red color-white{/if}">{$result.out_of_stock_label}</span></div>
                 {elseif $result.web_state=='For Sale'}
 
-                <div class="mobile_ordering"  data-settings='{ "pid":{$result.key}}'>
+                <div class="mobile_ordering {if $website->get('Website Type')=='EcomDS'}hide{/if}"  data-settings='{ "pid":{$result.key}}'>
                     <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
                     <input  type="number" min="0" value="{$result.ordered}" class="needsclick order_qty">
                     <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
