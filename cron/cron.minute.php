@@ -50,6 +50,7 @@ switch ($time) {
 
         $account->load_acc_data();
         $account->update_orders();
+        $account->update_orders_dispatched_today();
 
         $account->update(
             array(
@@ -75,11 +76,9 @@ switch ($time) {
                 );
 
                 $store->update_new_products();
+                $store->update_orders_dispatched_today();
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
         $msg = new_housekeeping_fork(

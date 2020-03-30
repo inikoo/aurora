@@ -43,7 +43,7 @@ if ($result = $db->query($sql)) {
         $store->update_customers_with_transactions();
 
 
-
+        $store->update_orders_dispatched_today();
 
     }
 
@@ -132,6 +132,9 @@ function update_sales($db, $print_est) {
 
     $account->update_previous_years_data();
     $account->update_previous_quarters_data();
+
+    $account->update_orders_dispatched_today();
+
 
     $sql = sprintf(
         'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  '
