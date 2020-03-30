@@ -2740,15 +2740,13 @@ class Store extends DB_Table {
             foreach ($result as $row) {
 
 
+
                 $data['dispatched_today']['number']    = $row['num'];
                 $data['dispatched_today']['amount']    = $row['amount'];
                 $data['dispatched_today']['dc_amount'] = $row['dc_amount'];
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2770,6 +2768,8 @@ class Store extends DB_Table {
 
 
         );
+
+
         $this->fast_update($data_to_update, 'Store Data');
 
         $data_to_update = array(

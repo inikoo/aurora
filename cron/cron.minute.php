@@ -22,6 +22,9 @@ switch ($time) {
     case '00:00':
 
 
+        $db->exec("update `Order Dimension`set  `Order Replacements Dispatched Today`=0 ");
+
+
 
         new_housekeeping_fork(
             'au_housekeeping', array(

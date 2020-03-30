@@ -68,6 +68,9 @@ if ($result = $db->query($sql)) {
             );
         }
 
+
+        print "$from $to\n";
+
         if ($from and $to) {
 
 
