@@ -62,7 +62,6 @@ function date_frequency_range($db, $frequency, $first, $last) {
             );
 
 
-
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     $dates[$row['date_index']] = array(
@@ -648,21 +647,17 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $to_date     = date('Y-m-d 23:59:59', mktime(0, 0, -1, date('m'), 1, date('Y')));
 
 
-
-            $_to_date=preg_replace('/-02-29 23:59:59/','-02-28 23:59:59',$to_date);
-        
-
+            $_to_date = preg_replace('/-02-29 23:59:59/', '-02-28 23:59:59', $to_date);
 
 
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-t H:i:s', strtotime("$_to_date -1 year"));
 
 
-
             $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("first day of -2 month"));
             $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("last day of -2 month"));
 
-           // print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            // print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
             break;
 
@@ -709,10 +704,10 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $from_date   = date('Y-m-d 00:00:00', strtotime('today -1 day'));
             $to_date     = date('Y-m-d 23:59:59', strtotime('today -1 day'));
 
-        $_to_date=preg_replace('/-02-29 23:59:59/','-02-28 23:59:59',$to_date);
+            $_to_date = preg_replace('/-02-29 23:59:59/', '-02-28 23:59:59', $to_date);
 
 
-        $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+            $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$_to_date -1 year"));
 
             $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("today -2 day"));
@@ -724,33 +719,44 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
         case 'wtd':
 
 
-
             $db_interval = 'Week To Day';
 
-            $from_date     = false;
 
-            $sql = sprintf(
-                "SELECT `First Day`  FROM kbase.`Week Dimension` WHERE `Year`=%d AND `Week`=%d", date('Y'), date('W')
+            $sql = "SELECT `First Day`  FROM kbase.`Week Dimension` WHERE `Year`=? AND `Week`=?";
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    date('Y'),
+                    date('W')
+                )
             );
-
-
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $from_date      = $row['First Day'].' 00:00:00';
-                } else {
-                    return;
-                }
+            if ($row = $stmt->fetch()) {
+                $from_date = $row['First Day'].' 00:00:00';
+            } else {
+                return;
             }
-
 
             $to_date = gmdate('Y-m-d 23:59:59');
 
 
-        $_to_date=preg_replace('/-02-29 23:59:59/','-02-28 23:59:59',$to_date);
+            $sql = "SELECT `First Day`  FROM kbase.`Week Dimension` WHERE `Year`=? AND `Week`=?";
 
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    date('Y') - 1,
+                    date('W')
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $from_date_1yb = $row['First Day'].' 00:00:00';
+            } else {
+                return;
+            }
 
-            $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-            $to_1yb        = date('Y-m-d H:i:s', strtotime("$_to_date  -1 year"));
+            $to_1yb = date('Y-m-d 23:59:59', strtotime($from_date_1yb."  + ".date('w').' days'));
+
 
             $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("monday last weeks"));
             $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("today last weeks"));
@@ -761,7 +767,7 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $db_interval = 'Today';
             $from_date   = date('Y-m-d 00:00:00');
             $to_date     = gmdate('Y-m-d 23:59:59');
-        $_to_date=preg_replace('/-02-29 23:59:59/','-02-28 23:59:59',$to_date);
+            $_to_date    = preg_replace('/-02-29 23:59:59/', '-02-28 23:59:59', $to_date);
 
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$_to_date  -1 year"));
@@ -789,12 +795,12 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
         case 'Month To Day':
         case 'Month To Date':
         case 'mtd':
-            $db_interval               = 'Month To Day';
-            $from_date                 = date('Y-m-01 00:00:00');
-            $to_date                   = gmdate('Y-m-d 23:59:59');
-        $_to_date=preg_replace('/-02-29 23:59:59/','-02-28 23:59:59',$to_date);
+            $db_interval = 'Month To Day';
+            $from_date   = date('Y-m-01 00:00:00');
+            $to_date     = gmdate('Y-m-d 23:59:59');
+            $_to_date    = preg_replace('/-02-29 23:59:59/', '-02-28 23:59:59', $to_date);
 
-        $from_date_1yb             = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+            $from_date_1yb             = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb                    = date('Y-m-d H:i:s', strtotime("$_to_date -1 year"));
             $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("first day of -1 month"));
             $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("today -1 month"));
@@ -802,12 +808,12 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
         case 'Year To Day':
         case 'Year To Date':
         case 'ytd':
-            $db_interval               = 'Year To Day';
-            $from_date                 = date('Y-01-01 00:00:00');
-            $to_date                   = gmdate('Y-m-d 23:59:59');
-        $_to_date=preg_replace('/-02-29 23:59:59/','-02-28 23:59:59',$to_date);
+            $db_interval = 'Year To Day';
+            $from_date   = date('Y-01-01 00:00:00');
+            $to_date     = gmdate('Y-m-d 23:59:59');
+            $_to_date    = preg_replace('/-02-29 23:59:59/', '-02-28 23:59:59', $to_date);
 
-        $from_date_1yb             = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+            $from_date_1yb             = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb                    = date('Y-m-d H:i:s', strtotime("$_to_date -1 year"));
             $from_date_previous_period = date('Y-01-01 00:00:00', strtotime("-2 year"));
             $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("today -2 year"));
@@ -826,11 +832,11 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
         case '1 Year':
         case '1y':
         case 'year':
-            $db_interval               = '1 Year';
-            $to_date                   = gmdate('Y-m-d 00:00:00');
-        $_to_date=preg_replace('/-02-29 00:00:00/','-02-28 00:00:00',$to_date);
+            $db_interval = '1 Year';
+            $to_date     = gmdate('Y-m-d 00:00:00');
+            $_to_date    = preg_replace('/-02-29 00:00:00/', '-02-28 00:00:00', $to_date);
 
-        $from_date                 = date('Y-m-d 23:59:59', strtotime("$to_date -1 year"));
+            $from_date                 = date('Y-m-d 23:59:59', strtotime("$to_date -1 year"));
             $from_date_1yb             = date('Y-m-d H:i:s', strtotime("$_to_date -1 year"));
             $to_1yb                    = date('Y-m-d 23:59:59', strtotime("$to_date -1 year"));
             $from_date_previous_period = date('Y-m-d H:i:s', strtotime("$from_date -2 year"));
@@ -865,11 +871,11 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             break;
         case '1 Month':
         case '1m':
-            $db_interval               = '1 Month';
-            $to_date                   = gmdate('Y-m-d 00:00:00');
-        $_to_date=preg_replace('/-02-29 00:00:00/','-02-28 00:00:00',$to_date);
+            $db_interval = '1 Month';
+            $to_date     = gmdate('Y-m-d 00:00:00');
+            $_to_date    = preg_replace('/-02-29 00:00:00/', '-02-28 00:00:00', $to_date);
 
-        $from_date                 = date(
+            $from_date                 = date(
                 'Y-m-d H:i:s', strtotime("$to_date -1 month")
             );
             $from_date_1yb             = date(
