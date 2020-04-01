@@ -66,10 +66,8 @@ class Website_User extends DB_Table {
         }
 
 
-
         $sql = sprintf(
-            "SELECT count(*) AS num  FROM `Website User Dimension` WHERE `Website User Handle`=%s AND `Website User Website Key`=%d ", prepare_mysql($base_data['Website User Handle']),
-            $base_data['Website User Website Key']
+            "SELECT count(*) AS num  FROM `Website User Dimension` WHERE `Website User Handle`=%s AND `Website User Website Key`=%d ", prepare_mysql($base_data['Website User Handle']), $base_data['Website User Website Key']
         );
 
 
@@ -94,7 +92,6 @@ class Website_User extends DB_Table {
         $base_data['Website User Created'] = gmdate("Y-m-d H:i:s");
 
 
-
         $keys   = '(';
         $values = 'values(';
         foreach ($base_data as $key => $value) {
@@ -110,13 +107,14 @@ class Website_User extends DB_Table {
         if ($this->db->exec($sql)) {
 
 
-
             $user_key = $this->db->lastInsertId();
 
             $this->get_data('id', $user_key);
-            $this->fast_update([
-                                       'Website User Static API Hash'=>md5(DNS_ACCOUNT_CODE.'.'.$this->id.'.'.SKEY.microtime())
-                                   ]);
+            $this->fast_update(
+                [
+                    'Website User Static API Hash' => md5(DNS_ACCOUNT_CODE.'.'.$this->id.'.'.SKEY.microtime())
+                ]
+            );
 
             $sql = sprintf("INSERT INTO `Website User Data` (`Website User Key`) VALUES (%d)", $user_key);
             $this->db->exec($sql);
@@ -238,16 +236,25 @@ class Website_User extends DB_Table {
         $this->db->exec($sql);
 
         $sql = sprintf(
-            "INSERT INTO `Website User Deleted Dimension` (`Website User Deleted Key`,`Website User Deleted Handle`,`Website User Deleted Customer Key`,`Website User Deleted Website Key`,`Website User Deleted Date`) VALUE (%d,%s,%d,%d,%s) ",
-            $this->id, prepare_mysql($this->data['Website User Handle']), $this->data['Website User Customer Key'], $this->data['Website User Website Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
+            "INSERT INTO `Website User Deleted Dimension` (`Website User Deleted Key`,`Website User Deleted Handle`,`Website User Deleted Customer Key`,`Website User Deleted Website Key`,`Website User Deleted Date`) VALUE (%d,%s,%d,%d,%s) ", $this->id,
+            prepare_mysql($this->data['Website User Handle']), $this->data['Website User Customer Key'], $this->data['Website User Website Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
 
         );
 
 
         $this->db->exec($sql);
-        //$website = get_object('Website', $this->data['Website User Website Key']);
 
-        //  $website->update_customers_data();
+
+        $customer = get_object('Customer', $this->data['Website User Customer Key']);
+        if($customer->get('Customer Website User Key')==$this->id){
+            $customer->fast_update(
+                [
+                    'Customer Website User Key' => null
+                ]
+            );
+        }
+
+
 
 
     }
@@ -256,4 +263,4 @@ class Website_User extends DB_Table {
 }
 
 
-?>
+

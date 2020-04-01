@@ -411,7 +411,7 @@ class Public_Website {
 
             }
 
-            return $customer;
+            return $user;
         } else {
             $this->error = true;
             $this->msg   = $user->msg;
