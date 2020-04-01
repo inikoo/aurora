@@ -2,8 +2,14 @@ function use_this_credit_card(element){
 
     $('.credit_cards_row').addClass('hide');
     var card_info=$(element).closest('.credit_cards_row').find('.card_info');
-    $('.credit_card_input_row').removeClass('hide').find('.card_info').html(card_info.html()).data('token',card_info.data('token'));
+
+
+    let cc_row=$('.credit_card_input_row')
+    cc_row.removeClass('hide')
+    cc_row.find('.card_info').html(card_info.html()).data('token',card_info.data('token'));
+
     $('#BTree_saved_credit_cards_form .show_saved_cards_list').removeClass('hide')
+
 
 }
 
