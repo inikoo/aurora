@@ -444,6 +444,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
 
+
     $smarty->assign('settings', $website_settings);
 
 

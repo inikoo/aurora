@@ -151,6 +151,7 @@
             {if !empty($content.blocks) and  $content.blocks|is_array}
                 {foreach from=$content.blocks item=$block key=key}
 
+                    
 
                     {if $block.show}
 
@@ -213,6 +214,8 @@
                             {/if}
                         {elseif $block.type=='top_up'}
                             {if $logged_in}{assign "with_top_up" 1}
+
+
                                 <div id="top_up">
                                     <div style="text-align: center">
                                         <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>

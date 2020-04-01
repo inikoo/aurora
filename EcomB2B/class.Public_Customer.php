@@ -221,7 +221,7 @@ class Public_Customer extends DBW_Table {
         switch ($key) {
 
             case 'Account Balance':
-                return money($this->data['Customer Account Balance'],$this->metadata('cur'));
+                return money($this->data['Customer Account Balance'], $this->metadata('cur'));
             case $this->table_name.' Contact Address':
             case $this->table_name.' Invoice Address':
             case $this->table_name.' Delivery Address':
@@ -338,20 +338,20 @@ class Public_Customer extends DBW_Table {
                 break;
             case 'SNS Subscriptions':
                 $customer_sns_keys = $this->metadata('sns_keys');
-                if($customer_sns_keys==''){
-                    $customer_sns_keys=[];
-                }else{
-                    $customer_sns_keys=json_decode($customer_sns_keys);
+                if ($customer_sns_keys == '') {
+                    $customer_sns_keys = [];
+                } else {
+                    $customer_sns_keys = json_decode($customer_sns_keys);
                 }
 
 
-                $subscriptions=[
-                    'email'=>[],
-                    'https'=>[]
+                $subscriptions = [
+                    'email' => [],
+                    'https' => []
                 ];
 
 
-                foreach($customer_sns_keys as $customer_sns_key ) {
+                foreach ($customer_sns_keys as $customer_sns_key) {
                     $sql  = "select * from `Customer SNS Fact` where `Customer SNS Key`=? ";
                     $stmt = $this->db->prepare($sql);
                     $stmt->execute(
@@ -360,7 +360,7 @@ class Public_Customer extends DBW_Table {
                         )
                     );
                     if ($row = $stmt->fetch()) {
-                        $subscriptions[$row['Customer SNS Subscription Protocol']][]=$row;
+                        $subscriptions[$row['Customer SNS Subscription Protocol']][] = $row;
                     }
                 }
 
@@ -542,7 +542,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Delivery Address':
 
 
-                $this->update_address('Delivery', json_decode($value, true),$options);
+                $this->update_address('Delivery', json_decode($value, true), $options);
 
                 $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
                 if ($result = $this->db->query($sql)) {
@@ -606,7 +606,7 @@ class Public_Customer extends DBW_Table {
 
                 if ($field == 'Customer Main Plain Mobile' or $field == 'Customer Main Plain Telephone') {
 
-                    $this->update_field_switcher('Customer Preferred Contact Number', '',$options);
+                    $this->update_field_switcher('Customer Preferred Contact Number', '', $options);
 
 
                 }
@@ -862,18 +862,15 @@ class Public_Customer extends DBW_Table {
 
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
-                            array(
-                                $this->id
-                            )
-                        );
+                    array(
+                        $this->id
+                    )
+                );
                 if ($row = $stmt->fetch()) {
                     $order         = get_object('Order', $row['Order Key']);
                     $order->editor = $this->editor;
                     $order->update(array('Order Email' => $value));
-                    }
-
-
-
+                }
 
 
                 $this->fork_index_elastic_search();
@@ -1145,6 +1142,7 @@ class Public_Customer extends DBW_Table {
         return $order;
 
     }
+
 
     function get_number_of_orders() {
         $sql    = sprintf(
@@ -1452,7 +1450,6 @@ class Public_Customer extends DBW_Table {
         $data['editor'] = $this->editor;
 
 
-
         $data['Customer Client Store Key']     = $this->data['Customer Store Key'];
         $data['Customer Client Customer Key']  = $this->id;
         $data['Customer Client Currency Code'] = $this->metadata('cur');
@@ -1528,6 +1525,54 @@ class Public_Customer extends DBW_Table {
         }
 
         return false;
+    }
+
+
+    /**
+     * @param $amount
+     *
+     * @return bool|\Public_Top_Up
+     */
+    public function create_top_up($amount) {
+
+
+        include_once 'class.Public_Top_Up.php';
+
+        if (!is_numeric($amount) or $amount <= 0) {
+            $this->error = true;
+            $this->msg   = _('Invalid top up amount');
+
+            return false;
+        }
+
+        $top_uo_data = array(
+
+            'Top Up Customer Key'  => $this->id,
+            'Top Up Store key'     => $this->data['Customer Store Key'],
+            'Top Up Date'          => gmdate('Y-m-d H:i:s'),
+            'Top Up Amount'        => $amount,
+            'Top Up Currency Code' => $this->metadata('cur'),
+            'Top Up Metadata'      => '{}',
+            'editor'               => $this->editor,
+
+
+        );
+
+
+        include_once 'class.Public_Top_Up.php';
+        $top_up = new Public_Top_Up('new', $top_uo_data);
+
+
+        if ($top_up->error) {
+            $this->error = true;
+            $this->msg   = $top_up->msg;
+
+            return $top_up;
+        }
+
+
+        return $top_up;
+
     }
 
 

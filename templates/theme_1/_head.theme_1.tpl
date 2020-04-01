@@ -92,7 +92,7 @@
             {elseif $block.type=='profile'} {if $logged_in}{assign "profile" 1} {assign "with_forms" 1} {/if}
             {elseif $block.type=='client'} {if $logged_in}{assign "profile" 1} {assign "with_forms" 1} {/if}
 
-            {elseif $block.type=='checkout'} {if $logged_in}{assign "checkout" 1} {assign "with_forms" 1} {/if}
+            {elseif $block.type=='checkout' or $block.type=='top_up'} {if $logged_in}{assign "checkout" 1} {assign "with_forms" 1} {/if}
             {elseif $block.type=='favourites'} {if $logged_in}{assign "favourites" 1} {/if}
             {elseif $block.type=='thanks'} {if $logged_in}{assign "thanks" 1} {/if}
             {elseif $block.type=='reset_password'} {if $logged_in}{assign "with_reset_password" 1} {/if}

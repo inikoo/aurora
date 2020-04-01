@@ -96,6 +96,8 @@ $smarty->assign('theme', $theme);
 $smarty->assign('navigation', $webpage->get('Navigation Data'));
 $smarty->assign('discounts', $webpage->get('Discounts'));
 
+$smarty->assign('currency_symbol', currency_symbol($store->get('Store Currency Code')));
+
 
 $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 

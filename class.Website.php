@@ -768,6 +768,9 @@ class Website extends DB_Table {
         $this->update_website_webpages_data();
 
 
+        $page->reindex();
+
+
         if ($data['Webpage Scope'] == 'HomepageToLaunch') {
             $page->publish();
         }

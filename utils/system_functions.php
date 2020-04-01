@@ -15,7 +15,6 @@ function setTimezone($default) {
         $default = 'Europe/London';
     }
 
-    $timezone = "";
 
     // On many systems (Mac, for instance) "/etc/localtime" is a symlink
     // to the file with the timezone info
@@ -45,4 +44,3 @@ function setTimezone($default) {
 }
 
 
-?>

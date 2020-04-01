@@ -3,7 +3,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  24 March 2020  15:53::50  +0800. Kuala Lumpur, Malysia
+ Created:  24 March 2020  15:53::50  +0800. Kuala Lumpur, Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -116,11 +116,11 @@ switch ($tipo) {
 
         break;
 
-    case 'place_order_pay_braintree':
+    case 'top_up_pay_braintree':
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key'),
+                         'amount' => array('type' => 'key'),
                          'data' => array('type' => 'json array'),
 
                      )
@@ -128,97 +128,62 @@ switch ($tipo) {
         $website = get_object('Website', $_SESSION['website_key']);
 
 
-        if ($website->get('Website Type') == 'EcomDS') {
-
-            $order         = get_object('Order', $data['order_key']);
-            $order->editor = $editor;
-
-            if ($order->get('Order Customer Key') != $customer->id) {
-                $response = array(
-                    'state' => 400,
-                    'resp'  => 'Error C_not_M'
-                );
-                echo json_encode($response);
-                exit;
-            }
 
 
-        }
 
 
-        if ($order->get('Order State') != 'InBasket') {
-            $response = array(
-                'state' => 400,
-                'resp'  => 'Error order not in basket'
-            );
-            echo json_encode($response);
-            exit;
-        }
 
 
-        $store   = get_object('Store', $order->get('Order Store Key'));
+        $store   = get_object('Store', $website->get('Website Store Key'));
         $account = get_object('Account', 1);
-        place_order_pay_braintree($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
+        top_up_pay_braintree($store, $data, $customer, $website, $editor, $smarty, $db, $account);
 
 
         break;
 
-    case 'place_order_pay_braintree_using_saved_card':
+    case 'top_up_pay_braintree_using_saved_card':
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key'),
+                         'amount' => array('type' => 'key'),
                          'data' => array('type' => 'json array'),
 
                      )
         );
         $website = get_object('Website', $_SESSION['website_key']);
-
-        if ($website->get('Website Type') == 'EcomDS') {
-
-            $order         = get_object('Order', $data['order_key']);
-            $order->editor = $editor;
-
-            if ($order->get('Order Customer Key') != $customer->id) {
-                $response = array(
-                    'state' => 400,
-                    'resp'  => 'Error C_not_M'
-                );
-                echo json_encode($response);
-                exit;
-            }
-
-
-        }
-
-
-        if ($order->get('Order State') != 'InBasket') {
-            $response = array(
-                'state' => 400,
-                'resp'  => 'Error order not in basket'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        $store   = get_object('Store', $order->get('Order Store Key'));
+        $store   = get_object('Store', $customer->get('Customer Store Key'));
         $account = get_object('Account', 1);
-        place_order_pay_braintree_using_saved_card($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
+        top_up_pay_braintree_using_saved_card($store, $data, $customer, $website, $editor, $smarty, $db, $account);
 
 
         break;
 
 }
 
+/**
+ * @param $store
+ * @param $_data
+ * @param $customer \Public_Customer
+ * @param $website
+ * @param $editor
+ * @param $smarty
+ * @param $db
+ * @param $account
+ */
+function top_up_pay_braintree($store, $_data, $customer, $website, $editor, $smarty, $db, $account) {
 
-function place_order_pay_braintree($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
 
+    $top_up=$customer->create_top_up($_data['amount']);
 
-    $order->fast_update(
-        array(
-            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
-        )
-    );
+    if($top_up==false){
+        $response = array(
+            'state' => 400,
+            'resp'  => $customer->msg
+        );
+        echo json_encode($response);
+        exit;
+    }
+
 
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
@@ -233,65 +198,28 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
     );
 
 
-    $to_pay  = $order->get('Order To Pay Amount');
-    $credits = floatval($customer->get('Customer Account Balance'));
-    if ($credits > 0) {
 
 
-        if ($to_pay < $credits) {
 
 
-            list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay, $editor, $db, $account);
-
-            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
-
-            $exchange = currency_conversion(
-                $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
-            );
-
-            $analytics_items = array();
-            foreach ($items = $order->get_items() as $item) {
-                $analytics_items[] = $item['analytics_data'];
-            }
-
-            $response = array(
-                'state'          => 200,
-                'order_key'      => $order->id,
-                'analytics_data' => array(
-                    'id'          => $order->get('Public ID'),
-                    'affiliation' => $store->get('Name'),
-                    'revenue'     => $order->get('Order Total Amount'),
-                    'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
-                    'tax'         => $order->get('Order Total Tax Amount'),
-                    'shipping'    => $order->get('Order Shipping Net Amount'),
-                    'items'       => $analytics_items
-                )
-            );
+    $braintree_data           = get_top_up_transaction_braintree_data($top_up,$customer, $gateway, $_data['data']['save_card']);
 
 
-            echo json_encode($response);
-            exit;
 
-        }
-
-
-    }
-
-
-    $braintree_data           = get_sale_transaction_braintree_data($order, $gateway, $_data['data']['save_card']);
-    $braintree_data['amount'] = $order->get('Order Basket To Pay Amount');
+    $braintree_data['amount'] = $top_up->get('Top Up Amount');
 
 
     $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
     $braintree_data['paymentMethodNonce'] = $_data['data']['nonce'];
 
 
-    $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
+    $response = process_braintree_top_up($braintree_data, $top_up, $gateway, $customer, $store, $website, $payment_account, $db, $account);
+
+
+
     echo json_encode($response);
 
 }
-
-
 
 function get_error_message($code, $original_message) {
 
@@ -348,7 +276,6 @@ function get_error_message($code, $original_message) {
     return $msg;
 }
 
-
 function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
 
 
@@ -381,97 +308,6 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 
     $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
     echo json_encode($response);
-
-}
-
-
-/**
- * @param $order   \Public_Order
- * @param $amount
- * @param $editor
- * @param $db      \PDO
- * @param $account \Public_Account
- *
- * @return array
- */
-function pay_credit($order, $amount, $editor, $db, $account) {
-
-    include_once __DIR__.'/utils/currency_functions.php';
-
-    $store    = get_object('store', $order->get('Order Store Key'));
-    $customer = get_object('Customer', $order->get('Customer Key'));
-
-
-    $order->editor = $editor;
-
-    /**
-     * @var $payment_account \Public_Payment_Account
-     */
-    $payment_account = get_object('Payment_Account', $store->get('Store Customer Payment Account Key'));
-
-
-    $payment_account->editor = $editor;
-
-    $date     = gmdate('Y-m-d H:i:s');
-    $exchange = currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code'));
-
-    $payment_data = array(
-        'Payment Store Key'                   => $order->get('Store Key'),
-        'Payment Customer Key'                => $order->get('Customer Key'),
-        'Payment Transaction Amount'          => $amount,
-        'Payment Currency Code'               => $order->get('Currency Code'),
-        'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
-        'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
-        'Payment Sender Email'                => $order->get('Email'),
-        'Payment Sender Card Type'            => '',
-        'Payment Created Date'                => $date,
-
-        'Payment Completed Date'         => $date,
-        'Payment Last Updated Date'      => $date,
-        'Payment Transaction Status'     => 'Completed',
-        'Payment Transaction ID'         => '',
-        'Payment Method'                 => 'Account',
-        'Payment Location'               => 'Order',
-        'Payment Metadata'               => '',
-        'Payment Submit Type'            => 'AutoCredit',
-        'Payment Currency Exchange Rate' => $exchange,
-        'Payment Type'                   => 'Payment'
-
-
-    );
-
-
-    $payment = $payment_account->create_payment($payment_data);
-
-
-    $sql = sprintf(
-        'INSERT INTO `Credit Transaction Fact` 
-                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
-                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$amount, prepare_mysql($order->get('Currency Code')), $exchange, $order->get('Order Customer Key'), $payment->id
-
-
-    );
-
-
-    $db->exec($sql);
-    $reference = $db->lastInsertId();
-    $payment->fast_update(array('Payment Transaction ID' => sprintf('%05d', $reference)));
-
-
-    $customer->update_account_balance();
-    $customer->update_credit_account_running_balances();
-
-    $order->add_payment($payment);
-    $order->update_totals();
-
-
-    return array(
-        $customer,
-        $order,
-        $payment_account,
-        $payment
-    );
-
 
 }
 
@@ -531,26 +367,8 @@ function get_top_up_html($data, $website, $customer, $smarty) {
     $smarty->assign('data', $block);
     $smarty->assign('labels', $website->get('Localised Labels'));
 
-    $webpage_checkout = $website->get_webpage('checkout.sys');
+    $smarty->assign('checkout_labels', $block['labels']);
 
-    $content_checkout = $webpage_checkout->get('Content Data');
-    $block_checkout       = array();
-    $block_found_checkout = false;
-    $block_key_checkout   = false;
-
-    foreach ($content_checkout['blocks'] as $_block_key => $_block) {
-        if ($_block['type'] == 'checkout') {
-            $block_checkout       = $_block;
-            $block_key_checkout   = $_block_key;
-            $block_found_checkout = true;
-            break;
-        }
-    }
-
-    if ($block_found) {
-        $smarty->assign('checkout_labels', $block_checkout['labels']);
-
-    }
 
 
 
@@ -569,17 +387,19 @@ function get_top_up_html($data, $website, $customer, $smarty) {
 }
 
 
-function place_order_pay_braintree_using_saved_card($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
+function top_up_pay_braintree_using_saved_card($store, $_data, $customer, $website, $editor, $smarty, $db, $account) {
 
+    $top_up=$customer->create_top_up($_data['amount']);
 
-    //require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
+    if($top_up==false){
+        $response = array(
+            'state' => 400,
+            'resp'  => $customer->msg
+        );
+        echo json_encode($response);
+        exit;
+    }
 
-
-    $order->fast_update(
-        array(
-            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
-        )
-    );
 
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
@@ -629,60 +449,17 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
     if ($verification_result->success) {
 
 
-        $to_pay  = $order->get('Order To Pay Amount');
-        $credits = floatval($customer->get('Customer Account Balance'));
-        if ($credits > 0) {
 
 
-            if ($to_pay < $credits) {
+        $braintree_data           = get_top_up_transaction_braintree_data($top_up,$customer, $gateway);
 
 
-                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay, $editor, $db, $account);
-
-                place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
-
-
-                $exchange = currency_conversion(
-                    $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
-                );
-
-
-                $analytics_items = array();
-                foreach ($items = $order->get_items() as $item) {
-                    $analytics_items[] = $item['analytics_data'];
-                }
-
-                $response = array(
-                    'state'          => 200,
-                    'order_key'      => $order->id,
-                    'analytics_data' => array(
-                        'id'          => $order->get('Public ID'),
-                        'affiliation' => $store->get('Name'),
-                        'revenue'     => $order->get('Order Total Amount'),
-                        'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
-                        'tax'         => $order->get('Order Total Tax Amount'),
-                        'shipping'    => $order->get('Order Shipping Net Amount'),
-                        'items'       => $analytics_items
-                    )
-                );
-
-                echo json_encode($response);
-                exit;
-
-            }
-
-
-        }
-
-
-        $braintree_data = get_sale_transaction_braintree_data($order, $gateway);
-
-        $braintree_data['amount']             = $order->get('Order Basket To Pay Amount');
+        $braintree_data['amount']             =  $top_up->get('Top Up Amount');
         $braintree_data['paymentMethodToken'] = $token;
         $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
 
+        $response = process_braintree_top_up($braintree_data, $top_up, $gateway, $customer, $store, $website, $payment_account, $db, $account);
 
-        $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
         echo json_encode($response);
 
     } else {
@@ -700,18 +477,19 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
     }
 
 
-    /*
-        Braintree_Configuration::environment('production');
-        Braintree_Configuration::merchantId($payment_account->get('Payment Account ID'));
-        Braintree_Configuration::publicKey($payment_account->get('Payment Account Login'));
-        Braintree_Configuration::privateKey($payment_account->get('Payment Account Password'));
-    */
-
 
 }
 
 
-function get_sale_transaction_braintree_data($order, $gateway, $save_payment = false) {
+/**
+ * @param      $top_up \Public_Top_Up
+ * @param      $customer \Public_Customer
+ * @param      $gateway
+ * @param bool $save_payment
+ *
+ * @return array
+ */
+function get_top_up_transaction_braintree_data($top_up,$customer, $gateway, $save_payment = false) {
 
 
     include_once 'external_libs/contact_name_parser.php';
@@ -721,10 +499,10 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
     if ($save_payment) {
 
         try {
-            $braintree_customer = $gateway->customer()->find($order->get('Order Customer Key'));
-            //print_r($braintree_customer);
+            $braintree_customer = $gateway->customer()->find($customer->id);
+
         } catch (Exception $e) {
-            //echo 'Message: ' .$e->getMessage();
+
         }
 
 
@@ -734,42 +512,42 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
     $parser = new FullNameParser();
 
 
-    $billing_contact_name  = $parser->parse_name($order->get('Order Invoice Address Recipient'));
-    $delivery_contact_name = $parser->parse_name($order->get('Order Delivery Address Recipient'));
+    $billing_contact_name  = $parser->parse_name($customer->get('Customer Main Contact Name'));
+    $delivery_contact_name = $parser->parse_name($customer->get('Customer Main Contact Name'));
 
     $braintree_data = [
 
-        'amount'   => $order->get('Order To Pay Amount'),
-        'orderId'  => $order->get('Order Public ID'),
+        'amount'   => $top_up->get('Top Up Amount'),
+        'orderId'  => 'TopUp_'.$top_up->id,
         'customer' => [
 
             'firstName' => $billing_contact_name['fname'],
             'lastName'  => $billing_contact_name['lname'],
-            'company'   => $order->get('Order Invoice Address Organization'),
-            'email'     => $order->get('Order Email')
+            'company'   => $customer->get('Customer Company Name'),
+            'email'     => $customer->get('Customer Main Plain Email')
         ],
 
         'billing'  => [
             'firstName'         => $billing_contact_name['fname'],
             'lastName'          => $billing_contact_name['lname'],
-            'company'           => $order->get('Order Invoice Address Organization'),
-            'streetAddress'     => $order->get('Order Invoice Address Line 1'),
-            'extendedAddress'   => $order->get('Order Invoice Address Line 2'),
-            'locality'          => $order->get('Order Invoice Address Locality'),
-            'region'            => $order->get('Order Invoice Address  Administrative Area'),
-            'postalCode'        => $order->get('Order Invoice Address Postal Code'),
-            'countryCodeAlpha2' => $order->get('Order Invoice Address Country 2 Alpha Code'),
+            'company'           => $customer->get('Customer Company Name'),
+            'streetAddress'     => $customer->get('Customer Invoice Address Line 1'),
+            'extendedAddress'   => $customer->get('Customer Invoice Address Line 2'),
+            'locality'          => $customer->get('Customer Invoice Address Locality'),
+            'region'            => $customer->get('Customer Invoice Address Administrative Area'),
+            'postalCode'        => $customer->get('Customer Invoice Address Postal Code'),
+            'countryCodeAlpha2' => $customer->get('Customer Invoice Address Country 2 Alpha Code'),
         ],
         'shipping' => [
             'firstName'         => $delivery_contact_name['fname'],
             'lastName'          => $delivery_contact_name['lname'],
-            'company'           => $order->get('Order Delivery Address Organization'),
-            'streetAddress'     => $order->get('Order Delivery Address Line 1'),
-            'extendedAddress'   => $order->get('Order Delivery Address Line 2'),
-            'locality'          => $order->get('Order Delivery Address Locality'),
-            'region'            => $order->get('Order Delivery Address  Administrative Area'),
-            'postalCode'        => $order->get('Order Delivery Address Postal Code'),
-            'countryCodeAlpha2' => $order->get('Order Delivery Address Country 2 Alpha Code'),
+            'company'           => $customer->get('Customer Company Name'),
+            'streetAddress'     => $customer->get('Customer Invoice Address Line 1'),
+            'extendedAddress'   => $customer->get('Customer Invoice Address Line 2'),
+            'locality'          => $customer->get('Customer Invoice Address Locality'),
+            'region'            => $customer->get('Customer Invoice Address Administrative Area'),
+            'postalCode'        => $customer->get('Customer Invoice Address Postal Code'),
+            'countryCodeAlpha2' => $customer->get('Customer Invoice Address Country 2 Alpha Code'),
         ],
 
 
@@ -785,9 +563,9 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
         $braintree_data['options']['storeShippingAddressInVault'] = true;
 
         if ($braintree_customer) {
-            $braintree_data['customerId'] = $order->get('Order Customer Key');
+            $braintree_data['customerId'] = $customer->id;
         } else {
-            $braintree_data['customer']['id'] = $order->get('Order Customer Key');
+            $braintree_data['customer']['id'] = $customer->id;
         }
 
     }
@@ -796,7 +574,7 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
     return $braintree_data;
 }
 
-function process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty) {
+function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer, $store, $website, $payment_account, $db, $account) {
 
 
     try {
@@ -825,14 +603,13 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             }
 
 
-            //print_r($result);
 
 
             $payment_metadata = '';
 
 
             $payment_data = array(
-                'Payment Store Key'                   => $order->get('Order Store Key'),
+                'Payment Store Key'                   => $top_up->get('Top Up Store Key'),
                 'Payment Website Key'                 => $website->id,
                 'Payment Customer Key'                => $customer->id,
                 'Payment Transaction Amount'          => $result->transaction->amount,
@@ -848,7 +625,7 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                 'Payment Transaction Status' => 'Completed',
                 'Payment Transaction ID'     => $result->transaction->id,
                 'Payment Method'             => $payment_method,
-                'Payment Location'           => 'Basket',
+                'Payment Location'           => 'Top Up',
                 'Payment Metadata'           => $payment_metadata
 
             );
@@ -857,41 +634,86 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             $payment = $payment_account->create_payment($payment_data);
 
 
-            $order->add_payment($payment);
-
-
-            $credits = floatval($customer->get('Customer Account Balance'));
-
-            if ($credits > 0) {
-                $to_pay_credits = min($order->get('Order To Pay Amount'), $credits);
-                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
-
-            }
-
-
-            place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
-
             $exchange = currency_conversion(
                 $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
             );
+            $top_up->fast_update(
+                [
+                    'Top Up Payment Key'=>$payment->id,
+                    'Top Up Status'=>'Paid',
+                    'Top Up Exchange'=>$exchange
+                ]
+            );
 
-            $analytics_items = array();
-            foreach ($items = $order->get_items() as $item) {
-                $analytics_items[] = $item['analytics_data'];
-            }
+
+
+
+            include_once "utils/currency_functions.php";
+
+
+            $date    = gmdate('Y-m-d H:i:s');
+
+
+
+
+            $sql = "INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,
+                     `Credit Transaction Payment Key`,`Credit Transaction Top Up Key`,
+                     `Credit Transaction Type`) 
+                    VALUES (?,?,?,?,?,?,?,?) ";
+
+
+
+            $db->prepare($sql)->execute(
+                array(
+                    $date,
+                    $top_up->get('Top Up Amount'),
+                    $top_up->get('Top Up Currency Code'),
+                    $exchange,
+                    $customer->id,
+                    $payment->id,
+                    $top_up->id,
+                    'TopUp'
+
+                )
+            );
+
+
+            $credit_key = $db->lastInsertId();
+
+
+
+
+            $history_data = array(
+                'History Abstract' => sprintf(
+                    _('Customer top up %s'),money($top_up->get('Top Up Amount'), $top_up->get('Store Currency Code'))
+                ),
+                'History Details'  => '',
+                'Action'           => 'edited'
+            );
+
+            $history_key = $customer->add_subject_history(
+                $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+            );
+
+            $sql ="INSERT INTO `Credit Transaction History Bridge` 
+                    (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
+                    VALUES (?,?) ";
+            $db->prepare($sql)->execute(
+                array(
+                    $credit_key, $history_key
+                )
+            );
+
+
+
+            $customer->update_account_balance();
+            $customer->update_credit_account_running_balances();
+
 
             $response = array(
                 'state'          => 200,
-                'order_key'      => $order->id,
-                'analytics_data' => array(
-                    'id'          => $order->get('Public ID'),
-                    'affiliation' => $store->get('Name'),
-                    'revenue'     => $order->get('Order Total Amount'),
-                    'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
-                    'tax'         => $order->get('Order Total Tax Amount'),
-                    'shipping'    => $order->get('Order Shipping Net Amount'),
-                    'items'       => $analytics_items
-                )
+                'top_up_key'      => $top_up->id
             );
 
             return $response;
@@ -991,9 +813,15 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
 
                 $payment = $payment_account->create_payment($payment_data);
+                $top_up->fast_update(
+                    [
+                        'Top Up Payment Key'=>$payment->id,
+                        'Top Up Status'=>'Error',
+
+                    ]
+                );
 
 
-                $order->add_payment($payment);
             }
 
             $response = array(
@@ -1013,6 +841,15 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
     } catch (Exception $e) {
 
 
+
+        $top_up->fast_update(
+            [
+                'Top Up Status'=>'Error',
+
+            ]
+        );
+
+
         $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
 
         $response = array(
@@ -1022,9 +859,9 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
         );
 
+
         return $response;
 
-        //echo 'Message: ' .$e->getMessage();
     }
 
 

@@ -9,15 +9,7 @@
 -->
 *}{include file="theme_1/_head.theme_1.tpl"}
 
-
-
 <body xmlns="http://www.w3.org/1999/html">
-
-
-<style>
-
-
-</style>
 
 <div id="aux">
 
@@ -1156,7 +1148,25 @@
                         labels: content_data
                     })
                     break;
+                case 'top_up':
 
+                    var content_data = {
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'top_up',
+                        label: '{t}Top up{/t}',
+                        icon: 'fa-piggy-bank',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+                    })
+                    break;
                 case 'register':
 
                     var content_data = {

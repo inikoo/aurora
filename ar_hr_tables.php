@@ -616,6 +616,7 @@ function timesheet_records($_data, $db, $user) {
         foreach ($result as $data) {
 
 
+
             switch ($data['Timesheet Record Source']) {
                 case 'ClockingMachine':
                     $source = _('Clocking machine');

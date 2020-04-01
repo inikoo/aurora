@@ -1154,7 +1154,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-        'top_up.sys' => array(
+        'top_up.sys'           => array(
             'Webpage Scope'            => 'Top_Up',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
@@ -1165,13 +1165,50 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
                         array(
-                            'locked'              => true,
-                            'type'                => 'top_up',
-                            'label'               => _('Top up'),
-                            'icon'                => 'fa-piggy-bank',
-                            'show'                => 1,
+                            'locked' => true,
+                            'type'   => 'top_up',
+                            'label'  => _('Top up'),
+                            'icon'   => 'fa-piggy-bank',
+                            'show'   => 1,
+                            'top_up_options'=>[10,50,100,250],
+
+                            'labels' => array(
 
 
+                                '_credit_card_label' => _('Credit card'),
+                                '_bank_label'        => _('Bank transfer'),
+
+                                '_credit_card_number'                      => _('Card number'),
+                                '_credit_card_ccv'                         => _('CVV'),
+                                '_credit_card_expiration_date'             => _('Expiration date'),
+                                '_credit_card_expiration_date_month_label' => _('Month'),
+                                '_credit_card_expiration_date_year_label'  => _('Year'),
+                                '_credit_card_save'                        => _('Save card'),
+
+
+                                '_form_title_credit_card'          => _('Top up'),
+                                '_form_title_paypal'               => _('Top up'),
+                                '_form_title_cond'                 => _('Top up'),
+                                '_form_title_sofort'               => _('Top up'),
+                                '_form_title_bank'                 => _('Top up'),
+                                '_form_title_other'                => _('Top up'),
+                                '_form_title_online_bank_transfer' => _('Top up'),
+                                '_form_title_cash_on_delivery'     => _('Top up'),
+
+
+                                '_bank_header' => _('Please go to your bank and make a payment of <b>[Order Amount]</b>  to our bank account, details below'),
+                                '_bank_footer' => _('Remember to state your customer ID in the payment reference').' [Customer ID]',
+
+
+                                '_pay_top_up'                           => ('Top up'),
+                                '_pay_top_up_from_bank'                 => ('Top up'),
+                                '_pay_top_up_from_credit_card'          => ('Top up'),
+                                '_pay_top_up_from_paypal'               => ('Top up'),
+                                '_pay_top_up_from_cash_on_delivery'     => ('Top up'),
+                                '_pay_top_up_from_online_bank_transfer' => ('Top up'),
+
+
+                            )
 
                         )
 

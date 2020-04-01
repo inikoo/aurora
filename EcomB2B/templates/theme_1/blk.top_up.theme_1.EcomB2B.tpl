@@ -15,10 +15,53 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  data-amount_to_top_up="20"  >
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  data-top_up_value="{$data.options[0].value}"  >
+
+
+    <style>
+        .top_up_options{
+            display: flex;
+            margin: 10px auto;
+            width: 400px;
+        }
+        .top_up_options div{
+            text-align: center;
+            width: 100px;
+            border:1px solid #ccc;
+            border-left:none;
+            font-size: 22px;
+            padding: 10px;
+            font-weight: 800;
+            opacity: .7;cursor: pointer;
+        }
+        .top_up_options div:hover{
+            opacity: 1;
+        }
+
+        .top_up_options div.selected{
+            opacity: 1;
+            color:white;
+            background-color: #0d47a1;
+        }
+
+        .top_up_options div:first-child {
+            border-left:1px solid #ccc;
+        }
+    </style>
 
 
 
+    <div style="text-align: center;margin-top: 30px;margin-bottom: 30px">
+
+        <h1>{if empty($data.labels._main_title)}{t}Top up{/t}{else}{$data.labels._main_title}{/if}</h1>
+        <div class="top_up_options" >
+            {foreach from=$data.options item=option name=options}
+                <div data-formatted_value="{$option.formatted_value}" data-value="{$option.value}" class="top_up_option  {if $smarty.foreach.options.first}selected{/if}" >{$option.formatted_value}</div>
+            {/foreach}
+
+        </div>
+
+    </div>
 
 
 
@@ -79,7 +122,7 @@
 
 
                                 <form id="BTree_saved_credit_cards_form" action="" class="sky-form {if $braintree_data.number_saved_credit_cards==0}hide{/if}" style="max-width: 500px;">
-                                    <header>{$checkout_labels._form_title_credit_card}</header>
+                                    <header>{$checkout_labels._form_title_credit_card} </header>
 
 
                                     <fieldset  class="credit_cards_list " >
@@ -146,12 +189,12 @@
                                         <section  class="col col-5  "  >
                                             <span class="like_button show_saved_cards_list hide" style="color:#666" onclick="show_saved_cards()" >{if isset($checkout_labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
                                         </section>
-                                        <button id="place_order_saved_card_braintree" type="submit" class="button state-disabled">{$checkout_labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
+                                        <button id="place_order_saved_card_braintree" type="submit" class="button state-disabled">{$checkout_labels._pay_top_up_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
                                     </footer>
                                 </form>
 
                                 <form id="BTree_credit_card_form" action="" class="sky-form  {if $braintree_data.number_saved_credit_cards>0}hide{/if}" style="max-width: 500px;">
-                                <header>{$checkout_labels._form_title_credit_card}</header>
+                                <header>{$checkout_labels._form_title_credit_card} (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
 
                                 {assign "saved_cards" $customer->get_saved_credit_cards($customer->get('Customer Delivery Address Checksum'),$customer->get('Customer Invoice Address Checksum'))}
                                 {assign "number_saved_cards" count($saved_cards)  }
@@ -216,7 +259,7 @@
                                         <span class="like_button show_saved_cards_list {if $braintree_data.number_saved_credit_cards==0}hide{/if}"" style="color:#666" onclick="show_saved_cards()" >{if isset($checkout_labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
 
                                     </section>
-                                    <button id="place_order_braintree" type="submit" class="button  {if $braintree_data.number_saved_credit_cards>0} state-disabled{/if}  ">{$checkout_labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
+                                    <button id="place_order_braintree" type="submit" class="button  {if $braintree_data.number_saved_credit_cards>0} state-disabled{/if}  ">{$checkout_labels._pay_top_up_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
                                     </footer>
                             </form>
 
@@ -238,7 +281,7 @@
                                         ajaxData.append("payment_account_key", BTree_account_key)
 
                                         $.ajax({
-                                            url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                            url: "/ar_web_top_up.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                                             complete: function () {
                                             }, success: function (data) {
 
@@ -289,7 +332,7 @@
 
 
                                 <form id="Sofort_form" action="" class="sky-form" style="max-width: 500px;">
-                                    <header >{$checkout_labels._form_title_online_bank_transfer}</header>
+                                    <header >{$checkout_labels._form_title_online_bank_transfer}  (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
 
 
                                     <div style="padding:20px">
@@ -299,7 +342,7 @@
 
 
                                     <footer>
-                                        <button   class="button" id="place_order_from_Sofort">{$checkout_labels._place_order_from_online_bank_transfer} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                                        <button   class="button" id="place_order_from_Sofort">{$checkout_labels._pay_top_up_from_online_bank_transfer} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
                                     </footer>
                                 </form>
 
@@ -393,7 +436,7 @@
 
 
                                 <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header >{if isset($checkout_labels._form_title_paypal) }{$checkout_labels._form_title_paypal}{else}{t}Checkout form{/t}{/if}</header>
+                                    <header >{if isset($checkout_labels._form_title_paypal) }{$checkout_labels._form_title_paypal}{else}{t}Top up{/t}{/if}  (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
 
 
                                     <fieldset style="min-height: 280px">
@@ -543,9 +586,9 @@
                                                 }
 
 
-                                                var register_data={ }
-                                                register_data['nonce']=payload.nonce
-                                                register_data['token']=$('#BTree_saved_credit_cards_form .credit_card_input_row .card_info').data('token')
+                                                var payment_data={ }
+                                                payment_data['nonce']=payload.nonce
+                                                payment_data['token']=$('#BTree_saved_credit_cards_form .credit_card_input_row .card_info').data('token')
 
                                                 //console.log($('#BTree_saved_credit_cards_form .credit_card_input_row .card_info').data('token'))
 
@@ -555,11 +598,13 @@
 
                                                 ajaxData.append("tipo", 'top_up_pay_braintree_using_saved_card')
                                                 ajaxData.append("payment_account_key",BTree_account_key )
-                                                ajaxData.append("data", JSON.stringify(register_data))
+                                                ajaxData.append("amount",$('.top_up').data('top_up_value') )
+
+                                                ajaxData.append("data", JSON.stringify(payment_data))
 
 
                                                 $.ajax({
-                                                    url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                                    url: "/ar_web_top_up.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                                                     complete: function () {
                                                     }, success: function (data) {
 
@@ -683,11 +728,13 @@
 
                                                 ajaxData.append("tipo", 'top_up_pay_braintree')
                                                 ajaxData.append("payment_account_key",BTree_account_key )
+                                                ajaxData.append("amount",$('.top_up').data('top_up_value') )
+
                                                 ajaxData.append("data", JSON.stringify(register_data))
 
 
                                                 $.ajax({
-                                                    url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                                    url: "/ar_web_top_up.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                                                     complete: function () {
                                                     }, success: function (data) {
 
@@ -768,7 +815,7 @@
                                                 ajaxData.append("nonce",payload.nonce )
 
                                                 $.ajax({
-                                                        url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                                        url: "/ar_web_top_up.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                                                         complete: function () {
                                                         },
                                                         success: function (data) {
@@ -865,4 +912,33 @@
 
     <div class="clear" style="margin-bottom: 30px"> </div>
 </div>
+
+<script>
+
+    $(function () {
+
+        $(document).on('click', '.top_up_options .top_up_option', function () {
+
+
+            if($(this).hasClass('selected')){
+                return;
+            }
+
+            $('.top_up_options .top_up_option').removeClass('selected')
+
+
+            $(this).addClass('selected')
+            $('.formatted_value').html($(this).data('formatted_value'))
+
+            $('.top_up').data('top_up_value',$(this).data('value'))
+
+        });
+
+
+
+
+
+    });
+
+</script>
 

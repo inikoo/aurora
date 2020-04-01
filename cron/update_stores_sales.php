@@ -31,7 +31,9 @@ $editor = array(
 $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
-
+//$store = new Store('id',1);
+//$store->update_sales_from_invoices('Week To Day');
+//exit;
 
 
 $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
