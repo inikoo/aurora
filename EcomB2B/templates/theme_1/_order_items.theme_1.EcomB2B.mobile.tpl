@@ -13,7 +13,7 @@
 
 <table class="order_items" style="margin-bottom: 0px">
     <thead>
-
+    {if $order->get('Order State')=='InBasket'}
     <tr class="operations">
 
         <td colspan=2>
@@ -56,7 +56,7 @@
 
         </td>
     </tr>
-
+    {/if}
     <tr >
         <th colspan="2" class="text-left padding_left_5">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
 

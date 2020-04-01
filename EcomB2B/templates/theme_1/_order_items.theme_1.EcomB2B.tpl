@@ -14,7 +14,7 @@
 
 <table class="table basket" style="width: 100%;margin-bottom: 0px;border-top:0px">
     <thead>
-
+    {if $order->get('Order State')=='InBasket'}
     <tr class="operations" >
         <td colspan=2 class="text-left"><i class="hide fa fa-upload"></i></td>
 
@@ -41,9 +41,8 @@
 
         </td>
     </tr>
-
-
-
+    {/if}
+    
 
     <tr class="basket_order_ths {if !$order->id or $order->get('Order Number Items')==0  }hide{/if}">
         <th class="text-left">{if !empty($labels._items_code)}{$labels._items_code}{else}{t}Code{/t}{/if}</th>
