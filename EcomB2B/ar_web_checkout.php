@@ -342,7 +342,7 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
     $gateway = new Braintree_Gateway(
         [
-            'environment' => 'production',
+            'environment' => BRAINTREE_ENV,
             'merchantId'  => $payment_account->get('Payment Account ID'),
             'publicKey'   => $payment_account->get('Payment Account Login'),
             'privateKey'  => $payment_account->get('Payment Account Password')
@@ -456,7 +456,7 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 
     $gateway = new Braintree_Gateway(
         [
-            'environment' => 'production',
+            'environment' => BRAINTREE_ENV,
             'merchantId'  => $payment_account->get('Payment Account ID'),
             'publicKey'   => $payment_account->get('Payment Account Login'),
             'privateKey'  => $payment_account->get('Payment Account Password')
@@ -736,7 +736,7 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
     $gateway = new Braintree_Gateway(
         [
-            'environment' => 'production',
+            'environment' => BRAINTREE_ENV,
             'merchantId'  => $payment_account->get('Payment Account ID'),
             'publicKey'   => $payment_account->get('Payment Account Login'),
             'privateKey'  => $payment_account->get('Payment Account Password')
@@ -1188,7 +1188,7 @@ function delete_braintree_saved_card($_data, $editor) {
 
     $gateway = new Braintree_Gateway(
         [
-            'environment' => 'production',
+            'environment' => BRAINTREE_ENV,
             'merchantId'  => $payment_account->get('Payment Account ID'),
             'publicKey'   => $payment_account->get('Payment Account Login'),
             'privateKey'  => $payment_account->get('Payment Account Password')

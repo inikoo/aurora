@@ -154,7 +154,7 @@ function top_up_pay_braintree($store, $_data, $customer, $website, $editor, $db,
 
     $gateway = new Braintree_Gateway(
         [
-            'environment' => 'production',
+            'environment' => BRAINTREE_ENV,
             'merchantId'  => $payment_account->get('Payment Account ID'),
             'publicKey'   => $payment_account->get('Payment Account Login'),
             'privateKey'  => $payment_account->get('Payment Account Password')
@@ -199,7 +199,7 @@ function top_up_pay_braintree_paypal($store, $_data, $customer, $website, $edito
 
     $gateway = new Braintree_Gateway(
         [
-            'environment' => 'production',
+            'environment' => BRAINTREE_ENV,
             'merchantId'  => $payment_account->get('Payment Account ID'),
             'publicKey'   => $payment_account->get('Payment Account Login'),
             'privateKey'  => $payment_account->get('Payment Account Password')
@@ -305,7 +305,7 @@ function top_up_pay_braintree_using_saved_card($store, $_data, $customer, $websi
 
     $gateway = new Braintree_Gateway(
         [
-            'environment' => 'production',
+            'environment' => BRAINTREE_ENV,
             'merchantId'  => $payment_account->get('Payment Account ID'),
             'publicKey'   => $payment_account->get('Payment Account Login'),
             'privateKey'  => $payment_account->get('Payment Account Password')

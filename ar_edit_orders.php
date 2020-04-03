@@ -1246,7 +1246,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
                             $gateway = new Braintree_Gateway(
                                 [
-                                    'environment' => 'production',
+                                    'environment' => BRAINTREE_ENV,
                                     'merchantId'  => $payment_account->get('Payment Account ID'),
                                     'publicKey'   => $payment_account->get('Payment Account Login'),
                                     'privateKey'  => $payment_account->get('Payment Account Password')
