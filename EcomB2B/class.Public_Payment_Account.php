@@ -164,7 +164,7 @@ class Public_Payment_Account {
 
                     $gateway = new Braintree_Gateway(
                         [
-                            'environment' => 'production',
+                            'environment' => BRAINTREE_ENV,
                             'merchantId'  => $this->get('Payment Account ID'),
                             'publicKey'   => $this->get('Payment Account Login'),
                             'privateKey'  => $this->get('Payment Account Password')

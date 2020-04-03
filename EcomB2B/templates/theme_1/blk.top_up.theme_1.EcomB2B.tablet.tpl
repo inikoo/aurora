@@ -191,7 +191,7 @@
                 </form>
 
                 <form id="BTree_credit_card_form" action="" class="sky-form  {if $braintree_data.number_saved_credit_cards>0}hide{/if}" style="max-width: 500px;">
-                    <header>{$data.labels._form_title_credit_card}</header>
+                    <header>{$data.labels._form_title_credit_card} (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
 
                     {assign "saved_cards" $customer->get_saved_credit_cards($customer->get('Customer Delivery Address Checksum'),$customer->get('Customer Invoice Address Checksum'))}
                     {assign "number_saved_cards" count($saved_cards)  }
@@ -258,7 +258,7 @@
                             <span class="like_button show_saved_cards_list {if $braintree_data.number_saved_credit_cards==0}hide{/if}"" style="font-size: smaller;color:#666;position: relative;top:5px" onclick="show_saved_cards()" >{if isset($data.labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
 
                         </section>
-                        <button id="place_order_braintree" type="submit" class="button  {if $braintree_data.number_saved_credit_cards>0} state-disabled{/if}  ">{$data.labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
+                        <button id="place_order_braintree" type="submit" class="button  {if $braintree_data.number_saved_credit_cards>0} state-disabled{/if}  ">{$checkout_labels._pay_top_up_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
                     </footer>
                 </form>
 
@@ -337,7 +337,7 @@
 
 
                 <form id="Sofort_form" action="" class="sky-form" style="max-width: 500px;">
-                    <header >{$data.labels._form_title_online_bank_transfer}</header>
+                    <header >{$data.labels._form_title_online_bank_transfer} (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
 
 
                     <div style="padding:20px">

@@ -438,7 +438,7 @@
 
 
                                 <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header >{if isset($checkout_labels._form_title_paypal) }{$checkout_labels._form_title_paypal}{else}{t}Top up{/t}{/if}  (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
+                                    <header>{if isset($checkout_labels._form_title_paypal) }{$checkout_labels._form_title_paypal}{else}{t}Top up{/t}{/if}  (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
                                     <fieldset style="min-height: 280px">
                                         <div  id="loading_paypal-button"><i class="fa fa-spinner fa-spin" style="margin-right: 10px"></i>  {t}Loading paypal{/t}</div>
                                         <div  id="paying_paypal" class="hide"><i class="fab fa-paypal" style="margin-right: 10px"></i>  {t}Processing payment{/t}</div>
