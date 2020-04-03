@@ -288,93 +288,102 @@ class Public_Website {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
-    function get_payment_accounts($delivery_2alpha_country = '') {
+    function get_payment_accounts($delivery_2alpha_country = '', $options = '') {
 
         $payments_accounts = array();
 
-        $sql = sprintf(
-            'SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=%d AND `Payment Account Store Status`="Active" AND `Payment Account Store Show in Cart`="Yes"  ORDER BY `Payment Account Store Show Cart Order`    ',
-            $this->id
+        $sql =
+            "SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ORDER BY `Payment Account Store Show Cart Order`";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+
+            )
         );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
+        while ($row = $stmt->fetch()) {
+            $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
 
 
+            $ok = true;
+            switch ($payment_account->get('Payment Account Block')) {
+                case 'BTree':
+                    $icon            = 'fa fa-credit-card';
+                    $tab_label_index = '_credit_card_label';
+                    $tab_label       = '';
+                    $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
+                    $analytics_label = 'Credit card';
+                    break;
+                case 'BTreePaypal':
+                    $icon            = 'fab fa-paypal';
+                    $tab_label       = 'Paypal';
+                    $tab_label_index = '';
+                    $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
+                    $analytics_label = 'Paypal';
 
-                $ok = true;
-                switch ($payment_account->get('Payment Account Block')) {
-                    case 'BTree':
-                        $icon            = 'fa fa-credit-card';
-                        $tab_label_index = '_credit_card_label';
-                        $tab_label       = '';
-                        $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
-                        $analytics_label = 'Credit card';
-                        break;
-                    case 'BTreePaypal':
-                        $icon            = 'fab fa-paypal';
-                        $tab_label       = 'Paypal';
-                        $tab_label_index = '';
-                        $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
-                        $analytics_label = 'Paypal';
+                    break;
+                case 'Paypal':
+                    $icon            = 'fab fa-paypal';
+                    $tab_label       = 'Paypal';
+                    $tab_label_index = '';
+                    $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
+                    $analytics_label = 'Paypal';
+                    break;
+                case 'Sofort':
+                    $icon            = 'fa fa-hand-peace ';
+                    $tab_label       = 'Sofort';
+                    $tab_label_index = '';
+                    $short_label     = '<i class="fa fa-hand-peace" aria-hidden="true"></i>';
+                    $analytics_label = 'Sofort';
+                    break;
+                case 'Bank':
 
-                        break;
-                    case 'Paypal':
-                        $icon            = 'fab fa-paypal';
-                        $tab_label       = 'Paypal';
-                        $tab_label_index = '';
-                        $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
-                        $analytics_label = 'Paypal';
-                        break;
-                    case 'Sofort':
-                        $icon            = 'fa fa-hand-peace ';
-                        $tab_label       = 'Sofort';
-                        $tab_label_index = '';
-                        $short_label     = '<i class="fa fa-hand-peace" aria-hidden="true"></i>';
-                        $analytics_label = 'Sofort';
-                        break;
-                    case 'Bank':
+                    $icon            = 'fa fa-university';
+                    $tab_label_index = '_bank_label';
+                    $tab_label       = '';
+                    $short_label     = '';
+                    $analytics_label = 'Bank';
+                    break;
 
-                        $icon            = 'fa fa-university';
-                        $tab_label_index = '_bank_label';
+                case 'ConD':
+
+
+                    if (in_array($delivery_2alpha_country, $payment_account->get('Valid Delivery Countries'))) {
+                        $icon            = 'fa fa-handshake';
+                        $tab_label_index = '_cash_on_delivery_label';
                         $tab_label       = '';
                         $short_label     = '';
-                        $analytics_label = 'Bank';
-                        break;
-
-                    case 'ConD':
-
-
-                        if (in_array($delivery_2alpha_country, $payment_account->get('Valid Delivery Countries'))) {
-                            $icon            = 'fa fa-handshake';
-                            $tab_label_index = '_cash_on_delivery_label';
-                            $tab_label       = '';
-                            $short_label     = '';
-                            $analytics_label = 'Cash on delivery';
-                        } else {
-                            $ok = false;
-                        }
-
-                        break;
-                    default:
+                        $analytics_label = 'Cash on delivery';
+                    } else {
                         $ok = false;
+                    }
 
+                    break;
+                default:
+                    $ok = false;
+
+            }
+
+            if ($options == 'top_up') {
+                if (!($payment_account->get('Payment Account Block') == 'BTree' or $payment_account->get('Payment Account Block') == 'BTreePaypal')) {
+                    $ok = false;
                 }
 
-                if ($ok) {
+            }
 
-                    $payments_accounts[] = array(
-                        'object'          => $payment_account,
-                        'icon'            => $icon,
-                        'tab_label_index' => $tab_label_index,
-                        'tab_label'       => $tab_label,
-                        'short_label'     => $short_label,
-                        'analytics_label' => $analytics_label
-                    );
-                }
+
+            if ($ok) {
+
+                $payments_accounts[] = array(
+                    'object'          => $payment_account,
+                    'icon'            => $icon,
+                    'tab_label_index' => $tab_label_index,
+                    'tab_label'       => $tab_label,
+                    'short_label'     => $short_label,
+                    'analytics_label' => $analytics_label
+                );
             }
         }
 

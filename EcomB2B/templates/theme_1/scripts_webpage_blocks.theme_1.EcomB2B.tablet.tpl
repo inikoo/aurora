@@ -223,7 +223,41 @@
                 });
 
                 {/if}
-                {if $with_favourites==1}
+
+                {if $with_top_up==1}
+
+                getScript("/assets/mobile.logged_in.min.js", function () {
+                    getScript("/assets/mobile.forms.min.js", function () {
+                        getScript("/assets/desktop.checkout.min.js", function () {
+
+                            let top_up_request="ar_web_top_up.php?tipo=get_top_up_html&device_prefix=tablet";
+
+
+                            $.getJSON(top_up_request, function (data) {
+
+                                $('.customer_balance').html('('+data.customer_balance+')')
+
+                                $('#top_up').html(data.html)
+
+                                $("form").on('submit',function(e) {
+                                    e.preventDefault();
+                                    e.returnValue = false;
+                                });
+
+
+
+
+
+                            })
+                        })
+                    })
+                })
+
+
+                {/if}
+
+
+            {if $with_favourites==1}
 
 
                 getScript("/assets/mobile.logged_in.min.js", function () {
@@ -270,6 +304,7 @@
                 })
 
                 {/if}
+
                 {if $with_profile==1}
                     getScript("/assets/mobile.forms.min.js", function () {
                     getScript("/assets/mobile.profile.min.js", function () {
@@ -796,6 +831,29 @@
                             }
                         });
                     })
+                {/if}
+                {if $with_balance==1}
+
+                getScript("/assets/datatables.min.js", function () {
+
+                    const request_data ={ "tipo":'balance',"device_prefix" :'tablet'}
+                    $.ajax({
+
+                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                            if (data.state == 200) {
+                                $('.customer_balance').html(data.balance)
+                                state = data.app_state;
+                                $('#table_container').html(data.html)
+
+
+                            }
+
+                        }
+                    });
+
+
+
+                })
                 {/if}
                 {if $with_clients==1}
                     getScript("/assets/mobile.forms.min.js", function () {

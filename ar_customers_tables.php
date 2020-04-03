@@ -2221,6 +2221,10 @@ function credit_blockchain($_data, $db, $user, $account) {
                     $type = _('Adjust');
                     $note = $data['History Abstract'];
                     break;
+                case 'TopUp':
+                    $type = _('Top up');
+
+                    break;
                 default:
                     $type = $data['Credit Transaction Type'];
 

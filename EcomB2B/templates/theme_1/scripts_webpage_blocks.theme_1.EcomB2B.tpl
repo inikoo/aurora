@@ -405,6 +405,7 @@
 
 
                                             $('#top_up').html(data.html)
+                                            $('.customer_balance').html('('+data.customer_balance+')')
 
                                             $("form").on('submit',function(e) {
                                                 e.preventDefault();
@@ -871,6 +872,27 @@
 
                         })
              {/if}
+            {if $with_balance==1}
+                            getScript("/assets/datatables.min.js", function () {
+                                const request_data ={ "tipo":'balance'}
+                                $.ajax({
+
+                                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                                        if (data.state == 200) {
+                                            $('.customer_balance').html(data.balance)
+                                            state = data.app_state;
+                                            $('#table_container').html(data.html)
+
+
+                                        }
+
+                                    }
+                                });
+
+
+
+                            })
+              {/if}
              {if $with_clients==1}
                 getScript("/assets/desktop.forms.min.js", function () {
                  getScript("/assets/datatables.min.js", function () {

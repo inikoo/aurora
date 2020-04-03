@@ -104,6 +104,9 @@
 
             </div>
             </div>
+
+
+
             <div class="clear"></div>
                 {assign "braintree_data" ""}
             {foreach from=$payment_accounts item=payment_account key=key}
@@ -529,7 +532,7 @@
             {/foreach}
 
 
-    {if $braintree_data!=''}
+             {if $braintree_data!=''}
         <script>
 
 

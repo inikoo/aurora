@@ -41,9 +41,9 @@ trait Send_Email {
 
 
         if ($this->email_template_type->id) {
-            if ($this->email_template_type->get('Email Campaign Type Status') != 'Active') {
+            if (  $this->email_template_type->get('Email Campaign Type Scope')!='Marketing' and  $this->email_template_type->get('Email Campaign Type Status') != 'Active') {
                 $this->error = true;
-                $this->msg   = 'Email Campaign Type Status not active';
+                $this->msg   = 'Email Campaign Type Status not active '.$this->email_template_type->id;
 
                 return false;
             }
@@ -335,6 +335,8 @@ trait Send_Email {
 
             }
 
+
+            //print_r($result);
 
             $email_tracking->fast_update(
                 array(

@@ -107,6 +107,7 @@
             {assign "with_datatables" false}
             {assign "with_catalogue" false}
             {assign "with_top_up" false}
+            {assign "with_balance" false}
 
             {if $webpage->get('Webpage Scope')=='Category Products'}
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
@@ -206,6 +207,16 @@
 
                         {if $logged_in}
                             {assign "with_portfolio" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.mobile.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='balance'}
+
+                        {if $logged_in}
+                            {assign "with_balance" 1}
                             {assign "with_datatables" 1}
                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.mobile.tpl" data=$block key=$key  }
 

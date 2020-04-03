@@ -72,6 +72,7 @@
             {assign "with_client" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
+            {assign "with_balance" false}
             {assign "with_clients" false}
             {assign "with_clients_orders" false}
             {assign "with_client_order" false}
@@ -241,6 +242,16 @@
 
                             {if $logged_in}
                                 {assign "with_portfolio" 1}
+                                {assign "with_datatables" 1}
+                                {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                            {else}
+                                {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                            {/if}
+                        {elseif $block.type=='balance'}
+
+                            {if $logged_in}
+                                {assign "with_balance" 1}
                                 {assign "with_datatables" 1}
                                 {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
 

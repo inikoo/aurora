@@ -285,6 +285,34 @@ class Public_Webpage {
                         'prev'        => false,
 
                     );
+                }elseif ($this->data['Webpage Code'] == 'top_up.sys') {
+                    $website = get_object('Website', $this->get('Webpage Website Key'));
+
+                    $navigation_data = array(
+                        'show'        => true,
+                        'breadcrumbs' => [
+                            [
+                                'link'  => 'https://'.$website->get('Website URL'),
+                                'title' => _('Home'),
+                                'label' => '<i class="fa fa-home"></i>'
+                            ],
+                            [
+                                'link'  => 'https://'.$website->get('Website URL').'/balance.sys',
+                                'title' => _('Balance'),
+                                'label' => '<i class="fa fa-piggy-bank"></i> '._('Balance').' <span class="customer_balance"></span>'
+                            ],
+                            [
+                                'link'  => '',
+                                'title' => _('Top up'),
+                                'label' => _('Top up'),
+                            ]
+
+
+                        ],
+                        'next'        => false,
+                        'prev'        => false,
+
+                    );
                 } elseif ($this->data['Webpage Code'] == 'clients_orders.sys') {
                     $website = get_object('Website', $this->get('Webpage Website Key'));
 

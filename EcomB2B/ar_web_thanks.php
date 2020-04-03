@@ -126,6 +126,8 @@ function get_thanks_html($data, $customer, $db,$account) {
         echo json_encode($response);
         exit;
     }
+
+
     $smarty->assign('placed_order', $order);
     $smarty->assign('customer', $customer);
     $smarty->assign('website', $website);
@@ -223,4 +225,3 @@ function get_thanks_html($data, $customer, $db,$account) {
 
 }
 
-?>

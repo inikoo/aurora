@@ -143,6 +143,22 @@ switch ($tipo) {
         );
         get_catalogue_table_html($data, $customer,$website);
         break;
+    case 'balance':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+        $parameters = array(
+            'parent'     => 'Customer',
+            'parent_key' => $customer->id,
+
+        );
+        get_balance_table_html($data, $parameters, $customer, $db);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1099,6 +1115,103 @@ function get_catalogue_table_html($data, $customer,$website) {
 
 
 
+    );
+    echo json_encode($response);
+
+}
+
+
+function get_balance_table_html($data, $parameters, $customer, $db) {
+
+    if (!isset($data['device_prefix'])) {
+        $device_prefix = '';
+    } else {
+        $device_prefix = $data['device_prefix'];
+
+    }
+
+    include_once '../conf/export_fields.php';
+    include_once '../conf/elements_options.php';
+
+
+    $smarty = new Smarty();
+    $smarty->setTemplateDir('templates');
+    $smarty->setCompileDir('server_files/smarty/templates_c');
+    $smarty->setCacheDir('server_files/smarty/cache');
+    $smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->addPluginsDir('./smarty_plugins');
+
+
+    $website = get_object('Website', $_SESSION['website_key']);
+    $labels  = $website->get('Localised Labels');
+
+    $store = get_object('Store', $website->get('Website Store Key'));
+
+    if ($device_prefix == 'mobile') {
+        $tab = 'balance_mobile';
+    } else {
+        $tab = 'balance';
+    }
+    $ar_file = 'ar_web_balance.php';
+    $tipo    = 'balance';
+
+
+    $default = array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => [
+            100,
+            500,
+            100
+        ],
+        'f_field'     => '',
+        //    'f_period'      => 'ytd',
+        //'elements_type' => array_keys(get_elements_option('customer_portfolio'))[0],
+        //'elements'      => get_elements_option('customer_portfolio'),
+        //'export_fields' => get_export_fields('products_public')
+
+    );
+
+    $table_views = array(
+        'overview' => array('label' => _('Overview')),
+        //    'performance' => array('label' => _('Performance')),
+        //   'sales'       => array('label' => _('Sales')),
+        //   'sales_y'     => array('label' => _('Invoiced amount (Yrs)')),
+        //   'sales_q'     => array('label' => _('Invoiced amount (Qs)')),
+
+    );
+
+    $table_filters = array(
+        'id' => array(
+            'label' => _('ID'),
+            'title' => _('ID')
+        ),
+
+
+    );
+
+    $table_buttons = [];
+
+
+
+
+    $smarty->assign('table_buttons', $table_buttons);
+    $smarty->assign('parameters', $parameters);
+
+
+    include 'utils/get_table_html.php';
+
+    $state = [
+        'tab' => ''
+    ];
+
+    $response = array(
+        'state'     => 200,
+        'app_state' => $state,
+        'html'      => $html,
+        'balance'=>$customer->get('Account Balance')
     );
     echo json_encode($response);
 

@@ -102,9 +102,13 @@ function fork_send_mailshot($job) {
                 $recipient->editor=$data['editor'];
             }
 
+
+
+
             $published_email_template->send($recipient, $send_data, $smarty);
 
 
+            //print $published_email_template->msg;
 
 
 

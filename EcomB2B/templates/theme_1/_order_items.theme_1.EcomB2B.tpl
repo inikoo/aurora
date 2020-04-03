@@ -42,7 +42,7 @@
         </td>
     </tr>
     {/if}
-    
+
 
     <tr class="basket_order_ths {if !$order->id or $order->get('Order Number Items')==0  }hide{/if}">
         <th class="text-left">{if !empty($labels._items_code)}{$labels._items_code}{else}{t}Code{/t}{/if}</th>

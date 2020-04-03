@@ -233,7 +233,7 @@
             {/if}
         {elseif $block.type=='catalogue'}
             {assign "with_datatables" 1}
-        {elseif $block.type=='portfolio' or $block.type=='clients' or $block.type=='client_order_new' or  $block.type=='clients_orders'}
+        {elseif $block.type=='portfolio' or $block.type=='clients' or $block.type=='client_order_new' or  $block.type=='clients_orders' or  $block.type=='balance'}
             {if !$logged_in}
                 {assign "with_not_found" 1}
             {else}

@@ -809,6 +809,71 @@
             })
             {/if}
 
+            {if $with_balance==1}
+            getScript("/assets/datatables.min.js", function () {
+                const request_data ={ "tipo":'balance',"device_prefix" :'mobile'}
+                $.ajax({
+
+                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                        if (data.state == 200) {
+                            $('.customer_balance').html(data.balance)
+                            state = data.app_state;
+                            $('#table_container').html(data.html)
+
+
+                        }
+
+                    }
+                });
+
+
+
+            })
+            {/if}
+            {if $with_top_up==1}
+            getScript("/assets/desktop.logged_in.min.js", function () {
+                getScript("/assets/desktop.forms.min.js", function () {
+                    getScript("/assets/desktop.checkout.min.js", function () {
+
+                        let top_up_request="ar_web_top_up.php?tipo=get_top_up_html&device_prefix=mobile";
+
+
+                        $.getJSON(top_up_request, function (data) {
+
+
+                            $('#top_up').html(data.html)
+                            $('.customer_balance').html('('+data.customer_balance+')')
+
+                            $("form").on('submit',function(e) {
+                                e.preventDefault();
+                                e.returnValue = false;
+                            });
+
+
+                            function jQueryTabs3() {
+                                $(".tabs3").each(function () {
+                                    $(".tabs-panel3").not(":first").hide(), $("li", this).removeClass("active"), $("li:first-child", this).addClass("active"), $(".tabs-panel:first-child").show(), $("li", this).on( 'click',function (t){
+                                        var i=$("a",this).attr("href");
+                                        $(this).siblings().removeClass("active"),$(this).addClass("active"),$(i).siblings().hide(),$(i).fadeIn(400),t.preventDefault()}), $(window).width() < 100 && $(".tabs-panel3").show()
+                                })
+                            }
+                            jQueryTabs3();
+                            $(".tabs3 li a").each(function(){
+                                var t=$(this).attr("href"),i=$(this).html();$(t+" .tab-title3").prepend("<p><strong>"+i+"</strong></p>")})
+                            $(window).resize(function (){
+                                jQueryTabs3()
+
+                            })
+
+
+
+                        })
+                    })
+                })
+            })
+
+
+            {/if}
             {if $with_clients==1}
             getScript("/assets/mobile.forms.min.js", function () {
                 getScript("/assets/datatables.min.js", function () {

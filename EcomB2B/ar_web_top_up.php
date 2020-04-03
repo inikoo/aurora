@@ -13,6 +13,7 @@ include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
 require_once 'utils/aes.php';
 require_once 'utils/currency_functions.php';
+require_once 'utils/braintree_error_messages.php';
 
 
 $smarty = new Smarty();
@@ -55,7 +56,7 @@ switch ($tipo) {
     case 'get_top_up_html':
         $data = prepare_values(
             $_REQUEST, array(
-                         'device_prefix'    => array(
+                         'device_prefix' => array(
                              'type'     => 'string',
                              'optional' => true
                          )
@@ -71,7 +72,6 @@ switch ($tipo) {
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key'),
                          'amount'              => array('type' => 'string'),
                          'nonce'               => array('type' => 'string'),
 
@@ -80,38 +80,11 @@ switch ($tipo) {
         );
         $website = get_object('Website', $_SESSION['website_key']);
 
-        if ($website->get('Website Type') == 'EcomDS') {
 
-            $order         = get_object('Order', $data['order_key']);
-            $order->editor = $editor;
-
-            if ($order->get('Order Customer Key') != $customer->id) {
-                $response = array(
-                    'state' => 400,
-                    'resp'  => 'Error C_not_M'
-                );
-                echo json_encode($response);
-                exit;
-            }
-
-
-        }
-
-
-        if ($order->get('Order State') != 'InBasket') {
-            $response = array(
-                'state' => 400,
-                'resp'  => 'Error order not in basket'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        $store   = get_object('Store', $order->get('Order Store Key'));
+        $store   = get_object('Store', $website->get('Website Store Key'));
         $account = get_object('Account', 1);
 
-        place_order_pay_braintree_paypal($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
+        top_up_pay_braintree_paypal($store, $data, $customer, $website, $editor, $smarty, $db, $account);
 
 
         break;
@@ -120,23 +93,15 @@ switch ($tipo) {
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-                         'amount' => array('type' => 'key'),
-                         'data' => array('type' => 'json array'),
+                         'amount'              => array('type' => 'key'),
+                         'data'                => array('type' => 'json array'),
 
                      )
         );
         $website = get_object('Website', $_SESSION['website_key']);
-
-
-
-
-
-
-
-
         $store   = get_object('Store', $website->get('Website Store Key'));
         $account = get_object('Account', 1);
-        top_up_pay_braintree($store, $data, $customer, $website, $editor, $smarty, $db, $account);
+        top_up_pay_braintree($store, $data, $customer, $website, $editor, $db, $account);
 
 
         break;
@@ -145,8 +110,8 @@ switch ($tipo) {
         $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
-                         'amount' => array('type' => 'key'),
-                         'data' => array('type' => 'json array'),
+                         'amount'              => array('type' => 'key'),
+                         'data'                => array('type' => 'json array'),
 
                      )
         );
@@ -166,16 +131,15 @@ switch ($tipo) {
  * @param $customer \Public_Customer
  * @param $website
  * @param $editor
- * @param $smarty
  * @param $db
  * @param $account
  */
-function top_up_pay_braintree($store, $_data, $customer, $website, $editor, $smarty, $db, $account) {
+function top_up_pay_braintree($store, $_data, $customer, $website, $editor, $db, $account) {
 
 
-    $top_up=$customer->create_top_up($_data['amount']);
+    $top_up = $customer->create_top_up($_data['amount']);
 
-    if($top_up==false){
+    if ($top_up == false) {
         $response = array(
             'state' => 400,
             'resp'  => $customer->msg
@@ -198,12 +162,7 @@ function top_up_pay_braintree($store, $_data, $customer, $website, $editor, $sma
     );
 
 
-
-
-
-
-    $braintree_data           = get_top_up_transaction_braintree_data($top_up,$customer, $gateway, $_data['data']['save_card']);
-
+    $braintree_data = get_top_up_transaction_braintree_data($top_up, $customer, $gateway, $_data['data']['save_card']);
 
 
     $braintree_data['amount'] = $top_up->get('Top Up Amount');
@@ -216,74 +175,23 @@ function top_up_pay_braintree($store, $_data, $customer, $website, $editor, $sma
     $response = process_braintree_top_up($braintree_data, $top_up, $gateway, $customer, $store, $website, $payment_account, $db, $account);
 
 
-
     echo json_encode($response);
 
 }
 
-function get_error_message($code, $original_message) {
+function top_up_pay_braintree_paypal($store, $_data, $customer, $website, $editor, $smarty, $db, $account) {
 
-    switch ($code) {
-        case ('81528'):
-            $msg = _('Sorry, but the amount is too large').'.';
-            break;
-        case ('81509'):
-        case ('91517'):
-        case ('91734'):
-            $msg = _("Sorry, we don't accept this credit card type").'.';
-            break;
-        case ('91577'):
-            $msg = _("Sorry, we don't support this payment instrument").'.';
-            break;
-        case ('91518'):
-            $msg = _("There was a problem processing your credit card, please provide your payment information again").'.';
-            break;
-        case ('92202'):
-            $msg = _("Phone number is invalid").'.';
-            break;
 
-        case ('81706'):
-            $msg = _("CVV is required").'.';
-            break;
-        case ('81707'):
-            $msg = _("CVV must be 3 or 4 digits").'.';
-            break;
-        case ('81709'):
-            $msg = _("Expiration date is required").'.';
-            break;
-        case ('81710'):
-        case ('81711'):
-        case ('81712'):
-        case ('81713'):
-            $msg = _("Expiration date is invalid").'.';
-            break;
-        case ('81706'):
-            $msg = _("CVV is required").'.';
-            break;
+    $top_up = $customer->create_top_up($_data['amount']);
 
-        case ('81714'):
-        case ('81715'):
-        case ('81716'):
-        case ('81737'):
-        case ('81736'):
-            $msg = _("There was a problem processing your credit card, please double check your payment information and try again").'.';
-            break;
-
-        default:
-            $msg = $original_message;
+    if ($top_up == false) {
+        $response = array(
+            'state' => 400,
+            'resp'  => $customer->msg
+        );
+        echo json_encode($response);
+        exit;
     }
-
-    return $msg;
-}
-
-function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
-
-
-    $order->fast_update(
-        array(
-            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
-        )
-    );
 
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
@@ -299,14 +207,15 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
     );
 
 
-    $braintree_data = get_sale_transaction_braintree_data($order, $gateway);
+    $braintree_data = get_top_up_transaction_braintree_data($top_up, $customer, $gateway);
 
     $braintree_data['amount'] = floatval($_data['amount']);
 
     $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
     $braintree_data['paymentMethodNonce'] = $_data['nonce'];
 
-    $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
+    $response = process_braintree_top_up($braintree_data, $top_up, $gateway, $customer, $store, $website, $payment_account, $db, $account);
+
     echo json_encode($response);
 
 }
@@ -329,7 +238,7 @@ function get_top_up_html($data, $website, $customer, $smarty) {
 
     $webpage = $website->get_webpage('top_up.sys');
 
-    $content = $webpage->get('Content Data');
+    $content     = $webpage->get('Content Data');
     $block       = array();
     $block_found = false;
     $block_key   = false;
@@ -353,12 +262,6 @@ function get_top_up_html($data, $website, $customer, $smarty) {
     }
 
 
-
-
-
-    
-
-
     $smarty->assign('customer', $customer);
     $smarty->assign('website', $website);
     $smarty->assign('store', $store);
@@ -370,15 +273,10 @@ function get_top_up_html($data, $website, $customer, $smarty) {
     $smarty->assign('checkout_labels', $block['labels']);
 
 
-
-
-
-
-
-
     $response = array(
-        'state'      => 200,
-        'html'       => $smarty->fetch('theme_1/blk.top_up.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        'state' => 200,
+        'customer_balance'=>$customer->get('Account Balance'),
+        'html'  => $smarty->fetch('theme_1/blk.top_up.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
     );
 
 
@@ -389,9 +287,9 @@ function get_top_up_html($data, $website, $customer, $smarty) {
 
 function top_up_pay_braintree_using_saved_card($store, $_data, $customer, $website, $editor, $smarty, $db, $account) {
 
-    $top_up=$customer->create_top_up($_data['amount']);
+    $top_up = $customer->create_top_up($_data['amount']);
 
-    if($top_up==false){
+    if ($top_up == false) {
         $response = array(
             'state' => 400,
             'resp'  => $customer->msg
@@ -449,12 +347,10 @@ function top_up_pay_braintree_using_saved_card($store, $_data, $customer, $websi
     if ($verification_result->success) {
 
 
+        $braintree_data = get_top_up_transaction_braintree_data($top_up, $customer, $gateway);
 
 
-        $braintree_data           = get_top_up_transaction_braintree_data($top_up,$customer, $gateway);
-
-
-        $braintree_data['amount']             =  $top_up->get('Top Up Amount');
+        $braintree_data['amount']             = $top_up->get('Top Up Amount');
         $braintree_data['paymentMethodToken'] = $token;
         $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
 
@@ -477,19 +373,18 @@ function top_up_pay_braintree_using_saved_card($store, $_data, $customer, $websi
     }
 
 
-
 }
 
 
 /**
- * @param      $top_up \Public_Top_Up
+ * @param      $top_up   \Public_Top_Up
  * @param      $customer \Public_Customer
  * @param      $gateway
  * @param bool $save_payment
  *
  * @return array
  */
-function get_top_up_transaction_braintree_data($top_up,$customer, $gateway, $save_payment = false) {
+function get_top_up_transaction_braintree_data($top_up, $customer, $gateway, $save_payment = false) {
 
 
     include_once 'external_libs/contact_name_parser.php';
@@ -574,6 +469,19 @@ function get_top_up_transaction_braintree_data($top_up,$customer, $gateway, $sav
     return $braintree_data;
 }
 
+/**
+ * @param $braintree_data
+ * @param $top_up
+ * @param $gateway
+ * @param $customer
+ * @param $store
+ * @param $website
+ * @param $payment_account
+ * @param $db \PDO
+ * @param $account
+ *
+ * @return array
+ */
 function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer, $store, $website, $payment_account, $db, $account) {
 
 
@@ -601,8 +509,6 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
                     $payment_method = 'Other';
                     break;
             }
-
-
 
 
             $payment_metadata = '';
@@ -639,21 +545,18 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
             );
             $top_up->fast_update(
                 [
-                    'Top Up Payment Key'=>$payment->id,
-                    'Top Up Status'=>'Paid',
-                    'Top Up Exchange'=>$exchange
+                    'Top Up Payment Key' => $payment->id,
+                    'Top Up Status'      => 'Paid',
+                    'Top Up Exchange'    => $exchange,
+                    'Top Up Amount'      => $result->transaction->amount
                 ]
             );
-
-
 
 
             include_once "utils/currency_functions.php";
 
 
-            $date    = gmdate('Y-m-d H:i:s');
-
-
+            $date = gmdate('Y-m-d H:i:s');
 
 
             $sql = "INSERT INTO `Credit Transaction Fact` 
@@ -661,7 +564,6 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
                      `Credit Transaction Payment Key`,`Credit Transaction Top Up Key`,
                      `Credit Transaction Type`) 
                     VALUES (?,?,?,?,?,?,?,?) ";
-
 
 
             $db->prepare($sql)->execute(
@@ -682,11 +584,9 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
             $credit_key = $db->lastInsertId();
 
 
-
-
             $history_data = array(
                 'History Abstract' => sprintf(
-                    _('Customer top up %s'),money($top_up->get('Top Up Amount'), $top_up->get('Store Currency Code'))
+                    _('Customer top up %s'), money($top_up->get('Top Up Amount'), $top_up->get('Store Currency Code'))
                 ),
                 'History Details'  => '',
                 'Action'           => 'edited'
@@ -696,15 +596,15 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
                 $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
             );
 
-            $sql ="INSERT INTO `Credit Transaction History Bridge` 
+            $sql = "INSERT INTO `Credit Transaction History Bridge` 
                     (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
                     VALUES (?,?) ";
             $db->prepare($sql)->execute(
                 array(
-                    $credit_key, $history_key
+                    $credit_key,
+                    $history_key
                 )
             );
-
 
 
             $customer->update_account_balance();
@@ -712,8 +612,8 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
 
 
             $response = array(
-                'state'          => 200,
-                'top_up_key'      => $top_up->id
+                'state'      => 200,
+                'top_up_key' => $top_up->id
             );
 
             return $response;
@@ -790,7 +690,7 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
                 }
 
                 $payment_data = array(
-                    'Payment Store Key'                   => $order->get('Order Store Key'),
+                    'Payment Store Key'                   => $top_up->get('Top Up Store Key'),
                     'Payment Website Key'                 => $website->id,
                     'Payment Customer Key'                => $customer->id,
                     'Payment Transaction Amount'          => $result->transaction->amount,
@@ -815,8 +715,8 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
                 $payment = $payment_account->create_payment($payment_data);
                 $top_up->fast_update(
                     [
-                        'Top Up Payment Key'=>$payment->id,
-                        'Top Up Status'=>'Error',
+                        'Top Up Payment Key' => $payment->id,
+                        'Top Up Status'      => 'Error',
 
                     ]
                 );
@@ -841,10 +741,9 @@ function process_braintree_top_up($braintree_data, $top_up, $gateway, $customer,
     } catch (Exception $e) {
 
 
-
         $top_up->fast_update(
             [
-                'Top Up Status'=>'Error',
+                'Top Up Status' => 'Error',
 
             ]
         );

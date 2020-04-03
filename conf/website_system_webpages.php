@@ -1220,6 +1220,42 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
+        'balance.sys'           => array(
+            'Webpage Scope'            => 'Balance',
+            'Webpage Scope Metadata'   => '',
+            'Webpage Type'             => 'Ordering',
+            'Webpage Code'             => 'balance.sys',
+            'Webpage Name'             => _("Balance"),
+            'Webpage Meta Description' => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'locked' => true,
+                            'type'   => 'balance',
+                            'label'  => _('Top up'),
+                            'icon'   => 'fa-list-ol',
+                            'show'   => 1,
+
+                            'labels' => array(
+
+
+                                '_main_title' => _('Balance'),
+
+
+
+                            )
+
+                        )
+
+
+                    )
+
+
+                )
+            )
+
+        ),
     );
     $website_system_webpages = array(
 

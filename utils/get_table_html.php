@@ -57,6 +57,8 @@ foreach ($default as $key => $value) {
         if (isset($table_state[$key])) {
             $parameters[$key] = $table_state[$key];
         } else {
+
+
             $parameters[$key] = $value;
         }
     }

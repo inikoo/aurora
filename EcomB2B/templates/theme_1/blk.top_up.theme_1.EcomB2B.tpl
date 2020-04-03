@@ -56,7 +56,9 @@
         <h1>{if empty($data.labels._main_title)}{t}Top up{/t}{else}{$data.labels._main_title}{/if}</h1>
         <div class="top_up_options" >
             {foreach from=$data.options item=option name=options}
+                {if !empty($option.value)}
                 <div data-formatted_value="{$option.formatted_value}" data-value="{$option.value}" class="top_up_option  {if $smarty.foreach.options.first}selected{/if}" >{$option.formatted_value}</div>
+                {/if}
             {/foreach}
 
         </div>
@@ -122,7 +124,7 @@
 
 
                                 <form id="BTree_saved_credit_cards_form" action="" class="sky-form {if $braintree_data.number_saved_credit_cards==0}hide{/if}" style="max-width: 500px;">
-                                    <header>{$checkout_labels._form_title_credit_card} </header>
+                                    <header>{$checkout_labels._form_title_credit_card} (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
 
 
                                     <fieldset  class="credit_cards_list " >
@@ -437,34 +439,15 @@
 
                                 <form action="" class="sky-form" style="max-width: 500px;">
                                     <header >{if isset($checkout_labels._form_title_paypal) }{$checkout_labels._form_title_paypal}{else}{t}Top up{/t}{/if}  (<span class="formatted_value">{$data.options[0].formatted_value}</span>)</header>
-
-
                                     <fieldset style="min-height: 280px">
-
                                         <div  id="loading_paypal-button"><i class="fa fa-spinner fa-spin" style="margin-right: 10px"></i>  {t}Loading paypal{/t}</div>
                                         <div  id="paying_paypal" class="hide"><i class="fab fa-paypal" style="margin-right: 10px"></i>  {t}Processing payment{/t}</div>
                                         <div  id="processing_paypal" class="hide"><i class="fa fa-spinner fa-spin" style="margin-right: 10px"></i>  {t}Processing payment, please wait{/t}</div>
-
-
-
-
                                         <div class="hide" id="paypal-button"></div>
-
-
                                     </fieldset>
-
                                     <footer>
-
                                     </footer>
                                 </form>
-
-
-
-
-
-
-
-
                             {/if}
 
                         </div>
@@ -615,7 +598,7 @@
 
 
 
-
+                                                            window.location.replace("balance.sys");
 
 
 
@@ -742,7 +725,7 @@
 
 
                                                         if (data.state == '200') {
-
+                                                            window.location.replace("balance.sys");
 
                                                         } else if (data.state == '400') {
                                                             var button=$('#place_order_braintree');
@@ -786,12 +769,12 @@
 
 
                                     paypal.Button.render({
-                                        env: 'production', // or 'production'
+                                        env: 'production',
                                         commit: true,
                                         payment: function () {
                                             return paypalCheckoutInstance.createPayment({
                                                 flow: 'checkout', // Required
-                                                amount: $('.top_up').data('amount_to_top_up'),
+                                                amount: $('.top_up').data('top_up_value'),
                                                 currency: '{$customer->metadata('cur')}'
                                             });
                                         },
@@ -799,19 +782,12 @@
                                         onAuthorize: function (data, actions) {
                                             return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
 
-
-
-
                                                 $('#processing_paypal').removeClass('hide')
                                                 $('#paying_paypal').addClass('hide')
-
-
-
                                                 var ajaxData = new FormData();
                                                 ajaxData.append("tipo", 'place_order_pay_braintree_paypal')
-
                                                 ajaxData.append("payment_account_key",BTreePaypal_account_key )
-                                                ajaxData.append("amount",$('.top_up').data('amount_to_top_up') )
+                                                ajaxData.append("amount",$('.top_up').data('top_up_value') )
                                                 ajaxData.append("nonce",payload.nonce )
 
                                                 $.ajax({
@@ -819,19 +795,8 @@
                                                         complete: function () {
                                                         },
                                                         success: function (data) {
-
-
-
-
                                                             if (data.state == '200') {
-
-                                                                var d = new Date();
-                                                                var timestamp=d.getTime()
-                                                                d.setTime(timestamp + 300000);
-                                                                var expires = "expires="+ d.toUTCString();
-                                                                document.cookie = "au_pu_"+ data.order_key+"=" + data.order_key + ";" + expires + ";path=/";
-                                                                window.location.replace("thanks.sys?order_key="+data.order_key+'&t='+timestamp);
-
+                                                                window.location.replace("balance.sys");
                                                             } else if (data.state == '400') {
 
                                                                 $('#processing_paypal').addClass('hide')
@@ -905,7 +870,7 @@
                     {/if}
 
 
-                    </div><!-- end tab 3 -->
+                    </div>
 
 
                 </div>

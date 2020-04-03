@@ -662,7 +662,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
         default:
 
             print 'warning: object '.$data['object'].' still not configured';
-            exit;
+
             return false;
 
             break;

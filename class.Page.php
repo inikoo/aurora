@@ -3611,8 +3611,11 @@ class Page extends DB_Table {
 
                     }else{
                         foreach ($content_data['blocks'][$block_key]['options'] as $i=>$option) {
+                            if(isset($option['value'])){
+                                $content_data['blocks'][$block_key]['options'][$i]['formatted_value'] = money($option['value'], $store->get('Store Currency Code'),false,'NO_FRACTION_DIGITS');
 
-                            $content_data['blocks'][$block_key]['options'][i]['formatted_value'] = money($option['value'], $store->get('Store Currency Code'),false,'NO_FRACTION_DIGITS');
+                            }
+
                         }
                     }
 

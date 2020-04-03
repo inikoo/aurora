@@ -8,6 +8,7 @@
  Version 3
 -->
 *}
+{assign "braintree_data" ""}
             <div class="content" style="margin-bottom: 10px">
 
                 <h4>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h4>
@@ -89,7 +90,7 @@
             </div>
 
             <div class="clear"></div>
-                {assign "braintree_data" ""}
+
                 {foreach from=$payment_accounts item=payment_account key=key}
                 {assign "block" $payment_account.object->get("Block")  }
                 {if $block=='BTree' or  $block=='BTreePaypal'}
@@ -165,7 +166,7 @@
 
 
 
-                                            <section class="col   " ">
+                                            <section class="col   " >
                                             <div style="width: 25px;float: left">
                                             <i onclick="delete_this_credit_card(this)" title="{t}Delete card{/t}" style="margin-right: 10px;position: relative;top:-2px" class="like_button delete_this_credit_card fa fa-trash-alt "></i>
                                             </div>

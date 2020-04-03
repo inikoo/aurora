@@ -1,5 +1,13 @@
 <?php
+/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created:  02 April 2020  16:25::20  +0800, Kuala Lumpur, Malaysia
+ Copyright (c) 2020, Inikoo
 
+ Version 3
+
+*/
 
 $group_by = '';
 $wheref   = '';
@@ -8,8 +16,14 @@ $currency = '';
 
 
 $where = 'where true" ';
-$table = '`Credit Transaction Fact` CTF left join `Payment Dimension` P on (P.`Payment Key`=CTF.`Credit Transaction Payment Key`)  left join  `Credit Transaction History Bridge`  on (`Credit Transaction History Credit Transaction Key`=`Credit Transaction Key`)  left join `History Dimension` on (`History Key`=`Credit Transaction History History Key`) 
+$table = '`Credit Transaction Fact` CTF 
+left join `Payment Dimension` P on (P.`Payment Key`=CTF.`Credit Transaction Payment Key`)
+left join `Payment Account Dimension` PAD on (P.`Payment Account Key`=PAD.`Payment Account Key`)  
+  
+left join  `Credit Transaction History Bridge`  on (`Credit Transaction History Credit Transaction Key`=`Credit Transaction Key`)  
+left join `History Dimension` on (`History Key`=`Credit Transaction History History Key`) 
 left join `Order Dimension` on (`Order Key`=`Payment Order Key`) left join `Invoice Dimension` on (`Invoice Key`=`Payment Invoice Key`)
+left join `Top Up Dimension` on (`Top Up Key`=`Credit Transaction Top Up Key`) 
 
 ';
 
@@ -170,8 +184,12 @@ if ($order == 'date') {
 }
 
 
+
+
 $fields     =
-    '`History Abstract`, `Order Key`,`Order Public ID`,`Order Store Key`,  `Invoice Key`,`Invoice Public ID` ,`Invoice Type`,`Payment Related Payment Transaction ID`,`Payment Related Payment Key`, CTF.`Credit Transaction Key`,`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`,`Credit Transaction Running Amount`';
+    ' 
+    `Payment Transaction ID`,`Payment Account Block`,
+    `Top Up Key`, `History Abstract`, `Order Key`,`Order Public ID`,`Order Store Key`,  `Invoice Key`,`Invoice Public ID` ,`Invoice Type`,`Payment Related Payment Transaction ID`,`Payment Related Payment Key`, CTF.`Credit Transaction Key`,`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`,`Credit Transaction Running Amount`';
 $sql_totals = "select count(Distinct `Credit Transaction Key`) as num from $table $where";
 
 
