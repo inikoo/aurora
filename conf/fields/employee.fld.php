@@ -36,6 +36,7 @@ $account  = new Account();
 
 $employee->get_user();
 
+
 $options_Staff_Payment_Terms = array(
     'Monthly' => _('Monthly (fixed)'),
     'PerHour' => _('Per hour (prorata)')
@@ -78,10 +79,12 @@ foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_positio
 }
 
 $options_Staff_Supervisor = array();
-$sql                      = sprintf(
-    'SELECT `Staff Name`,`Staff Key`,`Staff Alias` FROM `Staff Dimension` WHERE `Staff Currently Working`="Yes" '
-);
-foreach ($db->query($sql) as $row) {
+
+$sql = "SELECT `Staff Name`,`Staff Key`,`Staff Alias` FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' ";
+
+$stmt = $db->prepare($sql);
+$stmt->execute();
+while ($row = $stmt->fetch()) {
     $options_Staff_Supervisor[$row['Staff Key']] = array(
         'label' => $row['Staff Alias'],
 
@@ -89,6 +92,7 @@ foreach ($db->query($sql) as $row) {
         'selected' => false
     );
 }
+
 
 
 $_options_User_Groups = array();
@@ -481,13 +485,11 @@ if (!$new) {
     );
 
 
-    if ($employee->get('Staff User Key')) {
+    if (!empty($employee->system_user->id)) {
 
 
         $object_fields[] = array(
-            'label'      => _('System user').' <i  onClick="change_view(\'users/'.$employee->get(
-                    'Staff User Key'
-                ).'\')" class="fa fa-terminal link"></i>',
+            'label'      => _('System user').' <i  onClick="change_view(\'users/'.$employee->system_user->id.'\')" class="fa fa-terminal link"></i>',
             'show_title' => true,
             'class'      => 'edit_fields',
             'fields'     => array(
@@ -521,7 +523,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_Password',
-                    'edit'              => ($edit_users ? 'password' : ''),
+                    'edit'            => ($edit_users ? 'password' : ''),
                     'value'           => '',
                     'formatted_value' => '******',
                     'label'           => ucfirst(
@@ -533,7 +535,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_PIN',
-                    'edit'              => ($edit_users ? 'pin' : ''),
+                    'edit'            => ($edit_users ? 'pin' : ''),
                     'value'           => '',
                     'formatted_value' => '****',
                     'label'           => ucfirst(
@@ -544,7 +546,7 @@ if (!$new) {
 
 
                 array(
-                    'render'              => ($edit_users ? true : false),
+                    'render'          => ($edit_users ? true : false),
                     'id'              => 'Staff_User_Permissions',
                     'edit'            => 'user_permissions',
                     'stores'          => $stores,
@@ -560,7 +562,7 @@ if (!$new) {
         );
 
     } else {
-        if($edit_users) {
+        if ($edit_users) {
             $object_fields[] = array(
                 'label'      => _('System user'),
                 'show_title' => true,
@@ -639,7 +641,8 @@ if (!$new) {
     $object_fields[] = $operations;
 
 
-} else {
+}
+else {
 
 
     $object_fields[] = array(
@@ -678,9 +681,7 @@ if (!$new) {
                 'options'         => $options_yn,
                 'value'           => 'Yes',
                 'formatted_value' => _('Yes'),
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff User Active')
-                ),
+                'label'           => ucfirst($employee->get_field_label('Staff User Active')),
                 'type'            => 'user_value',
                 'hidden'          => true
             ),

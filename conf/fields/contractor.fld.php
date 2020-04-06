@@ -33,7 +33,6 @@ $employee->get_user();
 $account  = new Account();
 
 $employee->get_user();
-
 $options_Staff_Payment_Terms = array(
     'Monthly'  => _('Monthly (fixed)'),
     'PerHour' => _('Per hour (prorata)')
@@ -487,10 +486,12 @@ if (!$new) {
     if ( isset($employee->system_user) and is_object($employee->system_user) and $employee->system_user->id) {
 
 
+
+
+
+
         $object_fields[] = array(
-            'label'      => _('System user').' <i  onClick="change_view(\'users/'.$employee->get(
-                    'Staff User Key'
-                ).'\')" class="fa fa-terminal link"></i>',
+            'label'      => _('System user').' <i  onClick="change_view(\'users/'.$employee->system_user->id.'\')" class="fa fa-terminal link"></i>',
             'show_title' => true,
             'class'      => 'edit_fields',
             'fields'     => array(

@@ -13,6 +13,9 @@
 */
 
 
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
+
 require_once 'class.User.php';
 require_once 'trait.AttachmentSubject.php';
 require_once 'trait.ImageSubject.php';
@@ -83,7 +86,7 @@ class Staff extends DB_Table {
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['Staff Key'];
+            $this->id         = $this->data['Staff Key'];
             $this->properties = json_decode($this->data['Staff Properties'], true);
 
         }
@@ -124,12 +127,9 @@ class Staff extends DB_Table {
 
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
         }
 
 
@@ -152,10 +152,6 @@ class Staff extends DB_Table {
                 $this->found_key = $row['Staff Key'];
                 $this->get_data('id', $this->found_key);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
 
 
@@ -226,10 +222,10 @@ class Staff extends DB_Table {
             $this->get_data('id', $this->id);
 
 
-            $from = date('Y-m-d');
-            $to   = date(
+            $from = gmdate('Y-m-d');
+            $to   = gmdate(
                 'Y-m-d', strtotime(
-                           date('Y', strtotime('now + 1 year')).'-'.$account->get(
+                           gmdate('Y', strtotime('now + 1 year')).'-'.$account->get(
                                'Account HR Start Year'
                            )
                        )
@@ -237,9 +233,7 @@ class Staff extends DB_Table {
 
             $dates = date_range($from, $to);
             foreach ($dates as $date) {
-                $timesheet = $this->create_timesheet(
-                    strtotime($date.' 00:00:00'), ''
-                );
+                $this->create_timesheet(strtotime($date.' 00:00:00'), '');
             }
 
 
@@ -278,10 +272,14 @@ class Staff extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
-            $sql = sprintf(
-                'INSERT INTO `HR History Bridge`  (`HR Key`,`History Key`,`Type`) VALUES (1,%d,"Changes")  ', $history_key
+            $sql = "INSERT INTO `HR History Bridge`  (`HR Key`,`History Key`,`Type`) VALUES (1,?,'Changes')";
+
+            $this->db->prepare($sql)->execute(
+                array(
+                    $history_key
+                )
             );
-            $this->db->exec($sql);
+
 
             $this->new = true;
 
@@ -300,7 +298,6 @@ class Staff extends DB_Table {
 
 
                 $staff_user = $this->create_user($user_data);
-                //print_r($this->user);
                 if ($this->create_user_error) {
                     $this->extra_msg = '<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
 
@@ -327,11 +324,10 @@ class Staff extends DB_Table {
         include_once 'class.Timesheet.php';
         include_once 'class.Timesheet_Record.php';
         if ($date == '') {
-            $date = date();
+            $date = time();
         }
 
-        //$start = microtime(true);
-        //exit;
+
         $working_hours = json_decode($this->data['Staff Working Hours'], true);
 
 
@@ -351,13 +347,13 @@ class Staff extends DB_Table {
 
             return $timesheet;
         }
-        $day_of_the_week = date('N', $date);
+        $day_of_the_week = gmdate('N', $date);
 
         if (isset($working_hours['data'][$day_of_the_week])) {
 
             $day_data       = $working_hours['data'][$day_of_the_week];
             $timesheet_data = array(
-                'Timesheet Date'      => date("Y-m-d", $date),
+                'Timesheet Date'      => gmdate("Y-m-d", $date),
                 'Timesheet Staff Key' => $this->id,
                 'editor'              => $this->editor
             );
@@ -391,37 +387,29 @@ class Staff extends DB_Table {
                 'Timesheet Record Timesheet Key' => $timesheet->id,
                 'Timesheet Record Type'          => 'WorkingHoursMark',
                 'Timesheet Record Staff Key'     => $this->id,
-                'Timesheet Record Date'          => date('Y-m-d', $date).' '.$day_data['s'].':00',
+                'Timesheet Record Date'          => gmdate('Y-m-d', $date).' '.$day_data['s'].':00',
                 'Timesheet Record Source'        => 'System',
                 'editor'                         => $this->editor
 
             );
 
-            $timesheet_record                     = new Timesheet_Record(
-                'new', $record_data
-            );
+            new Timesheet_Record('new', $record_data);
             $record_data['Timesheet Record Type'] = 'WorkingHoursMark';
 
-            $record_data['Timesheet Record Date'] = date('Y-m-d', $date).' '.$day_data['e'].':00';
-            $timesheet_record                     = new Timesheet_Record(
-                'new', $record_data
-            );
+            $record_data['Timesheet Record Date'] = gmdate('Y-m-d', $date).' '.$day_data['e'].':00';
+            new Timesheet_Record('new', $record_data);
 
             foreach ($day_data['b'] as $break) {
                 $record_data['Timesheet Record Type'] = 'BreakMark';
-                $record_data['Timesheet Record Date'] = date('Y-m-d', $date).' '.$break['s'].':00';
-                $timesheet_record                     = new Timesheet_Record(
-                    'new', $record_data
-                );
-                $record_data['Timesheet Record Date'] = date('Y-m-d', $date).' '.$break['e'].':00';
-                $timesheet_record                     = new Timesheet_Record(
-                    'new', $record_data
-                );
+                $record_data['Timesheet Record Date'] = gmdate('Y-m-d', $date).' '.$break['s'].':00';
+                new Timesheet_Record('new', $record_data);
+                $record_data['Timesheet Record Date'] = gmdate('Y-m-d', $date).' '.$break['e'].':00';
+                new Timesheet_Record('new', $record_data);
             }
 
         } else {
             $timesheet_data = array(
-                'Timesheet Date'      => date("Y-m-d", $date),
+                'Timesheet Date'      => gmdate("Y-m-d", $date),
                 'Timesheet Staff Key' => $this->id,
                 'editor'              => $this->editor
             );
@@ -434,8 +422,6 @@ class Staff extends DB_Table {
         $timesheet->update_type();
         $timesheet->process_mark_records_action_type();
 
-        //$time_elapsed_secs = 1000*(microtime(true) - $start);
-        //print "\n<br>$time_elapsed_secs\n";
 
         return $timesheet;
     }
@@ -452,7 +438,7 @@ class Staff extends DB_Table {
                 }
 
             } else {
-                return;
+                return false;
             }
         }
 
@@ -482,7 +468,7 @@ class Staff extends DB_Table {
                     $salary_amount .= money(
                             $salary_data['data']['amount_sunday'], $account->get('Account Currency')
                         ).' '._('Sun').') ';
-                    $compress      = false;
+
                 }
                 if ($salary_data['data']['type'] == 'prorata_hour') {
 
@@ -502,7 +488,7 @@ class Staff extends DB_Table {
 
                         $salary = sprintf(
                             _(
-                                '%s/hour (pro rata) paid every %s day of the month (%s per year)'
+                                '%s/hour (prorata) paid every %s day of the month (%s per year)'
                             ), $salary_amount, get_ordinal_suffix($salary_data['data']['payday']), money(
                                 $average_year_amount, $account->get('Account Currency')
                             )
@@ -534,7 +520,7 @@ class Staff extends DB_Table {
 
                         $salary = sprintf(
                             _(
-                                '%s/hour (pro rata) paid every %s (&#8776;%s per year)'
+                                '%s/hour (prorata) paid every %s (&#8776;%s per year)'
                             ), $salary_amount, $day_names[$salary_data['data']['payday']], money(
                                 $average_year_amount, $account->get('Account Currency')
                             )
@@ -637,10 +623,10 @@ class Staff extends DB_Table {
 
                 ) {
 
-                    $start = date(
+                    $start = gmdate(
                         'H:i', strtotime('2000-01-01 '.$working_hours['data'][1]['s'])
                     );
-                    $end   = date(
+                    $end   = gmdate(
                         'H:i', strtotime('2000-01-01 '.$working_hours['data'][1]['e'])
                     );
 
@@ -651,12 +637,12 @@ class Staff extends DB_Table {
 
                     if (isset($working_hours['data'][6]) and isset($working_hours['data'][7]) and $working_hours['data'][6] = $working_hours['data'][7]) {
 
-                        $start = date(
+                        $start = gmdate(
                             'H:i', strtotime(
                                      '2000-01-01 '.$working_hours['data'][6]['s']
                                  )
                         );
-                        $end   = date(
+                        $end   = gmdate(
                             'H:i', strtotime(
                                      '2000-01-01 '.$working_hours['data'][6]['e']
                                  )
@@ -676,12 +662,12 @@ class Staff extends DB_Table {
                             $working_hours['data'] as $day_key => $day_working_hours
                         ) {
                             if ($day_key >= 6) {
-                                $start  = date(
+                                $start  = gmdate(
                                     'H:i', strtotime(
                                              '2000-01-01 '.$day_working_hours['s']
                                          )
                                 );
-                                $end    = date(
+                                $end    = gmdate(
                                     'H:i', strtotime(
                                              '2000-01-01 '.$day_working_hours['e']
                                          )
@@ -701,10 +687,10 @@ class Staff extends DB_Table {
                     foreach (
                         $working_hours['data'] as $day_key => $day_working_hours
                     ) {
-                        $start  = date(
+                        $start  = gmdate(
                             'H:i', strtotime('2000-01-01 '.$day_working_hours['s'])
                         );
-                        $end    = date(
+                        $end    = gmdate(
                             'H:i', strtotime('2000-01-01 '.$day_working_hours['e'])
                         );
                         $breaks = $this->get_breaks($day_working_hours['b']);
@@ -734,7 +720,7 @@ class Staff extends DB_Table {
             case('Staff PIN'):
                 return '';
 
-
+            case('User PIN'):
             case('PIN'):
                 return '****';
 
@@ -753,7 +739,9 @@ class Staff extends DB_Table {
 
 
             case 'Staff User Groups':
+            case 'Staff User Active':
             case 'Staff User Stores':
+            case 'Staff User Handle':
             case 'Staff User Websites':
             case 'Staff User Warehouses':
             case 'Staff User Productions':
@@ -769,6 +757,8 @@ class Staff extends DB_Table {
                 }
 
             case 'User Groups':
+            case 'User Active':
+            case 'User Handle':
             case 'User Stores':
             case 'User Websites':
             case 'User Warehouses':
@@ -784,28 +774,10 @@ class Staff extends DB_Table {
                 }
 
 
-            case('User Active'):
-                if (array_key_exists('Staff User Active', $this->data)) {
-                    switch ($this->data['Staff User Active']) {
-                        case('Yes'):
-                            $formatted_value = _('Yes');
-                            break;
-                        case('No'):
-                            $formatted_value = _('No');
-                            break;
-                        default:
-                            $formatted_value = $this->data['Staff User Active'];
-                    }
-
-                    return $formatted_value;
-
-                } else {
-                    return _('No');
-                }
 
 
-            case('Staff PIN'):
-                return '';
+
+
             case('Staff Position'):
 
                 $positions = '';
@@ -952,6 +924,8 @@ class Staff extends DB_Table {
 
         }
 
+        return false;
+
 
     }
 
@@ -983,32 +957,44 @@ class Staff extends DB_Table {
     function get_user() {
 
 
-        $sql = sprintf(
-            'SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Parent Key`=%d ', prepare_mysql(($this->get('Staff Type') == 'Contractor' ? 'Contractor' : 'Staff')), $this->id
+        $sql = "SELECT `User Key` FROM `User Dimension` WHERE `User Type`=? AND `User Parent Key`=? ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                ($this->get('Staff Type') == 'Contractor' ? 'Contractor' : 'Staff'),
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $this->system_user = get_object('User', $row['User Key']);
+            $this->system_user->read_stores();
+            $this->system_user->get_groups();
 
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->system_user = get_object('User', $row['User Key']);
-                $this->system_user->read_stores();
-                $this->system_user->get_groups();
-
-                return $this->system_user;
-            } else {
-                return false;
-            }
+            return $this->system_user;
+        } else {
+            return false;
         }
-
 
     }
 
     function create_user($data) {
 
-        if (isset($this->data['Staff User Key']) and $this->data['Staff User Key']) {
+
+        $staff_user = $this->get_user();
+
+
+        if (is_object($staff_user) and $staff_user->id) {
             $this->create_user_error = true;
-            $this->create_user_msg   = _('Employee is already a system user');
-            $this->user              = false;
+            if ($this->get('Staff Type') == 'Contractor') {
+                $this->create_user_msg = _('Contractor is already a system user');
+            } else {
+                $this->create_user_msg = _('Employee is already a system user');
+
+            }
+
+            $this->system_user = false;
 
             return false;
         }
@@ -1019,7 +1005,7 @@ class Staff extends DB_Table {
         if (!array_key_exists('User Handle', $data) or $data['User Handle'] == '') {
             $this->create_user_error = true;
             $this->create_user_msg   = _('User login must be provided');
-            $this->user              = false;
+            $this->system_user       = false;
 
             return false;
 
@@ -1048,7 +1034,7 @@ class Staff extends DB_Table {
         $this->get_user_data();
         $this->create_user_error = $user->error;
         $this->create_user_msg   = $user->msg;
-        $this->user              = $user;
+        $this->system_user       = $user;
 
         return $user;
 
@@ -1094,13 +1080,18 @@ class Staff extends DB_Table {
     function get_formatted_supervisors() {
 
         $supervisors = '';
-        $sql         = sprintf(
-            'SELECT GROUP_CONCAT(`Staff Alias`  ORDER BY `Staff Alias` SEPARATOR ", ") AS supervisors   FROM  `Staff Supervisor Bridge` B LEFT JOIN `Staff Dimension` S ON (B.`Supervisor Key`=S.`Staff Key`)  WHERE  B.`Staff Key`=%d ', $this->id
-        );
-        if ($row = $this->db->query($sql)->fetch()) {
+        $sql         = "SELECT GROUP_CONCAT(`Staff Alias`  ORDER BY `Staff Alias` SEPARATOR ', ') AS supervisors   FROM  `Staff Supervisor Bridge` B LEFT JOIN `Staff Dimension` S ON (B.`Supervisor Key`=S.`Staff Key`)  WHERE  B.`Staff Key`=?";
 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
             $supervisors = $row['supervisors'];
         }
+
 
         $supervisors = preg_replace('/, $/', '', $supervisors);
 
@@ -1122,7 +1113,7 @@ class Staff extends DB_Table {
         if ($this->timesheet_record->new) {
 
             $timesheet_data = array(
-                'Timesheet Date'      => date(
+                'Timesheet Date'      => gmdate(
                     "Y-m-d", strtotime(
                                $this->timesheet_record->data['Timesheet Record Date'].' +0:00'
                            )
@@ -1143,7 +1134,7 @@ class Staff extends DB_Table {
             $timesheet->update_working_time();
             $timesheet->update_unpaid_overtime();
 
-            $this->get_data('id',$this->id);
+            $this->get_data('id', $this->id);
 
 
         }
@@ -1189,8 +1180,8 @@ class Staff extends DB_Table {
 
 
                 $this->update_field($field, $value, $options);
-                $from = date('Y-m-d', strtotime($this->get('Staff Valid From')));
-                $to   = date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+                $from = gmdate('Y-m-d', strtotime($this->get('Staff Valid From')));
+                $to   = gmdate('Y-m-d', strtotime(gmdate('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
 
                 if ($from and $to) {
 
@@ -1233,8 +1224,8 @@ class Staff extends DB_Table {
 
 
                 $this->update_field($field, $value, $options);
-                $from = date('Y-m-d', strtotime($this->get('Staff Valid From')));
-                $to   = date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+                $from = gmdate('Y-m-d', strtotime($this->get('Staff Valid From')));
+                $to   = gmdate('Y-m-d', strtotime(gmdate('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
 
                 if ($from and $to) {
 
@@ -1274,9 +1265,9 @@ class Staff extends DB_Table {
                 $this->update_field('Staff Working Hours Per Week Metadata', json_encode($working_hours_per_week_metadata), 'no_history');
 
 
-                $to = date('Y-m-d', strtotime(date('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
+                $to = gmdate('Y-m-d', strtotime(gmdate('Y', strtotime('now + 1 year')).'-'.$account->get('Account HR Start Year')));
 
-                $from = date('Y-m-d');
+                $from = gmdate('Y-m-d');
 
                 if ($from and $to) {
 
@@ -1395,15 +1386,15 @@ class Staff extends DB_Table {
 
             $proto_number    = $phoneUtil->parse($value, $country);
             $formatted_value = $phoneUtil->format(
-                $proto_number, \libphonenumber\PhoneNumberFormat::INTERNATIONAL
+                $proto_number, PhoneNumberFormat::INTERNATIONAL
             );
 
             $value = $phoneUtil->format(
-                $proto_number, \libphonenumber\PhoneNumberFormat::E164
+                $proto_number, PhoneNumberFormat::E164
             );
 
 
-        } catch (\libphonenumber\NumberParseException $e) {
+        } catch (NumberParseException $e) {
 
         }
 
@@ -1428,11 +1419,8 @@ class Staff extends DB_Table {
             'Sunday'   => 0
         );
         foreach ($working_hours['data'] as $day_key => $day_data) {
-            //$start=date('H:i', strtotime('2000-01-01 '.$day_data['s']));
-            //$end=date('H:i', strtotime('2000-01-01 '.$day_data['e']));
-            $day_hours  = strtotime('2000-01-01 '.$day_data['e']) - strtotime(
-                    '2000-01-01 '.$day_data['s']
-                );
+
+            $day_hours  = strtotime('2000-01-01 '.$day_data['e']) - strtotime('2000-01-01 '.$day_data['s']);
             $break_diff = 0;
             foreach ($day_data['b'] as $break_data) {
 
@@ -1472,14 +1460,19 @@ class Staff extends DB_Table {
         $this->add_changelog_record(
             'Staff PIN', '****', '****', '', $this->table_name, $this->id
         );
-        $system_user         = new User($this->data['Staff User Key']);
-        $system_user->editor = $this->editor;
 
-        if ($system_user->id) {
+
+        $system_user = $this->get_user();
+
+        if (is_object($system_user) and $system_user->id) {
+            $system_user->editor = $this->editor;
             $system_user->add_changelog_record(
                 'User PIN', '****', '****', '', $system_user->table_name, $system_user->id
             );
         }
+
+        $system_user->editor = $this->editor;
+
 
     }
 
@@ -1643,10 +1636,10 @@ class Staff extends DB_Table {
 
             $this->update_field('Staff Valid To', '', 'no_history');
 
-            $from = date('Y-m-d');
-            $to   = date(
+            $from = gmdate('Y-m-d');
+            $to   = gmdate(
                 'Y-m-d', strtotime(
-                           date('Y', strtotime('now + 1 year')).'-'.$account->get(
+                           gmdate('Y', strtotime('now + 1 year')).'-'.$account->get(
                                'Account HR Start Year'
                            )
                        )
@@ -1654,9 +1647,7 @@ class Staff extends DB_Table {
 
             $dates = date_range($from, $to);
             foreach ($dates as $date) {
-                $timesheet = $this->create_timesheet(
-                    strtotime($date.' 00:00:00'), ''
-                );
+                $this->create_timesheet(strtotime($date.' 00:00:00'), '');
             }
 
 
@@ -1759,7 +1750,7 @@ class Staff extends DB_Table {
                 break;
             case 'Staff Working Hours':
                 if ($this->data['Staff Type'] == 'Contractor') {
-                    $label = _('insite working hours');
+                    $label = _('In premises working hours');
                 } else {
                     $label = _('working hours');
                 }
@@ -1825,8 +1816,8 @@ class Staff extends DB_Table {
         }
 
         $this->get_user_data();
-        $system_user = new User($this->get('Staff User Key'));
-        if ($system_user->id) {
+        $system_user = $this->get_user();
+        if (is_object($system_user) and $system_user->id) {
 
             $system_user->update(array('User Alias' => $value), $options);
         }
@@ -1873,7 +1864,7 @@ class Staff extends DB_Table {
     }
 
     function add_supervisor($value) {
-        $updated = false;
+
         $sql     = sprintf(
             "INSERT INTO `Staff Supervisor Bridge` (`Supervisor Key`, `Staff Key`) VALUES (%d, %d)   ON DUPLICATE KEY UPDATE  `Supervisor Key`= %d", $value, $this->id, $value
         );
@@ -1881,10 +1872,6 @@ class Staff extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->updated = true;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
     }
 
@@ -1897,10 +1884,6 @@ class Staff extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->updated = true;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
     }
 
@@ -1919,7 +1902,7 @@ class Staff extends DB_Table {
             "SELECT `Timesheet Record Date`,`Timesheet Record Source` FROM `Timesheet Record Dimension`   WHERE  `Timesheet Record Source`!='System' AND  `Timesheet Record Staff Key`=%d  ", $this->id
         );
 
-        $clockings = array();
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $timesheet_records[] = array(
@@ -1928,17 +1911,6 @@ class Staff extends DB_Table {
                 );
             }
 
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->get_user_data();
-
-        $user = new User($this->get('Staff User Key'));
-        if ($user->id) {
-            $user->delete();
         }
 
 
@@ -1956,7 +1928,6 @@ class Staff extends DB_Table {
 
         );
 
-        //print $sql;
 
 
         $stmt = $this->db->prepare($sql);
@@ -1965,9 +1936,9 @@ class Staff extends DB_Table {
 
         $this->get_user_data();
 
-        $user = new User($this->get('Staff User Key'));
-        if ($user->id) {
-            $user->delete();
+        $system_user = $this->get_user();
+        if (is_object($system_user) and $system_user->id) {
+            $system_user->delete();
         }
 
 
@@ -2058,10 +2029,17 @@ class Staff extends DB_Table {
         );
         $history_key  = $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
-        $sql = sprintf(
-            'INSERT INTO `HR History Bridge`  (`HR Key`,`History Key`,`Type`) VALUES (1,%d,"Changes")  ', $history_key
+        $sql = "INSERT INTO `HR History Bridge`  (`HR Key`,`History Key`,`Type`) VALUES (1,?,'Changes') ";
+
+
+        $this->db->prepare($sql)->execute(
+            array(
+                $history_key
+            )
         );
-        $this->db->exec($sql);
+
+
+
 
 
         $this->deleted = true;
@@ -2137,7 +2115,8 @@ class Staff extends DB_Table {
         $last_clocking_datetime  = '';
         $first_clocking_datetime = '';
 
-        $sql = "select `Timesheet Record Source`,`Timesheet Record Date`  from `Timesheet Record Dimension` where  `Timesheet Record Timesheet Key`=? and `Timesheet Record Type`='ClockingRecord' and `Timesheet Record Ignored`='No'  order by `Timesheet Record Date` desc ";
+        $sql =
+            "select `Timesheet Record Source`,`Timesheet Record Date`  from `Timesheet Record Dimension` where  `Timesheet Record Timesheet Key`=? and `Timesheet Record Type`='ClockingRecord' and `Timesheet Record Ignored`='No'  order by `Timesheet Record Date` desc ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -2155,8 +2134,6 @@ class Staff extends DB_Table {
             if ($last_attendance_status == '') {
 
 
-
-
                 if ($row['Timesheet Record Source'] == 'WorkHome') {
                     $last_attendance_status = 'Home';
                 } elseif ($row['Timesheet Record Source'] == 'WorkOutside') {
@@ -2168,7 +2145,6 @@ class Staff extends DB_Table {
                 }
 
 
-
             }
         }
 
@@ -2177,21 +2153,17 @@ class Staff extends DB_Table {
 
             if (($number_clockings % 2) == 0) {
 
-                if($last_attendance_status!='Break'){
+                if ($last_attendance_status != 'Break') {
                     $last_attendance_status = '';
                 }
-
-
 
 
             } else {
                 $last_clocking_datetime = '';
 
 
-
             }
         }
-
 
 
         if ($last_attendance_status != '') {
@@ -2199,9 +2171,8 @@ class Staff extends DB_Table {
         }
 
 
-
-        if($attendance_status=='Off' and $number_clockings>0){
-            $attendance_status='Finish';
+        if ($attendance_status == 'Off' and $number_clockings > 0) {
+            $attendance_status = 'Finish';
         }
 
 
@@ -2214,8 +2185,14 @@ class Staff extends DB_Table {
         );
 
 
-        if(in_array($attendance_status,['Home','Outside','Work'])){
-            $this->fast_update_json_field('Staff Properties','current_attendance_source',$attendance_status);
+        if (in_array(
+            $attendance_status, [
+                                  'Home',
+                                  'Outside',
+                                  'Work'
+                              ]
+        )) {
+            $this->fast_update_json_field('Staff Properties', 'current_attendance_source', $attendance_status);
         }
 
     }
