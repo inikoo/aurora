@@ -196,133 +196,48 @@ function get_order_items_table_html($data, $parameters, $customer, $db) {
     $web_user = get_object('website_user', $customer->get('Customer Website User Key'));
 
 
-    switch ($data['scope']) {
-        case 'departments':
-            $tab     = 'departments';
-            $ar_file = 'ar_web_catalogue.php';
-            $tipo    = 'departments';
 
 
-            $default     = array(
-                'view'        => 'overview',
-                'sort_key'    => 'label',
-                'sort_order'  => 0,
-                'rpp'         => 100,
-                'rpp_options' => [
-                    500,
-                    100
-                ],
-                'f_field'     => 'name',
-
-            );
-            $table_views = array(
-                'overview' => array('label' => _('Overview')),
+    $ar_file = 'ar_web_order.php';
+    $tipo    = 'order_items';
 
 
-            );
-
-            $table_filters = array(
-
-                'name' => array(
-                    'label' => _('Name'),
-                    'title' => _('Department name')
-                ),
-
-            );
-
-            $parameters = array(
-                'parent'     => 'store',
-                'parent_key' => $website->get('Website Store Key')
-
-            );
-            break;
-        case 'families':
-            $tab     = 'families';
-            $ar_file = 'ar_web_catalogue.php';
-            $tipo    = 'families';
+    $default = array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => [
+            500,
+            100
+        ],
+        'f_field'     => 'code',
 
 
-            $default     = array(
-                'view'        => 'overview',
-                'sort_key'    => 'code',
-                'sort_order'  => 0,
-                'rpp'         => 100,
-                'rpp_options' => [
-                    500,
-                    100
-                ],
-                'f_field'     => 'code',
+    );
 
-
-            );
-            $table_views = array(
-                'overview' => array('label' => _('Overview')),
-
-
-            );
-
-            $table_filters = array(
-                'code' => array(
-                    'label' => _('Code'),
-                    'title' => _('Family code')
-                ),
-                'name' => array(
-                    'label' => _('Name'),
-                    'title' => _('Family name')
-                ),
-
-            );
-
-            $parameters = array(
-                'parent'     => $data['parent'],
-                'parent_key' => $data['parent_key'],
-
-            );
-            break;
-        case 'products':
-            $tab     = 'products';
-            $ar_file = 'ar_web_catalogue.php';
-            $tipo    = 'products';
-
-
-            $default     = array(
-                'view'        => 'overview',
-                'sort_key'    => 'code',
-                'sort_order'  => 1,
-                'rpp'         => 100,
-                'rpp_options' => [
-                    500,
-                    100
-                ],
-                'f_field'     => 'code',
-
-            );
-            $table_views = array(
-                'overview' => array('label' => _('Overview')),
-
-
-            );
-
-            $table_filters = array(
-                'code' => array(
-                    'label' => _('Code'),
-                    'title' => _('Product code')
-                ),
-                'name' => array(
-                    'label' => _('Name'),
-                    'title' => _('Product name')
-                ),
-
-            );
-
-
-            $parameters = array(
-                'parent'     => $data['parent'],
-                'parent_key' => $data['parent_key'],
-
-            );
-            break;
+    if ($device_prefix == 'mobile') {
+        $tab = 'order_items_mobile';
+    } else {
+        $tab = 'order_items';
     }
+
+
+    $table_views = array(
+        'overview' => array('label' => _('Overview')),
+     
+
+    );
+
+    $table_filters = array(
+        'code' => array(
+            'label' => _('Code'),
+            'title' => _('Product code')
+        ),
+
+
+    );
+
 
 
     $table_buttons = array();
