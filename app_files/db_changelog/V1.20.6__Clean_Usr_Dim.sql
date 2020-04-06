@@ -1,0 +1,1 @@
+ALTER TABLE `User Dimension` DROP `User Site Key`;
