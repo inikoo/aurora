@@ -225,7 +225,7 @@ function get_order_items_table_html($data, $parameters, $customer, $db) {
 
     $table_views = array(
         'overview' => array('label' => _('Overview')),
-     
+
 
     );
 

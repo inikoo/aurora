@@ -1095,7 +1095,13 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
             }
 
-            $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'. ('.$result->transaction->id.')';
+
+            if($payment_account->get('Payment Account Block')=='BTreePaypal'){
+                $msg = _('There was a problem processing your payment').', '._('please double check your payment information and try again');
+            }else{
+                $msg = _('There was a problem processing your credit card').', '._('please double check your payment information and try again');
+            }
+
 
 
             $payment_metadata = '';
