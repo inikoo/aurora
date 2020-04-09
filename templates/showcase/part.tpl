@@ -191,16 +191,10 @@
                     <td colspan=2>
                         <table style="width:100%;margin-bottom:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-                                <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-inventory fa-fw" aria-hidden="true"></i> <span
-                                            class="Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span></td>
-                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet " title="{t}Reserved paid parts in process by customer services{/t}"><i class="fa fa-shopping-cart fa-fw"
-                                                                                                                                                                                      aria-hidden="true"></i> <span
-                                            class="Part_Current_Stock_Ordered_Paid">{$part->get('Current Stock Ordered Paid')}</span></td>
-                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet" title="{t}Parts been picked{/t}"
-                                "><i style="font-size:80%;position: relative;top:-1px" class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i> <span
-                                        class="Current_Stock_In_Process">{$part->get('Current Stock In Process')}</span></td>
-                                <td style="border-left:1px solid #ccc;width:30%;border-right:1px solid #ccc;font-size:110%" class=" align_center strong" title="{t}Stock available for sale{/t}"><span
-                                            class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-inventory fa-fw" aria-hidden="true"></i> <span class="Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet " title="{t}Reserved paid parts in process by customer services{/t}"><i class="fa fa-shopping-cart fa-fw"></i> <span class="Part_Current_Stock_Ordered_Paid">{$part->get('Current Stock Ordered Paid')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet" title="{t}Parts been picked{/t}""><i style="font-size:80%;position: relative;top:-1px" class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i> <span class="Current_Stock_In_Process">{$part->get('Current Stock In Process')}</span></td>
+                                <td style="border-left:1px solid #ccc;width:30%;border-right:1px solid #ccc;font-size:110%" class="align_center strong" title="{t}Stock available for sale{/t}"><span class="Current_Stock_Available">{$part->get('Current Stock Available')}</span></td>
                             </tr>
                         </table>
                     </td>

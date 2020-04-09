@@ -3994,7 +3994,7 @@ class Part extends Asset {
 
 
         $sql =
-            "SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) WHERE OTF.`Current Dispatching State` IN ('Submitted by Customer','In Process') AND  `Current Payment State` IN ('Paid','No Applicable') AND `Product Part Part SKU`=?   ";
+            "SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required  FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) LEFT JOIN `Order Dimension` O ON (OTF.`Order Key`=O.`Order Key`)  WHERE `Order State`='InProcess'  and `Order To Pay Amount`<=0 and `Product Part Part SKU`=?   ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
