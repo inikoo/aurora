@@ -239,6 +239,33 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
         'qr_data', $qr_data
     );
 
+
+
+
+    if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Priority Level')!='Normal' ) {
+
+        $urgent = true;
+
+    }else{
+        $urgent = false;
+
+    }
+
+    if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Care Level')!='Normal' ) {
+
+        $fragile = true;
+
+    }else{
+        $fragile = false;
+
+    }
+
+    $smarty->assign('urgent', $urgent);
+    $smarty->assign('fragile', $fragile);
+
+
+
+
     if (isset($_REQUEST['with_labels'])) {
         $html = $smarty->fetch('order_pick_aid_with_labels.pdf.tpl');
 
@@ -257,6 +284,9 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
 
 }
+
+
+
 
 
 if(count($ids)>1){

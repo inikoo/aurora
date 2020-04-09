@@ -177,6 +177,18 @@
 	{assign expected_payment $order->get('Expected Payment')}
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
+
+	{if $urgent or $fragile}
+		<div style="font-size: x-large">
+			{if $urgent}
+				<b>{t}Priority dispatch{/t}</b>
+			{/if}
+			{if $fragile}
+				<b>{if $urgent}-{/if} {t}Pack with extra care{/t}</b>
+			{/if}
+		</div>
+	{/if}
+
 	{if $order->get('Order Delivery Sticky Note')!=''}<br> {$order->get('Order Delivery Sticky Note')|nl2br}<br>{/if}
 	<br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 </div>

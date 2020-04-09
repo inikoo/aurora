@@ -192,6 +192,16 @@
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
 
+	{if $urgent or $fragile}
+		<div style="font-size: x-large">
+			{if $urgent}
+				<b>{t}Priority dispatch{/t}</b>
+			{/if}
+			{if $fragile}
+				<b>{if $urgent}-{/if} {t}Pack with extra care{/t}</b>
+			{/if}
+		</div>
+	{/if}
 
 	{if $dangerous_goods|@count gt 0}
 	<div style="padding-top: 1mm">
