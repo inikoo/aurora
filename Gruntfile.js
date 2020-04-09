@@ -236,18 +236,17 @@ module.exports = function (grunt) {
             ecom_css: {
                 files: {
                     'EcomB2B/assets/desktop.min.css': [
-                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css',  'node_modules/froala-editor/css/froala_style.css'],
                     'EcomB2B/assets/datatables.min.css': [
-                        'css/backgrid.css', 'css/backgrid-filter.css'],
+                        'EcomB2B/css/backgrid/backgrid.css', 'EcomB2B/css/backgrid/backgrid-filter.css'],
                     'EcomB2B/assets/forms.min.css': [
                         'EcomB2B/css/sweetalert.css', 'EcomB2B/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
                     'EcomB2B/assets/image_gallery.min.css': [
                         'EcomB2B/css/photoswipe.css', 'EcomB2B/css/photoswipe/default-skin.css'],
                     'EcomB2B/assets/mobile.min.css': [
-                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css',  'node_modules/froala-editor/css/froala_style.css'],
                     'EcomB2B/assets/tablet.min.css': [
-                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css',
-                        'EcomB2B/css/staging/style.theme_1.EcomB2B.tablet.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.tablet.css',  'node_modules/froala-editor/css/froala_style.css'],
 
 
                 }
@@ -255,24 +254,25 @@ module.exports = function (grunt) {
 
             au: {
                 files: {
-                    'assets/au_app.min.css': ['css/jquery-ui.css', 'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/intlTelInput.css', 'css/countrySelect.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css', 'bower_components/select2/dist/css/select2.css',
+                    'assets/au_app.min.css': [
+                        'css/jquery-ui.css', 'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/intlTelInput.css', 'css/countrySelect.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css', 'bower_components/select2/dist/css/select2.css',
 
                         'node_modules/froala-editor/css/froala_editor.pkgd.min.css',
                         'node_modules/froala-editor/css/froala_style.css',
 
                         'node_modules/froala-editor/css/char_counter.css',
-                        'ode_modules/froala-editor/css/code_view.css',
-                        'ode_modules/froala-editor/css/colors.css',
-                        'ode_modules/froala-editor/css/emoticons.css',
-                        'ode_modules/froala-editor/css/file.css',
-                        'ode_modules/froala-editor/css/fullscreen.css',
-                        'ode_modules/froala-editor/css/image.css',
-                        'ode_modules/froala-editor/css/image_manager.css',
-                        'ode_modules/froala-editor/css/line_breaker.css',
-                        'ode_modules/froala-editor/css/quick_insert.css',
-                        'ode_modules/froala-editor/css/table.css',
-                        'ode_modules/froala-editor/css/video.css',
-                        'ode_modules/froala-editor/css/draggable.css',
+                        'node_modules/froala-editor/css/code_view.css',
+                        'node_modules/froala-editor/css/colors.css',
+                        'node_modules/froala-editor/css/emoticons.css',
+                        'node_modules/froala-editor/css/file.css',
+                        'node_modules/froala-editor/css/fullscreen.css',
+                        'node_modules/froala-editor/css/image.css',
+                        'node_modules/froala-editor/css/image_manager.css',
+                        'node_modules/froala-editor/css/line_breaker.css',
+                        'node_modules/froala-editor/css/quick_insert.css',
+                        'node_modules/froala-editor/css/table.css',
+                        'node_modules/froala-editor/css/video.css',
+                        'node_modules/froala-editor/css/draggable.css',
                         'css/amcharts/style.css', 'css/jquery.fancybox.min.css', 'css/tooltipster.bundle.min.css', 'css/staging/app.css']
 
                 }

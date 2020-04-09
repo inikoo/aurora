@@ -1018,7 +1018,7 @@ right connector from last child*/
 
 #edit_history_note_dialog {
   .note_type {
-    padding: 0px 5px 10px 0px;
+    padding: 0 5px 10px 0;
 
     i {
       margin-left: 10px;
@@ -1031,7 +1031,7 @@ right connector from last child*/
 }
 
 .history_details {
-  padding: 10px 0px;
+  padding: 10px 0;
   font-size: 95%;
 
   .field {
@@ -1054,7 +1054,7 @@ right connector from last child*/
 
 .progress_bar_container {
   width: 120px;
-  align: center;
+
   padding: 0;
   position: relative;
 
@@ -1074,7 +1074,7 @@ right connector from last child*/
     position: absolute;
     top: 1px;
     background: green;
-    width: 0%;
+    width: 0;
     overflow: hidden;
     color: #fff;
     z-index: 20;
@@ -1252,8 +1252,7 @@ h2.dashboard {
     font-weight: 300;
     font-size: 14px;
     padding: 0;
-    margin: 0;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
   }
 
   position: absolute;
