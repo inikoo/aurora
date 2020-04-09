@@ -408,14 +408,23 @@ function orders_in_warehouse($_data, $db, $user) {
 
         $operations .= '</div>';
 
+        $public_id =sprintf(
+            '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+        );
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+        }
+
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
+
+        }
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
             'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>',$data['Order Key']),
             'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
-            ),
+            'public_id'      => $public_id,
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
@@ -524,14 +533,23 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
 
         }
 
+        $public_id=sprintf(
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+        );
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+        }
+
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
+
+        }
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
             'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d" data-pdf_scope_keys="%s" ></i>',$data['Order Key'],htmlspecialchars(json_encode($dn_keys), ENT_QUOTES, 'UTF-8')  ),
             'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
-            ),
+            'public_id'      => $public_id,
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['submitted_date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Replacement State'], $data['Order Key']),
@@ -602,14 +620,24 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
 
         $operations .= '</div>';
 
+        $public_id=sprintf(
+            '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+        );
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+        }
+
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
+
+        }
+
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
             'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>',$data['Order Key']),
             'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
-            ),
+            'public_id'      => $public_id,
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
@@ -676,18 +704,27 @@ function orders_packed_done($_data, $db, $user, $account) {
 
 
         $operations .= '</div>';
-
-
         $operations .= '</div>';
+
+        $public_id = sprintf(
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed_done/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+        );
+
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+        }
+
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
+
+        }
 
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
             'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>',$data['Order Key']),
             'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed_done/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
-            ),
+            'public_id'      => $public_id,
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
@@ -756,14 +793,24 @@ function orders_approved($_data, $db, $user, $account) {
 
         $operations .= '</div>';
 
+        $public_id = sprintf(
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/approved/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+        );
+
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+        }
+
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
+
+        }
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
             'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>',$data['Order Key']),
             'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/approved/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
-            ),
+            'public_id'      => $public_id,
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
