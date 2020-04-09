@@ -28,33 +28,30 @@
 
     <link href="/css/jquery-ui.css" rel="stylesheet">
 
-    <link href="/css/editor_v1/froala_editor.css?v=2a" rel="stylesheet"/>
-    <link href="/css/editor_v1/codemirror.css" rel="stylesheet">
-    <link href="/css/editor_v1/codemirror_dracula.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/char_counter.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/code_view.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/colors.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/emoticons.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/file.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/fullscreen.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/image.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/image_manager.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/line_breaker.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/quick_insert.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/table.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
-    <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/froala_editor.css?v=2a" rel="stylesheet"/>
+
+    <link href="/node_modules/froala-editor/css/plugins/char_counter.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/code_view.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/colors.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/emoticons.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/file.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/fullscreen.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/image.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/image_manager.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/line_breaker.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/quick_insert.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/table.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/video.css" rel="stylesheet">
+    <link href="/node_modules/froala-editor/css/plugins/draggable.css" rel="stylesheet">
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
     <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
-
     <script src="EcomB2B/assets/desktop.logged_in.min.js"></script>
 
 
 
     <script src="/js/edit_webpage_upload_images_from_iframe.js"></script>
-
-
     <script src="/js_libs/sweetalert.min.js"></script>
 
     <link rel="stylesheet" href="EcomB2B/assets/desktop.min.css" type="text/css"/>
@@ -133,40 +130,38 @@
     <script src="js/webpage_blocks.text_block.edit.js"></script>
 
 
-    <script src="/js_libs/editor_v1/froala_editor.min.js"></script>
-    <script src="/js_libs/editor_v1/codemirror.js"></script>
-    <script src="/js_libs/editor_v1/codemirror.xml.js"></script>
-    <script src="/js_libs/editor_v1/codemirror_active-line.js"></script>
+    <script src="/node_modules/froala-editor/js/froala_editor.min.js"></script>
 
-    <script src="/js_libs/editor_v1/plugins/align.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/draggable.min.js"></script>
 
-    <script src="/js_libs/editor_v1/plugins/char_counter.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/code_beautifier.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/code_view.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/colors.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/emoticons.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/entities.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/file.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/font_family.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/font_size.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/fullscreen.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/image.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/image_manager.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/inline_style.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/line_breaker.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/link.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/lists.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/paragraph_format.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/paragraph_style.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/quick_insert.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/quote.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/table.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/align.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/draggable.min.js"></script>
+
+    <script src="/node_modules/froala-editor/js/plugins/char_counter.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/code_beautifier.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/code_view.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/colors.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/emoticons.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/entities.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/file.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/font_family.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/font_size.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/fullscreen.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/image.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/image_manager.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/inline_style.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/line_breaker.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/link.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/lists.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/paragraph_format.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/paragraph_style.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/quick_insert.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/quote.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/table.min.js"></script>
 
 
 
-    <script src="/js_libs/editor_v1/plugins/url.min.js"></script>
-    <script src="/js_libs/editor_v1/plugins/video.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/url.min.js"></script>
+    <script src="/node_modules/froala-editor/js/plugins/video.min.js"></script>
 
 
 
@@ -176,6 +171,7 @@
     <script src="/js/validation.js?"></script>
     <script src="/js/common_webpage_preview.js?v2.2"></script>
 
+    <script src="/js/webpage_blocks.js?v1.1"></script>
 
     <style>
 

@@ -140,10 +140,13 @@ module.exports = function (grunt) {
                     //'js_libs/d3fc.js',
 
 
-                    'js_libs/sweetalert2.all.min.js', 'js_libs/tooltipster.bundle.min.js', 'js_libs/jquery-qrcode-0.14.0.min.js', 'js/alert_dial.js', 'js_libs/editor_v1/froala_editor.min.js', //'js_libs/editor_v1/codemirror.js',
-                    //'js_libs/editor_v1/codemirror.xml.js',
-                    //'js_libs/editor_v1/codemirror_active-line.js',
-                    'js_libs/editor_v1/plugins/align.min.js', 'js_libs/editor_v1/plugins/draggable.min.js', 'js_libs/editor_v1/plugins/char_counter.min.js', 'js_libs/editor_v1/plugins/code_beautifier.min.js', 'js_libs/editor_v1/plugins/code_view.min.js', 'js_libs/editor_v1/plugins/colors.min.js', 'js_libs/editor_v1/plugins/emoticons.min.js', 'js_libs/editor_v1/plugins/entities.min.js', 'js_libs/editor_v1/plugins/file.min.js', 'js_libs/editor_v1/plugins/font_family.min.js', 'js_libs/editor_v1/plugins/font_size.min.js', 'js_libs/editor_v1/plugins/fullscreen.min.js', 'js_libs/editor_v1/plugins/image.min.js', 'js_libs/editor_v1/plugins/image_manager.min.js', 'js_libs/editor_v1/plugins/inline_style.min.js', 'js_libs/editor_v1/plugins/line_breaker.min.js', 'js_libs/editor_v1/plugins/link.min.js', 'js_libs/editor_v1/plugins/lists.min.js', 'js_libs/editor_v1/plugins/paragraph_format.min.js', 'js_libs/editor_v1/plugins/paragraph_style.min.js', 'js_libs/editor_v1/plugins/quick_insert.min.js', 'js_libs/editor_v1/plugins/quote.min.js', 'js_libs/editor_v1/plugins/table.min.js', 'js_libs/editor_v1/plugins/save.min.js', 'js_libs/editor_v1/plugins/url.min.js', 'js_libs/editor_v1/plugins/video.min.js', 'js_libs/amcharts/amcharts.js', 'js_libs/amcharts/serial.js', 'js_libs/amcharts/amstock.js', 'js_libs/amcharts/plugins/dataloader/dataloader.min.js', 'js_libs/amcharts/plugins/export/export.min.js', 'js_libs/jquery.fancybox.min.js', 'js_libs/jquery.awesome-cursor.min.js', 'js_libs/base64.js', //'js_libs/jquery.formatCurrency-1.4.0.min.js',
+                    'js_libs/sweetalert2.all.min.js', 'js_libs/tooltipster.bundle.min.js', 'js_libs/jquery-qrcode-0.14.0.min.js', 'js/alert_dial.js',
+
+                    'node_modules/froala-editor/js/froala_editor.pkgd.min.js',
+
+                    'node_modules/froala-editor/js/plugins/align.min.js', 'node_modules/froala-editor/js/plugins/draggable.min.js', 'node_modules/froala-editor/js/plugins/char_counter.min.js', 'node_modules/froala-editor/js/plugins/code_beautifier.min.js', 'node_modules/froala-editor/js/plugins/code_view.min.js', 'node_modules/froala-editor/js/plugins/colors.min.js', 'node_modules/froala-editor/js/plugins/emoticons.min.js', 'node_modules/froala-editor/js/plugins/entities.min.js', 'node_modules/froala-editor/js/plugins/file.min.js', 'node_modules/froala-editor/js/plugins/font_family.min.js', 'node_modules/froala-editor/js/plugins/font_size.min.js', 'node_modules/froala-editor/js/plugins/fullscreen.min.js', 'node_modules/froala-editor/js/plugins/image.min.js', 'node_modules/froala-editor/js/plugins/image_manager.min.js', 'node_modules/froala-editor/js/plugins/inline_style.min.js', 'node_modules/froala-editor/js/plugins/line_breaker.min.js', 'node_modules/froala-editor/js/plugins/link.min.js', 'node_modules/froala-editor/js/plugins/lists.min.js', 'node_modules/froala-editor/js/plugins/paragraph_format.min.js', 'node_modules/froala-editor/js/plugins/paragraph_style.min.js', 'node_modules/froala-editor/js/plugins/quick_insert.min.js', 'node_modules/froala-editor/js/plugins/quote.min.js', 'node_modules/froala-editor/js/plugins/table.min.js', 'node_modules/froala-editor/js/plugins/save.min.js', 'node_modules/froala-editor/js/plugins/url.min.js', 'node_modules/froala-editor/js/plugins/video.min.js',
+                    'js_libs/amcharts/amcharts.js', 'js_libs/amcharts/serial.js', 'js_libs/amcharts/amstock.js', 'js_libs/amcharts/plugins/dataloader/dataloader.min.js', 'js_libs/amcharts/plugins/export/export.min.js', 'js_libs/jquery.fancybox.min.js', 'js_libs/jquery.awesome-cursor.min.js', 'js_libs/base64.js', //'js_libs/jquery.formatCurrency-1.4.0.min.js',
+
                     'js_libs/jquery.formatCurrency.js', //'bower_components/autobahn/autobahn.js',
                     'js_libs/autobahn.v1.js',
 
@@ -254,9 +257,23 @@ module.exports = function (grunt) {
                 files: {
                     'assets/au_app.min.css': ['css/jquery-ui.css', 'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/intlTelInput.css', 'css/countrySelect.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css', 'bower_components/select2/dist/css/select2.css',
 
-                        'css/editor_v1/froala_editor.css', 'css/editor_v1/froala_style.css', 'css/editor_v1/codemirror.css', 'css/editor_v1/codemirror_dracula.css',
+                        'node_modules/froala-editor/css/froala_editor.pkgd.min.css',
+                        'node_modules/froala-editor/css/froala_style.css',
 
-                        'css/editor_v1/plugins/char_counter.css', 'css/editor_v1/plugins/code_view.css', 'css/editor_v1/plugins/colors.css', 'css/editor_v1/plugins/emoticons.css', 'css/editor_v1/plugins/file.css', 'css/editor_v1/plugins/fullscreen.css', 'css/editor_v1/plugins/image.css', 'css/editor_v1/plugins/image_manager.css', 'css/editor_v1/plugins/line_breaker.css', 'css/editor_v1/plugins/quick_insert.css', 'css/editor_v1/plugins/table.css', 'css/editor_v1/plugins/video.css', 'css/editor_v1/plugins/draggable.css', 'css/amcharts/style.css', 'css/jquery.fancybox.min.css', 'css/tooltipster.bundle.min.css', 'css/staging/app.css']
+                        'node_modules/froala-editor/css/char_counter.css',
+                        'ode_modules/froala-editor/css/code_view.css',
+                        'ode_modules/froala-editor/css/colors.css',
+                        'ode_modules/froala-editor/css/emoticons.css',
+                        'ode_modules/froala-editor/css/file.css',
+                        'ode_modules/froala-editor/css/fullscreen.css',
+                        'ode_modules/froala-editor/css/image.css',
+                        'ode_modules/froala-editor/css/image_manager.css',
+                        'ode_modules/froala-editor/css/line_breaker.css',
+                        'ode_modules/froala-editor/css/quick_insert.css',
+                        'ode_modules/froala-editor/css/table.css',
+                        'ode_modules/froala-editor/css/video.css',
+                        'ode_modules/froala-editor/css/draggable.css',
+                        'css/amcharts/style.css', 'css/jquery.fancybox.min.css', 'css/tooltipster.bundle.min.css', 'css/staging/app.css']
 
                 }
             },

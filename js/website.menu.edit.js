@@ -77,24 +77,63 @@ $(function () {
 
 
     $('.editor').each(function(i, obj) {
-        $(obj).froalaEditor({
-            iconsTemplate: 'font_awesome_5',
 
+
+        var container=obj.closest('div.text')
+
+        default_font=$('body').data('default_font');
+
+        var buttons={
+            'moreText': {
+                'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting']
+            },
+            'moreParagraph': {
+                'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote']
+            },
+            'moreRich': {
+                'buttons': ['insertLink', 'insertImage', 'insertVideo', 'insertTable', 'emoticons', 'fontAwesome', 'specialCharacters', 'embedly', 'insertFile', 'insertHR']
+            },
+            'moreMisc': {
+                'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help'],
+                'align': 'right',
+                'buttonsVisible': 2
+            }
+        }
+
+        var editor=new FroalaEditor(obj, {
+            key: $('body').data('fel'),
             toolbarInline: true,
             charCounterCount: false,
-            toolbarButtons: [ 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsMD: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsSM: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsXS: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtons: buttons,
+            toolbarButtonsMD: buttons,
+            toolbarButtonsSM: buttons,
+            toolbarButtonsXS: buttons,
             defaultImageDisplay: 'inline',
             fontSize: ['8', '10', '12', '14','16', '18', '30', '60', '96'],
-
+            fontFamily: {
+                default_font: 'Default',
+                'Arial,Helvetica,sans-serif': 'Arial',
+                'Impact,Charcoal,sans-serif': 'Impact',
+                'Tahoma,Geneva,sans-serif': 'Tahoma'
+            },
             zIndex: 10000,
             pastePlain: true,
 
-        }).on('froalaEditor.contentChanged', function (e, editor, keyupEvent) {
-            $('#save_button', window.parent.document).addClass('save button changed valid')
-        });
+
+
+            events: {
+                'contentChanged': function () {
+                    $('#save_button', window.parent.document).addClass('save button changed valid')
+                }
+            }
+        })
+
+
+        $(obj).data('editor',editor)
+
+
+
+
 
     });
 
@@ -427,10 +466,14 @@ function save_header() {
 
 
                         var text_block=$(obj2).find('.editor')
-                        if ($(text_block).hasClass('fr-box')) {
-                            var text = $(text_block).froalaEditor('html.get')
+
+
+                        if (text_block.hasClass('fr-box')) {
+
+
+                            var text = text_block.data('editor').html.get()
                         } else {
-                            var text = $(text_block).html()
+                            var text = text_block.html()
                         }
                         column.image = $(obj2).find('img').attr('src')
                         column.url = $(obj2).find('img').attr('link')
@@ -654,24 +697,56 @@ function change_column(type, key, subkey) {
     ul.html(clone.html())
 
     if (type == 'text' ) {
-        ul.find('.new_editor').froalaEditor({
-            iconsTemplate: 'font_awesome_5',
 
+
+
+        default_font=$('body').data('default_font');
+        var buttons={
+            'moreText': {
+                'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting']
+            },
+            'moreParagraph': {
+                'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote']
+            },
+            'moreRich': {
+                'buttons': ['insertLink', 'insertImage', 'insertVideo', 'insertTable', 'emoticons', 'fontAwesome', 'specialCharacters', 'embedly', 'insertFile', 'insertHR']
+            },
+            'moreMisc': {
+                'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help'],
+                'align': 'right',
+                'buttonsVisible': 2
+            }
+        }
+
+        var editor=new FroalaEditor(ul.find('.new_editor'), {
+            key: $('body').data('fel'),
             toolbarInline: true,
             charCounterCount: false,
-            toolbarButtons: [ 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsMD: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsSM: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
-            toolbarButtonsXS: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|',  'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtons: buttons,
+            toolbarButtonsMD: buttons,
+            toolbarButtonsSM: buttons,
+            toolbarButtonsXS: buttons,
             defaultImageDisplay: 'inline',
             fontSize: ['8', '10', '12', '14','16', '18', '30', '60', '96'],
-
+            fontFamily: {
+                default_font: 'Default',
+                'Arial,Helvetica,sans-serif': 'Arial',
+                'Impact,Charcoal,sans-serif': 'Impact',
+                'Tahoma,Geneva,sans-serif': 'Tahoma'
+            },
             zIndex: 10000,
             pastePlain: true,
 
-        }).on('froalaEditor.contentChanged', function (e, editor, keyupEvent) {
-            $('#save_button', window.parent.document).addClass('save button changed valid')
-        });
+
+
+            events: {
+                'contentChanged': function () {
+                    $('#save_button', window.parent.document).addClass('save button changed valid')
+                }
+            }
+        })
+        ul.find('.new_editor').data('editor',editor)
+
 
     }
 

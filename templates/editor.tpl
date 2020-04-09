@@ -6,37 +6,61 @@
 
 <script>
 
-    $.FroalaEditor.DefineIcon('save', {
-        NAME: 'cloud'
-    });
+
 
     $(function () {
         var editor_data = JSON.parse(atob($('#editor_{$editor_data.id}').data('data')));
 
-        $('#editor_{$editor_data.id}').froalaEditor(
-                {
-                    saveParam: 'value',
-                    saveURL: '/ar_edit.php',
-                    saveMethod: 'GET',
-                    pastePlain: true,
-                    saveInterval: 36000000,
 
-                    saveParams: editor_data.metadata,
-                    pluginsEnabled: editor_data.plugins,
-                    toolbarInline: false,
-                    toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', '|', 'color', 'emoticons', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR', '|', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo', 'clearFormatting', 'selectAll', 'html', '|', 'save'],
-                    toolbarButtonsMD: ['fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo', 'clearFormatting', '|', 'save'],
-                    toolbarButtonsSM: ['fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize', 'insertLink', 'insertImage', 'insertTable', 'undo', 'redo', '|', 'save'],
-                    toolbarButtonsXS: ['bold', 'italic', 'fontFamily', 'fontSize', 'undo', 'redo', '|', 'save']
+        var buttons={
+            'moreText': {
+                'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting']
+            },
+            'moreParagraph': {
+                'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote']
+            },
+            'moreRich': {
+                'buttons': ['insertLink', 'insertImage', 'insertVideo', 'insertTable', 'emoticons', 'fontAwesome', 'specialCharacters', 'embedly', 'insertFile', 'insertHR']
+            },
+            'moreMisc': {
+                'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help'],
+                'align': 'right',
+                'buttonsVisible': 2
+            }
+        }
 
 
-                }
-        )
-                .on('froalaEditor.contentChanged', function (e, editor) {
-                    $('#editor_container_{$editor_data.id}  div.fr-toolbar i.fa-cloud').addClass('valid save changed')
-                    $('#editor_container_{$editor_data.id} div.fr-toolbar i.fa-cloud').closest('div').addClass('changed')
-                })
-                .on('froalaEditor.save.after', function (e, editor, data) {
+
+        new FroalaEditor('#editor_{$editor_data.id}', {
+            key: '{$smarty.const.FROALA_EDITOR_KEY}',
+            saveParam: 'value',
+            saveURL: '/ar_edit.php',
+            saveMethod: 'GET',
+            pastePlain: true,
+            saveInterval: 36000000,
+            saveParams: editor_data.metadata,
+
+            pluginsEnabled: editor_data.plugins,
+            toolbarInline: false,
+
+            charCounterCount: false,
+            toolbarButtons: buttons,
+            toolbarButtonsMD: buttons,
+            toolbarButtonsSM: buttons,
+            toolbarButtonsXS: buttons,
+            defaultImageDisplay: 'inline',
+            fontSize: ['8', '10', '12', '14','16', '18', '30', '60', '96'],
+            zIndex: 1000,
+            pastePlain: true,
+
+
+
+
+            events: {
+                'contentChanged': function () {
+                    $('#save_button', window.parent.document).addClass('save button changed valid')
+                },
+                'save.after': function () {
                     $('#editor_container_{$editor_data.id} div.fr-toolbar i.fa-cloud').removeClass('valid save changed')
                     $('#editor_container_{$editor_data.id} div.fr-toolbar i.fa-cloud').closest('div').removeClass('changed')
 
@@ -89,9 +113,14 @@
                         post_save_actions(field, data)
 
                     }
+                }
+            }
+        })
 
 
-                })
+
+
+
     });
 
 </script>

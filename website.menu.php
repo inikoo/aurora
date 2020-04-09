@@ -32,16 +32,9 @@ $theme=$_REQUEST['theme'];
 $website=get_object('Website',$website_key);
 $store=new Public_Store($website->get('Website Store Key'));
 
-
-
-
 $header_data = $website->get('Header Data');
 
-
-
 $header_key=$website->get('Website Header Key');
-
-
 $smarty->assign('header_data', $header_data);
 $smarty->assign('header_key', $header_key);
 

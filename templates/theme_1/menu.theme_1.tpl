@@ -10,7 +10,7 @@
 *}
 
 {include file="theme_1/_head.theme_1.tpl"}
-<body xmlns="http://www.w3.org/1999/html">
+<body xmlns="http://www.w3.org/1999/html"  data-fel="{$smarty.const.FROALA_EDITOR_KEY}"  data-default_font="{$website->get('Website Text Font')}">
 
 
 
@@ -516,8 +516,6 @@
 
     </div>
 </div>
-
-
 
 <script src="js/website.menu.edit.js?v=25"></script>
 <script src="js/edit_webpage_upload_images_from_iframe.js?v2"></script>
