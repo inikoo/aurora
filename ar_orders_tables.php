@@ -320,16 +320,26 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
         $operations .= '</div>';
 
+        $public_id = sprintf(
+            '<span class="link"  onclick="change_view(\'/orders/%s/dashboard/submitted/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+        );
+
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+        }
+
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
+
+        }
+
+
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
             'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>',$data['Order Key']),
             'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/submitted/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
-
-
-            ),
+            'public_id'      => $public_id,
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
