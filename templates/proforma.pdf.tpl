@@ -281,27 +281,7 @@
     </tr>
 
 
-    <tr >
-        <td style="border:none" colspan="2"></td>
-        <td colspan="2"><b>{t}Paid{/t}</b></td>
-        <td>{$order->get('Payments Amount')}</td>
-    </tr>
-
-
-    {if $order->get('Order Available Credit Amount')!=0}
-        <tr >
-            <td style="border:none" colspan="2"></td>
-            <td colspan="2">{t}Credits{/t}</td>
-            <td>{$order->get('Available Credit Amount')}</td>
-        </tr>
-    {/if}
-
-    <tr class="total">
-        <td style="border:none" colspan="2"></td>
-        <td colspan="2"><b>{t}To pay{/t}</b></td>
-        <td>{$order->get('Basket To Pay Amount')}</td>
-    </tr>
-
+  
     </tbody>
 </table>
 <br>
