@@ -12,11 +12,59 @@
 
 trait OrderChargesOperations {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
+
+    function get_charges_public_info() {
+
+        $charges_public_info = '';
+        $sql                 =
+            sprintf('select `Charge Public Description`,`Charge Name` from `Order No Product Transaction Fact` ONPTF  left join `Charge Dimension` C on (C.`Charge Key`=`Transaction Type Key` ) where `Order Key`=%d and `Transaction Type`="Charges"', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $charges_public_info .= ', <h3>'.$row['Charge Name'].'</h3><p>'.$row['Charge Public Description']."</p>";
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $charges_public_info = preg_replace('/^, /', '', $charges_public_info);
+
+        return $charges_public_info;
+
+    }
+
+    function use_calculated_items_charges() {
+
+
+        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
+            return;
+        }
+
+        $sql = "delete `Order No Product Transaction Fact`  from `Order No Product Transaction Fact`      left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)  where `Transaction Type`='Charges'    and `Order Key`=?  and (`Charge Scope`='Hanging' or `Transaction Type Key` is null)  ";
+
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id
+            )
+        );
+
+
+        $this->update_charges();
+        $this->update_totals();
+
+    }
 
     function update_charges($dn_key = false, $order_picked = true) {
 
 
-        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
 
@@ -162,31 +210,6 @@ trait OrderChargesOperations {
 
     }
 
-
-    function get_charges_public_info() {
-
-        $charges_public_info = '';
-        $sql                 =
-            sprintf('select `Charge Public Description`,`Charge Name` from `Order No Product Transaction Fact` ONPTF  left join `Charge Dimension` C on (C.`Charge Key`=`Transaction Type Key` ) where `Order Key`=%d and `Transaction Type`="Charges"', $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $charges_public_info .= ', <h3>'.$row['Charge Name'].'</h3><p>'.$row['Charge Public Description']."</p>";
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $charges_public_info = preg_replace('/^, /', '', $charges_public_info);
-
-        return $charges_public_info;
-
-    }
-
-
     function get_charges($dn_key = false) {
 
 
@@ -320,103 +343,94 @@ trait OrderChargesOperations {
 
     }
 
-    function use_calculated_items_charges() {
-
-
-        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
-            return;
-        }
-
-        $sql = sprintf(
-            'delete `Order No Product Transaction Fact`  from `Order No Product Transaction Fact`      left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`) 
-
-       
-        
-        where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ',
-
-
-            $this->id
-        );
-
-        $this->db->exec($sql);
-
-
-        $this->update_charges();
-        $this->update_totals();
-
-    }
-
-
+    /**
+     * @param      $value
+     * @param bool $dn_key
+     */
     function update_hanging_charges_amount($value, $dn_key = false) {
 
 
-        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
 
-        $value = sprintf("%.2f", $value);
+        $value = round($value, 2);
 
 
-        $sql = sprintf(
-            'select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   
-                where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ', $this->id
+        $sql  = "select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)  where  `Charge Scope`='Hanging' and  `Transaction Type`='Charges' and `Order Key`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $tax = round($value * $this->data['Order Tax Rate'], 2);
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+            $sql = "update `Order No Product Transaction Fact`    set `Order No Product Transaction Pinned`='Yes' ,  `Transaction Gross Amount`=? ,`Transaction Net Amount`=? ,`Transaction Tax Amount`=? where  `Order No Product Transaction Fact Key`=? ";
 
 
-                $tax = $value * $this->data['Order Tax Rate'];
+            $this->db->prepare($sql)->execute(
+                array(
+                    $value,
+                    $value,
+                    $tax,
+                    $row['Order No Product Transaction Fact Key']
+                )
+            );
 
 
-                $sql = sprintf(
-                    'update `Order No Product Transaction Fact`    set `Order No Product Transaction Pinned`="Yes" ,  `Transaction Gross Amount`=%.2f ,`Transaction Net Amount`=%.2f ,`Transaction Tax Amount`=%.2f where  `Order No Product Transaction Fact Key`=%d  ',
-                    $value, $value, $tax, $row['Order No Product Transaction Fact Key']
-                );
+            $this->db->exec($sql);
+        } else {
+            $sql = "select `Charge Key` from `Charge Dimension`   where  `Charge Scope`='Hanging' and  `Charge Store Key`=?";
 
-
-                $this->db->exec($sql);
+            $stmt2 = $this->db->prepare($sql);
+            $stmt2->execute(
+                array(
+                    $this->get('Store Key')
+                )
+            );
+            if ($row2 = $stmt2->fetch()) {
+                $charge             = get_object('Charge', $row2['Charge Key']);
+                $charge_id          = $charge->id;
+                $charge_description = $charge->get('Charge Description');
 
             } else {
-
-
-                $sql = sprintf(
-                    'select `Charge Key` from `Charge Dimension`   where  `Charge Scope`="Hanging" and  `Charge Store Key`=%d  ', $this->get('Store Key')
-                );
-
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-
-
-                        $charge = get_object('Charge', $row2['Charge Key']);
-                        $tax    = $charge->get('Charge Metadata') * $this->data['Order Tax Rate'];
-
-                        $sql = sprintf(
-                            "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Pinned`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,
-                        `Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
-                        `Currency Code`,`Currency Exchange`,`Metadata`)
-
-					VALUES (%s,%d,%s,%s,%d,
-					%s,%.2f,%.2f,%s,%.2f,
-					
-					%s,%f,%s)  ", prepare_mysql('Yes'), $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Charges'), $charge->id,
-
-                            prepare_mysql($charge->get('Charge Description')), $value, $value, prepare_mysql($this->data['Order Tax Code']), $tax,
-
-                            prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata'])
-
-                        );
-
-
-                        $this->db->exec($sql);
-
-                    }
-                }
-
-
+                $charge_id          = null;
+                $charge_description = '';
             }
+
+            $tax = round($value * $this->data['Order Tax Rate'], 2);
+
+            $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Pinned`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,
+                        `Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
+                        `Currency Code`,`Currency Exchange`,`Metadata`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
+
+            $this->db->prepare($sql)->execute(
+                array(
+                    'Yes',
+                    $this->id,
+                    $this->data['Order Date'],
+                    'Charges',
+                    $charge_id,
+
+                    $charge_description,
+                    $value,
+                    $value,
+                    $this->data['Order Tax Code'],
+                    $tax,
+
+                    $this->data['Order Currency'],
+                    $this->data['Order Currency Exchange'],
+                    $this->data['Order Original Metadata']
+                )
+            );
+
+
+            $this->db->exec($sql);
+
+
         }
 
 
@@ -431,7 +445,7 @@ trait OrderChargesOperations {
     function add_charge($charge) {
 
 
-        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
         $sql = sprintf(
@@ -533,7 +547,7 @@ trait OrderChargesOperations {
 
     function remove_charge($charge) {
 
-        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
 

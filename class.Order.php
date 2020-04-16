@@ -770,7 +770,7 @@ class Order extends DB_Table {
 
                 $amount = 0;
                 $sql    = sprintf(
-                    "select sum(`Transaction Net Amount`) as amount from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`='Hanging' and  `Transaction Type`='Charges' and `Order Key`=%d  ",
+                    "select sum(`Transaction Net Amount`) as amount from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  ( `Charge Scope`='Hanging' or `Transaction Type Key` is null  )and  `Transaction Type`='Charges' and `Order Key`=%d  ",
                     $this->id
                 );
 
@@ -778,10 +778,6 @@ class Order extends DB_Table {
                     if ($row = $result->fetch()) {
                         $amount = $row['amount'];
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 return $amount;
