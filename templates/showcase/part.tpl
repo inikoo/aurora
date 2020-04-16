@@ -496,7 +496,7 @@
                     </tr>
 
                     <tr>
-                        <td colspan="3"><textarea id="part_leakage_note_input" style="width:95%;"  plaecholder="{t}Note{/t}" /></td>
+                        <td colspan="3"><textarea id="part_leakage_note_input" style="width:95%;"  plaecholder="{t}Note{/t}"></textarea></td>
                     </tr>
 
                     <tr  id="unknown_location_save_buttons">
@@ -522,7 +522,7 @@
                     </tr>
 
                     <tr>
-                        <td colspan="3"><textarea id="part_to_production_note_input" style="width:95%;"  plaecholder="{t}Note{/t}" /></td>
+                        <td colspan="3"><textarea id="part_to_production_note_input" style="width:95%;"  plaecholder="{t}Note{/t}"></textarea></td>
                     </tr>
                     <tr>
                         <td colspan="3" class="aright "><span onclick="save_stock_dialog_to_production(this)" class="save">{t}Send to production{/t} <i class="fa fa-hand-rock" aria-hidden="true"></i></span></td>
