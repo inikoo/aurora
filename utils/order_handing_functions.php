@@ -31,7 +31,7 @@ function get_item_packed($pending, $itf_key, $part_sku, $packed) {
     $packed = sprintf(
         '<span class="packed_quantity_done %s">  
  <input class="packed_qty width_50" style="background-color:rgba(192,216,144, 0.2)" ondblclick="show_check_dialog(this)" value="%s" readonly >
-  <i  class="fa  fa-check fa-fw button add_packed " aria-hidden="true"/></span>
+  <i  class="fa  fa-check fa-fw button add_packed " aria-hidden="true"></i></span>
   
   
   
@@ -85,9 +85,9 @@ function get_picked_offline_input($total_required,$total_picked,$picked_in_locat
 
     $picked_offline_input=sprintf('
             <span class="picked_quantity_cant_pick %s"> 
-                <i  class="fa  %s fa-fw button warning add_picked invisible " aria-hidden="true"/>
+                <i  class="fa  %s fa-fw button warning add_picked invisible " aria-hidden="true"></i>
                 <input class="cant_pick width_50" style="text-align: center;background-color:%s"  value="%s" readonly >
-                <i  class="fa  %s fa-fw  warning  invisible  " aria-hidden="true"/>
+                <i  class="fa  %s fa-fw  warning  invisible  " aria-hidden="true"></i>
             </span>',
         ($quantity_on_location < 1 && $total_pending > 0 ? '' : 'hide'),
 
@@ -140,9 +140,9 @@ function get_delivery_note_fast_track_packing_input($part_location_exist,$total_
 
         $picked_offline_input=sprintf('
             <span class="picked_quantity_cant_pick %s"> 
-                <i  class="fa  %s fa-fw button warning add_picked invisible " aria-hidden="true"/>
+                <i  class="fa  %s fa-fw button warning add_picked invisible " aria-hidden="true"></i>
                 <input class="cant_pick width_50" style="text-align: center;background-color:%s"  value="%s" readonly >
-                <i  class="fa  %s fa-fw  warning  invisible  " aria-hidden="true"/>
+                <i  class="fa  %s fa-fw  warning  invisible  " aria-hidden="true"></i>
             </span>',
             ($part_location_exist=='Yes'? 'hide' : ''),
 
@@ -208,12 +208,12 @@ function get_item_picked($pending, $quantity_on_location, $itf_key, $part_sku, $
     $picked = sprintf(
         '<span class="picked_quantity_done %s">  
  <input class="picked_qty width_50" style="background-color:rgba(192,216,144, 0.2)" ondblclick="show_check_dialog(this)" value="%s" readonly >
-  <i  class="fa  fa-check fa-fw button add_picked " aria-hidden="true"/></span>
+  <i  class="fa  fa-check fa-fw button add_picked " aria-hidden="true"></i></span>
   
   
   <span class="picked_quantity_cant_pick %s">  
  <input class="cant_pick width_50" style="background-color:%s" ondblclick="show_check_dialog(this)" value="%s" readonly >
-  <i  class="fa  %s fa-fw button warning add_picked " aria-hidden="true"/></span>
+  <i  class="fa  %s fa-fw button warning add_picked " aria-hidden="true"></i></span>
   
 
                 <span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1, "reference":"%s" , "description":"%s" , "image_key":%d  }\' class="picked_quantity %s"  >

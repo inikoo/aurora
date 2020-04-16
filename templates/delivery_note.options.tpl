@@ -4,7 +4,7 @@
         <tr>
             <td>{t}Out of stock{/t}
 
-                <input class="picked_qty width_50" value="" ovalue=""/> <i onClick="save_item_out_of_stock_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true"/>
+                <input class="picked_qty width_50" value="" ovalue=""/> <i onClick="save_item_out_of_stock_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true"></i>
 
 
             </td>

@@ -30,7 +30,7 @@
 <div id="set_cost_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
     <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_cost_dialog()" aria-hidden="true"></i>
     {t}Total cost{/t} ({$account->get('Account Currency Code')})
-    <input id="set_cost_value" class=" width_75" value="" old_cost_per_sko="" data-ovalue=""  data-cost="" data-itf_key="" /> <i id="set_cost_save" onClick="save_cost(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/>
+    <input id="set_cost_value" class=" width_75" value="" old_cost_per_sko="" data-ovalue=""  data-cost="" data-itf_key="" /> <i id="set_cost_save" onClick="save_cost(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i>
 </div>
 
 

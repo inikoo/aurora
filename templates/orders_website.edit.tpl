@@ -15,7 +15,7 @@
 <div id="set_price_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
     <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_product_price_dialog()" aria-hidden="true"></i>
     {t}Price{/t} (<span id="set_price_currency"></span>)
-    <input id="set_price_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" product_id="" /> <i id="set_price_save" onClick="save_product_price(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/>
+    <input id="set_price_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" product_id="" /> <i id="set_price_save" onClick="save_product_price(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i>
 </div>
 
 
@@ -23,7 +23,7 @@
 <div id="set_rrp_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
     <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_product_rrp_dialog()" aria-hidden="true"></i>
     {t}Unit RRP{/t} (<span id="set_rrp_currency"></span>)
-    <input id="set_rrp_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" product_id="" /> <i id="set_rrp_save" onClick="save_product_rrp(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/>
+    <input id="set_rrp_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" product_id="" /> <i id="set_rrp_save" onClick="save_product_rrp(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i>
 </div>
 
 <div id="orders_website_block_operations" style="padding:30px;padding-left:40px;border-bottom:1px solid #ccc;display:flex;  ">

@@ -20,7 +20,7 @@
            <td><textarea style="width: 200px"></textarea></td>
        </tr>
        <tr class="aright">
-           <td><i  onClick="save_part_location_notes()" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/></td>
+           <td><i  onClick="save_part_location_notes()" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i></td>
        </tr>
    </table>
 

@@ -33,7 +33,7 @@
         <div class="data_container">
             {assign "image_key" $part->get_main_image_key()}
             <div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
-                <img src="/{if $image_key}image.php?id={$image_key}&amp;s=270x270{else}art/nopic.png{/if}"> </span>
+                <img src="/{if $image_key}image.php?id={$image_key}&amp;s=270x270{else}art/nopic.png{/if}" alt="" />
             </div>
             {include file='upload_main_image.tpl' object='Part' parent_object_scope="Marketing" key=$part->id class="{if $image_key!=''}hide{/if}"}
         </div>
@@ -291,13 +291,13 @@
             <div id="set_part_location_note_bis" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:15px 10px 5px 10px;z-index: 100">
                 <table >
                     <tr style="height: 15px">
-                        <td class="aright" style="padding-bottom: 0px"> <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_part_location_notes_bis()" aria-hidden="true"></i></td>
+                        <td class="aright" style="padding-bottom: 0"> <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_part_location_notes_bis()" aria-hidden="true"></i></td>
                     </tr>
                     <tr>
                         <td><textarea style="width: 200px"></textarea></td>
                     </tr>
                     <tr class="aright">
-                        <td><i  onClick="save_part_location_notes_bis()" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/></td>
+                        <td><i  onClick="save_part_location_notes_bis()" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i></td>
                     </tr>
                 </table>
 

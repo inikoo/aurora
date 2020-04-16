@@ -60,7 +60,7 @@
             <td> {t}Stock{/t} </td>
             <td><input id="set_location_part_stock_quantity_value" class=" width_75" value="" ovalue="" part_sku="" location_key="" element=""/></td>
 
-            <td><i id="set_location_part_stock_quantity_save" onClick="save_location_part_stock_quantity_price(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"/></td>
+            <td><i id="set_location_part_stock_quantity_save" onClick="save_location_part_stock_quantity_price(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i></td>
 
         </tr>
         <tr>
