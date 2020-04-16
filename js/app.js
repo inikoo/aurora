@@ -19,7 +19,6 @@ var old_state_request = '';
 var websocket_connected = false;
 var websocket_connected_connecting = false;
 
-
 $(function () {
 
     state = {

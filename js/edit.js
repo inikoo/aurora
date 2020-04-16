@@ -6,7 +6,6 @@
 
 function open_edit_this_field(scope) {
 
-
     var field = $(scope).closest('tr').attr('field')
 
     // console.log($('#' + field + '_lock'))
