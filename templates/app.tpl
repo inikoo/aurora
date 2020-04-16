@@ -141,11 +141,9 @@
                     <li onclick="change_view('/account')"><i class="fal fa-sliders-h-square fa-fw"></i><span class="label"> </span>
                     </li>
                 {/if}
-
-
-                    <li onclick="change_view('/fire')"><i class="fa fa-chess-clock fa-fw"  title="{t}Attendance{/t}"></i>
-                    </li>
-
+                {if  $user->get('User Type')=='Staff' or   $user->get('User Type')=='Contractor' }
+                <li onclick="change_view('/fire')"><i class="fa fa-chess-clock fa-fw"  title="{t}Attendance{/t}"></i></li>
+                {/if}
 
 
             </ul>
