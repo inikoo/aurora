@@ -32,8 +32,10 @@ if (!in_array(
     $type, array(
              'package',
              'unit',
+             'unit_with_image',
              'carton',
              'unit_barcode',
+             'unit_barcode_with_image',
              'unit_ingredients',
              'unit_EL30',
              'unit_30UP',
@@ -55,6 +57,9 @@ $object = get_object($object_name, $key);
 if($type=='carton'){
     $w = 100;
     $h = 70;
+}elseif($type=='unit_barcode_with_image' or  $type=='unit_with_image'){
+    $w = 120;
+    $h = 60;
 }else{
     $w = 65;
     $h = 27;

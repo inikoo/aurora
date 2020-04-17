@@ -287,7 +287,13 @@
                 </td>
 
                 <td>
-                    <a  target="_blank"title="{t}Barcode label{/t}" href="/asset_label.php?object=product&key={$product->id}&type=unit_barcode"><i class="fal fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Product_Barcode_Number" data-label_no_set="{t}Not set{/t}" >{if $product->get('Product Barcode Number')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$product->get('Product Barcode Number')}{/if}</span>
+                    <a  target="_blank"title="{t}Barcode label with image{/t}" href="/asset_label.php?object=product&key={$product->id}&type=unit_barcode_with_image">
+                        <i class="fal fa-image-polaroid  padding_right_5" ></i>
+                    </a>
+                    <a  target="_blank"title="{t}Barcode label{/t}" href="/asset_label.php?object=product&key={$product->id}&type=unit_barcode">
+                        <i class="fal fa-barcode-alt padding_right_5" ></i>
+                    </a>
+                    <span class="Product_Barcode_Number" data-label_no_set="{t}Not set{/t}" >{if $product->get('Product Barcode Number')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$product->get('Product Barcode Number')}{/if}</span>
                     {if $product->get('Product Barcode Key')}
                         <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$product->get('Product Barcode Key')}')"></i>
                     {/if}
