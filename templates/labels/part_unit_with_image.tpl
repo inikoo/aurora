@@ -57,9 +57,10 @@
 
 
         </td>
-    </tr>
+
         <td style="height:100%;" valign="top">
             <img src="wi.php?id={$part->get('Part Main Image Key')}&s=270x270" width="60mm" />
         </td>
+    </tr>
     </table>
 </div>

@@ -31,9 +31,11 @@ if (!in_array($object_name, array('part','supplier_part','product'))) {
 if (!in_array(
     $type, array(
              'package',
+             'package_with_image',
              'unit',
              'unit_with_image',
              'carton',
+             'carton_with_image',
              'unit_barcode',
              'unit_barcode_with_image',
              'unit_ingredients',
@@ -53,11 +55,10 @@ if (!in_array(
 $object = get_object($object_name, $key);
 
 
-
-if($type=='carton'){
+if($type=='carton'  or  $type=='carton_with_image'){
     $w = 100;
     $h = 70;
-}elseif($type=='unit_barcode_with_image' or  $type=='unit_with_image'){
+}elseif($type=='unit_barcode_with_image' or  $type=='unit_with_image'  or  $type=='package_with_image' ){
     $w = 120;
     $h = 60;
 }else{
@@ -166,7 +167,6 @@ if ($object_name == 'product') {
 
 
 
-
 $mpdf = new \Mpdf\Mpdf(
     [
         'tempDir'       => __DIR__.'/server_files/pdf_tmp',
@@ -194,6 +194,5 @@ $html = $smarty->fetch($template);
 
 
 $mpdf->WriteHTML($html);
-
 $mpdf->Output($filename.'.pdf', 'I');
 

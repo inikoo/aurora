@@ -569,7 +569,7 @@
                 </td>
 
                 <td>
-                    <a  target="_blank"title="{t}Commercial unit label with images{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit_with_image">
+                    <a  target="_blank"title="{t}Commercial unit label{/t} ({t}with image{/t})" href="/asset_label.php?object=part&key={$part->id}&type=unit_with_image">
                         <i class="fal fa-image-polaroid fa-fw padding_right_5" ></i>
                     </a>
                     <a  target="_blank"title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit">
@@ -664,7 +664,7 @@
                 </td>
 
                 <td>
-                    <a style="visibility:hidden" target="_blank" title="{t}Stock keeping unit (Outer) label with image{/t}" href="/asset_label.php?object=part&key={$part->id}&type=package_with_image"><i class="fas fa-image-polaroid fa-fw padding_right_5" ></i></a>
+                    <a  target="_blank" title="{t}Stock keeping unit (Outer) label{/t} ({t}with image{/t})" href="/asset_label.php?object=part&key={$part->id}&type=package_with_image"><i class="fas fa-image-polaroid fa-fw padding_right_5" ></i></a>
 
                     <a target="_blank" title="{t}Stock keeping unit (Outer) label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fas fa-barcode-alt fa-fw padding_right_5" ></i></a>
                     <span class="Part_SKO_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part SKO Barcode')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part SKO Barcode')}{/if}</span>
@@ -690,9 +690,11 @@
 
                 </td>
                 <td>
-                    <a style="visibility:hidden" target="_blank" title="{t}Carton label with image{/t}" href="/asset_label.php?object=part&key={$part->id}&type=carton_with_image"><i class="fas fa-image-polaroid fa-fw padding_right_5" ></i></a>
 
-                    {if $part->get('Part Number Supplier Parts')==1}<a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$part->get('Part Main Supplier Part Key')}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a>{/if} <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+                    {if $part->get('Part Number Supplier Parts')==1}
+                        <a  target="_blank" title="{t}Carton label{/t} ({t}with image{/t})" href="/asset_label.php?object=supplier_part&key={$part->get('Part Main Supplier Part Key')}&type=carton_with_image"><i class="far fa-image-polaroid fa-fw padding_right_5" ></i></a>
+
+                    <a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$part->get('Part Main Supplier Part Key')}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a>{/if} <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
 
 
                 </td>
