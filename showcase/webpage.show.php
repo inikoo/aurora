@@ -16,6 +16,9 @@ function get_webpage_showcase($data, $smarty) {
     $webpage = $data['_object'];
 
 
+    // $webpage->index_elastic_search(get_ES_hosts(),false);
+    //exit;
+
     //   print_r($webpage->get('Content Data'));
 
     if (!$webpage->id) {
@@ -33,10 +36,8 @@ function get_webpage_showcase($data, $smarty) {
         $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
 
-
-        $navigation=json_decode($webpage->properties('navigation'),true);
+        $navigation = json_decode($webpage->properties('navigation'), true);
         $smarty->assign('navigation', $navigation);
-
 
 
         switch ($webpage->get('Webpage Scope')) {
@@ -53,15 +54,11 @@ function get_webpage_showcase($data, $smarty) {
                 $smarty->assign('category', $category);
 
 
-
                 $template = 'showcase/webpage.category_products.tpl';
                 break;
             case 'Category Categories':
                 $category = get_object('Category', $webpage->get('Webpage Scope Key'));
                 $smarty->assign('category', $category);
-
-
-
 
 
                 $template = 'showcase/webpage.category_categories.tpl';

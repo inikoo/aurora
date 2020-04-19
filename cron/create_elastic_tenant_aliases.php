@@ -18,6 +18,46 @@ require '../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
+
+
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_web_search_analytics',
+                'alias'   => 'au_web_search_analytics_'.strtolower(DNS_ACCOUNT_CODE),
+                "routing" => DNS_ACCOUNT_CODE,
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);
+
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_web_search',
+                'alias'   => 'au_web_search_'.strtolower(DNS_ACCOUNT_CODE),
+                "routing" => DNS_ACCOUNT_CODE,
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);
+
+
+
 $params['body'] = array(
     'actions' => array(
         array(
@@ -53,6 +93,10 @@ $params['body'] = array(
     )
 );
 $client->indices()->updateAliases($params);
+
+
+
+
 
 $params['body'] = array(
     'actions' => array(

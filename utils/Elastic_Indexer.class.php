@@ -112,7 +112,7 @@ class Elastic_Indexer {
      */
     private $indices;
 
-    function __construct($hosts, $account_code, $object, $db, $indices=[]) {
+    function __construct($hosts, $account_code, $object, $db, $indices = []) {
         $this->client       = ClientBuilder::create()->setHosts($hosts)->build();
         $this->indices      = $indices;
         $this->object       = $object;
@@ -138,105 +138,14 @@ class Elastic_Indexer {
         $this->store_key = '';
 
 
-        $this->agent_user = [];
+        $this->agent_user    = [];
         $this->supplier_user = [];
         $this->customer_user = [];
-
 
 
         $this->skip_add_index = false;
 
 
-
-    }
-
-
-    private function set_prefix(){
-        switch ($this->object->get_object_name()) {
-            case 'Customer':
-                $this->prefix            = 'c';
-
-                break;
-            case 'Prospect':
-                $this->prefix = 'cp';
-                break;
-            case 'Order':
-                $this->prefix = 'o';
-                break;
-            case 'Part':
-                $this->prefix = 'sko';
-                break;
-            case 'Location':
-                $this->prefix = 'loc';
-                break;
-            case 'Product':
-                $this->prefix = 'p';
-                break;
-            case 'Category':
-                switch ($this->object->get('Category Scope')) {
-                    case 'Product':
-
-                        if ($this->object->get('Category Branch Type') == 'Head') {
-                            $this->prefix = 'cat_p';
-                        } else {
-
-                            $this->skip_add_index = true;
-                        }
-                        break;
-                    case 'Part':
-
-                        if ($this->object->get('Category Branch Type') == 'Head') {
-                            $this->prefix = 'cat_sko';
-                        }
-                        break;
-
-                }
-
-                break;
-
-            case 'Page':
-                $this->prefix = 'wp';
-                break;
-            case 'Supplier':
-                $this->prefix = 'sup';
-                break;
-            case 'Agent':
-                $this->prefix = 'ag';
-                break;
-            case 'Supplier Part':
-                $this->prefix = 'sp';
-                break;
-            case 'Staff':
-                $this->prefix = 's';
-                break;
-            case 'User':
-                $this->prefix = 'u';
-                break;
-            case 'Invoice':
-                $this->prefix = 'i';
-                break;
-            case 'Delivery Note':
-                $this->prefix = 'dn';
-                break;
-            case 'Payment':
-                $this->prefix = 'pay';
-                break;
-            case 'List':
-                $this->prefix = 'li';
-                break;
-            case 'Deal':
-                $this->prefix = 'd';
-                break;
-            case 'Deal Component':
-                $this->prefix = 'dc';
-                break;
-            case 'Deal Campaign':
-                $this->prefix = 'dcc';
-                break;
-            case 'Email Campaign':
-                $this->prefix = 'm';
-                break;
-        }
     }
 
     public function prepare_object() {
@@ -339,6 +248,94 @@ class Elastic_Indexer {
         }
     }
 
+    private function set_prefix() {
+        switch ($this->object->get_object_name()) {
+            case 'Customer':
+                $this->prefix = 'c';
+
+                break;
+            case 'Prospect':
+                $this->prefix = 'cp';
+                break;
+            case 'Order':
+                $this->prefix = 'o';
+                break;
+            case 'Part':
+                $this->prefix = 'sko';
+                break;
+            case 'Location':
+                $this->prefix = 'loc';
+                break;
+            case 'Product':
+                $this->prefix = 'p';
+                break;
+            case 'Category':
+                switch ($this->object->get('Category Scope')) {
+                    case 'Product':
+
+                        if ($this->object->get('Category Branch Type') == 'Head') {
+                            $this->prefix = 'cat_p';
+                        } else {
+
+                            $this->skip_add_index = true;
+                        }
+                        break;
+                    case 'Part':
+
+                        if ($this->object->get('Category Branch Type') == 'Head') {
+                            $this->prefix = 'cat_sko';
+                        }
+                        break;
+
+                }
+
+                break;
+
+            case 'Page':
+                $this->prefix = 'wp';
+                break;
+            case 'Supplier':
+                $this->prefix = 'sup';
+                break;
+            case 'Agent':
+                $this->prefix = 'ag';
+                break;
+            case 'Supplier Part':
+                $this->prefix = 'sp';
+                break;
+            case 'Staff':
+                $this->prefix = 's';
+                break;
+            case 'User':
+                $this->prefix = 'u';
+                break;
+            case 'Invoice':
+                $this->prefix = 'i';
+                break;
+            case 'Delivery Note':
+                $this->prefix = 'dn';
+                break;
+            case 'Payment':
+                $this->prefix = 'pay';
+                break;
+            case 'List':
+                $this->prefix = 'li';
+                break;
+            case 'Deal':
+                $this->prefix = 'd';
+                break;
+            case 'Deal Component':
+                $this->prefix = 'dc';
+                break;
+            case 'Deal Campaign':
+                $this->prefix = 'dcc';
+                break;
+            case 'Email Campaign':
+                $this->prefix = 'm';
+                break;
+        }
+    }
+
     private function prepare_customer() {
 
         $this->module    = 'customers';
@@ -351,7 +348,7 @@ class Elastic_Indexer {
         //$this->label = $this->object->get_formatted_id().' '.$this->object->get('Name').' '.$this->object->get('Location');
         $this->url = sprintf('customers/%d/%d', $this->object->get('Customer Store Key'), $this->object->id);
 
-        $this->customer_user[]=$this->object->id;
+        $this->customer_user[] = $this->object->id;
 
         $this->real_time[] = $this->object->id;
         $this->real_time[] = $this->object->get('Name');
@@ -662,9 +659,9 @@ class Elastic_Indexer {
     private function prepare_order() {
 
 
-        $this->module    = 'orders';
-        $this->store_key = $this->object->get('Store Key');
-        $this->customer_user[]=$this->object->get('Order Customer Key');
+        $this->module          = 'orders';
+        $this->store_key       = $this->object->get('Store Key');
+        $this->customer_user[] = $this->object->get('Order Customer Key');
 
         $this->code = $this->object->get('Order Public ID');
 
@@ -832,9 +829,6 @@ class Elastic_Indexer {
         $this->real_time[] = preg_replace('/-/', '_', $this->object->get('Part Reference'));
 
 
-
-
-
         $this->real_time[] = $this->object->get('Part Package Description');
         $this->real_time[] = $this->object->get('Part SKO Barcode');
         $this->real_time[] = strip_tags($this->object->get('Materials'));
@@ -868,10 +862,10 @@ class Elastic_Indexer {
 
         }
 
-        foreach($this->object->get_suppliers('objects') as $supplier){
-            $this->supplier_user[]=$supplier->id;
-            foreach($supplier->get_agents() as $agent_key){
-                $this->agent_user[]=$agent_key;
+        foreach ($this->object->get_suppliers('objects') as $supplier) {
+            $this->supplier_user[] = $supplier->id;
+            foreach ($supplier->get_agents() as $agent_key) {
+                $this->agent_user[] = $agent_key;
             }
 
         }
@@ -1126,10 +1120,12 @@ class Elastic_Indexer {
 
         $this->module = 'websites';
 
-        $this->scopes    = array(
+        $this->scopes      = array(
             'webpages' => 100
         );
-        $this->store_key = $this->object->get('Store Key');
+        $this->store_key   = $this->object->get('Store Key');
+        $this->website_key = $this->object->get('Website Key');
+        $this->webpage_key = $this->object->id;
 
 
         $this->url  = sprintf('website/%d/webpage/%d', $this->object->get('Webpage Website Key'), $this->object->id);
@@ -1213,16 +1209,12 @@ class Elastic_Indexer {
                 break;
         }
 
-        /*
-        $this->label  = $this->object->get('Webpage Code').', '.$this->object->get('URL');
-        $this->status = $this->object->get('Webpage State');
-        $this->primary[] = $this->object->get('Webpage Code');
+        $this->object_data['status']    = $this->object->get('Webpage State');
+        $this->object_data['url']       = $this->object->get('Webpage URL');
+        $this->object_data['scope']     = $this->object->get('Webpage Scope');
+        $this->object_data['scope_key'] = $this->object->get('Webpage Scope Key');
 
-
-        list($tokens, $aux) = $this->tokenize_url($this->object->get('URL'));
-        $this->alias = array_merge($this->alias, $tokens);
-        $this->alias = array_merge($this->alias, $aux);
-
+        $this->object_data['content'] = '';
 
         $content_data = $this->object->get('Content Data');
         if (isset($content_data['blocks'])) {
@@ -1230,19 +1222,19 @@ class Elastic_Indexer {
                 switch ($block['type']) {
                     case 'text':
                         foreach ($block['text_blocks'] as $text_block) {
-                            $this->secondary[] = html_entity_decode(strip_tags($text_block['text']));
+                            $this->object_data['content'] .= html_entity_decode(strip_tags($text_block['text'])).' ';
                         }
 
                         break;
                     case 'product':
-                        $this->secondary[] = html_entity_decode(strip_tags($block['text']));
+                        $this->object_data['content'] .= html_entity_decode(strip_tags($block['text'])).' ';
                         break;
                     case 'blackboard':
                         foreach ($block['texts'] as $text_block) {
-                            $this->secondary[] = html_entity_decode(strip_tags($text_block['text']));
+                            $this->object_data['content'] .= html_entity_decode(strip_tags($text_block['text'])).' ';
                         }
                         foreach ($block['images'] as $images_block) {
-                            $this->secondary[] = strip_tags($images_block['title']);
+                            $this->object_data['content'] .= strip_tags($images_block['title']).' ';
                         }
                         break;
                 }
@@ -1250,9 +1242,8 @@ class Elastic_Indexer {
 
             }
         }
+        $this->object_data['content'] = trim($this->object_data['content']);
 
-        $this->remove_duplicated_tokens();
-        */
 
     }
 
@@ -1262,8 +1253,8 @@ class Elastic_Indexer {
         /**
          * @var $supplier \Supplier
          */
-        $supplier=$this->object;
-        
+        $supplier = $this->object;
+
 
         if ($supplier->get('Supplier Production') == 'Yes') {
             $this->module = 'production';
@@ -1274,17 +1265,16 @@ class Elastic_Indexer {
                 'suppliers' => 100
             );
 
-            $this->supplier_user[]=$supplier->id;
+            $this->supplier_user[] = $supplier->id;
 
-            foreach($supplier->get_agents() as $agent_key){
-                $this->agent_user[]=$agent_key;
+            foreach ($supplier->get_agents() as $agent_key) {
+                $this->agent_user[] = $agent_key;
             }
 
         }
 
 
         $this->code = $supplier->get('Supplier Code');
-
 
 
         $this->url = sprintf('supplier/%d', $supplier->id);
@@ -1311,7 +1301,6 @@ class Elastic_Indexer {
                 $this->weight       = 50;
 
 
-
                 break;
             case 'Archived':
                 $this->icon_classes = 'far fa-fw fa-hand-holding-box error super_discreet ';
@@ -1330,9 +1319,9 @@ class Elastic_Indexer {
             'agents' => 100
         );
 
-        $this->agent_user[]=$this->object->id;
-        $this->code = $this->object->get('Agent Code');
-        $this->url  = sprintf('agent/%d', $this->object->id);
+        $this->agent_user[] = $this->object->id;
+        $this->code         = $this->object->get('Agent Code');
+        $this->url          = sprintf('agent/%d', $this->object->id);
 
         $this->real_time[] = $this->object->get('Agent Code');
         $this->real_time[] = $this->object->get('Agent Name');
@@ -1360,7 +1349,7 @@ class Elastic_Indexer {
                 'supplier_parts' => 100
             );
 
-            $this->supplier_user[]=$this->object->get('Supplier Key');
+            $this->supplier_user[] = $this->object->get('Supplier Key');
 
 
         }
@@ -1389,8 +1378,8 @@ class Elastic_Indexer {
         if ($supplier->get('Supplier Type') == 'Agent') {
             $this->label_3 .= ' <i class="fal small discreet fa-fw fa-user-secret"></i>';
 
-            foreach($supplier->get_agents() as $agent_key){
-                $this->agent_user[]=$agent_key;
+            foreach ($supplier->get_agents() as $agent_key) {
+                $this->agent_user[] = $agent_key;
             }
 
         }
@@ -1560,9 +1549,9 @@ class Elastic_Indexer {
     private function prepare_invoice() {
 
 
-        $this->module    = 'accounting';
-        $this->store_key = $this->object->get('Store Key');
-        $this->customer_user[]=$this->object->get('Invoice Customer Key');
+        $this->module          = 'accounting';
+        $this->store_key       = $this->object->get('Store Key');
+        $this->customer_user[] = $this->object->get('Invoice Customer Key');
 
         $this->code = $this->object->get('Public ID');
 
@@ -1613,9 +1602,9 @@ class Elastic_Indexer {
     private function prepare_delivery_note() {
 
 
-        $this->module    = 'delivering';
-        $this->store_key = $this->object->get('Store Key');
-        $this->customer_user[]=$this->object->get('Delivery Note Customer Key');
+        $this->module          = 'delivering';
+        $this->store_key       = $this->object->get('Store Key');
+        $this->customer_user[] = $this->object->get('Delivery Note Customer Key');
 
 
         $this->code = $this->object->get('ID');
@@ -1655,9 +1644,9 @@ class Elastic_Indexer {
     private function prepare_payment() {
 
 
-        $this->module    = 'accounting';
-        $this->store_key = $this->object->get('Store Key');
-        $this->customer_user[]=$this->object->get('Payment Customer Key');
+        $this->module          = 'accounting';
+        $this->store_key       = $this->object->get('Store Key');
+        $this->customer_user[] = $this->object->get('Payment Customer Key');
 
         $this->scopes = array(
             'payments' => 100
@@ -1944,6 +1933,14 @@ class Elastic_Indexer {
                     ]
                 );
                 break;
+            case 'Page':
+                $this->client->delete(
+                    [
+                        'index' => strtolower('au_web_search_'.$this->account_code),
+                        'id'    => $this->account_code.'.'.$this->object->id,
+                    ]
+                );
+                break;
         }
 
 
@@ -1955,6 +1952,8 @@ class Elastic_Indexer {
 
 
         $body = $this->get_index_body();
+        //print_r($this->get_index_header());
+        //print_r($body);
         if (is_array($body) and count($body) > 0) {
 
 
@@ -2017,7 +2016,7 @@ class Elastic_Indexer {
         }
 
         if (count($this->agent_user) > 0) {
-            $body['agent_user']= $this->agent_user;
+            $body['agent_user'] = $this->agent_user;
         }
         if (count($this->supplier_user) > 0) {
             $body['supplier_user'] = $this->supplier_user;
@@ -2054,7 +2053,7 @@ class Elastic_Indexer {
                 $body['products_bought']    = $this->get_object_data('products_bought');
                 $body['families_bought']    = $this->get_object_data('families_bought');
                 $body['departments_bought'] = $this->get_object_data('departments_bought');
-                
+
                 $body['products_bought_1y'] = $this->get_object_data('products_bought_1y');
                 $body['products_bought_1q'] = $this->get_object_data('products_bought_1q');
                 $body['products_bought_1m'] = $this->get_object_data('products_bought_1m');
@@ -2073,6 +2072,25 @@ class Elastic_Indexer {
 
                 $index_body[] = $body;
                 break;
+            /**
+             * case 'Page':
+             * $body         = array(
+             * 'url'         => $this->object_data['url'],
+             * 'weight'      => $this->weight,
+             * 'store_key'   => $this->store_key,
+             * 'website_key' => $this->website_key,
+             * 'webpage_key' => $this->webpage_key,
+             * 'content'     => $this->object_data['content'],
+             * 'status'      => $this->object_data['status'],
+             * 'scope'       => $this->object_data['scope'],
+             * 'scope_key'       => $this->object_data['scope_key'],
+             *
+             *
+             * );
+             * $index_body[] = $body;
+             * break;
+             * **/
+
         }
 
 
@@ -2145,17 +2163,23 @@ class Elastic_Indexer {
                     'id'    => $this->account_code.'.'.$this->object->id,
                 ];
                 break;
+            /**
+             * case 'Page':
+             * $index_header[] = [
+             * 'index' => strtolower('au_web_search_'.$this->account_code),
+             * 'id'    => $this->account_code.'.'.$this->object->id,
+             * ];
+             * break;
+             **/
         }
 
-        
+
         return $index_header;
     }
 
     public function update_index() {
-        
-        
-        
-        
+
+
         foreach ($this->indices as $index_type) {
             switch ($index_type) {
 
@@ -2179,9 +2203,9 @@ class Elastic_Indexer {
                         'id'    => $this->account_code.'.'.$this->object->id,
                         'body'  => [
                             'doc' => [
-                                'products_bought' =>  $this->get_object_data('products_bought'),
-                                'families_bought' =>  $this->get_object_data('families_bought'),
-                                'departments_bought' =>  $this->get_object_data('departments_bought')
+                                'products_bought'    => $this->get_object_data('products_bought'),
+                                'families_bought'    => $this->get_object_data('families_bought'),
+                                'departments_bought' => $this->get_object_data('departments_bought')
                             ]
                         ]
                     ];
@@ -2194,24 +2218,37 @@ class Elastic_Indexer {
                         'id'    => $this->account_code.'.'.$this->object->id,
                         'body'  => [
                             'doc' => [
-                                'products_bought_1y' =>  $this->get_object_data('products_bought_1y'),
-                                'families_bought_1y' =>  $this->get_object_data('families_bought_1y'),
-                                'departments_bought_1y' =>  $this->get_object_data('departments_bought_1y'),
-                                
-                                'products_bought_1q' =>  $this->get_object_data('products_bought_1q'),
-                                'families_bought_1q' =>  $this->get_object_data('families_bought_1q'),
-                                'departments_bought_1q' =>  $this->get_object_data('departments_bought_1q'),
-                                
-                                'products_bought_1m' =>  $this->get_object_data('products_bought_1m'),
-                                'families_bought_1m' =>  $this->get_object_data('families_bought_1m'),
-                                'departments_bought_1m' =>  $this->get_object_data('departments_bought_1m'),
-                                
-                                'products_bought_1w' =>  $this->get_object_data('products_bought_1w'),
-                                'families_bought_1w' =>  $this->get_object_data('families_bought_1w'),
-                                'departments_bought_1w' =>  $this->get_object_data('departments_bought_1w')
+                                'products_bought_1y'    => $this->get_object_data('products_bought_1y'),
+                                'families_bought_1y'    => $this->get_object_data('families_bought_1y'),
+                                'departments_bought_1y' => $this->get_object_data('departments_bought_1y'),
+
+                                'products_bought_1q'    => $this->get_object_data('products_bought_1q'),
+                                'families_bought_1q'    => $this->get_object_data('families_bought_1q'),
+                                'departments_bought_1q' => $this->get_object_data('departments_bought_1q'),
+
+                                'products_bought_1m'    => $this->get_object_data('products_bought_1m'),
+                                'families_bought_1m'    => $this->get_object_data('families_bought_1m'),
+                                'departments_bought_1m' => $this->get_object_data('departments_bought_1m'),
+
+                                'products_bought_1w'    => $this->get_object_data('products_bought_1w'),
+                                'families_bought_1w'    => $this->get_object_data('families_bought_1w'),
+                                'departments_bought_1w' => $this->get_object_data('departments_bought_1w')
                             ]
                         ]
                     ];
+                    $this->client->update($params);
+                    break;
+                case 'web_search':
+                    $params = [
+                        'index' => strtolower('au_web_search_'.$this->account_code),
+                        'id'    => $this->account_code.'.'.$this->object->id,
+                        'body'  => [
+                            'doc' => [
+                                'content' => $this->get_object_data('content')
+                            ]
+                        ]
+                    ];
+                    //print_r($params);
                     $this->client->update($params);
                     break;
 
