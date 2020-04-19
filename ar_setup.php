@@ -15,9 +15,7 @@ error_reporting(E_ALL);
 define("_DEVEL", isset($_SERVER['devel']));
 
 
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+
 
 
 require_once 'vendor/autoload.php';
@@ -31,10 +29,6 @@ require_once 'utils/table_functions.php';
 include_once 'utils/i18n.php';
 
 
-
-
-$memcached = new Memcached();
-$memcached->addServer($memcache_ip, 11211);
 
 
 $redis = new Redis();
@@ -62,13 +56,9 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 $account = new Account($db);
 
+session_start();
+$_SESSION['account']= $account->get('Code');
 
-$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-$session        = new Session($sessionStorage);
-$session->start();
-$session->set('account', $account->get('Code'));
-
-//require_once 'utils/modules.php';
 $modules=array();
 
 require_once 'utils/ar_common.php';
@@ -276,7 +266,7 @@ function setup_root_user($data,$editor) {
 
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
 
-    global $session;
+    
 
     $_tab    = $tab;
     $_subtab = $subtab;
@@ -297,10 +287,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     if (is_array($state)) {
 
 
-        //$_SESSION['state'][$state['module']][$state['section']]['tab'] = $_tab;
-
-
-        $session->set('state/'.$state['module'].'/'.$state['section'].'/tab',$_tab);
+        $_SESSION['state/'.$state['module'].'/'.$state['section'].'/tab']=$_tab;
 
         if ($_subtab != '') {
             $_SESSION['tab_state'][$_tab] = $_subtab;

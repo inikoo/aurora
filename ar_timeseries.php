@@ -32,12 +32,12 @@ switch ($tipo) {
     case 'asset_sales':
         $data = prepare_values(
             $_REQUEST, array(
-                'parent'     => array('type' => 'string'),
-                'parent_key' => array('type' => 'string'),
-                'from'       => array('type' => 'string'),
-                'to'         => array('type' => 'string')
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'string'),
+                         'from'       => array('type' => 'string'),
+                         'to'         => array('type' => 'string')
 
-            )
+                     )
         );
         asset_sales($db, $data, $account);
         break;
@@ -45,12 +45,12 @@ switch ($tipo) {
     case 'part_stock':
         $data = prepare_values(
             $_REQUEST, array(
-                'parent'     => array('type' => 'string'),
-                'parent_key' => array('type' => 'string'),
-                'from'       => array('type' => 'string'),
-                'to'         => array('type' => 'string')
+                         'parent'     => array('type' => 'string'),
+                         'parent_key' => array('type' => 'string'),
+                         'from'       => array('type' => 'string'),
+                         'to'         => array('type' => 'string')
 
-            )
+                     )
         );
         part_stock($data);
         break;
@@ -58,24 +58,24 @@ switch ($tipo) {
     case 'csv':
         $data = prepare_values(
             $_REQUEST, array(
-                'id'         => array(
-                    'type'     => 'key',
-                    'optional' => true
-                ),
-                'type'       => array(
-                    'type'     => 'string',
-                    'optional' => true
-                ),
-                'parent'     => array(
-                    'type'     => 'string',
-                    'optional' => true
-                ),
-                'parent_key' => array(
-                    'type'     => 'string',
-                    'optional' => true
-                ),
+                         'id'         => array(
+                             'type'     => 'key',
+                             'optional' => true
+                         ),
+                         'type'       => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'parent'     => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'parent_key' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
 
-            )
+                     )
         );
         get_csv_records($db, $data);
         break;
@@ -96,8 +96,7 @@ function get_csv_records($db, $data) {
     if (!isset($data['id'])) {
         if (isset($data['type']) and isset($data['parent']) and isset($data['parent_key'])) {
             $sql = sprintf(
-                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=%s AND `Timeseries Parent`=%s AND `Timeseries Parent Key`=%d', prepare_mysql($data['type']),
-                prepare_mysql($data['parent']), $data['parent_key']
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=%s AND `Timeseries Parent`=%s AND `Timeseries Parent Key`=%d', prepare_mysql($data['type']), prepare_mysql($data['parent']), $data['parent_key']
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -130,12 +129,11 @@ function get_csv_records($db, $data) {
     $table = '`Timeseries Record Dimension` TR ';
 
 
-    $where = sprintf(
+    $where  = sprintf(
         ' where `Timeseries Record Timeseries Key`=%d', $data['id']
     );
-    $order = '`Timeseries Record Date`';
-    $fields
-           = "`Timeseries Record Type`,`Timeseries Record Date`,`Timeseries Record Float A`,`Timeseries Record Float B`,`Timeseries Record Float C`,`Timeseries Record Float D`,`Timeseries Record Integer A`,`Timeseries Record Integer B`";
+    $order  = '`Timeseries Record Date`';
+    $fields = "`Timeseries Record Type`,`Timeseries Record Date`,`Timeseries Record Float A`,`Timeseries Record Float B`,`Timeseries Record Float C`,`Timeseries Record Float D`,`Timeseries Record Integer A`,`Timeseries Record Integer B`";
 
     $sql   = "select $fields from $table $where  order by $order ";
     $adata = array();
@@ -199,10 +197,9 @@ function outputCSV($data) {
 function asset_sales($db, $data, $account) {
     include_once 'utils/object_functions.php';
 
-    global $memcache_ip;
 
-    $table = "`Timeseries Record Dimension`  ";
-    $timeseries_key =0;
+    $table          = "`Timeseries Record Dimension`  ";
+    $timeseries_key = 0;
     switch ($data['parent']) {
 
 
@@ -211,38 +208,35 @@ function asset_sales($db, $data, $account) {
             include_once 'elastic/isf.elastic.php';
 
 
+            $results_raw = get_part_inventory_transaction_fact('sales', $data['parent_key']);
 
-            $results_raw=get_part_inventory_transaction_fact('sales',$data['parent_key']);
-
-            $results=$results_raw['aggregations']['stock_per_day']['buckets'];
+            $results = $results_raw['aggregations']['stock_per_day']['buckets'];
             print "Date,Open,Volume\n";
 
-            foreach(array_reverse($results) as $result){
+            foreach (array_reverse($results) as $result) {
                 print $result['key_as_string'].','.$result['sold_amount']['value'].','.$result['sold']['value']."\n";
             }
 
             exit();
 
 
-
             break;
 
         case 'product':
 
-            $product    = get_object('Product', $data['parent_key']);
+            $product = get_object('Product', $data['parent_key']);
 
 
-            $where  = sprintf("where   `Invoice Key` is not null  and `Product ID`=%d", $data['parent_key']);
-            $table  = "`Order Transaction Fact` TR ";
+            $where = sprintf("where   `Invoice Key` is not null  and `Product ID`=%d", $data['parent_key']);
+            $table = "`Order Transaction Fact` TR ";
             $group = 'group by `Date`';
 
 
-                $fields = "`Invoice Date` as `Date`,
+            $fields = "`Invoice Date` as `Date`,
 sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as `Sales`,
 count(distinct `Invoice Key`) as `Volume`,
 count(distinct `Customer Key`) as customers
 ";
-
 
 
             break;
@@ -250,8 +244,7 @@ count(distinct `Customer Key`) as customers
 
 
             $sql = sprintf(
-                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Category" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="ProductCategorySales" ',
-                $data['parent_key']
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Category" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="ProductCategorySales" ', $data['parent_key']
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -263,12 +256,11 @@ count(distinct `Customer Key`) as customers
             }
 
 
-            $fields
-                   = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
-            $where = sprintf(
+            $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+            $where  = sprintf(
                 "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
             );
-            $table = "`Timeseries Record Dimension`  ";
+            $table  = "`Timeseries Record Dimension`  ";
 
             $group = 'group by `Date`';
             break;
@@ -276,8 +268,7 @@ count(distinct `Customer Key`) as customers
 
 
             $sql = sprintf(
-                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Category" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="PartCategorySales" ',
-                $data['parent_key']
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Category" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="PartCategorySales" ', $data['parent_key']
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -289,12 +280,11 @@ count(distinct `Customer Key`) as customers
             }
 
 
-            $fields
-                   = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
-            $where = sprintf(
+            $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+            $where  = sprintf(
                 "where `Timeseries Record Timeseries Key`=%d", $timeseries_key
             );
-            $table = "`Timeseries Record Dimension`  ";
+            $table  = "`Timeseries Record Dimension`  ";
 
             $group = 'group by `Date`';
             break;
@@ -303,8 +293,7 @@ count(distinct `Customer Key`) as customers
         case 'store':
 
             $sql = sprintf(
-                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Store" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="StoreSales" ',
-                $data['parent_key']
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Store" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="StoreSales" ', $data['parent_key']
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -316,23 +305,22 @@ count(distinct `Customer Key`) as customers
             }
 
 
-
-            if(!$timeseries_key){
-               print "Date,Open,Volume\n";
+            if (!$timeseries_key) {
+                print "Date,Open,Volume\n";
                 print gmdate('Y-m-d').",0,0\n";
+
                 return;
             }
 
 
             $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
-            $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+            $where  = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
             $group  = 'group by `Date`';
             break;
         case 'account':
 
             $sql = sprintf(
-                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Account" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="AccountSales" ',
-                $data['parent_key']
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Account" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="AccountSales" ', $data['parent_key']
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -344,14 +332,13 @@ count(distinct `Customer Key`) as customers
             }
 
             $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
-            $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+            $where  = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
             $group  = 'group by `Date`';
             break;
         case 'supplier':
 
             $sql = sprintf(
-                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Supplier" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="SupplierSales" ',
-                $data['parent_key']
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Supplier" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="SupplierSales" ', $data['parent_key']
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -363,15 +350,14 @@ count(distinct `Customer Key`) as customers
             }
 
             $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
-            $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+            $where  = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
 
             $group = 'group by `Date`';
             break;
         case 'customer':
 
             $sql = sprintf(
-                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Customer" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="CustomerSales" ',
-                $data['parent_key']
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Customer" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="CustomerSales" ', $data['parent_key']
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -383,7 +369,7 @@ count(distinct `Customer Key`) as customers
             }
 
             $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
-            $where = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+            $where  = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
 
             $group = 'group by `Date`';
             break;
@@ -393,74 +379,57 @@ count(distinct `Customer Key`) as customers
     }
 
     $where_interval = prepare_mysql_dates($data['from'], $data['to'], '`Date`');
-    $where .= $where_interval['mysql'];
+    $where          .= $where_interval['mysql'];
 
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
 
     $sql = sprintf("SELECT %s FROM %s %s %s ORDER BY `Date` DESC", $fields, $table, $where, $group);
 
-//print $sql;
 
-    $result = $cache->get($account->get('Code').'SQL'.md5($sql));
-    if ($result and false) {
-        print "Date,Open,Volume\n";
+    $res = array();
+    print "Date,Open,Volume\n";
+
+
+    if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            print sprintf(
-                "%s,%s\n", $row['Date'], $row['Sales'], $row['Volume']
-            );
-        }
-
-    } else {
 
 
-        $res = array();
-        print "Date,Open,Volume\n";
-
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if ($row['Volume'] == 0) {
-                    // continue;
-                }
-
-                print sprintf(
-                    "%s,%.1f,%d\n", $row['Date'], $row['Sales'], $row['Volume']
-
-                );
-
-                $res[] = $row;
-
+            if ($row['Volume'] == 0) {
+                // continue;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
+
+            print sprintf(
+                "%s,%.1f,%d\n", $row['Date'], $row['Sales'], $row['Volume']
+
+            );
+
+            $res[] = $row;
+
         }
-
-
-        $cache->set($account->get('Code').'SQL'.md5($sql), $res, 86400);
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
     }
+
+
+    $cache->set($account->get('Code').'SQL'.md5($sql), $res, 86400);
 
 
 }
 
 
-function part_stock( $data) {
+function part_stock($data) {
 
     include_once 'elastic/isf.elastic.php';
 
     print "Date,Open,High,Low,Close,Volume,Adj Close\n";
 
 
-    $results_raw=get_part_inventory_transaction_fact('stock',$data['parent_key']);
+    $results_raw = get_part_inventory_transaction_fact('stock', $data['parent_key']);
 
-    $results=$results_raw['aggregations']['stock_per_day']['buckets'];
-    foreach(array_reverse($results) as $result){
+    $results = $results_raw['aggregations']['stock_per_day']['buckets'];
+    foreach (array_reverse($results) as $result) {
         print $result['key_as_string'].',0,0,0,'.$result['stock']['value']."\n";
     }
-
 
 
 }

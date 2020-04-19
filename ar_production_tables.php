@@ -542,9 +542,9 @@ function bill_of_materials($_data, $db, $user, $account) {
     $adata = array();
 
 
-    global $session;
+    
 
-    $production_key = $session->get('current_production');
+    $production_key = $_SESSION['current_production'];
 
 
     if ($result = $db->query($sql)) {

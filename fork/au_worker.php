@@ -41,7 +41,6 @@ $worker->addFunction("au_calculate_sales", "fork_calculate_sales");
 
 $db      = false;
 $account = false;
-$session = false;
 
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {

@@ -2929,8 +2929,8 @@ class Part extends Asset {
 
 
         if ($exclude_unknown) {
-            global $session;
-            $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+            
+            $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
             $where     = sprintf('and PL.`Location Key`!=%d  ', $warehouse->get('Warehouse Unknown Location Key'));
 
         } else {
@@ -3509,9 +3509,9 @@ class Part extends Asset {
 
 
         if (!$unknown_location_key) {
-            global $session;
+            
 
-            $warehouse            = get_object('Warehouse', $session->get('current_warehouse'));
+            $warehouse            = get_object('Warehouse', $_SESSION['current_warehouse']);
             $unknown_location_key = $warehouse->get('Warehouse Unknown Location Key');
         }
 
@@ -4767,8 +4767,8 @@ class Part extends Asset {
     function update_number_locations() {
 
 
-        global $session;
-        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+        
+        $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
         $locations = 0;
 
@@ -4791,8 +4791,8 @@ class Part extends Asset {
     function update_unknown_location() {
 
 
-        global $session;
-        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+        
+        $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
         $stock = 0;
         $value = 0;

@@ -1,6 +1,6 @@
 <?php
 
-global $session;
+
 
 $stores = join(',', $user->stores);
 
@@ -14,12 +14,13 @@ $date_interval = prepare_mysql_dates(
 );
 if ($date_interval['error']) {
     $date_interval = prepare_mysql_dates(
-        $session->get('state/report_sales_with_no_tax/from'),$session->get('state/report_sales_with_no_tax/to')
+        $_SESSION['state/report_sales_with_no_tax/from'],$_SESSION['state/report_sales_with_no_tax/to']
     );
 } else {
 
-    $session->set('state/report_sales_with_no_tax/from',$date_interval['from']);
-    $session->set('state/report_sales_with_no_tax/to',$date_interval['to']);
+
+    $_SESSION['state/report_sales_with_no_tax/from']=$date_interval['from'];
+    $_SESSION['state/report_sales_with_no_tax/to']=$date_interval['to'];
 
 
 }

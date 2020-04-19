@@ -14,7 +14,7 @@
 
 $account=get_object('Account',1);
 $account->load_acc_data();
-$warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+$warehouse=get_object('Warehouse',$_SESSION['current_warehouse']);
 
 $warehouse->update_delivery_notes();
 $smarty->assign('delivery_note_flow',(empty($state['extra_tab'])?$state['extra']:$state['extra'].'_'.$state['extra_tab']));

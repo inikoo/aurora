@@ -37,7 +37,6 @@ $worker->addFunction("au_reindex_webpages", "fork_reindex_webpages");
 
 $db      = false;
 $account = false;
-$session = false;
 
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {

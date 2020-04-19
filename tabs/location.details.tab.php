@@ -18,8 +18,8 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
 } else {
 
 
-    global $session;
-    $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+    
+    $warehouse=get_object('Warehouse',$_SESSION['current_warehouse']);
     if($warehouse->get('Warehouse Unknown Location Key')==$state['key']){
         $html ='<div style="padding:20px">'._("This is a special location, can't be edited").'</div>';
     }else{

@@ -13,7 +13,7 @@
 $account->load_acc_data();
 
 // todo get this info from Account dimension
-$warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+$warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 $smarty->assign('warehouse', $warehouse);
 
 $html = '';

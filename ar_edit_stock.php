@@ -491,8 +491,8 @@ function get_part_locations_html($account, $db, $user, $editor, $data, $smarty) 
     $smarty->assign('locations_data', $part->get_locations('data'));
 
 
-    global $session;
-    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    
+    $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
 
@@ -553,8 +553,8 @@ function edit_part_stock_check($account, $db, $user, $editor, $data, $smarty) {
     $smarty->assign('locations_data', $part->get_locations('data'));
 
 
-    global $session;
-    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    
+    $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
 
@@ -654,8 +654,8 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
     }
 
 
-    global $session;
-    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    
+    $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
     if (!$has_picking_location) {
 
@@ -998,8 +998,8 @@ function edit_part_move_stock($editor, $data, $smarty) {
 
     $smarty->assign('locations_data', $part->get_locations('data'));
 
-    global $session;
-    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    
+    $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
     $part_locations = $smarty->fetch('part_locations.edit.tpl');
@@ -1108,8 +1108,8 @@ function edit_stock_to_delete($account, $db, $user, $editor, $data, $smarty) {
 
         $smarty->assign('locations_data', $part->get_locations('data'));
 
-        global $session;
-        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+        
+        $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
         $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
         $part_locations = $smarty->fetch('part_locations.edit.tpl');
@@ -1438,8 +1438,8 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty) {
     $smarty->assign('locations_data', $part->get_locations('data'));
 
 
-    global $session;
-    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    
+    $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
 
@@ -1506,8 +1506,8 @@ function send_to_production($account, $db, $user, $editor, $data, $smarty) {
 
     $smarty->assign('locations_data', $part->get_locations('data'));
 
-    global $session;
-    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    
+    $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
     $part_locations = $smarty->fetch('part_locations.edit.tpl');

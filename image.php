@@ -14,19 +14,8 @@
 include_once 'keyring/dns.php';
 
 require_once 'vendor/autoload.php';
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
-
-$memcached = new Memcached();
-$memcached->addServer($memcache_ip, 11211);
-
-$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-$session        = new Session($sessionStorage);
-$session->start();
-
-
+session_start();
 if(empty($_SESSION['logged_in'])){
     http_response_code(403);
     exit('Forbidden');

@@ -359,7 +359,7 @@ class User extends DB_Table {
     function get($key) {
 
         global $account;
-        global $session;
+        
 
         if (!$this->id) {
             return;
@@ -376,7 +376,7 @@ class User extends DB_Table {
                         return _('Organization').' <small class="discreet small">('.$account->get('Timezone').')</small>';
                         break;
                     case 'Account':
-                        return _('Local time').' <small class="discreet small">('.$session->get('local_timezone_label').')</small>';
+                        return _('Local time').' <small class="discreet small">('.$_SESSION['local_timezone_label'].')</small>';
                         break;
                     case 'UTC':
                         return 'UTC';
@@ -1345,7 +1345,7 @@ class User extends DB_Table {
                         date_default_timezone_set($account->get('Account Timezone'));
                         break;
                     case 'Local':
-                        if (!date_default_timezone_set($session->get('local_timezone'))) {
+                        if (!date_default_timezone_set($_SESSION['local_timezone'])) {
 
                             print 'cacacaca';
                             date_default_timezone_set($account->get('Account Timezone'));
@@ -1356,8 +1356,8 @@ class User extends DB_Table {
                         break;
 
                 }
-                $session->set('timezone', date_default_timezone_get());
 
+                $_SESSION['timezone']= date_default_timezone_get();
 
                 $this->update_metadata = array(
                     'class_html' => array(

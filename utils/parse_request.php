@@ -5867,7 +5867,7 @@ function parse_title($module, $section, $modules) {
 
 function parse_tabs($module, $section, $_data, $modules) {
 
-    global $session;
+    
 
 
     if (isset($_data['subtab'])) {
@@ -5884,7 +5884,7 @@ function parse_tabs($module, $section, $_data, $modules) {
     } else {
 
 
-        $tmp = $session->get('state');
+        $tmp = $_SESSION['state'];
 
 
         if (!empty($tmp[$module][$section]['tab'])) {
@@ -5917,12 +5917,12 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 function parse_subtab($module, $section, $tab, $modules) {
 
-    global $session;
+    
 
     if (isset($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])) {
 
 
-        $_session = $session->get('tab_state');
+        $_session = $_SESSION['tab_state'];
 
         if (isset ($_session[$tab])) {
             $subtab = $_session[$tab];

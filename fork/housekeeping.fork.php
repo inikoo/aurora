@@ -10,13 +10,13 @@
 
 function fork_housekeeping($job) {
 
-    global $account, $db, $session;// remove the global $db and $account is removed
+    global $account, $db;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
-    list($account, $db, $data, $editor, $session, $ES_hosts) = $_data;
+    list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
 
     print $data['type']."\n";
@@ -1638,64 +1638,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
                 }
 
-                /*
 
-                include_once 'utils/email_notification.class.php';
-
-                $email_notification = new email_notification();
-                foreach ($recipients as $recipient) {
-                    $email_notification->mail->addAddress($recipient);
-
-                }
-
-
-                $subject    = _('New order').' '.$store->get('Name');
-                $title      = '<b>'._('New order').'</b> '.$order->get('Total Amount').' '.$store->get('Name');
-                $link_label = _('Link to order');
-
-                $link = sprintf(
-                    '%s/orders/%d/%d',
-                    $account->get('Account System Public URL'),
-                    $store->id,
-                    $order->id
-                );
-
-
-                $info = sprintf(
-                    _('New order %s (%s) has been placed by %s'),
-                    '<a href="'.$link.'">'.$order->get('Public ID').'</a>',
-                    '<b>'.$order->get('Total Amount').'</b>',
-                    '<b>'.$customer->get('Name').'</b>'
-
-                );
-
-
-                $smarty->assign('type', 'Success');
-
-                $smarty->assign('store', $store);
-                $smarty->assign('account', $account);
-                $smarty->assign('title', $title);
-                $smarty->assign('subject', $subject);
-                $smarty->assign('link_label', $link_label);
-                $smarty->assign('link', $link);
-                $smarty->assign('info', $info);
-                $smarty->assign('customer', $customer);
-                $smarty->assign('order', $order);
-
-                $email_notification->mail->Subject = $subject;
-
-                try {
-                    $email_notification->mail->msgHTML($smarty->fetch('notification_emails/new_order.ntfy.tpl'));
-                    $email_notification->mail->AltBody = strip_tags($info);
-
-                } catch (Exception $e) {
-                    echo 'Caught exception: ', $e->getMessage(), "\n";
-                }
-
-
-                $email_notification->send();
-
-                */
 
             }
 
@@ -3080,65 +3023,10 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
                     $published_email_template->send($recipient, $send_data, $smarty);
 
-                    //  print_r($published_email_template->msg);
 
 
                 }
-                /*
 
-
-            include_once 'utils/email_notification.class.php';
-
-            $email_notification = new email_notification();
-            foreach ($recipients as $recipient) {
-                $email_notification->mail->addAddress($recipient);
-
-            }
-
-
-                            $subject    = _('New customer registration').' '.$store->get('Name');
-                            $title      = '<b>'._('New customer registration').'</b> '.$store->get('Name');
-                            $link_label = _('Link to customer');
-
-
-                            $info = sprintf(
-                                _('%s (%s) has registered'),
-                                '<b>'.$customer->get('Name').'</b>',
-                                '<a href="href="mailto:'.$customer->get('Customer Main Plain Email').'"">'.$customer->get('Customer Main Plain Email').'</a>'
-
-                            );
-
-                            $link = sprintf(
-                                '%s/customers/%d/%d',
-                                $account->get('Account System Public URL'),
-                                $store->id,
-                                $customer->id
-                            );
-
-                            $smarty->assign('type', 'Success');
-
-                            $smarty->assign('store', $store);
-                            $smarty->assign('account', $account);
-                            $smarty->assign('title', $title);
-                            $smarty->assign('subject', $subject);
-                            $smarty->assign('link_label', $link_label);
-                            $smarty->assign('link', $link);
-                            $smarty->assign('info', $info);
-
-
-                            $email_notification->mail->Subject = $subject;
-
-                            try {
-                                $email_notification->mail->msgHTML($smarty->fetch('notification_emails/alert.ntfy.tpl'));
-                                $email_notification->mail->AltBody = strip_tags($info);
-
-                            } catch (Exception $e) {
-                                echo 'Caught exception: ', $e->getMessage(), "\n";
-                            }
-
-
-                            $email_notification->send();
-            */
 
             }
 

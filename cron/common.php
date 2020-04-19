@@ -24,10 +24,7 @@ require_once 'utils/fake_session.class.php';
 
 require_once "class.Account.php";
 
-if (class_exists('Memcached')) {
-    $mem = new Memcached();
-    $mem->addServer($memcache_ip, 11211);
-}
+
 
 
 
@@ -40,7 +37,6 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-$session = new fake_session;
 
 $warehouse_key = '';
 $sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
@@ -54,7 +50,7 @@ if ($result2 = $db->query($sql)) {
     print "$sql\n";
     exit;
 }
-$session->set('current_warehouse', $warehouse_key);
+$_SESSION['current_warehouse']= $warehouse_key;
 
 
 

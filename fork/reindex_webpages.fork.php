@@ -10,13 +10,13 @@
 
 function fork_reindex_webpages($job) {
 
-    global $account,$db,$session;// remove the global $db and $account is removed
+    global $account,$db;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
-    list($account, $db, $data, $editor, $session,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor,$ES_hosts) = $_data;
 
 
 

@@ -86,8 +86,8 @@ function get_part_showcase($data, $smarty, $user, $db) {
     $smarty->assign('a4_labels_options', $a4_labels_options);
 
 
-    global $session;
-    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    
+    $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
     $smarty->assign(

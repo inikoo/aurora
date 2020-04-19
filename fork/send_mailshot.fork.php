@@ -12,7 +12,7 @@ include_once 'utils/new_fork.php';
 
 function fork_send_mailshot($job) {
 
-    global $account,$db,$session;// remove the global $db and $account is removed
+    global $account,$db;
 
     $time_start_tier_1 = microtime_float();
     $time_start_tier_2 = microtime_float();
@@ -21,7 +21,7 @@ function fork_send_mailshot($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor,$session,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor,$ES_hosts) = $_data;
 
     $context = new ZMQContext();
     $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');

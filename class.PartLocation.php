@@ -116,8 +116,8 @@ class PartLocation extends DB_Table {
         $this->location = new Location($data['Location Key']);
         if (!$this->location->id) {
 
-            global $session;
-            $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+            
+            $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
 
             $this->location = get_object('Location', $warehouse->get('Warehouse Unknown Location Key'));
@@ -354,8 +354,8 @@ class PartLocation extends DB_Table {
         }
 
 
-        global $session;
-        $warehouse        = get_object('Warehouse', $session->get('current_warehouse'));
+        
+        $warehouse        = get_object('Warehouse', $_SESSION['current_warehouse']);
         $unknown_location = $warehouse->get('Warehouse Unknown Location Key');
 
 
@@ -416,8 +416,8 @@ class PartLocation extends DB_Table {
                 $details .= $note;
 
             }
-            global $session;
-            $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+            
+            $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
 
             $sql = sprintf(
@@ -576,8 +576,8 @@ class PartLocation extends DB_Table {
         $this->location->update_stock_value();
 
 
-        global $session;
-        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+        
+        $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
         if ($this->location->id == $warehouse->get('Warehouse Unknown Location Key')) {
             $this->part->update_unknown_location();

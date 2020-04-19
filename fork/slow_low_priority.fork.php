@@ -11,13 +11,13 @@ include_once 'utils/object_functions.php';
 include_once 'utils/new_fork.php';
 
 function fork_take_webpage_screenshot($job) {
-    global $account, $db, $session;// remove the global $db and $account is removed
+    global $account, $db;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
-    list($account, $db, $data, $editor,$session,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor,$ES_hosts) = $_data;
 
 
     $webpage       = get_object('Webpage', $data['webpage_key']);
@@ -38,14 +38,14 @@ function fork_redo_time_series($job) {
 
     include_once 'class.Timeserie.php';
 
-    global $account, $db, $session;// remove the global $db and $account is removed
+    global $account, $db;// remove the global $db and $account is removed
 
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
-    list($account, $db, $data, $editor,$session,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor,$ES_hosts) = $_data;
 
     require_once 'conf/timeseries.php';
     $timeseries = get_time_series_config();

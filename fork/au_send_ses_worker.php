@@ -30,7 +30,6 @@ $worker->addFunction("au_send_mailshot", "fork_send_mailshot");
 
 $db      = false;
 $account = false;
-$session = false;
 
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {

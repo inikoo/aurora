@@ -20,8 +20,6 @@ require_once 'utils/general_functions.php';
 require_once "class.Account.php";
 
 
-$mem = new Memcached();
-$mem->addServer($memcache_ip, 11211);
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
@@ -31,4 +29,3 @@ $account = new Account($db);
 date_default_timezone_set($account->data['Account Timezone']);
 
 
-?>

@@ -33,7 +33,6 @@ $worker->addFunction("au_redo_time_series", "fork_redo_time_series");
 
 $db      = false;
 $account = false;
-$session = false;
 
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {

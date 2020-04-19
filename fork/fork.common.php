@@ -18,7 +18,6 @@
  */
 function get_fork_metadata($job) {
 
-    $session = new fake_session;
 
     $editor = array(
         'Author Type'  => '',
@@ -80,8 +79,7 @@ function get_fork_metadata($job) {
     if ($row = $stmt->fetch()) {
         $warehouse_key = $row['Warehouse Key'];
     }
-    $session->set('current_warehouse', $warehouse_key);
-
+    $_SESSION['current_warehouse']=$warehouse_key;
 
     $elasticsearch_hosts=get_ES_hosts();
 
@@ -90,7 +88,6 @@ function get_fork_metadata($job) {
         $db,
         $fork_metadata['data'],
         $editor,
-        $session,
         $elasticsearch_hosts
     );
 
@@ -101,7 +98,6 @@ function get_fork_metadata($job) {
 function get_fork_data($job) {
 
 
-    $session = new fake_session;
 
     $editor = array(
         'Author Type'  => '',
@@ -176,7 +172,8 @@ function get_fork_data($job) {
         if ($row2 = $stmt2->fetch()) {
             $warehouse_key = $row2['Warehouse Key'];
         }
-        $session->set('current_warehouse', $warehouse_key);
+
+        $_SESSION['current_warehouse']=$warehouse_key;
 
 
         $fork_data = json_decode($row['Fork Process Data'], true);
@@ -187,9 +184,7 @@ function get_fork_data($job) {
             'inikoo_account_code' => $inikoo_account_code,
             'fork_data'           => $fork_data,
             'db'                  => $db,
-            'editor'              => $editor,
-            'session'             => $session
-
+            'editor'              => $editor
         );
 
 

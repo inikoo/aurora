@@ -10,7 +10,7 @@
 
 function fork_asset_sales($job) {
 
-    global $account,$db,$session;// remove the global $db and $account is removed
+    global $account,$db;
 
     if (!$_data = get_fork_metadata($job)) {
 
@@ -21,7 +21,7 @@ function fork_asset_sales($job) {
 
 
 
-    list($account, $db, $data,$editor,$session,$ES_hosts) = $_data;
+    list($account, $db, $data,$editor,$ES_hosts) = $_data;
     print_r($data);
    //return true;
 

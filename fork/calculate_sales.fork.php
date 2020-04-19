@@ -14,7 +14,7 @@ include_once 'utils/object_functions.php';
 
 function fork_calculate_sales($job) {
 
-    global $account,$db,$session;// remove the global $db and $account is removed
+    global $account,$db;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_data($job)) {
         return;
@@ -24,7 +24,7 @@ function fork_calculate_sales($job) {
     $db        = $_data['db'];
     $fork_data = $_data['fork_data'];
     $fork_key  = $_data['fork_key'];
-    $session   = $_data['session'];
+
     //$inikoo_account_code = $_data['inikoo_account_code'];
 
 

@@ -13,7 +13,7 @@
 include 'utils/available_locales.php';
 include 'conf/user_groups.php';
 
-global $session;
+
 
 
 //print_r($object);
@@ -32,7 +32,7 @@ $options_theme = array(
 
 $options_timezone = array(
     'Account' => _('Organization').' <small class="discreet small">('.$account->get('Timezone').')</small>',
-    'Local' => _('Local time').' <small class="discreet small">('.$session->get('local_timezone_label').')</small>',
+    'Local' => _('Local time').' <small class="discreet small">('.$_SESSION['local_timezone_label'].')</small>',
     'UTC' => 'UTC',
 );
 

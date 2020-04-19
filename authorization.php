@@ -12,11 +12,6 @@ error_reporting(E_ALL);
 
 require_once 'vendor/autoload.php';
 
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
-
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-
 include_once 'utils/object_functions.php';
 
 
@@ -26,8 +21,6 @@ include_once 'keyring/key.php';
 include_once 'class.Account.php';
 $smarty = new Smarty();
 
-$memcached = new Memcached();
-$memcached->addServer($memcache_ip, 11211);
 
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -39,7 +32,7 @@ date_default_timezone_set('UTC');
 
 
 $db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -52,21 +45,9 @@ require_once "utils/aes.php";
 
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
-
-$account =  get_object('Account','');
-
-
+$account = get_object('Account', '');
 include_once 'class.Auth.php';
-
-
-$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-$session        = new Session($sessionStorage);
-
-
-//$session = new Session();
-$session->start();
-
-//session_start();
+session_start();
 
 
 $auth   = new Auth(IKEY, SKEY);
@@ -84,19 +65,12 @@ if (!$sk and array_key_exists('mk', $_REQUEST)) {
 if ($auth->is_authenticated()) {
 
     $_user_key = $auth->get_user_key();
+    $user      = get_object('User', $_user_key);
 
     $_SESSION['logged_in']      = true;
     $_SESSION['logged_in_page'] = 0;
-
-
-    $session->set('logged_in', true);
-    $session->set('logged_in_page', 0);
-    $session->set('user_key', $auth->get_user_key());
-
-
-    $_SESSION['user_key']    = $_user_key;
-    $user                    = get_object('User', $_user_key);
-    $_SESSION['text_locale'] = $user->get('User Preferred Locale');
+    $_SESSION['user_key']       = $_user_key;
+    $_SESSION['text_locale']    = $user->get('User Preferred Locale');
 
 
     include_once 'utils/timezones.php';
@@ -105,7 +79,7 @@ if ($auth->is_authenticated()) {
             date_default_timezone_set($account->get('Account Timezone'));
             break;
         case 'Local':
-            if(!date_default_timezone_set($_REQUEST['timezone'])){
+            if (!date_default_timezone_set($_REQUEST['timezone'])) {
                 date_default_timezone_set($account->get('Account Timezone'));
 
             }
@@ -115,53 +89,47 @@ if ($auth->is_authenticated()) {
 
     }
 
-    $session->set('timezone', date_default_timezone_get());
-    $session->set('local_timezone', $_REQUEST['timezone']);
-    $session->set('local_timezone_label', get_normalized_timezones_formatted_label($_REQUEST['timezone']));
+
+    $_SESSION['timezone']             = date_default_timezone_get();
+    $_SESSION['local_timezone']       = $_REQUEST['timezone'];
+    $_SESSION['local_timezone_label'] = get_normalized_timezones_formatted_label($_REQUEST['timezone']);
+    $_SESSION['state']                = array();
 
 
-    $session->set('state', array());
-
-    $warehouse_key = '';
-
-    $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $warehouse_key = $row['Warehouse Key'];
-        }
+    $sql  = "SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`='Active' limit 1";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    if ($row = $stmt->fetch()) {
+        $warehouse_key = $row['Warehouse Key'];
     } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
+        $warehouse_key = '';
     }
-    $session->set('current_warehouse', $warehouse_key);
+
+
+    $_SESSION['current_warehouse'] = $warehouse_key;
 
     $store_key = '';
 
-    $sql = sprintf('SELECT `Store Key`,count(*) as num FROM `Store Dimension` WHERE `Store Sttus`="Normal" ');
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch() and $row['num'] == 1) {
-            $store_key = $row['Store Key'];
-        }
+    $sql  = "SELECT `Store Key`,count(*) as num FROM `Store Dimension` WHERE `Store Status`='Normal'";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    if ($row = $stmt->fetch() and $row['num'] == 1) {
+        $store_key = $row['Store Key'];
     }
-    $session->set('current_store', $store_key);
 
+
+    $_SESSION['current_store'] = $store_key;
 
     $production_key = '';
-    $sql            = sprintf('SELECT `Supplier Production Supplier Key`,count(*) as num FROM `Supplier Production Dimension`  ');
 
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch() and $row['num'] == 1) {
-            $production_key = $row['Supplier Production Supplier Key'];
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
+    $sql  = "SELECT `Supplier Production Supplier Key`,count(*) as num FROM `Supplier Production Dimension`";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    if ($row = $stmt->fetch() and $row['num'] == 1) {
+        $production_key = $row['Supplier Production Supplier Key'];
     }
-    $session->set('current_production', $production_key);
+
+    $_SESSION['current_production'] = $production_key;
 
 
     if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {

@@ -1411,8 +1411,8 @@ class Order extends DB_Table {
 
                 case 'InWarehouse':
 
-                    global $session;
-                    $warehouse_key = $session->get('current_warehouse');
+                    
+                    $warehouse_key = $_SESSION['current_warehouse'];
 
                     include_once('class.DeliveryNote.php');
 
@@ -2978,7 +2978,7 @@ class Order extends DB_Table {
 
     function create_replacement($transactions) {
 
-        global $session;
+        
 
 
         include_once 'utils/new_fork.php';
@@ -2989,7 +2989,7 @@ class Order extends DB_Table {
         $account = get_object('Account', 1);
 
 
-        $warehouse_key = $session->get('current_warehouse');
+        $warehouse_key = $_SESSION['current_warehouse'];
 
         include_once('class.DeliveryNote.php');
 

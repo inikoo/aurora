@@ -16,9 +16,7 @@ error_reporting(E_ALL);
 define("_DEVEL", isset($_SERVER['devel']));
 
 
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+
 
 
 include_once 'keyring/dns.php';
@@ -36,8 +34,6 @@ require_once 'class.Data_Sets.php';
 include_once 'class.Category.php';
 
 
-$memcached = new Memcached();
-$memcached->addServer($memcache_ip, 11211);
 
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
@@ -68,16 +64,10 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-//session_start();
-
-
 $account = new Account($db);
 
-
-$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-$session        = new Session($sessionStorage);
-$session->start();
-$session->set('account', $account->get('Code'));
+session_start();
+$_SESSION['account']= $account->get('Code');
 
 
 if (!$account->id) {
@@ -301,21 +291,11 @@ if (!$account->id) {
     );
     $account->create_warehouse($warehouse_data);
 
-
-
     $_SESSION['logged_in']      = true;
     $_SESSION['logged_in_page'] = 0;
-
-
-    $session->set('logged_in', true);
-    $session->set('logged_in_page', 0);
-    $session->set('user_key', $user->id);
-
-
     $_SESSION['user_key']    = $user->id;
     $_SESSION['text_locale'] = $user->get('User Preferred Locale');
-
-    $session->set('state', array());
+    $_SESSION['state']    = array();
 
     header('Location: dashboard');
 

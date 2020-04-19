@@ -42,7 +42,6 @@ list($user_key, $api_key_key, $scope) = authenticate($db);
 
 
 
-$session = new fake_session;
 
 
 authorization($db, $user_key, $api_key_key, $scope);
@@ -51,7 +50,7 @@ authorization($db, $user_key, $api_key_key, $scope);
 function authorization($db, $user_key, $api_key_key, $scope) {
 
 
-    global $session;
+
 
     $warehouse_key = '';
     $sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
@@ -65,7 +64,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
         print "$sql\n";
         exit;
     }
-    $session->set('current_warehouse', $warehouse_key);
+    $_SESSION['current_warehouse']= $warehouse_key;
 
 
     $method       = $_SERVER['REQUEST_METHOD'];

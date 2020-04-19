@@ -11,10 +11,6 @@ require_once 'vendor/autoload.php';
 require_once 'utils/sentry.php';
 
 
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
-
 require_once 'keyring/key.php';
 include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
@@ -29,8 +25,6 @@ require_once "utils/aes.php";
 require_once "class.Account.php";
 require_once "class.User.php";
 
-$memcached = new Memcached();
-$memcached->addServer($memcache_ip, 11211);
 
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
@@ -63,23 +57,17 @@ if ($account->get('Account State') != 'Active') {
 
 
 require_once 'utils/modules.php';
+session_start();
 
 
+$_SESSION['account'] = $account->get('Code');
 
-
-$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-$session        = new Session($sessionStorage);
-$session->start();
-
-$session->set('account', $account->get('Code'));
-$_SESSION['account']= $account->get('Code');
-
-if ($session->get('timezone') == '' or !date_default_timezone_set($session->get('timezone'))) {
+if ($_SESSION['timezone'] == '' or !date_default_timezone_set($_SESSION['timezone'])) {
     if ($account->get('Account Timezone') or !date_default_timezone_set($account->get('Account Timezone'))) {
         date_default_timezone_set('UTC');
     }
 }
-$session->set('timezone', date_default_timezone_get());
+$_SESSION['timezone'] = date_default_timezone_get();
 
 
 /**
@@ -97,7 +85,7 @@ if (!empty($release)) {
     $smarty->assign('release', trim($release));
 }
 if (defined('SENTRY_DNS_AUJS')) {
-    $smarty->assign('sentry_js',SENTRY_DNS_AUJS);
+    $smarty->assign('sentry_js', SENTRY_DNS_AUJS);
 
 }
 
@@ -130,12 +118,9 @@ if ($_SESSION['logged_in_page'] != 0) {
     );
     $db->exec($sql);
 
-    $session->migrate();
-    $session->invalidate();
-    //session_regenerate_id();
-    //session_destroy();
-    unset($_SESSION);
 
+    session_destroy();
+    $_SESSION = [];
     header('Location: /login.php');
     exit;
 
@@ -173,14 +158,10 @@ if ($user->id) {
             break;
     }
 
-    $modules=get_modules($user);
+    $modules = get_modules($user);
 
-    if($user->settings('current_store') and in_array($user->settings('current_store'),$user->stores) ){
-
-
-
-        $session->set('current_store', $user->settings('current_store'));
-
+    if ($user->settings('current_store') and in_array($user->settings('current_store'), $user->stores)) {
+        $_SESSION['current_store'] = $user->settings('current_store');
     }
 
 

@@ -36,9 +36,9 @@ switch ($tipo) {
                      )
         );
 
-        $session->set('side_block',$data['value']);
 
 
+        $_SESSION['side_block']=$data['value'];
         break;
 
 

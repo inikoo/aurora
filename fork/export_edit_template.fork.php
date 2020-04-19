@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 function fork_export_edit_template($job) {
 
-    global $account, $db, $session;// remove the global $db and $account is removed
+    global $account, $db;// remove the global $db and $account is removed
 
     include_once 'conf/export_edit_template_fields.php';
 
@@ -29,7 +29,7 @@ function fork_export_edit_template($job) {
         return;
     }
 
-    list($account, $db, $fork_data, $editor, $session, $ES_hosts) = $_data;
+    list($account, $db, $fork_data, $editor, $ES_hosts) = $_data;
 
     $inikoo_account_code = $account->get('Account Code');
 

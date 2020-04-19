@@ -93,8 +93,6 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
-    global $session;
-
     require_once 'utils/parse_request.php';
 
     $data = prepare_values(
@@ -149,10 +147,10 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
-    $state['current_website']    = $session->get('current_website');
-    $state['current_store']      = $session->get('current_store');
-    $state['current_warehouse']  = $session->get('current_warehouse');
-    $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
+    $state['current_website']    = (!empty($_SESSION['current_website']) ? $_SESSION['current_website'] : '');
+    $state['current_store']      = (!empty($_SESSION['current_store']) ? $_SESSION['current_store'] : '');
+    $state['current_warehouse']  = (!empty($_SESSION['current_warehouse']) ? $_SESSION['current_warehouse'] : '');
+    $state['current_production'] = (!empty($_SESSION['current_production']) ? $_SESSION['current_production'] : '');
 
 
     $store      = '';
@@ -841,7 +839,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     if (isset($state['current_store'])) {
-        $session->set('current_store', $state['current_store']);
+        $_SESSION['current_store'] = $state['current_store'];
 
         if ($state['current_store']) {
             $store_data                     = get_cached_object_data($redis, DNS_ACCOUNT_CODE, 'Store', $state['current_store']);
@@ -851,14 +849,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         $user->fast_update_json_field('User Settings', 'current_store', $state['current_store']);
 
     }
-
-
-    // todo implement correctly if multi-warehouses ever done, special care has to be done when visiting warehouses servers becuse current_warehouse will be set to null, and if then jump to a invengtory/part it may be still null causing avok
-    //if (isset($state['current_warehouse'])) {$session->set('current_warehouse', $state['current_warehouse']);}
-
-    // todo implement correctly if multi-production ever done,
-
-    //if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
 
 
     list($state, $response['view_position']) = get_view_position(
@@ -1399,11 +1389,10 @@ function utf8ize($mixed) {
 
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
 
-    global $session;
 
     $html = '';
 
-    if ( isset($state['section']) and  $state['section'] == 'customer' and $state['store']->get('Store Type') == 'Dropshipping' and $state['_object']->get('Customer Type by Activity')=='ToApprove' ) {
+    if (isset($state['section']) and $state['section'] == 'customer' and $state['store']->get('Store Type') == 'Dropshipping' and $state['_object']->get('Customer Type by Activity') == 'ToApprove') {
         return '';
     }
 
@@ -1430,22 +1419,18 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     if (is_array($state) and !(preg_match('/_edit$/', $tab) or preg_match('/\.wget$/', $_tab))) {
 
 
-        // $_SESSION['state'][ $state['module']  ][ $state['section']  ]  ['tab'] = $_tab;
-
-        $tmp = $session->get('state');
+        $tmp = $_SESSION['state'];
 
         $tmp[$state['module']][$state['section']]['tab'] = $_tab;
 
-        // print $_subtab;
 
-        $session->set('state', $tmp);
-
+        $_SESSION['state'] = $tmp;
 
         if (!empty($_subtab)) {
 
-            $tmp        = $session->get('tab_state');
-            $tmp[$_tab] = $_subtab;
-            $session->set('tab_state', $tmp);
+            $tmp                   = $_SESSION['tab_state'];
+            $tmp[$_tab]            = $_subtab;
+            $_SESSION['tab_state'] = $tmp;
 
 
         }
@@ -3765,7 +3750,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
         if ($data['store']->get('Store Type') == 'Dropshipping') {
 
-            if ($data['_object']->get('Customer Type by Activity')=='ToApprove') {
+            if ($data['_object']->get('Customer Type by Activity') == 'ToApprove') {
                 $_content['tabs'] = [];
             } else {
                 $_content['tabs']['customer.clients']['class'] = '';
