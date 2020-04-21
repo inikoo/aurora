@@ -767,6 +767,7 @@ function fork_export_edit_template($job) {
     );
 
 
+
     $socket->send(
         json_encode(
             array(
@@ -793,7 +794,7 @@ function fork_export_edit_template($job) {
             )
         )
     );
-
+    unlink($output_file);
 
     return false;
 }

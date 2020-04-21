@@ -63,7 +63,6 @@ function fork_export($job) {
 
     $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_data['table'].'_'.$download_key;
 
-    $files_to_delete   = array();
     $columns_no_resize = array();
     $number_rows       = 0;
 
@@ -272,7 +271,6 @@ function fork_export($job) {
                         $objDrawing->setDescription('Item image'); //set description to image
 
 
-                        //$tmp_file = 'tmp/'.$output_filename.date('U').$row_index.'.png';
 
                         $original_image = get_object('Image', $value);
 
@@ -377,7 +375,6 @@ function fork_export($job) {
 
                         $objPHPExcel->getActiveSheet()->getRowDimension($row_index)->setRowHeight(220);
 
-                        //$files_to_delete[] = $tmp_file;
 
 
                     }
@@ -583,10 +580,8 @@ function fork_export($job) {
     );
 
 
-    foreach ($files_to_delete as $file_to_delete) {
-        unlink($file_to_delete);
-    }
 
+    unlink($output_file);
 
     return false;
 }
