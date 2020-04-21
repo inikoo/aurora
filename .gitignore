@@ -35,7 +35,8 @@ server_files/
 /EcomB2B/css/staging/
 /webfonts/
 /css/staging/
-/EcomB2B/assets/
+
+/EcomB2B/assets/*.min*
 /assets/*.min*
 cron/add_new_system_webpage.php
 app_files/po_sources_from_smarty/au.php
