@@ -1,6 +1,8 @@
 keyring/*
 .idea/
 .sass-cache/
+
+img/
 img/*
 
 img/db/*
@@ -8,11 +10,7 @@ img/public_db/*
 img/public_cache/*
 img/cache/*
 
-!img/index.html
-!img/db/index.html
-!img/cache/index.html
-!img/public_db/index.html
-!img/public_cache/index.html
+
 
 
 cron/tmp/
@@ -25,6 +23,7 @@ websocket_server/vendor/*
 
 
 node_modules/*
+
 
 
 websocket_server/composer.lock
