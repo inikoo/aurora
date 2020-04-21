@@ -2,6 +2,7 @@
   "require": {
     "aws/aws-sdk-php": "^3.55",
     "aws/aws-php-sns-message-validator": "^1.4",
+    "symfony/http-foundation": "^3.4",
     "mpdf/mpdf": "^7.1",
     "commerceguys/addressing": "^1.0",
     "braintree/braintree_php" : "4.5.0",
@@ -17,7 +18,7 @@
     "ext-json": "*",
     "phpoffice/phpspreadsheet": "^1.9",
     "rbdwllr/reallysimplejwt": "^2.1",
-    "elasticsearch/elasticsearch": "^7.6",
+    "elasticsearch/elasticsearch": "^7.4",
     "giggsey/libphonenumber-for-php": "^8.11",
     "ext-zlib": "*",
     "fzaninotto/faker": "^1.9",
