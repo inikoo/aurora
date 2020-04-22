@@ -62,7 +62,7 @@ session_start();
 
 $_SESSION['account'] = $account->get('Code');
 
-if ($_SESSION['timezone'] == '' or !date_default_timezone_set($_SESSION['timezone'])) {
+if (empty($_SESSION['timezone'] ) or !date_default_timezone_set($_SESSION['timezone'])) {
     if ($account->get('Account Timezone') or !date_default_timezone_set($account->get('Account Timezone'))) {
         date_default_timezone_set('UTC');
     }
