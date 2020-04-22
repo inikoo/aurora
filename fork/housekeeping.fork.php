@@ -2788,24 +2788,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $webpage = get_object('Webpage', $data['webpage_key']);
 
-            $smarty_web               = new Smarty();
-            $smarty_web->caching_type = 'redis';
-
-            $base = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
-
-
-            $smarty_web->template_dir = 'EcomB2B/templates';
-            $smarty_web->compile_dir  = $base.'smarty/templates_c';
-            $smarty_web->cache_dir    = $base.'smarty/cache';
-            $smarty_web->config_dir   = $base.'smarty/configs';
-            $smarty_web->addPluginsDir('./smarty_plugins');
-
-
-            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-
-            $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
-            $smarty_web->clearCache(null, $cache_id);
+            $webpage->clear_cache();
 
 
             $redis = new Redis();
@@ -3224,10 +3207,20 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
              */
 
             $webpage = get_object('Webpage', $data['webpage_key']);
+
+            $children=[];
             foreach ($webpage->get_category_children_webpage_keys() as $child_webpage_key) {
-                $_webpage = get_object('Webpage', $child_webpage_key);
-                $_webpage->refresh_cache();
+                $children[] = get_object('Webpage', $child_webpage_key);
+
             }
+
+            chdir(AU_PATH);
+            foreach($children as $_webpage){
+                $_webpage->refresh_cache();
+
+            }
+
+
             break;
         case 'order_replacements_updated':
 
@@ -3298,21 +3291,10 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
         case 'clear_smarty_web_cache':
 
+            $webpage = get_object('Webpage', $data['webpage_key']);
+            chdir(AU_PATH);
+            $webpage->clear_cache();
 
-            $smarty_web               = new Smarty();
-            $smarty_web->caching_type = 'redis';
-
-
-            $base = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
-
-
-            $smarty_web->template_dir = 'EcomB2B/templates';
-            $smarty_web->compile_dir  = $base.'smarty/templates_c';
-            $smarty_web->cache_dir    = $base.'smarty/cache';
-            $smarty_web->config_dir   = $base.'smarty/configs';
-            $smarty_web->addPluginsDir('./smarty_plugins');
-            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-            $smarty_web->clearCache(null, $data['cache_id']);
 
             break;
         default:

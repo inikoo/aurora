@@ -189,12 +189,11 @@ class DealComponent extends DB_Table {
                 if ($webpage->id) {
 
 
-                    $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
                         'type'     => 'clear_smarty_web_cache',
-                        'cache_id' => $cache_id
+                        'webpage_key' => $webpage->id
                     ), DNS_ACCOUNT_CODE, $this->db
                     );
 
@@ -213,12 +212,11 @@ class DealComponent extends DB_Table {
 
                         $webpage = get_object('Webpage', $row['Product Webpage Key']);
                         if ($webpage->id) {
-                            $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
 
                             new_housekeeping_fork(
                                 'au_housekeeping', array(
                                 'type'     => 'clear_smarty_web_cache',
-                                'cache_id' => $cache_id
+                                'webpage_key' => $webpage->id
                             ), DNS_ACCOUNT_CODE, $this->db
                             );
 
@@ -1062,12 +1060,10 @@ class DealComponent extends DB_Table {
 
         foreach ($webpage_keys as $data) {
 
-            $cache_id = $data[0].'|'.$data[1];
-
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'     => 'clear_smarty_web_cache',
-                'cache_id' => $cache_id
+                'webpage_key' => $data[1],
             ), DNS_ACCOUNT_CODE, $this->db
             );
 

@@ -1056,12 +1056,11 @@ class Deal extends DB_Table {
 
         foreach ($webpage_keys as $data) {
 
-            $cache_id = $data[0].'|'.$data[1];
 
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'     => 'clear_smarty_web_cache',
-                'cache_id' => $cache_id
+                'webpage_key' => $data[1],
             ), DNS_ACCOUNT_CODE, $this->db
             );
 

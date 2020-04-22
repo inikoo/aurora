@@ -60,7 +60,6 @@
                     <div style="clear:both"></div>
                 </div>
             {/if}
-
             {assign "with_iframe" false}
             {assign "with_login" false}
             {assign "with_register" false}

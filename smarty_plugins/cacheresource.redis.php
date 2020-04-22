@@ -55,6 +55,7 @@ class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
      */
     protected function write(array $keys, $expire = null) {
 
+
         foreach ($keys as $k => $v) {
             if ($expire == null) {
                 $this->redis->setEx($k, $expire, $v);
@@ -75,6 +76,8 @@ class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
      * @return bool true on success, false on failure
      */
     protected function delete(array $keys) {
+
+
 
         $this->redis->del($keys);
 

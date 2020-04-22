@@ -618,31 +618,20 @@ class Page extends DB_Table {
         $template_response = '';
 
 
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-
         if (!$this->fork) {
 
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_housekeeping', array(
-                'type'     => 'clear_smarty_web_cache',
-                'cache_id' => $cache_id
+                'type'        => 'clear_smarty_web_cache',
+                'webpage_key' => $this->id
             ), DNS_ACCOUNT_CODE, $this->db
             );
 
 
         } else {
 
-            $base                     = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
-            $smarty_web               = new Smarty();
-            $smarty_web->caching_type = 'redis';
-            $smarty_web->template_dir = 'EcomB2B/templates';
-            $smarty_web->compile_dir  = $base.'smarty/templates_c';
-            $smarty_web->cache_dir    = $base.'smarty/cache';
-            $smarty_web->config_dir   = $base.'smarty/configs';
-            $smarty_web->addPluginsDir('./smarty_plugins');
-            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-            $smarty_web->clearCache(null, $cache_id);
+            $this->clear_cache();
 
 
         }
@@ -665,42 +654,43 @@ class Page extends DB_Table {
 
     }
 
+    function clear_cache() {
+        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
+
+        $smarty_web               = new Smarty();
+        $smarty_web->caching_type = 'redis';
+        $smarty_web->setTemplateDir('EcomB2B/templates');
+        $smarty_web->addPluginsDir('./smarty_plugins');
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+        $theme        = 'theme_1';
+        $website_type = 'EcomB2B';
+
+
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tpl', $cache_id.'|out');
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tpl', $cache_id.'|in');
+
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl', $cache_id.'|out');
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl', $cache_id.'|in');
+
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile,tpl', $cache_id.'|out');
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile.tpl', $cache_id.'|in');
+
+
+    }
+
     function unpublish() {
 
         $this->update_state('Offline');
 
 
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-
-
-        if (!$this->fork) {
-
-            require_once 'utils/new_fork.php';
-            new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'     => 'clear_smarty_web_cache',
-                'cache_id' => $cache_id
-            ), DNS_ACCOUNT_CODE, $this->db
-            );
-
-
-        } else {
-
-            $base = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
-
-            $smarty_web = new Smarty();
-            $smarty_web->caching_type = 'redis';
-            $smarty_web->template_dir = 'EcomB2B/templates';
-            $smarty_web->compile_dir  = $base.'smarty/templates_c';
-            $smarty_web->cache_dir    = $base.'smarty/cache';
-            $smarty_web->config_dir   = $base.'smarty/configs';
-            $smarty_web->addPluginsDir('./smarty_plugins');
-
-            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-
-            $smarty_web->clearCache(null, $cache_id);
-        }
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'clear_smarty_web_cache',
+            'webpage_key' => $this->id
+        ), DNS_ACCOUNT_CODE, $this->db
+        );
 
 
         $this->update_metadata = array(
@@ -847,36 +837,13 @@ class Page extends DB_Table {
         $this->updated = true;
 
 
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-
-
-        if (!$this->fork) {
-
-            require_once 'utils/new_fork.php';
-            new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'     => 'clear_smarty_web_cache',
-                'cache_id' => $cache_id
-            ), DNS_ACCOUNT_CODE, $this->db
-            );
-
-        } else {
-
-            $base = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
-
-            $smarty_web               = new Smarty();
-            $smarty_web->caching_type = 'redis';
-            $smarty_web->template_dir = 'EcomB2B/templates';
-            $smarty_web->compile_dir  = $base.'smarty/templates_c';
-            $smarty_web->cache_dir    = $base.'smarty/cache';
-            $smarty_web->config_dir   = $base.'smarty/configs';
-            $smarty_web->addPluginsDir('./smarty_plugins');
-
-            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-
-            $smarty_web->clearCache(null, $cache_id);
-        }
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'clear_smarty_web_cache',
+            'webpage_key' => $this->id
+        ), DNS_ACCOUNT_CODE, $this->db
+        );
 
 
         $redis = new Redis();
@@ -1573,7 +1540,6 @@ class Page extends DB_Table {
             $this->reindex();
 
         }
-
 
 
         if ($this->get('Website Status') == 'Active') {
@@ -2779,6 +2745,63 @@ class Page extends DB_Table {
         }
     }
 
+    function reindex() {
+
+        $this->reindex_items();
+        $this->update_navigation();
+
+
+        if ($this->get('Webpage Scope') == 'Top_Up') {
+            $store = get_object('Store', $this->data['Webpage Store Key']);
+
+            $content_data = $this->get('Content Data');
+
+
+            foreach ($content_data['blocks'] as $block_key => $block) {
+                if ($block['type'] == 'top_up') {
+
+                    if (empty($content_data['blocks'][$block_key]['options'])) {
+                        $content_data['blocks'][$block_key]['options'] = [
+                            [
+                                'value'           => 20,
+                                'formatted_value' => money(20, $store->get('Store Currency Code'), false, 'NO_FRACTION_DIGITS')
+                            ],
+                            [
+                                'value'           => 50,
+                                'formatted_value' => money(50, $store->get('Store Currency Code'), false, 'NO_FRACTION_DIGITS')
+                            ],
+                            [
+                                'value'           => 100,
+                                'formatted_value' => money(100, $store->get('Store Currency Code'), false, 'NO_FRACTION_DIGITS')
+                            ],
+                            [
+                                'value'           => 250,
+                                'formatted_value' => money(250, $store->get('Store Currency Code'), false, 'NO_FRACTION_DIGITS')
+                            ],
+                        ];
+
+                    } else {
+                        foreach ($content_data['blocks'][$block_key]['options'] as $i => $option) {
+                            if (isset($option['value'])) {
+                                $content_data['blocks'][$block_key]['options'][$i]['formatted_value'] = money($option['value'], $store->get('Store Currency Code'), false, 'NO_FRACTION_DIGITS');
+
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
+
+
+            $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
+
+        }
+
+
+    }
+
     function publish($note = '') {
 
 
@@ -3572,68 +3595,6 @@ class Page extends DB_Table {
         }
 
         return $label;
-
-    }
-
-    function reindex() {
-
-        $this->reindex_items();
-        $this->update_navigation();
-
-
-        if ($this->get('Webpage Scope') == 'Top_Up') {
-            $store = get_object('Store', $this->data['Webpage Store Key']);
-
-            $content_data = $this->get('Content Data');
-
-
-
-
-            foreach($content_data['blocks'] as $block_key=>$block){
-                if($block['type']=='top_up'){
-
-                    if (empty($content_data['blocks'][$block_key]['options'])) {
-                        $content_data['blocks'][$block_key]['options'] = [
-                            ['value'           => 20,
-                             'formatted_value' => money(20, $store->get('Store Currency Code'),false,'NO_FRACTION_DIGITS')
-                            ],
-                            [
-                                'value'           => 50,
-                                'formatted_value' => money(50,  $store->get('Store Currency Code'),false,'NO_FRACTION_DIGITS')
-                            ],
-                            [
-                                'value'           => 100,
-                                'formatted_value' => money(100,  $store->get('Store Currency Code'),false,'NO_FRACTION_DIGITS')
-                            ],
-                            [
-                                'value'           => 250,
-                                'formatted_value' => money(250, $store->get('Store Currency Code'),false,'NO_FRACTION_DIGITS')
-                            ],
-                        ];
-
-                    }else{
-                        foreach ($content_data['blocks'][$block_key]['options'] as $i=>$option) {
-                            if(isset($option['value'])){
-                                $content_data['blocks'][$block_key]['options'][$i]['formatted_value'] = money($option['value'], $store->get('Store Currency Code'),false,'NO_FRACTION_DIGITS');
-
-                            }
-
-                        }
-                    }
-
-                }
-
-            }
-
-
-
-
-
-
-            $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
-
-        }
-
 
     }
 
