@@ -635,6 +635,7 @@ class Page extends DB_Table {
 
             $base                     = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
             $smarty_web               = new Smarty();
+            $smarty_web->caching_type = 'redis';
             $smarty_web->template_dir = 'EcomB2B/templates';
             $smarty_web->compile_dir  = $base.'smarty/templates_c';
             $smarty_web->cache_dir    = $base.'smarty/cache';
@@ -688,7 +689,7 @@ class Page extends DB_Table {
             $base = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
 
             $smarty_web = new Smarty();
-
+            $smarty_web->caching_type = 'redis';
             $smarty_web->template_dir = 'EcomB2B/templates';
             $smarty_web->compile_dir  = $base.'smarty/templates_c';
             $smarty_web->cache_dir    = $base.'smarty/cache';
@@ -864,6 +865,7 @@ class Page extends DB_Table {
             $base = 'base_dirs/server_files_EcomB2B.'.strtoupper(DNS_ACCOUNT_CODE).'/';
 
             $smarty_web               = new Smarty();
+            $smarty_web->caching_type = 'redis';
             $smarty_web->template_dir = 'EcomB2B/templates';
             $smarty_web->compile_dir  = $base.'smarty/templates_c';
             $smarty_web->cache_dir    = $base.'smarty/cache';

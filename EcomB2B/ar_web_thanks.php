@@ -75,6 +75,7 @@ function get_thanks_html($data, $customer, $db,$account) {
     $template_suffix = $data['device_prefix'];
 
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');

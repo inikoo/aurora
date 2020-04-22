@@ -370,6 +370,7 @@ function get_charges_info($order) {
 
 function get_items_html($data, $customer) {
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
@@ -414,6 +415,7 @@ function get_basket_html($data, $customer) {
 
 
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');

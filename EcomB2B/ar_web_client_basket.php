@@ -178,6 +178,7 @@ function get_client_order_items_html($data, $customer_key) {
 
 
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
@@ -248,6 +249,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
 
 
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');

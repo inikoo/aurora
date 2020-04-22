@@ -102,21 +102,21 @@ function fork_housekeeping($job) {
 
                 if ($row['Webpage Code'] == 'home.sys') {
                     $webpage_label = '<i class="fal fa-home"></i> '._('Home');
-                } elseif ($row['Webpage Code'] == 'basket.sys' or $row['Webpage Code'] == 'client_basket.sys' or $row['Webpage Code']=='client_order_new.sys' ) {
+                } elseif ($row['Webpage Code'] == 'basket.sys' or $row['Webpage Code'] == 'client_basket.sys' or $row['Webpage Code'] == 'client_order_new.sys') {
                     $webpage_label = '<i class="fal fa-shopping-basket"></i> '._('Basket');
                 } elseif ($row['Webpage Code'] == 'profile.sys') {
                     $webpage_label = '<i class="fal fa-user"></i> '._('Profile');
-                }elseif ($row['Webpage Code'] == 'clients_orders.sys') {
+                } elseif ($row['Webpage Code'] == 'clients_orders.sys') {
                     $webpage_label = '<i class="fal fa-shopping-cart"></i> '._('Orders');
-                }elseif ($row['Webpage Code'] == 'portfolio.sys') {
+                } elseif ($row['Webpage Code'] == 'portfolio.sys') {
                     $webpage_label = '<i class="fal fa-store-alt"></i> '._('Portfolio');
-                }elseif ($row['Webpage Code'] == 'client.sys') {
+                } elseif ($row['Webpage Code'] == 'client.sys') {
                     $webpage_label = '<i class="fal fa-user"></i> '._('Client');
-                }elseif ($row['Webpage Code'] == 'shipping.sys') {
+                } elseif ($row['Webpage Code'] == 'shipping.sys') {
                     $webpage_label = '<i class="fal fa-shipping-fast"></i> '._('Shipping');
-                }elseif ($row['Webpage Code'] == 'faq') {
+                } elseif ($row['Webpage Code'] == 'faq') {
                     $webpage_label = '<i class="fal fa-question"></i> '._('FAQ');
-                }elseif ($row['Webpage Code'] == 'clients.sys') {
+                } elseif ($row['Webpage Code'] == 'clients.sys') {
                     $webpage_label = '<i class="fal fa-user"></i> '._('Clients');
                 } elseif ($row['Webpage Code'] == 'checkout.sys') {
                     $webpage_label = '<i class="fal fa-scanner-keyboard"></i> '._('Checkout');
@@ -1603,8 +1603,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
 
-            $smarty = new Smarty();
-            $base   = '';
+            $smarty               = new Smarty();
+            $smarty->caching_type = 'redis';
+            $base                 = '';
             $smarty->setTemplateDir($base.'templates');
             $smarty->setCompileDir($base.'server_files/smarty/templates_c');
             $smarty->setCacheDir($base.'server_files/smarty/cache');
@@ -1637,7 +1638,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 }
-
 
 
             }
@@ -1756,8 +1756,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             /**
              * @var $poll_option \Customer_Poll_Query_Option
-             */
-            $poll_option = get_object('Customer_Poll_Query_Option', $data['poll_option_key']);
+             */ $poll_option = get_object('Customer_Poll_Query_Option', $data['poll_option_key']);
             $poll_option->update_poll_query_option_customers();
             $poll = get_object('Customer_Poll_Query', $poll_option->get('Customer Poll Query Option Query Key'));
             $poll->update_answers();
@@ -2375,11 +2374,10 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $date = gmdate('Y-m-d H:i:s');
 
 
-
-
-            $sql  = sprintf(
+            $sql = sprintf(
                 'insert into `Stack BiKey Dimension` (`Stack BiKey Creation Date`,`Stack BiKey Last Update Date`,`Stack BiKey Operation`,`Stack BiKey Object Key One`,`Stack BiKey Object Key Two`) values (%s,%s,%s,%d,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack BiKey Last Update Date`=%s ,`Stack BiKey Counter`=`Stack BiKey Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('update_part_location_isf'), $data['part_sku'], $data['location_key'], prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack BiKey Last Update Date`=%s ,`Stack BiKey Counter`=`Stack BiKey Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('update_part_location_isf'), $data['part_sku'], $data['location_key'],
+                prepare_mysql($date)
 
             );
             $db->exec($sql);
@@ -2652,7 +2650,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $product->fast_update(array('Product XHTML Parts' => $product->get('Parts')));
 
 
-
             $product->update_availability();
             $product->update_cost();
 
@@ -2791,8 +2788,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $webpage = get_object('Webpage', $data['webpage_key']);
 
-            $smarty_web = new Smarty();
-
+            $smarty_web               = new Smarty();
+            $smarty_web->caching_type = 'redis';
 
             $base = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
 
@@ -2843,8 +2840,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store = get_object('Store', $data['store_key']);
             $store->update_invoices();
 
-            $smarty = new Smarty();
-            $base   = '';
+            $smarty               = new Smarty();
+            $smarty->caching_type = 'redis';
+            $base                 = '';
             $smarty->setTemplateDir($base.'templates');
             $smarty->setCompileDir($base.'server_files/smarty/templates_c');
             $smarty->setCacheDir($base.'server_files/smarty/cache');
@@ -2920,8 +2918,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $shipper->update_shipper_usage();
 
 
-            $smarty = new Smarty();
-            $base   = '';
+            $smarty               = new Smarty();
+            $smarty->caching_type = 'redis';
+            $base                 = '';
             $smarty->setTemplateDir($base.'templates');
             $smarty->setCompileDir($base.'server_files/smarty/templates_c');
             $smarty->setCacheDir($base.'server_files/smarty/cache');
@@ -2977,8 +2976,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store = get_object('Store', $customer->get('Customer Store Key'));
 
 
-            $smarty = new Smarty();
-            $base   = '';
+            $smarty               = new Smarty();
+            $smarty->caching_type = 'redis';
+            $base                 = '';
             $smarty->setTemplateDir($base.'templates');
             $smarty->setCompileDir($base.'server_files/smarty/templates_c');
             $smarty->setCacheDir($base.'server_files/smarty/cache');
@@ -3022,7 +3022,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 foreach ($recipients as $recipient) {
 
                     $published_email_template->send($recipient, $send_data, $smarty);
-
 
 
                 }
@@ -3279,14 +3278,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'create_elastic_index_object':
 
 
-
             $object = get_object($data['object'], $data['object_key']);
             if ($object->id) {
                 try {
                     $object->index_elastic_search($ES_hosts, false, $data['indices']);
 
                 } catch (Exception $e) {
-                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                    echo 'Caught exception: ', $e->getMessage(), "\n";
                 }
 
             }
@@ -3301,9 +3299,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'clear_smarty_web_cache':
 
 
-
-            $smarty_web = new Smarty();
-
+            $smarty_web               = new Smarty();
+            $smarty_web->caching_type = 'redis';
 
 
             $base = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';

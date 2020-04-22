@@ -295,6 +295,7 @@ function get_client_html($data, $customer) {
 
 
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');

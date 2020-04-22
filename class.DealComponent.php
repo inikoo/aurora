@@ -1049,6 +1049,7 @@ class DealComponent extends DB_Table {
         }
 
         $smarty_web               = new Smarty();
+        $smarty_web->caching_type = 'redis';
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
         $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';

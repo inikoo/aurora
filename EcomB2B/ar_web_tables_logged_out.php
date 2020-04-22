@@ -72,6 +72,7 @@ function get_catalogue_table_logged_out_html($data,$website) {
 
 
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');

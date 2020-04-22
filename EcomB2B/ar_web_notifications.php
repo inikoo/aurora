@@ -165,6 +165,7 @@ function subscribe($data, $db, $customer, $website) {
 
 
         $smarty = new Smarty();
+        $smarty->caching_type = 'redis';
         $smarty->setTemplateDir('templates');
         $smarty->setCompileDir('server_files/smarty/templates_c');
         $smarty->setCacheDir('server_files/smarty/cache');
@@ -234,6 +235,7 @@ function notifications_control_panel($data, $customer) {
 
     $theme  = 'theme_1';
     $smarty = new Smarty();
+    $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');

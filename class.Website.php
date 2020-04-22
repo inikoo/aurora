@@ -820,23 +820,98 @@ class Website extends DB_Table {
 
     }
 
-    function update_labels_in_localised_labels($labels, $operation = 'append') {
-
-        $localised_labels = $this->get('Localised Labels');
-        // print_r($labels);
-
-        //  print_r($localised_labels);
-
-        switch ($operation) {
-            case 'append':
-                $localised_labels = array_merge($localised_labels, $labels);
+    function update_sitemap() {
 
 
+        $sql = sprintf(
+            "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d  ", $this->id
+        );
+
+
+        $this->db->exec($sql);
+
+
+        include_once 'class.Sitemap.php';
+        $sitemap = new Sitemap($this->id);
+        $sitemap->page('info');
+
+
+        //ENUM('About','Basket','Catalogue','Category Categories','Category Products','Checkout','Contact','Homepage','HomepageLogout','HomepageNoOrders','HomepageToLaunch','Info','InProcess','Login','NotFound','Offline','Product','Register','ResetPwd','Search','ShippingInfo','TandC','Thanks','UserProfile','Welcome') NOT NULL
+
+
+        $sql = sprintf(
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage Code` not in 
+                                                          ('in_process.sys','profile.sys','basket.sys','checkout.sys','favourites.sys','home.sys','not_found.sys','offline.sys','reset_pwd.sys','search.sys',
+                                                          'thanks.sys','welcome.sys','unsubscribe.sys'
+                                                          )  and   `Webpage State`='Online'   ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated, 'monthly');
+            }
         }
 
 
-        $this->fast_update(array('Website Localised Labels' => json_encode($localised_labels)));
-        $this->clean_cache();
+        $sitemap->page('products');
+
+        $sql = sprintf(
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sitemap->close();
+        unset ($sitemap);
+
+
+        $this->update_field('Website Sitemap Last Update', gmdate("Y-m-d H:i:s"), 'no_history');
+
+
+    }
+
+    function update_labels_in_localised_labels($labels) {
+
+
+        if(empty($labels)){
+           return;
+        }
+
+
+
+
+        $old_checksum=md5($this->get('Website Localised Labels'));
+
+        $localised_labels = $this->get('Localised Labels');
+
+
+        $localised_labels = array_merge($localised_labels, $labels);
+
+
+
+        $new_value=json_encode($localised_labels);
+        $new_checksum=md5($new_value);
+
+        $this->fast_update(array('Website Localised Labels' => $new_value));
+
+
+
+
+        if($old_checksum!=$new_checksum){
+            $this->clean_cache();
+        }
+
 
     }
 
@@ -844,6 +919,7 @@ class Website extends DB_Table {
 
 
         $smarty_web               = new Smarty();
+        $smarty_web->caching_type = 'redis';
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
         $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
@@ -1131,6 +1207,7 @@ class Website extends DB_Table {
         );
         if ($row = $stmt->fetch()) {
             $product->fast_update(array('Product Webpage Key' => $row['Page Key']));
+
             return $row['Page Key'];
         }
 
@@ -1174,7 +1251,6 @@ class Website extends DB_Table {
         $page->reset_object();
 
 
-
         if ($product->get('Product Status') == 'Discontinued' or $product->get('Product Status') == 'Suspended') {
             $page->unpublish();
         } elseif ($product->get('Product Status') == 'Discontinuing' or $product->get('Product Status') == 'Active') {
@@ -1208,7 +1284,6 @@ class Website extends DB_Table {
 
         }
     }
-
 
     function get_system_webpage_key($code) {
 
@@ -1322,67 +1397,6 @@ class Website extends DB_Table {
 
 
         $this->fast_update(array('Website Total Acc Users' => $users), 'Website Data');
-
-    }
-
-    function update_sitemap() {
-
-
-        $sql = sprintf(
-            "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d  ", $this->id
-        );
-
-
-        $this->db->exec($sql);
-
-
-        include_once 'class.Sitemap.php';
-        $sitemap = new Sitemap($this->id);
-        $sitemap->page('info');
-
-
-        //ENUM('About','Basket','Catalogue','Category Categories','Category Products','Checkout','Contact','Homepage','HomepageLogout','HomepageNoOrders','HomepageToLaunch','Info','InProcess','Login','NotFound','Offline','Product','Register','ResetPwd','Search','ShippingInfo','TandC','Thanks','UserProfile','Welcome') NOT NULL
-
-
-        $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage Code` not in 
-                                                          ('in_process.sys','profile.sys','basket.sys','checkout.sys','favourites.sys','home.sys','not_found.sys','offline.sys','reset_pwd.sys','search.sys',
-                                                          'thanks.sys','welcome.sys','unsubscribe.sys'
-                                                          )  and   `Webpage State`='Online'   ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $updated = $row['Webpage Launch Date'];
-                $sitemap->url($row['Webpage URL'], $updated, 'monthly');
-            }
-        }
-
-
-        $sitemap->page('products');
-
-        $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $updated = $row['Webpage Launch Date'];
-                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $sitemap->close();
-        unset ($sitemap);
-
-
-        $this->update_field('Website Sitemap Last Update', gmdate("Y-m-d H:i:s"), 'no_history');
-
 
     }
 

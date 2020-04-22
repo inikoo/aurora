@@ -29,11 +29,14 @@ date_default_timezone_set('UTC');
 $logged_in = get_logged_in();
 
 $smarty = new Smarty();
+$smarty->caching_type = 'redis';
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
 $smarty->setConfigDir('server_files/smarty/configs');
 $smarty->addPluginsDir('./smarty_plugins');
+
+
 
 if (defined('SENTRY_DNS_ECOM_JS')) {
     $smarty->assign('sentry_js', SENTRY_DNS_ECOM_JS);
@@ -252,6 +255,8 @@ $smarty->assign('account_code', DNS_ACCOUNT_CODE);
 
 
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
+
+
 
     include_once __DIR__.'/utils/public_object_functions.php';
     include_once __DIR__.'/utils/natural_language.php';
