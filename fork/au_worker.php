@@ -29,9 +29,9 @@ include 'asset_sales.fork.php';
 include 'time_series.fork.php';
 include 'calculate_sales.fork.php';
 
-
+include 'keyring/au_deploy_conf.php';
 $worker = new GearmanWorker();
-$worker->addServer('127.0.0.1');
+$worker->addServers(GEARMAN_SERVERS);
 
 $worker->addFunction("au_upload_edit", "fork_upload_edit");
 $worker->addFunction("au_housekeeping", "fork_housekeeping");

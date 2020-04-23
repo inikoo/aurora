@@ -23,8 +23,9 @@ include 'utils/system_functions.php';
 include 'utils/natural_language.php';
 include 'send_mailshot.fork.php';
 
+include 'keyring/au_deploy_conf.php';
 $worker = new GearmanWorker();
-$worker->addServer('127.0.0.1');
+$worker->addServers(GEARMAN_SERVERS);
 
 $worker->addFunction("au_send_mailshot", "fork_send_mailshot");
 
