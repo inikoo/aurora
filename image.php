@@ -47,7 +47,7 @@ if (!empty($_REQUEST['s'])) {
 }
 
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect(REDIS_HOST, REDIS_PORT);
 
 $image_code = 'i.'.DNS_ACCOUNT_CODE.'.'.$image_key.'_'.$size_r;
 

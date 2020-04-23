@@ -29,7 +29,7 @@ require_once "class.Account.php";
 
 
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect(REDIS_HOST, REDIS_PORT);
 
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd

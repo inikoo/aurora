@@ -27,7 +27,7 @@ require_once "class.User.php";
 
 
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect(REDIS_HOST, REDIS_PORT);
 
 /**
  * @var PDO

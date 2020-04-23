@@ -33,7 +33,7 @@ $smarty->setConfigDir('server_files/smarty/configs');
 $smarty->addPluginsDir('./smarty_plugins');
 
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect(REDIS_HOST, REDIS_PORT);
 
 if(session_id() == '' || !isset($_SESSION)) {
     session_start();

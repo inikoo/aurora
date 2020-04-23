@@ -126,7 +126,7 @@ function save_whiteboard($data, $db, $user, $smarty, $account, $modules) {
 
 
     $redis = new Redis();
-    $redis->connect('127.0.0.1', 6379);
+    $redis->connect(REDIS_HOST, REDIS_PORT);
 
 
     $redis->set($help_cache_key, json_encode($response));

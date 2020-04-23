@@ -32,7 +32,7 @@ include_once 'utils/i18n.php';
 
 
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect(REDIS_HOST, REDIS_PORT);
 
 
 date_default_timezone_set('UTC');

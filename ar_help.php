@@ -10,8 +10,10 @@
  Version 3.0
 */
 
+require_once 'keyring/dns.php';
+
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect(REDIS_HOST, REDIS_PORT);
 
 
 $state = json_decode($_REQUEST['state'], true);

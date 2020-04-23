@@ -28,6 +28,8 @@ if (!isset($_REQUEST['order_key'])) {
 
 
 require_once 'keyring/key.php';
+require_once 'keyring/dns.php';
+
 include_once 'utils/public_object_functions.php';
 
 include_once 'utils/natural_language.php';
@@ -36,7 +38,7 @@ include_once 'utils/network_functions.php';
 
 
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect(REDIS_HOST, REDIS_PORT);
 session_start();
 if (empty($_SESSION['website_key'])) {
     include_once('utils/find_website_key.include.php');
@@ -50,7 +52,6 @@ if (isset($_REQUEST['cancel'])) {
 }
 
 if (!isset($db)) {
-    require 'keyring/dns.php';
     $db = new PDO(
         "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
