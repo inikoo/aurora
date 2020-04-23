@@ -47,7 +47,7 @@ if (!empty($_REQUEST['s'])) {
 }
 
 $redis = new Redis();
-$redis->connect(REDIS_HOST, REDIS_PORT);
+$redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
 $image_code = 'i.'.DNS_ACCOUNT_CODE.'.'.$image_key.'_'.$size_r;
 
@@ -161,8 +161,9 @@ if ($row = $stmt->fetch()) {
 
     //chmod($cached_image_path,0664);
 
-
-    $redis->set(
+    $redis_write = new Redis();
+    $redis_write->connect(REDIS_HOST, REDIS_PORT);
+    $redis_write->set(
         $image_code, json_encode(
         array(
             $cached_image_path,
