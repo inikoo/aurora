@@ -411,7 +411,7 @@ count(distinct `Customer Key`) as customers
     }
 
 
-    $cache->set($account->get('Code').'SQL'.md5($sql), $res, 86400);
+//    $cache->set($account->get('Code').'SQL'.md5($sql), $res, 86400);
 
 
 }
