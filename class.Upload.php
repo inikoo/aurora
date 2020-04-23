@@ -18,7 +18,7 @@ class Upload extends DB_Table {
      */
     public $db;
 
-    function __construct($a1, $a2 = false,  $_db = false) {
+    function __construct($a1, $a2 = false, $_db = false) {
         if (!$_db) {
             global $db;
             $this->db = $db;
@@ -47,89 +47,18 @@ class Upload extends DB_Table {
                 "SELECT * FROM `Upload Dimension` WHERE `Upload Key`=%d", $tag
             );
             if ($this->data = $this->db->query($sql)->fetch()) {
-                $this->id = $this->data['Upload Key'];
-                $this->metadata=$this->get('Metadata');
+                $this->id       = $this->data['Upload Key'];
+                $this->metadata = $this->get('Metadata');
             }
-        }
-
-
-
-    }
-
-    function create($data) {
-
-        $this->new = false;
-
-        $data['Upload State'] = 'Uploaded';
-        $data['Upload Created'] = gmdate('Y-m-d H:i:s');
-
-        $base_data = $this->base_data();
-
-        foreach ($data as $key => $value) {
-            if (array_key_exists($key, $base_data)) {
-                $base_data[$key] = _trim($value);
-            }
-        }
-
-
-          $sql = sprintf(
-            "INSERT INTO `Upload Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
-        );
-
-        $stmt = $this->db->prepare($sql);
-
-
-        $i = 1;
-        foreach ($base_data as $key => $value) {
-            $stmt->bindValue($i, $value);
-            $i++;
-        }
-
-
-        if ($stmt->execute()) {
-
-            $this->id = $this->db->lastInsertId();
-            $this->get_data('id', $this->id);
-
-
-            $this->new = true;
-
-
-        } else {
-            $this->error = true;
-            $this->msg   = 'Error inserting upload record';
-            print_r($stmt->errorInfo());
         }
 
 
     }
 
-    function load_file_data() {
-        $sql = sprintf(
-            "SELECT * FROM `Upload File Dimension` WHERE `Upload File Upload Key`=%d", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
-
-
-
-    function get($key, $data = false) {
+    function get($key) {
 
         if (!$this->id) {
-            return;
+            return '';
         }
 
         switch ($key) {
@@ -250,10 +179,10 @@ class Upload extends DB_Table {
                 return json_decode($this->data['Upload Metadata'], true);
 
             case 'Filename':
-               if(isset($this->metadata['files_data'][0]['Upload File Name'])){
-                   return $this->metadata['files_data'][0]['Upload File Name'];
-               }
-
+                if (isset($this->metadata['files_data'][0]['Upload File Name'])) {
+                    return $this->metadata['files_data'][0]['Upload File Name'];
+                }
+                break;
 
             default:
 
@@ -269,8 +198,72 @@ class Upload extends DB_Table {
         return '';
     }
 
+    function create($data) {
+
+        $this->new = false;
+
+        $data['Upload State']   = 'Uploaded';
+        $data['Upload Created'] = gmdate('Y-m-d H:i:s');
+
+        $base_data = $this->base_data();
+
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $base_data)) {
+                $base_data[$key] = _trim($value);
+            }
+        }
 
 
+        $sql = sprintf(
+            "INSERT INTO `Upload Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
+
+            $this->id = $this->db->lastInsertId();
+            $this->get_data('id', $this->id);
+
+
+            $this->new = true;
+
+
+        } else {
+            $this->error = true;
+            $this->msg   = 'Error inserting upload record';
+            print_r($stmt->errorInfo());
+        }
+
+
+    }
+
+    function load_file_data() {
+        $sql = "SELECT * FROM `Upload File Dimension` WHERE `Upload File Upload Key`=?";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            foreach ($row as $key => $value) {
+                $this->data[$key] = $value;
+            }
+        }
+
+
+    }
 
     function get_field_label($field) {
 
