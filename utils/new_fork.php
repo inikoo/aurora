@@ -54,7 +54,7 @@ function new_fork($type, $data, $account_code, $db) {
         $servers = explode(",", GEARMAN_SERVERS);
         shuffle($servers);
         $servers = implode(",", $servers);
-        $client->addServers($servers);
+        $client->addServers('127.0.0.1');
         $msg = $client->doBackground($type, $fork_metadata);
 
         return array(
@@ -84,7 +84,7 @@ function new_housekeeping_fork($type, $data, $account_code) {
         $servers = explode(",", GEARMAN_SERVERS);
         shuffle($servers);
         $servers = implode(",", $servers);
-        $client->addServers($servers);
+        $client->addServers('127.0.0.1');
 
         return $client->doBackground($type, $fork_metadata);
     } else {
