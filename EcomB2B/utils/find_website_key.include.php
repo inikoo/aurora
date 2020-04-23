@@ -22,9 +22,10 @@ function get_website_key_from_domain($redis) {
         if (ENVIRONMENT=='DEVEL') {
 
             include 'keyring/dns.php';
-            $redis->set(
-                $redis_key, DEVEL_WEBSITE_KEY
-            );
+            $redis_write = new Redis();
+            $redis_write->connect(REDIS_HOST, REDIS_PORT);
+
+            $redis_write->set($redis_key, DEVEL_WEBSITE_KEY);
             return DEVEL_WEBSITE_KEY;
         } else {
 
@@ -48,9 +49,10 @@ function get_website_key_from_domain($redis) {
                 )
             );
             if ($row = $stmt->fetch()) {
-                $redis->set(
-                    $redis_key, $row['Website Key']
-                );
+
+                $redis_write = new Redis();
+                $redis_write->connect(REDIS_HOST, REDIS_PORT);
+                $redis_write->set($redis_key, $row['Website Key']);
                 return $row['Website Key'];
             } else {
                 Sentry\captureMessage('Can not find website key from '.$_SERVER['SERVER_NAME']);

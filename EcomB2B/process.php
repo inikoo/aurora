@@ -18,7 +18,7 @@ require_once 'utils/sentry.php';
 
 
 $redis = new Redis();
-$redis->connect(REDIS_HOST, REDIS_PORT);
+$redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
 session_start();
 
@@ -121,7 +121,9 @@ if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
 } else {
     $webpage_id = get_url($_SESSION['website_key'], $url, $dns_host, $dns_user, $dns_pwd, $dns_db);
-    $redis->set($url_cache_key, $webpage_id);
+    $redis_write = new Redis();
+    $redis_write->connect(REDIS_HOST, REDIS_PORT);
+    $redis_write->set($url_cache_key, $webpage_id);
 }
 
 
