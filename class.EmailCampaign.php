@@ -1429,7 +1429,12 @@ class EmailCampaign extends DB_Table {
                     )
                 )
             );
-            $client->addServer('127.0.0.1');
+
+            include_once 'keyring/au_deploy_conf.php';
+            $servers = explode(",", GEARMAN_SERVERS);
+            shuffle($servers);
+            $servers = implode(",", $servers);
+            $client->addServers($servers);
             $client->doBackground('au_send_mailshot', $fork_metadata);
         }
 
@@ -1487,7 +1492,11 @@ class EmailCampaign extends DB_Table {
                             )
                         )
                     );
-                    $client->addServer('127.0.0.1');
+                    include_once 'keyring/au_deploy_conf.php';
+                    $servers = explode(",", GEARMAN_SERVERS);
+                    shuffle($servers);
+                    $servers = implode(",", $servers);
+                    $client->addServers($servers);
                     $client->doBackground('au_send_mailshot', $fork_metadata);
                     $thread++;
 

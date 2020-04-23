@@ -12,7 +12,7 @@ include_once 'utils/new_fork.php';
 
 function fork_send_mailshot($job) {
 
-    global $account,$db;
+    global $account, $db;
 
     $time_start_tier_1 = microtime_float();
     $time_start_tier_2 = microtime_float();
@@ -21,7 +21,7 @@ function fork_send_mailshot($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
     $context = new ZMQContext();
     $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
@@ -29,7 +29,7 @@ function fork_send_mailshot($job) {
 
     $mailshot = get_object('email_campaign', $data['mailshot']);
 
-    $smarty = new Smarty();
+    $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -37,13 +37,13 @@ function fork_send_mailshot($job) {
     $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
-    $store           = get_object('Store', $mailshot->data['Email Campaign Store Key']);
-    $website         = get_object('Website', $store->get('Store Website Key'));
+    $store   = get_object('Store', $mailshot->data['Email Campaign Store Key']);
+    $website = get_object('Website', $store->get('Store Website Key'));
 
-    if($website->id){
+    if ($website->id) {
         $unsubscribe_url = $website->get('Website URL').'/unsubscribe.php';
 
-    }else{
+    } else {
         $unsubscribe_url = $account->get('Website URL').'/unsubscribe.php';
 
     }
@@ -53,8 +53,8 @@ function fork_send_mailshot($job) {
 
     $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
-    if(isset($data['editor'])){
-        $published_email_template->editor=$data['editor'];
+    if (isset($data['editor'])) {
+        $published_email_template->editor = $data['editor'];
     }
 
 
@@ -63,89 +63,79 @@ function fork_send_mailshot($job) {
     }
 
 
-    $sql = sprintf(
-        'select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d  and `Email Tracking Thread`=%d and `Email Tracking State`="Ready" ',
-        $mailshot->id, $data['thread']
+    $sql =
+        "select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=?  and `Email Tracking Thread`=? and `Email Tracking State`='Ready'";
+
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $mailshot->id,
+            $data['thread']
+        )
     );
+    while ($row = $stmt->fetch()) {
+        $send_data = array(
+            'Email_Template_Type' => $email_template_type,
+            'Email_Template'      => $email_template,
+            'Email_Tracking'      => get_object('Email_Tracking', $row['Email Tracking Key']),
+            'Unsubscribe URL'     => $unsubscribe_url
+        );
+
+        if ($mailshot->data['Email Campaign Type'] == 'GR Reminder') {
+            $customer               = get_object('Customer', $row['Email Tracking Recipient Key']);
+            $send_data['Order Key'] = $customer->get('Customer Last Dispatched Order Key');
+        }
 
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
+        // print_r($send_data);
 
+        $sql = sprintf('select `Email Campaign State` from `Email Campaign Dimension` where `Email Campaign Key`=%d ', $mailshot->id);
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                if ($row2['Email Campaign State'] == 'Stopped') {
+                    return true;
 
-            $send_data = array(
-                'Email_Template_Type' => $email_template_type,
-                'Email_Template'      => $email_template,
-                'Email_Tracking'      => get_object('Email_Tracking', $row['Email Tracking Key']),
-                'Unsubscribe URL'     => $unsubscribe_url
-            );
-
-            if ($mailshot->data['Email Campaign Type'] == 'GR Reminder') {
-                $customer               = get_object('Customer', $row['Email Tracking Recipient Key']);
-                $send_data['Order Key'] = $customer->get('Customer Last Dispatched Order Key');
-            }
-
-
-            // print_r($send_data);
-
-            $sql = sprintf('select `Email Campaign State` from `Email Campaign Dimension` where `Email Campaign Key`=%d ', $mailshot->id);
-            if ($result2 = $db->query($sql)) {
-                if ($row2 = $result2->fetch()) {
-                    if ($row2['Email Campaign State'] == 'Stopped') {
-                        return true;
-
-                    }
                 }
             }
+        }
 
-            $recipient=get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']);
-            if(isset($data['editor'])){
-                $recipient->editor=$data['editor'];
-            }
+        $recipient = get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']);
+        if (isset($data['editor'])) {
+            $recipient->editor = $data['editor'];
+        }
 
+        $published_email_template->send($recipient, $send_data, $smarty);
 
+        $time_end = microtime_float();
 
-
-            $published_email_template->send($recipient, $send_data, $smarty);
-
-
-            //print $published_email_template->msg;
-
+        if (($time_end - $time_start_tier_1) > 15000) {
 
 
-            $time_end = microtime_float();
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'                    => 'update_sent_emails_data',
+                'email_template_key'      => $email_template->id,
+                'email_template_type_key' => $email_template_type->id,
 
-            if (($time_end - $time_start_tier_1) > 15000) {
-
-
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'                    => 'update_sent_emails_data',
-                    'email_template_key'      => $email_template->id,
-                    'email_template_type_key' => $email_template_type->id,
-
-                ), $account->get('Account Code')
-                );
+            ), $account->get('Account Code')
+            );
 
 
-                $time_start_tier_1 = microtime_float();
-            }
+            $time_start_tier_1 = microtime_float();
+        }
 
+        if (($time_end - $time_start_tier_2) > 5000 or mt_rand(1, 1000) == 1000) {
 
-            if (($time_end - $time_start_tier_2) > 5000 or  mt_rand(1, 1000)==1000  ) {
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'               => 'update_sent_emails_data',
+                'email_mailshot_key' => $mailshot->id,
 
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'               => 'update_sent_emails_data',
-                    'email_mailshot_key' => $mailshot->id,
+            ), $account->get('Account Code')
+            );
 
-                ), $account->get('Account Code')
-                );
-
-                $time_start_tier_2 = microtime_float();
-            }
-
-
+            $time_start_tier_2 = microtime_float();
         }
     }
 
@@ -274,66 +264,37 @@ function fork_send_mailshot($job) {
     }
 
 
-    $sql = sprintf(
-        'select count(*) as num   from `Email Tracking Dimension`  where `Email Tracking Email Mailshot Key`=%d  and `Email Tracking Thread`=%d  and `Email Tracking State`="Ready" ', $mailshot->id, $data['thread']
+    $sql = "select count(*) as num   from `Email Tracking Dimension`  where `Email Tracking Email Mailshot Key`=?  and `Email Tracking Thread`=?  and `Email Tracking State`='Ready'";
+
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $mailshot->id,
+            $data['thread']
+        )
     );
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            if ($row['num'] > 0) {
-                $client        = new GearmanClient();
-                $fork_metadata = json_encode(
-                    array(
-                        'code' => addslashes($account->get('Code')),
-                        'data' => array(
-                            'mailshot' => $mailshot->id,
-                            'thread'   => $data['thread'],
-                        )
-                    )
-                );
-                $client->addServer('127.0.0.1');
-                $client->doBackground('au_send_mailshot', $fork_metadata);
-
-            }
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-    /*
-
-            $mailshot->update_metadata['hide'] = array(
-                'estimated_recipients',
-                'email_campaign_operations'
-            );
-
-
-            $socket->send(
-                json_encode(
-                    array(
-                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                        'objects' => array(
-                            array(
-                                'object' => 'email_campaign',
-                                'key'    => $mailshot->id,
-
-                                'update_metadata' => $mailshot->get_update_metadata()
-
-                            )
-
-                        ),
-
-
+    while ($row = $stmt->fetch()) {
+        if ($row['num'] > 0) {
+            $client        = new GearmanClient();
+            $fork_metadata = json_encode(
+                array(
+                    'code' => addslashes($account->get('Code')),
+                    'data' => array(
+                        'mailshot' => $mailshot->id,
+                        'thread'   => $data['thread'],
                     )
                 )
             );
+            include_once 'keyring/au_deploy_conf.php';
+            $servers = explode(",", GEARMAN_SERVERS);
+            shuffle($servers);
+            $servers = implode(",", $servers);
+            $client->addServers($servers);
+            $client->doBackground('au_send_mailshot', $fork_metadata);
 
-
-    */
+        }
+    }
 
 
 }

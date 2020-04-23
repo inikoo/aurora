@@ -17,7 +17,6 @@ function new_fork($type, $data, $account_code, $db) {
 
     if (class_exists('GearmanClient')) {
 
-        //  $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 
         $token = substr(
             str_shuffle(
@@ -31,7 +30,6 @@ function new_fork($type, $data, $account_code, $db) {
 
         );
 
-        // print $sql;
 
         $salt = md5(rand());
         $db->exec($sql);
@@ -50,10 +48,13 @@ function new_fork($type, $data, $account_code, $db) {
             )
         );
 
+        $client  = new GearmanClient();
 
-        $client = new GearmanClient();
-
-        $client->addServer('127.0.0.1');
+        include_once 'keyring/au_deploy_conf.php';
+        $servers = explode(",", GEARMAN_SERVERS);
+        shuffle($servers);
+        $servers = implode(",", $servers);
+        $client->addServers($servers);
         $msg = $client->doBackground($type, $fork_metadata);
 
         return array(
@@ -63,7 +64,7 @@ function new_fork($type, $data, $account_code, $db) {
     } else {
         return array(
             0,
-            'GearmanClient class not found'
+            'Gearman Client class not found'
         );
     }
 }
@@ -72,19 +73,22 @@ function new_fork($type, $data, $account_code, $db) {
 function new_housekeeping_fork($type, $data, $account_code) {
 
     if (class_exists('GearmanClient')) {
-        $client = new GearmanClient();
+        $client        = new GearmanClient();
         $fork_metadata = json_encode(
             array(
                 'code' => addslashes($account_code),
                 'data' => $data
             )
         );
-        $client->addServer('127.0.0.1');
-        $msg = $client->doBackground($type, $fork_metadata);
+        include_once 'keyring/au_deploy_conf.php';
+        $servers = explode(",", GEARMAN_SERVERS);
+        shuffle($servers);
+        $servers = implode(",", $servers);
+        $client->addServers($servers);
 
-        return $msg;
+        return $client->doBackground($type, $fork_metadata);
     } else {
-        return '\'Gearman Client class not found\'';
+        return 'Gearman Client class not found';
     }
 
 

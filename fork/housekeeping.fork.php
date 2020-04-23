@@ -1885,7 +1885,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                                 )
                             )
                         );
-                        $client->addServer('127.0.0.1');
+                        include_once 'keyring/au_deploy_conf.php';
+                        $servers = explode(",", GEARMAN_SERVERS);
+                        shuffle($servers);
+                        $servers = implode(",", $servers);
+                        $client->addServers($servers);
                         $client->doBackground('au_send_mailshot', $fork_metadata);
 
                         if ($row['Email Tracking Thread'] >= $max_thread) {
