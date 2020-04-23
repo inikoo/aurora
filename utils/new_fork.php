@@ -54,7 +54,7 @@ function new_fork($type, $data, $account_code, $db) {
         $servers = explode(",", GEARMAN_SERVERS);
         shuffle($servers);
         $servers = implode(",", $servers);
-        $client->addServers('127.0.0.1');
+        $client->addServers($servers);
         $msg = $client->doBackground($type, $fork_metadata);
 
         return array(
@@ -80,11 +80,12 @@ function new_housekeeping_fork($type, $data, $account_code) {
                 'data' => $data
             )
         );
+
         include_once 'keyring/au_deploy_conf.php';
         $servers = explode(",", GEARMAN_SERVERS);
         shuffle($servers);
         $servers = implode(",", $servers);
-        $client->addServers('127.0.0.1');
+        $client->addServers($servers);
 
         return $client->doBackground($type, $fork_metadata);
     } else {
