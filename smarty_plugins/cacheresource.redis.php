@@ -12,14 +12,14 @@
 
 class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
 
-    protected $redis_read;
-    protected $redis_write;
+    protected $redis;
+
 
     public function __construct() {
 
-        $this->redis_read  = false;
-        $this->redis_write = false;
-
+        $this->redis = new Redis();
+        $this->redis->connect(REDIS_HOST, REDIS_PORT);
+        $this->redis->select(REDIS_SMARTY_CACHE_DB);
 
     }
 
@@ -33,16 +33,10 @@ class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
      */
     protected function read(array $keys) {
 
-
-        if (!$this->redis_read) {
-            $this->redis_read = new Redis();
-            $this->redis_read->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
-            $this->redis_read->select(REDIS_SMARTY_CACHE_DB);
-        }
-
-
         $_res = array();
-        $res  = $this->redis_read->mGet($keys);
+
+        $res = $this->redis->mGet($keys);
+
         foreach ($res as $k => $v) {
             $_res[$keys[$k]] = $v;
         }
@@ -61,15 +55,12 @@ class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
      */
     protected function write(array $keys, $expire = null) {
 
-        if (!$this->redis_write) {
-            $this->init_redis_write();
-        }
 
         foreach ($keys as $k => $v) {
             if ($expire == null) {
-                $this->redis_write->setEx($k, $expire, $v);
+                $this->redis->setEx($k, $expire, $v);
             } else {
-                $this->redis_write->set($k, $v);
+                $this->redis->set($k, $v);
             }
 
         }
@@ -86,28 +77,18 @@ class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
      */
     protected function delete(array $keys) {
 
-        if (!$this->redis_write) {
-            $this->init_redis_write();
-        }
-        $this->redis_write->del($keys);
+
+
+        $this->redis->del($keys);
 
         return true;
     }
 
 
     protected function purge() {
-        if (!$this->redis_write) {
-            $this->init_redis_write();
-        }
-        $this->redis_write->flushdb();
+
+        $this->redis->flushdb();
 
         return true;
     }
-
-    protected function init_redis_write() {
-        $this->redis_write = new Redis();
-        $this->redis_write->connect(REDIS_HOST, REDIS_PORT);
-        $this->redis_write->select(REDIS_SMARTY_CACHE_DB);
-    }
-
 }
