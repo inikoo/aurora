@@ -14,6 +14,8 @@
 
 function fork_upload_edit($job) {
 
+    global $account,$db;
+
 
     include_once 'class.User.php';
     include_once 'class.Upload.php';
@@ -34,7 +36,7 @@ function fork_upload_edit($job) {
     $fork_key            = $_data['fork_key'];
     $db                  = $_data['db'];
 
-
+    
     $account = new Account($db);
 
 
