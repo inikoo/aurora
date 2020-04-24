@@ -33,7 +33,7 @@
 
 
                     <div class="product_block item product_container" data-product_id="{$item.product_id}">
-                        <div class="product_header_text fr-view" >
+                        <div class="product_header_text _au_vw_" >
                             {$item.header_text}
                         </div>
 
@@ -152,7 +152,7 @@
                         <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
 
                     </div>
-                    <div class="fr-view txt {$item.size_class}">
+                    <div class="_au_vw_ txt {$item.size_class}">
                         {$item.text}
                     </div>
 

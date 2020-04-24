@@ -13,7 +13,7 @@
 <div id="block_{$key}" class="{$data.type} _block {if !$data.show}hide{/if}">
 
 
-    <div class="asset_description content  fr-view" style="margin-bottom:0px;margin-top:0px">
+    <div class="asset_description content  _au_vw_" style="margin-bottom:0px;margin-top:0px">
 
         <div class="asset_description_wrap">
             {$data.mobile_html}

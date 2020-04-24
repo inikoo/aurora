@@ -115,7 +115,7 @@
             {/if}
 
 
-            <div id="product_description" class="product_description_block fr-view ">
+            <div id="product_description" class="product_description_block _au_vw_ ">
                 {$data.text}
             </div>
 

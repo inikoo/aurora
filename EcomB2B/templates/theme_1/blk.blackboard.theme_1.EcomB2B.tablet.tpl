@@ -10,7 +10,7 @@
 *}
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if}">
-    <div class="content   fr-view" style="margin-bottom:0px">
+    <div class="content   _au_vw_" style="margin-bottom:0px">
         {$data.tablet_html}
         <div class="clear"></div>
     </div>

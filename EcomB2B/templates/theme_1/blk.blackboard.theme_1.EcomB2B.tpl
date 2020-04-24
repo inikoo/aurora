@@ -25,7 +25,7 @@
             </div>
         {/foreach}
         {foreach from=$data.texts item=text}
-            <div id="{$text.id}" class="blackboard_text" style="position: absolute;top:{$text.top}px;left:{$text.left}px;width:{$text.width}px;height:{$text.height}px; ">{$text.text}</div>
+            <div id="{$text.id}" class="blackboard_text _au_vw_" style="position: absolute;top:{$text.top}px;left:{$text.left}px;width:{$text.width}px;height:{$text.height}px; ">{$text.text}</div>
         {/foreach}
     </div>
 

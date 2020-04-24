@@ -34,7 +34,7 @@
 
 
                 <div class="product_block item product_container tablet" data-product_id="{$item.product_id}">
-                    <div class="product_header_text fr-view" >
+                    <div class="product_header_text _au_vw_" >
                         {$item.header_text}
                     </div>
 

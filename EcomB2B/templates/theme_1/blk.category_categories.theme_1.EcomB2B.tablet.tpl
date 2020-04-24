@@ -50,7 +50,7 @@
 
                                 {elseif $category_data.type=='text'}
 
-                                        <div style="padding:{$category_data.padding}px"  class="fr-view txt  {$category_data.size_class}">{$category_data.text}</div>
+                                        <div style="padding:{$category_data.padding}px"  class="_au_vw_ txt  {$category_data.size_class}">{$category_data.text}</div>
 
                                 {elseif $category_data.type=='image'}
                                         {if !empty($category_data.link)}

@@ -17,7 +17,7 @@
 
 <div id="block_{$key}"  class=" content {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
-    <div class="container fr-view">
+    <div class="container _au_vw_">
         {if  ($products|@count)==0}
             <div  >{$data.labels.no_items}</div>
         {else}

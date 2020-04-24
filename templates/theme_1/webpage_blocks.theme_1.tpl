@@ -1254,11 +1254,16 @@
                     });
                     text_block=$(obj).find('.product_description_block')
 
+                    var text='';
                     if ($(text_block).hasClass('fr-box')) {
-                        var text = $(text_block).data('editor').html.get()
+                         text = $(text_block).data('editor').html.get()
+
                     } else {
-                        var text = $(text_block).html()
+                         text = $(text_block).html()
                     }
+
+
+
 
                     blocks.push({
                         type: 'product',

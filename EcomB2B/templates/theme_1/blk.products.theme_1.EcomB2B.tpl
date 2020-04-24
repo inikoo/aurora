@@ -35,7 +35,7 @@
                     {counter print=false assign="counter"}
 
                     <div class="product_block item product_container" data-product_id="{$item.product_id}">
-                        <div class="product_header_text fr-view" >
+                        <div class="product_header_text _au_vw_" >
                             {$item.header_text}
                         </div>
 
@@ -159,7 +159,7 @@
                         <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
 
                     </div>
-                    <div style="padding:{$item.padding}px" size_class="{$item.size_class}" data-padding="{$item.padding}" class="fr-view txt {$item.size_class}">{$item.text}</div>
+                    <div style="padding:{$item.padding}px" size_class="{$item.size_class}" data-padding="{$item.padding}" class="_au_vw_ txt {$item.size_class}">{$item.text}</div>
 
 
                 {elseif $item.type=='image'}

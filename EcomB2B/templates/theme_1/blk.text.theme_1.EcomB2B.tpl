@@ -21,7 +21,7 @@
     <div class="text_blocks  container  text_template_{$data.template}">
         {foreach from=$data.text_blocks item=text_block key=text_block_key}
             <div class="text_block_container" style="position: relative">
-                <div class="text_block fr-view"
+                <div class="text_block _au_vw_"
                      style="border-style:solid;
                      {if isset($text_block.styles)}
                          {foreach from=$text_block.styles item=style key=style_key}

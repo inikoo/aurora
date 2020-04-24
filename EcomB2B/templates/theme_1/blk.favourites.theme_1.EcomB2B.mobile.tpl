@@ -14,7 +14,7 @@
 
 
 
-    <div class=" fr-view">
+    <div class=" _au_vw_">
         {if  ($products|@count)==0}
             <div  >{$data.labels.no_items}</div>
         {else}

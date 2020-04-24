@@ -1315,6 +1315,7 @@ i.product_stock_dot {
 .category_products p{
   margin-bottom: auto;
 }
+@import 'e1';
 
 @import 'tabs';
 @import 'table_title';
@@ -1324,6 +1325,7 @@ i.product_stock_dot {
 @import 'notifications_control_panel';
 @import 'timeline_horizontal';
 @import 'order';
+@import 'e2';
 
 .table .backgrid tr td{
   padding: 3px 4px;border:none;border-bottom: 1px solid #e0e0e0;

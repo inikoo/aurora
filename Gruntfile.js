@@ -236,7 +236,7 @@ module.exports = function (grunt) {
             ecom_css: {
                 files: {
                     'EcomB2B/assets/desktop.min.css': [
-                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css',  'node_modules/froala-editor/css/froala_style.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css'],
                     'EcomB2B/assets/datatables.min.css': [
                         'EcomB2B/css/backgrid/backgrid.css', 'EcomB2B/css/backgrid/backgrid-filter.css'],
                     'EcomB2B/assets/forms.min.css': [
@@ -244,9 +244,9 @@ module.exports = function (grunt) {
                     'EcomB2B/assets/image_gallery.min.css': [
                         'EcomB2B/css/photoswipe.css', 'EcomB2B/css/photoswipe/default-skin.css'],
                     'EcomB2B/assets/mobile.min.css': [
-                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css',  'node_modules/froala-editor/css/froala_style.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css'],
                     'EcomB2B/assets/tablet.min.css': [
-                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.tablet.css',  'node_modules/froala-editor/css/froala_style.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.tablet.css'],
 
 
                 }

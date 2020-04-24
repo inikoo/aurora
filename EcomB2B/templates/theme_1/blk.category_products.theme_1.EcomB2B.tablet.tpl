@@ -30,7 +30,7 @@
                 {if $item.type=='product'}
                     {counter print=false assign="counter"}
                     <div class="product_block tablet item product_container" data-product_id="{$item.product_id}">
-                        <div class="product_header_text fr-view" >
+                        <div class="product_header_text _au_vw_" >
                             {$item.header_text}
                         </div>
                         <div class="wrap_to_center product_image" >
@@ -131,7 +131,7 @@
                     </div>
                 {elseif $item.type=='text'}
 
-                    <div class="fr-view txt {$item.size_class}">{$item.text}</div>
+                    <div class="_au_vw_ txt {$item.size_class}">{$item.text}</div>
 
                 {elseif $item.type=='image'}
 
