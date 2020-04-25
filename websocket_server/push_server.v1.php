@@ -1,29 +1,27 @@
 <?php
+require __DIR__.'/keyring/dns.php';
 require __DIR__.'/vendor/autoload.php';
 
 use App\Publishers\Pusher;
-
+use Ratchet\Http\HttpServer;
+use Ratchet\Server\IoServer;
+use Ratchet\Wamp\WampServer;
+use Ratchet\WebSocket\WsServer;
 use React\ZMQ\Context;
 
 
-use Ratchet\Server\IoServer;
-use Ratchet\Http\HttpServer;
-use Ratchet\WebSocket\WsServer;
-use Ratchet\Wamp\WampServer;
-
-
-$loop   = React\EventLoop\Factory::create();
-$pusher = new Pusher;
+$loop    = React\EventLoop\Factory::create();
+$pusher  = new Pusher;
 $context = new Context($loop);
 $pull    = $context->getSocket(ZMQ::SOCKET_PULL);
-$pull->bind('tcp://127.0.0.1:5555');
+$pull->bind('tcp://'.LOCAL_IP.':5555');
 $pull->on(
     'message', array(
                  $pusher,
                  'broadcast'
              )
 );
-$webSock   = new React\Socket\Server('0.0.0.0:8081', $loop);
+$webSock = new React\Socket\Server('0.0.0.0:8081', $loop);
 
 
 $webServer = new IoServer(
@@ -31,8 +29,7 @@ $webServer = new IoServer(
         new WsServer(
             new WampServer($pusher)
         )
-    )
-    , $webSock
+    ), $webSock
 );
 $loop->run();
 
