@@ -17,4 +17,3 @@ $data=array(
 $socket->send(json_encode($data));
 
 
-?>

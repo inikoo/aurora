@@ -1057,37 +1057,30 @@ class Account extends DB_Table {
             ), 'Account Data'
         );
 
+        include_once 'utils/send_zqm_message.class.php';
+        send_zqm_message(json_encode(
+                             array(
+                                 'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
+                                 'sections' => array(
+                                     array(
+                                         'section' => 'dashboard',
 
-        $context = new ZMQContext();
-        $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-        $socket->connect("tcp://localhost:5555");
+                                         'update_metadata' => array(
+                                             'class_html' => array(
+                                                 'Active_Parts'        => $this->get('Active Parts Number'),
+                                                 'In_Process_Parts'    => $this->get('In Process Parts Number'),
+                                                 'Discontinuing_Parts' => $this->get('Discontinuing Parts Number'),
 
-        $socket->send(
-            json_encode(
-                array(
-                    'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
-                    'sections' => array(
-                        array(
-                            'section' => 'dashboard',
+                                             )
+                                         )
 
-                            'update_metadata' => array(
-                                'class_html' => array(
-                                    'Active_Parts'        => $this->get('Active Parts Number'),
-                                    'In_Process_Parts'    => $this->get('In Process Parts Number'),
-                                    'Discontinuing_Parts' => $this->get('Discontinuing Parts Number'),
+                                     )
 
-                                )
-                            )
-
-                        )
-
-                    ),
+                                 ),
 
 
-                )
-            )
-        );
-
+                             )
+                         ));
 
     }
 
@@ -1334,52 +1327,47 @@ class Account extends DB_Table {
         }
 
 
-        $context = new ZMQContext();
-        $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-        $socket->connect("tcp://localhost:5555");
+        include_once 'utils/send_zqm_message.class.php';
+        send_zqm_message( json_encode(
+                              array(
+                                  'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
+                                  'sections' => array(
+                                      array(
+                                          'section' => 'dashboard',
 
-        $socket->send(
-            json_encode(
-                array(
-                    'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
-                    'sections' => array(
-                        array(
-                            'section' => 'dashboard',
+                                          'update_metadata' => array(
+                                              'class_html' => array(
+                                                  'Active_Parts_Stock_Surplus_Number'             => $this->get('Active Parts Stock Surplus Number'),
+                                                  'Active_Parts_Stock_Surplus_Stock_Value_Minify' => $this->get('Active Parts Stock Surplus Stock Value Minify'),
+                                                  'Active_Parts_Stock_Surplus_Deliveries_Number'  => $this->get('Active Parts Stock Surplus Deliveries Number'),
 
-                            'update_metadata' => array(
-                                'class_html' => array(
-                                    'Active_Parts_Stock_Surplus_Number'             => $this->get('Active Parts Stock Surplus Number'),
-                                    'Active_Parts_Stock_Surplus_Stock_Value_Minify' => $this->get('Active Parts Stock Surplus Stock Value Minify'),
-                                    'Active_Parts_Stock_Surplus_Deliveries_Number'  => $this->get('Active Parts Stock Surplus Deliveries Number'),
+                                                  'Active_Parts_Stock_OK_Number'             => $this->get('Active Parts Stock OK Number'),
+                                                  'Active_Parts_Stock_OK_Stock_Value_Minify' => $this->get('Active Parts Stock OK Stock Value Minify'),
+                                                  'Active_Parts_Stock_OK_Deliveries_Number'  => $this->get('Active Parts Stock OK Deliveries Number'),
 
-                                    'Active_Parts_Stock_OK_Number'             => $this->get('Active Parts Stock OK Number'),
-                                    'Active_Parts_Stock_OK_Stock_Value_Minify' => $this->get('Active Parts Stock OK Stock Value Minify'),
-                                    'Active_Parts_Stock_OK_Deliveries_Number'  => $this->get('Active Parts Stock OK Deliveries Number'),
+                                                  'Active_Parts_Stock_Low_Number'             => $this->get('Active Parts Stock Low Number'),
+                                                  'Active_Parts_Stock_Low_Stock_Value_Minify' => $this->get('Active Parts Stock Low Stock Value Minify'),
+                                                  'Active_Parts_Stock_Low_Deliveries_Number'  => $this->get('Active Parts Stock Low Deliveries Number'),
 
-                                    'Active_Parts_Stock_Low_Number'             => $this->get('Active Parts Stock Low Number'),
-                                    'Active_Parts_Stock_Low_Stock_Value_Minify' => $this->get('Active Parts Stock Low Stock Value Minify'),
-                                    'Active_Parts_Stock_Low_Deliveries_Number'  => $this->get('Active Parts Stock Low Deliveries Number'),
+                                                  'Active_Parts_Stock_Critical_Number'             => $this->get('Active Parts Stock Critical Number'),
+                                                  'Active_Parts_Stock_Critical_Stock_Value_Minify' => $this->get('Active Parts Stock Critical Stock Value Minify'),
+                                                  'Active_Parts_Stock_Critical_Deliveries_Number'  => $this->get('Active Parts Stock Critical Deliveries Number'),
 
-                                    'Active_Parts_Stock_Critical_Number'             => $this->get('Active Parts Stock Critical Number'),
-                                    'Active_Parts_Stock_Critical_Stock_Value_Minify' => $this->get('Active Parts Stock Critical Stock Value Minify'),
-                                    'Active_Parts_Stock_Critical_Deliveries_Number'  => $this->get('Active Parts Stock Critical Deliveries Number'),
-
-                                    'Active_Parts_Stock_Zero_Number'             => $this->get('Active Parts Stock Zero Number'),
-                                    'Active_Parts_Stock_Zero_Stock_Value_Minify' => $this->get('Active Parts Stock Zero Stock Value Minify'),
-                                    'Active_Parts_Stock_Zero_Deliveries_Number'  => $this->get('Active Parts Stock Zero Deliveries Number'),
+                                                  'Active_Parts_Stock_Zero_Number'             => $this->get('Active Parts Stock Zero Number'),
+                                                  'Active_Parts_Stock_Zero_Stock_Value_Minify' => $this->get('Active Parts Stock Zero Stock Value Minify'),
+                                                  'Active_Parts_Stock_Zero_Deliveries_Number'  => $this->get('Active Parts Stock Zero Deliveries Number'),
 
 
-                                )
-                            )
+                                              )
+                                          )
 
-                        )
+                                      )
 
-                    ),
+                                  ),
 
 
-                )
-            )
-        );
+                              )
+                          ));
 
 
     }

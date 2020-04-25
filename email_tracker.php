@@ -488,9 +488,7 @@ if ($validator->isValid($sns)) {
                 }
 
 
-                $context = new ZMQContext();
-                $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-                $socket->connect("tcp://localhost:5555");
+
 
 
                 switch ($email_tracking->get('Email Tracking State')) {
@@ -529,10 +527,8 @@ if ($validator->isValid($sns)) {
                 if (isset($email_campaign)) {
 
                     $email_template_type = get_object('email_template_type', $email_campaign->get('Email Campaign Email Template Type Key'));
-
-
-                    $socket->send(
-                        json_encode(
+                    include_once 'utils/send_zqm_message.class.php';
+                    send_zqm_message(json_encode(
                             array(
                                 'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
@@ -593,8 +589,7 @@ if ($validator->isValid($sns)) {
 
 
                             )
-                        )
-                    );
+                        ));
 
 
                 }

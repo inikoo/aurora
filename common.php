@@ -4,6 +4,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 define("_DEVEL", isset($_SERVER['devel']));
 
 require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 
 require_once 'vendor/autoload.php';
 

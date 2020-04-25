@@ -23,9 +23,7 @@ function fork_send_mailshot($job) {
 
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
-    $context = new ZMQContext();
-    $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-    $socket->connect("tcp://localhost:5555");
+    $socket=get_zqm_message_socket();
 
     $mailshot = get_object('email_campaign', $data['mailshot']);
 

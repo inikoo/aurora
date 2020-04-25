@@ -436,13 +436,9 @@ switch ($time) {
  * @param $redis   \Redis
  * @param $account \Account
  *
- * @throws \ZMQSocketException
  */
 function real_time_users_operations($db, $redis, $account) {
 
-    $context = new ZMQContext();
-    $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-    $socket->connect("tcp://localhost:5555");
 
     require_once 'utils/real_time_functions.php';
 
@@ -508,19 +504,18 @@ function real_time_users_operations($db, $redis, $account) {
 
     }
 
+    include_once 'utils/send_zqm_message.class.php';
+    send_zqm_message(json_encode(
+                         array(
+                             'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-    $socket->send(
-        json_encode(
-            array(
-                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                             'iu'      => $real_time_users,
+                             'd3'      => $real_time_website_users,
+                             'objects' => $objects_data
 
-                'iu'      => $real_time_users,
-                'd3'      => $real_time_website_users,
-                'objects' => $objects_data
+                         )
+                     ));
 
-            )
-        )
-    );
 
 }
 

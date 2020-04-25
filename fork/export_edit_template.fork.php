@@ -246,9 +246,7 @@ function fork_export_edit_template($job) {
         }
     }
 
-    $context = new ZMQContext();
-    $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-    $socket->connect("tcp://localhost:5555");
+    $socket  = get_zqm_message_socket();
 
 
     $socket->send(

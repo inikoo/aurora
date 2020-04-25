@@ -88,7 +88,6 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
  * @param $modules
  * @param $redis   \Redis
  *
- * @throws \ZMQSocketException
  */
 function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
@@ -1320,24 +1319,20 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     if ($old_weblocation != (isset($state['module']) ? $state['module'] : '').'|'.(isset($state['section']) ? $state['section'] : '')) {
 
-        $context = new ZMQContext();
-        $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-        $socket->connect("tcp://localhost:5555");
 
         require_once 'utils/real_time_functions.php';
         $real_time_users = get_users_read_time_data($redis, $account);
 
-
-        $socket->send(
+        include_once 'utils/send_zqm_message.class.php';
+        send_zqm_message(
             json_encode(
                 array(
                     'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-
                     'iu' => $real_time_users,
-
                 )
             )
         );
+
 
     }
 

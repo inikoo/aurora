@@ -207,12 +207,8 @@ function fork_housekeeping($job) {
                 //print_r($real_time_website_users_data);
                 //exit;
 
-                $context = new ZMQContext();
-                $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-                $socket->connect("tcp://localhost:5555");
-
-
-                $socket->send(
+                include_once 'utils/send_zqm_message.class.php';
+                send_zqm_message(
                     json_encode(
                         array(
                             'channel' => 'real_time.'.strtolower($account->get('Account Code')),
@@ -270,8 +266,7 @@ function fork_housekeeping($job) {
             break;
 
 
-        case
-        'update_basket_orders':
+        case 'update_basket_orders':
 
 
             $date = gmdate('Y-m-d H:i:s');
@@ -666,11 +661,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $account->update_active_parts_stock_data();
 
 
-            $context = new ZMQContext();
-            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-            $socket->connect("tcp://localhost:5555");
-
-
             switch ($part->get('Part Status')) {
                 case 'In Use':
                     $part_status = sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-box title="%s"></i>', $part->sku, _('Active, click to discontinue'));
@@ -690,7 +680,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
 
-            $socket->send(
+            include_once 'utils/send_zqm_message.class.php';
+            send_zqm_message(
                 json_encode(
                     array(
                         'channel' => 'real_time.'.strtolower($account->get('Account Code')),
@@ -1016,11 +1007,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store->update_orders_in_basket_data();
             $account->update_orders_in_basket_data();
 
-            $context = new ZMQContext();
-            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-            $socket->connect("tcp://localhost:5555");
-
-            $socket->send(
+           include_once 'utils/send_zqm_message.class.php';
+            send_zqm_message(
                 json_encode(
                     array(
                         'channel'  => 'real_time.'.strtolower($account->get('Account Code')),
@@ -1089,11 +1077,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $account->load_acc_data();
             $store->load_acc_data();
 
-            $context = new ZMQContext();
-            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-            $socket->connect("tcp://localhost:5555");
-
-            $socket->send(
+            include_once 'utils/send_zqm_message.class.php';
+            send_zqm_message(
                 json_encode(
                     array(
                         'channel'  => 'real_time.'.strtolower($account->get('Account Code')),
@@ -1767,14 +1752,12 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             if (!empty($data['email_mailshot_key'])) {
 
-                $context = new ZMQContext();
-                $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-                $socket->connect("tcp://localhost:5555");
 
                 $email_campaign = get_object('email_campaign', $data['email_mailshot_key']);
                 $email_campaign->update_sent_emails_totals();
 
-                $socket->send(
+                include_once 'utils/send_zqm_message.class.php';
+                send_zqm_message(
                     json_encode(
                         array(
                             'channel' => 'real_time.'.strtolower($account->get('Account Code')),
@@ -1835,15 +1818,12 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'send_mailshot':
 
-            $context = new ZMQContext();
-            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-            $socket->connect("tcp://localhost:5555");
 
             $email_campaign         = get_object('email_campaign', $data['mailshot_key']);
             $email_campaign->editor = $data['editor'];
 
             if ($email_campaign->id) {
-                $email_campaign->socket = $socket;
+                $email_campaign->socket = get_zqm_message_socket();
                 $email_campaign->update_estimated_recipients();
                 $email_campaign->send_mailshot();
             }
@@ -1851,52 +1831,43 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'resume_mailshot':
 
-            $context = new ZMQContext();
-            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-            $socket->connect("tcp://localhost:5555");
-
 
             $mailshot = get_object('mailshot', $data['mailshot_key']);
 
 
             if ($mailshot->id) {
-                $mailshot->socket = $socket;
-
-
-                $sql = sprintf(
-                    'select `Email Tracking Thread` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d  and `Email Tracking State`="Ready" group by `Email Tracking Thread`  ',
-
-                    $mailshot->id
-                );
-
+                $mailshot->socket = get_zqm_message_socket();
 
                 $max_thread = 1;
-                if ($result = $db->query($sql)) {
-                    foreach ($result as $row) {
 
+                $sql = "select `Email Tracking Thread` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=?  and `Email Tracking State`='Ready' group by `Email Tracking Thread`";
 
-                        $client        = new GearmanClient();
-                        $fork_metadata = json_encode(
-                            array(
-                                'code' => addslashes($account->get('Code')),
-                                'data' => array(
-                                    'mailshot' => $mailshot->id,
-                                    'thread'   => $row['Email Tracking Thread'],
-                                )
+                $stmt = $db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $mailshot->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    $client        = new GearmanClient();
+                    $fork_metadata = json_encode(
+                        array(
+                            'code' => addslashes($account->get('Code')),
+                            'data' => array(
+                                'mailshot' => $mailshot->id,
+                                'thread'   => $row['Email Tracking Thread'],
                             )
-                        );
-                        include_once 'keyring/au_deploy_conf.php';
-                        $servers = explode(",", GEARMAN_SERVERS);
-                        shuffle($servers);
-                        $servers = implode(",", $servers);
-                        $client->addServers($servers);
-                        $client->doBackground('au_send_mailshot', $fork_metadata);
+                        )
+                    );
+                    include_once 'keyring/au_deploy_conf.php';
+                    $servers = explode(",", GEARMAN_SERVERS);
+                    shuffle($servers);
+                    $servers = implode(",", $servers);
+                    $client->addServers($servers);
+                    $client->doBackground('au_send_mailshot', $fork_metadata);
 
-                        if ($row['Email Tracking Thread'] >= $max_thread) {
-                            $max_thread = $row['Email Tracking Thread'] + 1;
-                        }
-
-
+                    if ($row['Email Tracking Thread'] >= $max_thread) {
+                        $max_thread = $row['Email Tracking Thread'] + 1;
                     }
                 }
 
@@ -2017,144 +1988,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
 
-            return;
-
-
-            // down here is real time
-            //todo option to do real time
-
-            $intervals = array(
-                'Total',
-                'Year To Day',
-                'Quarter To Day',
-                'Month To Day',
-                'Week To Day',
-                'Today',
-                '1 Year',
-                '1 Month',
-                '1 Week',
-            );
-
-            require_once 'conf/timeseries.php';
-            require_once 'class.Timeserie.php';
-
-            $timeseries = get_time_series_config();
-
-
-            //$sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
-            $sql = sprintf('select `Part SKU`,`Inventory Transaction Type`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d   ', $data['delivery_note_key']);
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    if ($row['Inventory Transaction Type'] == 'Sale') {
-
-                        $part = get_object('Part', $row['Part SKU']);
-
-
-                        foreach ($intervals as $interval) {
-                            $part->update_sales_from_invoices($interval, true, false);
-                        }
-
-                        foreach ($part->get_suppliers() as $suppliers_key) {
-                            $suppliers[$suppliers_key] = $suppliers_key;
-                        }
-                        foreach ($part->get_categories() as $part_category_key) {
-                            $part_categories[$part_category_key] = $part_category_key;
-                        }
-                    }
-
-
-                }
-            }
-            foreach ($part_categories as $part_category_key) {
-                $category = get_object('Category', $part_category_key);
-                if ($category->get('Category Branch Type') != 'Root') {
-                    foreach ($intervals as $interval) {
-                        $category->update_sales_from_invoices($interval, true, false);
-                    }
-                }
-
-
-                $timeseries_data = $timeseries['PartCategory'];
-                foreach ($timeseries_data as $time_series_data) {
-
-
-                    $time_series_data['Timeseries Parent']     = 'Category';
-                    $time_series_data['Timeseries Parent Key'] = $category->id;
-                    $time_series_data['editor']                = $editor;
-
-
-                    $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-                    $category->update_part_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
-
-
-                }
-
-            }
-
-
-            foreach ($suppliers as $supplier_key) {
-                $supplier = get_object('Supplier', $supplier_key);
-
-
-                $timeseries_data = $timeseries['Supplier'];
-                foreach ($timeseries_data as $time_series_data) {
-
-
-                    $time_series_data['Timeseries Parent']     = 'Supplier';
-                    $time_series_data['Timeseries Parent Key'] = $supplier->id;
-                    $time_series_data['editor']                = $editor;
-
-
-                    $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-                    $supplier->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
-
-
-                }
-
-
-                foreach ($intervals as $interval) {
-                    $supplier->update_sales_from_invoices($interval, true, false);
-                }
-                foreach ($supplier->get_categories() as $supplier_category_key) {
-                    $suppliers_categories[$supplier_category_key] = $supplier_category_key;
-                }
-
-            }
-
-            foreach ($suppliers_categories as $supplier_category_key) {
-                $category = get_object('Category', $supplier_category_key);
-                if ($category->get('Category Branch Type') != 'Root') {
-                    foreach ($intervals as $interval) {
-                        $category->update_sales_from_invoices($interval, true, false);
-                    }
-                }
-
-                // todo supplier categories timeseries still not done
-                /*
-                $timeseries_data = $timeseries['PartCategory'];
-                foreach ($timeseries_data as $time_series_data) {
-
-
-                    $time_series_data['Timeseries Parent']     = 'Category';
-                    $time_series_data['Timeseries Parent Key'] = $category->id;
-                    $time_series_data['editor']                = $editor;
-
-
-                    $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-                    $category->update_supplier_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
-
-
-                }
-                */
-            }
-
-
-            //print_r($part_categories);
-            //print_r($suppliers);
-            //print_r($suppliers_categories);
 
             break;
 
@@ -2501,15 +2334,10 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'start_purge':
 
-            $context = new ZMQContext();
-            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-            $socket->connect("tcp://localhost:5555");
-
-
             $purge         = get_object('purge', $data['purge_key']);
             $purge->editor = $editor;
             if ($purge->id) {
-                $purge->socket = $socket;
+                $purge->socket = get_zqm_message_socket();
                 $purge->purge();
             }
             break;
@@ -3072,10 +2900,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'update_marketing_customers':
 
 
-            $context = new ZMQContext();
-            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-            $socket->connect("tcp://localhost:5555");
-
             if ($data['object'] == 'category') {
                 $category = get_object('Category', $data['key']);
 
@@ -3122,8 +2946,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 }
             }
 
-
-            $socket->send(
+            include_once 'utils/send_zqm_message.class.php';
+            send_zqm_message(
                 json_encode(
                     array(
                         'channel' => 'real_time.'.strtolower($account->get('Account Code')),
@@ -3212,14 +3036,14 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $webpage = get_object('Webpage', $data['webpage_key']);
 
-            $children=[];
+            $children = [];
             foreach ($webpage->get_category_children_webpage_keys() as $child_webpage_key) {
                 $children[] = get_object('Webpage', $child_webpage_key);
 
             }
 
             chdir(AU_PATH);
-            foreach($children as $_webpage){
+            foreach ($children as $_webpage) {
                 $_webpage->refresh_cache();
 
             }
