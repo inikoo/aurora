@@ -26,6 +26,7 @@
     "ext-redis": "*",
     "ext-zmq": "*",
     "ext-memcached": "*",
-    "ext-gearman": "*"
+    "ext-gearman": "*",
+    "ext-intl": "*"
   }
 }
