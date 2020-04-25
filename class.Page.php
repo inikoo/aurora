@@ -638,7 +638,7 @@ class Page extends DB_Table {
 
 
         $redis = new Redis();
-        if ($redis->connect('127.0.0.1', 6379)) {
+        if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
 
             $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
             $redis->set($url_cache_key, $this->id);
@@ -847,7 +847,7 @@ class Page extends DB_Table {
 
 
         $redis = new Redis();
-        if ($redis->connect('127.0.0.1', 6379)) {
+        if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
 
             $cache_id_prefix = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_';
 
@@ -3535,7 +3535,7 @@ class Page extends DB_Table {
         $account = get_object('Account', 1);
 
         $redis = new Redis();
-        if ($redis->connect('127.0.0.1', 6379)) {
+        if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
 
             $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 

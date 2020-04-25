@@ -180,7 +180,7 @@ function fork_housekeeping($job) {
             $redis = new Redis();
 
 
-            if ($redis->connect('127.0.0.1', 6379)) {
+            if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
 
 
                 /*
@@ -2626,7 +2626,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $redis = new Redis();
 
 
-            if ($redis->connect('127.0.0.1', 6379)) {
+            if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
 
 
                 $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.$webpage->get('Webpage Code');

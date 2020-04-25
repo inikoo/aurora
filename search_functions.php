@@ -2265,7 +2265,7 @@ function search_invoices($db, $account, $user, $data) {
 
     $cache_fingerprint = 'AU/'.$account->get('Account Code').'/S/invoices/'.md5($stores.'|'.$queries);
     $redis             = new Redis();
-    if ($redis->connect('127.0.0.1', 6379)) {
+    if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
 
 
         if ($redis->exists($cache_fingerprint)) {
@@ -3748,7 +3748,7 @@ function search_payments($db, $account, $user, $data) {
 
     $cache_fingerprint = 'AU/'.$account->get('Account Code').'/S/payment/'.md5($stores.'|'.$queries);
     $redis             = new Redis();
-    if ($redis->connect('127.0.0.1', 6379)) {
+    if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
 
 
         if ($redis->exists($cache_fingerprint)) {
