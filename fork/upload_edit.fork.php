@@ -36,7 +36,7 @@ function fork_upload_edit($job) {
     $fork_key            = $_data['fork_key'];
     $db                  = $_data['db'];
 
-    
+
     $account = new Account($db);
 
 
@@ -488,8 +488,6 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             if ($parent->get_object_name() != 'Store') {
 
 
-                $error_code     = 'wrong_parent';
-                $error_metadata = json_encode(array());
 
                 $sql = sprintf(
                     "UPDATE `Upload Record Dimension` SET `Upload Record Date`=%s ,`Upload Record State`='Error', `Upload Record Status`='Done'  WHERE `Upload Record Upload Key`=%d AND `Upload Record State`='InProcess' ", prepare_mysql(gmdate('Y-m-d H:i:s')),

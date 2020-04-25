@@ -3694,18 +3694,34 @@ class Store extends DB_Table {
         }
 
 
-        if (isset($data['Parts']) and $data['Parts'] != '') {
+        if (!empty($data['Parts'])) {
 
             include_once 'class.Part.php';
             $product_parts = array();
             foreach (preg_split('/,/', $data['Parts']) as $part_data) {
                 $part_data = _trim($part_data);
-                if (preg_match('/(\d+)x\s+/', $part_data, $matches)) {
 
-                    $ratio     = $matches[1];
-                    $part_data = preg_replace('/(\d+)x\s+/', '', $part_data);
+                if (preg_match('/([0-9]*\.?[0-9]+)x\s+/', $part_data, $matches)) {
+
+                    $ratio     = floatval($matches[1]);
+
+
+                    if($ratio<=0){
+                        $this->error      = true;
+                        $this->msg        = sprintf(_('Invalid parts format, use: %s'),'<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
+                        $this->error_code = 'invalid_parts';
+                        $this->metadata   = $data['Parts'];
+                        return false;
+
+                    }
+                    $part_data = preg_replace('/([0-9]*\.?[0-9]+)x\s+/', '', $part_data);
                 } else {
-                    $ratio = 1;
+                    $this->error      = true;
+                    $this->msg        = sprintf(_('Invalid parts format, use: %s'),'<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
+                    $this->error_code = 'invalid_parts';
+                    $this->metadata   = $data['Parts'];
+
+                    return false;
                 }
 
                 $part = new Part(
@@ -3724,6 +3740,8 @@ class Store extends DB_Table {
 
             $data['Product Parts'] = json_encode($product_parts);
         }
+
+
 
 
         if (isset($data['Product Parts'])) {

@@ -1164,31 +1164,24 @@ class Product extends Asset {
     function get_parts($scope = 'keys') {
 
 
-        if ($scope == 'objects') {
-            include_once 'class.Part.php';
-        }
-
-        $sql = sprintf(
-            'SELECT `Product Part Part SKU` AS `Part SKU` FROM `Product Part Bridge` WHERE `Product Part Product ID`=%d ', $this->id
-        );
-
         $parts = array();
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+        $sql = "SELECT `Product Part Part SKU` AS `Part SKU` FROM `Product Part Bridge` WHERE `Product Part Product ID`=?";
 
-                if ($scope == 'objects') {
-                    $parts[$row['Part SKU']] = new Part($row['Part SKU']);
-                } else {
-                    $parts[$row['Part SKU']] = $row['Part SKU'];
-                }
-
-
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if ($scope == 'objects') {
+                $parts[$row['Part SKU']] = new Part($row['Part SKU']);
+            } else {
+                $parts[$row['Part SKU']] = $row['Part SKU'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
+
 
         return $parts;
     }
@@ -1353,6 +1346,82 @@ class Product extends Asset {
 
             )
         );
+
+
+    }
+
+    function update_status_availability_state() {
+
+
+        switch ($this->data['Product Status']) {
+            case 'Discontinuing':
+            case 'Discontinued':
+                $status_availability_state = $this->data['Product Status'];
+                break;
+            default:
+                if (in_array(
+                    $this->data['Product Availability State'], [
+                                                                 'Excess',
+                                                                 'Normal',
+                                                                 'OnDemand'
+                                                             ]
+                )) {
+                    $status_availability_state = 'OK';
+                } elseif (in_array(
+                    $this->data['Product Availability State'], [
+                                                                 'OutofStock',
+                                                                 'Error'
+                                                             ]
+                )) {
+                    $status_availability_state = 'OutofStock';
+                } else {
+                    $status_availability_state = $this->data['Product Availability State'];
+
+                }
+
+        }
+
+        $this->fast_update(['Product Status Availability State' => $status_availability_state]);
+
+    }
+
+    function update_updated_markers($marker) {
+
+        $date = gmdate('Y-m-d H:i:s');
+
+        $this->fast_update(array('Product '.$marker.' Updated' => $date));
+
+
+        $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+
+        $this->db->prepare($sql)->execute(
+            [
+                $date,
+                $date,
+                'store_data_feed',
+                $this->get('Product Store Key'),
+                $date,
+
+            ]
+        );
+
+        if ($this->data['Product Department Category Key'] > 0) {
+            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+
+            $this->db->prepare($sql)->execute(
+                [
+                    $date,
+                    $date,
+                    'department_data_feed',
+                    $this->data['Product Department Category Key'],
+                    $date,
+
+                ]
+            );
+
+        }
 
 
     }
@@ -1734,42 +1803,6 @@ class Product extends Asset {
         return $categories;
     }
 
-    function update_status_availability_state() {
-
-
-
-        switch ($this->data['Product Status']) {
-            case 'Discontinuing':
-            case 'Discontinued':
-                $status_availability_state = $this->data['Product Status'];
-                break;
-            default:
-                if (in_array(
-                    $this->data['Product Availability State'], [
-                    'Excess',
-                    'Normal',
-                    'OnDemand'
-                ]
-                )) {
-                    $status_availability_state = 'OK';
-                } elseif (in_array(
-                    $this->data['Product Availability State'], [
-                    'OutofStock',
-                    'Error'
-                ]
-                )) {
-                    $status_availability_state = 'OutofStock';
-                } else {
-                    $status_availability_state = $this->data['Product Availability State'];
-
-                }
-
-        }
-
-        $this->fast_update(['Product Status Availability State'=>$status_availability_state]);
-
-    }
-
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
 
@@ -1966,7 +1999,6 @@ class Product extends Asset {
         return $repeat_customers;
 
     }
-
 
     function update_previous_years_data() {
 
@@ -2892,34 +2924,177 @@ class Product extends Asset {
             case 'Parts':
 
 
+                if ($value != '') {
+
+                    include_once 'class.Part.php';
+                    $product_parts = array();
+                    foreach (preg_split('/,/', $value) as $part_data) {
+                        $part_data = _trim($part_data);
+
+                        if (preg_match('/([0-9]*\.?[0-9]+)x\s+/', $part_data, $matches)) {
+
+                            $ratio = floatval($matches[1]);
+
+
+                            if ($ratio <= 0) {
+                                $this->error      = true;
+                                $this->msg        = sprintf(_('Invalid parts format, use: %s'), '<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
+                                $this->error_code = 'invalid_parts';
+                                $this->metadata   = $value;
+
+                                return false;
+
+                            }
+                            $part_data = preg_replace('/([0-9]*\.?[0-9]+)x\s+/', '', $part_data);
+                        } else {
+                            $this->error      = true;
+                            $this->msg        = sprintf(_('Invalid parts format, use: %s'), '<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
+                            $this->error_code = 'invalid_parts';
+                            $this->metadata   = $value;
+
+                            return false;
+                        }
+
+                        $part = new Part('reference', _trim($part_data));
+
+                        $product_parts[] = array(
+                            'Ratio'    => $ratio,
+                            'Part SKU' => $part->id,
+                            'Note'     => ''
+                        );
+
+                    }
+
+
+                    foreach ($product_parts as $product_part) {
+
+                        if (!is_array($product_part)
+
+                        ) {
+
+                            $this->error      = true;
+                            $this->msg        = "Can't parse product parts";
+                            $this->error_code = 'can_not_parse_product_parts_no_array';
+                            $this->metadata   = '';
+
+
+                            return false;
+                        }
+
+                        if (!isset($product_part['Part SKU'])
+
+
+                        ) {
+
+                            $this->error      = true;
+                            $this->msg        = "Can't parse product parts, missing part sku";
+                            $this->error_code = 'can_not_parse_product_parts_missing_part_sku';
+                            $this->metadata   = '';
+
+
+                            return false;
+                        }
+
+                        if (!array_key_exists('Ratio', $product_part)
+
+                        ) {
+
+                            $this->error      = true;
+                            $this->msg        = "Can't parse product parts, missing ratio";
+                            $this->error_code = 'can_not_parse_product_parts_missing_ratio';
+                            $this->metadata   = '';
+
+
+                            return false;
+                        }
+
+                        if (!array_key_exists('Note', $product_part)
+
+                        ) {
+
+                            $this->error      = true;
+                            $this->msg        = "Can't parse product parts, missing note";
+                            $this->error_code = 'can_not_parse_product_parts_missing_note';
+                            $this->metadata   = '';
+
+
+                            return false;
+                        }
+
+                        if (is_null($product_part['Note'])) {
+                            $product_part['Note'] = '';
+
+                        }
+
+                        if (
+
+                        !is_numeric($product_part['Part SKU'])) {
+
+                            $this->error      = true;
+                            $this->msg        = "Can't parse product parts";
+                            $this->error_code = 'can_not_parse_product_parts_wrong_part_sku';
+                            $this->metadata   = '';
+
+
+                            return false;
+                        }
+
+                        if (
+
+                        !is_string($product_part['Note'])) {
+
+                            $this->error      = true;
+                            $this->msg        = "Can't parse product parts";
+                            $this->error_code = 'can_not_parse_product_parts_note_is_not_string';
+                            $this->metadata   = '';
+
+
+                            return false;
+                        }
+
+
+                        $part = get_object('Part', $product_part['Part SKU']);
+
+                        if (!$part->id) {
+
+                            $this->error      = true;
+                            $this->msg        = 'Part not found';
+                            $this->error_code = 'part_not_found';
+                            $this->metadata   = $product_part['Part SKU'];
+
+
+                            return false;
+
+                        }
+
+
+                        if (!is_numeric($product_part['Ratio']) or $product_part['Ratio'] < 0) {
+                            $this->error      = true;
+                            $this->msg        = sprintf(
+                                _('Invalid parts per product (%s)'), $product_part['Ratio']
+                            );
+                            $this->error_code = 'invalid_parts_per_product';
+                            $this->metadata   = array($product_part['Ratio']);
+
+                            return false;
+
+                        }
+
+
+                    }
+
+
+                } else {
+                    $product_parts = [];
+                }
+
+
                 $sql = sprintf(
                     'DELETE FROM `Product Part Bridge` WHERE  `Product Part Product ID`=%d ', $this->id
                 );
 
                 $this->db->exec($sql);
 
-
-                include_once 'class.Part.php';
-                $product_parts = array();
-                foreach (preg_split('/,/', $value) as $part_data) {
-                    $part_data = _trim($part_data);
-                    if (preg_match('/(\d+)x\s+/', $part_data, $matches)) {
-
-                        $ratio     = $matches[1];
-                        $part_data = preg_replace('/(\d+)x\s+/', '', $part_data);
-                    } else {
-                        $ratio = 1;
-                    }
-
-                    $part = new Part('reference', _trim($part_data));
-
-                    $product_parts[] = array(
-                        'Ratio'    => $ratio,
-                        'Part SKU' => $part->id,
-                        'Note'     => ''
-                    );
-
-                }
 
                 $this->update_part_list(json_encode($product_parts), $options);
 
@@ -3193,9 +3368,10 @@ class Product extends Asset {
 
     function update_part_list($value, $options = '') {
 
-        $value = json_decode($value, true);
 
+        $num_parts_edited = 0;
 
+        $value     = json_decode($value, true);
         $part_list = $this->get_parts_data();
 
         $old_part_list_keys = array();
@@ -3205,6 +3381,7 @@ class Product extends Asset {
 
 
         $new_part_list_keys = array();
+
         foreach ($value as $product_part) {
             if (isset($product_part['Key'])) {
                 $new_part_list_keys[$product_part['Key']] = $product_part['Key'];
@@ -3213,6 +3390,7 @@ class Product extends Asset {
 
 
         foreach (array_diff($old_part_list_keys, $new_part_list_keys) as $product_part_key) {
+            $num_parts_edited++;
             $sql = "delete from `Product Part Bridge` where `Product Part Key`=? ";
             $this->db->prepare($sql)->execute(
                 array(
@@ -3235,6 +3413,7 @@ class Product extends Asset {
                 $updt = $this->db->prepare($sql);
                 $updt->execute();
                 if ($updt->rowCount()) {
+                    $num_parts_edited++;
                     $this->updated = true;
                 }
 
@@ -3247,6 +3426,7 @@ class Product extends Asset {
                     $updt = $this->db->prepare($sql);
                     $updt->execute();
                     if ($updt->rowCount()) {
+                        $num_parts_edited++;
                         $this->updated = true;
                     }
 
@@ -3259,6 +3439,7 @@ class Product extends Asset {
                     $updt = $this->db->prepare($sql);
                     $updt->execute();
                     if ($updt->rowCount()) {
+                        $num_parts_edited++;
                         $this->updated = true;
                     }
                 }
@@ -3273,6 +3454,7 @@ class Product extends Asset {
                     );
                     //    print $sql;
                     $this->db->exec($sql);
+                    $num_parts_edited++;
                     $this->updated = true;
                 }
             }
@@ -3292,9 +3474,12 @@ class Product extends Asset {
 
         );
 
-        $parts = $this->get_parts();
 
-        if (count($parts) == 1) {
+        $parts        = $this->get_parts();
+        $number_parts = count($parts);
+
+
+        if ($number_parts == 1) {
 
 
             $part = get_object('Part', array_pop($parts));
@@ -3333,6 +3518,24 @@ class Product extends Asset {
 
         }
 
+        if ($num_parts_edited > 0) {
+
+            if ($number_parts == 0) {
+                $history_abstract = _("Product's parts deleted");
+            } else {
+                $history_abstract = sprintf(_("Product's parts changed to %s"), $this->get('Parts'));
+            }
+
+            $history_data = array(
+                'History Abstract' => $history_abstract,
+                'History Details'  => '',
+                'Action'           => 'edit'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+        }
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
@@ -3862,48 +4065,6 @@ class Product extends Asset {
         $this->fast_update_json_field('Product Properties', 'donut_marketing_customers_last_updated', gmdate('U'));
 
 
-    }
-
-    function update_updated_markers($marker){
-
-        $date=gmdate('Y-m-d H:i:s');
-
-        $this->fast_update(array('Product '.$marker.' Updated' => $date));
-
-
-
-        $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
-
-        $this->db->prepare($sql)->execute(
-            [
-                $date,
-                $date,
-                'store_data_feed',
-                $this->get('Product Store Key'),
-                $date,
-
-            ]
-        );
-
-        if($this->data['Product Department Category Key']>0){
-            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
-
-            $this->db->prepare($sql)->execute(
-                [
-                    $date,
-                    $date,
-                    'department_data_feed',
-                    $this->data['Product Department Category Key'],
-                    $date,
-
-                ]
-            );
-
-        }
-
-        
     }
 
 }
