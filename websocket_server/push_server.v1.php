@@ -1,5 +1,5 @@
 <?php
-require __DIR__.'/keyring/dns.php';
+require __DIR__.'/keyring/ws.dns.php';
 require __DIR__.'/vendor/autoload.php';
 
 use App\Publishers\Pusher;
