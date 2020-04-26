@@ -27,6 +27,7 @@
     "ext-zmq": "*",
     "ext-memcached": "*",
     "ext-gearman": "*",
-    "ext-intl": "*"
+    "ext-intl": "*",
+    "ext-soap": "*"
   }
 }
