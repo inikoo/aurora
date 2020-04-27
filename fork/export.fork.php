@@ -99,36 +99,36 @@ function fork_export($job) {
     }
 
 
-    $socket  = get_zqm_message_socket();
+    $sockets  = get_zqm_message_sockets();
+
+    foreach ($sockets as $socket) {
+        $socket->send(
+            json_encode(
+                array(
+                    'channel' => $ws_key,
+
+                    'progress_bar' => array(
+                        array(
+                            'id'    => 'download_'.$download_key,
+                            'state' => 'In Process',
+
+                            'progress_info' => percentage(0, $number_rows),
+                            'progress'      => sprintf(
+                                '%s/%s (%s)', number(0), number($number_rows), percentage(
+                                                0, $number_rows
+                                            )
+                            ),
+                            'percentage'    => percentage(0, $number_rows),
+
+                        )
+
+                    ),
 
 
-    $socket->send(
-        json_encode(
-            array(
-                'channel' => $ws_key,
-
-                'progress_bar' => array(
-                    array(
-                        'id'    => 'download_'.$download_key,
-                        'state' => 'In Process',
-
-                        'progress_info' => percentage(0, $number_rows),
-                        'progress'      => sprintf(
-                            '%s/%s (%s)', number(0), number($number_rows), percentage(
-                                            0, $number_rows
-                                        )
-                        ),
-                        'percentage'    => percentage(0, $number_rows),
-
-                    )
-
-                ),
-
-
+                )
             )
-        )
-    );
-
+        );
+    }
 
     $objPHPExcel = new Spreadsheet();
     Cell::setValueBinder(new AdvancedValueBinder());
@@ -434,33 +434,33 @@ function fork_export($job) {
                     }
                 }
 
+                foreach ($sockets as $socket) {
+                    $socket->send(
+                        json_encode(
+                            array(
+                                'channel'      => $ws_key,
+                                'progress_bar' => array(
+                                    array(
+                                        'id'    => 'download_'.$download_key,
+                                        'state' => 'In Process',
 
-                $socket->send(
-                    json_encode(
-                        array(
-                            'channel'      => $ws_key,
-                            'progress_bar' => array(
-                                array(
-                                    'id'    => 'download_'.$download_key,
-                                    'state' => 'In Process',
+                                        'progress_info' => percentage($row_index, $number_rows),
+                                        'progress'      => sprintf(
+                                            '%s/%s (%s)', number($row_index), number($number_rows), percentage(
+                                                            $row_index, $number_rows
+                                                        )
+                                        ),
+                                        'percentage'    => percentage($row_index, $number_rows),
 
-                                    'progress_info' => percentage($row_index, $number_rows),
-                                    'progress'      => sprintf(
-                                        '%s/%s (%s)', number($row_index), number($number_rows), percentage(
-                                                        $row_index, $number_rows
-                                                    )
-                                    ),
-                                    'percentage'    => percentage($row_index, $number_rows),
+                                    )
 
-                                )
-
-                            ),
+                                ),
 
 
+                            )
                         )
-                    )
-                );
-
+                    );
+                }
 
                 $show_feedback = (float)microtime(true) + .400;
 
@@ -535,50 +535,32 @@ function fork_export($job) {
         )
     );
 
-    print_r(
-        array(
-            'channel'      => $ws_key,
-            'progress_bar' => array(
-                array(
-                    'id'           => 'download_'.$download_key,
-                    'state'        => 'Finish',
-                    'download_key' => $download_key,
 
-                    'progress_info' => _('Done'),
-                    'progress'      => sprintf('%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)),
-                    'percentage'    => percentage($number_rows, $number_rows),
+
+    foreach ($sockets as $socket) {
+        $socket->send(
+            json_encode(
+                array(
+                    'channel'      => $ws_key,
+                    'progress_bar' => array(
+                        array(
+                            'id'           => 'download_'.$download_key,
+                            'state'        => 'Finish',
+                            'download_key' => $download_key,
+
+                            'progress_info' => _('Done'),
+                            'progress'      => sprintf('%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)),
+                            'percentage'    => percentage($number_rows, $number_rows),
+
+                        )
+
+                    ),
+
 
                 )
-
-            ),
-
-
-        )
-    );
-
-    $socket->send(
-        json_encode(
-            array(
-                'channel'      => $ws_key,
-                'progress_bar' => array(
-                    array(
-                        'id'           => 'download_'.$download_key,
-                        'state'        => 'Finish',
-                        'download_key' => $download_key,
-
-                        'progress_info' => _('Done'),
-                        'progress'      => sprintf('%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)),
-                        'percentage'    => percentage($number_rows, $number_rows),
-
-                    )
-
-                ),
-
-
             )
-        )
-    );
-
+        );
+    }
 
 
     unlink($output_file);

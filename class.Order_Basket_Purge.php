@@ -805,27 +805,27 @@ class Order_Basket_Purge extends DB_Table {
 
                     );
 
+                    foreach ($this->sockets as $socket) {
+                        $socket->send(
+                            json_encode(
+                                array(
+                                    'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                                    'objects' => array(
+                                        array(
+                                            'object' => 'purge',
+                                            'key'    => $this->id,
 
-                    $this->socket->send(
-                        json_encode(
-                            array(
-                                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                                'objects' => array(
-                                    array(
-                                        'object' => 'purge',
-                                        'key'    => $this->id,
+                                            'update_metadata' => $this->get_update_metadata()
 
-                                        'update_metadata' => $this->get_update_metadata()
+                                        )
 
-                                    )
-
-                                ),
+                                    ),
 
 
+                                )
                             )
-                        )
-                    );
-
+                        );
+                    }
                     return;
                 }
             }
@@ -896,7 +896,7 @@ class Order_Basket_Purge extends DB_Table {
 
             $this->update_purged_orders_data();
 
-            if (isset($this->socket)) {
+            if (isset($this->sockets)) {
 
                 switch ($operation_status) {
                     case('In Process'):
@@ -916,52 +916,53 @@ class Order_Basket_Purge extends DB_Table {
 
                 }
 
-
-                $this->socket->send(
-                    json_encode(
-                        array(
-                            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                            'objects' => array(
-                                array(
-                                    'object' => 'purge',
-                                    'key'    => $this->id,
-
-
-                                    'update_metadata' => array(
-                                        'class_html' => array(
-                                            'Purged_Orders_Info'        => $this->get('Purged Orders Info'),
-                                            'Purged_Orders'             => $this->get('Purged Orders'),
-                                            'Purged_Transactions'       => $this->get('Purged Transactions'),
-                                            'Purged_Amount'             => $this->get('Purged Amount'),
-                                            'purged_status_'.$order->id => $purge_status,
-                                            'purged_date_'.$order->id   => ($operation_status == 'Purged' ? strftime("%a %e %b %Y %H:%M %Z") : '')
+                foreach ($this->sockets as $socket) {
+                    $socket->send(
+                        json_encode(
+                            array(
+                                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                                'objects' => array(
+                                    array(
+                                        'object' => 'purge',
+                                        'key'    => $this->id,
 
 
-                                        ),
+                                        'update_metadata' => array(
+                                            'class_html' => array(
+                                                'Purged_Orders_Info'        => $this->get('Purged Orders Info'),
+                                                'Purged_Orders'             => $this->get('Purged Orders'),
+                                                'Purged_Transactions'       => $this->get('Purged Transactions'),
+                                                'Purged_Amount'             => $this->get('Purged Amount'),
+                                                'purged_status_'.$order->id => $purge_status,
+                                                'purged_date_'.$order->id   => ($operation_status == 'Purged' ? strftime("%a %e %b %Y %H:%M %Z") : '')
 
-                                        'show' => array(
-                                            'estimated_orders_post_sent',
-                                        ),
-                                        'hide' => array(
-                                            'estimated_orders_pre_sent',
-                                        ),
+
+                                            ),
+
+                                            'show' => array(
+                                                'estimated_orders_post_sent',
+                                            ),
+                                            'hide' => array(
+                                                'estimated_orders_pre_sent',
+                                            ),
+                                        )
+
                                     )
 
-                                )
-
-                            ),
+                                ),
 
 
+                            )
                         )
-                    )
-                );
+                    );
+                }
             }
         }
 
 
         $this->update_state('Finished');
 
-        if (isset($this->socket)) {
+        if (isset($this->sockets)) {
 
 
             $this->update_metadata = array(
@@ -977,26 +978,27 @@ class Order_Basket_Purge extends DB_Table {
 
             );
 
+            foreach ($this->sockets as $socket) {
+                $socket->send(
+                    json_encode(
+                        array(
+                            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                            'objects' => array(
+                                array(
+                                    'object' => 'purge',
+                                    'key'    => $this->id,
 
-            $this->socket->send(
-                json_encode(
-                    array(
-                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                        'objects' => array(
-                            array(
-                                'object' => 'purge',
-                                'key'    => $this->id,
+                                    'update_metadata' => $this->get_update_metadata()
 
-                                'update_metadata' => $this->get_update_metadata()
+                                )
 
-                            )
-
-                        ),
+                            ),
 
 
+                        )
                     )
-                )
-            );
+                );
+            }
         }
 
 

@@ -22,9 +22,10 @@ function fork_send_mailshot($job) {
         return true;
     }
 
+
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
-    $socket=get_zqm_message_socket();
+    $sockets = get_zqm_message_sockets();
 
     $mailshot = get_object('email_campaign', $data['mailshot']);
 
@@ -57,9 +58,7 @@ function fork_send_mailshot($job) {
     }
 
 
-    if (isset($socket)) {
-        $published_email_template->socket = $socket;
-    }
+
 
 
     $sql =
@@ -151,49 +150,49 @@ function fork_send_mailshot($job) {
 
     $mailshot->update_sent_emails_totals();
 
+    foreach ($sockets as $socket) {
+        $socket->send(
+            json_encode(
+                array(
+                    'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                    'objects' => array(
+                        array(
+                            'object' => 'mailshot',
+                            'key'    => $mailshot->id,
 
-    $socket->send(
-        json_encode(
-            array(
-                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                'objects' => array(
-                    array(
-                        'object' => 'mailshot',
-                        'key'    => $mailshot->id,
-
-                        'update_metadata' => array(
-                            'class_html' => array(
-                                '_Sent_Emails_Info'    => $mailshot->get('Sent Emails Info'),
-                                '_Email_Campaign_Sent' => $mailshot->get('Sent'),
+                            'update_metadata' => array(
+                                'class_html' => array(
+                                    '_Sent_Emails_Info'    => $mailshot->get('Sent Emails Info'),
+                                    '_Email_Campaign_Sent' => $mailshot->get('Sent'),
+                                )
                             )
+
                         )
-
-                    )
-
-                ),
-
-                'tabs' => array(
-
-                    array(
-                        'tab'        => 'email_campaign_type.mailshots',
-                        'parent'     => 'store',
-                        'parent_key' => $mailshot->get('Email Campaign Store Key'),
-                        'cell'       => array(
-                            'date_'.$mailshot->id  => strftime("%a, %e %b %Y %R", strtotime($mailshot->get('Email Campaign Last Updated Date')." +00:00")),
-                            'state_'.$mailshot->id => $mailshot->get('State'),
-                            'sent_'.$mailshot->id  => $mailshot->get('Sent')
-                        )
-
 
                     ),
 
-                ),
+                    'tabs' => array(
+
+                        array(
+                            'tab'        => 'email_campaign_type.mailshots',
+                            'parent'     => 'store',
+                            'parent_key' => $mailshot->get('Email Campaign Store Key'),
+                            'cell'       => array(
+                                'date_'.$mailshot->id  => strftime("%a, %e %b %Y %R", strtotime($mailshot->get('Email Campaign Last Updated Date')." +00:00")),
+                                'state_'.$mailshot->id => $mailshot->get('State'),
+                                'sent_'.$mailshot->id  => $mailshot->get('Sent')
+                            )
 
 
+                        ),
+
+                    ),
+
+
+                )
             )
-        )
-    );
-
+        );
+    }
 
     $total         = 0;
     $state_numbers = array(
@@ -232,28 +231,29 @@ function fork_send_mailshot($job) {
                     'sent_email_data'
                 );
 
+                foreach ($sockets as $socket) {
+                    $socket->send(
+                        json_encode(
+                            array(
+                                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                                'objects' => array(
+                                    array(
+                                        'object' => 'mailshot',
+                                        'key'    => $mailshot->id,
 
-                $socket->send(
-                    json_encode(
-                        array(
-                            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                            'objects' => array(
-                                array(
-                                    'object' => 'mailshot',
-                                    'key'    => $mailshot->id,
-
-                                    'update_metadata' => $mailshot->get_update_metadata(),
-                                    'v'               => 1
-
-
-                                )
-
-                            ),
+                                        'update_metadata' => $mailshot->get_update_metadata(),
+                                        'v'               => 1
 
 
+                                    )
+
+                                ),
+
+
+                            )
                         )
-                    )
-                );
+                    );
+                }
 
             }
 

@@ -1824,7 +1824,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $email_campaign->editor = $data['editor'];
 
             if ($email_campaign->id) {
-                $email_campaign->socket = get_zqm_message_socket();
+
                 $email_campaign->update_estimated_recipients();
                 $email_campaign->send_mailshot();
             }
@@ -1837,7 +1837,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             if ($mailshot->id) {
-                $mailshot->socket = get_zqm_message_socket();
+
 
                 $max_thread = 1;
 
@@ -2338,7 +2338,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $purge         = get_object('purge', $data['purge_key']);
             $purge->editor = $editor;
             if ($purge->id) {
-                $purge->socket = get_zqm_message_socket();
+                $purge->sockets = get_zqm_message_sockets();
                 $purge->purge();
             }
             break;

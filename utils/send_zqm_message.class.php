@@ -15,20 +15,27 @@
  *
  * @throws \ZMQSocketException
  */
-function send_zqm_message($message){
-    $socket=get_zqm_message_socket();
-    $socket->send($message);
+function send_zqm_message($message) {
+    $sockets = get_zqm_message_sockets();
+    foreach ($sockets as $socket) {
+        $socket->send($message);
+    }
+
 
 }
 
-function get_zqm_message_socket(){
+function get_zqm_message_sockets() {
     include_once 'keyring/au_deploy_conf.php';
-    $context = new ZMQContext();
-    $socket= $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-    foreach (RATCHET_SERVERS as $server){
+
+    $sockets = [];
+    foreach (RATCHET_SERVERS as $server) {
+        $context = new ZMQContext();
+        $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
         $socket->connect($server);
+        $sockets[] = $socket;
     }
-    return $socket;
+
+    return $sockets;
 
 }
 
