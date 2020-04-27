@@ -9,6 +9,7 @@
 
 include_once 'utils/object_functions.php';
 include_once 'utils/new_fork.php';
+include_once 'utils/send_zqm_message.class.php';
 
 function fork_send_mailshot($job) {
 

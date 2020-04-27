@@ -7,6 +7,7 @@
  Version 2.0
 */
 
+include_once 'utils/send_zqm_message.class.php';
 
 function fork_housekeeping($job) {
 
