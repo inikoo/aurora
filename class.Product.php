@@ -1176,7 +1176,7 @@ class Product extends Asset {
         );
         while ($row = $stmt->fetch()) {
             if ($scope == 'objects') {
-                $parts[$row['Part SKU']] = new Part($row['Part SKU']);
+                $parts[$row['Part SKU']] = get_object('Part',$row['Part SKU']);
             } else {
                 $parts[$row['Part SKU']] = $row['Part SKU'];
             }
@@ -3517,6 +3517,7 @@ class Product extends Asset {
             $this->update_webpages('weight');
 
         }
+
 
         if ($num_parts_edited > 0) {
 
