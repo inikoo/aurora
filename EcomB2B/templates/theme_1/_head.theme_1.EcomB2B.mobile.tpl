@@ -113,14 +113,15 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    {if isset($sentry_js)  }
-        <script
-                src="https://browser.sentry-cdn.com/5.12.1/bundle.min.js"
-                integrity="sha384-y+an4eARFKvjzOivf/Z7JtMJhaN6b+lLQ5oFbBbUwZNNVir39cYtkjW1r6Xjbxg3"
-                crossorigin="anonymous"></script>
+
+    {if isset($sentry_js) }
+
+            <script
+            src="https://browser.sentry-cdn.com/5.15.5/bundle.min.js"
+            integrity="sha384-wF7Jc4ZlWVxe/L8Ji3hOIBeTgo/HwFuaeEfjGmS3EXAG7Y+7Kjjr91gJpJtr+PAT"
+            crossorigin="anonymous"></script>
 
 
-        <script>
     Sentry.init({
     dsn: '{$sentry_js}' ,
     release: "__AURORA_RELEASE__"
