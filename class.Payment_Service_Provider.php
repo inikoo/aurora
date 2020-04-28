@@ -194,22 +194,6 @@ class Payment_Service_Provider extends DB_Table {
 
     }
 
-    function get_valid_payment_methods() {
-        $valid_payment_method = array();
-        $sql                  = sprintf(
-            "SELECT `Payment Method` FROM `Payment Service Provider Payment Method Bridge` WHERE `Payment Service Provider Key`=%d ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $valid_payment_method[] = $row['Payment Method'];
-            }
-        }
-
-
-        return $valid_payment_method;
-    }
 
     function create_payment_account($data) {
 
