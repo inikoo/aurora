@@ -37,12 +37,13 @@ function get_inventory_module() {
                 'icon'      => 'boxes',
                 'reference' => 'inventory',
                 'tabs'      => array(
+
+                    'inventory.parts'               => array(
+                        'label' => _('Active')
+                    ),
                     'inventory.in_process_parts'    => array(
                         'label' => _('In process'),
                         'class' => 'discreet'
-                    ),
-                    'inventory.parts'               => array(
-                        'label' => _('Active')
                     ),
                     'inventory.discontinuing_parts' => array(
                         'label' => _(
