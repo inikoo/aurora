@@ -37,36 +37,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
     $where_type     = '';
     $where_interval = '';
-} elseif ($parameters['parent'] == 'list') {
-
-    $sql = sprintf(
-        "SELECT * FROM `List Dimension` WHERE `List Key`=%d", $parameters['parent_key']
-    );
-    //print $sql;exit;
-    $res = mysql_query($sql);
-    if ($list_data = mysql_fetch_assoc($res)) {
-        $awhere = false;
-        if ($list_data['List Type'] == 'Static') {
-
-            $table
-                = '`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
-            $where .= sprintf(' and `List Key`=%d ', $parameters['parent_key']);
-
-        } else {
-            $tmp = preg_replace('/\\\"/', '"', $list_data['List Metadata']);
-            $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-            $tmp = preg_replace('/\'/', "\'", $tmp);
-
-            $raw_data = json_decode($tmp, true);
-            //print_r($raw_data);
-            //$raw_data['store_key']=$store;
-            list($where, $table, $sql_type) = parts_awhere($raw_data);
-        }
-
-    } else {
-
-    }
-} elseif ($parameters['parent'] == 'category') {
+}  elseif ($parameters['parent'] == 'category') {
 
 
     $fields = ' "" as `Warehouse Code`,';
