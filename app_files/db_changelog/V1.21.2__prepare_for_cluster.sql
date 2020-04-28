@@ -1,0 +1,1 @@
+ALTER TABLE `Agent Data` DROP INDEX `Agent Key`, ADD PRIMARY KEY (`Agent Key`) USING BTREE;
