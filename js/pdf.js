@@ -4,7 +4,7 @@
  Version 3.0*/
 
 
-$(document).on('mousedown', '.proforma_button', function (evt) {
+$(document).on('mousedown', '.proforma_buttonxxx', function (evt) {
 
     $('.proforma_dialog').removeClass('hide').offset({
         top: $(this).offset().top-1, left: $(this).offset().left
@@ -13,29 +13,39 @@ $(document).on('mousedown', '.proforma_button', function (evt) {
 })
 
 
-function show_pdf_invoice_dialog(element,invoice_key){
-    var anchor_x=$(element).prev('.pdf_link')
-    var anchor_y=$(element).closest('.node')
-    $('.pdf_invoice_dialog').removeClass('hide').offset({
+function show_pdf_settings_dialog(element,asset, asset_key){
+
+    var container=$(element).closest('.pdf_label_container')
+    console.log($(element))
+    console.log(container)
+    var anchor_x=container.find('.left_pdf_label_mark')
+    var anchor_y=container.find('.top_pdf_label_mark')
+
+
+    $('.pdf_asset_dialog.'+asset).removeClass('hide').data('asset',asset).data('asset_key',asset_key).offset({
         top: $(anchor_y).offset().top-1, left: $(anchor_x).offset().left
-    }).data('invoice_key',invoice_key)
+    })
+
+
+
 }
 
 
-function download_pdf_from_list(invoice_key,element){
-
-    $(element).closest('.options_dialog').data('invoice_key',invoice_key)
+function download_pdf_from_ui(element,asset,asset_key){
+    $(element).data('asset',asset)
+    $(element).data('asset_key',asset_key)
     download_pdf(element)
 }
 
 function download_pdf(element) {
 
-    var dialog = $(element).closest('.options_dialog')
-    var data = dialog.data('data')
+    var dialog = $(element)
+
+
 
     var args = '';
     $('.pdf_option', dialog).each(function (i, obj) {
-        console.log($(obj).data('field'))
+
 
         switch ($(obj).data('field')) {
             case 'locale':
@@ -65,17 +75,17 @@ function download_pdf(element) {
 
 
 
-    switch (data.type) {
+    switch (dialog.data('asset')) {
         case 'proforma':
-            window.open('/pdf/proforma.pdf.php?id=' + data.order_key + args, '_blank');
+            window.open('/pdf/proforma.pdf.php?id=' +dialog.data('asset_key')+ args, '_blank');
 
             break;
         case 'invoice':
-            window.open('/pdf/invoice.pdf.php?id=' + data.invoice_key + args, '_blank');
+            window.open('/pdf/invoice.pdf.php?id=' + dialog.data('asset_key') + args, '_blank');
 
             break;
         case 'invoice_from_list':
-            window.open('/pdf/invoice.pdf.php?id=' + dialog.data('invoice_key') + args, '_blank');
+            window.open('/pdf/invoice.pdf.php?id=' + dialog.data('asset_key') + args, '_blank');
 
             break;
     }
