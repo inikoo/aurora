@@ -28,9 +28,13 @@ include 'export_edit_template.fork.php';
 include 'reindex_webpages.fork.php';
 
 
-include 'keyring/au_deploy_conf.php';
+include_once 'keyring/au_deploy_conf.php';
+$servers = explode(",", GEARMAN_SERVERS);
+shuffle($servers);
+$servers = implode(",", $servers);
+
 $worker = new GearmanWorker();
-$worker->addServers(GEARMAN_SERVERS);
+$worker->addServers($servers);
 
 $worker->addFunction("au_export", "fork_export");
 $worker->addFunction("au_export_edit_template", "fork_export_edit_template");

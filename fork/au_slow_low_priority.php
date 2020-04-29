@@ -23,10 +23,14 @@ include 'utils/system_functions.php';
 
 include 'utils/natural_language.php';
 include 'slow_low_priority.fork.php';
-include 'keyring/au_deploy_conf.php';
+
+include_once 'keyring/au_deploy_conf.php';
+$servers = explode(",", GEARMAN_SERVERS);
+shuffle($servers);
+$servers = implode(",", $servers);
 
 $worker = new GearmanWorker();
-$worker->addServers(GEARMAN_SERVERS);
+$worker->addServers($servers);
 
 $worker->addFunction("au_take_webpage_screenshot", "fork_take_webpage_screenshot");
 $worker->addFunction("au_redo_time_series", "fork_redo_time_series");
