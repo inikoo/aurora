@@ -28,6 +28,7 @@
     "ext-memcached": "*",
     "ext-gearman": "*",
     "ext-intl": "*",
-    "ext-soap": "*"
+    "ext-soap": "*",
+    "ext-imagick": "*"
   }
 }
