@@ -1,5 +1,6 @@
 <?php
 
+set_time_limit(300);
 use Mpdf\Mpdf;
 
 chdir('../');

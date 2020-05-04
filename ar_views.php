@@ -1423,10 +1423,14 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
         if (!empty($_subtab)) {
 
-            $tmp                   = $_SESSION['tab_state'];
-            $tmp[$_tab]            = $_subtab;
-            $_SESSION['tab_state'] = $tmp;
 
+            if(isset($_SESSION['tab_state'])) {
+                $tmp        = $_SESSION['tab_state'];
+                $tmp[$_tab] = $_subtab;
+                $_SESSION['tab_state'] = $tmp;
+            }else{
+                $_SESSION['tab_state'][$_tab]=$tmp;
+            }
 
         }
 
