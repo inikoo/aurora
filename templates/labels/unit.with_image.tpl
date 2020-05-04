@@ -117,7 +117,7 @@
         {assign 'font_size' '2.0mm'}
 
     {/if}
-    <table border=1 style='width:100%;font-size:{$font_size};font-family: Arial, "Helvetica Neue", Helvetica, sans-serif'>
+    <table border=0 style='width:100%;font-size:{$font_size};font-family: Arial, "Helvetica Neue", Helvetica, sans-serif'>
         <tr>
             <td style="height:100%;" valign="top">
                 <table style="{$text_margin}">

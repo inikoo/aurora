@@ -673,7 +673,7 @@
 
         {include file="pdf_asset_dialog.tpl" asset='part' type='unit'}
         {include file="pdf_asset_dialog.tpl" asset='part' type='sko'}
-        {include file="pdf_asset_dialog.tpl" asset='part' type='carton'}
+        {include file="pdf_asset_dialog.tpl" asset='supplier_part' type='carton'}
 
 
     </div>

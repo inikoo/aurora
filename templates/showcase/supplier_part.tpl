@@ -16,7 +16,7 @@
 
 
 <div class="asset_container">
-    <div class="block picture">
+    <div class="block picture" style="float: left">
         <div class="data_container">
             {assign "image_key" $part->get_main_image_key()}
             <div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
@@ -24,9 +24,10 @@
             </div>
             {include file='upload_main_image.tpl' object='Part' parent_object_scope="Marketing" key=$part->id class="{if $image_key!=''}hide{/if}"}
         </div>
-        <div style="clear:both">
-        </div>
+
     </div>
+    <div style="float: left">
+        <div style="">
     <div class="block carton_sko_units " style="width: 540px">
 
 
@@ -137,87 +138,11 @@
             </tr>
         </table>
 
-        <table class="hide">
-            <tr class="carton">
-                <td class=" canvas">
-                    <a target="_blank" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton">
-                    <canvas width="80" height="80">
-                    </canvas>
-                    </a>
-                </td>
-                <td class="info">
-                    <div>
-                        {t}Carton{/t}
-                    </div>
-                    <div>
-                        <span class="Carton_Weight padding_right_5">{$supplier_part->get('Carton Weight')}</span> <span
-                                class="Carton_CBM">{$supplier_part->get('Carton CBM')}</span>
-                    </div>
-                    <div>
-                    </div>
-                    <div>
-                        <span class="Carton_Cost">{$supplier_part->get('Carton Cost')}</span> <span
-                                class="Carton_Delivered_Cost_container discreet {if $supplier_part->get('Supplier Part Currency Code')==$account->get('Account Currency') and !$supplier_part->get('Supplier Part Carton Extra Cost')>0  }hide{/if}">(<span
-                                    class="Carton_Delivered_Cost">{$supplier_part->get('Carton Delivered Cost')}</span>)</span>
-                    </div>
-                </td>
-            </tr>
-            <tr class="sko">
-                <td class="canvas">
-                    <a target="_blank" title="{t}Stock keeping unit (Outer){/t}" href="/asset_label.php?object=part&key={$supplier_part->part->id}&type=package">
-                    <canvas width="80" height="80">
-                    </canvas>
-                    </a>
-                </td>
-                <td class="info">
-                    <div>
-                        {t}SKO{/t} (<span
-                                class="Packages_Per_Carton">{$supplier_part->get('Supplier Part Packages Per Carton')}</span> {t}per carton{/t}
-                        )
-                    </div>
-                    <div>
-                        <span class="SKO_Barcode">{$supplier_part->get('SKO Barcode')}</span>
-                    </div>
-                    <div>
-                        <span class="SKO_Weight padding_right_5">{$supplier_part->get('SKO Weight')}</span> <span
-                                class="SKO_Dimensions">{$supplier_part->get('SKO Dimensions')}</span>
-                    </div>
-                    <div>
-                        <span class="SKO_Cost">{$supplier_part->get('SKO Cost')}</span> <span
-                                class="SKO_Delivered_Cost_container discreet {if $supplier_part->get('Supplier Part Currency Code')==$account->get('Account Currency') and !$supplier_part->get('Supplier Part SKO Extra Cost')>0  }hide{/if}">(<span
-                                    class="SKO_Delivered_Cost">{$supplier_part->get('SKO Delivered Cost')}</span>)</span>
-                    </div>
-                </td>
-            </tr>
-            <tr class="unit">
-                <td class="canvas">
-                    <a target="_blank" class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit">
-                    <canvas width="80" height="80">
-                    </canvas>
-                    </a>
-                </td>
-                <td class="info">
-                    <div>
-                        {t}Unit{/t} (<span
-                                class="Supplier_Part_Units_Per_Package">{$supplier_part->get('Supplier Part Units Per Package')}</span> {t}per SKO{/t}
-                        )
-                    </div>
-                    <div>
-                        <span class="Unit_CBM">{$supplier_part->get('Unit Dimensions')}</span>
-                    </div>
-                    <div>
-                        <span class="Unit_Weight">{$supplier_part->get('Unit Weight')}</span>
-                    </div>
-                    <div>
-                        <span class="Unit_Cost_Amount">{$supplier_part->get('Unit Cost Amount')}</span> <span
-                                class="Unit_Delivered_Cost_container discreet {if $supplier_part->get('Supplier Part Currency Code')==$account->get('Account Currency') and !$supplier_part->get('Supplier Part Unit Extra Cost')>0  }hide{/if}">(<span
-                                    class="Unit_Delivered_Cost">{$supplier_part->get('Unit Delivered Cost')}</span>)</span>
-                    </div>
-                </td>
-            </tr>
-        </table>
+
+
+
     </div>
-    <div class="block info">
+     <div class="block info">
         <div id="overviews">
             <div class="hide" style="margin-bottom: 5px">
 
@@ -273,6 +198,150 @@
 
         </div>
     </div>
+        </div>
+
+        <div>
+            <table class="overview  ">
+                <tr class=" units_data">
+
+                    <td>
+                        <i class="fal fa-fw fa-stop-circle" title="{t}Unit{/t}" ></i>
+                    </td>
+                    <td>
+
+                    </td>
+
+                    <td>
+
+
+
+
+                        <i class="fal fa-barcode-alt fa-fw padding_right_5" ></i>
+
+
+                        <span class="Part_Barcode_Number" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Barcode Number')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part Barcode Number')}{/if}</span>
+                        {if $part->get('Part Barcode Key')}
+                            <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"></i>
+                        {/if}
+
+                    </td>
+                    <td>
+
+                    <span class="pdf_label_container">
+                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.unit'),'part',{$part->id},'unit')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'part',{$part->id},'unit')" title="{t}PDF unit label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    </span>
+
+
+
+                    </td>
+
+
+
+                    <td style="text-align: right">
+                        <span class="Unit_Weight">{$part->get('Unit Weight')}</span>
+                    </td>
+                    <td style="text-align: right">
+                        <span class="Unit_Dimensions">{$part->get('Unit Dimensions')}</span>
+                    </td>
+
+                </tr>
+                <tr class="sko_data">
+
+                    <td>
+                        <i class="fal fa-box fa-fw" title="{t}SKO{/t}" ></i>
+                    </td>
+                    <td style="padding-left: 4px">
+                        <span class="discreet" title="{t}Units per SKO{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$part->get('Units Per Package')}</span>
+                    </td>
+
+                    <td>
+
+                        <i class="fas fa-barcode-alt fa-fw padding_right_5" ></i>
+                        <span class="Part_SKO_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part SKO Barcode')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part SKO Barcode')}{/if}</span>
+
+                    </td>
+                    <td>
+                      <span class="pdf_label_container">
+                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.sko'),'part',{$part->id},'sko')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'part',{$part->id},'sko')" title="{t}PDF SKO label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    </span>
+                    </td>
+
+                    <td style="text-align: right">
+                        <span class="Package_Weight">{$part->get('Package Weight')}</span>
+                    </td>
+
+                    <td style="text-align: right">
+                        <span class="Package_Dimensions">{$part->get('Package Dimensions')}</span>
+                    </td>
+
+                </tr>
+                <tr class="carton_data">
+
+                    <td>
+                        <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>
+                    </td>
+                    <td style="padding-left: 4px">
+                        <span class="discreet" title="{t}Units per carton{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$part->get('Units Per Carton')} </span> <span class="discreet" title="{t}SKOs per carton{/t}">({$part->get('SKOs per Carton')})</span>
+
+                    </td>
+                    <td>
+
+
+
+                        <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+
+
+                    </td>
+
+                    <td>
+
+                            <span class="pdf_label_container">
+                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.carton'),'supplier_part',{$supplier_part->id},'carton')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'supplier_part',{$supplier_part->id},'carton')" title="{t}PDF carton label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    </span>
+
+                    </td>
+
+                    <td style="text-align: right">
+                        <span class="Carton_Weight "  title="{t}Carton gross weight{/t}"  >{$part->get('Carton Weight')}</span>
+                    </td>
+                    <td style="text-align: right">
+                        <span class="Carton_CBM" title="{t}Carton CBM{/t}">{$part->get('Carton CBM')}</span>
+                    </td>
+                </tr>
+
+            </table>
+
+            {include file="pdf_asset_dialog.tpl" asset='part' type='unit'}
+            {include file="pdf_asset_dialog.tpl" asset='part' type='sko'}
+            {include file="pdf_asset_dialog.tpl" asset='supplier_part' type='carton'}
+
+
+
+        </div>
+        <div style="clear:both">
+
+
+
+
+
+
+        </div>
+    </div>
+
+
     <div style="clear:both">
+
+
+
+
+
+
+        </div>
+
+
+
     </div>
 </div>

@@ -10,35 +10,45 @@
  Version 3.0
 */
 
-function get_supplier_part_showcase($data, $smarty, $user, $db) {
+function get_supplier_part_showcase($data, $smarty, $user, $account) {
 
+    $account->load_acc_data();
 
     $supplier_part = $data['_object'];
 
-    $part = $data['_object']->part;
+    $part = $supplier_part->part;
     if (!$part->id) {
         return "";
     }
 
-    /*
-        $sql = sprintf(
-            "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $part->get('Part Family Category Key')
-        );
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $family_data = array(
-                    'id'    => $row['Category Key'],
-                    'code'  => $row['Category Code'],
-                    'label' => $row['Category Label'],
-                );
-            } else {
-                $family_data = array('id' => false);
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-    */
+
+
+    $labels_data['unit']=json_decode($part->properties('label_unit'),true);
+    $labels_data['sko']=json_decode($part->properties('label_sko'),true);
+
+
+    if($part->get('Part Number Supplier Parts')==1){
+        $supplier_part=get_object('SupplierPart',$part->get('Part Main Supplier Part Key'));
+        $labels_data['carton']=json_decode($supplier_part->properties('label_carton'),true);
+
+    }
+
+    if($labels_data['unit']==''){
+
+        $labels_data['unit']=json_decode($account->properties('part_label_unit'),true);
+    }
+    if($labels_data['sko']==''){
+        $labels_data['sko']=json_decode($account->properties('part_label_sko'),true);
+    }
+    if($labels_data['carton']==''){
+        $labels_data['carton']=json_decode($account->properties('part_label_carton'),true);
+    }
+
+
+    $smarty->assign('labels_data', $labels_data);
+
+
+
     $smarty->assign('supplier_part', $supplier_part);
     $smarty->assign('part', $part);
 
@@ -60,4 +70,4 @@ function get_supplier_part_showcase($data, $smarty, $user, $db) {
 }
 
 
-?>
+
