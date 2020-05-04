@@ -85,8 +85,10 @@ function get_categorize_invoices_functions() {
 
     $categorize_invoices_functions['store_type'] = function ($data, $aux) {
 
+        $aux=json_decode($aux,true);
 
-        if ($data["Store Type"] ==$aux) {
+
+        if (in_array($data["Store Type"],$aux)) {
             return true;
         } else {
             return false;
