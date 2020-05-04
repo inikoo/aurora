@@ -310,7 +310,7 @@ if ($object_name == 'product') {
 
 $mpdf = new Mpdf(
     [
-        'tempDir'       => __DIR__.'/server_files/pdf_tmp',
+        'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
         'mode'          => 'utf-8',
         'format'        => [
             ($set_up == 'single' ? $label_data['width'] : $label_data['sheet_width']),
@@ -318,7 +318,7 @@ $mpdf = new Mpdf(
         ],
         'margin_left'   => ($set_up == 'single' ? 0 : $label_data['margin_left']),
         'margin_right'  => ($set_up == 'single' ? 0 : $label_data['margin_right']),
-     'margin_top'    => ($set_up == 'single' ? 0 : $label_data['margin_top']),
+        'margin_top'    => ($set_up == 'single' ? 0 : $label_data['margin_top']),
         'margin_bottom' => ($set_up == 'single' ? 0 : $label_data['margin_bottom']),
         'margin_header' => 0,
         'margin_footer' => 0
