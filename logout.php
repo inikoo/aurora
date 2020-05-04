@@ -10,13 +10,15 @@
 */
 
 include_once 'common.php';
-$sql = sprintf(
-    "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=%s", prepare_mysql($_SESSION['getId'])
+$sql = "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=?";
+$db->prepare($sql)->execute(
+    array(
+        session_id()
+    )
 );
-$db->exec($sql);
+
 
 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'logged_in', false);
-
 session_destroy();
 $_SESSION=[];
 

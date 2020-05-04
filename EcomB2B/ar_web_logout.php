@@ -33,7 +33,7 @@ switch ($tipo) {
                          'webpage_key' => array('type' => 'key')
                      )
         );
-        logout($db, $data);
+        logout($db);
         break;
 
 
@@ -47,21 +47,27 @@ switch ($tipo) {
         break;
 }
 
-function logout($db, $data) {
+function logout($db) {
 
 
-    $sql=sprintf('update `Website User Log Dimension` set `Website User Log Status`="Close",`Website User Log Logout Date`=%s where `Website User Log Key`=%d  ',
-        prepare_mysql(gmdate('Y-m-d H:i:s')),
-        $_SESSION['website_user_log_key']
-        );
+    $sql="update `Website User Log Dimension` set `Website User Log Status`='Close',`Website User Log Logout Date`=? where `Website User Log Key`=? ";
 
-    $db->exec($sql);
-
-    $sql=sprintf('delete from  `Website Auth Token Dimension` where `Website Auth Token Website User Log Key`=%d  ',
-                 $_SESSION['website_user_log_key']
+    $db->prepare($sql)->execute(
+        array(
+            gmdate('Y-m-d H:i:s'),
+            $_SESSION['website_user_log_key']
+        )
     );
 
-    $db->exec($sql);
+
+    $sql="delete from  `Website Auth Token Dimension` where `Website Auth Token Website User Log Key`=?";
+
+    $db->prepare($sql)->execute(
+        array(
+            $_SESSION['website_user_log_key']
+        )
+    );
+
 
     setcookie('rmb', 'x:x', time() - 864000, '/'
     //,'',
@@ -87,4 +93,3 @@ function logout($db, $data) {
 }
 
 
-?>
