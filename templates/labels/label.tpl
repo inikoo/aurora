@@ -26,7 +26,7 @@
             {for $row=1 to $label_data.rows}
                 <tr>
                     {for $col=1 to $label_data.cols}
-                        <td style="width: {$label_data.width}mm;height: {$label_data.height}mm;border: .05px solid #ccc">
+                        <td style="width: {$label_data.width}mm;height: {$label_data.height}mm;">
                             {if $with_images}
                                 {include file="labels/$type.with_image.tpl"}
 
