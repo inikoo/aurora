@@ -1742,6 +1742,9 @@ class Invoice extends DB_Table {
 
         $categorize_invoices_functions = get_categorize_invoices_functions();
 
+        $store=get_object('Store',$this->get('Invoice Store Key'));
+        $invoice_data=$this->data;
+        $invoice_data['Store Type']=$store->get('Store Type');
         $sql = sprintf(
             "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc "
         );
@@ -1751,7 +1754,8 @@ class Invoice extends DB_Table {
 
 
                 if (isset($categorize_invoices_functions[$row['Invoice Category Function Code']])) {
-                    if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($this->data, $row['Invoice Category Function Argument'])) {
+
+                    if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($invoice_data, $row['Invoice Category Function Argument'])) {
                         $category_key = $row['Invoice Category Key'];
                         break;
                     }
@@ -1760,10 +1764,6 @@ class Invoice extends DB_Table {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
