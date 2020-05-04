@@ -23,9 +23,9 @@ function get_part_showcase($data, $smarty, $account) {
     // $part->update_available_forecast();
     //   $part->update_stock_status();
 
-   //   foreach($part->get_locations('part_location_object') as $pl) {
-   //       $pl->update_stock();
-   //   }
+    //   foreach($part->get_locations('part_location_object') as $pl) {
+    //       $pl->update_stock();
+    //   }
 
 
     //$part->update_stock_run();
@@ -57,29 +57,30 @@ function get_part_showcase($data, $smarty, $account) {
     $smarty->assign('main_supplier_part', $main_supplier_part);
 
 
-    $labels_data['unit']=json_decode($part->properties('label_unit'),true);
-    $labels_data['sko']=json_decode($part->properties('label_sko'),true);
+    $labels_data['unit'] = json_decode($part->properties('label_unit'), true);
+    $labels_data['sko']  = json_decode($part->properties('label_sko'), true);
 
 
-    if($part->get('Part Number Supplier Parts')==1){
-        $supplier_part=get_object('SupplierPart',$part->get('Part Main Supplier Part Key'));
-        $labels_data['carton']=json_decode($supplier_part->properties('label_carton'),true);
+    if ($part->get('Part Number Supplier Parts') == 1) {
+        $supplier_part         = get_object('SupplierPart', $part->get('Part Main Supplier Part Key'));
+        $labels_data['carton'] = json_decode($supplier_part->properties('label_carton'), true);
+        if ($labels_data['carton'] == '') {
+            $labels_data['carton'] = json_decode($account->properties('part_label_carton'), true);
+        }
+    } else {
+        $labels_data['carton'] = json_decode($account->properties('part_label_carton'), true);
 
     }
 
-    if($labels_data['unit']==''){
-        $labels_data['unit']=json_decode($account->properties('part_label_unit'),true);
+    if ($labels_data['unit'] == '') {
+        $labels_data['unit'] = json_decode($account->properties('part_label_unit'), true);
     }
-    if($labels_data['sko']==''){
-        $labels_data['sko']=json_decode($account->properties('part_label_sko'),true);
-    }
-    if($labels_data['carton']==''){
-        $labels_data['carton']=json_decode($account->properties('part_label_carton'),true);
+    if ($labels_data['sko'] == '') {
+        $labels_data['sko'] = json_decode($account->properties('part_label_sko'), true);
     }
 
 
     $smarty->assign('labels_data', $labels_data);
-
 
 
     $a4_labels_options = array(
@@ -91,10 +92,10 @@ function get_part_showcase($data, $smarty, $account) {
             'code'        => '30UP',
             'description' => '30UP (3x10)'
         ),
-         array(
-             'code'        => 'EP40sp',
-             'description' => 'EP40sp L(5x8) '._('No bleed, with padding')
-         ),
+        array(
+            'code'        => 'EP40sp',
+            'description' => 'EP40sp L(5x8) '._('No bleed, with padding')
+        ),
         array(
             'code'        => '5x15',
             'description' => '5x15 '._('No bleed')
@@ -105,14 +106,12 @@ function get_part_showcase($data, $smarty, $account) {
         ),
 
 
-
     );
 
 
     $smarty->assign('a4_labels_options', $a4_labels_options);
 
 
-    
     $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
@@ -245,9 +244,11 @@ function get_part_showcase($data, $smarty, $account) {
                            'dispatched_delta_title'      => delta(
                                $part->get('Part Year To Day Acc Dispatched'), $part->get('Part Year To Day Acc 1YB Dispatched')
                            ),
-                           'dispatched_delta'            => ($part->get('Part Year To Day Acc Dispatched') > $part->get('Part Year To Day Acc 1YB Dispatched') ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($part->get(
-                               'Part Year To Day Acc Dispatched'
-                           ) < $part->get('Part Year To Day Acc 1YB Dispatched') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
+                           'dispatched_delta'            => ($part->get('Part Year To Day Acc Dispatched') > $part->get('Part Year To Day Acc 1YB Dispatched')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($part->get(
+                                   'Part Year To Day Acc Dispatched'
+                               ) < $part->get('Part Year To Day Acc 1YB Dispatched') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : ''))
 
                        ),
                        array(
@@ -257,9 +258,11 @@ function get_part_showcase($data, $smarty, $account) {
                            'invoiced_amount_delta_title' => delta(
                                $part->get('Part 1 Year Ago Invoiced Amount'), $part->get('Part 2 Year Ago Invoiced Amount')
                            ),
-                           'invoiced_amount_delta'       => ($part->get('Part 1 Year Ago Invoiced Amount') > $part->get('Part 2 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($part->get(
-                               'Part 1 Year Ago Invoiced Amount'
-                           ) < $part->get('Part 2 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'invoiced_amount_delta'       => ($part->get('Part 1 Year Ago Invoiced Amount') > $part->get('Part 2 Year Ago Invoiced Amount')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($part->get(
+                                   'Part 1 Year Ago Invoiced Amount'
+                               ) < $part->get('Part 2 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
                            'dispatched_delta_title'      => delta(
                                $part->get('Part 1 Year Ago Dispatched'), $part->get('Part 2 Year Ago Dispatched')
                            ),
@@ -276,9 +279,11 @@ function get_part_showcase($data, $smarty, $account) {
                            'invoiced_amount_delta_title' => delta(
                                $part->get('Part 2 Year Ago Invoiced Amount'), $part->get('Part 3 Year Ago Invoiced Amount')
                            ),
-                           'invoiced_amount_delta'       => ($part->get('Part 2 Year Ago Invoiced Amount') > $part->get('Part 3 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($part->get(
-                               'Part 2 Year Ago Invoiced Amount'
-                           ) < $part->get('Part 3 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'invoiced_amount_delta'       => ($part->get('Part 2 Year Ago Invoiced Amount') > $part->get('Part 3 Year Ago Invoiced Amount')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($part->get(
+                                   'Part 2 Year Ago Invoiced Amount'
+                               ) < $part->get('Part 3 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
                            'dispatched_delta_title'      => delta(
                                $part->get('Part 2 Year Ago Dispatched'), $part->get('Part 3 Year Ago Dispatched')
                            ),
@@ -317,9 +322,11 @@ function get_part_showcase($data, $smarty, $account) {
                            'invoiced_amount_delta_title' => delta(
                                $part->get('Part 4 Year Ago Invoiced Amount'), $part->get('Part 5 Year Ago Invoiced Amount')
                            ),
-                           'invoiced_amount_delta'       => ($part->get('Part 4 Year Ago Invoiced Amount') > $part->get('Part 5 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($part->get(
-                               'Part 4 Year Ago Invoiced Amount'
-                           ) < $part->get('Part 5 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
+                           'invoiced_amount_delta'       => ($part->get('Part 4 Year Ago Invoiced Amount') > $part->get('Part 5 Year Ago Invoiced Amount')
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($part->get(
+                                   'Part 4 Year Ago Invoiced Amount'
+                               ) < $part->get('Part 5 Year Ago Invoiced Amount') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
                            'dispatched_delta_title'      => delta(
                                $part->get('Part 4 Year Ago Dispatched'), $part->get('Part 5 Year Ago Dispatched')
                            ),
