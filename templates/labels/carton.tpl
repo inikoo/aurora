@@ -40,7 +40,7 @@
 </style>
     <table style="width: 100%; border-collapse: collapse;" >
         <tr class="top" >
-            <td colspan="4" style="padding-top: 2px"> Commercialised by {$account->get('Code')} </td>
+            <td colspan="4" style="padding-top: 2px"> Commercialised by {$account->get('Name')} </td>
 
         </tr>
         <tr class="labels">
