@@ -717,18 +717,10 @@ function show_invalid_messages(field) {
 function select_option(element, field, value) {
 
     $('#' + field).val(value)
-
-
     $('#' + field + '_options li').removeClass('selected')
     $(element).addClass('selected')
 
-//console.log(element)
 
-    if ($('#fields').hasClass('new_object')) {
-
-
-        //   $('#' + field + '_options').addClass('hide')
-    }
 
     on_changed_value(field, value)
 
@@ -2260,7 +2252,6 @@ function toggle_field_value(element) {
 
 function check_field_value(element) {
 
-
     var icon = $(element).find('i')
 
     if (icon.hasClass('fa-check-square')) {
@@ -2270,8 +2261,8 @@ function check_field_value(element) {
         icon.removeClass('fa-square').addClass('fa-check-square').next('span').removeClass('discreet')
     }
 
-
 }
+
 
 
 $(document).on('click', '.permissions .permission_type', function (evt) {

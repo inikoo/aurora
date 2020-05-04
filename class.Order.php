@@ -1922,8 +1922,8 @@ class Order extends DB_Table {
                     <span class="node_label" >
                         <i class="fal fa-file-invoice-dollar fa-fw %s" aria-hidden="true"></i>
                         <span class="link %s" onClick="change_view(\'%s\')">%s</span>
-                        <img class="button pdf_link" onclick="download_pdf_from_ui($(\'.pdf_asset_dialog.invoice\'),\'invoice\',%d)" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
-                        <i onclick="show_pdf_settings_dialog(this,\'invoice\',%d)" title="%s" class="far very_discreet fa-sliders-h-square button"></i>
+                        <img class="button pdf_link" onclick="download_pdf_from_ui($(\'.pdf_asset_dialog.invoice\'),\'invoice\',%d,\'invoice\')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                        <i onclick="show_pdf_settings_dialog(this,\'invoice\',%d,\'invoice\')" title="%s" class="far very_discreet fa-sliders-h-square button"></i>
                     </span>
                     <div class="red" style="float: right;padding-right: 10px;padding-top: 5px">%s
                     </div>

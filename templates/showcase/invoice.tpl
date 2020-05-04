@@ -190,7 +190,7 @@
 
             <tr class="date pdf_label_container">
                 <td class="top_pdf_label_mark">
-                    <img class="button pdf_link left_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.invoice'),'invoice',{$invoice->id})" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"> <i onclick="show_pdf_settings_dialog(this,'invoice',{$invoice->id})" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    <img class="button pdf_link left_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.invoice'),'invoice',{$invoice->id},'invoice')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"> <i onclick="show_pdf_settings_dialog(this,'invoice',{$invoice->id},'invoice')" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
 
 
 
@@ -221,7 +221,7 @@
     <div style="clear:both">
     </div>
 </div>
-{include file="pdf_asset_dialog.tpl" asset='invoice'}
+{include file="pdf_asset_dialog.tpl" asset='invoice' type='invoice'}
 
 <script>
 

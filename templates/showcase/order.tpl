@@ -344,12 +344,12 @@
 
                 <div id="proforma_operations" oncontextmenu="return false;" class="order_operation pdf_label_container {if  $order->get('State Index')<10 or  $order->get('State Index')>=80    or  $order->get('Order Number Items')==0 }hide{/if}">
 
-                    <div onclick="show_pdf_settings_dialog(this,'proforma',{$order->id})" class="square_button right proforma_button left_pdf_label_mark top_pdf_label_mark " data-order_key="{$order->id}" title="{t}Proforma invoice{/t}">
+                    <div onclick="show_pdf_settings_dialog(this,'order',{$order->id}),'proforma'" class="square_button right proforma_button left_pdf_label_mark top_pdf_label_mark " data-order_key="{$order->id}" title="{t}Proforma invoice{/t}">
                         <span><i class="fal fa-file-invoice-dollar   " style="color:darkseagreen" aria-hidden="true"></i></span>
 
                     </div>
 
-                    {include file="pdf_asset_dialog.tpl" asset='proforma'}
+                    {include file="pdf_asset_dialog.tpl" asset='order' type='proforma'}
 
 
                 </div>
@@ -699,8 +699,8 @@
                         <i class="fal fa-file-invoice-dollar fa-fw {if $invoice->get('Invoice Type')=='Refund'}error {/if}" aria-hidden="true"></i>
                         <span class="link {if $invoice->get('Invoice Type')=='Refund'}error{/if}"
                               onClick="change_view('orders/{$invoice->get('Invoice Store Key')}/{$order->id}/{$invoice->get('Invoice Type')|lower}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
-                         <img class="left_pdf_label_mark button pdf_link" onclick="download_pdf_from_ui($('.pdf_asset_dialog.invoice'),'invoice',{$invoice->id})" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
-                         <i onclick="show_pdf_settings_dialog(this,'invoice',{$invoice->id})" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                         <img class="left_pdf_label_mark button pdf_link" onclick="download_pdf_from_ui($('.pdf_asset_dialog.invoice'),'invoice',{$invoice->id},'invoice')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                         <i onclick="show_pdf_settings_dialog(this,'invoice',{$invoice->id},'invoice')" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
                     </span>
                     <div class="red" style="float: right;padding-right: 10px;padding-top: 5px">{if $invoice->get('Invoice Type')=='Refund'} {$invoice->get('Refund Total Amount')} {if $invoice->get('Invoice Paid')!='Yes'}
                             <i class="fa fa-exclamation-triangle warning fa-fw" aria-hidden="true" title="{t}Return payment pending{/t}"></i>
@@ -727,7 +727,7 @@
             {/foreach}
         </div>
 
-        {include file="pdf_asset_dialog.tpl" asset='invoice'}
+        {include file="pdf_asset_dialog.tpl" asset='invoice' type='invoice'}
 
         <div class="customer_balance_showcase {if $customer->get('Customer Account Balance')==0 }hide{/if} ">
             <div style="margin-bottom: 0px" class="payments  customer_balance  {if $order->get('Order State')!='InBasket' }hide{/if}  ">

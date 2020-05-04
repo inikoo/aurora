@@ -10,7 +10,9 @@
  Version 3.0
 */
 
-include 'utils/available_locales.php';
+include_once 'utils/available_locales.php';
+$available_locales=get_available_locales();
+
 include 'conf/user_groups.php';
 
 
@@ -28,6 +30,8 @@ foreach ($user_groups as $key => $user_group) {
         'selected' => false
     );
 }
+
+
 
 $options_locales = array();
 foreach ($available_locales as $locale) {
@@ -202,7 +206,9 @@ if (!$new) {
                                  )
     )) {
 
-        include 'utils/available_locales.php';
+        include_once 'utils/available_locales.php';
+        $available_locales=get_available_locales();
+
         include 'conf/user_groups.php';
 
 

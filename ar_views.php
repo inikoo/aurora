@@ -1558,7 +1558,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'part':
             include_once 'showcase/part.show.php';
-            $html         = get_part_showcase($data, $smarty, $user, $db);
+            $html         = get_part_showcase($data, $smarty, $account);
             $title        = $data['_object']->get('Reference');
             $web_location = '<i class="fal fa-fw fa-box"></i> '.$title;
 

@@ -582,7 +582,8 @@ class User extends DB_Table {
             case('Preferred Locale'):
 
 
-                include 'utils/available_locales.php';
+                include_once 'utils/available_locales.php';
+                $available_locales=get_available_locales();
 
                 if (array_key_exists(
                     $this->data['User Preferred Locale'], $available_locales

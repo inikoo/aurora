@@ -569,76 +569,25 @@
                 </td>
 
                 <td>
-                    <a  target="_blank"title="{t}Commercial unit label{/t} ({t}with image{/t})" href="/asset_label.php?object=part&key={$part->id}&type=unit_with_image">
-                        <i class="fal fa-image-polaroid fa-fw padding_right_5" ></i>
-                    </a>
-                    <a  target="_blank"title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit">
+
+
+
+
                         <i class="fal fa-barcode-alt fa-fw padding_right_5" ></i>
-                    </a>
+
 
                     <span class="Part_Barcode_Number" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Barcode Number')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part Barcode Number')}{/if}</span>
                     {if $part->get('Part Barcode Key')}
                         <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"></i>
                     {/if}
-                    <span onclick="download_label()" class="link download_a4_label  "  target="_blank" title="{t}Commercial unit label in A4{/t}" data-href="/asset_label.php?object=part&key={$part->id}&type=" data-type="unit_EL30" ><i class="fal fa-th fa-fw padding_right_5" ></i></span>
 
+                </td>
+                <td>
 
-
-                        <span onclick="open_a4_label_chooser()" class="a4_label button italic">EL30</span>
-
-                    <div class="a4_label_chooser hide" style="width:200px;position: absolute;padding:10px 10px 20px 20px ;background-color:#fff;border:1px solid #ccc;z-index:2000">
-
-                        <i onclick="close_a4_label_chooser()" class="fa fa-window-close button"></i>
-
-                        <input class="a4_label_selected_type" type="hidden"  value="EL30" >
-
-                        <div style="clear:both:margin-top:20px;padding-top:10px">
-
-                        <select class="a4_labels_options small" style="width: 500px;margin-top:40px">
-                            {foreach from=$a4_labels_options item=label}
-                                <option value="{$label.code}" {if $label.code=='EL30'}selected="selected"{/if} >{$label.description}</option>
-                            {/foreach}
-
-
-                        </select>
-                        </div>
-
-                        <script>
-                            $('.a4_labels_options').niceSelect();
-
-                            $( ".a4_labels_options" ).on('change',
-                                function() {
-
-                                    var value=$( ".a4_labels_options option:selected" ).val();
-                                    $('.a4_label_selected_type').val(value)
-
-
-                                    $('.download_a4_label').data('type','unit_'+value)
-                                    $('.a4_label').html(value)
-
-
-                                    $('.a4_label_chooser').addClass('hide')
-
-                                });
-                            function open_a4_label_chooser(){
-                                $('.a4_label_chooser').removeClass('hide')
-                            }
-
-                            function close_a4_label_chooser(){
-                                $('.a4_label_chooser').addClass('hide')
-                            }
-
-                            function download_label(){
-                                window.open($('.download_a4_label').data('href')+$('.download_a4_label').data('type'), '_blank');
-                            }
-
-
-                        </script>
-
-
-                    </div>
-
-
+                    <span class="pdf_label_container">
+                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.unit'),'part',{$part->id},'unit')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'part',{$part->id},'unit')" title="{t}PDF unit label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    </span>
 
 
 
@@ -664,11 +613,16 @@
                 </td>
 
                 <td>
-                    <a  target="_blank" title="{t}Stock keeping unit (Outer) label{/t} ({t}with image{/t})" href="/asset_label.php?object=part&key={$part->id}&type=package_with_image"><i class="fas fa-image-polaroid fa-fw padding_right_5" ></i></a>
 
-                    <a target="_blank" title="{t}Stock keeping unit (Outer) label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fas fa-barcode-alt fa-fw padding_right_5" ></i></a>
+                        <i class="fas fa-barcode-alt fa-fw padding_right_5" ></i>
                     <span class="Part_SKO_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part SKO Barcode')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part SKO Barcode')}{/if}</span>
 
+                </td>
+                <td>
+                      <span class="pdf_label_container">
+                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.sko'),'part',{$part->id},'sko')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'part',{$part->id},'sko')" title="{t}PDF SKO label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    </span>
                 </td>
 
                 <td style="text-align: right">
@@ -691,13 +645,22 @@
                 </td>
                 <td>
 
-                    {if $part->get('Part Number Supplier Parts')==1}
-                        <a  target="_blank" title="{t}Carton label{/t} ({t}with image{/t})" href="/asset_label.php?object=supplier_part&key={$part->get('Part Main Supplier Part Key')}&type=carton_with_image"><i class="far fa-image-polaroid fa-fw padding_right_5" ></i></a>
 
-                    <a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$part->get('Part Main Supplier Part Key')}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a>{/if} <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+
+                    <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
 
 
                 </td>
+
+                <td>
+                    {if $part->get('Part Number Supplier Parts')==1}
+                      <span class="pdf_label_container">
+                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.carton'),'part',{$part->id},'carton')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'part',{$part->id},'carton')" title="{t}PDF carton label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    </span>
+                    {/if}
+                </td>
+
                 <td style="text-align: right">
                     <span class="Carton_Weight "  title="{t}Carton gross weight{/t}"  >{$part->get('Carton Weight')}</span>
                 </td>
@@ -707,6 +670,12 @@
             </tr>
 
         </table>
+
+        {include file="pdf_asset_dialog.tpl" asset='part' type='unit'}
+        {include file="pdf_asset_dialog.tpl" asset='part' type='sko'}
+        {include file="pdf_asset_dialog.tpl" asset='part' type='carton'}
+
+
     </div>
 
     <div style="clear:both"></div>

@@ -10,8 +10,9 @@
  Version 3.0
 */
 
-function get_part_showcase($data, $smarty, $user, $db) {
+function get_part_showcase($data, $smarty, $account) {
 
+    $account->load_acc_data();
 
     $part = $data['_object'];
     $part->load_acc_data();
@@ -54,6 +55,25 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
     $main_supplier_part = get_object('Supplier_Part', $part->get('Part Main Supplier Part Key'));
     $smarty->assign('main_supplier_part', $main_supplier_part);
+
+
+    $labels_data['unit']=json_decode($part->properties('label_unit'),true);
+    $labels_data['sko']=json_decode($part->properties('label_sko'),true);
+    $labels_data['carton']=json_decode($part->properties('label_carton'),true);
+
+    if($labels_data['unit']==''){
+        $labels_data['unit']=json_decode($account->properties('part_label_unit'),true);
+    }
+    if($labels_data['sko']==''){
+        $labels_data['sko']=json_decode($account->properties('part_label_sko'),true);
+    }
+    if($labels_data['carton']==''){
+        $labels_data['carton']=json_decode($account->properties('part_label_carton'),true);
+    }
+
+
+    $smarty->assign('labels_data', $labels_data);
+
 
 
     $a4_labels_options = array(
@@ -326,4 +346,4 @@ function get_part_showcase($data, $smarty, $user, $db) {
 }
 
 
-?>
+

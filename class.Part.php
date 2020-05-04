@@ -1252,7 +1252,7 @@ class Part extends Asset {
                     $image = '/art/nopic.png';
 
                 } else {
-                    $image = sprintf('<img src="/image.php?id=%d&s=25x20"> ', $this->data['Part SKO Image Key']);
+                    $image = sprintf('<img src="/image.php?id=%d&s=25x20" alt=""> ', $this->data['Part SKO Image Key']);
 
                 }
 
@@ -1347,7 +1347,7 @@ class Part extends Asset {
 
 
                     if ($duplicates != '') {
-                        $duplicates = ' ('.preg_replace('/\, $/', ')', $duplicates);
+                        $duplicates = ' ('.preg_replace('/, $/', ')', $duplicates);
                     }
 
 
@@ -1730,6 +1730,12 @@ class Part extends Asset {
 
         switch ($field) {
 
+            case 'label unit':
+
+                $this->fast_update_json_field('Part Properties', preg_replace('/\s/','_',$field), $value);
+
+                break;
+
             case 'Part Supplier Part Unit Cost':
 
                 $main_supplier_part         = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
@@ -1910,9 +1916,7 @@ class Part extends Asset {
                 if (file_exists('widgets/inventory_alerts.wget.php')) {
                     include_once('widgets/inventory_alerts.wget.php');
 
-                    /**
-                     * @var $smarty \Smarty
-                     */ global $smarty;
+                    global $smarty;
 
                     if (is_object($smarty)) {
 
@@ -1926,7 +1930,11 @@ class Part extends Asset {
                         $smarty->assign('data', $_data);
 
 
-                        $this->update_metadata = array('parts_with_barcode_errors' => $smarty->fetch('dashboard/inventory.parts_with_barcode_errors.dbard.tpl'));
+                        try {
+                            $this->update_metadata = array('parts_with_barcode_errors' => $smarty->fetch('dashboard/inventory.parts_with_barcode_errors.dbard.tpl'));
+                        } catch (SmartyException $e) {
+                            Sentry\captureException($e);
+                        }
                     }
                 }
 
@@ -2486,7 +2494,12 @@ class Part extends Asset {
 
 
                                 $smarty->assign('data', $_data);
-                                $this->update_metadata['parts_with_weight_error'] = $smarty->fetch('dashboard/inventory.parts_with_weight_errors.dbard.tpl');
+                                try {
+                                    $this->update_metadata['parts_with_weight_error'] = $smarty->fetch('dashboard/inventory.parts_with_weight_errors.dbard.tpl');
+                                } catch (SmartyException $e) {
+                                    Sentry\captureException($e);
+
+                                }
                             }
 
 
@@ -2583,7 +2596,12 @@ class Part extends Asset {
                         $smarty->assign('data', $data);
 
 
-                        $this->update_metadata = array('parts_with_no_sko_barcode' => $smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl'));
+                        try {
+                            $this->update_metadata = array('parts_with_no_sko_barcode' => $smarty->fetch('dashboard/inventory.parts_with_no_sko_barcode.dbard.tpl'));
+                        } catch (SmartyException $e) {
+                            Sentry\captureException($e);
+
+                        }
                     }
                 }
 
@@ -2960,7 +2978,8 @@ class Part extends Asset {
 
 
                     $picking_location_icon = sprintf(
-                        '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s"  title="%s" ></i></span>', $this->id, $row['Location Key'], ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
+                        '<i onclick="set_as_picking_location('.$this->id.','. $row['Location Key'].')" class="fa fa-fw fa-shopping-basket %s"  title="%s" ></i></span>',
+                        ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
                         ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
                     );

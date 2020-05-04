@@ -47,9 +47,6 @@ class Account extends DB_Table {
             if ($this->data = $result->fetch()) {
                 $this->id = 1;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -100,11 +97,16 @@ class Account extends DB_Table {
             $type = 'Changes';
         }
 
-        $sql = sprintf(
-            "INSERT INTO  `Account History Bridge` (`History Key`,`Type`) VALUES (%d,%s)", $history_key, prepare_mysql($type)
+        $sql = "INSERT INTO  `Account History Bridge` (`Account Key`,`History Key`,`Type`) VALUES (?,?,?)";
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id,
+                $history_key,
+                $type
+            )
         );
-        $this->db->exec($sql);
-        //print $sql;
+
+
     }
 
 
@@ -135,8 +137,11 @@ class Account extends DB_Table {
 
             return $staff;
         } else {
+
             $this->error = true;
             $this->msg   = $staff->msg;
+
+            return false;
         }
     }
 
@@ -179,9 +184,6 @@ class Account extends DB_Table {
 
         if (!isset($data['Store Currency Code']) or $data['Store Currency Code'] == '') {
             $data['Store Currency Code'] = $this->get('Account Currency');
-
-        } else {
-            $data['Store Currency Code'] = $data['Store Currency Code'];
 
         }
 
@@ -233,6 +235,8 @@ class Account extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $store->msg;
+
+            return false;
         }
     }
 
@@ -240,7 +244,7 @@ class Account extends DB_Table {
 
 
         if (!$this->id) {
-            return;
+            return false;
         }
 
 
@@ -287,26 +291,26 @@ class Account extends DB_Table {
                     return '';
                 }
 
-                break;
-
 
             case 'Productions':
 
                 $number = 0;
-                $sql    = sprintf(
-                    "SELECT count(*) AS num FROM `Supplier Production Dimension`", $this->id
-                );
-                if ($row = $this->db->query($sql)->fetch()) {
+                $sql    = "SELECT count(*) AS num FROM `Supplier Production Dimension`";
+                $stmt   = $this->db->prepare($sql);
+                $stmt->execute();
+                if ($row = $stmt->fetch()) {
                     $number = $row['num'];
                 }
 
                 return $number;
-                break;
+
 
             case('Locale'):
 
 
-                include 'utils/available_locales.php';
+                include_once 'utils/available_locales.php';
+                $available_locales = get_available_locales();
+
 
                 if (array_key_exists(
                     $this->data['Account Locale'].'.UTF-8', $available_locales
@@ -347,10 +351,7 @@ class Account extends DB_Table {
 
                 $diff = $end - $start;
 
-                $delta = ($diff > 0 ? '+' : '').number($diff).delta_icon($end, $start, $inverse = true);
-
-
-                return $delta;
+                return ($diff > 0 ? '+' : '').number($diff).delta_icon($end, $start, $inverse = true);
 
             case 'Today Orders Dispatched':
 
@@ -447,11 +448,8 @@ class Account extends DB_Table {
                     $_amount = $_value;
                 }
 
-                $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+                return money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
 
-                return $amount;
-
-                break;
 
             case 'Contacts':
             case 'New Contacts':
@@ -540,26 +538,25 @@ class Account extends DB_Table {
                 }
 
 
-                $histogram= $this->properties($key);
+                $histogram = $this->properties($key);
 
 
-                if($histogram!=''){
-                    $histogram=json_decode($histogram,true);
+                if ($histogram != '') {
+                    $histogram = json_decode($histogram, true);
 
 
-
-                    if(isset($histogram[$args[0]])){
+                    if (isset($histogram[$args[0]])) {
                         return $histogram[$args[0]];
 
                     }
                 }
+
                 return 0;
 
 
             case 'percentage_dispatch_time_histogram':
                 return percentage(
-                    $this->get('dispatch_time_histogram',$args),
-                    $this->get('dispatch_time_samples',$args[1])
+                    $this->get('dispatch_time_histogram', $args), $this->get('dispatch_time_samples', $args[1])
                 );
 
             default:
@@ -606,9 +603,7 @@ class Account extends DB_Table {
                         $_amount = $this->data[$field];
                     }
 
-                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
-                    return $amount;
+                    return money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
                 }
 
 
@@ -623,9 +618,7 @@ class Account extends DB_Table {
                     $fraction_digits = 'NO_FRACTION_DIGITS';
                     $_amount         = $this->data[$field];
 
-                    $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
-                    return $amount;
+                    return money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
                 }
                 if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Distinct Parts Dispatched|Number)$/', $key)) {
 
@@ -688,22 +681,23 @@ class Account extends DB_Table {
     function update_stores_data() {
         $number_stores   = 0;
         $number_websites = 0;
-        $sql             = sprintf(
-            'SELECT count(*) AS num FROM `Store Dimension` WHERE `Store Status`="Normal"'
-        );
+
+        $sql = "SELECT count(*) AS num FROM `Store Dimension` WHERE `Store Status`='Normal'";
         if ($row = $this->db->query($sql)->fetch()) {
             $number_stores = $row['num'];
         }
 
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `Website Dimension` '
-        );
+        $sql = "SELECT count(*) AS num FROM `Website Dimension`";
         if ($row = $this->db->query($sql)->fetch()) {
             $number_websites = $row['num'];
         }
 
-        $this->update(array('Account Stores' => $number_stores), 'no_history');
-        $this->update(array('Account Websites' => $number_websites), 'no_history');
+        $this->fast_update(
+            [
+                'Account Stores'   => $number_stores,
+                'Account Websites' => $number_websites
+            ]
+        );
 
 
     }
@@ -716,9 +710,13 @@ class Account extends DB_Table {
 
         $this->errors = 0;
         $this->new    = 0;
+        $barcode      = false;
 
-        $range = preg_split('/-/', $data['Barcode Range']);
+        $barcodes_range = $data['Barcode Range'];
         unset($data['Barcode Range']);
+
+        $range = preg_split('/-/', (string)$barcodes_range);
+
 
         if (count($range) == 1) {
             $data['Barcode Number']    = $range[0];
@@ -730,7 +728,7 @@ class Account extends DB_Table {
                 $this->error = true;
                 $this->msg   = $barcode->msg;
 
-                return;
+                return false;
             } else {
                 if ($barcode->new) {
                     $this->new++;
@@ -740,7 +738,7 @@ class Account extends DB_Table {
 
                     $this->msg = $barcode->msg;
 
-                    return;
+                    return false;
                 }
             }
         } elseif (count($range) == 2) {
@@ -765,7 +763,7 @@ class Account extends DB_Table {
             $this->error = true;
             $this->msg   = _('None of the bar codes could be added');
 
-            return;
+            return false;
         }
 
 
@@ -773,7 +771,7 @@ class Account extends DB_Table {
             $this->error = true;
             $this->msg   = _('None of the bar codes could be added');
 
-            return;
+            return false;
         }
 
         return $barcode;
@@ -896,6 +894,8 @@ class Account extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $warehouse->msg;
+
+            return false;
         }
     }
 
@@ -956,9 +956,9 @@ class Account extends DB_Table {
                 $interval_data[1]
             )
         );
-        $waiting_time_histogram=array();
+        $waiting_time_histogram = array();
         while ($row = $stmt->fetch()) {
-            $waiting_time_histogram[$row['days']]=$row['num'];
+            $waiting_time_histogram[$row['days']] = $row['num'];
         }
         $this->fast_update_json_field('Account Properties', 'dispatch_time_histogram_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), json_encode($waiting_time_histogram), 'Account Data');
 
@@ -1058,29 +1058,35 @@ class Account extends DB_Table {
         );
 
         include_once 'utils/send_zqm_message.class.php';
-        send_zqm_message(json_encode(
-                             array(
-                                 'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
-                                 'sections' => array(
-                                     array(
-                                         'section' => 'dashboard',
+        try {
+            send_zqm_message(
+                json_encode(
+                    array(
+                        'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
+                        'sections' => array(
+                            array(
+                                'section' => 'dashboard',
 
-                                         'update_metadata' => array(
-                                             'class_html' => array(
-                                                 'Active_Parts'        => $this->get('Active Parts Number'),
-                                                 'In_Process_Parts'    => $this->get('In Process Parts Number'),
-                                                 'Discontinuing_Parts' => $this->get('Discontinuing Parts Number'),
+                                'update_metadata' => array(
+                                    'class_html' => array(
+                                        'Active_Parts'        => $this->get('Active Parts Number'),
+                                        'In_Process_Parts'    => $this->get('In Process Parts Number'),
+                                        'Discontinuing_Parts' => $this->get('Discontinuing Parts Number'),
 
-                                             )
-                                         )
+                                    )
+                                )
 
-                                     )
+                            )
 
-                                 ),
+                        ),
 
 
-                             )
-                         ));
+                    )
+                )
+            );
+        } catch (ZMQSocketException $e) {
+
+        }
 
     }
 
@@ -1110,62 +1116,50 @@ class Account extends DB_Table {
         $active_deliveries_parts_zero_barcode = 0;
 
 
-        $sql = sprintf(
-            'SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`="In Use"   GROUP BY `Part Stock Status`'
-        );
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+        $sql  =
+            "SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`='In Use' GROUP BY `Part Stock Status`";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            switch ($row['Part Stock Status']) {
+                case 'Surplus':
+                    $number_surplus_parts            = $row['num'];
+                    $stock_value_surplus_parts       = $row['stock_value'];
+                    $active_deliveries_surplus_parts = $row['next_deliveries'];
 
-                // print "$sql\n";
+                    break;
+                case 'Optimal':
+                    $number_ok_parts            = $row['num'];
+                    $stock_value_ok_parts       = $row['stock_value'];
+                    $active_deliveries_ok_parts = $row['next_deliveries'];
 
-                // print_r($row);
-                //'Surplus','Optimal','Low','Critical','Out_Of_Stock','Error'
-                switch ($row['Part Stock Status']) {
-                    case 'Surplus':
-                        $number_surplus_parts            = $row['num'];
-                        $stock_value_surplus_parts       = $row['stock_value'];
-                        $active_deliveries_surplus_parts = $row['next_deliveries'];
+                    break;
+                case 'Low':
+                    $number_low_parts            = $row['num'];
+                    $stock_value_low_parts       = $row['stock_value'];
+                    $active_deliveries_low_parts = $row['next_deliveries'];
 
-                        break;
-                    case 'Optimal':
-                        $number_ok_parts            = $row['num'];
-                        $stock_value_ok_parts       = $row['stock_value'];
-                        $active_deliveries_ok_parts = $row['next_deliveries'];
+                    break;
+                case 'Critical':
+                    $number_critical_parts            = $row['num'];
+                    $stock_value_critical_parts       = $row['stock_value'];
+                    $active_deliveries_critical_parts = $row['next_deliveries'];
 
-                        break;
-                    case 'Low':
-                        $number_low_parts            = $row['num'];
-                        $stock_value_low_parts       = $row['stock_value'];
-                        $active_deliveries_low_parts = $row['next_deliveries'];
+                    break;
+                case 'Out_Of_Stock':
+                    $number_parts_zero_barcode            = $row['num'];
+                    $stock_value_parts_zero_barcode       = $row['stock_value'];
+                    $active_deliveries_parts_zero_barcode = $row['next_deliveries'];
 
-                        break;
-                    case 'Critical':
-                        $number_critical_parts            = $row['num'];
-                        $stock_value_critical_parts       = $row['stock_value'];
-                        $active_deliveries_critical_parts = $row['next_deliveries'];
+                    break;
+                case 'Error':
+                    $number_error_parts            = $row['num'];
+                    $stock_value_error_parts       = $row['stock_value'];
+                    $active_deliveries_error_parts = $row['next_deliveries'];
 
-                        break;
-                    case 'Out_Of_Stock':
-                        $number_parts_zero_barcode            = $row['num'];
-                        $stock_value_parts_zero_barcode       = $row['stock_value'];
-                        $active_deliveries_parts_zero_barcode = $row['next_deliveries'];
-
-                        break;
-                    case 'Error':
-                        $number_error_parts            = $row['num'];
-                        $stock_value_error_parts       = $row['stock_value'];
-                        $active_deliveries_error_parts = $row['next_deliveries'];
-
-                        break;
-                }
-
+                    break;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-
 
         $this->fast_update(
             array(
@@ -1328,46 +1322,48 @@ class Account extends DB_Table {
 
 
         include_once 'utils/send_zqm_message.class.php';
-        send_zqm_message( json_encode(
-                              array(
-                                  'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
-                                  'sections' => array(
-                                      array(
-                                          'section' => 'dashboard',
+        send_zqm_message(
+            json_encode(
+                array(
+                    'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
+                    'sections' => array(
+                        array(
+                            'section' => 'dashboard',
 
-                                          'update_metadata' => array(
-                                              'class_html' => array(
-                                                  'Active_Parts_Stock_Surplus_Number'             => $this->get('Active Parts Stock Surplus Number'),
-                                                  'Active_Parts_Stock_Surplus_Stock_Value_Minify' => $this->get('Active Parts Stock Surplus Stock Value Minify'),
-                                                  'Active_Parts_Stock_Surplus_Deliveries_Number'  => $this->get('Active Parts Stock Surplus Deliveries Number'),
+                            'update_metadata' => array(
+                                'class_html' => array(
+                                    'Active_Parts_Stock_Surplus_Number'             => $this->get('Active Parts Stock Surplus Number'),
+                                    'Active_Parts_Stock_Surplus_Stock_Value_Minify' => $this->get('Active Parts Stock Surplus Stock Value Minify'),
+                                    'Active_Parts_Stock_Surplus_Deliveries_Number'  => $this->get('Active Parts Stock Surplus Deliveries Number'),
 
-                                                  'Active_Parts_Stock_OK_Number'             => $this->get('Active Parts Stock OK Number'),
-                                                  'Active_Parts_Stock_OK_Stock_Value_Minify' => $this->get('Active Parts Stock OK Stock Value Minify'),
-                                                  'Active_Parts_Stock_OK_Deliveries_Number'  => $this->get('Active Parts Stock OK Deliveries Number'),
+                                    'Active_Parts_Stock_OK_Number'             => $this->get('Active Parts Stock OK Number'),
+                                    'Active_Parts_Stock_OK_Stock_Value_Minify' => $this->get('Active Parts Stock OK Stock Value Minify'),
+                                    'Active_Parts_Stock_OK_Deliveries_Number'  => $this->get('Active Parts Stock OK Deliveries Number'),
 
-                                                  'Active_Parts_Stock_Low_Number'             => $this->get('Active Parts Stock Low Number'),
-                                                  'Active_Parts_Stock_Low_Stock_Value_Minify' => $this->get('Active Parts Stock Low Stock Value Minify'),
-                                                  'Active_Parts_Stock_Low_Deliveries_Number'  => $this->get('Active Parts Stock Low Deliveries Number'),
+                                    'Active_Parts_Stock_Low_Number'             => $this->get('Active Parts Stock Low Number'),
+                                    'Active_Parts_Stock_Low_Stock_Value_Minify' => $this->get('Active Parts Stock Low Stock Value Minify'),
+                                    'Active_Parts_Stock_Low_Deliveries_Number'  => $this->get('Active Parts Stock Low Deliveries Number'),
 
-                                                  'Active_Parts_Stock_Critical_Number'             => $this->get('Active Parts Stock Critical Number'),
-                                                  'Active_Parts_Stock_Critical_Stock_Value_Minify' => $this->get('Active Parts Stock Critical Stock Value Minify'),
-                                                  'Active_Parts_Stock_Critical_Deliveries_Number'  => $this->get('Active Parts Stock Critical Deliveries Number'),
+                                    'Active_Parts_Stock_Critical_Number'             => $this->get('Active Parts Stock Critical Number'),
+                                    'Active_Parts_Stock_Critical_Stock_Value_Minify' => $this->get('Active Parts Stock Critical Stock Value Minify'),
+                                    'Active_Parts_Stock_Critical_Deliveries_Number'  => $this->get('Active Parts Stock Critical Deliveries Number'),
 
-                                                  'Active_Parts_Stock_Zero_Number'             => $this->get('Active Parts Stock Zero Number'),
-                                                  'Active_Parts_Stock_Zero_Stock_Value_Minify' => $this->get('Active Parts Stock Zero Stock Value Minify'),
-                                                  'Active_Parts_Stock_Zero_Deliveries_Number'  => $this->get('Active Parts Stock Zero Deliveries Number'),
-
-
-                                              )
-                                          )
-
-                                      )
-
-                                  ),
+                                    'Active_Parts_Stock_Zero_Number'             => $this->get('Active Parts Stock Zero Number'),
+                                    'Active_Parts_Stock_Zero_Stock_Value_Minify' => $this->get('Active Parts Stock Zero Stock Value Minify'),
+                                    'Active_Parts_Stock_Zero_Deliveries_Number'  => $this->get('Active Parts Stock Zero Deliveries Number'),
 
 
-                              )
-                          ));
+                                )
+                            )
+
+                        )
+
+                    ),
+
+
+                )
+            )
+        );
 
 
     }
@@ -1679,7 +1675,7 @@ class Account extends DB_Table {
     function get_field_label($field) {
 
         switch ($field) {
-            case 'Account Accounts':
+            case 'Account Stores':
                 $label = _('stores');
                 break;
             case 'Account Websites':
@@ -1865,7 +1861,7 @@ class Account extends DB_Table {
         list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
 
 
-       // print "$db_interval  $from_date, $to_date, $from_date_1yb, $to_date_1yb\n";
+        // print "$db_interval  $from_date, $to_date, $from_date_1yb, $to_date_1yb\n";
 
         if ($this_year) {
 
@@ -2965,6 +2961,26 @@ class Account extends DB_Table {
 
     }
 
+    function cache_object($redis, $account_code) {
+
+        $redis_key     = 'Au_Cached_obj'.$account_code.'.Account.'.$this->id;
+        $data_to_cache = json_encode(
+            [
+                'code'         => $this->data['Account Code'],
+                'name'         => $this->data['Account Name'],
+                'currency'     => $this->data['Account Currency'],
+                'part_cat_key' => $this->data['Account Part Family Category Key'],
+                'locale'       => $this->data['Account Locale'],
+                'timezone'     => $this->data['Account Timezone'],
+
+            ]
+        );
+        $redis->set($redis_key, $data_to_cache);
+
+        return $data_to_cache;
+
+    }
+
     protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -3023,26 +3039,6 @@ class Account extends DB_Table {
 
                 break;
         }
-    }
-
-    function cache_object($redis, $account_code) {
-
-        $redis_key     = 'Au_Cached_obj'.$account_code.'.Account.'.$this->id;
-        $data_to_cache = json_encode(
-            [
-                'code' => $this->data['Account Code'],
-                'name' => $this->data['Account Name'],
-                'currency' => $this->data['Account Currency'],
-                'part_cat_key' => $this->data['Account Part Family Category Key'],
-                'locale' => $this->data['Account Locale'],
-                'timezone' => $this->data['Account Timezone'],
-
-            ]
-        );
-        $redis->set($redis_key, $data_to_cache);
-
-        return $data_to_cache;
-
     }
 
 }

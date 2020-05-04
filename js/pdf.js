@@ -4,52 +4,39 @@
  Version 3.0*/
 
 
-$(document).on('mousedown', '.proforma_buttonxxx', function (evt) {
+function show_pdf_settings_dialog(element, asset, asset_key, type) {
+    "use strict"
 
-    $('.proforma_dialog').removeClass('hide').offset({
-        top: $(this).offset().top-1, left: $(this).offset().left
+    $('.pdf_asset_dialog').addClass('hide')
+
+    const container = $(element).closest('.pdf_label_container');
+    const anchor_x = container.find('.left_pdf_label_mark');
+    const anchor_y = container.find('.top_pdf_label_mark');
+    $('.pdf_asset_dialog.' + type).removeClass('hide').data('asset', asset).data('asset_key', asset_key).data('type', type).offset({
+        top: $(anchor_y).offset().top - 1, left: $(anchor_x).offset().left
     })
-
-})
-
-
-function show_pdf_settings_dialog(element,asset, asset_key){
-
-    var container=$(element).closest('.pdf_label_container')
-    console.log($(element))
-    console.log(container)
-    var anchor_x=container.find('.left_pdf_label_mark')
-    var anchor_y=container.find('.top_pdf_label_mark')
-
-
-    $('.pdf_asset_dialog.'+asset).removeClass('hide').data('asset',asset).data('asset_key',asset_key).offset({
-        top: $(anchor_y).offset().top-1, left: $(anchor_x).offset().left
-    })
-
 
 
 }
 
 
-function download_pdf_from_ui(element,asset,asset_key){
-    $(element).data('asset',asset)
-    $(element).data('asset_key',asset_key)
+function download_pdf_from_ui(element, asset, asset_key,type) {
+    $(element).data('asset', asset).data('asset_key', asset_key).data('type', type)
+
     download_pdf(element)
 }
 
 function download_pdf(element) {
+    "use strict"
+    const dialog = $(element);
+    let args = '';
 
-    var dialog = $(element)
-
-
-
-    var args = '';
     $('.pdf_option', dialog).each(function (i, obj) {
 
-
+        let icon;
         switch ($(obj).data('field')) {
             case 'locale':
-                var icon = $(obj).find('i')
+                icon = $(obj).find('i');
                 if (icon.hasClass('fa-check-square')) {
                     args += '&locale=' + icon.data('value')
                 }
@@ -57,11 +44,11 @@ function download_pdf(element) {
                 break;
             default:
 
-                var icon = $(obj).find('i')
+                icon = $(obj).find('i');
 
                 if (icon.hasClass('fa-check-square')) {
 
-                    args += '&' + $(obj).data('field')+'=1'
+                    args += '&' + $(obj).data('field') + '=1'
 
                 }
 
@@ -74,21 +61,176 @@ function download_pdf(element) {
     })
 
 
-
-    switch (dialog.data('asset')) {
+    switch (dialog.data('type')) {
         case 'proforma':
-            window.open('/pdf/proforma.pdf.php?id=' +dialog.data('asset_key')+ args, '_blank');
+            window.open('/pdf/proforma.pdf.php?id=' + dialog.data('asset_key') + args, '_blank');
 
             break;
         case 'invoice':
             window.open('/pdf/invoice.pdf.php?id=' + dialog.data('asset_key') + args, '_blank');
 
             break;
-        case 'invoice_from_list':
-            window.open('/pdf/invoice.pdf.php?id=' + dialog.data('asset_key') + args, '_blank');
+        case 'unit':
+        case 'sko':
+        case 'carton':
+
+            const settings=get_pdf_label_options(dialog);
+
+            let url='/pdf/asset_label.pdf.php?object=' + dialog.data('asset') +'&key=' + dialog.data('asset_key')+ '&type=' +dialog.data('type');
+
+
+
+            url+='&'+jQuery.param(settings);
+            window.open(url, '_blank');
 
             break;
     }
 
+
+}
+
+function select_option_from_asset_labels(element) {
+    "use strict"
+
+    const options = $(element).closest('.options');
+    options.find('.option').removeClass('selected');
+
+    $(element).addClass('selected')
+
+    const sheet_options=$('.pdf_asset_dialog  .options.set_ups .option.sheet')
+
+    switch (options.data('type')) {
+        case 'size':
+            sheet_options.each(function (i, obj) {
+                if ($(obj).hasClass($(element).data('value'))) {
+                    $(obj).removeClass('hide')
+                } else {
+                    $(obj).addClass('hide')
+                }
+            });
+            break;
+        case 'set_up':
+            if($(element).hasClass('sheet')){
+                sheet_options.addClass('selected')
+            }else{
+                sheet_options.removeClass('selected')
+                $(element).addClass('selected')
+
+            }
+            break;
+
+
+    }
+    $('.pdf_asset_dialog .save').addClass('changed valid')
+
+
+}
+
+function check_pdf_asset_label_field_value(element) {
+    "use strict"
+    const icon = $(element).find('i');
+
+    if (icon.hasClass('fa-check-square')) {
+        icon.removeClass('fa-check-square').addClass('fa-square').next('span').addClass('discreet')
+        if ($(element).data('field') === 'with_custom_text') {
+            $('.pdf_asset_dialog .custom_text_tr').addClass('hide')
+        }
+
+    } else if (icon.hasClass('fa-square')) {
+        icon.removeClass('fa-square').addClass('fa-check-square').next('span').removeClass('discreet')
+        if ($(element).data('field') === 'with_custom_text') {
+            $('.pdf_asset_dialog .custom_text_tr').removeClass('hide')
+        }
+
+    }
+
+    $('.pdf_asset_dialog .save').addClass('changed valid')
+
+}
+
+
+function save_pdf_asset_label_options(element) {
+    "use strict"
+
+    if($(element).hasClass('valid')){
+        retuurn;
+    }
+
+    $(element).removeClass('valid changed').addClass('fa-spin fa-spinner')
+
+    const dialog = $(element).closest('.pdf_asset_dialog')
+    const options = get_pdf_label_options(dialog)
+
+
+    const ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'edit_field')
+    ajaxData.append("object", dialog.data('asset'))
+    ajaxData.append("key", dialog.data('asset_key'))
+    ajaxData.append("field", 'label_' + dialog.data('type'))
+    ajaxData.append("value", JSON.stringify(options))
+
+    $.ajax({
+        url: '/ar_edit.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+        complete: function () {
+
+        }, success: function (data) {
+            if (data.state === 200) {
+
+
+                if (data.ok) {
+
+
+                } else {
+
+
+                }
+
+            }
+
+
+        }, error: function () {
+
+        }
+    }).then(r => {
+        console.log(r)
+        $(element).removeClass('fa-spin fa-spinner')
+
+    })
+
+
+}
+
+$(document).on('input propertychange', '.pdf_asset_dialog textarea', function () {
+    $('.pdf_asset_dialog .save').addClass('changed valid')
+
+});
+
+function get_pdf_label_options(element) {
+    "use strict"
+
+    let options = {};
+
+    $('.pdf_option', element).each(function (i, obj) {
+
+        options[$(obj).data('field')] = !!$(obj).find('i').hasClass('fa-check-square');
+    })
+
+    $('.options', element).each(function (i, objs) {
+        $('.option', objs).each(function (j, obj) {
+
+
+            if (!$(obj).hasClass('hide') && $(obj).hasClass('selected')) {
+                options[$(obj).closest('.options').data('type')] = $(obj).data('value')
+                return false;
+            }
+
+        })
+    })
+
+    options['custom_text'] = $(element).find('textarea.custom_text').val()
+
+    return options;
 
 }

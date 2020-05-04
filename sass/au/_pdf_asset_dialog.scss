@@ -1,0 +1,32 @@
+//About:
+//Author: Raul Perusquia <raul@inikoo.com>
+//Created:   30 April 2020  12:16::49  +0800, Kuala Lumpur, Malaysia
+//Copyright (c) 2020, Inikoo
+
+//Version 3
+
+.pdf_asset_dialog {
+
+  img.button{
+    width: 50px;height:16px;margin-top:10px
+  }
+
+  td.options{
+    padding-top: 12px
+  }
+
+  &.unit,&.sko,&.carton {
+
+    img.button{
+      width: 50px;height: auto;margin-top:20px;margin-left: 5px;
+    }
+  }
+  .option{
+    padding:2px 7px ;border:1px solid #ddd;margin-left: 4px;cursor: pointer;
+    &.selected{
+      color:#222;border:1px solid #555;border-bottom: 2px solid #555;
+
+    }
+  }
+
+}
