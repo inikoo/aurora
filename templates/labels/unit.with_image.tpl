@@ -71,16 +71,14 @@
                     {/if}
 
 
-
-
                 </table>
 
             </td>
 
-                <td>
-                    <barcode size=".60" code="{$part->get('Part Barcode Number')}"/>
+            <td>
+                <barcode size=".60" code="{$part->get('Part Barcode Number')}"/>
 
-                </td>
+            </td>
 
             <td class="image_td" valign="middle">
                 <img src="../wi.php?id={$part->get('Part Main Image Key')}&s=270x270" style="margin-right: 0mm;vertical-align: middle;max-height: {$img_size}" width="{$img_size}" height="{$img_size}"/>
@@ -101,7 +99,7 @@
 
 
     {elseif   $size=='EU30137'}
-        {assign 'signature_font_size' '3mm'}
+        {assign 'signature_font_size' '3.5mm'}
         {assign 'font_size' '4.0mm'}
         {assign 'text_margin' 'margin-left:5.0mm;margin-right:2.5mm'}
         {assign 'img_size' '50mm' }
@@ -157,21 +155,40 @@
                     {if $with_account_signature}
                         <tr>
                             <td style="font-size: {$signature_font_size}">
-                                {$account->get('Label Signature')}
+
+
+
+
+                                {if   $size=='EU30137' }
+                                    <table style="font-size: 3.5mm;padding:0">
+                                        <tr>
+                                            <td valign="top" style="padding:0">
+                                                {$account->get('Label Signature')}
+                                            </td>
+                                            <td>
+                                                <barcode size=".8" code="{$part->get('Part Barcode Number')}"/>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                {else}
+                                    {$account->get('Label Signature')}
+                                {/if}
+
 
                             </td>
                         </tr>
                     {/if}
 
-
-                    {if   $size=='EU30137' }
+                    {if   $size=='EU30137' and  !$with_account_signature}
                         <tr>
                             <td>
-                                <barcode size=".7" code="{$part->get('Part Barcode Number')}"/>
+                                <barcode size="1" code="{$part->get('Part Barcode Number')}"/>
 
                             </td>
                         </tr>
                     {/if}
+
                     {if   $size=='EU30129'}
                         <tr>
                             <td>
