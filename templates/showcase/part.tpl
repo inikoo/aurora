@@ -655,8 +655,8 @@
                 <td>
                     {if $part->get('Part Number Supplier Parts')==1}
                       <span class="pdf_label_container">
-                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.carton'),'part',{$part->id},'carton')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
-                    <i onclick="show_pdf_settings_dialog(this,'part',{$part->id},'carton')" title="{t}PDF carton label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    <img class="button pdf_link left_pdf_label_mark top_pdf_label_mark" onclick="download_pdf_from_ui($('.pdf_asset_dialog.carton'),'supplier_part',{$part->get('Part Main Supplier Part Key')},'carton')" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'supplier_part',{$part->get('Part Main Supplier Part Key')},'carton')" title="{t}PDF carton label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
                     </span>
                     {/if}
                 </td>

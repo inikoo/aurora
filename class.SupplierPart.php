@@ -260,7 +260,7 @@ class SupplierPart extends DB_Table {
     function get_historic_data($key) {
 
         $sql = sprintf(
-            'SELECT * FROM `Supplier Part Historic Dimension` WHERE `Supplier Part Historic Dimension`=%d ', $key
+            'SELECT * FROM `Supplier Part Historic Dimension` WHERE `Supplier Part Historic key`=%d ', $key
         );
         if ($row = $this->db->query($sql)->fetch()) {
 
@@ -279,6 +279,10 @@ class SupplierPart extends DB_Table {
 
         switch ($field) {
 
+            case 'label carton':
+                $this->fast_update_json_field('Supplier Part Properties', preg_replace('/\s/','_',$field), $value);
+
+                break;
             case 'Supplier Part Carton Weight':
 
                 $this->fast_update_json_field('Supplier Part Properties', strtolower(preg_replace('/^Supplier_Part_/', '', preg_replace('/\s/', '_', $field))), $value);

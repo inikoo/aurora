@@ -59,7 +59,13 @@ function get_part_showcase($data, $smarty, $account) {
 
     $labels_data['unit']=json_decode($part->properties('label_unit'),true);
     $labels_data['sko']=json_decode($part->properties('label_sko'),true);
-    $labels_data['carton']=json_decode($part->properties('label_carton'),true);
+
+
+    if($part->get('Part Number Supplier Parts')==1){
+        $supplier_part=get_object('SupplierPart',$part->get('Part Main Supplier Part Key'));
+        $labels_data['carton']=json_decode($supplier_part->properties('label_carton'),true);
+
+    }
 
     if($labels_data['unit']==''){
         $labels_data['unit']=json_decode($account->properties('part_label_unit'),true);

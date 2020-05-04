@@ -1731,7 +1731,7 @@ class Part extends Asset {
         switch ($field) {
 
             case 'label unit':
-
+            case 'label sko':
                 $this->fast_update_json_field('Part Properties', preg_replace('/\s/','_',$field), $value);
 
                 break;
