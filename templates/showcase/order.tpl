@@ -344,7 +344,7 @@
 
                 <div id="proforma_operations" oncontextmenu="return false;" class="order_operation pdf_label_container {if  $order->get('State Index')<10 or  $order->get('State Index')>=80    or  $order->get('Order Number Items')==0 }hide{/if}">
 
-                    <div onclick="show_pdf_settings_dialog(this,'order',{$order->id},'proforma')," class="square_button right proforma_button left_pdf_label_mark top_pdf_label_mark " data-order_key="{$order->id}" title="{t}Proforma invoice{/t}">
+                    <div onclick="show_pdf_settings_dialog(this,'order',{$order->id},'proforma')" class="square_button right proforma_button left_pdf_label_mark top_pdf_label_mark " data-order_key="{$order->id}" title="{t}Proforma invoice{/t}">
                         <span><i class="fal fa-file-invoice-dollar   " style="color:darkseagreen" aria-hidden="true"></i></span>
 
                     </div>
