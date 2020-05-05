@@ -19,13 +19,13 @@
     <tr class="main_title small_row">
         <td colspan="9">
             <div class="widget_types">
-                <div id="store_" onclick="change_pending_orders_parent('')"
+                <div id="store_dashboard_pending_orders_" onclick="change_pending_orders_parent('')"
                      class="widget  left  {if $parent==''}selected{/if}">
                     <span class="label"> {t}All stores{/t} </span>
                 </div>
 
                 {foreach from=$stores item=store}
-                    <div id="store_{$store.key}" onclick="change_pending_orders_parent({$store.key})"
+                    <div id="store_dashboard_pending_orders_{$store.key}" onclick="change_pending_orders_parent({$store.key})"
                          class="widget  left {if $parent==$store.key}selected{/if}">
                         <span class="label">{$store.code} </span>
                     </div>
