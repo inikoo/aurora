@@ -6,7 +6,7 @@
 
 
 function change_dispatching_times_parent(parent) {
-    $('.widget_types .widget').removeClass('selected')
+    $('#dashboard_dispatching_times .widget_types .widget').removeClass('selected')
     $('#store_' + parent).addClass('selected')
     get_dashboard_dispatching_times_data(parent)
 }
@@ -48,7 +48,7 @@ function toggle_pending_orders_currency() {
 function change_pending_orders_parent(parent) {
 
 
-    $('.widget_types .widget').removeClass('selected')
+    $('#dashboard_pending_orders .widget_types .widget').removeClass('selected')
     $('#store_dashboard_pending_orders_' + parent).addClass('selected')
 
     if (parent == '') {
