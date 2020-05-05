@@ -743,7 +743,7 @@ function sales_history($_data, $db, $user, $account) {
 
             $currency   = $category->get('Product Category Currency Code');
             $from       = $category->get('Product Category Valid From');
-            $to         = ($category->get('Product Category Status') == 'Discontinued' ? $product->get('Product Category Valid To') : gmdate('Y-m-d'));
+            $to         = ($category->get('Product Category Status') == 'Discontinued' ? $category->get('Product Category Valid To') : gmdate('Y-m-d'));
             $date_field = '`Timeseries Record Date`';
             break;
         case 'store':

@@ -567,8 +567,7 @@ trait ProductCategory {
         if ($product_ids != '') {
 
             $sql = sprintf(
-                'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product ID
-                ` IN (%s) AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $product_ids
+                'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product ID` IN (%s) AND `Product Valid From` >= CURDATE() - INTERVAL 14 DAY', $product_ids
 
             );
             if ($result = $this->db->query($sql)) {
@@ -585,7 +584,7 @@ trait ProductCategory {
     function update_product_category_products_data() {
 
 
-        $elements_status_numbers = array(
+        $elements_status_numbers       = array(
             'In Process'    => 0,
             'Active'        => 0,
             'Suspended'     => 0,
@@ -593,13 +592,13 @@ trait ProductCategory {
             'Discontinued'  => 0
         );
         $elements_availability_numbers = array(
-            'Excess'    => 0,
-            'Normal'        => 0,
-            'Low'     => 0,
-            'VeryLow' => 0,
-            'OutofStock'  => 0,
-            'Error'  => 0,
-              'OnDemand'  => 0
+            'Excess'     => 0,
+            'Normal'     => 0,
+            'Low'        => 0,
+            'VeryLow'    => 0,
+            'OutofStock' => 0,
+            'Error'      => 0,
+            'OnDemand'   => 0
         );
 
         $elements_active_web_status_numbers = array(
@@ -613,7 +612,7 @@ trait ProductCategory {
         $category_status = 'In Process';
 
         $product_ids = $this->get_product_ids();
-
+        $valid_to    = null;
 
         if ($product_ids != '') {
 
@@ -652,7 +651,6 @@ trait ProductCategory {
             }
 
 
-
             $sql = "SELECT count(*) AS num ,`Product Web State` AS web_state FROM  `Product Dimension` P WHERE `Product ID` IN (".str_pad('', count($product_ids) * 2 - 1, '?,').") AND `Product Status` IN ('Active','Discontinuing') GROUP BY  `Product Web State`   ";
 
             $stmt = $this->db->prepare($sql);
@@ -674,25 +672,43 @@ trait ProductCategory {
             }
 
 
+            if ($category_status == 'Discontinued') {
+
+                $sql = "SELECT max(`Product Valid To`) valid_to FROM  `Product Dimension` P WHERE `Product ID` IN (".str_pad('', count($product_ids) * 2 - 1, '?,').")     ";
+
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute($product_ids);
+
+                if ($row = $stmt->fetch()) {
+                    $valid_to = $row['valid_to'];
+                }
+
+
+            }
+
         }
 
+
         $update_data = array(
-            'Product Category Status'                  => $category_status,
-            'Product Category In Process Products'     => $elements_status_numbers['In Process'],
-            'Product Category Active Products'         => $elements_status_numbers['Active'],
-            'Product Category Suspended Products'      => $elements_status_numbers['Suspended'],
-            'Product Category Discontinuing Products'  => $elements_status_numbers['Discontinuing'],
-            'Product Category Discontinued Products'   => $elements_status_numbers['Discontinued'],
-            'Product Category Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
-            'Product Category Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
-            'Product Category Active Web Offline'      => $elements_active_web_status_numbers['Offline'],
-            'Product Category Excess Availability Products'=>$elements_availability_numbers['Excess'],
-            'Product Category Normal Availability Products'=>$elements_availability_numbers['Normal'],
-            'Product Category Low Availability Products'=>$elements_availability_numbers['Low'],
-            'Product Category Vary Low Availability Products'=>$elements_availability_numbers['VeryLow'],
-            'Product Category Out of Stock Availability Products'=>$elements_availability_numbers['OutofStock'],
-            'Product Category Error Availability Products'=>$elements_availability_numbers['Error'],
-            'Product Category On Demand Availability Products'=>$elements_availability_numbers['OnDemand'],
+            'Product Category Status'   => $category_status,
+            'Product Category Valid To' => $valid_to,
+
+            'Product Category In Process Products'                => $elements_status_numbers['In Process'],
+            'Product Category Active Products'                    => $elements_status_numbers['Active'],
+            'Product Category Suspended Products'                 => $elements_status_numbers['Suspended'],
+            'Product Category Discontinuing Products'             => $elements_status_numbers['Discontinuing'],
+            'Product Category Discontinued Products'              => $elements_status_numbers['Discontinued'],
+            'Product Category Active Web For Sale'                => $elements_active_web_status_numbers['For Sale'],
+            'Product Category Active Web Out of Stock'            => $elements_active_web_status_numbers['Out of Stock'],
+            'Product Category Active Web Offline'                 => $elements_active_web_status_numbers['Offline'],
+            'Product Category Excess Availability Products'       => $elements_availability_numbers['Excess'],
+            'Product Category Normal Availability Products'       => $elements_availability_numbers['Normal'],
+            'Product Category Low Availability Products'          => $elements_availability_numbers['Low'],
+            'Product Category Vary Low Availability Products'     => $elements_availability_numbers['VeryLow'],
+            'Product Category Out of Stock Availability Products' => $elements_availability_numbers['OutofStock'],
+            'Product Category Error Availability Products'        => $elements_availability_numbers['Error'],
+            'Product Category On Demand Availability Products'    => $elements_availability_numbers['OnDemand'],
         );
 
 
@@ -700,9 +716,6 @@ trait ProductCategory {
 
 
         $active_web_families = 0;
-
-
-
 
 
         if ($this->data['Category Subject'] == 'Category') {
@@ -718,9 +731,8 @@ trait ProductCategory {
                 $active_web_families = $row['num'];
             }
 
-            $this->fast_update(['Product Category Active Web Families'=>$active_web_families], 'Product Category Dimension');
+            $this->fast_update(['Product Category Active Web Families' => $active_web_families], 'Product Category Dimension');
         }
-
 
 
         $this->get_data('id', $this->id);

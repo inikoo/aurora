@@ -50,3 +50,4 @@ app_files/po_sources_from_smarty/au.php
 app_files/po_sources_from_smarty/web.php
 websocket_server/keyring/ws.dns.php
 app_files/po_sources_from_smarty/web_au.php
+cron/fix_discontnued_valid_to_date.php

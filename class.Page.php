@@ -1278,9 +1278,9 @@ class Page extends DB_Table {
 
         if ($this->get('Webpage Scope') == 'Category Products') {
 
-            include_once 'class.Category.php';
 
-            $category = new Category($this->get('Webpage Scope Key'));
+
+            $category = get_object('Category',$this->get('Webpage Scope Key'));
 
 
             $items = array();
