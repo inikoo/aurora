@@ -37,7 +37,7 @@ switch ($tipo) {
 
                      )
         );
-        kpi($data, $db, $user, $account);
+        kpi($data);
         break;
     case 'sales_overview':
         $data = prepare_values(
@@ -62,7 +62,7 @@ switch ($tipo) {
 
                      )
         );
-        pending_orders($data, $db, $user, $account);
+        pending_orders($data);
         break;
 
     case 'customers':
@@ -74,7 +74,7 @@ switch ($tipo) {
 
                      )
         );
-        customers($data, $db, $user, $account);
+        customers($data);
         break;
     case 'dispatching_times':
         $data = prepare_values(
@@ -98,7 +98,7 @@ switch ($tipo) {
 }
 
 
-function pending_orders($data, $db, $user, $account) {
+function pending_orders($data) {
 
 
     $_SESSION['dashboard_state']['pending_orders'] = array(
@@ -188,7 +188,7 @@ function pending_orders($data, $db, $user, $account) {
 }
 
 
-function customers($data, $db, $user, $account) {
+function customers($data) {
 
 
     $_SESSION['dashboard_state']['customers'] = array(
@@ -199,15 +199,14 @@ function customers($data, $db, $user, $account) {
 
 
     if ($data['parent'] != '') {
-        include_once 'class.Store.php';
 
-        $object = new Store($data['parent']);
+        $object = get_object('Store',$data['parent']);
         $object->load_acc_data();
 
         $title = $object->get('Code');
 
     } else {
-        $object = new Account();
+        $object = get_object('Account',1);
         $object->load_acc_data();
         $title = $object->get('Code');
     }
@@ -260,7 +259,6 @@ function sales_overview($_data, $db, $user, $account) {
     $data = array();
 
     if ($_data['type'] == 'invoice_categories') {
-        $request = 'invoices/all';
 
         $fields = "
 		`Invoice Category $period_tag Acc Refunds` as refunds,
@@ -321,11 +319,11 @@ function sales_overview($_data, $db, $user, $account) {
 
         }
         $sql =
-            "select concat('cat',C.`Category Key`) record_key, `Category Code`, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where  `Category Branch Type`='Head'  order by C.`Category Store Key` ,`Category Function Order`";
+            "select concat('cat',C.`Category Key`) record_key, `Category Code`, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal','ClosingDown')   order by C.`Category Store Key` ,`Category Function Order`";
 
 
     } else {
-        $request = 'invoices';
+      //  $request = 'invoices';
         $fields  = "
 			`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
 	`Store Orders In Process Paid Number`,`Store Orders In Process Paid Amount`,`Store DC Orders In Process Paid Amount`,
@@ -376,7 +374,6 @@ function sales_overview($_data, $db, $user, $account) {
     $sum_in_process_amount_not_paid = 0;
     $sum_in_warehouse               = 0;
     $sum_in_warehouse_amount        = 0;
-    $sum_packed                     = 0;
     $sum_packed_amount              = 0;
     $sum_in_dispatch_area           = 0;
     $sum_in_dispatch_area_amount    = 0;
@@ -776,7 +773,7 @@ function sales_overview($_data, $db, $user, $account) {
 }
 
 
-function kpi($data, $db, $user, $account) {
+function kpi($data) {
 
     require_once 'utils/object_functions.php';
 

@@ -1,3 +1,13 @@
+
+table.dashboard_table{
+  tr.totals td{
+    border-top:1px solid #aaa;
+    background: #fff;
+    border-bottom: none;
+  }
+  border-bottom: none;
+}
+
 section.table_block {
 
   .export_dialog_block {
