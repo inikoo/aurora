@@ -114,85 +114,85 @@ function sanitize($content) {
 
     include_once 'utils/html_minifier.php';
 
+    if (!empty($content['blocks']) and is_array($content['blocks'])) {
+        foreach ($content['blocks'] as $block_key => $block) {
 
-    foreach ($content['blocks'] as $block_key => $block) {
+            switch ($block['type']) {
+                case 'favourites':
+                    $content['blocks'][$block_key]['labels']['with_items'] = process_text($content['blocks'][$block_key]['labels']['with_items']);
+                    $content['blocks'][$block_key]['labels']['no_items']   = process_text($content['blocks'][$block_key]['labels']['no_items']);
+                    break;
 
-        switch ($block['type']) {
-            case 'favourites':
-                $content['blocks'][$block_key]['labels']['with_items'] = process_text($content['blocks'][$block_key]['labels']['with_items'] );
-                $content['blocks'][$block_key]['labels']['no_items'] = process_text($content['blocks'][$block_key]['labels']['no_items'] );
-                break;
-
-                $content['blocks'][$block_key]['labels']['with_items'] = process_text($content['blocks'][$block_key]['labels']['with_items'] );
-                $content['blocks'][$block_key]['labels']['no_items'] = process_text($content['blocks'][$block_key]['labels']['no_items'] );
-                break;
-            case 'product':
-                $content['blocks'][$block_key]['text'] = process_text($content['blocks'][$block_key]['text']);
-                break;
-            case 'blackboard':
-                foreach ($block['texts'] as $block_text_key => $block_text) {
-                    $content['blocks'][$block_key]['texts'][$block_text_key]['text'] = process_text($content['blocks'][$block_key]['texts'][$block_text_key]['text']);
-                }
-                $content['blocks'][$block_key]['mobile_html'] = process_text($content['blocks'][$block_key]['mobile_html']);
-                $content['blocks'][$block_key]['tablet_html'] = process_text($content['blocks'][$block_key]['tablet_html']);
-
-
-                break;
-            case 'text':
-                foreach ($block['text_blocks'] as $block_text_key => $block_text) {
-                    $content['blocks'][$block_key]['text_blocks'][$block_text_key]['text'] = process_text($content['blocks'][$block_key]['text_blocks'][$block_text_key]['text']);
-                }
+                    $content['blocks'][$block_key]['labels']['with_items'] = process_text($content['blocks'][$block_key]['labels']['with_items']);
+                    $content['blocks'][$block_key]['labels']['no_items']   = process_text($content['blocks'][$block_key]['labels']['no_items']);
+                    break;
+                case 'product':
+                    $content['blocks'][$block_key]['text'] = process_text($content['blocks'][$block_key]['text']);
+                    break;
+                case 'blackboard':
+                    foreach ($block['texts'] as $block_text_key => $block_text) {
+                        $content['blocks'][$block_key]['texts'][$block_text_key]['text'] = process_text($content['blocks'][$block_key]['texts'][$block_text_key]['text']);
+                    }
+                    $content['blocks'][$block_key]['mobile_html'] = process_text($content['blocks'][$block_key]['mobile_html']);
+                    $content['blocks'][$block_key]['tablet_html'] = process_text($content['blocks'][$block_key]['tablet_html']);
 
 
-                break;
-            case 'category_categories':
+                    break;
+                case 'text':
+                    foreach ($block['text_blocks'] as $block_text_key => $block_text) {
+                        $content['blocks'][$block_key]['text_blocks'][$block_text_key]['text'] = process_text($content['blocks'][$block_key]['text_blocks'][$block_text_key]['text']);
+                    }
 
-                foreach ($block['sections'] as $sections_key => $section) {
-                    foreach ($section['items'] as $item_key => $item) {
+
+                    break;
+                case 'category_categories':
+
+                    foreach ($block['sections'] as $sections_key => $section) {
+                        foreach ($section['items'] as $item_key => $item) {
+                            if ($item['type'] == 'text') {
+                                $content['blocks'][$block_key]['sections'][$sections_key]['items'][$item_key]['text'] = process_text($content['blocks'][$block_key]['sections'][$sections_key]['items'][$item_key]['text']);
+                            }
+
+                        }
+
+                    }
+                    break;
+                case 'category_products':
+                case 'products':
+                    foreach ($block['items'] as $item_key => $item) {
                         if ($item['type'] == 'text') {
-                            $content['blocks'][$block_key]['sections'][$sections_key]['items'][$item_key]['text'] = process_text($content['blocks'][$block_key]['sections'][$sections_key]['items'][$item_key]['text']);
+                            $content['blocks'][$block_key]['items'][$item_key]['text'] = process_text($content['blocks'][$block_key]['items'][$item_key]['text']);
+                        } elseif ($item['type'] == 'product') {
+                            $content['blocks'][$block_key]['items'][$item_key]['header_text'] = process_text($content['blocks'][$block_key]['items'][$item_key]['header_text']);
                         }
 
                     }
 
-                }
-                break;
-            case 'category_products':
-            case 'products':
-                foreach ($block['items'] as $item_key => $item) {
-                    if ($item['type'] == 'text') {
-                        $content['blocks'][$block_key]['items'][$item_key]['text'] = process_text($content['blocks'][$block_key]['items'][$item_key]['text']);
-                    } elseif ($item['type'] == 'product') {
-                        $content['blocks'][$block_key]['items'][$item_key]['header_text'] = process_text($content['blocks'][$block_key]['items'][$item_key]['header_text']);
-                    }
 
-                }
-
+            }
 
         }
-
     }
-
 
     return $content;
 }
 
 
-function process_text($text,$minify=true) {
+function process_text($text, $minify = true) {
 
     if ($text == '') {
         return;
     }
 
 
-    $text     = replace_class($text);
+    $text = replace_class($text);
 
 
     $text = preg_replace('/&nbsp;<\/span>/', '</span>&nbsp;', $text);
     $text = preg_replace('/&nbsp;<\/p>$/', '</p>', $text);
     $text = preg_replace('/<br>/', '<br/>', $text);
 
-    if($minify) {
+    if ($minify) {
         $minifier = new TinyHtmlMinifier([]);
         $text     = $minifier->minify($text);
     }
@@ -204,8 +204,6 @@ function process_text($text,$minify=true) {
 function replace_class($html) {
     return preg_replace_callback(
         '/class="([^"]+)"/', function ($m) {
-
-
 
 
         if (strpos($m[1], "fr-fill") !== false) {
@@ -321,7 +319,6 @@ function replace_class($html) {
         if (strpos($m[1], "fr-alternate-rows") !== false) {
             $m[0] = preg_replace("/\bfr-class-code\b/", '_atr1_', $m[0], 1);
         }
-
 
 
         return $m[0];

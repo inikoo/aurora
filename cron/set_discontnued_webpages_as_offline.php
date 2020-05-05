@@ -41,6 +41,60 @@ $contador = 0;
 
 
 
+$sql  = "select `Webpage State`, `Store Code`,`Webpage Code`,`Page Key` from `Page Store Dimension` left join `Store Dimension` on (`Webpage Store Key`=`Store Key` ) ;";
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array()
+);
+while ($row = $stmt->fetch()) {
+    $webpage = get_object('Webpage', $row['Page Key']);
+    $ok=true;
+
+    if ($webpage->get('Webpage Scope') == 'Category Products' or $webpage->get('Webpage Scope') == 'Category Categories') {
+
+
+        $category = get_object('Category', $webpage->get('Webpage Scope Key'));
+        if(!$category->id){
+            $contador++;
+            $webpage->unpublish();
+            $webpage->delete();
+            print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." error not category found \n";
+            $ok=false;
+
+        }
+
+    }elseif ($webpage->get('Webpage Scope') == 'Product') {
+
+
+        $product    = get_object('Product', $webpage->get('Webpage Scope Key'));
+        if(!$product->id){
+            $contador++;
+            $webpage->unpublish();
+            $webpage->delete();
+            print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." error not product found \n";
+            $ok=false;
+        }
+
+    }
+
+    if($ok){
+        $content=$webpage->get('Content Data');
+
+        if(empty($content['blocks']) or !is_array($content['blocks'])){
+            print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." ".$row['Webpage State']."  error no blocks \n";
+            $contador++;
+            $webpage->reset_object();
+            if ($webpage->get('Webpage Scope') == 'Category Products' or $webpage->get('Webpage Scope') == 'Category Categories' or $webpage->get('Webpage Scope') == 'Product') {
+                $webpage->unpublish();
+            }
+        }
+
+
+    }
+
+}
+exit;
+
 $sql = "select `Store Code`,`Webpage Code`,`Page Key` from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key`)  
 left join `Store Dimension` on (`Webpage Store Key`=`Store Key`)  
       where  `Webpage Scope`='Category Products' and `Webpage State`='Online'   ;";
@@ -100,54 +154,4 @@ if ($stmt->execute()) {
 } else {
     print_r($error_info = $this->db->errorInfo());
     exit();
-}
-
-
-$sql  = "select  `Store Code`,`Webpage Code`,`Page Key` from `Page Store Dimension` left join `Store Dimension` on (`Webpage Store Key`=`Store Key` ) ;";
-$stmt = $db->prepare($sql);
-$stmt->execute(
-    array()
-);
-while ($row = $stmt->fetch()) {
-    $webpage = get_object('Webpage', $row['Page Key']);
-    $ok=true;
-
-    if ($webpage->get('Webpage Scope') == 'Category Products' or $webpage->get('Webpage Scope') == 'Category Categories') {
-
-
-        $category = get_object('Category', $webpage->get('Webpage Scope Key'));
-        if(!$category->id){
-            $contador++;
-            $webpage->unpublish();
-            $webpage->delete();
-            print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." error not category found \n";
-            $ok=false;
-
-        }
-
-    }elseif ($webpage->get('Webpage Scope') == 'Product') {
-
-
-        $product    = get_object('Product', $webpage->get('Webpage Scope Key'));
-        if(!$product->id){
-            $contador++;
-            $webpage->unpublish();
-            $webpage->delete();
-            print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." error not product found \n";
-            $ok=false;
-        }
-
-    }
-
-    if($ok){
-        $content=$webpage->get('Content Data');
-
-        if(empty($content['blocks']) or !is_array($content['blocks'])){
-            print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." error no blocks \n";
-
-        }
-
-
-    }
-
 }
