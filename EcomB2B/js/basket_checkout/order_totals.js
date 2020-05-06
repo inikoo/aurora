@@ -18,3 +18,19 @@
             }
         })
     }
+
+
+function show_client_charges_info(order_key){
+
+    var request = '/ar_web_client_basket.php?tipo=get_charges_info&order_key='+order_key
+    $.getJSON(request, function (data) {
+
+        if (data.state == 200) {
+            swal({
+                html:true,
+                title: '',
+                text:data.text,
+            })
+        }
+    })
+}

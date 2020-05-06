@@ -76,7 +76,9 @@
                         <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
                     </tr>
                     <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }hide{/if}">
-                        <td><i class="button fa fa-info-circle padding_right_5 info" style="color: #007fff;" onclick="show_charges_info()" ></i>  {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
+                        <td><i class="button fa fa-info-circle padding_right_5 info" style="color: #007fff;"
+                                    {if $website->get('Website Type')=='EcomDS'}onclick="show_client_charges_info({$order->id})"{else}onclick="show_charges_info()"{/if}
+                            ></i>  {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
 
                         <td class="text-right order_charges">{$order->get('Charges Net Amount')}</td>
                     </tr>

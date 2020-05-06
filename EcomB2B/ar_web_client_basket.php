@@ -84,12 +84,22 @@ switch ($tipo) {
             $_REQUEST, array(
 
                          'charge_key' => array('type' => 'key'),
-                         'order_key' => array('type' => 'key'),
+                         'order_key'  => array('type' => 'key'),
                          'operation'  => array('type' => 'string'),
 
                      )
         );
-        web_toggle_charge($data, $customer->id, $website,$editor);
+        web_toggle_charge($data, $customer->id, $website, $editor);
+        break;
+    case 'get_charges_info':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'order_key' => array('type' => 'key'),
+
+                     )
+        );
+        get_charges_info($data, $customer->id);
         break;
 
 
@@ -101,6 +111,36 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
 
+
+}
+
+function get_charges_info($data, $customer_key) {
+
+    $order = get_object('Order', $data['order_key']);
+    if (!$order->id) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Order not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    if ($order->get('Order Customer Key') != $customer_key) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Customer not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $response = array(
+        'state' => 200,
+        'title' => _('Charges'),
+        'text'  => $order->get_charges_public_info()
+    );
+    echo json_encode($response);
 
 }
 
@@ -177,7 +217,7 @@ function get_client_order_items_html($data, $customer_key) {
     }
 
 
-    $smarty = new Smarty();
+    $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -198,7 +238,6 @@ function get_client_order_items_html($data, $customer_key) {
     $smarty->assign('items_data', $order->get_items());
     $smarty->assign('interactive_charges_data', $order->get_interactive_charges_data());
     $smarty->assign('client_key', $customer_client->id);
-
 
 
     $smarty->assign('interactive_deal_component_data', $order->get_interactive_deal_component_data());
@@ -248,7 +287,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
     $customer_client->editor = $editor;
 
 
-    $smarty = new Smarty();
+    $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -318,7 +357,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
         'empty'      => false,
         'html'       => $smarty->fetch($theme.'/blk.client_basket.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         'client_nav' => [
-            'label' => '<a href="/client.sys?id='.$customer_client->id.'">'.($customer_client->get('Customer Client Code')==''?'<span class="italic">'.sprintf('%05d',$customer_client->id).'</span>':$customer_client->get('Customer Client Code')).'</a>',
+            'label' => '<a href="/client.sys?id='.$customer_client->id.'">'.($customer_client->get('Customer Client Code') == '' ? '<span class="italic">'.sprintf('%05d', $customer_client->id).'</span>' : $customer_client->get('Customer Client Code')).'</a>',
             'title' => htmlspecialchars($customer_client->get('Customer Client Name'))
 
         ],
@@ -335,8 +374,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
 }
 
 
-
-function web_toggle_charge($data,$customer_key,  $website,$editor) {
+function web_toggle_charge($data, $customer_key, $website, $editor) {
 
 
     $order = get_object('Order', $data['order_key']);

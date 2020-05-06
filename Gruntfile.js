@@ -58,12 +58,12 @@ module.exports = function (grunt) {
             }, ecom_desktop_client_basket: {
                 options: {
                     sourceMap: true,
-                }, src: ['EcomB2B/js/basket_checkout/client_basket.js'],
+                }, src: ['EcomB2B/js/basket_checkout/client_basket.js', 'EcomB2B/js/basket_checkout/order_totals.js'],
                 dest: 'EcomB2B/assets/desktop.client_basket.min.js'
             }, ecom_desktop_basket: {
                 options: {
                     sourceMap: true,
-                }, src: ['EcomB2B/js/basket_checkout/basket.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
+                }, src: ['EcomB2B/js/basket_checkout/basket.js', 'EcomB2B/js/basket_checkout/order_totals.js'],
                 dest: 'EcomB2B/assets/desktop.basket.min.js'
             }, ecom_desktop_checkout: {
                 options: {
