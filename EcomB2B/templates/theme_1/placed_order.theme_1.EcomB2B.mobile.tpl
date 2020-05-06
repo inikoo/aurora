@@ -74,7 +74,7 @@
         <tr class="order_charges_container {if $placed_order->get('Order Charges Net Amount')==0 }very_discreet{/if}">
             <td>
 
-                {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}  
+                {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}
             </td>
 
             <td class="text-right order_charges">{$placed_order->get('Charges Net Amount')}</td>

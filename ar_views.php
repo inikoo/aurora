@@ -1429,7 +1429,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
                 $tmp[$_tab] = $_subtab;
                 $_SESSION['tab_state'] = $tmp;
             }else{
-                $_SESSION['tab_state'][$_tab]=$tmp;
+                $_SESSION['tab_state'][$_tab]=$_subtab;
             }
 
         }
