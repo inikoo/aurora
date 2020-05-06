@@ -40,7 +40,7 @@
     </div>
 
     <div class="sky-form" style="width: 100%;text-align: center;box-shadow: none;">
-        <button id="order_for_existing_customer"  style="float:none;display: inline;margin-top:5px" type="submit" class="button">{if !empty($data._order_for_existing_customers)}{$data._order_for_existing_customers}{else}{t}Create order for existing customer{/t}{/if} <i  class=" far fa-fw fa-users" aria-hidden="true"></i> </button>
+        <button id="order_for_existing_customer"  style="float:none;display: inline;margin-top:5px" type="submit" class="button">{if !empty($data._order_existing_customers)}{$data._order_existing_customers}{else}{t}Create order for existing customer{/t}{/if} <i  class=" far fa-fw fa-users" aria-hidden="true"></i> </button>
         <div style="clear: both"></div>
     </div>
     </div>

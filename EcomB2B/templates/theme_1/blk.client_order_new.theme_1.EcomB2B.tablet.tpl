@@ -32,13 +32,13 @@
 <div class="new_order_options">
     <div class="new_order_option" style="width: 50%;border-right:1px solid #ccc">
         <div class="table_top">
-            <span class="title" >{t}Order for existing customers{/t}</span>
+            <span class="title" >{if !empty($data._order_existing_customers)}{$data._order_existing_customers}{else}{t}Order for existing customers{/t}{/if}</span>
         </div>
         <div id="table_container"></div>
     </div>
     <div class="new_order_option" style="width: 50%;">
         <div class="table_top">
-            <span class="title" s>{t}Order for new customer{/t}</span>
+            <span class="title">{if !empty($data._order_new_customers)}{$data._order_new_customers}{else}{t}Order for new customer{/t}{/if}</span>
         </div>
 
         <div class="sky-form" style="width: 100%;text-align: center;box-shadow: none;">

@@ -1899,6 +1899,34 @@ console.log($(obj).attr('block'))
 
 
                     break;
+                case 'client_order_new':
+
+
+                    var content_data = {
+                        type: 'client_order_new', label: '{t}New order{/t}', icon: 'fa-seedling', show: 1,
+
+                        top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+
+                    }
+
+                    $('[contenteditable=true]').each(function (i, obj2) {
+
+                        if ($(obj2).hasClass('website_localized_label')) {
+
+                            labels[$(obj2).attr('id')] = $(obj2).html()
+                        } else {
+                            content_data[$(obj2).attr('id')] = $(obj2).html()
+                        }
+
+
+                    })
+
+
+
+                    blocks.push(content_data)
+
+
+                    break;
                 case 'iframe':
 
 

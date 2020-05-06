@@ -1097,14 +1097,14 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
                         array(
-                            'locked'              => true,
-                            'type'                => 'client_order_new',
-                            'label'               => _('Basket'),
-                            'icon'                => 'fa-basket',
-                            'show'                => 1,
-                            '_existing_customers' => _('Existing customers'),
-                            '_new_customer'       => _('New customer'),
-                            '_anon_customer'      => _('Anonymous order'),
+                            'locked'                    => true,
+                            'type'                      => 'client_order_new',
+                            'label'                     => _('New order'),
+                            'icon'                      => 'fa-seedling',
+                            'show'                      => 1,
+                            '_order_existing_customers' => _('Order for existing customers'),
+                            '_order_new_customers'      => _('Order for new customer'),
+                            '_order_for_new_customer'   => _('Create order for new customer'),
 
 
                         )
