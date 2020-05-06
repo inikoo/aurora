@@ -52,7 +52,7 @@
             Units per carton
         </td>
         <td rowspan="4" style="text-align: center;vertical-align: middle;" valign="middle">
-            <img style="vertical-align: middle;max-height: 25mm" src="../image.php?id={$supplier_part->part->get('Part Main Image Key')}&s=270x270" width="25mm"/>
+            <img style="vertical-align: middle;max-height: 25mm" src="/image.php?id={$supplier_part->part->get('Part Main Image Key')}&s=270x270&asset=Part&asset_key={$supplier_part->part->id}" width="25mm"/>
         <td>
     </tr>
     <tr class="data">

@@ -76,11 +76,13 @@ function download_pdf(element) {
 
             const settings=get_pdf_label_options(dialog);
 
-            let url='/pdf/asset_label.pdf.php?object=' + dialog.data('asset') +'&key=' + dialog.data('asset_key')+ '&type=' +dialog.data('type');
+            let url='/asset_label.pdf.php?object=' + dialog.data('asset') +'&key=' + dialog.data('asset_key')+ '&type=' +dialog.data('type');
 
 
 
             url+='&'+jQuery.param(settings);
+
+
             window.open(url, '_blank');
 
             break;

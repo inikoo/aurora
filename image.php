@@ -10,19 +10,53 @@
 */
 
 
-
 include_once 'keyring/dns.php';
 
 require_once 'vendor/autoload.php';
 
-session_start();
-if(empty($_SESSION['logged_in'])){
-    http_response_code(403);
-    exit('Forbidden');
+
+if (!empty($_REQUEST['asset_pdf']) and !empty($_REQUEST['asset']) and !empty($_REQUEST['asset_key']) and !empty($_REQUEST['id']) and in_array(
+        $_REQUEST['asset'], [
+        'Part',
+        'Product'
+    ]
+    )) {
+
+
+    $sql = "select `Image Subject Image Key`  from  `Image Subject Bridge` where `Image Subject Object`=? and `Image Subject Object Key`=? and `Image Subject Image Key`=?  and `Image Subject Object Image Scope`='Marketing'  ";
+    $db  = new PDO(
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    );
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+    $sql  = 'select `Image Subject Image Key`  from  `Image Subject Bridge` where `Image Subject Object`=? and `Image Subject Object Key`=? and `Image Subject Image Key`=?  ';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $_REQUEST['asset'],
+            $_REQUEST['asset_key'],
+            $_REQUEST['id']
+        )
+    );
+    if ($row = $stmt->fetch()) {
+
+    } else {
+        http_response_code(403);
+        exit('Forbidden');
+    }
+
+
+} else {
+
+    session_start();
+    if (empty($_SESSION['logged_in'])) {
+        http_response_code(403);
+        exit('Forbidden');
+    }
 }
 
-
-use \Gumlet\ImageResize;
+use Gumlet\ImageResize;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 if (empty($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or $_REQUEST['id'] <= 0) {
@@ -51,7 +85,7 @@ $redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
 $image_code = 'i.'.DNS_ACCOUNT_CODE.'.'.$image_key.'_'.$size_r;
 
-if ($redis->exists($image_code)  ) {
+if ($redis->exists($image_code)) {
 
 
     list($image_filename, $mime_type) = json_decode($redis->get($image_code), true);
@@ -65,7 +99,7 @@ if ($redis->exists($image_code)  ) {
         header("Expires: $ts");
         header("Pragma: cache");
         header("Cache-Control: max-age=$seconds_to_cache");
-        header('Content-Length: ' . filesize($image_filename));
+        header('Content-Length: '.filesize($image_filename));
 
         readfile($image_filename);
         exit();
@@ -74,13 +108,10 @@ if ($redis->exists($image_code)  ) {
 }
 
 
-
-
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
 
 
 $sql  = sprintf('select `Image Path`,`Image MIME Type`,`Image File Checksum` from `Image Dimension` where `Image Key`=? ');
@@ -93,17 +124,12 @@ $stmt->execute([$image_key]);
 if ($row = $stmt->fetch()) {
 
 
-
     $image_path = $row['Image Path'];
     $image_mime = $row['Image MIME Type'];
 
 
-
-
-
     $cached_image_path = preg_replace('/^img\/db/', 'img/cache', $image_path);
     $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
-
 
 
     if (!is_dir('img/cache/'.$row['Image File Checksum'][0])) {
@@ -115,7 +141,7 @@ if ($row = $stmt->fetch()) {
     }
 
 
-    if($size_r!=''){
+    if ($size_r != '') {
         list($w, $h) = preg_split('/x/', $size_r);
         $image              = new ImageResize($image_path);
         $image->quality_jpg = 100;
@@ -125,38 +151,36 @@ if ($row = $stmt->fetch()) {
         $image->save($cached_image_path);
 
         if (!file_exists($cached_image_path)) {
-            usleep(  1000 );
+            usleep(1000);
         }
         if (!file_exists($cached_image_path)) {
-            usleep(  2000 );
+            usleep(2000);
         }
         if (!file_exists($cached_image_path)) {
-            usleep(  3000 );
+            usleep(3000);
         }
         if (!file_exists($cached_image_path)) {
-            usleep(  100000 );
+            usleep(100000);
         }
-    }else{
-        copy($image_path,$cached_image_path);
+    } else {
+        copy($image_path, $cached_image_path);
     }
-
-
 
 
     $optimizerChain = OptimizerChainFactory::create();
     $optimizerChain->optimize($cached_image_path);
 
     if (!file_exists($cached_image_path)) {
-        usleep(  1000 );
+        usleep(1000);
     }
     if (!file_exists($cached_image_path)) {
-        usleep(  2000 );
+        usleep(2000);
     }
     if (!file_exists($cached_image_path)) {
-        usleep(  3000 );
+        usleep(3000);
     }
     if (!file_exists($cached_image_path)) {
-        usleep(  100000 );
+        usleep(100000);
     }
 
     //chmod($cached_image_path,0664);
@@ -165,11 +189,11 @@ if ($row = $stmt->fetch()) {
     $redis_write->connect(REDIS_HOST, REDIS_PORT);
     $redis_write->set(
         $image_code, json_encode(
-        array(
-            $cached_image_path,
-            $image_mime
-        )
-    )
+                       array(
+                           $cached_image_path,
+                           $image_mime
+                       )
+                   )
     );
 
 
@@ -187,14 +211,14 @@ if ($row = $stmt->fetch()) {
         readfile($cached_image_path);
 
 
-    }else{
+    } else {
         header("HTTP/1.0 404 Not Found");
         echo "Image not found";
         exit();
     }
 
     //print $cached_image_path;
-   // exit;
+    // exit;
 
 
 } else {

@@ -88,7 +88,9 @@
             </table>
         </td>
         <td class="image_td" style="" valign="middle">
-            <img src="../image.php?id={$part->get('Part Main Image Key')}&s=270x270" style="margin-right: 2mm;vertical-align: middle;max-height: {$img_size}" width="{$img_size}" height="{$img_size}"/>
+
+
+            <img src="/image.php?id={$part->get('Part Main Image Key')}&s=270x270&asset_pdf=1&asset=Part&asset_key={$part->id}" style="margin-right: 2mm;vertical-align: middle;max-height: {$img_size}" width="{$img_size}" height="{$img_size}"/>
         </td>
     </tr>
     <tr>

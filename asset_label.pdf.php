@@ -14,11 +14,9 @@
 
 use Mpdf\Mpdf;
 
-chdir('../');
 require_once 'vendor/autoload.php';
 include_once 'common.php';
 include_once 'utils/object_functions.php';
-
 include_once 'utils/labels_data.php';
 
 //print_r($_REQUEST);
@@ -310,7 +308,7 @@ if ($object_name == 'product') {
 
 $mpdf = new Mpdf(
     [
-        'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
+        'tempDir'       => __DIR__.'/server_files/pdf_tmp',
         'mode'          => 'utf-8',
         'format'        => [
             ($set_up == 'single' ? $label_data['width'] : $label_data['sheet_width']),
