@@ -15,7 +15,7 @@ include_once 'keyring/dns.php';
 require_once 'vendor/autoload.php';
 
 
-if (!empty($_REQUEST['asset_pdf']) and !empty($_REQUEST['asset']) and !empty($_REQUEST['asset_key']) and !empty($_REQUEST['id']) and in_array(
+if (!empty($_REQUEST['asset']) and !empty($_REQUEST['asset_key']) and !empty($_REQUEST['id']) and in_array(
         $_REQUEST['asset'], [
         'Part',
         'Product'
