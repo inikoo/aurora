@@ -1385,6 +1385,16 @@ function utf8ize($mixed) {
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
 
 
+    //cleaning mess can removed later
+    if(!is_string($tab) ){
+        $tab='';
+    }
+    if(!is_string($subtab) ){
+        $subtab='';
+    }
+    //=================
+
+
     $html = '';
 
     if (isset($state['section']) and $state['section'] == 'customer' and $state['store']->get('Store Type') == 'Dropshipping' and $state['_object']->get('Customer Type by Activity') == 'ToApprove') {
@@ -3677,6 +3687,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
+
+    //cleaning mess can removed later
+    if(empty($data['subtab']) or !is_string($data['subtab']) ){
+        $data['subtab']='';
+    }
+    //=================
 
 
     if (preg_match('/\_edit$/', $data['tab']) or $data['section'] == 'refund.new') {
