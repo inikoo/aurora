@@ -29,7 +29,6 @@ date_default_timezone_set('UTC');
 include_once 'utils/general_functions.php';
 include_once 'utils/object_functions.php';
 
-include_once 'utils/fake_session.class.php';
 
 
 $db = new PDO(
