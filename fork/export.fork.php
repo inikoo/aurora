@@ -42,7 +42,7 @@ function fork_export($job) {
     $db        = $_data[1];
     $fork_data = $_data[2];
 
-   // print_r($fork_data);
+    // print_r($fork_data);
 
     $inikoo_account_code = $account->get('Account Code');
 
@@ -52,7 +52,6 @@ function fork_export($job) {
     $sql_data     = $fork_data['sql_data'];
     $ws_key       = $fork_data['ws_key'];
     $download_key = $fork_data['download_key'];
-
 
 
     $creator     = 'aurora.systems';
@@ -99,7 +98,7 @@ function fork_export($job) {
     }
 
 
-    $sockets  = get_zqm_message_sockets();
+    $sockets = get_zqm_message_sockets();
 
     foreach ($sockets as $socket) {
         $socket->send(
@@ -271,7 +270,6 @@ function fork_export($job) {
                         $objDrawing->setDescription('Item image'); //set description to image
 
 
-
                         $original_image = get_object('Image', $value);
 
 
@@ -291,18 +289,18 @@ function fork_export($job) {
                         $image_path = preg_replace('/^img\//', 'img_'.$account->get('Code').'/', $original_image->get('Image Path'));
 
 
-                        $cached_image_path = preg_replace('/^.*\/db\//', 'img_cache/', $image_path);
+                        $cached_image_path = preg_replace('/^.*\/db\//', 'cache/', $image_path);
                         $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
 
 
                         if (!file_exists($cached_image_path)) {
 
-                            if (!is_dir('img_cache/'.$original_image->get('Image File Checksum')[0])) {
-                                mkdir('img_cache/'.$original_image->get('Image File Checksum')[0]);
+                            if (!is_dir('cache/'.$original_image->get('Image File Checksum')[0])) {
+                                mkdir('cache/'.$original_image->get('Image File Checksum')[0]);
                             }
 
-                            if (!is_dir('img_cache/'.$original_image->get('Image File Checksum')[0].'/'.$original_image->get('Image File Checksum')[1])) {
-                                mkdir('img_cache/'.$original_image->get('Image File Checksum')[0].'/'.$original_image->get('Image File Checksum')[1]);
+                            if (!is_dir('cache/'.$original_image->get('Image File Checksum')[0].'/'.$original_image->get('Image File Checksum')[1])) {
+                                mkdir('cache/'.$original_image->get('Image File Checksum')[0].'/'.$original_image->get('Image File Checksum')[1]);
                             }
 
 
@@ -376,7 +374,6 @@ function fork_export($job) {
                         $objPHPExcel->getActiveSheet()->getRowDimension($row_index)->setRowHeight(220);
 
 
-
                     }
 
 
@@ -385,7 +382,7 @@ function fork_export($job) {
                 } else {
 
 
-                    $type = (empty($fork_data['field_set'][$char_index-1]['type']) ? '' : $fork_data['field_set'][$char_index-1]['type']);
+                    $type = (empty($fork_data['field_set'][$char_index - 1]['type']) ? '' : $fork_data['field_set'][$char_index - 1]['type']);
 
 
                     if ($type == 'html') {
@@ -393,13 +390,12 @@ function fork_export($job) {
                     } else {
 
 
- $value=str_replace("\xc2\xa0",' ',$value);
+                        $value = str_replace("\xc2\xa0", ' ', $value);
 
 
                         $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
                     }
-
 
 
                     if ($type == 'text') {
@@ -441,15 +437,10 @@ function fork_export($job) {
                                 'channel'      => $ws_key,
                                 'progress_bar' => array(
                                     array(
-                                        'id'    => 'download_'.$download_key,
-                                        'state' => 'In Process',
-
+                                        'id'            => 'download_'.$download_key,
+                                        'state'         => 'In Process',
                                         'progress_info' => percentage($row_index, $number_rows),
-                                        'progress'      => sprintf(
-                                            '%s/%s (%s)', number($row_index), number($number_rows), percentage(
-                                                            $row_index, $number_rows
-                                                        )
-                                        ),
+                                        'progress'      => sprintf('%s/%s (%s)', number($row_index), number($number_rows), percentage($row_index, $number_rows)),
                                         'percentage'    => percentage($row_index, $number_rows),
 
                                     )
@@ -536,7 +527,6 @@ function fork_export($job) {
     );
 
 
-
     foreach ($sockets as $socket) {
         $socket->send(
             json_encode(
@@ -544,10 +534,9 @@ function fork_export($job) {
                     'channel'      => $ws_key,
                     'progress_bar' => array(
                         array(
-                            'id'           => 'download_'.$download_key,
-                            'state'        => 'Finish',
-                            'download_key' => $download_key,
-
+                            'id'            => 'download_'.$download_key,
+                            'state'         => 'Finish',
+                            'download_key'  => $download_key,
                             'progress_info' => _('Done'),
                             'progress'      => sprintf('%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)),
                             'percentage'    => percentage($number_rows, $number_rows),
