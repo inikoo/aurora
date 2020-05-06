@@ -766,7 +766,7 @@
 
 
         $('._block').each(function (i, obj) {
-
+console.log($(obj).attr('block'))
 
             switch ($(obj).attr('block')) {
 
@@ -1870,7 +1870,35 @@
 
                     break;
 
+                case 'client_basket':
 
+
+                    var content_data = {
+                        type: 'client_basket', label: '{t}Client Basket{/t}', icon: 'fa-basket', show: 1,
+
+                        top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+
+                    }
+
+                    $('[contenteditable=true]').each(function (i, obj2) {
+
+                        if ($(obj2).hasClass('website_localized_label')) {
+
+                            labels[$(obj2).attr('id')] = $(obj2).html()
+                        } else {
+                            content_data[$(obj2).attr('id')] = $(obj2).html()
+                        }
+
+
+                    })
+
+                    content_data['_special_instructions'] = $('#_special_instructions').val()
+
+
+                    blocks.push(content_data)
+
+
+                    break;
                 case 'iframe':
 
 

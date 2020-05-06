@@ -36,11 +36,11 @@
     <div class="content">
         <div class="one-half-responsive " >
             <h5  >
-                <span class="discreet">{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if}:</span>
+                <span class="discreet">{if !empty({$data._order_number})}{$data._order_number}{else}{t}Order number{/t}{/if}:</span>
                 <span>{$order->get('Public ID')}</span>
             </h5>
             <h4  >
-            <span class="discreet">{t}Customer{/t}:</span>
+            <span class="discreet">{if !empty({$data._customer})}{$data._customer}{else}{t}Customer{/t}{/if}:</span>
             <span >
                    <span style="background-color: black;color:white;padding:2px 12px" class="Customer_Client_Code">{$customer_client->get('Customer Client Code')}</span>
 

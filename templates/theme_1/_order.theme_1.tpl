@@ -76,7 +76,3 @@
     </tbody>
 </table>
 
-<script>
-
-
-</script>

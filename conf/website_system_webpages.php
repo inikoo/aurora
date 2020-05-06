@@ -1071,6 +1071,9 @@ function website_system_webpages_config($website_type) {
                             '_total_to_pay'           => _('To pay'),
                             '_special_instructions'   => _('Special Instructions'),
                             '_go_checkout_label'      => _('Go to checkout'),
+                            '_customer'               => _('Customer'),
+                            '_order_number'           => _('Order number'),
+                            '_weight'                 => _('Weight'),
 
                         )
 
@@ -1165,12 +1168,17 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
                         array(
-                            'locked' => true,
-                            'type'   => 'top_up',
-                            'label'  => _('Top up'),
-                            'icon'   => 'fa-piggy-bank',
-                            'show'   => 1,
-                            'top_up_options'=>[10,50,100,250],
+                            'locked'         => true,
+                            'type'           => 'top_up',
+                            'label'          => _('Top up'),
+                            'icon'           => 'fa-piggy-bank',
+                            'show'           => 1,
+                            'top_up_options' => [
+                                10,
+                                50,
+                                100,
+                                250
+                            ],
 
                             'labels' => array(
 
@@ -1220,7 +1228,7 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-        'balance.sys'           => array(
+        'balance.sys'          => array(
             'Webpage Scope'            => 'Balance',
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
@@ -1241,7 +1249,6 @@ function website_system_webpages_config($website_type) {
 
 
                                 '_main_title' => _('Balance'),
-
 
 
                             )
