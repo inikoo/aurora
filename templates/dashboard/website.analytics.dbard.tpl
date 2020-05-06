@@ -36,6 +36,10 @@ table.current_website_users .amount{
     text-align: right;padding-right: 50px;
 }
 
+table.current_website_users .location img{
+    max-width: 20px;
+}
+
 </style>
 
 
