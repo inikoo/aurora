@@ -1388,7 +1388,7 @@ class SupplierPart extends DB_Table {
             case 'Carton Net Weight Approx':
 
                 return weight(
-                    ceil($this->part->data['Part Package Weight'] * $this->data['Supplier Part Packages Per Carton'])
+                    round($this->part->data['Part Package Weight'] * $this->data['Supplier Part Packages Per Carton'],1)
                 );
                 break;
             case 'Supplier Part Carton Weight':
