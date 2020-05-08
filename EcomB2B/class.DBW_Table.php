@@ -648,7 +648,7 @@ abstract class DBW_Table extends stdClass {
     function fork_index_elastic_search($type = 'create_elastic_index_object', $indices = ['quick']) {
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
-            'au_housekeeping', array(
+            'au_elastic', array(
             'type'       => $type,
             'object'     => $this->get_object_name(),
             'object_key' => $this->id,
