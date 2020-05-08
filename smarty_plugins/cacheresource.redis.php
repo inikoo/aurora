@@ -20,6 +20,7 @@ class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
         $this->redis = new Redis();
         $this->redis->connect(REDIS_HOST, REDIS_PORT);
         $this->redis->select(REDIS_SMARTY_CACHE_DB);
+        $this->redis->setOption(Redis::OPT_PREFIX, DNS_ACCOUNT_CODE.':' );
 
     }
 
@@ -76,19 +77,12 @@ class Smarty_CacheResource_Redis extends Smarty_CacheResource_KeyValueStore {
      * @return bool true on success, false on failure
      */
     protected function delete(array $keys) {
-
-
-
         $this->redis->del($keys);
-
         return true;
     }
 
 
     protected function purge() {
-
-        $this->redis->flushdb();
-
         return true;
     }
 }

@@ -655,7 +655,10 @@ class Page extends DB_Table {
     }
 
     function clear_cache() {
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
+
+
+        $cache_id = '_'.$this->id.'|'.$this->get('Webpage Website Key').'|'.DNS_ACCOUNT_CODE;
+
 
         $smarty_web               = new Smarty();
         $smarty_web->caching_type = 'redis';
@@ -667,14 +670,15 @@ class Page extends DB_Table {
         $website_type = 'EcomB2B';
 
 
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tpl', $cache_id.'|out');
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tpl', $cache_id.'|in');
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tpl', 'in'.$cache_id);
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tpl', 'out'.$cache_id);
 
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl', $cache_id.'|out');
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl', $cache_id.'|in');
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl', 'in'.$cache_id);
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl','out'.$cache_id);
 
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile,tpl', $cache_id.'|out');
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile.tpl', $cache_id.'|in');
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile,tpl',  'in'.$cache_id);
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile.tpl',  'out'.$cache_id);
+
 
 
     }

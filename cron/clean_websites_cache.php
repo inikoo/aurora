@@ -17,11 +17,35 @@ $smarty_web->template_dir = 'EcomB2B/templates';
 $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
 $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
 $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
-$smarty->addPluginsDir('./smarty_plugins');
+$smarty_web->addPluginsDir('./smarty_plugins');
 $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
 $smarty_web->clearAllCache();
-$smarty_web->clearCompiledTemplate();
+
+$_redis = new Redis();
+$_redis->connect(REDIS_HOST, REDIS_PORT);
+$_redis->select(REDIS_SMARTY_CACHE_DB);
+$_redis->setOption(Redis::OPT_SCAN, Redis::SCAN_RETRY);
+
+
+$sql  = 'Select `Website Key` from `Website Dimension`';
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array()
+);
+while ($row = $stmt->fetch()) {
+
+    print $row['Website Key']." === \n";
+    $it = null;
+    while ($arr_keys = $_redis->scan($it)) {
+        foreach ($arr_keys as $str_key) {
+            if (preg_match('/\|'.$row['Website Key'].'\|'.DNS_ACCOUNT_CODE.'#$/',$str_key)) {
+                echo "Here is a key: $str_key\n";
+                $_redis->del($str_key);
+            }
+        }
+    }
+}
 
 

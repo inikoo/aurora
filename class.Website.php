@@ -884,14 +884,12 @@ class Website extends DB_Table {
     function update_labels_in_localised_labels($labels) {
 
 
-        if(empty($labels)){
-           return;
+        if (empty($labels)) {
+            return;
         }
 
 
-
-
-        $old_checksum=md5($this->get('Website Localised Labels'));
+        $old_checksum = md5($this->get('Website Localised Labels'));
 
         $localised_labels = $this->get('Localised Labels');
 
@@ -899,16 +897,13 @@ class Website extends DB_Table {
         $localised_labels = array_merge($localised_labels, $labels);
 
 
-
-        $new_value=json_encode($localised_labels);
-        $new_checksum=md5($new_value);
+        $new_value    = json_encode($localised_labels);
+        $new_checksum = md5($new_value);
 
         $this->fast_update(array('Website Localised Labels' => $new_value));
 
 
-
-
-        if($old_checksum!=$new_checksum){
+        if ($old_checksum != $new_checksum) {
             $this->clean_cache();
         }
 
@@ -929,6 +924,22 @@ class Website extends DB_Table {
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
         $smarty_web->clearAllCache();
+
+
+        $_redis = new Redis();
+        $_redis->connect(REDIS_HOST, REDIS_PORT);
+        $_redis->select(REDIS_SMARTY_CACHE_DB);
+        $_redis->setOption(Redis::OPT_SCAN, Redis::SCAN_RETRY);
+
+
+        $it = null;
+        while ($arr_keys = $_redis->scan($it)) {
+            foreach ($arr_keys as $str_key) {
+                if (preg_match('/\|'.$this->id.'\|'.DNS_ACCOUNT_CODE.'#$/', $str_key)) {
+                    $_redis->del($str_key);
+                }
+            }
+        }
 
 
     }
