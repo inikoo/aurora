@@ -28,14 +28,13 @@ if (!isset($db)) {
 date_default_timezone_set('UTC');
 $logged_in = get_logged_in();
 
-$smarty = new Smarty();
+$smarty               = new Smarty();
 $smarty->caching_type = 'redis';
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
 $smarty->setConfigDir('server_files/smarty/configs');
 $smarty->addPluginsDir('./smarty_plugins');
-
 
 
 if (defined('SENTRY_DNS_ECOM_JS')) {
@@ -200,25 +199,23 @@ if (isset($_REQUEST['snapshot'])) {
 }
 
 
-//if ($logged_in and !$is_devel) {
 if ($logged_in) {
 
     include_once __DIR__.'/utils/new_fork.php';
-
-
-    new_housekeeping_fork(
-        'au_housekeeping', array(
-        'type'         => 'website_user_visit',
-        'server_data'  => $_SERVER,
-        'session_data' => $_SESSION,
-        'webpage_key'  => $webpage_key,
-        'device'       => $detected_device,
-        'datetime'     => gmdate('Y-m-d H:i:s')
-    ), DNS_ACCOUNT_CODE
-    );
-
-
-
+    try {
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'         => 'website_user_visit',
+            'server_data'  => $_SERVER,
+            'session_data' => $_SESSION,
+            'webpage_key'  => $webpage_key,
+            'device'       => $detected_device,
+            'datetime'     => gmdate('Y-m-d H:i:s')
+        ), DNS_ACCOUNT_CODE
+        );
+    } catch (Exception $e) {
+        Sentry\captureException($e);
+    }
 }
 
 
@@ -251,7 +248,6 @@ $smarty->assign('account_code', DNS_ACCOUNT_CODE);
 
 
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
-
 
 
     include_once __DIR__.'/utils/public_object_functions.php';
@@ -402,7 +398,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         $countries = get_countries($website->get('Website Locale'));
 
 
-
         $smarty->assign('address_labels', $address_labels);
         $smarty->assign('used_address_fields', $used_fields);
         $smarty->assign('required_fields', $required_fields);
@@ -444,7 +439,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', sanitize($webpage->get('Content Data')));
-
 
 
     $smarty->assign('settings', $website_settings);
