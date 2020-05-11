@@ -19,7 +19,7 @@ include_once 'utils/natural_language.php';
 include_once 'elastic.fork.php';
 include_once 'keyring/au_deploy_conf.php';
 
-$servers = explode(",", GEARMAN_SERVERS);
+$servers = explode(",", GEARMAN_SERVERS_FOR_WORKERS);
 shuffle($servers);
 $servers = implode(",", $servers);
 

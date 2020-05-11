@@ -31,7 +31,7 @@ include 'time_series.fork.php';
 include 'calculate_sales.fork.php';
 
 include_once 'keyring/au_deploy_conf.php';
-$servers = explode(",", GEARMAN_SERVERS);
+$servers = explode(",", GEARMAN_SERVERS_FOR_WORKERS);
 shuffle($servers);
 $servers = implode(",", $servers);
 
