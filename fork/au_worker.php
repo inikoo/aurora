@@ -22,6 +22,8 @@ include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';
 include 'utils/natural_language.php';
+include 'asset_sales.fork.php';
+
 
 include 'upload_edit.fork.php';
 include 'housekeeping.fork.php';
