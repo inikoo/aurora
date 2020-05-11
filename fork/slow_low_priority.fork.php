@@ -155,7 +155,7 @@ function fork_update_part_products_availability($job) {
 }
 
 
-function fork_long_operartions($job) {
+function fork_long_operations($job) {
 
     global $account, $db;// remove the global $db and $account is removed
 
