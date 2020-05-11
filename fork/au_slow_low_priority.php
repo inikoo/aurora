@@ -39,6 +39,8 @@ $worker->addFunction("au_take_webpage_screenshot", "fork_take_webpage_screenshot
 $worker->addFunction("au_redo_time_series", "fork_redo_time_series");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
 $worker->addFunction("au_update_part_products_availability", "fork_update_part_products_availability");
+$worker->addFunction("au_redo_day_ISF", "fork_redo_day_ISF");
+
 
 $db      = false;
 $account = false;

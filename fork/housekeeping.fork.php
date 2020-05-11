@@ -2197,37 +2197,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             break;
 
-        case 'redo_day_ISF':
 
-
-            $date = $data['date'];
-
-
-            $sql = sprintf(
-                'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc '
-            );
-
-            // print "$sql\n";
-
-            if ($result2 = $db->query($sql)) {
-                foreach ($result2 as $row2) {
-                    $part = get_object('Part', $row2['Part SKU']);
-                    $part->update_part_inventory_snapshot_fact($date, $date);
-
-                }
-            }
-
-
-            $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
-            if ($result2 = $db->query($sql)) {
-                foreach ($result2 as $row2) {
-                    $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
-                    $warehouse->update_inventory_snapshot($date);
-                }
-            }
-
-
-            break;
 
         case 'create_yesterday_timeseries':
 

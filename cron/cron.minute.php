@@ -27,8 +27,8 @@ switch ($time) {
 
 
         new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type' => 'redo_day_ISF',
+            'fork_redo_day_ISF', array(
+
             'date' => gmdate('Y-m-d')
 
         ), $account->get('Account Code')
@@ -364,8 +364,8 @@ switch ($time) {
         break;
     case '03:00':
         new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type' => 'redo_day_ISF',
+            'fork_redo_day_ISF', array(
+
             'date' => gmdate('Y-m-d', strtotime('Yesterday'))
 
         ), $account->get('Account Code')
