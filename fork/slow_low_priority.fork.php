@@ -111,3 +111,46 @@ function fork_redo_time_series($job) {
 
 }
 
+function fork_update_part_products_availability($job){
+
+    global $account, $db;// remove the global $db and $account is removed
+
+    if (!$_data = get_fork_metadata($job)) {
+        return true;
+    }
+
+    list($account, $db, $data, $editor, $ES_hosts) = $_data;
+
+    /**
+     * @var $part \Part
+     */
+
+    $part = get_object('Part', $data['part_sku']);
+
+    if (isset($data['editor'])) {
+        $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+        $part->editor           = $data['editor'];
+    } else {
+        $part->editor = $editor;
+    }
+
+
+    $part->update_available_forecast();
+    $part->update_stock_status();
+
+    foreach ($part->get_products('objects') as $product) {
+        if (isset($data['editor'])) {
+            $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+            $product->editor        = $data['editor'];
+        } else {
+            $product->editor = $editor;
+        }
+
+        $product->fork = true;
+
+        $product->update_availability(false);
+    }
+
+
+}
+

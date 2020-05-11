@@ -80,7 +80,7 @@ function send_mailshot($data, $account, $editor, $db) {
 
 
         new_housekeeping_fork(
-            'au_housekeeping', array(
+            'au_send_mailshots', array(
             'type'         => 'send_mailshot',
             'mailshot_key' => $mailshot->id,
             'editor'      => $editor
@@ -129,7 +129,7 @@ function resume_mailshot($data, $account, $editor, $db) {
 
 
         new_housekeeping_fork(
-            'au_housekeeping', array(
+            'au_send_mailshots', array(
             'type'         => 'resume_mailshot',
             'mailshot_key' => $mailshot->id,
 

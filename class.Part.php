@@ -3248,8 +3248,7 @@ class Part extends Asset {
 
 
             new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'     => 'update_part_products_availability',
+                'au_update_part_products_availability', array(
                 'part_sku' => $this->id
             ), $account->get('Account Code')
             );

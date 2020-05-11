@@ -546,7 +546,7 @@ function send_periodic_email_mailshots($time, $db, $account) {
                         if ($metadata['Schedule']['Days'][iso_860_to_day_name(date('N'))] == 'Yes') {
 
                             new_housekeeping_fork(
-                                'au_housekeeping', array(
+                                'au_send_mailshots', array(
                                 'type'                    => 'create_and_send_mailshot',
                                 'email_template_type_key' => $row['Email Campaign Type Key'],
 

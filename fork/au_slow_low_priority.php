@@ -24,6 +24,9 @@ include 'utils/system_functions.php';
 include 'utils/natural_language.php';
 include 'slow_low_priority.fork.php';
 
+include 'asset_sales.fork.php';
+
+
 include_once 'keyring/au_deploy_conf.php';
 $servers = explode(",", GEARMAN_SERVERS);
 shuffle($servers);
@@ -34,6 +37,8 @@ $worker->addServers($servers);
 
 $worker->addFunction("au_take_webpage_screenshot", "fork_take_webpage_screenshot");
 $worker->addFunction("au_redo_time_series", "fork_redo_time_series");
+$worker->addFunction("au_asset_sales", "fork_asset_sales");
+$worker->addFunction("au_update_part_products_availability", "fork_update_part_products_availability");
 
 $db      = false;
 $account = false;
