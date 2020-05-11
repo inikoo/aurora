@@ -1179,11 +1179,12 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
-            $customer->editor       = $data['editor'];
 
-            $customer->update_orders();
-            $customer->update_activity();
-
+            if($customer->id) {
+                $customer->editor = $data['editor'];
+                $customer->update_orders();
+                $customer->update_activity();
+            }
             if ($order->get('Order Customer Client Key') > 0) {
                 $customer_client = get_object('CustomerClient', $order->get('Order Customer Client Key'));
                 $customer_client->update_customer_client_orders();
@@ -1214,9 +1215,10 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 }
             }
 
-
-            $customer->update_orders();
-            $customer->update_activity();
+            if($customer->id) {
+                $customer->update_orders();
+                $customer->update_activity();
+            }
 
             $store->update_customers_data();
             $store->update_orders();
@@ -1970,6 +1972,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'delivery_note_cancelled':
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
+            print $delivery_note->get('Deliver Note ID')."\n";
+
             $store         = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
             $store->load_acc_data();
 

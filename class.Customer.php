@@ -2732,6 +2732,8 @@ class Customer extends Subject {
     public function update_activity() {
 
 
+
+
         if ($this->data['Customer Type by Activity'] == 'ToApprove' or $this->data['Customer Type by Activity'] == 'Rejected') {
             return;
         }

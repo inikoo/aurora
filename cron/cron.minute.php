@@ -379,8 +379,10 @@ switch ($time) {
         );
         while ($row = $stmt->fetch()) {
             $customer = get_object('Customer', $row['Customer Key']);
-            $customer->update_orders();
-            $customer->update_activity();
+            if($customer->id) {
+                $customer->update_orders();
+                $customer->update_activity();
+            }
 
         }
         $sql  = "select `Store Key` from `Store Dimension`   ";
