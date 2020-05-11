@@ -25,24 +25,23 @@ switch ($time) {
         $db->exec("update `Order Dimension`set  `Order Replacements Dispatched Today`=0 ");
 
 
-
         new_housekeeping_fork(
-            'fork_redo_day_ISF', array(
-
+            'au_long_operations', array(
+            'type' => 'redo_day_ISF',
             'date' => gmdate('Y-m-d')
 
         ), $account->get('Account Code')
         );
 
         new_housekeeping_fork(
-            'au_housekeeping', array(
+            'au_long_operations', array(
             'type' => 'update_deals_status_from_dates',
 
         ), $account->get('Account Code')
         );
 
         new_housekeeping_fork(
-            'au_housekeeping', array(
+            'au_long_operations', array(
             'type' => 'create_yesterday_timeseries',
 
         ), $account->get('Account Code')
@@ -364,8 +363,8 @@ switch ($time) {
         break;
     case '03:00':
         new_housekeeping_fork(
-            'fork_redo_day_ISF', array(
-
+            'au_long_operations', array(
+            'type' => 'redo_day_ISF',
             'date' => gmdate('Y-m-d', strtotime('Yesterday'))
 
         ), $account->get('Account Code')
@@ -379,7 +378,7 @@ switch ($time) {
         );
         while ($row = $stmt->fetch()) {
             $customer = get_object('Customer', $row['Customer Key']);
-            if($customer->id) {
+            if ($customer->id) {
                 $customer->update_orders();
                 $customer->update_activity();
             }
@@ -507,16 +506,18 @@ function real_time_users_operations($db, $redis, $account) {
     }
 
     include_once 'utils/send_zqm_message.class.php';
-    send_zqm_message(json_encode(
-                         array(
-                             'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+    send_zqm_message(
+        json_encode(
+            array(
+                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-                             'iu'      => $real_time_users,
-                             'd3'      => $real_time_website_users,
-                             'objects' => $objects_data
+                'iu'      => $real_time_users,
+                'd3'      => $real_time_website_users,
+                'objects' => $objects_data
 
-                         )
-                     ));
+            )
+        )
+    );
 
 
 }

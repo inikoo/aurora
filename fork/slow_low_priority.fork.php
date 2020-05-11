@@ -17,7 +17,7 @@ function fork_take_webpage_screenshot($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
 
     $webpage       = get_object('Webpage', $data['webpage_key']);
@@ -45,7 +45,7 @@ function fork_redo_time_series($job) {
         return true;
     }
 
-    list($account, $db, $data, $editor,$ES_hosts) = $_data;
+    list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
     require_once 'conf/timeseries.php';
     $timeseries = get_time_series_config();
@@ -111,7 +111,7 @@ function fork_redo_time_series($job) {
 
 }
 
-function fork_update_part_products_availability($job){
+function fork_update_part_products_availability($job) {
 
     global $account, $db;// remove the global $db and $account is removed
 
@@ -155,8 +155,7 @@ function fork_update_part_products_availability($job){
 }
 
 
-
-function fork_redo_day_ISF($job){
+function fork_long_operartions($job) {
 
     global $account, $db;// remove the global $db and $account is removed
 
@@ -166,33 +165,155 @@ function fork_redo_day_ISF($job){
 
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
-    $date = $data['date'];
+
+    print $data['type']."\n";
+
+    switch ($data['type']) {
+
+        case 'redo_day_ISF':
+            $date = $data['date'];
 
 
-    $sql = sprintf(
-        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc '
-    );
+            $sql = sprintf(
+                'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc '
+            );
 
-    // print "$sql\n";
+            // print "$sql\n";
 
-    if ($result2 = $db->query($sql)) {
-        foreach ($result2 as $row2) {
-            $part = get_object('Part', $row2['Part SKU']);
-            $part->update_part_inventory_snapshot_fact($date, $date);
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $part = get_object('Part', $row2['Part SKU']);
+                    $part->update_part_inventory_snapshot_fact($date, $date);
 
-        }
+                }
+            }
+
+
+            $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
+                    $warehouse->update_inventory_snapshot($date);
+                }
+            }
+            bresk;
+
+        case 'update_parts_cost':
+
+
+            $sql  = "SELECT `Part SKU` FROM `Part Dimension`  where `Part Status`!=?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(['Not In Use']);
+            while ($row = $stmt->fetch()) {
+                $part = get_object('Part', $row['Part SKU']);
+                $part->update_cost();
+            }
+
+
+            break;
+        case 'update_deals_status_from_dates':
+
+            $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished')");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $deal = get_object('Deal', $row['Deal Key']);
+
+
+                    $deal->update_status_from_dates(false);
+                    foreach ($deal->get_deal_components('objects', 'all') as $component) {
+                        $component->update_status_from_dates();
+                    }
+
+
+                }
+
+            }
+
+
+            break;
+
+
+        case 'create_yesterday_timeseries':
+
+            require_once 'class.Timeserie.php';
+
+
+            require_once 'conf/timeseries.php';
+
+            $timeseries = get_time_series_config();
+
+
+            $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = get_object('Category', $row['Category Key']);
+                    if ($category->get('Part Category Status') != 'NotInUse' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Part Category Valid To').' +0:00'))) {
+                        if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
+                            continue;
+                        }
+
+                        $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
+                        //print_r($timeseries_data);
+                        foreach ($timeseries_data as $timeserie_data) {
+
+                            $editor['Date']                          = gmdate('Y-m-d H:i:s');
+                            $timeserie_data['editor']                = $editor;
+                            $timeserie_data['Timeseries Parent']     = 'Category';
+                            $timeserie_data['Timeseries Parent Key'] = $category->id;
+                            $timeseries                              = new Timeseries(
+                                'find', $timeserie_data, 'create'
+                            );
+                            $category->update_part_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));
+                        }
+                    }
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
+
+
+            $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" ORDER BY  `Category Key` DESC');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = get_object('Category', $row['Category Key']);
+                    $category->update_product_category_new_products();
+                    if ($category->get('Product Category Status') != 'Discontinued' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Product Category Valid To').' +0:00'))) {
+                        if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
+                            continue;
+                        }
+
+                        $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
+                        //print_r($timeseries_data);
+                        foreach ($timeseries_data as $timeserie_data) {
+
+                            $editor['Date']                          = gmdate('Y-m-d H:i:s');
+                            $timeserie_data['editor']                = $editor;
+                            $timeserie_data['Timeseries Parent']     = 'Category';
+                            $timeserie_data['Timeseries Parent Key'] = $category->id;
+                            $timeseries                              = new Timeseries('find', $timeserie_data, 'create');
+                            $category->update_product_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));
+                        }
+                    }
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
+
+
+            break;
+
+
     }
-
-
-    $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
-    if ($result2 = $db->query($sql)) {
-        foreach ($result2 as $row2) {
-            $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
-            $warehouse->update_inventory_snapshot($date);
-        }
-    }
-
 
 
 }
-

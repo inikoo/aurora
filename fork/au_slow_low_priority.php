@@ -40,6 +40,9 @@ $worker->addFunction("au_redo_time_series", "fork_redo_time_series");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
 $worker->addFunction("au_update_part_products_availability", "fork_update_part_products_availability");
 $worker->addFunction("au_redo_day_ISF", "fork_redo_day_ISF");
+$worker->addFunction("au_long_operations", "fork_long_operations");
+
+
 
 
 $db      = false;
