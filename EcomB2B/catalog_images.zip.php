@@ -115,7 +115,7 @@ if ($_REQUEST['scope'] == 'category' and $object->get('Category Subject') == 'Pr
 
 $zip = new ZipArchive();
 
-$tmp_file = tempnam('server_files/tmp/', 'webpage_images_zip_');
+$tmp_file = tempnam('server_files/tmp/', 'webpage_images_zip_').'.zip';
 
 $zip->open($tmp_file, ZipArchive::CREATE);
 

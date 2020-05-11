@@ -29,6 +29,7 @@
     "ext-gearman": "*",
     "ext-intl": "*",
     "ext-soap": "*",
-    "ext-imagick": "*"
+    "ext-imagick": "*",
+    "cloudflare/sdk": "^1.1"
   }
 }
