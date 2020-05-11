@@ -1407,33 +1407,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
 
         case 'update_part_products_availability':
-            /**
-             * @var $part \Part
-             */ $part = get_object('Part', $data['part_sku']);
-
-            if (isset($data['editor'])) {
-                $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
-                $part->editor           = $data['editor'];
-            } else {
-                $part->editor = $editor;
-            }
-
-
-            $part->update_available_forecast();
-            $part->update_stock_status();
-
-            foreach ($part->get_products('objects') as $product) {
-                if (isset($data['editor'])) {
-                    $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
-                    $product->editor        = $data['editor'];
-                } else {
-                    $product->editor = $editor;
-                }
-
-                $product->fork = true;
-
-                $product->update_availability(false);
-            }
+            return true;
 
             break;
 
