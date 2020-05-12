@@ -3694,7 +3694,7 @@ function purged_orders($_data, $db, $user) {
                 'public_id'    => sprintf('<span class="link" onClick="change_view(\'orders/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
                 'purge_status' => sprintf('<span class="purged_status_%d">%s</span>', $data['Order Key'], $purge_status),
 
-                'last_updated_date' => strftime("%a %e %b %Y", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'last_updated_date' => strftime("%a %e %b %Y", strtotime($data['Order Last Updated by Customer'].' +0:00')),
                 'purged_date'       => sprintf(
                     '<span class="purged_date_%d">%s</span>', $data['Order Key'],
                     (($data['Order Basket Purge Purged Date'] == '' or ($data['Order Basket Purge Order Status'] == 'Exculpated')) ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Basket Purge Purged Date'].' +0:00')))
