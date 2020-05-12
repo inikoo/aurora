@@ -73,7 +73,7 @@ function login($db, $data, $website) {
         $authenticator = random_bytes(33);
 
         setcookie(
-            'rmb',
+            'rmb2',
             $selector.':'.base64_encode($authenticator),
             time() + 864000,
             '/'

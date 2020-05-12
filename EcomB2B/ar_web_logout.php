@@ -69,7 +69,7 @@ function logout($db) {
     );
 
 
-    setcookie('rmb', 'x:x', time() - 864000, '/'
+    setcookie('rmb2', 'x:x', time() - 864000, '/'
     //,'',
     //true, // TLS-only
     //true  // http-only

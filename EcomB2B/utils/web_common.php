@@ -36,13 +36,13 @@ function get_logged_in() {
 
     $logged_in = !empty($_SESSION['logged_in']);
 
-    if (!$logged_in and !empty($_COOKIE['rmb'])) {
+    if (!$logged_in and !empty($_COOKIE['rmb2'])) {
 
 
         include_once('class.WebAuth.php');
 
         $auth = new WebAuth();
-        list($selector, $authenticator) = explode(':', $_COOKIE['rmb']);
+        list($selector, $authenticator) = explode(':', $_COOKIE['rmb2']);
 
 
         list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_remember($selector, $authenticator, $_SESSION['website_key']);
@@ -64,13 +64,13 @@ function get_logged_in() {
         session_destroy();
         unset($_SESSION);
         setcookie(
-            'rmb', 'x:x', time() - 864000, '/'
+            'rmb2', 'x:x', time() - 864000, '/'
         );
         header('Location: /index.php');
         exit;
     }
 
-    if ($logged_in and empty($_COOKIE['rmb'])) {
+    if ($logged_in and empty($_COOKIE['rmb2'])) {
 
 
         require_once "external_libs/random/lib/random.php";
@@ -78,7 +78,7 @@ function get_logged_in() {
         $authenticator = random_bytes(33);
 
         setcookie(
-            'rmb', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
+            'rmb2', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
 
         );
 

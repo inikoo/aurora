@@ -216,7 +216,7 @@ function register($db, $website, $data, $editor) {
                     $authenticator = random_bytes(33);
 
                     setcookie(
-                        'rmb', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
+                        'rmb2', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
                     //,'',
                     //true, // TLS-only
                     //true  // http-only

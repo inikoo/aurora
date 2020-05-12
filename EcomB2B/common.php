@@ -259,7 +259,7 @@ if (!$is_cached) {
             session_destroy();
             unset($_SESSION);
             setcookie(
-                'rmb', 'x:x', time() - 864000, '/'
+                'rmb2', 'x:x', time() - 864000, '/'
             //,'',
             //true, // TLS-only
             //true  // http-only
@@ -283,7 +283,7 @@ if (!$is_cached) {
                 session_destroy();
                 unset($_SESSION);
                 setcookie(
-                    'rmb', 'x:x', time() - 864000, '/'
+                    'rmb2', 'x:x', time() - 864000, '/'
                 //,'',
                 //true, // TLS-only
                 //true  // http-only
@@ -293,14 +293,14 @@ if (!$is_cached) {
             }
 
 
-            if (empty($_COOKIE['rmb'])) {
+            if (empty($_COOKIE['rmb2'])) {
 
                 require_once "external_libs/random/lib/random.php";
                 $selector      = base64_encode(random_bytes(9));
                 $authenticator = random_bytes(33);
 
                 setcookie(
-                    'rmb', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
+                    'rmb2', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
                 //,'',
                 //true, // TLS-only
                 //true  // http-only
@@ -326,7 +326,7 @@ if (!$is_cached) {
             session_destroy();
             unset($_SESSION);
             setcookie(
-                'rmb', 'x:x', time() - 864000, '/'
+                'rmb2', 'x:x', time() - 864000, '/'
             //,'',
             //true, // TLS-only
             //true  // http-only
@@ -336,13 +336,13 @@ if (!$is_cached) {
         }
 
     }
-    elseif (!empty($_COOKIE['rmb'])) {
+    elseif (!empty($_COOKIE['rmb2'])) {
 
 
         include_once('class.WebAuth.php');
 
         $auth = new WebAuth();
-        list($selector, $authenticator) = explode(':', $_COOKIE['rmb']);
+        list($selector, $authenticator) = explode(':', $_COOKIE['rmb2']);
 
 
         list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_remember($selector, $authenticator, $website->id);

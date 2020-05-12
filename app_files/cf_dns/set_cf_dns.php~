@@ -1,0 +1,60 @@
+<?php
+/*
+
+ About:
+ Author: Raul Perusquia <rulovico@gmail.com>
+ Created:  10 May 2020  12:16::56  +0800, Kuala Lumpur, Malaysia
+
+ Copyright (c) 2020, Inikoo
+
+ Version 2.0
+*/
+
+use Cloudflare\API\Endpoints\DNS;
+use Cloudflare\API\Endpoints\Zones;
+
+require_once __DIR__.'/vendor/autoload.php';
+
+include_once __DIR__.'/keyring/cf_key.php';
+
+$key     = new Cloudflare\API\Auth\APIKey(CF_HANDLE, CF_KEY);
+$adapter = new Cloudflare\API\Adapter\Guzzle($key);
+$zones   = new Zones($adapter);
+$dns     = new DNS($adapter);
+
+/*
+foreach (CF_DOMAINS as $domain) {
+    $zoneID = $zones->getZoneID($domain);
+    foreach ($dns->listRecords($zoneID)->result as $record) {
+        if ($record->type == 'A' and ($record->name == $domain or $record->name == 'www.'.$domain)) {
+            $details  = array(
+                'type'    => $record->type,
+                'name'    => $record->name,
+                'content' => TARGET_IP,
+                'ttl'     => $record->ttl,
+                'proxied' => $record->proxied,
+            );
+            $response = $dns->updateRecordDetails($zoneID, $record->id, $details);
+            echo $record->name.PHP_EOL;
+        }
+    }
+}
+*/
+$zoneID = $zones->getZoneID('aurora.systems');
+foreach ($dns->listRecords($zoneID)->result as $record) {
+ // print_r($record);
+    if ($record->type == 'A' and in_array( preg_replace('/.aurora.systems$/','',$record->name), CF_AU_SUB_DOMAINS)) {
+        $details  = array(
+            'type'    => $record->type,
+            'name'    => $record->name,
+            'content' => TARGET_IP,
+            'ttl'     => $record->ttl,
+            'proxied' => $record->proxied,
+        );
+        $response = $dns->updateRecordDetails($zoneID, $record->id, $details);
+        echo $record->name.PHP_EOL;
+    }
+}
+
+
+
