@@ -22,6 +22,8 @@ $redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
 session_start();
 
+
+
 if (empty($_SESSION['website_key'])) {
     include_once('utils/find_website_key.include.php');
     $_SESSION['website_key']=get_website_key_from_domain($redis);
@@ -130,6 +132,8 @@ if ($redis->exists($url_cache_key)) {
 if (is_numeric($webpage_id)) {
     $website_key = $_SESSION['website_key'];
     $webpage_key = $webpage_id;
+
+
     include 'display_webpage.php';
 } else {
     header("Location: https://".$_SERVER['SERVER_NAME']."$webpage_id");

@@ -39,6 +39,8 @@ function get_logged_in() {
     if (!$logged_in and !empty($_COOKIE['rmb2'])) {
 
 
+
+
         include_once('class.WebAuth.php');
 
         $auth = new WebAuth();

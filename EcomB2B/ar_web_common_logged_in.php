@@ -14,12 +14,26 @@ require_once '../vendor/autoload.php';
 require 'keyring/dns.php';
 require_once 'utils/sentry.php';
 require 'keyring/key.php';
+include_once __DIR__.'/utils/general_functions.php';
+
 include_once __DIR__.'/utils/web_locale_functions.php';
+include_once __DIR__.'/utils/web_common.php';
 
 session_start();
 
 
-$logged_in = !empty($_SESSION['logged_in']);
+if (!isset($db)) {
+
+    $db = new PDO(
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+    );
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+}
+
+
+$logged_in = get_logged_in();
+
+
 
 
 if (!$logged_in) {
@@ -54,14 +68,6 @@ include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';
 include_once 'utils/public_object_functions.php';
 
-
-if (!isset($db)) {
-
-    $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-    );
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
 
 
 $customer = get_object('Customer', $_SESSION['customer_key']);
