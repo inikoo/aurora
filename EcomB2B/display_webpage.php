@@ -228,11 +228,9 @@ $smarty->assign('cache_id', $cache_id);
 
 if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
-
-    $smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-    $smarty->setCacheLifetime(-1);
+    $smarty->setCaching(Smarty::CACHING_LIFETIME_SAVED);
+    $smarty->setCacheLifetime(86400);
     $smarty->setCompileCheck(true);
-
 
 }
 
