@@ -27,6 +27,8 @@ function fork_housekeeping($job) {
 
         case 'website_user_visit':
 
+            return true;
+
             include_once 'utils/network_functions.php';
             include_once 'utils/parse_user_agent.php';
             require_once 'utils/real_time_functions.php';
