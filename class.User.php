@@ -982,7 +982,7 @@ class User extends DB_Table {
                     );
                     $history_key  = $this->add_history($history_data);
                     $sql          = sprintf(
-                        "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
+                        "INSERT INTO `User History Bridge` (`User Key`,`History Key`,`Deletable`,`Strikethrough`,`Type`) VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
                     );
                     $this->db->exec($sql);
 
