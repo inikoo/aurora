@@ -45,4 +45,4 @@ $smarty->assign('state', $state);
 
 include('utils/get_table_html.php');
 
-?>
+

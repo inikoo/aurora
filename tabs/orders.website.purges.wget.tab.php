@@ -60,4 +60,4 @@ $smarty->assign('table_top_template', 'orders_website_tabs.tpl');
 include('utils/get_table_html.php');
 
 
-?>
+
