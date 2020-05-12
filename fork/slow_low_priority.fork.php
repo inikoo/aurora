@@ -115,6 +115,7 @@ function fork_update_part_products_availability($job) {
 
     global $account, $db;// remove the global $db and $account is removed
 
+
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
@@ -126,6 +127,7 @@ function fork_update_part_products_availability($job) {
      */
 
     $part = get_object('Part', $data['part_sku']);
+    print $part->get('Reference')."\n";
 
     if (isset($data['editor'])) {
         $data['editor']['Date'] = gmdate('Y-m-d H:i:s');

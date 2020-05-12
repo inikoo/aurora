@@ -136,4 +136,3 @@ function fork_calculate_sales($job) {
 }
 
 
-?>

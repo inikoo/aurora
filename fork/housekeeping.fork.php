@@ -24,10 +24,7 @@ function fork_housekeeping($job) {
     //return true;
     switch ($data['type']) {
 
-
         case 'website_user_visit':
-
-            return true;
 
             include_once 'utils/network_functions.php';
             include_once 'utils/parse_user_agent.php';
