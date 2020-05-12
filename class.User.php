@@ -829,6 +829,9 @@ class User extends DB_Table {
         $to_add    = array_diff($groups, $old_groups);
 
 
+
+
+
         $changed = 0;
         if (count($to_delete) > 0) {
             $changed += $this->delete_group($to_delete);
@@ -960,8 +963,10 @@ class User extends DB_Table {
 
 
                 $sql      = sprintf(
-                    "INSERT INTO `User Group User Bridge`VALUES (%d,%d) ", $this->id, $group_key
+                    "INSERT INTO `User Group User Bridge`   (`User Key`,`User Group Key`)  VALUES (%d,%d) ", $this->id, $group_key
                 );
+
+
                 $_changed = $this->db->exec($sql);
                 if ($_changed > 0) {
                     $changed++;
