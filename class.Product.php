@@ -940,7 +940,6 @@ class Product extends Asset {
             require_once 'utils/new_fork.php';
 
 
-
             $store = get_object('Store', $this->get('Product Store Key'));
             if ($store->get('Store Type') != 'External') {
                 new_housekeeping_fork(
@@ -1176,7 +1175,7 @@ class Product extends Asset {
         );
         while ($row = $stmt->fetch()) {
             if ($scope == 'objects') {
-                $parts[$row['Part SKU']] = get_object('Part',$row['Part SKU']);
+                $parts[$row['Part SKU']] = get_object('Part', $row['Part SKU']);
             } else {
                 $parts[$row['Part SKU']] = $row['Part SKU'];
             }
@@ -1593,7 +1592,18 @@ class Product extends Asset {
         }
 
         if ($web_availability_updated) {
-            $this->update_webpages('web_state');
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'       => 'update_product_webpages',
+                'product_id' => $this->id,
+                'type'       => 'web_state',
+                'editor'     => $this->editor
+            ), DNS_ACCOUNT_CODE
+            );
+
+
         }
 
     }
@@ -2232,8 +2242,16 @@ class Product extends Asset {
                     )
                 );
 
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'       => 'update_product_webpages',
+                    'product_id' => $this->id,
+                    'type'       => 'next_shipment',
+                    'editor'     => $this->editor
+                ), DNS_ACCOUNT_CODE
+                );
 
-                $this->update_webpages('next_shipment');
 
             }
 
@@ -2485,7 +2503,17 @@ class Product extends Asset {
 
                 if ($old_value != $this->get($field)) {
                     $this->update_updated_markers('Data');
-                    $this->update_webpages('weight');
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'weight',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
+
+
                 }
                 break;
 
@@ -2538,7 +2566,16 @@ class Product extends Asset {
 
                 if ($old_value != $this->get($field)) {
                     $this->update_updated_markers('Data');
-                    $this->update_webpages('dimensions');
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'dimensions',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
                 }
 
                 break;
@@ -2646,7 +2683,16 @@ class Product extends Asset {
 
                 if ($updated) {
                     $this->update_updated_markers('Data');
-                    $this->update_webpages('materials');
+                    
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'materials',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
                 }
 
                 break;
@@ -2703,7 +2749,15 @@ class Product extends Asset {
                 if ($updated) {
                     $this->update_updated_markers('Data');
 
-                    $this->update_webpages('code');
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'code',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
 
                     $this->fork_index_elastic_search();
                 }
@@ -2726,7 +2780,18 @@ class Product extends Asset {
 
 
                 if ($updated) {
-                    $this->update_webpages('name');
+
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'name',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
+
                     $this->update_updated_markers('Data');
                     $this->fork_index_elastic_search();
                 }
@@ -2761,7 +2826,18 @@ class Product extends Asset {
 
 
                 if ($this->updated) {
-                    $this->update_webpages('label');
+
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'label',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
+
                     $this->update_updated_markers('Data');
                     $this->fork_index_elastic_search();
                 }
@@ -2777,7 +2853,18 @@ class Product extends Asset {
 
 
                 if ($this->updated) {
-                    $this->update_webpages('label_in_family');
+
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'label_in_family',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
+
                     $this->update_updated_markers('Data');
                     $this->fork_index_elastic_search();
                 }
@@ -2827,7 +2914,18 @@ class Product extends Asset {
                     }
 
                     $this->update_updated_markers('Price');
-                    $this->update_webpages('price');
+
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'price',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
+
                     $this->fork_index_elastic_search();
                 }
                 break;
@@ -2855,7 +2953,17 @@ class Product extends Asset {
                 if ($this->updated) {
                     $this->update_updated_markers('Data');
 
-                    $this->update_webpages('rrp');
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'rrp',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
+
                 }
 
                 break;
@@ -2910,7 +3018,18 @@ class Product extends Asset {
                 $this->updated = $updated;
 
                 if ($updated) {
-                    $this->update_webpages('units_per_case');
+
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'units_per_case',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
+
                     $this->fork_index_elastic_search();
                     $this->update_updated_markers('Data');
                     $this->update_updated_markers('Price');
@@ -3281,7 +3400,17 @@ class Product extends Asset {
 
                 if ($old_value != $this->get($field)) {
                     $this->update_updated_markers('Data');
-                    $this->update_webpages('mix_properties');
+
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'mix_properties',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
 
                 }
 
@@ -3330,7 +3459,17 @@ class Product extends Asset {
 
                 if ($old_value != $this->get($field)) {
                     $this->update_updated_markers('Data');
-                    $this->update_webpages('country_origin');
+
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $this->id,
+                        'type'       => 'country_origin',
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE
+                    );
 
                 }
 
@@ -3514,7 +3653,17 @@ class Product extends Asset {
             while ($row = $stmt->fetch()) {
                 $this->link_image($row['Image Subject Image Key'], 'Marketing');
             }
-            $this->update_webpages('weight');
+
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'       => 'update_product_webpages',
+                'product_id' => $this->id,
+                'type'       => 'weight',
+                'editor'     => $this->editor
+            ), DNS_ACCOUNT_CODE
+            );
 
         }
 
@@ -3581,12 +3730,14 @@ class Product extends Asset {
         );
 
         if ($old_weight != $weight) {
+            $this->update_updated_markers('Data');
 
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_housekeeping', array(
-                'type'       => 'product_weight_updated',
+                'type'       => 'update_product_webpages',
                 'product_id' => $this->id,
+                'type'       => 'weight',
                 'editor'     => $this->editor
             ), DNS_ACCOUNT_CODE
             );

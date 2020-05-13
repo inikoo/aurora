@@ -2340,13 +2340,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
             break;
-        case 'product_weight_updated':
+        case 'update_product_webpages':
 
             $product = get_object('product', $data['product_id']);
-
             $product->editor= $data['editor'];
-            $product->update_updated_markers('Data');
-            $product->update_webpages('weight');
+            $product->update_webpages($data['type']);
 
 
             break;
