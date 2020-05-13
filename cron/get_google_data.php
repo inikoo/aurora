@@ -163,12 +163,12 @@ function dbReportInsert($rows, $range, $dev, $apiCallId){
 
         if ($dev != "all") {
             $sql .= "INSERT IGNORE INTO kbase.`Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('https://" . $hostname . $pagePath . "' ,'$hostname' ,'$pagePath' ,'$path');
-            INSERT INTO kbase.`Google Webpage Data`(`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range$device Page Value`, `Google Webpage $range$device Pageviews`, `Google Webpage $range$device Sessions`, `Google Webpage $range$device Users`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM kbase.`Google Webpage` WHERE `Google Webpage URL` = 'https://"
+            INSERT INTO kbase.`Google Webpage Data` (`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range$device Page Value`, `Google Webpage $range$device Pageviews`, `Google Webpage $range$device Sessions`, `Google Webpage $range$device Users`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM kbase.`Google Webpage` WHERE `Google Webpage URL` = 'https://"
                 . $hostname . $pagePath
                 . "') ,'$pageValue' ,'$pageviews' ,'$sessions' ,'$users') ON DUPLICATE KEY UPDATE `Google Webpage $range$device Page Value` = '$pageValue', `Google Webpage $range$device Pageviews` = '$pageviews', `Google Webpage $range$device Sessions` = '$sessions', `Google Webpage $range$device Users` = '$users' ;";
         } else {
             $sql .= "INSERT IGNORE INTO kbase.`Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('https://" . $hostname . $pagePath . "' ,'$hostname' ,'$pagePath' ,'$path');
-            INSERT INTO kbase.`Google Webpage Data`(`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range Page Value`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM kbase.`Google Webpage` WHERE `Google Webpage URL` = 'https://"
+            INSERT INTO kbase.`Google Webpage Data` (`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range Page Value`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM kbase.`Google Webpage` WHERE `Google Webpage URL` = 'https://"
                 . $hostname . $pagePath
                 . "') ,'$pageValue') ON DUPLICATE KEY UPDATE `Google Webpage $range Page Value` = '$pageValue' ;";
         }
@@ -186,8 +186,8 @@ function dbSearchInsert($responseSearch, $responseQuery, $range, $apiCallId) {
         $query    = parse_url($r->keys[0], PHP_URL_QUERY) !== null ? '?'.parse_url($r->keys[0], PHP_URL_QUERY) : '';
         $fragment = parse_url($r->keys[0], PHP_URL_FRAGMENT) !== null ? '#'.parse_url($r->keys[0], PHP_URL_FRAGMENT) : '';
 
-        $sql .= "INSERT IGNORE INTO kbase.`Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('".$r->keys[0]."' ,'$hostname' ,'".$path.$query.$fragment."' ,'$path');
-            INSERT INTO kbase.`Google Webpage Data`(`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range Clicks`, `Google Webpage $range CTR`, `Google Webpage $range Impressions`, `Google Webpage $range Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM kbase.`Google Webpage` WHERE `Google Webpage URL` = '"
+        $sql .= "INSERT IGNORE INTO kbase.`Google Webpage` (`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('".$r->keys[0]."' ,'$hostname' ,'".$path.$query.$fragment."' ,'$path');
+            INSERT INTO kbase.`Google Webpage Data` (`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range Clicks`, `Google Webpage $range CTR`, `Google Webpage $range Impressions`, `Google Webpage $range Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM kbase.`Google Webpage` WHERE `Google Webpage URL` = '"
             .$r->keys[0]
             ."'),'$r->clicks' ,'$r->ctr' ,'$r->impressions' , '$r->position') ON DUPLICATE KEY UPDATE `Google Webpage $range Clicks` = '$r->clicks', `Google Webpage $range CTR` = '$r->ctr', `Google Webpage $range Impressions` = '$r->impressions', `Google Webpage $range Position` = '$r->position' ;";
     }

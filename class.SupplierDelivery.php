@@ -1105,8 +1105,14 @@ class SupplierDelivery extends DB_Table {
 
                                     if (isset($metadata['placement_data'])) {
                                         foreach ($metadata['placement_data'] as $placement_data) {
-                                            $sql = sprintf('insert into `ITF POTF Costing Done Bridge`  values (%d,%d)  ', $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']);
-                                            $this->db->exec($sql);
+                                            $sql = "insert into `ITF POTF Costing Done Bridge` (`ITF POTF Costing Done ITF Key`,`ITF POTF Costing Done POTF Key`)  values (?,?) ";
+                                            $this->db->prepare($sql)->execute(
+                                                array(
+                                                    $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']
+                                                )
+                                            );
+
+
                                         }
 
 
