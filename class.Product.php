@@ -939,7 +939,7 @@ class Product extends Asset {
         if ($changed and $old_value > 0) {
             require_once 'utils/new_fork.php';
 
-            $account = get_object('Account', 1);
+
 
             $store = get_object('Store', $this->get('Product Store Key'));
             if ($store->get('Store Type') != 'External') {
@@ -948,7 +948,7 @@ class Product extends Asset {
                     'type'       => 'product_price_updated',
                     'product_id' => $this->id,
                     'editor'     => $this->editor
-                ), $account->get('Account Code')
+                ), DNS_ACCOUNT_CODE
                 );
             }
         }
@@ -1737,13 +1737,13 @@ class Product extends Asset {
         switch ($change_type) {
             case 'main_image':
 
-                $account = get_object('Account', 1);
+
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'          => 'reindex_webpages_items',
                     'webpages_keys' => $webpage->get_upstream_webpage_keys(),
-                ), $account->get('Account Code'), $this->db
+                ), DNS_ACCOUNT_CODE
                 );
                 break;
 
@@ -3544,7 +3544,7 @@ class Product extends Asset {
             'type'       => 'product_part_list_updated',
             'product_id' => $this->id,
             'editor'     => $this->editor
-        ), DNS_ACCOUNT_CODE, $this->db
+        ), DNS_ACCOUNT_CODE
         );
 
 
@@ -3581,8 +3581,17 @@ class Product extends Asset {
         );
 
         if ($old_weight != $weight) {
-            $this->update_updated_markers('Data');
-            $this->update_webpages('weight');
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'       => 'product_weight_updated',
+                'product_id' => $this->id,
+                'editor'     => $this->editor
+            ), DNS_ACCOUNT_CODE
+            );
+
+
         }
 
     }
