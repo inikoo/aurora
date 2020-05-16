@@ -56,3 +56,4 @@ app_files/cf_dns/vendor
 app_files/cf_dns/set_cf_dns.php
 app_files/cf_dns/keyring/cf_key.php~
 app_files/cf_dns/keyring/cf_key.php
+app_files/cf_dns/keyring/.cf_key.php.swp
