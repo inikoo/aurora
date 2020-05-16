@@ -238,9 +238,25 @@ trait OrderOperations {
 
     function add_basket_history($data) {
 
-        $sql = "INSERT INTO `Order Basket History Dimension`  (
-		`Order Basket History Date`,`Order Basket History Order Transaction Key`,`Order Basket History Website Key`,`Order Basket History Store Key`,`Order Basket History Customer Key`,`Order Basket History Order Key`,`Order Basket History Webpage Key`,`Order Basket History Product ID`,`Order Basket History Quantity Delta`,`Order Basket History Quantity`,`Order Basket History Net Amount Delta`,`Order Basket History Net Amount`,`Order Basket History Source`)
-	VALUE (?,?,?, ?,?,?, ?,?,?, ?,?,?, ?) ";
+        $sql = 'INSERT INTO `Order Basket History Dimension`  (
+		                `Order Basket History Date`,
+                                               `Order Basket History Order Transaction Key`,
+                                               `Order Basket History Website Key`,
+                                            
+                                               `Order Basket History Store Key`,
+                                               `Order Basket History Customer Key`,
+                                               `Order Basket History Order Key`,
+                                               
+                                               `Order Basket History Webpage Key`,
+                                               `Order Basket History Product ID`,
+                                               `Order Basket History Quantity Delta`,
+                                               
+                                               `Order Basket History Quantity`,
+                                               `Order Basket History Net Amount Delta`,
+                                               `Order Basket History Net Amount`,
+                                               
+                                               `Order Basket History Source`)
+	VALUES (?,?,?, ?,?,?, ?,?,?, ?,?,?, ?) ';
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -248,15 +264,19 @@ trait OrderOperations {
                 gmdate('Y-m-d H:i:s'),
                 $data['otf_key'],
                 $this->data['Order Website Key'],
+
                 $this->data['Order Store Key'],
                 $this->data['Order Customer Key'],
                 $this->id,
+
                 $data['webpage_key'],
                 $data['product_id'],
                 $data['quantity_delta'],
+
                 $data['quantity'],
                 $data['net_amount_delta'],
                 $data['net_amount'],
+
                 $data['page_section_type']
             )
         );
@@ -576,7 +596,6 @@ trait OrderOperations {
 				WHERE `Order Key`=?";
 
 
-
         $this->db->prepare($sql)->execute(
             array(
                 $this->data['Order Cancelled Date'],
@@ -634,6 +653,7 @@ trait OrderOperations {
 
             //tmp
             $this->fork_index_elastic_search();
+
             return true;
             //
 
@@ -690,7 +710,6 @@ trait OrderOperations {
                 $campaign = get_object('DealCampaign', $campaign_key);
                 $campaign->update_usage();
             }
-
 
 
         }
