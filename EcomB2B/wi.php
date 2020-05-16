@@ -70,7 +70,7 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 
 $db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -92,7 +92,8 @@ if ($row = $stmt->fetch()) {
 
     if (!file_exists($image_path)) {
         header('HTTP/1.0 403 Forbidden');
-        echo _('Forbidden');
+
+        echo _('Forbidden '.$image_path);
         exit;
     }
 

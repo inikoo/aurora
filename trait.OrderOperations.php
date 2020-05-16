@@ -632,6 +632,10 @@ trait OrderOperations {
             );
         } else {
 
+            //tmp
+            $this->fork_index_elastic_search();
+            return true;
+            //
 
             $customer = get_object('Customer', $this->get('Order Customer Key'));
             $store    = get_object('Store', $this->get('Order Store Key'));
@@ -686,6 +690,7 @@ trait OrderOperations {
                 $campaign = get_object('DealCampaign', $campaign_key);
                 $campaign->update_usage();
             }
+
 
 
         }

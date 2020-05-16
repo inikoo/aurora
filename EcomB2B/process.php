@@ -45,7 +45,7 @@ if ($url == 'sitemap.xml') {
     date_default_timezone_set('UTC');
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -81,7 +81,7 @@ elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
 
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -122,7 +122,7 @@ $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$_SESSION['website_key'].'_'.$url;
 if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
 } else {
-    $webpage_id = get_url($_SESSION['website_key'], $url, $dns_host, $dns_user, $dns_pwd, $dns_db);
+    $webpage_id = get_url($_SESSION['website_key'], $url, $dns_host, $dns_user, $dns_pwd, $dns_db,$dns_port);
     $redis_write = new Redis();
     $redis_write->connect(REDIS_HOST, REDIS_PORT);
     $redis_write->set($url_cache_key, $webpage_id);
@@ -144,11 +144,11 @@ if (isset($db)) {
 exit();
 
 
-function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
+function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db,$dns_port) {
 
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 

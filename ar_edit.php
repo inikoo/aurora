@@ -3315,10 +3315,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     echo json_encode($response);
                     exit;
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
             include_once 'class.Order_Basket_Purge.php';

@@ -204,11 +204,11 @@ class Image extends DB_Table {
 
         $tmp_file = $data['upload_data']['tmp_name'];
 
-        if(!empty($data['fork'])){
-            $this->fork=true;
+        if (!empty($data['fork'])) {
+            $this->fork = true;
             unset($data['fork']);
-        }else{
-            $this->fork=false;
+        } else {
+            $this->fork = false;
         }
 
 
@@ -267,20 +267,18 @@ class Image extends DB_Table {
 
         $data['Image Path'] = 'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension;
 
-        if($this->fork){
-            $account=get_object('Account',1);
-            $destination_path= preg_replace('/^img/','img_'.$account->get('Code'),$data['Image Path']);
+        if ($this->fork) {
+            $account          = get_object('Account', 1);
+            $destination_path = preg_replace('/^img/', 'img_'.$account->get('Code'), $data['Image Path']);
 
-        }else{
-            $destination_path= $data['Image Path'];
+        } else {
+            $destination_path = $data['Image Path'];
         }
 
 
-        copy($tmp_file,$destination_path);
+        copy($tmp_file, $destination_path);
         //chmod($destination_path,0664);
         unlink($tmp_file);
-
-
 
 
         $data['Image Creation Date'] = gmdate('Y-n-d H:i:s');
@@ -443,16 +441,16 @@ class Image extends DB_Table {
         $checksum   = $this->get('Image File Checksum');
         $image_path = $this->get('Image Path');
 
-        $current_cwd=getcwd();
+        $current_cwd = getcwd();
 
-        if($this->fork){
-            $account=get_object('Account',1);
+        if ($this->fork) {
+            $account = get_object('Account', 1);
             chdir('img_'.$account->get('Code'));
             chdir('../');
         }
 
 
-        $path_root='img';
+        $path_root = 'img';
 
         if (!preg_match('/^[a-f0-9]{32}$/i', $checksum)) {
             exit('wrong checksum');
@@ -469,6 +467,7 @@ class Image extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+                //                print_r($row);
 
 
                 if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
@@ -481,20 +480,18 @@ class Image extends DB_Table {
                 }
 
 
-
-
-
                 chdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
-
-
 
 
                 $_tmp = preg_replace('/.*\//', '', $image_path);
 
+  //              echo getcwd() . "\n";
+
+
                 if (!file_exists($_tmp)) {
 
-                    //print '1>'.preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
-                    //print "2>$_tmp\n";
+    //                print '1>'.preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
+      //              print "2>$_tmp\n";
 
                     if (!symlink(
                         preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path), $_tmp
@@ -514,6 +511,8 @@ class Image extends DB_Table {
             } else {
 
                 $public_db_path = preg_replace('/'.$path_root.'\/db/', $path_root.'/public_db', $image_path);
+
+//print $public_db_path;
                 if (file_exists($public_db_path)) {
                     unlink($public_db_path);
                 }

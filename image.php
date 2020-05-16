@@ -25,7 +25,7 @@ if (!empty($_REQUEST['asset']) and !empty($_REQUEST['asset_key']) and !empty($_R
 
     $sql = "select `Image Subject Image Key`  from  `Image Subject Bridge` where `Image Subject Object`=? and `Image Subject Object Key`=? and `Image Subject Image Key`=?  and `Image Subject Object Image Scope`='Marketing'  ";
     $db  = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -109,7 +109,7 @@ if ($redis->exists($image_code)) {
 
 
 $db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 

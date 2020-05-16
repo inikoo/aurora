@@ -33,10 +33,11 @@ function get_website_key_from_domain($redis) {
             /** @var $dns_db string */
             /** @var $dns_user string */
             /** @var $dns_pwd string */
+            /** @var $dns_port string */
             require 'keyring/dns.php';
 
             $db = new PDO(
-                "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+                "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
             );
             $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 

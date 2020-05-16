@@ -57,10 +57,11 @@ function get_fork_metadata($job) {
      * @var string $dns_db
      * @var string $dns_user
      * @var string $dns_pwd
+     * @var string $dns_port
      */
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -140,10 +141,11 @@ function get_fork_data($job) {
      * @var string $dns_db
      * @var string $dns_user
      * @var string $dns_pwd
+     * @var string $dns_port
      */
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 

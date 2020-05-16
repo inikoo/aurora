@@ -2683,7 +2683,7 @@ class Product extends Asset {
 
                 if ($updated) {
                     $this->update_updated_markers('Data');
-                    
+
                     require_once 'utils/new_fork.php';
                     new_housekeeping_fork(
                         'au_housekeeping', array(
