@@ -628,15 +628,15 @@ class Email_Template extends DB_Table {
 
         $this->fast_update(
             array(
-                'Email Campaign Sent'         => $sent,
-                'Email Campaign Delivered'    => $delivered,
-                'Email Campaign Open'         => $open,
-                'Email Campaign Clicked'      => $clicked,
-                'Email Campaign Errors'       => $errors,
-                'Email Campaign Hard Bounces' => $hard_bounces,
-                'Email Campaign Soft Bounces' => $soft_bounces,
-                'Email Campaign Spams'        => $spam,
-                'Email Campaign Unsubscribed' => $unsubscribed,
+                'Email Template Sent'         => $sent,
+                'Email Template Delivered'    => $delivered,
+                'Email Template Open'         => $open,
+                'Email Template Clicked'      => $clicked,
+                'Email Template Errors'       => $errors,
+                'Email Template Hard Bounces' => $hard_bounces,
+                'Email Template Soft Bounces' => $soft_bounces,
+                'Email Template Spams'        => $spam,
+                'Email Template Unsubscribed' => $unsubscribed,
 
 
             )
