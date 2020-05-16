@@ -96,6 +96,8 @@ function process_update_order_item($db,$order, $product_pid, $quantity, $website
             'page_section_type' => $page_section_type
 
         );
+
+
         $order->add_basket_history($basket_history);
 
 

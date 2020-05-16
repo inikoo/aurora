@@ -238,11 +238,10 @@ trait OrderOperations {
 
     function add_basket_history($data) {
 
-        $sql = 'INSERT INTO `Order Basket History Dimension`  (
-		                `Order Basket History Date`,
+
+        $sql = 'INSERT INTO `Order Basket History Dimension`  (`Order Basket History Date`,
                                                `Order Basket History Order Transaction Key`,
                                                `Order Basket History Website Key`,
-                                            
                                                `Order Basket History Store Key`,
                                                `Order Basket History Customer Key`,
                                                `Order Basket History Order Key`,
@@ -253,10 +252,7 @@ trait OrderOperations {
                                                
                                                `Order Basket History Quantity`,
                                                `Order Basket History Net Amount Delta`,
-                                               `Order Basket History Net Amount`,
-                                               
-                                               `Order Basket History Source`)
-	VALUES (?,?,?, ?,?,?, ?,?,?, ?,?,?, ?) ';
+                                               `Order Basket History Net Amount`,`Order Basket History Source`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ';
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -281,7 +277,6 @@ trait OrderOperations {
             )
         );
 
-        $this->db->exec($sql);
 
     }
 
