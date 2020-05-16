@@ -295,13 +295,12 @@ class DealCampaign extends DB_Table {
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'     => 'deal_campaign_changed',
-                    'field'=>$field,
+                    'type'              => 'deal_campaign_changed',
+                    'field'             => $field,
                     'deal_campaign_key' => $this->id,
-                    'editor'      => $this->editor
+                    'editor'            => $this->editor
                 ), DNS_ACCOUNT_CODE, $this->db
                 );
-
 
 
                 $this->fork_index_elastic_search();
@@ -352,7 +351,6 @@ class DealCampaign extends DB_Table {
         return $deals;
 
     }
-
 
 
     function create_deal($data, $component_data = '') {
@@ -547,6 +545,7 @@ class DealCampaign extends DB_Table {
 
         return $deal;
     }
+
     function get($key = '') {
 
         if (!$this->id) {
@@ -790,10 +789,6 @@ class DealCampaign extends DB_Table {
                 $applied_orders    = $row['orders'];
                 $applied_customers = $row['customers'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -808,10 +803,6 @@ class DealCampaign extends DB_Table {
                 $used_orders    = $row['orders'];
                 $used_customers = $row['customers'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -823,13 +814,8 @@ class DealCampaign extends DB_Table {
                 'Deal Campaign Total Acc Used Customers'    => $used_customers
 
 
-            ), 'no_history'
+            )
         );
-
-
-        //$store = new Store($this->get('Deal Campaign Store Key'));
-        //$store->update_campaings_data();
-        //$store->update_deals_data();
 
 
     }
