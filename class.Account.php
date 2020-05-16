@@ -73,17 +73,7 @@ class Account extends DB_Table {
 
             }
         }
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        }
-
-
+        
     }
 
 
