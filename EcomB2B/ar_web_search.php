@@ -284,7 +284,7 @@ function process_search($q, $db, $website, $order_key) {
             $stmt->execute(
                 array(
                     $website->id,
-                    '[[:<:]]'.$_q
+                    '\\b'.$_q
                 )
             );
             while ($row = $stmt->fetch()) {
@@ -343,7 +343,7 @@ function process_search($q, $db, $website, $order_key) {
            $stmt = $db->prepare($sql);
            $stmt->execute(
                        array(
-                       $website->id,  '[[:<:]]'.$_q
+                       $website->id,  '\\b'.$_q
                        )
                    );
            while ($row = $stmt->fetch()) {
