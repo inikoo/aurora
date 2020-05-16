@@ -628,15 +628,15 @@ class Email_Template extends DB_Table {
 
         $this->fast_update(
             array(
-                'Email Campaign Type Sent'         => $sent,
-                'Email Campaign Type Delivered'    => $delivered,
-                'Email Campaign Type Open'         => $open,
-                'Email Campaign Type Clicked'      => $clicked,
-                'Email Campaign Type Errors'       => $errors,
-                'Email Campaign Type Hard Bounces' => $hard_bounces,
-                'Email Campaign Type Soft Bounces' => $soft_bounces,
-                'Email Campaign Type Spams'        => $spam,
-                'Email Campaign Type Unsubscribed' => $unsubscribed,
+                'Email Campaign Sent'         => $sent,
+                'Email Campaign Delivered'    => $delivered,
+                'Email Campaign Open'         => $open,
+                'Email Campaign Clicked'      => $clicked,
+                'Email Campaign Errors'       => $errors,
+                'Email Campaign Hard Bounces' => $hard_bounces,
+                'Email Campaign Soft Bounces' => $soft_bounces,
+                'Email Campaign Spams'        => $spam,
+                'Email Campaign Unsubscribed' => $unsubscribed,
 
 
             )
@@ -649,4 +649,3 @@ class Email_Template extends DB_Table {
 }
 
 
-?>
