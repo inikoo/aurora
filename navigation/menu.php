@@ -119,16 +119,12 @@ if ($user->can_view('locations')) {
         $sql  = 'SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`=?';
         $stmt = $db->prepare($sql);
         $stmt->execute(
-            array('Active')
+            array(
+                'Active'
+            )
         );
         if ($row = $stmt->fetch()) {
             $warehouse_key = $row['Warehouse Key'];
-        }
-
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $warehouse_key = $row['Warehouse Key'];
-            }
         }
 
 
