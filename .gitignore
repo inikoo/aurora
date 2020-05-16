@@ -51,3 +51,8 @@ app_files/po_sources_from_smarty/web.php
 websocket_server/keyring/ws.dns.php
 app_files/po_sources_from_smarty/web_au.php
 cron/fix_discontnued_valid_to_date.php
+app_files/db_partitions.txt
+app_files/cf_dns/vendor
+app_files/cf_dns/set_cf_dns.php
+app_files/cf_dns/keyring/cf_key.php~
+app_files/cf_dns/keyring/cf_key.php

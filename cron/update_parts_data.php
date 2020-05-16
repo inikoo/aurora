@@ -26,13 +26,25 @@ function update_parts_data($db) {
     $sql = sprintf(
         'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="AFP01" ORDER BY `Part SKU` DESC  '
     );
-    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC ');
+    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`    ORDER BY `Part SKU`  DESC ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
-            $part->update_products_data();
+            print $part->get('Reference')."\n";
+
+            foreach($part->get_locations('part_location_object') as $pl) {
+                $pl->update_stock();
+            }
+
+            $part->update_stock();
+            $part->update_available_forecast();
+            $part->update_stock_status();
+
+
+
+           // $part->update_products_data();
           //  $part->update_weight_status();
 
            // $part->update_made_in_production_data();
