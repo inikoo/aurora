@@ -2695,7 +2695,7 @@ function parts_discontinuing($_data, $db, $user, $account) {
     }
 
 
-    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+    
 
     $rtext_label = 'discontinuing part';
 
@@ -3587,7 +3587,7 @@ function parts_no_products($_data, $db, $user, $account) {
     }
 
 
-    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+    
 
     $rtext_label = 'part';
 
@@ -3779,7 +3779,7 @@ function parts_forced_not_for_sale_on_website($_data, $db, $user, $account) {
         exit;
     }
 
-    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+    
 
 
     $rtext_label = 'part';

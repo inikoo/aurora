@@ -2436,7 +2436,7 @@ function delivery_checking_items($_data, $db, $user, $account) {
     $rtext_label = 'item';
     include_once 'utils/supplier_order_functions.php';
 
-    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+    
 
 
     $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
