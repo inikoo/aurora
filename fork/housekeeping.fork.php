@@ -2962,6 +2962,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
+    $db=null;
 
     return false;
 }
