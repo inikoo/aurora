@@ -69,11 +69,11 @@ trait OrderTax {
         if($this->data['Order Tax Number']==''){
             $this->fast_update(
                 array(
-                    'Customer Tax Number Valid'              => 'Unknown',
-                    'Customer Tax Number Details Match'      => '',
-                    'Customer Tax Number Validation Date'    => '',
-                    'Customer Tax Number Validation Source'  => '',
-                    'Customer Tax Number Validation Message' => ''
+                    'Order Tax Number Valid'              => 'Unknown',
+                    'Order Tax Number Details Match'      => '',
+                    'Order Tax Number Validation Date'    => '',
+                    'Order Tax Number Validation Source'  => '',
+                    'Order Tax Number Validation Message' => ''
                 )
             );
         }else{
