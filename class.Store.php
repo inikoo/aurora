@@ -2820,11 +2820,11 @@ class Store extends DB_Table {
         );
         $this->fast_update($data_to_update, 'Store Data');
 
-        //todo add field to table `Store DC Data'
-        //$data_to_update = array(
-        //    'Store DC Orders Cancelled Amount' => round($data['cancelled']['dc_amount'], 2)
-        //);
-        //$this->fast_update($data_to_update, 'Store DC Data');
+
+        $data_to_update = array(
+            'Store DC Orders Cancelled Amount' => round($data['cancelled']['dc_amount'], 2)
+        );
+        $this->fast_update($data_to_update, 'Store DC Data');
     }
 
     function update_payments() {
