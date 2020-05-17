@@ -492,16 +492,8 @@ class Customer_Client extends Subject {
 
     public function update_customer_client_orders() {
 
-
         $customer_orders = 0;
-
-
         $orders_cancelled = 0;
-
-        $order_interval     = '';
-        $order_interval_std = '';
-
-        $customer_with_orders = 'No';
         $first_order          = '';
         $last_order           = '';
 
@@ -525,7 +517,7 @@ class Customer_Client extends Subject {
                 if ($customer_orders > 0) {
                     $first_order          = $row['first_order_date'];
                     $last_order           = $row['last_order_date'];
-                    $customer_with_orders = 'Yes';
+
                 }
             }
         }
@@ -543,45 +535,15 @@ class Customer_Client extends Subject {
         }
 
 
-        if (($orders_cancelled + $customer_orders) > 1) {
-            $_last_order = false;
-            $_last_date  = false;
-            $intervals   = array();
-
-            $sql  = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Client Key`=? ORDER BY `Order Date`";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $this->id
-                )
-            );
-            while ($row = $stmt->fetch()) {
-                $this_date = gmdate('U', strtotime($row['date']));
-                if ($_last_order) {
-                    $intervals[] = ($this_date - $_last_date);
-                }
-
-                $_last_date  = $this_date;
-                $_last_order = true;
-            }
-
-
-            $order_interval     = average($intervals);
-            $order_interval_std = deviation($intervals);
-
-        }
-
 
         $update_data = array(
             'Customer Client Orders'           => $customer_orders,
             'Customer Client Orders Cancelled' => $orders_cancelled,
 
             'Customer Client First Order Date' => $first_order,
-            'Customer Client Last Order Date'  => $last_order,
+            'Customer Client Last Order Date'  => $last_order
 
-            'Customer Client Order Interval'     => $order_interval,
-            'Customer Client Order Interval STD' => $order_interval_std,
-            'Customer Client With Orders'        => $customer_with_orders,
+
 
         );
 

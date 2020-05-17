@@ -46,15 +46,36 @@ foreach ($data as $key => $row) {
 
                     if (isset($currency_codes[$_key])) {
                         $currency_code = $currency_codes[$_key];
-                        $sql           = sprintf('insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql('EUR'.$currency_code), $_value);
-                        $db->exec($sql);
-                        //print $sql."\n";
+
+
+
+                        $sql = 'insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (?,?,?) ON DUPLICATE KEY UPDATE `ECB Currency Exchange Rate`=?';
+                        $db->prepare($sql)->execute(
+                            array(
+                                $date,
+                                'EUR'.$currency_code,
+                                $_value,
+                                $_value
+                            )
+                        );
+
 
 
                         if ($_value != 0) {
-                            $sql = sprintf('insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (%s,%s,%s)', prepare_mysql($date), prepare_mysql($currency_code.'EUR'), 1 / $_value);
-                            $db->exec($sql);
-                            //print $sql."\n";
+
+
+                            $sql = 'insert into kbase.`ECB Currency Exchange Dimension` (`ECB Currency Exchange Date`,`ECB Currency Exchange Currency Pair`,`ECB Currency Exchange Rate`) values (?,?,?) ON DUPLICATE KEY UPDATE `ECB Currency Exchange Rate`=? ';
+                            $rate= 1 / $_value;
+                            $db->prepare($sql)->execute(
+                                array(
+                                    $date,
+                                    $currency_code.'EUR',
+                                    $rate,
+                                    $rate
+                                )
+                            );
+
+
                         }
                     }
 

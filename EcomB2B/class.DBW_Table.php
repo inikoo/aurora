@@ -439,12 +439,17 @@ abstract class DBW_Table extends stdClass {
             $data['User Key'] = $editor_data['User Key'];
         }
 
-        //  print_r($data);
 
 
-        if (!isset($data['Date']) or $data['Date'] == '') {
-            $data['Date'] = $editor_data['Date'];
+
+        if (empty($data['Date'])) {
+            if($editor_data['Date']!=''){
+                $data['Date'] = $editor_data['Date'];
+            }else{
+                $data['Date'] =gmdate('Y-m-d H:i:s');
+            }
         }
+
 
         if ($data['History Abstract'] == '') {
             if ($data['Indirect Object']) {

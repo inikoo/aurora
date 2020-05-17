@@ -353,9 +353,16 @@ abstract class DB_Table extends stdClass {
             }
 
         }
-        if (!isset($data['Date']) or $data['Date'] == '') {
-            $data['Date'] = $editor_data['Date'];
+        if (empty($data['Date'])) {
+            if($editor_data['Date']!=''){
+                $data['Date'] = $editor_data['Date'];
+            }else{
+                $data['Date'] =gmdate('Y-m-d H:i:s');
+            }
+
         }
+
+
 
         if ($data['History Abstract'] == '') {
             if ($data['Indirect Object']) {
@@ -509,7 +516,8 @@ abstract class DB_Table extends stdClass {
 
 
         $sql =
-            "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) 
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $stmt = $this->db->prepare($sql);
 
