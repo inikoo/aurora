@@ -232,6 +232,7 @@ function delivery_address($data, $order, $editor, $website) {
 
     } else {
         $order->update(array('Order For Collection' => 'No'));
+        unset($data['data']['order_for_collection']);
 
         $address_data = array(
             'Address Line 1'               => '',

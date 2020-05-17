@@ -401,7 +401,7 @@ class Location extends DB_Table {
             //  case('Location Mainly Used For'):
             //     $this->update_used_for($value);
             //     break;
-            case('Location Max Weight'):
+            case 'Location Max Weight':
 
                 include_once 'utils/parse_natural_language.php';
 
@@ -438,7 +438,7 @@ class Location extends DB_Table {
 
                 }
 
-                $this->update_field($field, $value, $options);
+                $this->update_field('Location Max Weight', $value, $options);
 
 
                 break;
@@ -475,7 +475,7 @@ class Location extends DB_Table {
                     }
 
                 }
-                $this->update_field($field, $value, $options);
+                $this->update_field('Location Max Volume', $value, $options);
 
                 break;
 

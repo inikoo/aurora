@@ -698,8 +698,6 @@ class PartLocation extends DB_Table {
             case 'Part Location min max':
 
                 $value = json_decode($value, true);
-
-
                 $this->update_min($value['min'], $options);
                 $this->update_max($value['max'], $options);
 
@@ -717,7 +715,6 @@ class PartLocation extends DB_Table {
             case('Part Location Maximum Quantity'):
                 $this->update_max($value, $options);
                 break;
-
             case('Part Location Moving Quantity'):
                 $this->update_move_qty($value);
                 break;

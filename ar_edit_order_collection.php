@@ -183,9 +183,7 @@ function use_delivery_address_form_directory($data, $editor, $db) {
             'Payments_Amount'               => $order->get('Payments Amount'),
             'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
             'Order_Delivery_Address'        => $order->get('Order Delivery Address Formatted'),
-
-
-            'Order_Number_items' => $order->get('Number Items')
+            'Order_Number_items'            => $order->get('Number Items')
 
         ),
         'hide'           => array('for_collection_label'),
@@ -240,7 +238,7 @@ function use_delivery_address_form_directory($data, $editor, $db) {
  */
 function set_order_for_collection($data, $editor) {
 
-   $order         = get_object('Order', $data['order_key']);
+    $order         = get_object('Order', $data['order_key']);
     $order->editor = $editor;
     $order->update_for_collection('Yes');
 
@@ -259,10 +257,8 @@ function set_order_for_collection($data, $editor) {
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
             'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
-
-            'Order_Delivery_Address' => $order->get('Order Delivery Address Formatted'),
-
-            'Order_Number_items' => $order->get('Number Items')
+            'Order_Delivery_Address'        => $order->get('Order Delivery Address Formatted'),
+            'Order_Number_items'            => $order->get('Number Items')
 
         ),
         'hide'             => array(
