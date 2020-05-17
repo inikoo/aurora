@@ -1,0 +1,1 @@
+ALTER TABLE `Customer Client Dimension` ADD `Customer Client First Order Date` DATETIME NULL DEFAULT NULL AFTER `Customer Client Orders with Replacements`, ADD `Customer Client Last Order Date` DATETIME NULL DEFAULT NULL AFTER `Customer Client First Order Date`;
