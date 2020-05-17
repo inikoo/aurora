@@ -705,7 +705,7 @@ trait ProductCategory {
             'Product Category Excess Availability Products'       => $elements_availability_numbers['Excess'],
             'Product Category Normal Availability Products'       => $elements_availability_numbers['Normal'],
             'Product Category Low Availability Products'          => $elements_availability_numbers['Low'],
-            'Product Category Vary Low Availability Products'     => $elements_availability_numbers['VeryLow'],
+            'Product Category Very Low Availability Products'     => $elements_availability_numbers['VeryLow'],
             'Product Category Out of Stock Availability Products' => $elements_availability_numbers['OutofStock'],
             'Product Category Error Availability Products'        => $elements_availability_numbers['Error'],
             'Product Category On Demand Availability Products'    => $elements_availability_numbers['OnDemand'],
