@@ -30,12 +30,6 @@ class Public_Store {
      * @var string|bool
      */
     public $id = false;
-
-    /**
-     * @var bool|\PDO
-     */
-    private $db;
-
     /**
      * @var array
      */
@@ -48,7 +42,6 @@ class Public_Store {
      * @var array
      */
     public $settings;
-
     /**
      * @var bool
      */
@@ -57,7 +50,10 @@ class Public_Store {
      * @var string
      */
     public $msg;
-
+    /**
+     * @var bool|\PDO
+     */
+    private $db;
 
     function __construct($a1) {
         global $db;
@@ -83,7 +79,6 @@ class Public_Store {
     }
 
     function get_categories($type = 'families', $pages = '1-10', $output = 'data') {
-
 
 
         $categories = array();
@@ -275,8 +270,7 @@ class Public_Store {
             );
         }
 
-        $sql = "SELECT `Website User Key` FROM `Website User Dimension` WHERE `Website User Handle`=? AND `Website User Website Key`=? ";
-
+        $sql  = "SELECT `Website User Key` FROM `Website User Dimension` WHERE `Website User Handle`=? AND `Website User Website Key`=? ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -298,16 +292,6 @@ class Public_Store {
         }
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['num'] > 0) {
-                    $this->error = true;
-                    $this->msg   = 'Duplicate user login';
-
-                    return;
-                }
-            }
-        }
 
 
         $data['editor']                         = $this->editor;
@@ -363,7 +347,6 @@ class Public_Store {
         }
 
 
-
         $customer     = new Public_Customer('new', $data, $address_fields);
         $website_user = '';
         if ($customer->id) {
@@ -371,7 +354,7 @@ class Public_Store {
 
             if ($customer->new) {
 
-                $customer->fast_update_json_field('Customer Metadata','cur',$this->data['Store Currency Code']);
+                $customer->fast_update_json_field('Customer Metadata', 'cur', $this->data['Store Currency Code']);
 
                 include_once 'utils/network_functions.php';
                 $website = get_object('website', $this->get('Store Website Key'));
