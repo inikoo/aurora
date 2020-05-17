@@ -23,7 +23,7 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref = " and  `Category Code` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'label' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Category Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Category Label` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } else {
     $wheref = '';

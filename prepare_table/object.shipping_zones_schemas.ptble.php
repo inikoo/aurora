@@ -29,7 +29,7 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Shipping Zone Schema Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Shipping Zone Schema Label` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

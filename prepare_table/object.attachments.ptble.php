@@ -41,7 +41,7 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'caption' and $f_value != '') {
     $wheref = sprintf(
-        '  and  Attachment Caption`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  Attachment Caption`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

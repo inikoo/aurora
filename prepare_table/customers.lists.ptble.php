@@ -22,7 +22,7 @@ if (in_array($parameters['parent_key'], $user->stores)) {
 
 if (($parameters['f_field'] == 'name') and $f_value != '') {
     $wheref = sprintf(
-        '  and  `List Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `List Name`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 
 } else {

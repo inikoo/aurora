@@ -187,6 +187,8 @@ function delivery_address($db, $data, $customer, $editor) {
     } else {
         $customer->update(array('Customer Delivery Address Link' => 'None'));
 
+        unset($data['data']['delivery_address_link']);
+
         $address_data = array(
             'Address Line 1'               => '',
             'Address Line 2'               => '',

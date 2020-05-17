@@ -53,7 +53,7 @@ $group = '';
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        '  and  PA.`Payment Account Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  PA.`Payment Account Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and  PA.`Payment Account Code` like '".addslashes($f_value)."%'";

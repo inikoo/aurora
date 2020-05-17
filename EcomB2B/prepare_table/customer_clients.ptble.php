@@ -20,7 +20,6 @@ $where=sprintf('where  `Customer Client Status`="Active"  and `Customer Client C
 
 
 
-
 $filter_msg = '';
 $wheref     = '';
 
@@ -35,7 +34,7 @@ if (($parameters['f_field'] == 'code') and $f_value != '') {
     );
 }elseif (($parameters['f_field'] == 'name') and $f_value != '') {
     $wheref = sprintf(
-        ' and `Customer Client Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Customer Client Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 
@@ -64,7 +63,6 @@ if ($order == 'name') {
 
 
 $sql_totals = "select count(Distinct `Customer Client Key`) as num from $table $where";
-
 
 $fields = '`Customer Client Key`,`Customer Client Code`,`Customer Client Name`,`Customer Client Creation Date`,`Customer Client Location`,
 `Customer Client Customer Key`,`Customer Client Store Key`,`Customer Client Number Invoices`,`Customer Client Invoiced Amount`,`Customer Client Currency Code`,

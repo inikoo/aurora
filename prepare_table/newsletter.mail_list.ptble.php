@@ -35,7 +35,7 @@ if ($parameters['parent'] == 'mailshot') {
 
 
 if (($parameters['f_field'] == 'customer') and $f_value != '') {
-    $wheref = sprintf('  and  `Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
+    $wheref = sprintf('  and  `Customer Name`  REGEXP "\\\\b%s" ', addslashes($f_value));
 }
 
 

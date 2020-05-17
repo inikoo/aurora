@@ -37,7 +37,7 @@ if (isset($parameters['period']) ) {
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `User Alias` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `User Alias` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

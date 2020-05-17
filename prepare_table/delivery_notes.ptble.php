@@ -209,7 +209,7 @@ if ($order == 'date') {
 
 if ($parameters['f_field'] == 'customer' and $f_value != '') {
     $wheref = sprintf(
-        '  and  `Delivery Note Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Delivery Note Customer Name`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'number' and $f_value != '') {
     $wheref .= " and  `Delivery Note ID` like '".addslashes($f_value)."%'";

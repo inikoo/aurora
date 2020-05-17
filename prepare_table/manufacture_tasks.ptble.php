@@ -21,7 +21,7 @@ if (isset($extra_where)) {
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and  `Manufacture Task Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and  `Manufacture Task Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

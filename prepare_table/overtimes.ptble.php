@@ -16,7 +16,7 @@ $wheref = '';
 
 if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref = sprintf(
-        '  and  `Overtime Reference`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Overtime Reference`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

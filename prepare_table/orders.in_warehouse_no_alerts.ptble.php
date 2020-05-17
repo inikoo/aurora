@@ -181,7 +181,7 @@ if (isset($parameters['elements_type'])) {
 
 if (($parameters['f_field'] == 'customer') and $f_value != '') {
     $wheref = sprintf(
-        '  and  `Order Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Order Customer Name`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'number' and $f_value != '') {
     $wheref = " and  `Order Public ID`  like '".addslashes($f_value)."%'";

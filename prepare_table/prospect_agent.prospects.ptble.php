@@ -75,7 +75,7 @@ $wheref     = '';
 
 if (($parameters['f_field'] == 'name') and $f_value != '') {
     $wheref = sprintf(
-        ' and `Prospect Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Prospect Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 
 

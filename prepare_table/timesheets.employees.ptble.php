@@ -47,7 +47,7 @@ if ($parameters['f_field'] == 'alias' and $f_value != '') {
     $wheref .= " and  `Staff Alias` like '".addslashes($f_value)."%'    ";
 } elseif ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        '  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Staff Name`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

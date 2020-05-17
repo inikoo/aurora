@@ -31,11 +31,11 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'target' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Deal Component Allowance Target Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Deal Component Allowance Target Label` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }elseif ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Deal Term Allowances Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Deal Term Allowances Label` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

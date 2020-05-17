@@ -27,7 +27,7 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and  `Warehouse Area Code` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Warehouse Area Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Warehouse Area Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

@@ -51,7 +51,7 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref = " and  `Product Code` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Product Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Product Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } else {
     $wheref = '';

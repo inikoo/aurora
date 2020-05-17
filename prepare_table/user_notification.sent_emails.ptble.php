@@ -85,7 +85,7 @@ if (isset($parameters['elements_type'])) {
 $wheref = '';
 if ($parameters['f_field'] == 'subject' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Published Email Template Subject` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Published Email Template Subject` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

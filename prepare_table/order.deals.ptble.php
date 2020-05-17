@@ -19,7 +19,7 @@ $where = sprintf(
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Deal Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Deal Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

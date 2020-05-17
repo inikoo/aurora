@@ -32,7 +32,7 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Shipping Zone Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Shipping Zone Code` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

@@ -54,7 +54,7 @@ if (isset($parameters['elements_type'])) {
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Deal Component Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Deal Component Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

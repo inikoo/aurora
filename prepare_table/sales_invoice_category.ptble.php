@@ -46,7 +46,7 @@ if (isset($parameters['period']) ) {
 $wheref = '';
 if ($parameters['f_field'] == 'category' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Category Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Category Label` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

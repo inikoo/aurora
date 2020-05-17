@@ -137,7 +137,7 @@ if (isset($parameters['elements_type'])) {
 if (($parameters['f_field'] == 'supplier') and $f_value != '') {
 
     $wheref = sprintf(
-        '  and  `Purcahse Order Supplier Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Purcahse Order Supplier Name`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 
 

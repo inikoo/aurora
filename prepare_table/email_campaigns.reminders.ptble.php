@@ -17,7 +17,7 @@ $wheref = '';
 /*
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Email Campaign Type Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Email Campaign Type Code` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 */

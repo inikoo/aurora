@@ -80,7 +80,7 @@ if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref = " and  `Part Reference` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Part Package Description` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Part Package Description` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

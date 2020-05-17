@@ -47,7 +47,7 @@ if ($parameters['f_field'] == 'number' and $f_value != '') {
     $wheref .= " and  `Supplier Delivery Public ID` like '".addslashes($f_value)."%'    ";
 } elseif ($parameters['f_field'] == 'supplier' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Supplier Delivery Parent Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Supplier Delivery Parent Code` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

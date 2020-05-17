@@ -30,7 +30,7 @@ $where.=' and `Email Campaign Type`="Newsletter"';
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Email Campaign Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Email Campaign Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

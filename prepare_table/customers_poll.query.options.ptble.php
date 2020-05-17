@@ -28,7 +28,7 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref = sprintf(
-        ' and `	Customer Poll Query Option Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `	Customer Poll Query Option Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

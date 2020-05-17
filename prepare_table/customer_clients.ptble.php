@@ -42,7 +42,7 @@ if (($parameters['f_field'] == 'code') and $f_value != '') {
     );
 }elseif (($parameters['f_field'] == 'name') and $f_value != '') {
     $wheref = sprintf(
-        ' and `Customer Client Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Customer Client Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

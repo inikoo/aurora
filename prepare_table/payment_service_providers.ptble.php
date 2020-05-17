@@ -19,7 +19,7 @@ $group = '';
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        '  and  PSP.`Payment Service Provider Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  PSP.`Payment Service Provider Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and  PSP.`Payment Service Provider Code` like '".addslashes(

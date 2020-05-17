@@ -25,11 +25,11 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'answer' and $f_value != '') {
     $wheref = sprintf(
-        ' and `	Customer Poll Replay` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `	Customer Poll Replay` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'customer' and $f_value != '') {
     $wheref = sprintf(
-        ' and `	Customer Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `	Customer Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

@@ -46,7 +46,7 @@ if (isset($parameters['period']) ) {
 $wheref = '';
 if ($parameters['f_field'] == 'store' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Store Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Store Code` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

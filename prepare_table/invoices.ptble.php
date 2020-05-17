@@ -225,7 +225,7 @@ if (isset($parameters['elements'])) {
 
 if (($parameters['f_field'] == 'customer') and $f_value != '') {
     $wheref = sprintf(
-        '  and  `Invoice Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Invoice Customer Name`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'number' and $f_value != '') {
     $wheref .= " and  I.`Invoice Public ID` like '".addslashes(

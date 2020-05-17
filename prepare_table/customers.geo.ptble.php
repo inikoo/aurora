@@ -28,7 +28,7 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'country' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Country Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Country Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 

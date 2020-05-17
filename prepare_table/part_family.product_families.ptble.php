@@ -26,7 +26,7 @@ $group = '';
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        '  and `Store Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and `Store Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and  `Store Code` like '".addslashes($f_value)."%'";

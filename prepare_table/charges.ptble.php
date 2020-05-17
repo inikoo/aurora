@@ -29,7 +29,7 @@ switch ($parameters['parent']) {
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Charge Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Charge Name` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
 }
 
