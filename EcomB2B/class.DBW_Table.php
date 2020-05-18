@@ -73,6 +73,9 @@ abstract class DBW_Table extends stdClass {
 
         foreach ($data as $field => $value) {
 
+            if( !is_string($field) or $field=='1'  or $field=='0' ){
+                throw new Exception(json_encode($data));
+            }
 
             $sql = sprintf(
                 "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id

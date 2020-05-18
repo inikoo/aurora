@@ -711,6 +711,15 @@ abstract class DB_Table extends stdClass {
         foreach ($data as $field => $value) {
 
 
+            if( !is_string($field) or $field=='1'  or $field=='0' ){
+
+
+
+                throw new Exception(json_encode($data));
+
+            }
+
+
             $sql = sprintf(
                 "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
             );
