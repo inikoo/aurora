@@ -1,0 +1,2 @@
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Number History Records` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Delivery Note Metadata V2`;
+ALTER TABLE `Delivery Note Dimension` DROP `Delivery Note Metadata V2`;

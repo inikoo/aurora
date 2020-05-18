@@ -832,7 +832,7 @@ class data_entry_picking_aid {
                             );
 
 
-                            $this->db->exec($sql);
+
 
                             $cost = 0;
 
