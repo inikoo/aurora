@@ -548,6 +548,10 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
     $db->exec($sql);
     $reference = $db->lastInsertId();
+    if(!$reference){
+        throw new Exception('Error inserting CTF');
+    }
+
     $payment->fast_update(array('Payment Transaction ID' => sprintf('%05d', $reference)));
 
 

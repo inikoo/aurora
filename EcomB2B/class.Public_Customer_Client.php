@@ -113,6 +113,9 @@ class Public_Customer_Client extends DBW_Table {
 
 
             $this->id = $this->db->lastInsertId();
+            if(!$this->id){
+                throw new Exception('Error inserting '.$this->table_name);
+            }
             $this->get_data('id', $this->id);
 
 

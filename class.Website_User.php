@@ -108,6 +108,9 @@ class Website_User extends DB_Table {
 
 
             $user_key = $this->db->lastInsertId();
+            if(!$user_key){
+                throw new Exception('Error inserting '.$this->table_name);
+            }
 
             $this->get_data('id', $user_key);
             $this->fast_update(

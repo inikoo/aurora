@@ -180,7 +180,14 @@ trait OrderOperations {
 
 
         if ($stmt->execute()) {
+
+
+
             $this->id = $this->db->lastInsertId();
+
+            if(!$this->id){
+                throw new Exception('Error inserting '.$this->table_name);
+            }
 
             $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_name);
             $this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);

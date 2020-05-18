@@ -781,6 +781,59 @@ class Invoice extends DB_Table {
 
     }
 
+    private function get_exchange_data($currency, $account_currency, $account_country, $date) {
+        if ($currency != $account_currency) {
+
+
+            if (in_array($account_country, [
+                'SVK',
+                'ESP'
+            ]
+            )) {
+
+                $sql  =
+                    "select `ECB Currency Exchange Rate`,`ECB Currency Exchange Date` from  kbase.`ECB Currency Exchange Dimension` where `ECB Currency Exchange Currency Pair`=? and `ECB Currency Exchange Date`<? and `ECB Currency Exchange Date`>?  order by `ECB Currency Exchange Date` desc limit 1 ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $currency.$account_currency,
+                        gmdate('Y-m-d', strtotime($date.' +0:00')),
+                        gmdate('Y-m-d', strtotime($date.' -5 days')),
+
+                    )
+                );
+
+
+                if ($row = $stmt->fetch()) {
+                    $exchange          = $row['ECB Currency Exchange Rate'];
+                    $exchange_metadata = [
+                        'type' => 'ECB',
+                        'date' => $row['ECB Currency Exchange Date']
+                    ];
+
+                } else {
+                    $exchange          = currency_conversion($this->db, $currency, $account_currency);
+                    $exchange_metadata = ['type' => 'au'];
+
+                }
+            } else {
+                $exchange          = currency_conversion($this->db, $currency, $account_currency);
+                $exchange_metadata = ['type' => 'au'];
+            }
+
+
+        } else {
+            $exchange          = 1;
+            $exchange_metadata = ['type' => 'na'];
+
+        }
+
+        return [
+            'exchange' => $exchange,
+            'metadata' => $exchange_metadata
+        ];
+    }
+
     function get($key) {
 
         if (!$this->id) {
@@ -1148,37 +1201,37 @@ class Invoice extends DB_Table {
                     return 'fal error fa-file-invoice';
                 }
             case 'exchange_type':
-                $exchange_data=$this->metadata('fx');
-                if($exchange_data!=''){
-                    $exchange_data=json_decode($exchange_data,true);
+                $exchange_data = $this->metadata('fx');
+                if ($exchange_data != '') {
+                    $exchange_data = json_decode($exchange_data, true);
 
                     return $exchange_data['type'];
-                }else{
+                } else {
                     return 'unk';
                 }
             case 'exchange_ECB_date':
-                $exchange_data=$this->metadata('fx');
-                if($exchange_data!=''){
-                    $exchange_data=json_decode($exchange_data,true);
+                $exchange_data = $this->metadata('fx');
+                if ($exchange_data != '') {
+                    $exchange_data = json_decode($exchange_data, true);
 
                     return $exchange_data['date'];
-                }else{
+                } else {
                     return '';
                 }
             case 'account_currency_label':
-                $account=get_object('Account',1);
+                $account = get_object('Account', 1);
 
 
-                if($account->get('Account Currency')=='EUR'){
+                if ($account->get('Account Currency') == 'EUR') {
 
-                    if($this->get('exchange_type')=='ECB'){
+                    if ($this->get('exchange_type') == 'ECB') {
                         return '<i title="'._('ECB exchange rate').' ('.$this->get('exchange_ECB_date').')" style="--fa-primary-color: #003399;--fa-secondary-color: #003399;" class="fad fa-euro-sign"></i> ';
-                    }else{
+                    } else {
                         return $account->get('Account Currency');
                     }
 
-                }else{
-                    return  $account->get('Account Currency');
+                } else {
+                    return $account->get('Account Currency');
                 }
 
 
@@ -1414,59 +1467,6 @@ class Invoice extends DB_Table {
         $this->update(array('Invoice Billing Region' => $billing_region), 'no_history');
     }
 
-
-    private function get_exchange_data($currency, $account_currency, $account_country, $date) {
-        if ($currency != $account_currency) {
-
-
-
-            if (in_array($account_country, ['SVK','ESP'])) {
-
-                $sql  =
-                    "select `ECB Currency Exchange Rate`,`ECB Currency Exchange Date` from  kbase.`ECB Currency Exchange Dimension` where `ECB Currency Exchange Currency Pair`=? and `ECB Currency Exchange Date`<? and `ECB Currency Exchange Date`>?  order by `ECB Currency Exchange Date` desc limit 1 ";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $currency.$account_currency,
-                        gmdate('Y-m-d',strtotime($date.' +0:00')),
-                        gmdate('Y-m-d',strtotime($date.' -5 days')),
-
-                    )
-                );
-
-
-
-
-                if ($row = $stmt->fetch()) {
-                    $exchange          = $row['ECB Currency Exchange Rate'];
-                    $exchange_metadata = [
-                        'type' => 'ECB',
-                        'date' => $row['ECB Currency Exchange Date']
-                    ];
-
-                } else {
-                    $exchange          = currency_conversion($this->db, $currency, $account_currency);
-                    $exchange_metadata = ['type' => 'au'];
-
-                }
-            } else {
-                $exchange          = currency_conversion($this->db, $currency, $account_currency);
-                $exchange_metadata = ['type' => 'au'];
-            }
-
-
-        } else {
-            $exchange          = 1;
-            $exchange_metadata = ['type' => 'na'];
-
-        }
-
-        return [
-            'exchange' => $exchange,
-            'metadata' => $exchange_metadata
-        ];
-    }
-
     function create($invoice_data) {
 
         include_once 'utils/currency_functions.php';
@@ -1494,8 +1494,7 @@ class Invoice extends DB_Table {
             }
         }
 
-        $exchange_data                          = $this->get_exchange_data($base_data['Invoice Currency'], $account->get('Account Currency'), $account->get('Account Country Code'), $base_data['Invoice Date']);
-
+        $exchange_data = $this->get_exchange_data($base_data['Invoice Currency'], $account->get('Account Currency'), $account->get('Account Country Code'), $base_data['Invoice Date']);
 
 
         $base_data['Invoice Currency Exchange'] = $exchange_data['exchange'];
@@ -1520,7 +1519,9 @@ class Invoice extends DB_Table {
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
 
-
+            if(!$this->id){
+                throw new Exception('Error inserting '.$this->table_name);
+            }
             $this->get_data('id', $this->id);
 
             if (isset($recargo_equivalencia)) {
@@ -1742,10 +1743,10 @@ class Invoice extends DB_Table {
 
         $categorize_invoices_functions = get_categorize_invoices_functions();
 
-        $store=get_object('Store',$this->get('Invoice Store Key'));
-        $invoice_data=$this->data;
-        $invoice_data['Store Type']=$store->get('Store Type');
-        $sql = sprintf(
+        $store                      = get_object('Store', $this->get('Invoice Store Key'));
+        $invoice_data               = $this->data;
+        $invoice_data['Store Type'] = $store->get('Store Type');
+        $sql                        = sprintf(
             "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc "
         );
 

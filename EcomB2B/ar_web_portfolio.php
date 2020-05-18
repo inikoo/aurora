@@ -484,6 +484,9 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
             )
         );
         $customer_portfolio_key = $db->lastInsertId();
+        if(!$customer_portfolio_key){
+            throw new Exception('Error inserting customer_portfolio');
+        }
 
         $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
         $stmt = $db->prepare($sql);
@@ -674,7 +677,9 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
             )
         );
         $customer_portfolio_key = $db->lastInsertId();
-
+        if(!$customer_portfolio_key){
+            throw new Exception('Error inserting customer_portfolio');
+        }
 
         $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
         $stmt = $db->prepare($sql);

@@ -249,7 +249,9 @@ class Page extends DB_Table {
 
         if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
-
+            if(!$this->id){
+                throw new Exception('Error inserting '.$this->table_name);
+            }
 
             $this->get_data('id', $this->id);
             $this->new = true;

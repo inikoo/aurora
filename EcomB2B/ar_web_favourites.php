@@ -91,6 +91,9 @@ function update_favourite($data, $customer, $editor, $db) {
         );
         $db->exec($sql);
         $favourite_key = $db->lastInsertId();
+        if(!$favourite_key){
+            throw new Exception('Error inserting Customer Favourite Product Fact');
+        }
         $pid           = $product->id;
 
     }

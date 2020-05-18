@@ -115,10 +115,9 @@ class DeliveryNote extends DB_Table {
         if ($stmt->execute()) {
 
             $this->id = $this->db->lastInsertId();
-
-
-
-
+            if(!$this->id){
+                throw new Exception('Error inserting '.$this->table_name);
+            }
             $this->get_data('id', $this->id);
 
 
@@ -888,6 +887,9 @@ class DeliveryNote extends DB_Table {
         if ($stmt->execute()) {
 
             $this->id = $this->db->lastInsertId();
+            if(!$this->id){
+                throw new Exception('Error inserting (replacement) '.$this->table_name);
+            }
             $this->get_data('id', $this->id);
 
 
@@ -956,6 +958,9 @@ class DeliveryNote extends DB_Table {
 
                             $replacement_itf = $this->db->lastInsertId();
 
+                            if(!$replacement_itf){
+                                throw new Exception('Error inserting ITF');
+                            }
 
                             $_feedback        = $transaction_data['feedback'];
                             $_feedback['itf'] = $replacement_itf;

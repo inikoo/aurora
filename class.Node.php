@@ -44,17 +44,15 @@ class nodes {
     var $HtmlTree;
     var $HtmlRow;
     var $table_name = "`Category Dimension`";
-    var $table_fields
-        = array(
-            'id'         => '`Category Key`',
-            'position'   => '`Category Position`',
-            'deep'       => '`Category Deep`',
-            'ord'        => '`Category Order`',
-            'name'       => '`Category Code`',
-            'is_default' => '`Category Default`',
-            'root_key'   => '`Category Root Key`'
-        );
-
+    var $table_fields = array(
+        'id'         => '`Category Key`',
+        'position'   => '`Category Position`',
+        'deep'       => '`Category Deep`',
+        'ord'        => '`Category Order`',
+        'name'       => '`Category Code`',
+        'is_default' => '`Category Default`',
+        'root_key'   => '`Category Root Key`'
+    );
 
 
     var $sql_condition;
@@ -76,7 +74,6 @@ class nodes {
     }
 
 
-
     function add_new($parent = 0, $fields = array()) { // add new category
 
         $position = $this->get_position($parent);
@@ -85,11 +82,11 @@ class nodes {
         $fields['Category Properties'] = '{}';
 
 
-        $_keys                         = '';
-        $_values                       = '';
+        $_keys   = '';
+        $_values = '';
         foreach ($fields as $key => $value) {
 
-            $_key=$key;
+            $_key = $key;
 
             if (!preg_match('/^\`.+\`$/', $key)) {
                 $key = "`".$key."`";
@@ -98,9 +95,9 @@ class nodes {
             $_keys .= ",".$key."";
 
 
-            if($_key=='Category Main Image Key'){
+            if ($_key == 'Category Main Image Key') {
                 $_values .= ','.prepare_mysql($value, true);
-            }else{
+            } else {
                 $_values .= ','.prepare_mysql($value, false);
             }
 
@@ -114,12 +111,14 @@ class nodes {
 
         $this->db->exec($sql);
 
-          $this->id = $this->db->lastInsertId();
+        $this->id = $this->db->lastInsertId();
+        if(!$this->id){
+            throw new Exception('Error inserting category');
+        }
 
-
-        $node_id = $this->id;
+        $node_id  = $this->id;
         $position .= $node_id.">";
-        $deep = count(preg_split('/>/', $position)) - 1;
+        $deep     = count(preg_split('/>/', $position)) - 1;
 
         $inserted_key = $this->id;
 
@@ -139,8 +138,6 @@ class nodes {
 
         $this->_optimize_orders($position);
     }
-
-
 
 
     function get_position($id) {
@@ -163,8 +160,6 @@ class nodes {
 
 
     }
-
-
 
 
     function _optimize_orders($position) {
@@ -207,8 +202,6 @@ class nodes {
 
 
     }
-
-
 
 
 }

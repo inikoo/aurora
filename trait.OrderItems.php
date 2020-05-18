@@ -258,6 +258,9 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
                 $otf_key = $this->db->lastInsertId();
+                if(!$otf_key){
+                    throw new Exception('Error inserting OTF');
+                }
 
                 $this->new_otfs[] = $otf_key;
 

@@ -126,6 +126,9 @@ class Payment extends DB_Table {
 
         if ($this->db->exec($sql)) {
             $this->id  = $this->db->lastInsertId();
+            if(!$this->id){
+                throw new Exception('Error inserting '.$this->table_name);
+            }
             $this->new = true;
             $this->get_data('id', $this->id);
 

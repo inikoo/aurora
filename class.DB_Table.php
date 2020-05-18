@@ -540,7 +540,9 @@ abstract class DB_Table extends stdClass {
 
         if ($stmt->execute()) {
             $history_key = $this->db->lastInsertId();
-
+            if(!$history_key){
+                throw new Exception('Error inserting history');
+            }
             return $history_key;
         } else {
             print_r($error_info = $this->db->errorInfo());
