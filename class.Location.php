@@ -193,6 +193,7 @@ class Location extends DB_Table {
             }
 
             $this->fork_index_elastic_search();
+
             return $this;
 
 
@@ -242,8 +243,6 @@ class Location extends DB_Table {
 
 
     }
-
-
 
 
     function get_deleted_data($tag) {
@@ -647,40 +646,41 @@ class Location extends DB_Table {
                 break;
 
 
-             default:
+            default:
 
-            if (array_key_exists($key, $this->data)) {
-                return $this->data[$key];
-            }
-
-            if (array_key_exists('Location '.$key, $this->data)) {
-                return $this->data['Location '.$key];
-            }
-
-
-            if (preg_match('/^warehouse area/i', $key)) {
-                if (!$this->warehouse_area) {
-                    $this->warehouse_area = get_object(
-                        'WarehouseArea', $this->data['Location Warehouse Area Key']
-                    );
+                if (array_key_exists($key, $this->data)) {
+                    return $this->data[$key];
                 }
 
-                return $this->warehouse_area->get($key);
-            }
-            if (preg_match('/^warehouse/i', $key)) {
-                if (!$this->warehouse) {
-                    $this->warehouse = new Warehouse(
-                        $this->data['Location Warehouse Key']
-                    );
+                if (array_key_exists('Location '.$key, $this->data)) {
+                    return $this->data['Location '.$key];
                 }
 
-                return $this->warehouse->get($key);
-            }
+
+                if (preg_match('/^warehouse area/i', $key)) {
+                    if (!$this->warehouse_area) {
+                        $this->warehouse_area = get_object(
+                            'WarehouseArea', $this->data['Location Warehouse Area Key']
+                        );
+                    }
+
+                    return $this->warehouse_area->get($key);
+                }
+                if (preg_match('/^warehouse/i', $key)) {
+                    if (!$this->warehouse) {
+                        $this->warehouse = new Warehouse(
+                            $this->data['Location Warehouse Key']
+                        );
+                    }
+
+                    return $this->warehouse->get($key);
+                }
 
 
-            return '';
+                return '';
 
         }
+
         return '';
 
     }
@@ -788,23 +788,28 @@ class Location extends DB_Table {
     }
 
 
-
     function update_stock_value() {
 
-        $stock_value = 0;
 
-        $sql = sprintf('SELECT sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Location Key`=%d ', $this->id);
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $stock_value = $row['value'];
-            }
+        $sql = "SELECT sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Location Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $stock_value = $row['value'];
+        }else{
+            $stock_value = 0;
         }
+
 
         $this->fast_update(
             array(
-                'Location Stock Value',
-                $stock_value
+                'Location Stock Value' => $stock_value
             )
         );
 
@@ -851,8 +856,8 @@ class Location extends DB_Table {
         /**
          * @var $warehouse_area \WarehouseArea
          */
-        $warehouse_area=get_object('WarehouseArea',$this->data['Location Warehouse Area Key']);
-        if($warehouse_area->id){
+        $warehouse_area = get_object('WarehouseArea', $this->data['Location Warehouse Area Key']);
+        if ($warehouse_area->id) {
             $warehouse_area->update_warehouse_area_number_parts();
         }
 
