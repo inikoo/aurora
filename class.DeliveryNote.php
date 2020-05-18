@@ -89,6 +89,8 @@ class DeliveryNote extends DB_Table {
         $this->editor = $dn_data['editor'];
         unset($dn_data['editor']);
 
+
+        $dn_data['Delivery Note Number History Records']=0;
         foreach ($dn_data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
@@ -115,7 +117,7 @@ class DeliveryNote extends DB_Table {
             $this->id = $this->db->lastInsertId();
 
 
-            $this->db->exec($sql);
+
 
             $this->get_data('id', $this->id);
 
