@@ -1734,15 +1734,15 @@ class SupplierDelivery extends DB_Table {
         $under = 0;
 
         $sql =
-            "SELECT  sum( if(`Supplier Delivery Checked Units` > `Supplier Delivery Units` ,1,0))  over, sum( if( `Supplier Delivery Checked Units` < `Supplier Delivery Units` ,1,0))  under FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=?   and `Supplier Delivery Checked Units` is not null  ";
+            "SELECT  sum( if(`Supplier Delivery Checked Units` > `Supplier Delivery Units` ,1,0))  over_qty, sum( if( `Supplier Delivery Checked Units` < `Supplier Delivery Units` ,1,0))  under_qty FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=?   and `Supplier Delivery Checked Units` is not null  ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array($this->id)
         );
         while ($row = $stmt->fetch()) {
-            $over  = $row['over'];
-            $under = $row['under'];
+            $over  = $row['over_qty'];
+            $under = $row['under_qty'];
         }
 
 
