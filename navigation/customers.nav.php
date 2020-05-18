@@ -3437,7 +3437,7 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
 
     $sql = sprintf(
         "select `Customer Client Code` object_name,`Customer Client Key` as object_key from $table $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND C.`Customer Client Key` < %d))  order by $_order_field desc , C.`Customer Client Key` desc limit 1",
+	                and ($_order_field < %s OR ($_order_field = %s AND CC.`Customer Client Key` < %d))  order by $_order_field desc , CC.`Customer Client Key` desc limit 1",
 
         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $client->id
     );
@@ -3453,7 +3453,7 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
 
     $sql = sprintf(
         "select `Customer Client Code` object_name,`Customer Client Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Customer Client Key` > %d))  order by $_order_field   , C.`Customer Client Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $client->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND CC.`Customer Client Key` > %d))  order by $_order_field   , CC.`Customer Client Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $client->id
     );
 
     if ($result = $db->query($sql)) {

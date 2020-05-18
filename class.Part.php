@@ -3799,7 +3799,7 @@ class Part extends Asset {
             $this->fast_update(
                 array(
                     'Part Stock Lost SKOs'   => -$skos,
-                    'Part Stock Lost Amount' => -$amount
+                    'Part Stock Lost Value' => -$amount
 
 
                 )
@@ -3830,7 +3830,7 @@ class Part extends Asset {
             $this->fast_update(
                 array(
                     'Part Stock Damaged SKOs'   => -$skos,
-                    'Part Stock Damaged Amount' => -$amount
+                    'Part Stock Damaged Value' => -$amount
 
 
                 )
@@ -3861,7 +3861,7 @@ class Part extends Asset {
             $this->fast_update(
                 array(
                     'Part Stock Errors SKOs'   => -$skos,
-                    'Part Stock Errors Amount' => -$amount
+                    'Part Stock Errors Value' => -$amount
 
 
                 )
@@ -3892,7 +3892,7 @@ class Part extends Asset {
             $this->fast_update(
                 array(
                     'Part Stock Found SKOs'   => $skos,
-                    'Part Stock Found Amount' => $amount
+                    'Part Stock Found Value' => $amount
 
 
                 )

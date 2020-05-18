@@ -536,24 +536,21 @@ class data_entry_picking_aid {
                         */
 
 
-
-                         $stmt = $this->db->prepare($sql);
-                         if (!$stmt) {
-                             print_r($this->db->errorInfo());
-                         }
-
-
-                         if (!$stmt->execute(
-                             [
-                                 $_required,
-                                 $_given,
-                                 $row['Inventory Transaction Key']
-                             ]
-                         )) {
-                             print_r($stmt->errorInfo());
-                         }
+                        $stmt = $this->db->prepare($sql);
+                        if (!$stmt) {
+                            print_r($this->db->errorInfo());
+                        }
 
 
+                        if (!$stmt->execute(
+                            [
+                                $_required,
+                                $_given,
+                                $row['Inventory Transaction Key']
+                            ]
+                        )) {
+                            print_r($stmt->errorInfo());
+                        }
 
 
                     }
@@ -616,7 +613,7 @@ class data_entry_picking_aid {
 
                             //print '==$taken_off_required=='.$taken_off_required."\n";
 
-                            $_required          = $otf_map['required'] - $taken_off_required;
+                            $_required = $otf_map['required'] - $taken_off_required;
 
                             //print '==$_required=='.$_required."\n";
 
@@ -628,13 +625,13 @@ class data_entry_picking_aid {
 
                             // $qty = $qty - $taken_off_given;
 
-                            $itf_key                     = $this->create_itf($part_sku, $transaction['location_key'], $taken_off_required, $taken_off_given, $otf_map['otf_map'], $otf_map['otf_map_metadata']);
+                            $itf_key = $this->create_itf($part_sku, $transaction['location_key'], $taken_off_required, $taken_off_given, $otf_map['otf_map'], $otf_map['otf_map_metadata']);
 
                             //$otf_maps[$_key]['required'] = $otf_maps[$_key]['required'] - $_required;
                             //$otf_maps[$_key]['given']    = $otf_maps[$_key]['given'] - $_given;
 
-                            $otf_maps[$_key]['required'] =$_required;
-                            $otf_maps[$_key]['given'] =$_given;
+                            $otf_maps[$_key]['required'] = $_required;
+                            $otf_maps[$_key]['given']    = $_given;
                             $otf_maps[$_key]['qty']      = $otf_maps[$_key]['required'] + $otf_maps[$_key]['given'];
                             $otf_maps[$_key]['diff']     = $otf_maps[$_key]['diff'] + $taken_off_required + $taken_off_given;
 
@@ -656,7 +653,7 @@ class data_entry_picking_aid {
                 }
             }
 
-          //  continue;
+            //  continue;
 
             //print_r($otf_maps);
 
@@ -700,8 +697,6 @@ class data_entry_picking_aid {
 
         }
 
-
-        
 
     }
 
@@ -832,8 +827,6 @@ class data_entry_picking_aid {
                             );
 
 
-
-
                             $cost = 0;
 
                             $sql = sprintf('SELECT sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Map To Order Transaction Fact Key`=%d ', $row['Map To Order Transaction Fact Key']);
@@ -891,7 +884,7 @@ class data_entry_picking_aid {
         $this->dn->fast_update(
             array(
                 'Delivery Note Date Finish Picking' => $date,
-                'Delivery Note Date Date'           => $date
+                'Delivery Note Date Finish Packing' => $date
             )
         );
 
