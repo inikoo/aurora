@@ -1094,19 +1094,23 @@ class Customer extends Subject {
             case 'Customer Order Sticky Note':
 
                 $this->update_field($field, $value);
-
-
-                $sql = sprintf("update `Order Dimension` set `Order Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ", $value, $this->id);
-                $this->db->exec($sql);
-
-                //$this->fork_subject_index_elastic_search();
+                $sql = "update `Order Dimension` set `Order Sticky Note`=?   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $value, $this->id
+                    )
+                );
                 break;
             case 'Customer Delivery Sticky Note':
                 $this->update_field($field, $value);
-                $sql = sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ", $value, $this->id);
-                $this->db->exec($sql);
-                //$this->fork_subject_index_elastic_search();
-                //todo maybe we need to change index form orers too
+                $sql = "update `Order Dimension` set `Order Delivery Sticky Note`=?   WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $value, $this->id
+                    )
+                );
+
+
                 break;
             case 'Customer Web Login Password':
 
