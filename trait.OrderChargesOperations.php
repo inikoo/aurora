@@ -428,7 +428,7 @@ trait OrderChargesOperations {
             );
 
 
-            $this->db->exec($sql);
+
 
 
         }

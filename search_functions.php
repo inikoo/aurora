@@ -1145,7 +1145,7 @@ function search_inventory($db, $account, $user, $data) {
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
-                '[[:<:]]'.$q
+                '\\b'.$q
             )
         );
         while ($row = $stmt->fetch()) {
@@ -1232,7 +1232,7 @@ function search_inventory($db, $account, $user, $data) {
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
-                '[[:<:]]'.$q
+                '\\b'.$q
             )
         );
         while ($row = $stmt->fetch()) {
@@ -1555,7 +1555,7 @@ function search_products($db, $account, $user, $data) {
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
-                '[[:<:]]'.$q
+                '\\b'.$q
             )
         );
         while ($row = $stmt->fetch()) {
@@ -1611,7 +1611,7 @@ function search_products($db, $account, $user, $data) {
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
-                '[[:<:]]'.$q
+                '\\b'.$q
             )
         );
         while ($row = $stmt->fetch()) {
@@ -3276,7 +3276,7 @@ function search_webpages($db, $account, $user, $data) {
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 array(
-                    '[[:<:]]'.$q
+                    '\\b'.$q
                 )
             );
             while ($row = $stmt->fetch()) {
@@ -3497,7 +3497,7 @@ function search_parts($db, $account, $data, $response_type = 'echo') {
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
-                '[[:<:]]'.$q
+                '\\b'.$q
             )
         );
         while ($row = $stmt->fetch()) {

@@ -119,13 +119,17 @@ class DeliveryNote extends DB_Table {
             $this->id = $this->db->query("SELECT LAST_INSERT_ID()")->fetchColumn();
             if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
-            }else{
-                Sentry\captureMessage('inserting  '.$this->id.'  '.$base_data['Delivery Note ID'].'   '.$this->table_name);
-
             }
 
 
             $this->get_data('id', $this->id);
+
+            if(!is_array($this->data)){
+                throw new Exception('Error data not '.$this->id.' loaded '.$this->table_name);
+                Sentry\captureMessage('Error  '.$this->id.'  '.$base_data['Delivery Note ID'].'   '.$this->table_name);
+
+
+            }
 
 
             $total_estimated_weight = 0;

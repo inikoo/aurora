@@ -13,7 +13,6 @@ use Elasticsearch\ClientBuilder;
 
 require_once 'common.php';
 require_once 'utils/ar_common.php';
-//include_once 'search_functions.php';
 
 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 

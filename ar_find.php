@@ -378,7 +378,7 @@ function find_users($db, $data) {
         $stmt = $db->prepare($sql);
         if ($stmt->execute(
             array(
-                '[[:<:]]'.$q
+                '\\b'.$q
             )
         )) {
             while ($row = $stmt->fetch()) {
@@ -529,28 +529,23 @@ function find_suppliers($db, $data) {
         }
 
 
-        $sql = sprintf(
-            "SELECT `Supplier Key`,`Supplier Code`,`Supplier Name` FROM `Supplier Dimension` WHERE  `Supplier Name`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        $sql  = "SELECT `Supplier Key`,`Supplier Code`,`Supplier Name` FROM `Supplier Dimension` WHERE  `Supplier Name`  REGEXP ? LIMIT 100 ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '\\b'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Supplier Name'] == $q) {
+                $candidates[$row['Supplier Key']] = 55;
+            } else {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Supplier Name'] == $q) {
-                    $candidates[$row['Supplier Key']] = 55;
-                } else {
-
-                    $len_name                         = strlen(
-                        $row['Supplier Name']
-                    );
-                    $len_q                            = strlen($q);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Supplier Key']] = 50 * $factor;
-                }
-
+                $len_name                         = strlen($row['Supplier Name']);
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Supplier Key']] = 50 * $factor;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -733,28 +728,25 @@ function find_stores($db, $data) {
         }
 
 
-        $sql = sprintf(
-            "select `Store Key`,`Store Code`,`Store Name` from `Store Dimension` where true $where_store and `Store Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
+        $sql  = "select `Store Key`,`Store Code`,`Store Name` from `Store Dimension` where true $where_store and `Store Name`  REGEXP ? limit 100 ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '\\b'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Store Name'] == $q) {
+                $candidates[$row['Store Key']] = 55;
+            } else {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Store Name'] == $q) {
-                    $candidates[$row['Store Key']] = 55;
-                } else {
-
-                    $len_name                      = strlen(
-                        $row['Store Name']
-                    );
-                    $len_q                         = strlen($q);
-                    $factor                        = $len_q / $len_name;
-                    $candidates[$row['Store Key']] = 50 * $factor;
-                }
-
+                $len_name                      = strlen(
+                    $row['Store Name']
+                );
+                $len_q                         = strlen($q);
+                $factor                        = $len_q / $len_name;
+                $candidates[$row['Store Key']] = 50 * $factor;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -1021,7 +1013,7 @@ function find_warehouse_areas($db, $data) {
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
-            '[[:<:]]'.$q
+            '\\b'.$q
         )
     );
     while ($row = $stmt->fetch()) {
@@ -1153,34 +1145,29 @@ function find_customers($db, $data) {
 
     }
 
-    $sql = sprintf(
-        "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer Name` REGEXP \"[[:<:]]%s\"  order by `Customer File As` limit $max_results ",
-        $q
+    $sql  =
+        "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer Name` REGEXP ?  order by `Customer File As` limit $max_results ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            '\\b'.$q
+        )
     );
+    while ($row = $stmt->fetch()) {
+        if ($row['Customer Name'] == $q) {
+            $candidates[$row['Customer Key']] = 1000;
+        } else {
 
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-
-            if ($row['Customer Name'] == $q) {
-                $candidates[$row['Customer Key']] = 1000;
-            } else {
-
-                $len_name                         = strlen($row['Customer Name']);
-                $len_q                            = strlen($q);
-                $factor                           = $len_q / $len_name;
-                $candidates[$row['Customer Key']] = 500 * $factor;
-            }
-
-            $candidates_data[$row['Customer Key']] = array(
-                'Customer Name' => $row['Customer Name'],
-                'Store Code'    => $row['Store Code']
-            );
-
+            $len_name                         = strlen($row['Customer Name']);
+            $len_q                            = strlen($q);
+            $factor                           = $len_q / $len_name;
+            $candidates[$row['Customer Key']] = 500 * $factor;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+
+        $candidates_data[$row['Customer Key']] = array(
+            'Customer Name' => $row['Customer Name'],
+            'Store Code'    => $row['Store Code']
+        );
     }
 
 
@@ -1270,34 +1257,29 @@ function find_customer_lists($db, $data) {
     $candidates_data = array();
 
 
-    $sql = sprintf(
-        "select `List Key`,`List Name`,`List Type`,`List Number Items` from `List Dimension`  where true $where_stores and `List Name` REGEXP \"[[:<:]]%s\"   limit $max_results ", $q
+    $sql  = "select `List Key`,`List Name`,`List Type`,`List Number Items` from `List Dimension`  where true $where_stores and `List Name` REGEXP ?   limit $max_results ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            '\\b'.$q
+        )
     );
+    while ($row = $stmt->fetch()) {
+        if ($row['List Name'] == $q) {
+            $candidates[$row['List Key']] = 1000;
+        } else {
 
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-
-            if ($row['List Name'] == $q) {
-                $candidates[$row['List Key']] = 1000;
-            } else {
-
-                $len_name                     = strlen($row['List Name']);
-                $len_q                        = strlen($q);
-                $factor                       = $len_q / $len_name;
-                $candidates[$row['List Key']] = 500 * $factor;
-            }
-
-            $candidates_data[$row['List Key']] = array(
-                'List Name' => $row['List Name'],
-                'List Type' => ($row['List Type'] == 'Static' ? _('Static') : _('Dynamic')),
-                'Customers' => $row['List Number Items'],
-            );
-
+            $len_name                     = strlen($row['List Name']);
+            $len_q                        = strlen($q);
+            $factor                       = $len_q / $len_name;
+            $candidates[$row['List Key']] = 500 * $factor;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+
+        $candidates_data[$row['List Key']] = array(
+            'List Name' => $row['List Name'],
+            'List Type' => ($row['List Type'] == 'Static' ? _('Static') : _('Dynamic')),
+            'Customers' => $row['List Number Items'],
+        );
     }
 
 
@@ -2197,7 +2179,7 @@ function find_special_category($type, $db, $account, $data) {
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
-                '[[:<:]]'.$q
+                '\\b'.$q
             )
         );
         while ($row = $stmt->fetch()) {
@@ -2403,52 +2385,45 @@ function find_countries($db, $data) {
         }
 
 
-        $sql = sprintf(
-            "SELECT `Country Key`,`Country Code`,`Country Name` FROM kbase.`Country Dimension` WHERE  `Country Name`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        $sql = "SELECT `Country Key`,`Country Code`,`Country Name` FROM kbase.`Country Dimension` WHERE  `Country Name`  REGEXP ? LIMIT 100 ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '\\b'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Country Name'] == $q) {
+                $candidates[$row['Country Key']] = 55;
+            } else {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Country Name'] == $q) {
-                    $candidates[$row['Country Key']] = 55;
-                } else {
-
-                    $len_name                        = strlen(
-                        $row['Country Name']
-                    );
-                    $len_q                           = strlen($q);
-                    $factor                          = $len_q / $len_name;
-                    $candidates[$row['Country Key']] = 50 * $factor;
-                }
-
+                $len_name                        = strlen($row['Country Name']);
+                $len_q                           = strlen($q);
+                $factor                          = $len_q / $len_name;
+                $candidates[$row['Country Key']] = 50 * $factor;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
-        $sql = sprintf(
-            "SELECT `Country Key`,`Country Code`,`Country Local Name` FROM kbase.`Country Dimension` WHERE  `Country Local Name`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+
+        $sql = "SELECT `Country Key`,`Country Code`,`Country Local Name` FROM kbase.`Country Dimension` WHERE  `Country Local Name`  REGEXP ? LIMIT 100 ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '\\b'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Country Local Name'] == $q) {
+                $candidates[$row['Country Key']] = 55;
+            } else {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Country Local Name'] == $q) {
-                    $candidates[$row['Country Key']] = 55;
-                } else {
-
-                    $len_name                        = strlen(
-                        $row['Country Local Name']
-                    );
-                    $len_q                           = strlen($q);
-                    $factor                          = $len_q / $len_name;
-                    $candidates[$row['Country Key']] = 50 * $factor;
-                }
-
+                $len_name                        = strlen($row['Country Local Name']);
+                $len_q                           = strlen($q);
+                $factor                          = $len_q / $len_name;
+                $candidates[$row['Country Key']] = 50 * $factor;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -2656,7 +2631,7 @@ function new_purchase_order_options($db, $data) {
 
     $sql = sprintf(
         "SELECT `Warehouse Key`,`Warehouse Code`,`Warehouse Name` FROM `Warehouse Dimension` WHERE `Warehouse State`='Active'"
-        );
+    );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             if (!$warehouse_key) {
@@ -3463,7 +3438,7 @@ function find_employees($db, $data) {
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
-            '[[:<:]]'.$q
+            '\\b'.$q
         )
     );
     while ($row = $stmt->fetch()) {
@@ -3769,7 +3744,7 @@ function find_part($db, $data) {
 function find_location($db, $data) {
 
 
-    $q           = trim($data['query']);
+    $q = trim($data['query']);
 
 
     if ($q == '') {
@@ -3804,7 +3779,6 @@ function find_location($db, $data) {
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-
 
 
             $object_data = array(
@@ -3858,8 +3832,6 @@ function find_allowance_targets($db, $data) {
 
         return;
     }
-
-
 
 
     $where = '';
