@@ -119,6 +119,9 @@ class DeliveryNote extends DB_Table {
             $this->id = $this->db->query("SELECT LAST_INSERT_ID()")->fetchColumn();
             if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
+            }else{
+                Sentry\captureMessage('inserting  '.$this->id.'  '.$base_data['Delivery Note ID'].'   '.$this->table_name);
+
             }
 
 
@@ -184,7 +187,7 @@ class DeliveryNote extends DB_Table {
             );
             while ($row = $stmt->fetch()) {
                 $this->create_inventory_transaction_fact_item(
-                    $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'], $row['Order Bonus Quantity'], $this->get('Delivery Note Date')
+                    $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'], $row['Order Bonus Quantity'], gmdate('Y-m-d H:i:s')
                 );
             }
 
