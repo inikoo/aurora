@@ -90,7 +90,7 @@ class DeliveryNote extends DB_Table {
         unset($dn_data['editor']);
 
 
-       
+
         foreach ($dn_data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);

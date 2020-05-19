@@ -177,8 +177,8 @@ class Auth {
         $ip   = ip_from_cloudfare();
         $date = gmdate('Y-m-d H:i:s');
         $sql  = sprintf(
-            "INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`) VALUES (%d, %s, %s, %s,%s, %s)",
-            $this->user_key, prepare_mysql(session_id()), prepare_mysql($ip), prepare_mysql($date), prepare_mysql($date), 'NULL'
+            "INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`) VALUES (%d, %s, %s, %s,%s, %s)", $this->user_key, prepare_mysql(session_id()), prepare_mysql($ip), prepare_mysql($date), prepare_mysql($date),
+            'NULL'
         );
 
 
@@ -207,11 +207,9 @@ class Auth {
             $this->data['User Has Login'] = 'No';
         }
         $sql = sprintf(
-            "UPDATE `User Dimension` SET `User Has Login`=%d , `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s WHERE `User Key`=%d", prepare_mysql($this->data['User Has Login']),
-            $num_logins, prepare_mysql($ip), prepare_mysql($date), $this->user_key
+            "UPDATE `User Dimension` SET `User Has Login`=%d , `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s WHERE `User Key`=%d", prepare_mysql($this->data['User Has Login']), $num_logins, prepare_mysql($ip), prepare_mysql($date), $this->user_key
         );
         $this->db->exec($sql);
-
 
 
     }
@@ -219,15 +217,27 @@ class Auth {
     function log_failed_login() {
         $date = gmdate("Y-m-d H:i:s");
         $ip   = ip_from_cloudfare();
-        $sql  = sprintf(
-            "INSERT INTO `User Failed Log Dimension` VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", prepare_mysql($this->handle), prepare_mysql($this->log_page), prepare_mysql($this->pass['handle_key']),
-            prepare_mysql($date), prepare_mysql($ip), prepare_mysql($this->pass['main_reason']), prepare_mysql($this->pass['handle']), prepare_mysql($this->pass['password']),
-            prepare_mysql($this->pass['time']), prepare_mysql($this->pass['ip']), prepare_mysql($this->pass['ikey'])
+        $sql  = "INSERT INTO `User Failed Log Dimension`  (`Handle`,`Login Page`,`User Key`, `Date`,`IP`,`Fail Main Reason`, `Handle OK`,`Password OK`,`Logging On Time OK`, `IP OK`,`IKey OK`)  VALUES (?,?,?,? ,?,?,?, ?,?,?, ?,?)";
 
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->handle,
+                $this->log_page,
+                $this->pass['handle_key'],
+
+                $date,
+                $ip,
+                $this->pass['main_reason'],
+
+                $this->pass['handle'],
+                $this->pass['password'],
+                $this->pass['time'],
+
+                $this->pass['ip'],
+                $this->pass['ikey']
+            )
         );
 
-
-        $this->db->exec($sql);
 
         if ($this->pass['handle_key']) {
 
@@ -249,11 +259,9 @@ class Auth {
 
 
             $sql = sprintf(
-                "UPDATE `User Dimension` SET `User Failed Login Count`=%d, `User Last Failed Login IP`=%s,`User Last Failed Login`=%s WHERE `User Key`=%d", $num_failed_logins, prepare_mysql($ip),
-                prepare_mysql($date), $this->pass['handle_key']
+                "UPDATE `User Dimension` SET `User Failed Login Count`=%d, `User Last Failed Login IP`=%s,`User Last Failed Login`=%s WHERE `User Key`=%d", $num_failed_logins, prepare_mysql($ip), prepare_mysql($date), $this->pass['handle_key']
             );
             $this->db->exec($sql);
-
 
 
         }
@@ -404,8 +412,8 @@ class Auth {
 
 
         $sql = sprintf(
-            "SELECT `MasterKey Internal Key`,U.`User Key`,`User Handle`,`User Parent Key` FROM `MasterKey Internal Dimension` M LEFT JOIN `User Dimension` U ON (U.`User Key`=M.`User Key`)    WHERE `Key`=%s AND  `Valid Until`>=%s  ",
-            prepare_mysql($data), prepare_mysql(gmdate('Y-m-d H:i:s'))
+            "SELECT `MasterKey Internal Key`,U.`User Key`,`User Handle`,`User Parent Key` FROM `MasterKey Internal Dimension` M LEFT JOIN `User Dimension` U ON (U.`User Key`=M.`User Key`)    WHERE `Key`=%s AND  `Valid Until`>=%s  ", prepare_mysql($data),
+            prepare_mysql(gmdate('Y-m-d H:i:s'))
 
         );
 
@@ -461,8 +469,7 @@ class Auth {
         //'cookie_error','handle','password','logging_timeout','ip','ikey','masterkey_not_found','masterkey_used','masterkey_expired'
 
         $this->authentication_type = 'masterkey';
-        $sql                       =
-            sprintf("SELECT `User Key`,`Valid Until`,`MasterKey Key`,`Used`,`Fails Already Used`,`Fails Expired`  FROM `MasterKey Dimension` M  WHERE `Key`=%s  ", prepare_mysql($data));
+        $sql                       = sprintf("SELECT `User Key`,`Valid Until`,`MasterKey Key`,`Used`,`Fails Already Used`,`Fails Expired`  FROM `MasterKey Dimension` M  WHERE `Key`=%s  ", prepare_mysql($data));
 
         //  if ($same_ip) {$sql.=sprintf(" and `IP`=%s",prepare_mysql(ip_from_cloudfare()));}
 
