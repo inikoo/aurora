@@ -201,7 +201,13 @@ class Customer extends Subject {
 
 
         if ($stmt->execute()) {
-            $this->id = $this->db->lastInsertId();
+
+            $this->id = $this->db->query("SELECT LAST_INSERT_ID()")->fetchColumn();
+            if (!$this->id) {
+                throw new Exception('Error inserting '.$this->table_name);
+            }
+
+
             $this->get_data('id', $this->id);
 
 
@@ -872,10 +878,6 @@ class Customer extends Subject {
 
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
-
     function update_location_type() {
 
         $store = get_object('Store', $this->data['Customer Store Key']);
@@ -938,7 +940,6 @@ class Customer extends Subject {
 
 
     }
-
 
     function create_order($options = '{}') {
 
@@ -1097,7 +1098,8 @@ class Customer extends Subject {
                 $sql = "update `Order Dimension` set `Order Sticky Note`=?   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=?";
                 $this->db->prepare($sql)->execute(
                     array(
-                        $value, $this->id
+                        $value,
+                        $this->id
                     )
                 );
                 break;
@@ -1106,7 +1108,8 @@ class Customer extends Subject {
                 $sql = "update `Order Dimension` set `Order Delivery Sticky Note`=?   WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=?";
                 $this->db->prepare($sql)->execute(
                     array(
-                        $value, $this->id
+                        $value,
+                        $this->id
                     )
                 );
 
@@ -2180,7 +2183,6 @@ class Customer extends Subject {
 
     }
 
-
     function get_last_order() {
         $order_key = 0;
         $sql       = sprintf(
@@ -2201,7 +2203,6 @@ class Customer extends Subject {
 
         return $order_key;
     }
-
 
     function get_addresses_data() {
 
@@ -2352,7 +2353,6 @@ class Customer extends Subject {
 
         return $credits;
     }
-
 
     public function update_orders() {
 
@@ -2736,8 +2736,6 @@ class Customer extends Subject {
     public function update_activity() {
 
 
-
-
         if ($this->data['Customer Type by Activity'] == 'ToApprove' or $this->data['Customer Type by Activity'] == 'Rejected') {
             return;
         }
@@ -2800,7 +2798,6 @@ class Customer extends Subject {
 
 
     }
-
 
     function delete($note = '') {
 
@@ -2892,7 +2889,6 @@ class Customer extends Subject {
 
         $this->deleted = true;
     }
-
 
     function get_category_data() {
 
@@ -3204,7 +3200,6 @@ class Customer extends Subject {
 
     }
 
-
     function update_product_bridge() {
 
 
@@ -3386,7 +3381,6 @@ class Customer extends Subject {
 
     }
 
-
     function set_account_balance_adjust($amount, $note) {
 
         include_once "utils/currency_functions.php";
@@ -3560,12 +3554,10 @@ class Customer extends Subject {
         );
         if ($row = $stmt->fetch()) {
             return 'customers/'.$this->data['Customer Store Key'].'/'.$row['Customer Key'];
-        }else{
+        } else {
             return 'customers/'.$this->data['Customer Store Key'];
 
         }
-
-
 
 
     }
@@ -3593,7 +3585,7 @@ class Customer extends Subject {
         );
         if ($row = $stmt->fetch()) {
             return 'customers/'.$this->data['Customer Store Key'].'/'.$row['Customer Key'];
-        }else{
+        } else {
             return 'customers/'.$this->data['Customer Store Key'];
 
         }
@@ -3790,7 +3782,6 @@ class Customer extends Subject {
 
 
     }
-
 
     function create_timeseries($data, $fork_key = 0) {
 
@@ -4133,6 +4124,10 @@ class Customer extends Subject {
         }
 
         return false;
+    }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
 

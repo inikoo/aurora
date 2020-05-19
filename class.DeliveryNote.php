@@ -90,7 +90,7 @@ class DeliveryNote extends DB_Table {
         unset($dn_data['editor']);
 
 
-        $dn_data['Delivery Note Number History Records']=0;
+       
         foreach ($dn_data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
@@ -114,10 +114,14 @@ class DeliveryNote extends DB_Table {
 
         if ($stmt->execute()) {
 
-            $this->id = $this->db->lastInsertId();
-            if(!$this->id){
+
+
+            $this->id = $this->db->query("SELECT LAST_INSERT_ID()")->fetchColumn();
+            if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
             }
+
+
             $this->get_data('id', $this->id);
 
 
