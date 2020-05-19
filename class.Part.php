@@ -4083,7 +4083,7 @@ class Part extends Asset {
                 "Part $db_interval Acc 1YB Invoiced Amount"  => $sales_data['invoiced_amount'],
                 "Part $db_interval Acc 1YB Required"         => $sales_data['required'],
                 "Part $db_interval Acc 1YB Dispatched"       => $sales_data['dispatched'],
-                "Part $db_interval Acc 1YB Keeping Day"      => $sales_data['keep_days'],
+                "Part $db_interval Acc 1YB Keeping Days"      => $sales_data['keep_days'],
                 "Part $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
 
             );
@@ -4216,7 +4216,7 @@ class Part extends Asset {
                 "Part $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
                 "Part $i Year Ago Required"         => $data_iy_ago['required'],
                 "Part $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
-                "Part $i Year Ago Keeping Day"      => $data_iy_ago['keep_days'],
+                "Part $i Year Ago Keeping Days"      => $data_iy_ago['keep_days'],
                 "Part $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
             );
 
@@ -4250,7 +4250,7 @@ class Part extends Asset {
                 "Part $i Quarter Ago Invoiced Amount"  => $sales_data['invoiced_amount'],
                 "Part $i Quarter Ago Required"         => $sales_data['required'],
                 "Part $i Quarter Ago Dispatched"       => $sales_data['dispatched'],
-                "Part $i Quarter Ago Keeping Day"      => $sales_data['keep_days'],
+                "Part $i Quarter Ago Keeping Days"      => $sales_data['keep_days'],
                 "Part $i Quarter Ago With Stock Days"  => $sales_data['with_stock_days'],
 
                 "Part $i Quarter Ago 1YB Customers"        => $sales_data_1yb['customers'],
@@ -4260,7 +4260,7 @@ class Part extends Asset {
                 "Part $i Quarter Ago 1YB Invoiced Amount"  => $sales_data_1yb['invoiced_amount'],
                 "Part $i Quarter Ago 1YB Required"         => $sales_data_1yb['required'],
                 "Part $i Quarter Ago 1YB Dispatched"       => $sales_data_1yb['dispatched'],
-                "Part $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
+                "Part $i Quarter Ago 1YB Keeping Days"      => $sales_data_1yb['keep_days'],
                 "Part $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
             $this->fast_update($data_to_update, 'Part Data');

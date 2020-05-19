@@ -882,7 +882,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
                 $this->table_name." $i Year Ago Required"         => $data_iy_ago['required'],
                 $this->table_name." $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
-                $this->table_name." $i Year Ago Keeping Day"      => $data_iy_ago['keep_days'],
+                $this->table_name." $i Year Ago Keeping Days"      => $data_iy_ago['keep_days'],
                 $this->table_name." $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
             );
 
@@ -917,7 +917,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $i Quarter Ago Invoiced Amount"  => $sales_data['invoiced_amount'],
                 $this->table_name." $i Quarter Ago Required"         => $sales_data['required'],
                 $this->table_name." $i Quarter Ago Dispatched"       => $sales_data['dispatched'],
-                $this->table_name." $i Quarter Ago Keeping Day"      => $sales_data['keep_days'],
+                $this->table_name." $i Quarter Ago Keeping Days"      => $sales_data['keep_days'],
                 $this->table_name." $i Quarter Ago With Stock Days"  => $sales_data['with_stock_days'],
 
                 $this->table_name." $i Quarter Ago 1YB Customers"        => $sales_data_1yb['customers'],
@@ -927,7 +927,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $i Quarter Ago 1YB Invoiced Amount"  => $sales_data_1yb['invoiced_amount'],
                 $this->table_name." $i Quarter Ago 1YB Required"         => $sales_data_1yb['required'],
                 $this->table_name." $i Quarter Ago 1YB Dispatched"       => $sales_data_1yb['dispatched'],
-                $this->table_name." $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
+                $this->table_name." $i Quarter Ago 1YB Keeping Days"      => $sales_data_1yb['keep_days'],
                 $this->table_name." $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
             $this->update($data_to_update, 'no_history');

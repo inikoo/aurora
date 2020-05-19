@@ -221,7 +221,7 @@ trait SupplierCategory {
             "Supplier Category 1 Year Ago Invoiced Amount"  => $data_1y_ago['invoiced_amount'],
             "Supplier Category 1 Year Ago Required"         => $data_1y_ago['required'],
             "Supplier Category 1 Year Ago Dispatched"       => $data_1y_ago['dispatched'],
-            "Supplier Category 1 Year Ago Keeping Day"      => $data_1y_ago['keep_days'],
+            "Supplier Category 1 Year Ago Keeping Days"      => $data_1y_ago['keep_days'],
             "Supplier Category 1 Year Ago With Stock Days"  => $data_1y_ago['with_stock_days'],
 
             "Supplier Category 2 Year Ago Customers"        => $data_2y_ago['customers'],
@@ -231,7 +231,7 @@ trait SupplierCategory {
             "Supplier Category 2 Year Ago Invoiced Amount"  => $data_2y_ago['invoiced_amount'],
             "Supplier Category 2 Year Ago Required"         => $data_2y_ago['required'],
             "Supplier Category 2 Year Ago Dispatched"       => $data_2y_ago['dispatched'],
-            "Supplier Category 2 Year Ago Keeping Day"      => $data_2y_ago['keep_days'],
+            "Supplier Category 2 Year Ago Keeping Days"      => $data_2y_ago['keep_days'],
             "Supplier Category 2 Year Ago With Stock Days"  => $data_2y_ago['with_stock_days'],
 
             "Supplier Category 3 Year Ago Customers"        => $data_3y_ago['customers'],
@@ -241,7 +241,7 @@ trait SupplierCategory {
             "Supplier Category 3 Year Ago Invoiced Amount"  => $data_3y_ago['invoiced_amount'],
             "Supplier Category 3 Year Ago Required"         => $data_3y_ago['required'],
             "Supplier Category 3 Year Ago Dispatched"       => $data_3y_ago['dispatched'],
-            "Supplier Category 3 Year Ago Keeping Day"      => $data_3y_ago['keep_days'],
+            "Supplier Category 3 Year Ago Keeping Days"      => $data_3y_ago['keep_days'],
             "Supplier Category 3 Year Ago With Stock Days"  => $data_3y_ago['with_stock_days'],
 
             "Supplier Category 4 Year Ago Customers"        => $data_4y_ago['customers'],
@@ -251,7 +251,7 @@ trait SupplierCategory {
             "Supplier Category 4 Year Ago Invoiced Amount"  => $data_4y_ago['invoiced_amount'],
             "Supplier Category 4 Year Ago Required"         => $data_4y_ago['required'],
             "Supplier Category 4 Year Ago Dispatched"       => $data_4y_ago['dispatched'],
-            "Supplier Category 4 Year Ago Keeping Day"      => $data_4y_ago['keep_days'],
+            "Supplier Category 4 Year Ago Keeping Days"      => $data_4y_ago['keep_days'],
             "Supplier Category 4 Year Ago With Stock Days"  => $data_4y_ago['with_stock_days'],
 
             "Supplier Category 5 Year Ago Customers"        => $data_5y_ago['customers'],
@@ -261,7 +261,7 @@ trait SupplierCategory {
             "Supplier Category 5 Year Ago Invoiced Amount"  => $data_5y_ago['invoiced_amount'],
             "Supplier Category 5 Year Ago Required"         => $data_5y_ago['required'],
             "Supplier Category 5 Year Ago Dispatched"       => $data_5y_ago['dispatched'],
-            "Supplier Category 5 Year Ago Keeping Day"      => $data_5y_ago['keep_days'],
+            "Supplier Category 5 Year Ago Keeping Days"      => $data_5y_ago['keep_days'],
             "Supplier Category 5 Year Ago With Stock Days"  => $data_5y_ago['with_stock_days'],
 
 
@@ -297,7 +297,7 @@ trait SupplierCategory {
                 "Supplier Category $i Quarter Ago Invoiced Amount"  => $sales_data['invoiced_amount'],
                 "Supplier Category $i Quarter Ago Required"         => $sales_data['required'],
                 "Supplier Category $i Quarter Ago Dispatched"       => $sales_data['dispatched'],
-                "Supplier Category $i Quarter Ago Keeping Day"      => $sales_data['keep_days'],
+                "Supplier Category $i Quarter Ago Keeping Days"      => $sales_data['keep_days'],
                 "Supplier Category $i Quarter Ago With Stock Days"  => $sales_data['with_stock_days'],
 
                 "Supplier Category $i Quarter Ago 1YB Customers"        => $sales_data_1yb['customers'],
@@ -307,7 +307,7 @@ trait SupplierCategory {
                 "Supplier Category $i Quarter Ago 1YB Invoiced Amount"  => $sales_data_1yb['invoiced_amount'],
                 "Supplier Category $i Quarter Ago 1YB Required"         => $sales_data_1yb['required'],
                 "Supplier Category $i Quarter Ago 1YB Dispatched"       => $sales_data_1yb['dispatched'],
-                "Supplier Category $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
+                "Supplier Category $i Quarter Ago 1YB Keeping Days"      => $sales_data_1yb['keep_days'],
                 "Supplier Category $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
             $this->update($data_to_update, 'no_history');
