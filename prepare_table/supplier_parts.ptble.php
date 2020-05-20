@@ -17,7 +17,6 @@ $table = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part
 
 $filter_msg = '';
 $sql_type   = 'part';
-$filter_msg = '';
 $wheref     = '';
 
 
@@ -166,10 +165,11 @@ if (isset($parameters['elements_type'])) {
 }
 
 if ($parameters['f_field'] == 'reference' and $f_value != '') {
-    $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
+    $wheref .= " and ( `Part Reference` like '".addslashes($f_value)."%'   or  `Supplier Part Reference` like '".addslashes($f_value)."%' ) "  ;
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
     $wheref .= " and  `Supplier Part Description` like '".addslashes($f_value)."%'";
 }
+
 
 
 $_order = $order;
