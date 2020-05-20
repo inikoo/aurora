@@ -246,8 +246,8 @@ $smarty->assign(
 
 
 
-//$supplier->update_supplier_paid_ordered_parts();
-//$supplier->update_supplier_part_locations_to_replenish();
+$supplier->update_supplier_paid_ordered_parts();
+$supplier->update_supplier_part_locations_to_replenish();
 
 
 $smarty->assign('supplier_production',$supplier);
