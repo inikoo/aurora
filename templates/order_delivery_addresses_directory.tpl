@@ -12,7 +12,7 @@
 <table class="delivery_options">
 
 
-    {if $can_collect=='Yes'}
+    {if $store->get('Store Can Collect')=='Yes'  and $store->get('Store Collect Address Country 2 Alpha Code')!=''  }
         <tr style="border:none"  data-type="collection" class="button order_delivery_directory_item"  >
             <td class="padding_right_10" >
                 <i class="far radio_icon fa-fw {if $order->get('Order For Collection')=='No'}fa-circle{else}fa-scrubber{/if} "   title="{t}Set order for collection{/t}"></i>

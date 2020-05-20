@@ -312,6 +312,16 @@ trait OrderOperations {
             $value = 'No';
         }
 
+        if($value=='Yes'){
+            $store = get_object('Store', $this->data['Order Store Key']);
+            if($store->get('Store Collect Address Country 2 Alpha Code')==''){
+                $this->error=true;
+                $this->msg=_('Collection address not configured');
+                return;
+            }
+
+        }
+
 
         $old_value = $this->data['Order For Collection'];
 
@@ -320,7 +330,10 @@ trait OrderOperations {
 
 
             if ($value == 'Yes') {
-                $store = get_object('Store', $this->data['Order Store Key']);
+
+
+
+
 
 
                 $address_data = array(

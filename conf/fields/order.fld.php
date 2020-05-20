@@ -54,7 +54,7 @@ if ($store->get('Store Can Collect') == 'Yes') {
     $number_other_delivery_address++;
 }
 
-$smarty->assign('can_collect', $store->get('Store Can Collect'));
+$smarty->assign('store',$store);
 $smarty->assign('order', $object);
 
 

@@ -261,7 +261,7 @@
     <form id="order_delivery_address_form" class="sky-form sky-form-modal">
         <header id="_title">{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</header>
 
-        <fieldset  class="{if $store->get('Store Can Collect')=='No'}hide{/if} "  >
+        <fieldset  class="{if $store->get('Store Can Collect')=='No' or $store->get('Store Collect Address Country 2 Alpha Code')==''  }hide{/if} "  >
 
 
             <section>
@@ -278,7 +278,7 @@
 
 
 
-        <fieldset id="order_delivery_address_fields" class=" {if $order->get('Order For Collection')=='Yes'  and  $store->get('Store Can Collect')=='Yes'}hide{/if}" style="position:relative">
+        <fieldset id="order_delivery_address_fields" class=" {if $order->get('Order For Collection')=='Yes'  and  $store->get('Store Can Collect')=='Yes'     }hide{/if}" style="position:relative">
 
 
 
