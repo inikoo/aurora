@@ -6,6 +6,9 @@
 
 function scanned_barcode(value) {
 
+    console.log('Barcode Scanned')
+
+    console.log(value)
 
     var matches_location = value.match(/^\!W(\d+)L(\d+)/);
     if (matches_location) {

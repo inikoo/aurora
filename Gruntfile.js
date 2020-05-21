@@ -125,7 +125,7 @@ module.exports = function (grunt) {
                 options: {
 
                     sourceMap: true,
-                }, src: ['bower_components/jquery/dist/jquery.js', 'js_libs/jquery-migrate-3.0.1.js', 'js_libs/jquery-ui.1.12.1.js', 'js_libs/jquery.nice-select.js',
+                }, src: ['bower_components/jquery/dist/jquery.js', 'js_libs/jquery-migrate-3.0.1.js', 'js_libs/jquery-ui.1.12.1.js', 'js_libs/jquery.nice-select.js','js_libs/jquery-barcodeListener.js',
 
 
                     'bower_components/moment/min/moment-with-locales.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-2012-2022.js', 'bower_components/select2/dist/js/select2.js', //'js_libs/moment-with-locales.js',

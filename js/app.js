@@ -21,6 +21,12 @@ var websocket_connected_connecting = false;
 
 $(function () {
 
+    $('body').barcodeListener().on('barcode.valid', function(e, code){
+        console.log('Barcode Scanned')
+
+        console.log(code);
+    })
+
     state = {
         module: '', section: '', parent: '', parent_key: '', object: '', key: ''
     };
