@@ -221,11 +221,15 @@ class Store extends DB_Table {
             $this->db->exec($sql);
 
 
-            $sql = sprintf(
-                "INSERT INTO `Store Data` (`Store Key`) VALUES (%d)", $this->id
+            $sql = "INSERT INTO `Store Data` (`Store Key`) VALUES (?)";
+
+            $this->db->prepare($sql)->execute(
+                array(
+                    $this->id
+                )
             );
 
-            $this->db->exec($sql);
+
             $sql = sprintf(
                 "INSERT INTO `Store DC Data` (`Store Key`) VALUES (%d)", $this->id
             );

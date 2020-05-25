@@ -27,7 +27,7 @@ class SubjectSupplier extends Subject {
         $warehouse = get_object('Warehouse', $_data['warehouse_key']);
 
         $order_data = array(
-            'Purchase Order Parent'              => ($this->table_name=='Supplier Production'?'Supplier':$this->table_name),
+            'Purchase Order Parent'              => ($this->table_name == 'Supplier Production' ? 'Supplier' : $this->table_name),
             'Purchase Order Parent Key'          => $this->id,
             'Purchase Order Parent Name'         => $this->get('Name'),
             'Purchase Order Parent Code'         => $this->get('Code'),
@@ -35,7 +35,7 @@ class SubjectSupplier extends Subject {
             'Purchase Order Parent Email'        => $this->get('Main Plain Email'),
             'Purchase Order Parent Telephone'    => $this->get('Preferred Contact Number Formatted Number'),
             'Purchase Order Parent Address'      => $this->get('Contact Address Formatted'),
-            'Purchase Order Parent Country Code'      => $this->get('Contact Address Country 2 Alpha Code'),
+            'Purchase Order Parent Country Code' => $this->get('Contact Address Country 2 Alpha Code'),
 
             'Purchase Order Currency Code'  => $this->get('Default Currency Code'),
             'Purchase Order Incoterm'       => $this->get($this->table_name.' Default Incoterm'),
@@ -94,6 +94,9 @@ class SubjectSupplier extends Subject {
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
 
     function update_purchase_orders() {
         $number_purchase_orders      = 0;
@@ -271,13 +274,11 @@ class SubjectSupplier extends Subject {
         }
 
 
-
         if ($this->table_name == 'Supplier Production') {
             $table_name = 'Supplier';
         } else {
             $table_name = $this->table_name;
         }
-        
 
 
         switch ($key) {
@@ -309,7 +310,6 @@ class SubjectSupplier extends Subject {
             case 'Supplier Number Todo Parts':
             case 'Agent Number Todo Parts':
 
-            
 
                 return array(
                     true,
@@ -573,9 +573,7 @@ class SubjectSupplier extends Subject {
                     '/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key
                 )) {
 
-                    
-                    
-                    
+
                     $field = $table_name.' '.preg_replace('/ Soft Minify$/', '', $key);
 
 
@@ -661,7 +659,6 @@ class SubjectSupplier extends Subject {
 
     }
 
-
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
         include_once 'utils/date_functions.php';
@@ -746,7 +743,8 @@ class SubjectSupplier extends Subject {
                         ]
         )) {
 
-            $this->update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
+
         }
 
 
@@ -882,15 +880,15 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
                 $this->table_name." $i Year Ago Required"         => $data_iy_ago['required'],
                 $this->table_name." $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
-                $this->table_name." $i Year Ago Keeping Days"      => $data_iy_ago['keep_days'],
+                $this->table_name." $i Year Ago Keeping Days"     => $data_iy_ago['keep_days'],
                 $this->table_name." $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
             );
 
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, $this->table_name.' Data');
         }
 
-        $this->update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
 
 
     }
@@ -917,7 +915,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $i Quarter Ago Invoiced Amount"  => $sales_data['invoiced_amount'],
                 $this->table_name." $i Quarter Ago Required"         => $sales_data['required'],
                 $this->table_name." $i Quarter Ago Dispatched"       => $sales_data['dispatched'],
-                $this->table_name." $i Quarter Ago Keeping Days"      => $sales_data['keep_days'],
+                $this->table_name." $i Quarter Ago Keeping Days"     => $sales_data['keep_days'],
                 $this->table_name." $i Quarter Ago With Stock Days"  => $sales_data['with_stock_days'],
 
                 $this->table_name." $i Quarter Ago 1YB Customers"        => $sales_data_1yb['customers'],
@@ -927,19 +925,15 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $i Quarter Ago 1YB Invoiced Amount"  => $sales_data_1yb['invoiced_amount'],
                 $this->table_name." $i Quarter Ago 1YB Required"         => $sales_data_1yb['required'],
                 $this->table_name." $i Quarter Ago 1YB Dispatched"       => $sales_data_1yb['dispatched'],
-                $this->table_name." $i Quarter Ago 1YB Keeping Days"      => $sales_data_1yb['keep_days'],
+                $this->table_name." $i Quarter Ago 1YB Keeping Days"     => $sales_data_1yb['keep_days'],
                 $this->table_name." $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, $this->table_name.' Data');
         }
 
-        $this->update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update([$this->table_name.' Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
 
 
-    }
-
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
 

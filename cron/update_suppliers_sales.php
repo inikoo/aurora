@@ -11,31 +11,30 @@
 */
 
 require_once 'common.php';
-require_once 'class.Agent.php';
 require_once 'class.Supplier.php';
 require_once 'class.Category.php';
 
 
 $sql = sprintf('SELECT `Agent Key` FROM `Agent Dimension`  ');
 
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $agent = new Agent($row['Agent Key']);
-        $agent->load_acc_data();
-        $agent->update_sales_from_invoices('Total');
-        $agent->update_sales_from_invoices('Week To Day');
-        $agent->update_sales_from_invoices('Month To Day');
-        $agent->update_sales_from_invoices('Quarter To Day');
-        $agent->update_sales_from_invoices('Year To Day');
-        $agent->update_sales_from_invoices('1 Year');
-        $agent->update_sales_from_invoices('1 Quarter');
-    }
+$stmt = $db->prepare($sql);
+$stmt->execute();
+while ($row = $stmt->fetch()) {
+    $agent = get_object('Agent', $row['Agent Key']);
+    $agent->load_acc_data();
+    $agent->update_previous_years_data();
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
+    $agent->update_sales_from_invoices('Total');
+    $agent->update_sales_from_invoices('Week To Day');
+    $agent->update_sales_from_invoices('Month To Day');
+    $agent->update_sales_from_invoices('Quarter To Day');
+    $agent->update_sales_from_invoices('Year To Day');
+    $agent->update_sales_from_invoices('1 Year');
+    $agent->update_sales_from_invoices('1 Quarter');
+    $agent->update_previous_quarters_data();
 }
 
+exit;
 
 $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
 
@@ -81,4 +80,3 @@ if ($result = $db->query($sql)) {
 }
 
 
-?>

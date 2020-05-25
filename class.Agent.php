@@ -234,6 +234,14 @@ class Agent extends SubjectSupplier {
 
             $this->get_data('id', $this->id);
 
+            $sql = "INSERT INTO `Agent Data` (`Agent Key`) VALUES (?)";
+
+            $this->db->prepare($sql)->execute(
+                array(
+                    $this->id
+                )
+            );
+
 
             if ($this->data['Agent Company Name'] != '') {
                 $agent_name = $this->data['Agent Company Name'];
@@ -300,19 +308,18 @@ class Agent extends SubjectSupplier {
     }
 
     function load_acc_data() {
-        $sql = sprintf(
-            "SELECT * FROM `Agent Data` WHERE `Agent Key`=%d", $this->id
-        );
+        $sql = "SELECT * FROM `Agent Data` WHERE `Agent Key`=?";
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            foreach ($row as $key => $value) {
+                $this->data[$key] = $value;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -396,12 +403,11 @@ class Agent extends SubjectSupplier {
                         );
                     }
                 }
+                break;
             case 'Agent Code':
             case 'Agent Name':
             case 'Agent Nickname':
             case 'Agent Website':
-
-
                 $this->update_field($field, $value, $options);
                 $this->fork_index_elastic_search();
                 break;
@@ -410,7 +416,7 @@ class Agent extends SubjectSupplier {
             default:
 
                 if (array_key_exists($field, $this->base_data('Agent Data'))) {
-                    //print "$field $value \n";
+
                     $this->update_table_field(
                         $field, $value, $options, 'Agent', 'Agent Data', $this->id
                     );
@@ -633,59 +639,51 @@ class Agent extends SubjectSupplier {
         $supplier_number_out_of_stock_parts = 0;
 
 
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM  `Agent Supplier Bridge`  WHERE `Agent Supplier Agent Key`=%d  ', $this->id
+        $sql = "SELECT count(*) AS num FROM  `Agent Supplier Bridge`  WHERE `Agent Supplier Agent Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $supplier_number_suppliers = $row['num'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+        if ($row = $stmt->fetch()) {
+            $supplier_number_suppliers = $row['num'];
         }
 
 
-        $sql = sprintf(
-            'SELECT
+        $sql = "SELECT
 		count(*) AS num ,
-		sum(if(`Part Stock Status`="Surplus",1,0)) AS surplus,
-		sum(if(`Part Stock Status`="Optimal",1,0)) AS optimal,
-		sum(if(`Part Stock Status`="Low",1,0)) AS low,
-		sum(if(`Part Stock Status`="Critical",1,0)) AS critical,
-		sum(if(`Part Stock Status`="Out_Of_Stock",1,0)) AS out_of_stock
+		sum(if(`Part Stock Status`='Surplus',1,0)) AS surplus,
+		sum(if(`Part Stock Status`='Optimal',1,0)) AS optimal,
+		sum(if(`Part Stock Status`='Low',1,0)) AS low,
+		sum(if(`Part Stock Status`='Critical',1,0)) AS critical,
+		sum(if(`Part Stock Status`='Out_Of_Stock',1,0)) AS out_of_stock
+		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`) 
+            LEFT JOIN `Agent Supplier Bridge` B ON (`Agent Supplier Supplier Key`=`Supplier Part Supplier Key`) 
+            WHERE `Agent Supplier Agent Key`=?  AND `Part Status`='In Use' AND `Supplier Part Status`!='Discontinued'";
 
-		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`) LEFT JOIN `Agent Supplier Bridge` B ON (`Agent Supplier Supplier Key`=`Supplier Part Supplier Key`)    WHERE `Agent Supplier Agent Key`=%d  AND `Part Status`="In Use" AND `Supplier Part Status`!="Discontinued" ',
-            $this->id
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $supplier_number_parts = $row['num'];
+            if ($row['num'] > 0) {
 
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $supplier_number_parts = $row['num'];
-                if ($row['num'] > 0) {
-
-                    $supplier_number_surplus_parts      = $row['surplus'];
-                    $supplier_number_optimal_parts      = $row['optimal'];
-                    $supplier_number_low_parts          = $row['low'];
-                    $supplier_number_critical_parts     = $row['critical'];
-                    $supplier_number_out_of_stock_parts = $row['out_of_stock'];
-                }
-
+                $supplier_number_surplus_parts      = $row['surplus'];
+                $supplier_number_optimal_parts      = $row['optimal'];
+                $supplier_number_low_parts          = $row['low'];
+                $supplier_number_critical_parts     = $row['critical'];
+                $supplier_number_out_of_stock_parts = $row['out_of_stock'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
-        $this->update(
+        $this->fastt_update(
             array(
                 'Agent Number Suppliers'          => $supplier_number_suppliers,
                 'Agent Number Parts'              => $supplier_number_parts,
@@ -695,7 +693,7 @@ class Agent extends SubjectSupplier {
                 'Agent Number Critical Parts'     => $supplier_number_critical_parts,
                 'Agent Number Out Of Stock Parts' => $supplier_number_out_of_stock_parts,
 
-            ), 'no_history'
+            )
         );
 
     }
