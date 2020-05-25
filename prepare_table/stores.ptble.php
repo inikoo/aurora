@@ -38,17 +38,12 @@ if ($parameters['f_field'] == 'name' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-
 if ($order == 'families') {
     $order = '`Store Families`';
 } elseif ($order == 'departments') {
     $order = '`Store Departments`';
 } elseif ($order == 'code') {
     $order = '`Store Code`';
-} elseif ($order == 'todo') {
-    $order = '`Store In Process Products`';
-} elseif ($order == 'discontinued') {
-    $order = '`Store In Process Products`';
 } elseif ($order == 'profit') {
     $order = '`Store '.$period_tag.' Profit`';
 
@@ -59,7 +54,7 @@ if ($order == 'families') {
 } elseif ($order == 'name') {
     $order = '`Store Name`';
 } elseif ($order == 'active') {
-    $order = '`Store For Public Sale Products`';
+    $order = '`Store Active Products`';
 } elseif ($order == 'outofstock') {
     $order = '`Store Out Of Stock Products`';
 } elseif ($order == 'stock_error') {
@@ -76,17 +71,21 @@ if ($order == 'families') {
     $order = '`Website Code`';
 } elseif ($order == 'new') {
     $order = '`Store New Products`';
+} elseif ($order == 'discontinuing') {
+    $order = '`Store Discontinuing Products`';
+} elseif ($order == 'discontinued') {
+    $order = '`Store Discontinued Products`';
+} elseif ($order == 'in_process') {
+    $order = '`Store New Products`';
 } else {
     $order = 'S.`Store Key`';
 }
 
 
-$table
-    = '`Store Dimension` S left join `Store Data` D on (D.`Store Key`=S.`Store Key`) left join `Store DC Data` DC on DC.`Store Key`=S.`Store Key` left join `Website Dimension` on `Store Website Key`=`Website Key`  ';
+$table = '`Store Dimension` S left join `Store Data` D on (D.`Store Key`=S.`Store Key`) left join `Store DC Data` DC on DC.`Store Key`=S.`Store Key` left join `Website Dimension` on `Store Website Key`=`Website Key`  ';
 
-$sql_totals
-    = "select count(Distinct S.`Store Key`) as num from $table  $where  ";
+$sql_totals = "select count(Distinct S.`Store Key`) as num from $table  $where  ";
 
 $fields = "`Store Name`,`Store Code`,S.`Store Key`,`Store New Products`,`Store Active Products`,`Store Suspended Products`,`Store Discontinued Products`,`Store Discontinuing Products`,`Website URL`,`Website Name`,`Website Key`,`Website Code`";
 
-?>
+

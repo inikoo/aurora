@@ -46,7 +46,7 @@ cell: Backgrid.HtmlCell.extend({
 {
 name: "in_process",
 label:'',
-html_label: '<i class="fa fa-child" aria-hidden="true"></i>',
+html_label: '<i class="fa fa-child" s aria-hidden="true"></i>',
 title: "{t}New products{/t}",
 headerCell: HeaderHtmlCell,
 headerClass:"aright",
@@ -56,6 +56,7 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='in_process'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell,
 
 },
 {
@@ -71,7 +72,7 @@ sortType: "toggle",
 {if $sort_key=='active'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-headerCell: HeaderHtmlCell,
+headerCell: rightHeaderHtmlCell,
 headerClass:"aright"
 },
 {
@@ -86,7 +87,7 @@ sortType: "toggle",
 {if $sort_key=='discontinuing'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-headerCell: HeaderHtmlCell,
+headerCell: rightHeaderHtmlCell,
 headerClass:"aright"
 
 },
@@ -102,7 +103,7 @@ sortType: "toggle",
 {if $sort_key=='discontinued'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-headerCell: HeaderHtmlCell,
+headerCell: rightHeaderHtmlCell,
 headerClass:"aright"
 
 },

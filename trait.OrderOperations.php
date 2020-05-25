@@ -182,10 +182,9 @@ trait OrderOperations {
         if ($stmt->execute()) {
 
 
-
             $this->id = $this->db->lastInsertId();
 
-            if(!$this->id){
+            if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
             }
 
@@ -312,11 +311,12 @@ trait OrderOperations {
             $value = 'No';
         }
 
-        if($value=='Yes'){
+        if ($value == 'Yes') {
             $store = get_object('Store', $this->data['Order Store Key']);
-            if($store->get('Store Collect Address Country 2 Alpha Code')==''){
-                $this->error=true;
-                $this->msg=_('Collection address not configured');
+            if ($store->get('Store Collect Address Country 2 Alpha Code') == '') {
+                $this->error = true;
+                $this->msg   = _('Collection address not configured');
+
                 return;
             }
 
@@ -330,10 +330,6 @@ trait OrderOperations {
 
 
             if ($value == 'Yes') {
-
-
-
-
 
 
                 $address_data = array(
@@ -557,7 +553,7 @@ trait OrderOperations {
 
     }
 
-    function cancel($note = '', $fork = true) {
+    function cancel($note = '', $fork = true, $process_stats = true) {
 
         if ($this->data['Order State'] == 'Dispatched') {
             $this->error = true;
@@ -666,66 +662,64 @@ trait OrderOperations {
             );
         } else {
 
-            //tmp
-            $this->fork_index_elastic_search();
-
-            return true;
-            //
-
             $customer = get_object('Customer', $this->get('Order Customer Key'));
-            $store    = get_object('Store', $this->get('Order Store Key'));
-
-            $sql = sprintf("SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`='Charges' AND   `Order Key`=%d  ", $this->id);
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    /**
-                     * @var $charge \Charge
-                     */
-                    $charge = get_object('Charge', $row['Transaction Type Key']);
-                    $charge->update_charge_usage();
-
-                }
-            }
-
-
             $customer->update_orders();
-            $store->update_orders();
-            $account->update_orders();
-
-            $deals     = array();
-            $campaigns = array();
-            $sql       = sprintf(
-                "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
-            );
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
+            if($process_stats) {
+
+                $store    = get_object('Store', $this->get('Order Store Key'));
+
+                $sql = sprintf("SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`='Charges' AND   `Order Key`=%d  ", $this->id);
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        /**
+                         * @var $charge \Charge
+                         */
+                        $charge = get_object('Charge', $row['Transaction Type Key']);
+                        $charge->update_charge_usage();
+
+                    }
+                }
+
+
+                $store->update_orders();
+                $account->update_orders();
+
+                $deals     = array();
+                $campaigns = array();
+                $sql       = sprintf(
+                    "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        /**
+                         * @var $component \DealComponent
+                         */
+                        $component = get_object('DealComponent', $row['Deal Component Key']);
+                        $component->update_usage();
+                        $deals[$row['Deal Key']]              = $row['Deal Key'];
+                        $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
+                    }
+                }
+
+
+                foreach ($deals as $deal_key) {
                     /**
-                     * @var $component \DealComponent
+                     * @var $deal \Deal
                      */
-                    $component = get_object('DealComponent', $row['Deal Component Key']);
-                    $component->update_usage();
-                    $deals[$row['Deal Key']]              = $row['Deal Key'];
-                    $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
+                    $deal = get_object('Deal', $deal_key);
+                    $deal->update_usage();
+                }
+
+                foreach ($campaigns as $campaign_key) {
+                    $campaign = get_object('DealCampaign', $campaign_key);
+                    $campaign->update_usage();
                 }
             }
-
-
-            foreach ($deals as $deal_key) {
-                /**
-                 * @var $deal \Deal
-                 */
-                $deal = get_object('Deal', $deal_key);
-                $deal->update_usage();
-            }
-
-            foreach ($campaigns as $campaign_key) {
-                $campaign = get_object('DealCampaign', $campaign_key);
-                $campaign->update_usage();
-            }
-
 
         }
 
