@@ -25,8 +25,6 @@ switch ($parameters['parent']) {
 $group = '';
 
 
-
-
 switch ($parameters['elements_type']) {
 
     case 'status':
@@ -53,8 +51,6 @@ switch ($parameters['elements_type']) {
 }
 
 
-
-
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref .= " and `Website Name` like '".addslashes($f_value)."%'";
@@ -65,7 +61,6 @@ if ($parameters['f_field'] == 'name' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-
 if ($order == 'name') {
     $order = '`Website Name`';
 } elseif ($order == 'url') {
@@ -75,8 +70,12 @@ if ($order == 'name') {
 } elseif ($order == 'code') {
     $order = '`Website Code`';
 
-} elseif ($order == 'pages') {
-    $order = '`Website Number WebPages`';
+} elseif ($order == 'online_webpages') {
+    $order = '`Website Number Online Webpages`';
+} elseif ($order == 'offline_webpages') {
+    $order = '`Website Number Offline Webpages`';
+} elseif ($order == 'in_process_webpages') {
+    $order = '`Website Number In Process Webpages`';
 } elseif ($order == 'products') {
     $order = '`Website Number Products`';
 } elseif ($order == 'visitors') {
@@ -90,8 +89,7 @@ if ($order == 'name') {
 } elseif ($order == 'pages_out_of_stock') {
     $order = '`Website Number WebPages with Out of Stock Products`';
 } elseif ($order == 'pages_out_of_stock_percentage') {
-    $order
-        = '`Website Number WebPages with Out of Stock Products`/`Website Number WebPages with Products`';
+    $order = '`Website Number WebPages with Out of Stock Products`/`Website Number WebPages with Products`';
 } elseif ($order == 'email_reminders_customers') {
     $order = '`Website Number Back in Stock Reminder Customers`';
 } elseif ($order == 'email_reminders_products') {
@@ -108,13 +106,13 @@ if ($order == 'name') {
     $order = '`Website Number Out of Stock Products`';
 } elseif ($order == 'out_of_stock_percentage') {
     $order = '`Website Number Out of Stock Products`/`Website Number Products`';
-}elseif ($order == 'gsc_clicks') {
+} elseif ($order == 'gsc_clicks') {
     $order = '`Website GSC Clicks`';
-}elseif ($order == 'gsc_impressions') {
+} elseif ($order == 'gsc_impressions') {
     $order = '`Website GSC Impressions`';
-}elseif ($order == 'gsc_ctr') {
+} elseif ($order == 'gsc_ctr') {
     $order = '`Website GSC CTR`';
-}elseif ($order == 'gsc_position') {
+} elseif ($order == 'gsc_position') {
     $order = '`Website GSC Position`';
 } else {
 
@@ -123,15 +121,11 @@ if ($order == 'name') {
 }
 
 
-$table
-    = '`Website Dimension` W left join `Website Data` D on (W.`Website Key`=D.`Website Key`)';
+$table = '`Website Dimension` W left join `Website Data` D on (W.`Website Key`=D.`Website Key`)';
 
-$sql_totals
-    = "select count(Distinct W.`Website Key`) as num from $table  $where  ";
+$sql_totals = "select count(Distinct W.`Website Key`) as num from $table  $where  ";
 
-
-$fields
-    = "`Website Store Key`,`Website Number Products`,`Website Number Out of Stock Products`,`Website Number WebPages with Out of Stock Products`,`Website Number WebPages with Products`,`Website Number WebPages`,`Website Total Acc Requests`,`Website Total Acc Sessions`,`Website Total Acc Visitors`,`Website Total Acc Users`,`Website Code`,`Website Name`,W.`Website Key`,`Website URL`,
-    `Website GSC Clicks`,`Website GSC Impressions`,`Website GSC CTR`,`Website GSC Position`,`Website Number Online Webpages`,`Website Status`
+$fields = "`Website Store Key`,`Website Number Products`,`Website Number Out of Stock Products`,`Website Number WebPages with Out of Stock Products`,`Website Number WebPages with Products`,`Website Number WebPages`,`Website Total Acc Requests`,`Website Total Acc Sessions`,`Website Total Acc Visitors`,`Website Total Acc Users`,`Website Code`,`Website Name`,W.`Website Key`,`Website URL`,
+    `Website GSC Clicks`,`Website GSC Impressions`,`Website GSC CTR`,`Website GSC Position`,`Website Number Online Webpages`,`Website Status`,`Website Number Offline Webpages`,`Website Number In Process Webpages`
 ";
 

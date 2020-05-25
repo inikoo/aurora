@@ -154,13 +154,13 @@ function queries($_data, $db, $user) {
 
         $adata[] = array(
             'website_key' => $data['Website Key'],
-            'date'     => strftime(
+            'date'        => strftime(
                 "%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')
             ),
-            'query'    => $data['Query'],
-            'number'   => number($data['number']),
-            'users'    => number($data['users']),
-            'results'  => number($data['results'], 1),
+            'query'       => $data['Query'],
+            'number'      => number($data['number']),
+            'users'       => number($data['users']),
+            'results'     => number($data['results'], 1),
         );
 
     }
@@ -195,13 +195,13 @@ function search_history($_data, $db, $user) {
 
         $adata[] = array(
             'website_key' => $data['Website Key'],
-            'date'     => strftime(
+            'date'        => strftime(
                 "%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')
             ),
-            'query'    => $data['Query'],
-            'user_key' => $data['User Key'],
-            'user'     => $user,
-            'results'  => number($data['Number Results']),
+            'query'       => $data['Query'],
+            'user_key'    => $data['User Key'],
+            'user'        => $user,
+            'results'     => number($data['Number Results']),
         );
 
     }
@@ -228,6 +228,7 @@ function websites($_data, $db, $user, $account, $redis) {
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
+
 
 
     foreach ($db->query($sql) as $data) {
@@ -260,7 +261,11 @@ function websites($_data, $db, $user, $account, $redis) {
             'requests'     => number($data['Website Total Acc Requests']),
             'sessions'     => number($data['Website Total Acc Sessions']),
 
-            'pages'                         => number($data['Website Number Online Webpages']),
+            'online_webpages'     => number($data['Website Number Online Webpages']),
+            'offline_webpages'    => number($data['Website Number Offline Webpages']),
+            'in_process_webpages' => number($data['Website Number In Process Webpages']),
+
+
             'pages_products'                => number($data['Website Number WebPages with Products']),
             'pages_out_of_stock'            => number($data['Website Number WebPages with Out of Stock Products']),
             'pages_out_of_stock_percentage' => percentage($data['Website Number WebPages with Out of Stock Products'], $data['Website Number WebPages with Products']),
@@ -299,7 +304,6 @@ function websites($_data, $db, $user, $account, $redis) {
     );
     echo json_encode($response);
 }
-
 
 
 function blocks($_data, $db, $user) {
@@ -611,7 +615,7 @@ function webpages_in_process($_data, $db, $user) {
     $rtext_label = 'webpage in_process';
     include_once 'prepare_table/init.php';
     include_once 'conf/webpage_types.php';
-    $webpage_types=get_webpage_types();
+    $webpage_types = get_webpage_types();
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -672,7 +676,7 @@ function webpages_ready($_data, $db, $user) {
     $rtext_label = 'webpage ready';
     include_once 'prepare_table/init.php';
     include_once 'conf/webpage_types.php';
-    $webpage_types=get_webpage_types();
+    $webpage_types = get_webpage_types();
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -720,7 +724,7 @@ function webpages_online($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
     include_once 'conf/webpage_types.php';
-    $webpage_types=get_webpage_types();
+    $webpage_types = get_webpage_types();
 
 
     //print_r($_data);
@@ -782,7 +786,7 @@ function webpages_offline($_data, $db, $user) {
     $rtext_label = 'webpage offline';
     include_once 'prepare_table/init.php';
     include_once 'conf/webpage_types.php';
-    $webpage_types=get_webpage_types();
+    $webpage_types = get_webpage_types();
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -841,7 +845,7 @@ function webpage_types($_data, $db, $user) {
     // $rtext_label = 'job position';
     include_once 'prepare_table/init.php';
     include_once 'conf/webpage_types.php';
-    $webpage_types=get_webpage_types();
+    $webpage_types = get_webpage_types();
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";

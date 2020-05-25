@@ -26,7 +26,7 @@ while ($row = $stmt->fetch()) {
 }
 
 
-$sql  = "select `Website Key`,`Website URL` from `Website Dimension` where `Website Status`='Active' ";
+$sql  = "select `Website Key`,`Website URL` from `Website Dimension`  ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     array()

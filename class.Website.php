@@ -788,17 +788,22 @@ class Website extends DB_Table {
     }
 
     function update_website_webpages_data() {
-        $sql = "SELECT `Webpage State`,count(*) AS number FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d  group by `Webpage State`";
+
 
         $number_online_webpages     = 0;
         $number_offline_webpages    = 0;
         $number_in_process_webpages = 0;
+
+        $sql = "SELECT `Webpage State`,count(*) AS number FROM `Page Store Dimension` WHERE `Webpage Website Key`=?  group by `Webpage State`";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array($this->id)
         );
         while ($row = $stmt->fetch()) {
+          
+
+
             if ($row['Webpage State'] == 'Online') {
                 $number_online_webpages = $row['number'];
             } elseif ($row['Webpage State'] == 'Offline') {

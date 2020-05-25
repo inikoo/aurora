@@ -129,12 +129,23 @@ headerCell: rightHeaderHtmlCell
 },
 
 {
-name: "pages",
-label:"{t}Webpages{/t}",
+name: "online_webpages",
+label:"{t}Online webpages{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='pages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='online_webpages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
+{
+name: "offline_webpages",
+label:"{t}Offline webpages{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='offline_webpages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
@@ -178,7 +189,8 @@ grid.columns.findWhere({ name: 'gsc_ctr'} ).set("renderable", true)
 }else if(view=='ga'){
 
 }else if(view=='webpages'){
-grid.columns.findWhere({ name: 'pages'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'online_webpages'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'offline_webpages'} ).set("renderable", true)
 
 
 }else if(view=='users'){
