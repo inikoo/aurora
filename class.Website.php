@@ -801,7 +801,7 @@ class Website extends DB_Table {
             array($this->id)
         );
         while ($row = $stmt->fetch()) {
-          
+
 
 
             if ($row['Webpage State'] == 'Online') {

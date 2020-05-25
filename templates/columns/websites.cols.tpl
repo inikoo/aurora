@@ -170,7 +170,8 @@ grid.columns.findWhere({ name: 'gsc_position'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'gsc_impressions'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'gsc_clicks'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'gsc_ctr'} ).set("renderable", false)
-
+grid.columns.findWhere({ name: 'online_webpages'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'offline_webpages'} ).set("renderable", false)
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'users'} ).set("renderable", true)
@@ -178,7 +179,7 @@ grid.columns.findWhere({ name: 'users'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'online_users'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'gsc_position'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'gsc_ctr'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'pages'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'online_webpages'} ).set("renderable", true)
 
 }else if(view=='gsc'){
 grid.columns.findWhere({ name: 'gsc_position'} ).set("renderable", true)
