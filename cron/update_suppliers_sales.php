@@ -22,7 +22,6 @@ $stmt->execute();
 while ($row = $stmt->fetch()) {
     $agent = get_object('Agent', $row['Agent Key']);
     $agent->load_acc_data();
-    $agent->update_previous_years_data();
 
     $agent->update_sales_from_invoices('Total');
     $agent->update_sales_from_invoices('Week To Day');
@@ -31,6 +30,10 @@ while ($row = $stmt->fetch()) {
     $agent->update_sales_from_invoices('Year To Day');
     $agent->update_sales_from_invoices('1 Year');
     $agent->update_sales_from_invoices('1 Quarter');
+    $agent->update_sales_from_invoices('Last Week');
+    $agent->update_sales_from_invoices('Last Month');
+    $agent->update_previous_years_data();
+
     $agent->update_previous_quarters_data();
 }
 
@@ -49,8 +52,16 @@ if ($result = $db->query($sql)) {
         $supplier->update_sales_from_invoices('Year To Day');
         $supplier->update_sales_from_invoices('1 Year');
         $supplier->update_sales_from_invoices('1 Quarter');
+        $supplier->update_sales_from_invoices('Last Week');
+        $supplier->update_sales_from_invoices('Last Month');
+
+        $supplier->update_previous_years_data();
+
+        $supplier->update_previous_quarters_data();
 
     }
+
+
 
 } else {
     print_r($error_info = $db->errorInfo());
@@ -74,6 +85,8 @@ if ($result = $db->query($sql)) {
         $category->update_supplier_category_sales('Year To Day');
         $category->update_supplier_category_sales('1 Year');
         $category->update_supplier_category_sales('1 Quarter');
+        $category->update_sales_from_invoices('Last Week');
+        $category->update_sales_from_invoices('Last Month');
 
     }
 }
