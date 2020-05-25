@@ -34,7 +34,6 @@ while ($row = $stmt->fetch()) {
     $agent->update_previous_quarters_data();
 }
 
-exit;
 
 $sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension`  ');
 
