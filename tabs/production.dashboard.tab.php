@@ -255,10 +255,10 @@ $smarty->assign('supplier_production',$supplier);
 $html = $smarty->fetch('production.kpi.tpl');
 
 
-
-//$supplier->update_locations_with_errors();
-//$supplier->update_paid_ordered_parts();
-//$supplier->update_supplier_parts();
+//todo do ths properly
+$supplier->update_locations_with_errors();
+$supplier->update_paid_ordered_parts();
+$supplier->update_supplier_parts();
 
 $smarty->assign('supplier', $supplier);
 
