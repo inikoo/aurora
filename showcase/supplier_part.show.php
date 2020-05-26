@@ -33,14 +33,14 @@ function get_supplier_part_showcase($data, $smarty, $user, $account) {
 
     }
 
-    if($labels_data['unit']==''){
+    if(empty($labels_data['unit'])){
 
         $labels_data['unit']=json_decode($account->properties('part_label_unit'),true);
     }
-    if($labels_data['sko']==''){
+    if(empty($labels_data['sko'])){
         $labels_data['sko']=json_decode($account->properties('part_label_sko'),true);
     }
-    if($labels_data['carton']==''){
+    if(empty($labels_data['carton'])){
         $labels_data['carton']=json_decode($account->properties('part_label_carton'),true);
     }
 
