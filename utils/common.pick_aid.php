@@ -144,7 +144,7 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
             if (is_whole_number($row['qty']) or $row['Part Units Per Package'] == 1) {
                 $qty = '<b>'.number($row['qty']).'</b>';
             } else {
-  
+
                 $hole = floor($row['qty']);
 
                 $reminder = $row['qty'] - $hole;
@@ -152,7 +152,7 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
                 $qty = '<b>'.$hole.'</b> ';
 
-                $residuo = $reminder * $row['Part Units Per Package'];
+                $residuo = round($reminder * $row['Part Units Per Package'],2);
 
                 if ($residuo == 1 and $row['Part Units Per Package'] == 2) {
                     $qty .= '&#xBD;';
