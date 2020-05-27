@@ -67,6 +67,7 @@ class Account extends DB_Table {
             foreach ($row as $key => $value) {
                 if ($key == 'Account Properties') {
                     $this->properties = json_decode($value, true);
+                    $this->settings   = [];
                 } else {
                     $this->data[$key] = $value;
                 }
@@ -76,6 +77,9 @@ class Account extends DB_Table {
 
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
 
     function add_account_history($history_key, $type = false) {
         $this->post_add_history($history_key, $type);
