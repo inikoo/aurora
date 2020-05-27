@@ -58,6 +58,8 @@ switch ($tipo) {
  * @param $data
  * @param $editor
  * @param $db \PDO
+ *
+ * @throws \Exception
  */
 function use_delivery_address_form_directory($data, $editor, $db) {
 

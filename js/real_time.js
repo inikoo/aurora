@@ -139,7 +139,8 @@ function connect_websocket() {
             for (var i in _data.progress_bar) {
                 var data = _data.progress_bar[i]
 
-                //console.log(data)
+
+                console.log(data)
 
                 if (data.state == 'In Process') {
 
@@ -169,6 +170,7 @@ function connect_websocket() {
 
                     $('#' + data.id + ' .field_export').addClass('button').removeClass('disabled')
                     $('#' + data.id + ' .stop_export').addClass('hide')
+                    $('#' + data.id + ' .close_export').removeClass('hide')
 
                 }
 
@@ -400,4 +402,5 @@ function  render_real_time_users_table(users_data) {
     });
 
 }
+
 

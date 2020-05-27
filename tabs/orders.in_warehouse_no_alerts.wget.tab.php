@@ -26,6 +26,17 @@ $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
 );
+$smarty->assign('table_top_lower_template_parameters',$parameters);
+
+$smarty->assign('parent',get_object($state['parent'],$state['parent_key']));
+
+
+//todo select correct warehouse
+$warehouse = get_object('warehouse', 1);
+$shippers = $warehouse->get_shippers('data', 'Active');
+
+$smarty->assign('shippers', $shippers);
+$smarty->assign('number_shippers', count($shippers));
 
 $smarty->assign('table_top_lower_template', 'orders_in_warehouse.edit.tpl');
 

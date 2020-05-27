@@ -68,10 +68,16 @@ function fork_export_edit_template($job) {
     $output_filename = preg_replace('/\s+/', '', $output_filename);
 
 
-    $sql = sprintf(
-        "update `Download Dimension` set `Download State`='In Process',`Download Filename`=%s where `Download Key`=%d  ", prepare_mysql($output_filename.'.'.$output_type), $download_key
+    $sql = "update `Download Dimension` set `Download State`='In Process',`Download Filename`=? where `Download Key`=? ";
 
+    $db->prepare($sql)->execute(
+        array(
+            $output_filename.'.'.$output_type,
+            $download_key
+        )
     );
+
+
     $db->exec($sql);
 
 
@@ -248,7 +254,7 @@ function fork_export_edit_template($job) {
         }
     }
 
-    $sockets  = get_zqm_message_sockets();
+    $sockets = get_zqm_message_sockets();
 
     foreach ($sockets as $socket) {
         $socket->send(
@@ -257,15 +263,10 @@ function fork_export_edit_template($job) {
                     'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                     'progress_bar' => array(
                         array(
-                            'id'    => 'download_'.$download_key,
-                            'state' => 'In Process',
-
+                            'id'            => 'download_'.$download_key,
+                            'state'         => 'In Process',
                             'progress_info' => percentage(0, $number_rows),
-                            'progress'      => sprintf(
-                                '%s/%s (%s)', number(0), number($number_rows), percentage(
-                                                0, $number_rows
-                                            )
-                            ),
+                            'progress'      => sprintf('%s/%s (%s)', number(0), number($number_rows), percentage(0, $number_rows)),
                             'percentage'    => percentage(0, $number_rows),
 
                         )
@@ -309,7 +310,6 @@ function fork_export_edit_template($job) {
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
-
 
 
             switch ($objects) {
@@ -435,8 +435,8 @@ function fork_export_edit_template($job) {
                             break;
 
                         case 'part_category':
-                            $object = get_object('Part',$row['id']);
-                            $data_rows      = array();
+                            $object    = get_object('Part', $row['id']);
+                            $data_rows = array();
                             if ($object->get('Part Status') != 'Not In Use' and $object->id) {
 
 
@@ -581,7 +581,6 @@ function fork_export_edit_template($job) {
             }
 
 
-
             if ($row_index == 1) {
                 $char_index = 1;
 
@@ -632,7 +631,7 @@ function fork_export_edit_template($job) {
                 $row_index++;
             }
 
-            if(count($data_rows)>0) {
+            if (count($data_rows) > 0) {
 
                 $char_index = 1;
                 foreach ($data_rows as $data_row) {
@@ -658,21 +657,20 @@ function fork_export_edit_template($job) {
                 $row_index++;
 
                 if (microtime(true) > $show_feedback) {
-                    //  print 'xx '.microtime(true) ." -> $show_feedback\n";
 
-
-                    $sql = sprintf(
-                        'select `Download State` from  `Download Dimension` where `Download Key`=%d  ', $download_key
-
+                    $sql  = "select `Download State` from  `Download Dimension` where `Download Key`=?";
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $download_key
+                        )
                     );
-
-                    if ($result = $db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            if ($row['Download State'] == 'Cancelled') {
-                                return 1;
-                            }
+                    while ($row = $stmt->fetch()) {
+                        if ($row['Download State'] == 'Cancelled') {
+                            return 1;
                         }
                     }
+
 
                     foreach ($sockets as $socket) {
                         $socket->send(
@@ -681,15 +679,10 @@ function fork_export_edit_template($job) {
                                     'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                                     'progress_bar' => array(
                                         array(
-                                            'id'    => 'download_'.$download_key,
-                                            'state' => 'In Process',
-
+                                            'id'            => 'download_'.$download_key,
+                                            'state'         => 'In Process',
                                             'progress_info' => percentage($row_index, $number_rows),
-                                            'progress'      => sprintf(
-                                                '%s/%s (%s)', number($row_index), number($number_rows), percentage(
-                                                                $row_index, $number_rows
-                                                            )
-                                            ),
+                                            'progress'      => sprintf('%s/%s (%s)', number($row_index), number($number_rows), percentage($row_index, $number_rows)),
                                             'percentage'    => percentage($row_index, $number_rows),
 
                                         )
@@ -710,7 +703,6 @@ function fork_export_edit_template($job) {
 
         }
     }
-
 
 
     $sheet        = $objPHPExcel->getActiveSheet();
@@ -775,16 +767,11 @@ function fork_export_edit_template($job) {
                     'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                     'progress_bar' => array(
                         array(
-                            'id'           => 'download_'.$download_key,
-                            'state'        => 'Finish',
-                            'download_key' => $download_key,
-
+                            'id'            => 'download_'.$download_key,
+                            'state'         => 'Finish',
+                            'download_key'  => $download_key,
                             'progress_info' => _('Done'),
-                            'progress'      => sprintf(
-                                '%s/%s (%s)', number($number_rows), number($number_rows), percentage(
-                                                $number_rows, $number_rows
-                                            )
-                            ),
+                            'progress'      => sprintf('%s/%s (%s)', number($number_rows), number($number_rows), percentage($number_rows, $number_rows)),
                             'percentage'    => percentage($number_rows, $number_rows),
 
                         )

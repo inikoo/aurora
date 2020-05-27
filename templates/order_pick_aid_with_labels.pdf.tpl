@@ -124,18 +124,17 @@
 <htmlpageheader name="myheader">
     <table width="100%">
         <tr>
-            <td width="50%" style="color:#000;">
-                <div style=";">{t}Order Pick Aid{/t} <b>{$delivery_note->get('Delivery Note ID')}</b></div>
-                <div>(C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')}) {$delivery_note->get('Delivery Note Customer Name')}</div>
+            <td width="50%" style="color:#000;font-size: 7.pt;">
+                <div style=";">{t}Order Pick Aid{/t} <b>{$delivery_note->get('Delivery Note ID')}</b> (C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')}) {$delivery_note->get('Delivery Note Customer Name')}</div>
 
             </td>
 
 
             <td width="50%" style="text-align: right;">
                 {if $delivery_note->get('Delivery Note Order Date Placed')}
-                    <div style="text-align: right">{t}Order date{/t}: {$delivery_note->get('Order Datetime Placed')}</div>
+                    <div style="text-align: right;font-size: 7.pt;">{t}Order date{/t}: {$delivery_note->get('Order Datetime Placed')}</div>
                 {/if}
-                <div style="text-align: right">{t}Delivery note date{/t}: {$delivery_note->get('Creation Date')}</div>
+
             </td>
         </tr>
     </table>
@@ -144,8 +143,10 @@
 
 
 <htmlpagefooter name="myfooter">
-    <small style="font-size: 7pt;">{t}Created{/t}: {$smarty.now|date_format:'%Y-%m-%d %H:%M:%S %Z'}</small>
-    <div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
+
+    <div style="float:left;width: 50%"><small style="font-size: 7pt;">{t}Created{/t}: {$smarty.now|date_format:'%Y-%m-%d %H:%M:%S %Z'}</small></div>
+    <div style="float:right;text-align: right;"><small >{t}Delivery note date{/t}: {$delivery_note->get('Creation Date')}</small></div>
+    <div style="clear:both;border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
         {t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}
     </div>
 </htmlpagefooter>
@@ -166,7 +167,8 @@
     <table>
         <tr>
 
-            <td style="font-size: 6pt;">
+            <td style="font-size: 7.pt;">
+                <div style="margin-left: 30px;padding-left: 30px">
                 <div style="margin-top: 10px;padding-top: 10px">
                     <b>{t}Dispatched by{/t}:</b>
                 </div>
@@ -183,10 +185,10 @@
                         </div>
                     {else}
                         <div class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
-                            <span style="font-size: 6pt;" class="address_label">{t}Phone{/t}</span> <span style="font-size: 6pt;" class="address_value">{$customer->get('Main XHTML Telephone')}</span>
+                            <span style="font-size: 7.pt;" class="address_label">{t}Phone{/t}</span> <span style="font-size: 7.pt;" class="address_value">{$customer->get('Main XHTML Telephone')}</span>
                         </div>
                         <div class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
-                            <span style="font-size: 6pt;" class="address_label">{t}Mobile{/t}</span> <span style="font-size: 6pt;" class="address_value">{$customer->get('Main XHTML Mobile')}</span>
+                            <span style="font-size: 7.pt;" class="address_label">{t}Mobile{/t}</span> <span style="font-size: 7.pt;" class="address_value">{$customer->get('Main XHTML Mobile')}</span>
                         </div>
                     {/if}
 
@@ -195,7 +197,7 @@
 
                 <div class="data_field small {if $customer->get('Customer Main Plain Email')==''}hide{/if}" style="margin-top:5px">
 
-                    <span style="font-size: 6pt;" class="address_label">{t}Email{/t}</span> <span style="font-size: 6pt;" class="address_value">{$customer->get('Customer Main Plain Email')}</span>
+                    <span style="font-size: 7.pt;" class="address_label">{t}Email{/t}</span> <span style="font-size: 7.pt;" class="address_value">{$customer->get('Customer Main Plain Email')}</span>
 
                 </div>
 
@@ -210,8 +212,9 @@
                 <div style="margin-top: 10px;">
                     {$store->get('Store Address')}
                 </div>
+                </div>
                 <br><br>
-                <barcode  code="AU_{$account->get('Code')}_{$delivery_note->id}" type="C128A" size=".5" />
+                <barcode  code="AU_{$account->get('Code')}_{$delivery_note->id}" type="C128A" size=".75" />
 
 
             </td>

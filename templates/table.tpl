@@ -121,7 +121,7 @@
             <table border=0 style="width:100%">
                 <tr class="no_border">
                     <td class="export_progress_bar_container">
-                        <a href="" class="download_export" download hidden></a>
+                        <a href="" class="download_export" ></a>
                         <span class="hide export_progress_bar_bg" ></span>
                         <div class="hide export_progress_bar"></div>
                         <div class="export_download hide"> {t}Download{/t}</div>

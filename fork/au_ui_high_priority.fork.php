@@ -27,6 +27,7 @@ include 'export.fork.php';
 include 'export_edit_template.fork.php';
 include 'reindex_webpages.fork.php';
 include 'send_mailshots.fork.php';
+include 'orders_control_panel.fork.php';
 
 
 include_once 'keyring/au_deploy_conf.php';
@@ -38,12 +39,10 @@ $worker = new GearmanWorker();
 $worker->addServers($servers);
 
 $worker->addFunction("au_export", "fork_export");
+$worker->addFunction("au_orders_control_panel", "fork_orders_control_panel");
 $worker->addFunction("au_export_edit_template", "fork_export_edit_template");
 $worker->addFunction("au_reindex_webpages", "fork_reindex_webpages");
-
 $worker->addFunction("au_send_mailshots", "fork_send_mailshots");
-
-
 
 
 

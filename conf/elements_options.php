@@ -1962,7 +1962,7 @@ function get_elements_option($option) {
                     ),
                     'Off'    => array(
                         'label'    => _('Off'),
-                        'selected' => true
+                        'selected' => false
                     )
 
 

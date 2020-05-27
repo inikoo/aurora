@@ -561,6 +561,7 @@ function show_download_edit_items_dialog(element) {
 
 
 function hide_export_dialog(export_dialog) {
+
     $(export_dialog).addClass('hide')
 
 
@@ -570,11 +571,11 @@ function hide_export_dialog(export_dialog) {
 
 
 
-    $(export_dialog).find('.export_download').addClass('hide').attr('title', '').on( 'click',function () {
-    })
+    $(export_dialog).find('.export_download').addClass('hide').attr('title', '').on( 'click',function () { })
     $(export_dialog).find('.export_progress_bar_bg').addClass('hide').html('')
     $(export_dialog).find('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
     $(export_dialog).find('.stop_export').addClass('hide')
+    $(export_dialog).find('.close_export').addClass('hide')
 
 
 }
@@ -824,19 +825,12 @@ function stop_export(element) {
 
     const export_dialog =$(element).closest('.export_dialog_container').find('.export_dialog')
 
-
     $(element).data('stop', 1);
-
     var request = "/ar_stop_export.php?tipo=stop&download_key="+$(element).closest('.export_dialog_container').data('download_key')
-
-
 
     $.getJSON(request, function (data) {
         if (data.state == 200) {
-
-
             hide_export_dialog(export_dialog)
-
         }
     })
 

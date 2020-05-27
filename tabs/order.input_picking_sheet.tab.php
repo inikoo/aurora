@@ -69,6 +69,7 @@ if(empty($state['metadata']['dn_key'])){
         $smarty->assign('order', $state['_object']);
 
         $smarty->assign('store', $state['store']);
+        $smarty->assign('parent', $state['store']);
 
 
         $warehouse = get_object('warehouse', $delivery_note->get('Delivery Note Warehouse Key'));
@@ -97,4 +98,4 @@ if(empty($state['metadata']['dn_key'])){
     }
 }
 
-?>
+

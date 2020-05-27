@@ -1072,7 +1072,7 @@ right connector from last child*/
 
   }
 
-  .progress_bar {
+  .progress_bar,.object_download {
     position: absolute;
     top: 1px;
     background: green;
@@ -1084,6 +1084,12 @@ right connector from last child*/
     line-height: 22px;
     -webkit-transition: width 1s;
     transition: width 1s;
+  }
+
+  .object_download{
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
   }
 
 }

@@ -341,9 +341,10 @@ switch ($tipo) {
             $_REQUEST, array(
 
                          'order_keys' => array('type' => 'json array'),
+
                      )
         );
-        send_orders_to_warehouse($data, $editor);
+        send_orders_to_warehouse($data, $editor,$smarty);
         break;
     default:
         $response = array(
@@ -356,7 +357,7 @@ switch ($tipo) {
 }
 
 
-function send_orders_to_warehouse($data, $editor) {
+function send_orders_to_warehouse($data, $editor,$smarty) {
 
     $updated = [];
     foreach ($data['order_keys'] as $order_key) {
@@ -381,9 +382,18 @@ function send_orders_to_warehouse($data, $editor) {
 
     $html.=' '.number($number_updated).' '.ngettext('order send to warehouse', 'orders send to warehouse',$number_updated);
 
+
+
+
+
     if($number_updated>0){
-        $html.=' <a target="_blank" href="/pdf/order_pick_aid.pdf.php?ids='.join(',',$updated).'"><i class="fal fa-fw fa-clipboard-list-check"></i></a>';
-        $html.=' <a target="_blank"  href="/pdf/order_pick_aid.pdf.php?with_labels&ids='.join(',',$updated).'"><i class="fal fa-fw fa-pager"></i></a>';
+        $html.=' <div style="float:right;margin-left:20px" class="orders_operations ">';
+        $html.='<span class="orders_picking_sheets orders_op orders_pdf " data-type="orders_picking_sheets"> '._('Picking sheets');
+        $html.=' <i data-source="fix" data-ids="'.join(',',$updated).'"   data-type="picking_aid"  class="fal fa-fw fa-clipboard-list-check button"></i>';
+        $html.=' <i data-source="fix"  data-ids="'.join(',',$updated).'" data-type="picking_aid_with_labels"  class="fal fa-fw fa-pager button"></i>';
+        $html.='</span>';
+        $html.= $smarty->fetch('control_order_operation_progress_bar.tpl');
+        $html.='</div>';
 
     }
 
