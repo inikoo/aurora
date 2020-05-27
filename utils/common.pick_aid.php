@@ -9,13 +9,14 @@
  Version 3
 
 */
+
 use Mpdf\Mpdf;
 
 
-function get_pick_aid_mpdf($type){
+function get_pick_aid_mpdf($type) {
 
 
-    if ($type=='with_labels') {
+    if ($type == 'with_labels') {
 
         $mpdf = new Mpdf(
             [
@@ -58,7 +59,7 @@ function get_pick_aid_mpdf($type){
  * @return mixed
  * @throws \SmartyException
  */
-function get_picking_aid_html_for_pdf($type,$delivery_note,$db,$smarty,$account){
+function get_picking_aid_html_for_pdf($type, $delivery_note, $db, $smarty, $account) {
 
 
     $store    = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
@@ -94,7 +95,7 @@ function get_picking_aid_html_for_pdf($type,$delivery_note,$db,$smarty,$account)
 
 
     $sql = sprintf(
-        "SELECT  Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Part Symbol` AS symbol,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
+        "SELECT  `Part Units Per Package`, Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Part Symbol` AS symbol,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
 (`Required`+`Given`) AS qty,`Location Code` AS location ,
         IFNULL((select GROUP_CONCAT(LD.`Location Key`,':',LD.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') 
         from `Part Location Dimension` PLD  left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`) 
@@ -113,6 +114,9 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
+
+            // print_r($row);
+
             $stock_in_picking = $row['stock_in_picking'];
             $total_stock      = $row['total_stock'];
             $row['stock']     = sprintf("[<b>%d</b>,%d]", $stock_in_picking, $total_stock);
@@ -134,13 +138,58 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
             }
 
-            $qty    = number($row['qty']);
+            $_qty = $row['qty'];
+
+
+            if (is_whole_number($row['qty']) or $row['Part Units Per Package'] == 1) {
+                $qty = '<b>'.number($row['qty']).'</b>';
+            } else {
+  
+                $hole = floor($row['qty']);
+
+                $reminder = $row['qty'] - $hole;
+
+
+                $qty = '<b>'.$hole.'</b> ';
+
+                $residuo = $reminder * $row['Part Units Per Package'];
+
+                if ($residuo == 1 and $row['Part Units Per Package'] == 2) {
+                    $qty .= '&#xBD;';
+                } elseif ($residuo == 1 and $row['Part Units Per Package'] == 3) {
+                    $qty .= '&#8531;';
+                } elseif ($residuo == 2 and $row['Part Units Per Package'] == 3) {
+                    $qty .= '&#8532;';
+                } elseif ($residuo == 1 and $row['Part Units Per Package'] == 4) {
+                    $qty .= '&#188;';
+                } elseif ($residuo == 3 and $row['Part Units Per Package'] == 4) {
+                    $qty .= '&#190;';
+                } elseif ($residuo == 1 and $row['Part Units Per Package'] == 6) {
+                    $qty .= '&#8537;';
+                } elseif ($residuo == 5 and $row['Part Units Per Package'] == 6) {
+                    $qty .= '&#8538;';
+                } elseif ($residuo == 1 and $row['Part Units Per Package'] == 8) {
+                    $qty .= '&#8539;';
+                } elseif ($residuo == 3 and $row['Part Units Per Package'] == 8) {
+                    $qty .= '&#8540;';
+                } elseif ($residuo == 5 and $row['Part Units Per Package'] == 8) {
+                    $qty .= '&#8541;';
+                } elseif ($residuo == 7 and $row['Part Units Per Package'] == 8) {
+                    $qty .= '&#8542;';
+                } else {
+                    $qty .= '<sup style="">'.$residuo.'</sup>&#8260;<sub style="">'.$row['Part Units Per Package'].'</sub>';
+
+                }
+
+
+            }
+
+
             $carton = $row['carton'];
 
 
-            $row['qty'] = '<b>'.$qty.'</b>';
-
-            if ($carton > 1 and fmod($qty, $carton) == 0) {
+            $row['qty'] = $qty;
+            if ($carton > 1 and fmod($_qty, $carton) == 0) {
                 $row['qty'] .= '<div style="font-style: italic;">('.number($qty / $carton).'c)</div>';
             }
 
@@ -188,6 +237,7 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
         }
     }
 
+    //print_r($transactions);
 
     $smarty->assign('transactions', $transactions);
 
@@ -233,35 +283,32 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
     );
 
 
-
-
-    if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Priority Level')!='Normal' ) {
+    if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Priority Level') != 'Normal') {
 
         $urgent = true;
 
-    }else{
+    } else {
         $urgent = false;
 
     }
 
-    if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Care Level')!='Normal' ) {
+    if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Care Level') != 'Normal') {
 
         $fragile = true;
 
-    }else{
+    } else {
         $fragile = false;
 
     }
 
 
-
     $smarty->assign('urgent', $urgent);
     $smarty->assign('fragile', $fragile);
 
+    //exit;
 
 
-
-    if ($type=='with_labels') {
+    if ($type == 'with_labels') {
         $html = $smarty->fetch('order_pick_aid_with_labels.pdf.tpl');
 
     } else {
@@ -273,4 +320,8 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
     return $html;
 
 
+}
+
+function is_whole_number($number) {
+    return (is_float(($f = filter_var($number, FILTER_VALIDATE_FLOAT))) && floor($f) === $f);
 }
