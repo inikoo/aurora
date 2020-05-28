@@ -238,7 +238,7 @@ class Product extends Asset {
                     $this->data['Product Price'], $this->data['Store Currency Code']
                 );
 
-                if ($this->data['Product Units Per Case'] != 1) {
+                if ($this->data['Product Units Per Case'] != 1 and  $this->data['Product Units Per Case']>0 ) {
 
                     $price .= ' ('.money(
                             $this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
@@ -471,9 +471,7 @@ class Product extends Asset {
                     return '';
                 } else {
 
-                    $date = strftime("%a, %e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
-
-                    return $date;
+                    return strftime("%a, %e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 
 
                 }
