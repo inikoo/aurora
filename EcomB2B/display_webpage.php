@@ -185,6 +185,8 @@ elseif (isset($is_unsubscribe)) {
 }
 
 elseif (isset($is_404)) {
+    include_once __DIR__.'/utils/public_object_functions.php';
+    $website     = get_object('Website', $_SESSION['website_key']);
     $webpage_key = $website->get_system_webpage_key('not_found.sys');
 }
 
