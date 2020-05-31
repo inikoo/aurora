@@ -21,7 +21,13 @@ include_once __DIR__.'/utils/web_locale_functions.php';
 include_once __DIR__.'/utils/general_functions.php';
 include_once __DIR__.'/utils/web_common.php';
 
+$redis = new Redis();
+$redis->connect(REDIS_HOST, REDIS_PORT);
 session_start();
+if (empty($_SESSION['website_key'])) {
+    include_once(__DIR__.'/utils/find_website_key.include.php');
+    $_SESSION['website_key']=get_website_key_from_domain($redis);
+}
 
 $logged_in = get_logged_in();
 
