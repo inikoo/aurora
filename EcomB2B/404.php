@@ -17,4 +17,4 @@ if (!empty($_REQUEST['original_url'])) {
 }
 $is_404=true;
 
-require __DIR__.'direct_process.php';
+require __DIR__.'/direct_process.php';

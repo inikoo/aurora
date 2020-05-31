@@ -11,4 +11,4 @@
 */
 
 $is_reset=true;
-require __DIR__.'direct_process.php';
+require __DIR__.'/direct_process.php';
