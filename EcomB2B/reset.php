@@ -10,21 +10,5 @@
   Version 2.0
 */
 
-
-require_once '../vendor/autoload.php';
-require 'keyring/dns.php';
-require_once 'utils/sentry.php';
-
-$redis = new Redis();
-$redis->connect(REDIS_HOST, REDIS_PORT);
-
-session_start();
-
-if (empty($_SESSION['website_key'])) {
-    include_once('utils/find_website_key.include.php');
-    $_SESSION['website_key']=get_website_key_from_domain($redis);
-}
-
 $is_reset=true;
-
-include 'display_webpage.php';
+require __DIR__.'direct_process.php';

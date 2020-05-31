@@ -13,12 +13,14 @@
 include_once '../vendor/autoload.php';
 require_once 'utils/sentry.php';
 require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 require_once 'keyring/key.php';
 include_once 'utils/public_object_functions.php';
 
 include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';
 include_once 'utils/network_functions.php';
+include_once __DIR__.'/utils/web_common.php';
 
 $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_PORT);
@@ -37,9 +39,11 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
-$logged_in = !empty($_SESSION['logged_in']);
 
-if (!isset($db)) {
+
+$logged_in =get_logged_in();
+
+if (!isset($db) or is_null($db) ) {
 
     $db = new PDO(
         "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd

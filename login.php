@@ -22,6 +22,7 @@ define("_DEVEL", isset($_SERVER['devel']));
 
 
 include_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 include_once 'keyring/key.php';
 
 

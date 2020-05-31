@@ -14,6 +14,7 @@
 chdir('../');
 
 require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 require_once 'keyring/key.php';
 require_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';

@@ -22,6 +22,8 @@ function get_website_key_from_domain($redis) {
         if (ENVIRONMENT=='DEVEL') {
 
             include 'keyring/dns.php';
+            include 'keyring/au_deploy_conf.php';
+
             $redis_write = new Redis();
             $redis_write->connect(REDIS_HOST, REDIS_PORT);
 
@@ -35,6 +37,7 @@ function get_website_key_from_domain($redis) {
             /** @var $dns_pwd string */
             /** @var $dns_port string */
             require 'keyring/dns.php';
+            include 'keyring/au_deploy_conf.php';
 
             $db = new PDO(
                 "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd

@@ -58,3 +58,4 @@ app_files/cf_dns/keyring/cf_key.php~
 app_files/cf_dns/keyring/cf_key.php
 app_files/cf_dns/keyring/.cf_key.php.swp
 EcomB2B/keyring
+cron/test_shipping.php

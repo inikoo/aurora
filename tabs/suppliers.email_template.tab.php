@@ -10,6 +10,7 @@
 */
 
 include_once('keyring/dns.php');
+require_once 'keyring/au_deploy_conf.php';
 
 
 include_once('external_libs/bee.io/BeeFree.php');
@@ -24,4 +25,4 @@ $smarty->assign('bee_token', json_encode($result));
 $html = $smarty->fetch('email_template.tpl');
 
 
-?>
+

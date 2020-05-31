@@ -2827,6 +2827,8 @@ class Account extends DB_Table {
 
 
         include 'keyring/dns.php';
+        include 'keyring/au_deploy_conf.php';
+
         $box_db = get_box_db();
 
         $this->new_clocking_machine = false;

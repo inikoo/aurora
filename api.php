@@ -15,6 +15,7 @@ require_once 'vendor/autoload.php';
 
 
 include_once 'keyring/dns.php';
+include_once 'keyring/au_deploy_conf.php';
 
 if(defined('SENTRY_DNS_API')){
     Sentry\init(['dsn' => SENTRY_DNS_API ]);

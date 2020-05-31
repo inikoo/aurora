@@ -16,6 +16,7 @@ include_once 'utils/object_functions.php';
 
 
 include_once 'keyring/dns.php';
+include_once 'keyring/au_deploy_conf.php';
 include_once 'keyring/key.php';
 
 include_once 'class.Account.php';

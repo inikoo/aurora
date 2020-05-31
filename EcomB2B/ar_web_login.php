@@ -8,6 +8,7 @@
  Version 3
 
 */
+use ReallySimpleJWT\Token;
 
 
 include_once 'ar_web_common_logged_out.php';
@@ -54,10 +55,7 @@ switch ($tipo) {
 function login($db, $data, $website) {
 
     include_once 'class.WebAuth.php';
-
-    $auth = new WebAuth();
-
-
+    $auth = new WebAuth($db);
     list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_login($data['handle'], $data['pwd'], $website, $data['keep_logged']);
 
 
@@ -66,41 +64,14 @@ function login($db, $data, $website) {
         $_SESSION['logged_in']            = true;
         $_SESSION['customer_key']         = $customer_key;
         $_SESSION['website_user_key']     = $website_user_key;
-        $_SESSION['website_user_log_key'] = $website_user_log_key;
-
-        require_once "external_libs/random/lib/random.php";
-        $selector      = base64_encode(random_bytes(9));
-        $authenticator = random_bytes(33);
-
-        setcookie(
-            'rmb2',
-            $selector.':'.base64_encode($authenticator),
-            time() + 864000,
-            '/'
+        $_SESSION['UTK']=['C'=>$customer_key,'WU'=>$website_user_key,'WUL'=>$website_user_log_key];
 
 
-            , '',
-            true, // TLS-only
-            true  // http-only
-        );
+        $token = Token::customPayload($_SESSION['UTK'], JWT_KEY);
+        setcookie('UTK', $token, time() + 157680000);
+        setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000);
 
 
-        $sql = sprintf(
-            'insert into `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
-            values (%d,%s,%s,%d,%d,%d,%s)',
-            $website->id,
-            prepare_mysql($selector),
-            prepare_mysql(hash('sha256', $authenticator)),
-            $website_user_key,
-            $customer_key,
-            $website_user_log_key,
-            prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
-
-        );
-
-        // print $sql;
-
-        $db->exec($sql);
 
 
         echo json_encode(
@@ -144,4 +115,4 @@ function login($db, $data, $website) {
 }
 
 
-?>
+

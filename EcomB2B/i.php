@@ -10,6 +10,7 @@
 */
 
 include_once 'keyring/dns.php';
+include_once 'keyring/au_deploy_conf.php';
 
 
 if (empty($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or $_REQUEST['id'] <= 0) {

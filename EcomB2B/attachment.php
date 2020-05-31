@@ -15,6 +15,7 @@ require_once 'utils/sentry.php';
 
 
 require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 
 $db = new PDO(
     "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd

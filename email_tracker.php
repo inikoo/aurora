@@ -9,6 +9,8 @@
 
 */
 require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
+
 require 'vendor/autoload.php';
 require_once 'utils/sentry.php';
 

@@ -12,6 +12,7 @@
 
 require_once 'keyring/key.php';
 require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 
 include_once 'utils/public_object_functions.php';
 
@@ -39,7 +40,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $logged_in = !empty($_SESSION['logged_in']);
 
-if (!isset($db)) {
+if (!isset($db) or is_null($db) ) {
     $db = new PDO(
         "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
@@ -99,7 +100,7 @@ function unsubscribe($db, $data, $editor,$account) {
 
 
     include_once('class.WebAuth.php');
-    $auth = new WebAuth();
+    $auth = new WebAuth($db);
 
     list($unsubscribe_subject_type,$unsubscribe_customer_key) = $auth->get_customer_from_unsubscribe_link($data['selector'], $data['authenticator']);
 

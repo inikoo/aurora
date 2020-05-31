@@ -1,5 +1,4 @@
 <?php
-
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -10,12 +9,15 @@
 
 */
 
+/**
+ * Class WebAuth
+ */
 class WebAuth {
 
 
-    function __construct() {
+    function __construct($db) {
 
-        global $db;
+
         $this->db = $db;
 
 
@@ -236,7 +238,7 @@ class WebAuth {
 
         }
     }
-
+    /*
     function authenticate_from_remember($selector, $authenticator, $website_key) {
 
 
@@ -272,7 +274,7 @@ class WebAuth {
                     $website_user_log_key = $row['Website Auth Token Website User Log Key'];
 
 
-                    require_once "external_libs/random/lib/random.php";
+
                     $selector      = base64_encode(random_bytes(9));
                     $authenticator = random_bytes(33);
 
@@ -364,7 +366,7 @@ class WebAuth {
 
 
     }
-
+    */
     function authenticate_from_reset_password($selector, $authenticator, $website_key) {
 
         $pass_tests = false;

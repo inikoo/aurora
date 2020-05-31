@@ -131,6 +131,8 @@ function check_for_box_serial_number($data, $db, $user, $account) {
         }
 
         include 'keyring/dns.php';
+        include 'keyring/au_deploy_conf.php';
+
         $box_db = get_box_db();
         $sql    = "SELECT `Box Key`,`Box Aurora Account Code`  FROM box.`Box Dimension`  WHERE  `Box ID`=?    ";
 

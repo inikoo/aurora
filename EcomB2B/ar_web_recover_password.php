@@ -82,7 +82,7 @@ function recover_password($db, $data, $editor, $website, $account) {
 
             $customer = get_object('Customer', $row['Website User Customer Key']);
 
-            require_once "external_libs/random/lib/random.php";
+
             $selector      = base64_url_encode(random_bytes(9));
             $authenticator = base64_url_encode(random_bytes(33));
 

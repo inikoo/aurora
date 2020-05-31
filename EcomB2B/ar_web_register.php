@@ -8,6 +8,7 @@
  Version 3
 
 */
+use ReallySimpleJWT\Token;
 
 
 include_once 'ar_web_common_logged_out.php';
@@ -200,7 +201,7 @@ function register($db, $website, $data, $editor) {
             if ($website->get('Website Registration Type') != 'ApprovedOnly') {
 
                 include_once('class.WebAuth.php');
-                $auth = new WebAuth();
+                $auth = new WebAuth($db);
 
                 list($logged_in, $website_user_log_key) = $auth->authenticate_from_register($website_user->id, $customer->id, $store->get('Store Website Key'));
 
@@ -208,32 +209,13 @@ function register($db, $website, $data, $editor) {
                     $_SESSION['logged_in']            = true;
                     $_SESSION['customer_key']         = $customer->id;
                     $_SESSION['website_user_key']     = $website_user->id;
-                    $_SESSION['website_user_log_key'] = $website_user_log_key;
 
+                    $_SESSION['UTK']=['C'=>$customer->id,'WU'=>$website_user->id,'WUL'=>$website_user_log_key];
 
-                    require_once "external_libs/random/lib/random.php";
-                    $selector      = base64_encode(random_bytes(9));
-                    $authenticator = random_bytes(33);
+                    $token = Token::customPayload($_SESSION['UTK'], JWT_KEY);
+                    setcookie('UTK', $token, time() + 157680000);
+                    setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000);
 
-                    setcookie(
-                        'rmb2', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
-                    //,'',
-                    //true, // TLS-only
-                    //true  // http-only
-                    );
-
-
-                    // print_r($_SESSION);
-
-
-                    $sql = sprintf(
-                        'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
-            VALUES (%d,%s,%s,%d,%d,%d,%s)', $store->get('Store Website Key'), prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user->id, $customer->id, $_SESSION['website_user_log_key'],
-                        prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
-
-                    );
-
-                    $db->exec($sql);
 
 
                 } else {

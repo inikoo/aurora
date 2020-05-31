@@ -17,7 +17,7 @@
     "ext-pdo": "*",
     "ext-json": "*",
     "phpoffice/phpspreadsheet": "^1.9",
-    "rbdwllr/reallysimplejwt": "^2.1",
+    "rbdwllr/reallysimplejwt": "^3.0",
     "elasticsearch/elasticsearch": "^7.4",
     "giggsey/libphonenumber-for-php": "^8.11",
     "ext-zlib": "*",
@@ -30,6 +30,7 @@
     "ext-intl": "*",
     "ext-soap": "*",
     "ext-imagick": "*",
-    "cloudflare/sdk": "^1.1"
+    "cloudflare/sdk": "^1.1",
+    "postmen/sdk-php": "^1.0"
   }
 }

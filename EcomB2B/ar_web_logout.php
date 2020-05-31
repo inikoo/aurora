@@ -55,27 +55,11 @@ function logout($db) {
     $db->prepare($sql)->execute(
         array(
             gmdate('Y-m-d H:i:s'),
-            $_SESSION['website_user_log_key']
+            $_SESSION['UTK']['WUL']
         )
     );
 
-
-    $sql="delete from  `Website Auth Token Dimension` where `Website Auth Token Website User Log Key`=?";
-
-    $db->prepare($sql)->execute(
-        array(
-            $_SESSION['website_user_log_key']
-        )
-    );
-
-
-    setcookie('rmb2', 'x:x', time() - 864000, '/'
-    //,'',
-    //true, // TLS-only
-    //true  // http-only
-    );
-
-
+    setcookie("UTK", "", time() - 10000);
     session_regenerate_id();
     session_destroy();
     unset($_SESSION);

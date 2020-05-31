@@ -11,6 +11,7 @@
 // Note this is not the same as the EcomB2B/wi.php
 
 include_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 
 
 if (empty($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or $_REQUEST['id'] <= 0) {

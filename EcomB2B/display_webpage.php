@@ -9,6 +9,7 @@
 
  Version 2.0
 */
+use ReallySimpleJWT\Token;
 
 
 include_once __DIR__.'/utils/general_functions.php';
@@ -17,17 +18,10 @@ include_once __DIR__.'/utils/web_locale_functions.php';
 
 list($detected_device, $template_suffix) = get_device();
 
-if (!isset($db)) {
 
-
-    require __DIR__.'/keyring/dns.php';
-    $db = new PDO(
-        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
-    );
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
 
 date_default_timezone_set('UTC');
+
 $logged_in = get_logged_in();
 
 $smarty               = new Smarty();
@@ -47,6 +41,14 @@ if (defined('SENTRY_DNS_ECOM_JS')) {
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
+
+if (!isset($db) or is_null($db)) {
+    $db = new PDO(
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    );
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+}
+
 if (isset($is_homepage)) {
     include_once __DIR__.'/utils/public_object_functions.php';
 
@@ -62,6 +64,7 @@ if (isset($is_homepage)) {
     }
 
 } elseif (isset($is_reset)) {
+
     include_once __DIR__.'/utils/public_object_functions.php';
     include_once __DIR__.'/utils/network_functions.php';
 
@@ -72,7 +75,7 @@ if (isset($is_homepage)) {
     $form_error = false;
     if (!$logged_in) {
         include_once('class.WebAuth.php');
-        $auth = new WebAuth();
+        $auth = new WebAuth($db);
 
         list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_reset_password(
             (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''), $website->id
@@ -83,7 +86,11 @@ if (isset($is_homepage)) {
             $_SESSION['logged_in']            = true;
             $_SESSION['customer_key']         = $customer_key;
             $_SESSION['website_user_key']     = $website_user_key;
-            $_SESSION['website_user_log_key'] = $website_user_log_key;
+            $_SESSION['UTK']=['C'=>$customer_key,'WU'=>$website_user_key,'WUL'=>$website_user_log_key];
+            $token = Token::customPayload($_SESSION['UTK'], JWT_KEY);
+            setcookie('UTK', $token, time() + 157680000);
+            setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000);
+
         }
 
 
@@ -97,14 +104,15 @@ if (isset($is_homepage)) {
     $smarty->assign('form_error', $form_error);
 
 
-} elseif (isset($is_unsubscribe)) {
+}
+elseif (isset($is_unsubscribe)) {
     include_once __DIR__.'/utils/public_object_functions.php';
     include_once __DIR__.'/utils/network_functions.php';
 
     $website     = get_object('Website', $_SESSION['website_key']);
     $webpage_key = $website->get_system_webpage_key('unsubscribe.sys');
     include_once('class.WebAuth.php');
-    $auth = new WebAuth();
+    $auth = new WebAuth($db);
 
     list($unsubscribe_subject_type, $unsubscribe_subject_key) = $auth->get_customer_from_unsubscribe_link((isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
 
@@ -176,6 +184,9 @@ if (isset($is_homepage)) {
 
 }
 
+elseif (isset($is_404)) {
+    $webpage_key = $website->get_system_webpage_key('not_found.sys');
+}
 
 $is_devel = (ENVIRONMENT == 'DEVEL' ? true : false);
 
@@ -194,7 +205,6 @@ if (isset($_REQUEST['snapshot'])) {
         $_SESSION['logged_in']            = true;
         $_SESSION['customer_key']         = 0;
         $_SESSION['website_user_key']     = 0;
-        $_SESSION['website_user_log_key'] = 0;
     }
 
 

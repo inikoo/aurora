@@ -11,6 +11,7 @@
 */
 
 require_once 'keyring/dns.php';
+include_once 'keyring/au_deploy_conf.php';
 
 $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_PORT);

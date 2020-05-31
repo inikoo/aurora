@@ -34,7 +34,7 @@ module.exports = function (grunt) {
             }, ecom_dropshipping_logged_in: {
                 options: {
                     sourceMap: true,},
-                src: ['EcomB2B/js/dropshipping/portfolio.js','EcomB2B/js/dropshipping/notifications.js','EcomB2B/js/dropshipping/logout.js','EcomB2B/js/dropshipping/dropshipping.js','EcomB2B/js/dropshipping/client.js'
+                src: ['EcomB2B/js/dropshipping/portfolio.js','EcomB2B/js/dropshipping/notifications.js','EcomB2B/js/dropshipping/dropshipping.js','EcomB2B/js/dropshipping/client.js'
                 ], dest: 'EcomB2B/assets/dropshipping.logged_in.min.js',
             }, ecom_image_gallery: {
                 options: {

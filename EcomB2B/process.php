@@ -11,9 +11,10 @@
 */
 
 
-
 require_once '../vendor/autoload.php';
 require 'keyring/dns.php';
+require 'keyring/au_deploy_conf.php';
+
 require_once 'utils/sentry.php';
 
 
@@ -23,13 +24,10 @@ $redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 session_start();
 
 
-
 if (empty($_SESSION['website_key'])) {
     include_once('utils/find_website_key.include.php');
-    $_SESSION['website_key']=get_website_key_from_domain($redis);
+    $_SESSION['website_key'] = get_website_key_from_domain($redis);
 }
-
-
 
 
 $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
@@ -76,8 +74,7 @@ if ($url == 'sitemap.xml') {
     print $xml;
     exit;
 
-}
-elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
+} elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
 
 
     $db = new PDO(
@@ -121,8 +118,17 @@ $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$_SESSION['website_key'].'_'.$url;
 
 if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
+    $db         = null;
 } else {
-    $webpage_id = get_url($_SESSION['website_key'], $url, $dns_host, $dns_user, $dns_pwd, $dns_db,$dns_port);
+
+    $db = new PDO(
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    );
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+    $webpage_id = get_url($db,$_SESSION['website_key'], $url);
+
+
     $redis_write = new Redis();
     $redis_write->connect(REDIS_HOST, REDIS_PORT);
     $redis_write->set($url_cache_key, $webpage_id);
@@ -138,19 +144,13 @@ if (is_numeric($webpage_id)) {
 } else {
     header("Location: https://".$_SERVER['SERVER_NAME']."$webpage_id");
 }
-if (isset($db)) {
-    $db = null;
-}
+$db = null;
+
 exit();
 
 
-function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db,$dns_port) {
+function get_url($db, $website_key, $url) {
 
-
-    $db = new PDO(
-        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
-    );
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
     $original_url = $url;
     $page_key     = get_page_key_from_code($website_key, $url, $db);

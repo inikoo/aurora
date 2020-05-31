@@ -12,6 +12,7 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 require __DIR__.'/keyring/dns.php';
+require __DIR__.'/keyring/au_deploy_conf.php';
 require_once 'utils/sentry.php';
 
 

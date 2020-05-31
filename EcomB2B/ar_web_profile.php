@@ -462,7 +462,7 @@ function unsubscribe($db, $data, $editor) {
 
 
     include_once('class.WebAuth.php');
-    $auth = new WebAuth();
+    $auth = new WebAuth($db);
 
     list($unsubscribe_subject_type,$unsubscribe_customer_key) = $auth->get_customer_from_unsubscribe_link($data['selector'], $data['authenticator']);
 

@@ -29,6 +29,7 @@ if (!isset($_REQUEST['order_key'])) {
 
 require_once 'keyring/key.php';
 require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 
 include_once 'utils/public_object_functions.php';
 
@@ -51,7 +52,7 @@ if (isset($_REQUEST['cancel'])) {
     $cancel = false;
 }
 
-if (!isset($db)) {
+if (!isset($db) or is_null($db) ) {
     $db = new PDO(
         "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );

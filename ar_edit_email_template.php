@@ -237,7 +237,9 @@ switch ($tipo) {
 
 function bee_token() {
 
-    include_once('keyring/dns.php');
+    include_once 'keyring/dns.php';
+    include_once 'keyring/au_deploy_conf.php';
+
     include_once('external_libs/bee.io/BeeFree.php');
     $beefree = new BeeFree(BEE_IO_ID, BEE_IO_KEY);
 

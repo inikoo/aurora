@@ -11,6 +11,7 @@
 */
 
 require '../../keyring/dns.php';
+require '../../keyring/au_deploy_conf.php';
 
 use Elasticsearch\ClientBuilder;
 

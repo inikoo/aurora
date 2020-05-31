@@ -9,6 +9,7 @@
 
  Version 2.0
 */
+use ReallySimpleJWT\Token;
 
 function get_device() {
     require_once 'external_libs/mobile_detect/Mobile_Detect.php';
@@ -32,79 +33,19 @@ function get_device() {
     );
 }
 
+
 function get_logged_in() {
 
-    $logged_in = !empty($_SESSION['logged_in']);
-
-    if (!$logged_in and !empty($_COOKIE['rmb2'])) {
-
-
-
-
-        include_once('class.WebAuth.php');
-
-        $auth = new WebAuth();
-        list($selector, $authenticator) = explode(':', $_COOKIE['rmb2']);
-
-
-        list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_remember($selector, $authenticator, $_SESSION['website_key']);
-
-        if ($logged_in) {
-
-            $_SESSION['logged_in']            = true;
-            $_SESSION['customer_key']         = $customer_key;
-            $_SESSION['website_user_key']     = $website_user_key;
-            $_SESSION['website_user_log_key'] = $website_user_log_key;
-        }
-
-    }
-
-    if ($logged_in and (empty($_SESSION['customer_key']) or empty($_SESSION['website_user_key']) or empty($_SESSION['website_user_log_key']))) {
-
-
-        session_regenerate_id();
-        session_destroy();
-        unset($_SESSION);
-        setcookie(
-            'rmb2', 'x:x', time() - 864000, '/'
-        );
-        header('Location: /index.php');
-        exit;
-    }
-
-    if ($logged_in and empty($_COOKIE['rmb2'])) {
-
-
-        require_once "external_libs/random/lib/random.php";
-        $selector      = base64_encode(random_bytes(9));
-        $authenticator = random_bytes(33);
-
-        setcookie(
-            'rmb2', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
-
-        );
-
-        include_once 'keyring/dns.php';
-
-        if (!isset($db)) {
-
-            require 'keyring/dns.php';
-
-            $db = new PDO(
-                "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
-            );
-            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        }
-
-        $sql = sprintf(
-            'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
-            VALUES (%d,%s,%s,%d,%d,%d,%s)', $_SESSION['website_key'], prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $_SESSION['website_user_key'], $_SESSION['customer_key'], $_SESSION['website_user_log_key'],
-            prepare_mysql(gmdate('Y-m-d H:i:s', time() + 864000))
-
-        );
-
-        $db->exec($sql);
-
+    if(!empty($_SESSION['UTK'])){
+        $logged_in=true;
+    }elseif(!empty($_COOKIE['UTK'])  and  Token::validate($_COOKIE['UTK'], JWT_KEY) ){
+        $logged_in=true;
+        $_SESSION['UTK']=  Token::getPayload($_COOKIE['UTK'], JWT_KEY);
+        $_SESSION['logged_in']            = true;
+        $_SESSION['customer_key']         = $_SESSION['UTK']['C'];
+        $_SESSION['website_user_key']     = $_SESSION['UTK']['WU'];
+    }else{
+        $logged_in=false;
     }
 
 

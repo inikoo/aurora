@@ -11,6 +11,7 @@
 
 
 include_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 
 require_once 'vendor/autoload.php';
 

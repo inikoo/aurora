@@ -12,6 +12,8 @@
 
 use ReallySimpleJWT\Token;
 require '../keyring/dns.php';
+require '../keyring/au_deploy_conf.php';
+
 require '../keyring/screenshots.dns.php';
 
 require '../vendor/autoload.php';

@@ -96,7 +96,7 @@ function place_order_pay_sofort($store, $order, $data, $customer, $website, $edi
     $sofort = new Sofortueberweisung($payment_account->get('Payment Account Password'));
 
 
-    require_once "external_libs/random/lib/random.php";
+    ;
     $secret = hash('crc32', base64_url_encode(random_bytes(9)), false);
 
 

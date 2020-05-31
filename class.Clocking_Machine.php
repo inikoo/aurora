@@ -74,6 +74,8 @@ class Clocking_Machine extends DB_Table {
     function create($raw_data, $settings) {
 
         include 'keyring/dns.php';
+        include 'keyring/au_deploy_conf.php';
+
         $box_db = get_box_db();
 
         $account = get_object('Account', 1);
