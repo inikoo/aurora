@@ -22,6 +22,7 @@ class Auth {
     var $user_log_key = 0;
     var $handle = '';
     var $remember = false;
+    var $log_page ='';
     private $status = false;
     private $use_cookies = false;
 
@@ -217,7 +218,7 @@ class Auth {
     function log_failed_login() {
         $date = gmdate("Y-m-d H:i:s");
         $ip   = ip_from_cloudfare();
-        $sql  = "INSERT INTO `User Failed Log Dimension`  (`Handle`,`Login Page`,`User Key`, `Date`,`IP`,`Fail Main Reason`, `Handle OK`,`Password OK`,`Logging On Time OK`, `IP OK`,`IKey OK`)  VALUES (?,?,?,? ,?,?,?, ?,?,?, ?,?)";
+        $sql  = "INSERT INTO `User Failed Log Dimension`  (`Handle`,`Login Page`,`User Key`, `Date`,`IP`,`Fail Main Reason`, `Handle OK`,`Password OK`,`Logging On Time OK`, `IP OK`,`IKey OK`)  VALUES (?,?,?, ?,?,?, ?,?,?, ?,?)";
 
         $this->db->prepare($sql)->execute(
             array(
