@@ -27,6 +27,10 @@
     {/if}
     {literal}
         <script>
+            function getCookieValue(a) {
+                var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
+                return b ? b.pop() : '';
+            }
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -38,12 +42,16 @@
             ga('auTracker.set', 'dimension1', '{$account_code}.{$webpage->id}');
             ga('auTracker.set', 'dimension2', '{$account_code}.{$webpage->get('Webpage Website Key')}');
             ga('auTracker/set', 'dimension3', '{$account_code}');
-            {if !empty($analytics_user_key)}
-            ga('auTracker/set', 'dimension4', '{$analytics_user_key}');
-            ga('auTracker.set', 'userId', '{$analytics_user_key}');
-            {else}
-            ga('auTracker.set', 'dimension4', '{$account_code}.');
-            {/if}
+
+            var analytics_user_key=getCookieValue('AUK');
+            if(analytics_user_key!=''){
+                ga('auTracker.set', 'dimension4', analytics_user_key);
+                ga('auTracker.set', 'userId', analytics_user_key);
+            }else{
+                ga('auTracker.set', 'dimension4', '{$account_code}.');
+            }
+
+
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
             {if  !empty($account_code)}
             ga('auTracker.set', 'contentGroup1', '{$account_code}');

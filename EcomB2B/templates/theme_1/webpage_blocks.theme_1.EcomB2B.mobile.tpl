@@ -9,7 +9,7 @@
 -->
 *}
 {include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
-<body data-device_prefix="mobile" class="pweb mobile" data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}"  {if $logged_in}   data-ws_key="{$ws_key}" {/if}>
+<body data-device_prefix="mobile" class="pweb mobile" data-ws="n" data-ws_key="" >
 {include file="analytics.tpl"}
 
 {if $logged_in}

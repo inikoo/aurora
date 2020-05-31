@@ -8,7 +8,7 @@
  Version 3
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.tablet.tpl"}
-<body data-device_prefix="tablet" class="pweb tablet" data-ws="{if $logged_in and $website->get('Website Type')=='EcomDS'}y{else}n{/if}"  {if $logged_in}   data-ws_key="{$ws_key}" {/if}>
+<body data-device_prefix="tablet" class="pweb tablet" data-ws="n" data-ws_key="">
 {include file="analytics.tpl"}
 
 
