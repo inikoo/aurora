@@ -23,21 +23,13 @@ $editor = array(
 );
 
 
+//$sql = "SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Status`!='Offline'  and `Webpage Scope` !='Product'";
+$sql = "SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Status`!='Offline'";
 
-
-
-
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Status`!=\'Offline\'  ');
-if ($result=$db->query($sql)) {
+if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-
         $webpage = get_object('Webpage', $row['Page Key']);
-
-
         print 'Reindex '.$webpage->get('Code')."\n";
-
-
         $webpage->reindex();
-
-        }
+    }
 }
