@@ -683,7 +683,7 @@ class Agent extends SubjectSupplier {
         }
 
 
-        $this->fastt_update(
+        $this->fast_update(
             array(
                 'Agent Number Suppliers'          => $supplier_number_suppliers,
                 'Agent Number Parts'              => $supplier_number_parts,
