@@ -238,7 +238,7 @@ class Product extends Asset {
                     $this->data['Product Price'], $this->data['Store Currency Code']
                 );
 
-                if ($this->data['Product Units Per Case'] != 1 and  $this->data['Product Units Per Case']>0 ) {
+                if ($this->data['Product Units Per Case'] != 1 and $this->data['Product Units Per Case'] > 0) {
 
                     $price .= ' ('.money(
                             $this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
@@ -797,7 +797,7 @@ class Product extends Asset {
 
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
-            if(!$this->id){
+            if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
             }
 
@@ -893,45 +893,52 @@ class Product extends Asset {
                 'Product Name'
             ).' ('.$this->get('Price').')';
 
-        $sql = sprintf(
-            'SELECT `Product Key` FROM `Product History Dimension` WHERE
-		`Product History Code`=%s AND `Product History Units Per Case`=%d AND `Product History Price`=%.2f AND
-		`Product History Name`=%s AND `Product ID`=%d',
+        $sql = "SELECT `Product Key` FROM `Product History Dimension` WHERE
+		`Product History Code`=? AND `Product History Units Per Case`=? AND `Product History Price`=? AND
+		`Product History Name`=? AND `Product ID`=?";
 
-            prepare_mysql($this->data['Product Code']), $this->data['Product Units Per Case'], $this->data['Product Price'], prepare_mysql($this->data['Product Name']), $this->id
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->data['Product Code'],
+                $this->data['Product Units Per Case'],
+                round($this->data['Product Price'], 2),
+                $this->data['Product Name'],
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $this->update(
+                array('Product Current Key' => $row['Product Key']), 'no_history'
+            );
+            $changed = true;
+        } else {
+            $sql  =
+                "INSERT INTO `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,`Product History Price`, `Product History Name`,`Product History Valid From`,`Product History Short Description`,`Product History XHTML Short Description`,`Product History Special Characteristic`) VALUES (?,?,?, ?,?,?, ?,?,?) ";
+            $stmt = $this->db->prepare($sql);
 
-        //print "$sql\n";
+            if ($stmt->execute(
+                array(
+                    $this->id,
+                    $this->data['Product Code'],
+                    $this->data['Product Units Per Case'],
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+                    round($this->data['Product Price'], 2),
+                    $this->data['Product Name'],
+                    gmdate('Y-m-d H:i:s'),
 
-
+                    $desc,
+                    $desc,
+                    $this->get('Product Special Characteristic')
+                )
+            )) {
                 $this->update(
-                    array('Product Current Key' => $row['Product Key']), 'no_history'
+                    array(
+                        'Product Current Key' => $this->db->lastInsertId()
+                    ), 'no_history'
                 );
                 $changed = true;
-
-            } else {
-
-
-                $sql = sprintf(
-                    'INSERT INTO `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,
-						`Product History Price`, `Product History Name`,`Product History Valid From`,`Product History Short Description`,`Product History XHTML Short Description`,`Product History Special Characteristic`
-
-				) VALUES (%d,%s,%d,%.2f,%s,%s,%s,%s,%s) ', $this->id, prepare_mysql($this->data['Product Code']), $this->data['Product Units Per Case'], $this->data['Product Price'], prepare_mysql($this->data['Product Name']), prepare_mysql(gmdate('Y-m-d H:i:s')),
-                    prepare_mysql($desc), prepare_mysql($desc), prepare_mysql($this->get('Product Special Characteristic'))
-                );
-                //print "$sql\n";
-                // exit;
-                if ($this->db->exec($sql)) {
-                    $this->update(
-                        array(
-                            'Product Current Key' => $this->db->lastInsertId()
-                        ), 'no_history'
-                    );
-                    $changed = true;
-                }
             }
         }
 
@@ -1434,7 +1441,6 @@ class Product extends Asset {
             return;
         }
 
-        include_once('class.Category.php');
 
         $old_web_state = $this->get('Product Web State');
 
@@ -1571,40 +1577,9 @@ class Product extends Asset {
 
         } else {
             $this->update_web_state_slow_forks($web_availability_updated);
-        }
-
-
-        foreach ($this->get_parts('objects') as $part) {
-            $part->update_products_web_status();
-        }
-
-
-        if (!($this->get('Product Status') == 'Active' or $this->get('Product Status') == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline') {
-            $_state = 'Offline';
-        } else {
-            $_state = 'Online';
-        }
-
-        $webpage = get_object('webpage', $this->data['Product Webpage Key']);
-
-        if ($webpage->id) {
-            $webpage->update(array('Webpage State' => $_state), 'no_history');
-        }
-
-        if ($web_availability_updated) {
-
-            require_once 'utils/new_fork.php';
-            new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'       => 'update_product_webpages',
-                'product_id' => $this->id,
-                'type'       => 'web_state',
-                'editor'     => $this->editor
-            ), DNS_ACCOUNT_CODE
-            );
-
 
         }
+
 
     }
 
@@ -1700,6 +1675,38 @@ class Product extends Asset {
         $this->get_data('id', $this->id);
         $this->load_acc_data();
 
+        foreach ($this->get_parts('objects') as $part) {
+            $part->update_products_web_status();
+        }
+
+
+        if (!($this->get('Product Status') == 'Active' or $this->get('Product Status') == 'Discontinuing') or $this->get('Product Web Configuration') == 'Offline') {
+            $_state = 'Offline';
+        } else {
+            $_state = 'Online';
+        }
+
+        $webpage = get_object('webpage', $this->data['Product Webpage Key']);
+
+        if ($webpage->id) {
+            $webpage->update(array('Webpage State' => $_state), 'no_history');
+        }
+
+        if ($web_availability_updated) {
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'       => 'update_product_webpages',
+                'product_id' => $this->id,
+                'type'       => 'web_state',
+                'editor'     => $this->editor
+            ), DNS_ACCOUNT_CODE
+            );
+
+
+        }
+
 
     }
 
@@ -1737,6 +1744,35 @@ class Product extends Asset {
         }
 
 
+    }
+
+    function get_categories($output = 'keys', $scope = 'all', $args = '') {
+
+        $categories = array();
+        $sql        = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Product' AND `Category Branch Type`!='Root'";
+
+        $params = array(
+            $this->id
+        );
+
+        if ($scope == 'root_key') {
+            $sql      .= ' and C.`Category Root Key`=?';
+            $params[] = $args;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            $params
+        );
+        while ($row = $stmt->fetch()) {
+            if ($output == 'objects') {
+                $categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
+            } else {
+                $categories[$row['Category Key']] = $row['Category Key'];
+            }
+        }
+
+        return $categories;
     }
 
     function update_webpages($change_type = '') {
@@ -1782,35 +1818,6 @@ class Product extends Asset {
         }
 
 
-    }
-
-    function get_categories($output = 'keys', $scope = 'all', $args = '') {
-
-        $categories = array();
-        $sql        = "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject Key`=? AND `Subject`='Product' AND `Category Branch Type`!='Root'";
-
-        $params = array(
-            $this->id
-        );
-
-        if ($scope == 'root_key') {
-            $sql      .= ' and C.`Category Root Key`=?';
-            $params[] = $args;
-        }
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            $params
-        );
-        while ($row = $stmt->fetch()) {
-            if ($output == 'objects') {
-                $categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
-            } else {
-                $categories[$row['Category Key']] = $row['Category Key'];
-            }
-        }
-
-        return $categories;
     }
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {

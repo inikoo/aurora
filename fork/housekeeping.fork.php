@@ -1369,8 +1369,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
         case 'update_web_state_slow_forks':
 
-            include_once 'class.Product.php';
-            $product = new Product('id', $data['product_id']);
+
+            $product = get_object('Product', $data['product_id']);
 
             if (isset($data['editor'])) {
                 $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
