@@ -1536,7 +1536,7 @@
             {if $logged_in}
 
             $.post("ar_web_ping.php", {
-                store_type: "{$store->get('Store Type')}", webpage_key:{$webpage->id} , device: 'Mobile'}, function (data) {
+                store_type: "{$store->get('Store Type')}", webpage_key:{$webpage->id} , device: 'mobile'}, function (data) {
                 {if $store->get('Store Type')=='Dropshipping'}
                 $('.DS_top_buttons .Customer_Balance').html(data.customer_balance)
                 {else}
