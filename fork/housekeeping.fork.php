@@ -2950,12 +2950,14 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
             break;
         case 'clear_smarty_web_cache':
-
             $webpage = get_object('Webpage', $data['webpage_key']);
             chdir(AU_PATH);
             $webpage->clear_cache();
-
-
+            break;
+        case 'update_public_db':
+            $image = get_object('Image', $data['image_key']);
+            $image->fork=true;
+            $image->update_public_db();
             break;
         default:
             break;

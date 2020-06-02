@@ -11,6 +11,7 @@
 
 require_once 'common.php';
 
+require 'utils/new_fork.php';
 
 $sql = sprintf('select  `Image Key`  from `Image Dimension`  ');
 
@@ -20,10 +21,16 @@ if ($result2 = $db->query($sql)) {
 
 
         $image = get_object('image', $row2['Image Key']);
-
-
         $image->update_public_db();
+        /*
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type' => 'update_public_db',
 
+                    'image_key' => $row2['Image Key']
+                ), DNS_ACCOUNT_CODE
+                );
+        */
 
     }
 }

@@ -182,10 +182,6 @@ class Image extends DB_Table {
                 $this->found_key = $row['Image Key'];
                 $this->get_data('id', $this->found_key);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
 
 
@@ -360,10 +356,6 @@ class Image extends DB_Table {
                 );
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
 
 
@@ -444,85 +436,88 @@ class Image extends DB_Table {
         $current_cwd = getcwd();
 
         if ($this->fork) {
-            $account = get_object('Account', 1);
-            chdir('img_'.$account->get('Code'));
-            chdir('../');
+            $path_root = 'img_'.DNS_ACCOUNT_CODE;
+        } else {
+            $path_root = 'img';
+
+
         }
 
-
-        $path_root = 'img';
 
         if (!preg_match('/^[a-f0-9]{32}$/i', $checksum)) {
-            exit('wrong checksum');
+
+            $this->error=true;
+            return;
+
+           // exit('wrong checksum');
         }
 
 
-        $sql = sprintf(
-            "select `Image Subject Key` from `Image Subject Bridge`  where  `Image Subject Is Public`='Yes'  
-             and `Image Subject Image Key`=%d 
-             limit 1", $this->id
+        $sql = "select `Image Subject Key` from `Image Subject Bridge`  where  `Image Subject Is Public`='Yes'  and `Image Subject Image Key`=? limit 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+            // print $this->id."  <<<<< \n";
 
-                //                print_r($row);
-
-
-                if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
-                    mkdir($path_root.'/public_db/'.$checksum[0]);
-                }
-
-
-                if (!is_dir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1])) {
-                    mkdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
-                }
-
-
-                chdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
-
-
-                $_tmp = preg_replace('/.*\//', '', $image_path);
-
-  //              echo getcwd() . "\n";
-
-
-                if (!file_exists($_tmp)) {
-
-    //                print '1>'.preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
-      //              print "2>$_tmp\n";
-
-                    if (!symlink(
-                        preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path), $_tmp
-
-
-                    )) {
-                        print getcwd()."\n";
-                        print preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
-                        print "$_tmp\n";
-                        print ('can not create symlink');
-                    }
-                }
-
-
-                chdir($current_cwd);
-
-            } else {
-
-                $public_db_path = preg_replace('/'.$path_root.'\/db/', $path_root.'/public_db', $image_path);
-
-//print $public_db_path;
-                if (file_exists($public_db_path)) {
-                    unlink($public_db_path);
-                }
-
-
-                $mask = $path_root.'/public_cache/'.$checksum[0].'/'.$checksum[1]."/".$checksum."_*";
-                array_map("unlink", glob($mask));
-
-
+            if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
+                mkdir($path_root.'/public_db/'.$checksum[0]);
             }
+
+
+            if (!is_dir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1])) {
+                mkdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
+            }
+
+
+            chdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
+
+
+            $_tmp = preg_replace('/.*\//', '', $image_path);
+
+            //    echo getcwd() . "\n";
+
+
+            //   print "==>>== $path_root  =====\n";
+            // print "==== $image_path  =====\n";
+
+            if (!file_exists($_tmp)) {
+
+                //                 print '1>'.preg_replace('/img\/db/', '../../../db', $image_path)."\n";
+                //               print "2>$_tmp\n";
+
+                if (!symlink(
+                    preg_replace('/img\/db/', '../../../db', $image_path), $_tmp
+
+
+                )) {
+                    //  print getcwd()."\n";
+                    //  print preg_replace('/img\/db/', '../../../db', $image_path)."\n";
+                    //  print "$_tmp\n";
+                    //print ('can not create symlink');
+                    //exit;
+                }
+            }
+            //     echo readlink($_tmp);
+            //exit;
+            chdir($current_cwd);
+        } else {
+            $public_db_path = preg_replace('/'.$path_root.'\/db/', $path_root.'/public_db', $image_path);
+
+            //print $public_db_path;
+            if (file_exists($public_db_path)) {
+                unlink($public_db_path);
+            }
+
+
+            $mask = $path_root.'/public_cache/'.$checksum[0].'/'.$checksum[1]."/".$checksum."_*";
+            array_map("unlink", glob($mask));
         }
 
 
