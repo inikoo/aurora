@@ -21,11 +21,9 @@ $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_PORT);
 
 session_start();
-
 if (empty($_SESSION['website_key'])) {
     include_once(__DIR__.'/utils/find_website_key.include.php');
     $_SESSION['website_key']=get_website_key_from_domain($redis);
 }
-
 
 include 'display_webpage.php';

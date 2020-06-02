@@ -8,6 +8,7 @@
  Version 3
 
 */
+
 use ReallySimpleJWT\Token;
 
 
@@ -61,17 +62,21 @@ function login($db, $data, $website) {
 
     if ($logged_in) {
 
-        $_SESSION['logged_in']            = true;
-        $_SESSION['customer_key']         = $customer_key;
-        $_SESSION['website_user_key']     = $website_user_key;
-        $_SESSION['UTK']=['C'=>$customer_key,'WU'=>$website_user_key,'WUL'=>$website_user_log_key];
+        $_SESSION['logged_in']        = true;
+        $_SESSION['customer_key']     = $customer_key;
+        $_SESSION['website_user_key'] = $website_user_key;
+        $_SESSION['UTK']              = [
+            'C'   => $customer_key,
+            'WU'  => $website_user_key,
+            'WUL' => $website_user_log_key,
+            'CUR'=>$website->get('Currency Code'),
+            'LOC'=>$website->get('Website Locale')
+        ];
 
 
         $token = Token::customPayload($_SESSION['UTK'], JWT_KEY);
-        setcookie('UTK', $token, time() + 157680000);
-        setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000);
-
-
+        setcookie('UTK', $token, time() + 157680000,'/');
+        setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000,'/');
 
 
         echo json_encode(

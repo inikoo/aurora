@@ -8,6 +8,7 @@
  Version 3
 
 */
+
 use ReallySimpleJWT\Token;
 
 
@@ -194,7 +195,7 @@ function register($db, $website, $data, $editor) {
                 'type'         => 'customer_registered',
                 'customer_key' => $customer->id,
                 'website_key'  => $website->id
-            ),DNS_ACCOUNT_CODE
+            ), DNS_ACCOUNT_CODE
             );
 
 
@@ -206,16 +207,21 @@ function register($db, $website, $data, $editor) {
                 list($logged_in, $website_user_log_key) = $auth->authenticate_from_register($website_user->id, $customer->id, $store->get('Store Website Key'));
 
                 if ($logged_in) {
-                    $_SESSION['logged_in']            = true;
-                    $_SESSION['customer_key']         = $customer->id;
-                    $_SESSION['website_user_key']     = $website_user->id;
+                    $_SESSION['logged_in']        = true;
+                    $_SESSION['customer_key']     = $customer->id;
+                    $_SESSION['website_user_key'] = $website_user->id;
 
-                    $_SESSION['UTK']=['C'=>$customer->id,'WU'=>$website_user->id,'WUL'=>$website_user_log_key];
+                    $_SESSION['UTK'] = [
+                        'C'   => $customer->id,
+                        'WU'  => $website_user->id,
+                        'WUL' => $website_user_log_key,
+                        'CUR' => $website->get('Currency Code'),
+                        'LOC' => $website->get('Website Locale')
+                    ];
 
                     $token = Token::customPayload($_SESSION['UTK'], JWT_KEY);
                     setcookie('UTK', $token, time() + 157680000);
                     setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000);
-
 
 
                 } else {

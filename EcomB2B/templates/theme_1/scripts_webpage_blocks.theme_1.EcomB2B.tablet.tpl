@@ -1498,6 +1498,18 @@
 
                 {/if}
                 {if $logged_in}
+
+                $.post( "ar_web_ping.php", { store_type: "{$store->get('Store Type')}", webpage_key:{$webpage->id} ,device: 'Tablet'  } ,
+                    function( data ) {
+                        {if $store->get('Store Type')=='Dropshipping'}
+                        $('.DS_top_buttons .Customer_Balance').html(data.customer_balance)
+                        {else}
+                        $('#header_order_totals').find('.ordered_products_number').html(data.items);
+                        $('#header_order_totals').find('.order_amount').html(data.total);
+                        $('#header_order_totals').find('i').attr('title', data.label);
+                        {/if}
+                    }, "json");
+
                     {if $store->get('Store Type')=='Dropshipping' }
                         {if $with_products_portfolio==1}
                         $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
@@ -1553,7 +1565,7 @@
 
                             $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
                         })
-                {else}
+                    {else}
                     {if $with_product_order_input==1}
 
                 $.getJSON("ar_web_customer_products.php?with_category_products={if $with_category_products==1}Yes{else}No{/if}&tipo=category_products&webpage_key={$webpage->id}", function (data) {
@@ -1590,12 +1602,6 @@
                 });
 
 
-                {else}
-                $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
-                    $('#header_order_totals').find('.ordered_products_number').html(data.items)
-                    $('#header_order_totals').find('.order_amount').html(data.total)
-                    $('#header_order_totals').find('i').attr('title',data.label)
-                });
                 {/if}
                     getScript("/assets/mobile.logged_in.min.js", function () {
                     $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')

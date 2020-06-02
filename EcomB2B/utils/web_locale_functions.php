@@ -13,7 +13,6 @@
 function set_locate($website_locale){
 
 
-   // $language= substr($website_locale, 0, 2);
 
     $locale = $website_locale.'.UTF-8';
 

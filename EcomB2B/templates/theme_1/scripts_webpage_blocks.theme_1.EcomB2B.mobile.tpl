@@ -4,8 +4,6 @@
     function getScript(url, success) {
 
 
-
-
         var script = document.createElement('script');
         script.src = url;
         var head = document.getElementsByTagName('head')[0], done = false;
@@ -27,12 +25,12 @@
         {if $website->get('Website Text Font')!=''  and !$logged_in}
 
         WebFontConfig = {
-            google: { families: [ '{$website->get('Website Text Font')}:400,700' ] }
+            google: {
+                families: ['{$website->get('Website Text Font')}:400,700']}
         };
 
         var wf = document.createElement('script');
-        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-            '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
         wf.type = 'text/javascript';
         wf.async = 'true';
         var s = document.getElementsByTagName('script')[0];
@@ -56,17 +54,17 @@
             {if $with_search==1}
 
 
-            var _args=document.location.href.split("?")[1];
+            var _args = document.location.href.split("?")[1];
 
-            if(_args!=undefined){
-                args=_args.split("=");
-                if(args[1]!=undefined && args[0]=='q'){
+            if (_args != undefined) {
+                args = _args.split("=");
+                if (args[1] != undefined && args[0] == 'q') {
 
-                    $('#search_input').val( decodeURI(args[1]))
+                    $('#search_input').val(decodeURI(args[1]))
                 }
 
             }
-            if($('#search_input').val()!=''){
+            if ($('#search_input').val() != '') {
                 search($('#search_input').val())
             }
 
@@ -83,38 +81,33 @@
                             $('#basket').html(data.html)
 
 
-                            if(data.empty){
+                            if (data.empty) {
 
                                 getScript("assets/mobile_custom.min.js", function () {
 
                                 })
-                            }else{
+                            } else {
 
-                                $('.modal-opener').on('click', function()
-                                {
-
+                                $('.modal-opener').on('click', function () {
 
 
-                                    if( !$('#sky-form-modal-overlay').length )
-                                    {
+                                    if (!$('#sky-form-modal-overlay').length) {
                                         $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
                                     }
 
-                                    $('#sky-form-modal-overlay').on('click', function()
-                                    {
+                                    $('#sky-form-modal-overlay').on('click', function () {
                                         $('#sky-form-modal-overlay').fadeOut();
                                         $('.sky-form-modal').fadeOut();
                                     });
 
                                     form = $($(this).attr('href'));
                                     $('#sky-form-modal-overlay').fadeIn();
-                                    form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
+                                    form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight() / 2).css('margin-left', -form.outerWidth() / 2).fadeIn();
 
                                     return false;
                                 });
 
-                                $('.modal-closer').on('click', function()
-                                {
+                                $('.modal-closer').on('click', function () {
                                     $('#sky-form-modal-overlay').fadeOut();
                                     $('.sky-form-modal').fadeOut();
 
@@ -122,7 +115,6 @@
                                 });
 
                             }
-
 
 
                         })
@@ -136,32 +128,25 @@
             getScript("/assets/mobile.logged_in.min.js", function () {
 
 
+                var order_key = getUrlParameter('order_key');
+                var timestamp = getUrlParameter('t');
+                var timestamp_server = getUrlParameter('ts');
 
-
-                var order_key=getUrlParameter('order_key');
-                var timestamp=getUrlParameter('t');
-                var timestamp_server=getUrlParameter('ts');
-
-                if(timestamp==undefined){
-                    timestamp='';
+                if (timestamp == undefined) {
+                    timestamp = '';
                 }
 
-                if(timestamp_server==undefined){
-                    timestamp_server='';
+                if (timestamp_server == undefined) {
+                    timestamp_server = '';
                 }
 
-                if(order_key){
-                    $.getJSON("ar_web_thanks.php?tipo=get_thanks_html&order_key="+order_key+"&device_prefix=mobile&timestamp="+timestamp+"&timestamp_server="+timestamp_server, function (data) {
+                if (order_key) {
+                    $.getJSON("ar_web_thanks.php?tipo=get_thanks_html&order_key=" + order_key + "&device_prefix=mobile&timestamp=" + timestamp + "&timestamp_server=" + timestamp_server, function (data) {
                         $('#thanks').html(data.html)
                     })
-                }else{
+                } else {
                     $('#thanks').html('')
                 }
-
-
-
-
-
 
 
             })
@@ -171,12 +156,12 @@
             getScript("/assets/mobile.logged_in.min.js", function () {
                 getScript("/assets/mobile.forms.min.js", function () {
                     getScript("/assets/desktop.client_basket.min.js", function () {
-                        $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key="+getUrlParameter('client_id')+"&device_prefix=mobile", function (data) {
+                        $.getJSON("ar_web_client_basket.php?tipo=get_client_basket_html&client_key=" + getUrlParameter('client_id') + "&device_prefix=mobile", function (data) {
                             $('#client_basket').html(data.html);
                             $('.breadcrumbs .client_nav').html(data.client_nav.label)
-                            $('.breadcrumbs .client_nav').attr('title',data.client_nav.title)
+                            $('.breadcrumbs .client_nav').attr('title', data.client_nav.title)
                             $('.breadcrumbs .order_nav').html(data.order_nav.label)
-                            $('.breadcrumbs .order_nav').attr('title',data.order_nav.title)
+                            $('.breadcrumbs .order_nav').attr('title', data.order_nav.title)
                         })
                     })
                 })
@@ -186,26 +171,26 @@
             getScript("/assets/desktop.logged_in.min.js", function () {
 
                 getScript("/assets/desktop.client_basket.min.js", function () {
-                    $.getJSON("ar_web_client_order.php?tipo=get_client_order_html&order_key="+getUrlParameter('id')+"&device_prefix=mobile", function (data) {
+                    $.getJSON("ar_web_client_order.php?tipo=get_client_order_html&order_key=" + getUrlParameter('id') + "&device_prefix=mobile", function (data) {
                         $('#client_order').html(data.html);
                         $('.breadcrumbs .client_nav').html(data.client_nav.label);
-                        $('.breadcrumbs .client_nav').attr('title',data.client_nav.title);
+                        $('.breadcrumbs .client_nav').attr('title', data.client_nav.title);
                         $('.breadcrumbs .order_nav').html(data.order_nav.label);
-                        $('.breadcrumbs .order_nav').attr('title',data.order_nav.title);
+                        $('.breadcrumbs .order_nav').attr('title', data.order_nav.title);
                         $('.Order_Public_ID').html(data.order_nav.label);
                         getScript("/assets/datatables.min.js", function () {
-                            const request_data ={ "tipo":'order_items','order_key':getUrlParameter('id'),"device_prefix":'mobile'}
-                            $.ajax({
-                                url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-                                    if (data.state == 200) {
-                                        state = data.app_state;
-                                        $('#table_container').html(data.html)
+                            const request_data = {
+                                "tipo": 'order_items', 'order_key': getUrlParameter('id'), "device_prefix": 'mobile'}
+                                $.ajax({
+                                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                                        if (data.state == 200) {
+                                            state = data.app_state;
+                                            $('#table_container').html(data.html)
+                                        }
+
+
                                     }
-
-
-
-                                }
-                            });
+                                });
 
                         })
                     })
@@ -217,25 +202,20 @@
             getScript("/assets/mobile.logged_in.min.js", function () {
                 getScript("/assets/mobile.forms.min.js", function () {
                     getScript("/assets/mobile.checkout.min.js", function () {
-                        var checkout_request="ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile";
-                        if(getUrlParameter('order_key')!=undefined){
-                            checkout_request+='&client_order_key='+getUrlParameter('order_key')
+                        var checkout_request = "ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile";
+                        if (getUrlParameter('order_key') != undefined) {
+                            checkout_request += '&client_order_key=' + getUrlParameter('order_key')
                         }
                         $.getJSON(checkout_request, function (data) {
 
                             $('#checkout').html(data.html);
 
-                            $("form").on( "submit",
-                                function(e) {
+                            $("form").on("submit", function (e) {
 
-                                    e.preventDefault();
-                                    e.returnValue = false;
+                                e.preventDefault();
+                                e.returnValue = false;
 
-                                }
-                            )
-
-
-
+                            })
 
 
                         })
@@ -261,7 +241,7 @@
                         });
                         $.each(data.out_of_stock_reminders, function (index, value) {
 
-                            var reminder_icon=$('.out_of_stock_reminders_' + index)
+                            var reminder_icon = $('.out_of_stock_reminders_' + index)
                             reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
                         });
                         $.each(data.stock, function (index, value) {
@@ -289,8 +269,6 @@
                         $('#profile').html(data.html)
 
 
-
-
                     })
                 })
 
@@ -298,38 +276,35 @@
             {/if}
             {if $with_client==1}
             getScript("/assets/mobile.forms.min.js", function () {
-                $.getJSON("ar_web_client.php?tipo=get_client_html&id="+getUrlParameter('id')+"&device_prefix=mobile", function (data) {
+                $.getJSON("ar_web_client.php?tipo=get_client_html&id=" + getUrlParameter('id') + "&device_prefix=mobile", function (data) {
                     $('#client').html(data.html);
                     $('.breadcrumbs .client_nav').html(data.client_nav.label);
-                    $('.breadcrumbs .client_nav').attr('title',data.client_nav.title);
+                    $('.breadcrumbs .client_nav').attr('title', data.client_nav.title);
 
 
                     $(document).on('click', '#new_order', function (e) {
-                        window.location = '/client_basket.sys?client_id='+getUrlParameter('id');
+                        window.location = '/client_basket.sys?client_id=' + getUrlParameter('id');
                     });
 
 
                     getScript("/assets/datatables.min.js", function () {
 
-                        const request_data ={ "tipo":'client_orders','client_id':getUrlParameter('id')}
+                        const request_data = {
+                            "tipo": 'client_orders', 'client_id': getUrlParameter('id')}
 
-                        $.ajax({
-                            url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                            $.ajax({
+                                url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
 
-                                if (data.state == 200) {
-                                    state = data.app_state;
-                                    $('#table_container').html(data.html)
+                                    if (data.state == 200) {
+                                        state = data.app_state;
+                                        $('#table_container').html(data.html)
 
 
-
+                                    }
 
 
                                 }
-
-
-
-                            }
-                        });
+                            });
 
                     })
 
@@ -341,53 +316,52 @@
             getScript("/assets/mobile.forms.min.js", function () {
 
 
-                $( "#country_select" ).change(function() {
+                $("#country_select").change(function () {
 
-                    var selected=$( "#country_select option:selected" )
+                    var selected = $("#country_select option:selected")
                     // console.log(selected.val())
 
-                    var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
+                    var request = "ar_web_addressing.php?tipo=address_format&country_code=" + selected.val() + '&website_key={$website->id}'
 
                     console.log(request)
-                    $.getJSON(request, function( data ) {
+                    $.getJSON(request, function (data) {
                         console.log(data)
-                        $.each(data.hidden_fields, function(index, value) {
-                            $('#'+value).addClass('hide')
-                            $('#'+value).find('input').addClass('ignore')
+                        $.each(data.hidden_fields, function (index, value) {
+                            $('#' + value).addClass('hide')
+                            $('#' + value).find('input').addClass('ignore')
 
                         });
 
-                        $.each(data.used_fields, function(index, value) {
-                            $('#'+value).removeClass('hide')
-                            $('#'+value).find('input').removeClass('ignore')
+                        $.each(data.used_fields, function (index, value) {
+                            $('#' + value).removeClass('hide')
+                            $('#' + value).find('input').removeClass('ignore')
 
                         });
 
-                        $.each(data.labels, function(index, value) {
-                            $('#'+index).find('input').attr('placeholder',value)
-                            $('#'+index).find('b').html(value)
-                            $('#'+index).find('label.label').html(value)
+                        $.each(data.labels, function (index, value) {
+                            $('#' + index).find('input').attr('placeholder', value)
+                            $('#' + index).find('b').html(value)
+                            $('#' + index).find('label.label').html(value)
 
 
                         });
 
-                        $.each(data.no_required_fields, function(index, value) {
+                        $.each(data.no_required_fields, function (index, value) {
 
 
                             // console.log(value)
 
-                            $('#'+value+' input').rules( "remove" );
-
-
+                            $('#' + value + ' input').rules("remove");
 
 
                         });
 
-                        $.each(data.required_fields, function(index, value) {
-                            console.log($('#'+value))
+                        $.each(data.required_fields, function (index, value) {
+                            console.log($('#' + value))
                             //console.log($('#'+value+' input').rules())
 
-                            $('#'+value+' input').rules( "add", { required: true});
+                            $('#' + value + ' input').rules("add", {
+                                required: true});
 
                         });
 
@@ -406,139 +380,123 @@
                 });
 
 
-                $("#registration_form").validate(
-                    {
+                $("#registration_form").validate({
 
-                        submitHandler: function(form)
-                        {
+                    submitHandler: function (form) {
 
 
-                            if($('#register_button').hasClass('wait')){
-                                return;
+                        if ($('#register_button').hasClass('wait')) {
+                            return;
+                        }
+
+                        $('#register_button').addClass('wait')
+                        $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                        var register_data = {}
+
+                            $("#registration_form input:not(.ignore)").each(function (i, obj) {
+                                if (!$(obj).attr('name') == '') {
+                                    register_data[$(obj).attr('name')] = $(obj).val()
+                                }
+
+                            });
+
+                        $("#registration_form select:not(.ignore)").each(function (i, obj) {
+                            if (!$(obj).attr('name') == '') {
+
+
+                                register_data[$(obj).attr('name')] = $(obj).val()
                             }
 
-                            $('#register_button').addClass('wait')
-                            $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+                        });
 
-                            var register_data={ }
+                        {if $website->settings('captcha_client')}
+                        register_data['captcha'] = grecaptcha.getResponse();
+                        {/if}
 
-                            $("#registration_form input:not(.ignore)").each(function(i, obj) {
-                                if(!$(obj).attr('name')==''){
-                                    register_data[$(obj).attr('name')]=$(obj).val()
+                        register_data['new-password'] = sha256_digest(register_data['new-password']);
+
+                        var ajaxData = new FormData();
+
+                        ajaxData.append("tipo", 'register')
+                        ajaxData.append("store_key", '{$store->id}')
+                        ajaxData.append("data", JSON.stringify(register_data))
+
+
+                        $.ajax({
+                            url: "/ar_web_register.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+                            }, success: function (data) {
+
+
+                                if (data.state == '200') {
+
+
+                                    ga('auTracker.send', 'event', 'Register', 'register');
+
+                                    window.location.replace("welcome.sys");
+
+
+                                } else if (data.state == '400') {
+                                    swal("{t}Error{/t}!", data.msg, "error")
                                 }
 
-                            });
-
-                            $("#registration_form select:not(.ignore)").each(function(i, obj) {
-                                if(!$(obj).attr('name')==''){
+                                $('#register_button').removeClass('wait')
+                                $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
 
-                                    register_data[$(obj).attr('name')]=$(obj).val()
+                            }, error: function () {
+
+
+                                $('#register_button').removeClass('wait')
+                                $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+
+                            }
+                        });
+
+
+                    },
+
+                    // Rules for form validation
+                    rules: {
+
+                        email: {
+                            required: true, email: true, remote: {
+                                url: "ar_web_validate.php", data: {
+                                    tipo: 'validate_email_registered', website_key: '{$website->id}'
                                 }
+                            }
 
-                            });
-
-                            {if $website->settings('captcha_client')}
-                            register_data['captcha']= grecaptcha.getResponse();
-                            {/if}
-
-                            register_data['new-password'] = sha256_digest(register_data['new-password']);
-
-                            var ajaxData = new FormData();
-
-                            ajaxData.append("tipo", 'register')
-                            ajaxData.append("store_key", '{$store->id}')
-                            ajaxData.append("data", JSON.stringify(register_data))
+                        }, 'new-password': {
+                            required: true, minlength: 8
 
 
-                            $.ajax({
-                                url: "/ar_web_register.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                                complete: function () {
-                                }, success: function (data) {
+                        }, password_confirm: {
+                            required: true, minlength: 8, equalTo: "#register_password"
+                        }, name: {
+                            required: true,
 
+                        }, tel: {
+                            required: true,
 
-
-
-                                    if (data.state == '200') {
-
-
-                                        ga('auTracker.send', 'event', 'Register', 'register');
-
-                                        window.location.replace("welcome.sys");
-
-
-                                    } else if (data.state == '400') {
-                                        swal("{t}Error{/t}!", data.msg, "error")
-                                    }
-
-                                    $('#register_button').removeClass('wait')
-                                    $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
-
-
-                                }, error: function () {
-
-
-                                    $('#register_button').removeClass('wait')
-                                    $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
-
-
-                                }
-                            });
-
-
+                        }, terms: {
+                            required: true,
                         },
 
-                        // Rules for form validation
-                        rules:
-                            {
-
-                                email:
-                                    {
-                                        required: true,
-                                        email: true,
-                                        remote: {
-                                            url: "ar_web_validate.php",
-                                            data: {
-                                                tipo:'validate_email_registered',
-                                                website_key:'{$website->id}'
-                                            }
-                                        }
-
-                                    },
-                                'new-password':
-                                    {
-                                        required: true,
-                                        minlength: 8
-
-
-                                    },
-                                password_confirm:
-                                    {
-                                        required: true,
-                                        minlength: 8,
-                                        equalTo: "#register_password"
-                                    },
-                                name:
-                                    {
-                                        required: true,
-
-                                    },
-                                tel:
-                                    {
-                                        required: true,
-
-                                    },
-                                terms:
-                                    {
-                                        required: true,
-                                    },
-
                 {foreach from=$required_fields item=required_field }
-                {$required_field}: { required: true },
+                {$required_field}:
+                {
+                    required: true
+                }
+            ,
                 {/foreach}
 
                 {foreach from=$no_required_fields item=no_required_field }
-                {$no_required_field}:{   required: false},
+                {$no_required_field}:
+                {
+                    required: false
+                }
+            ,
                 {/foreach}
 
             },
@@ -550,81 +508,98 @@
                     email:
                     {
 
-                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                            email: '{if empty($labels._validation_email_invalid)}{t}Invalid email{/t}{else}{$labels._validation_email_invalid|escape}{/if}',
-                        remote: '{if empty($labels._validation_handle_registered)}{t}Email address is already in registered{/t}{else}{$labels._validation_handle_registered|escape}{/if}',
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}', email
+                    :
+                        '{if empty($labels._validation_email_invalid)}{t}Invalid email{/t}{else}{$labels._validation_email_invalid|escape}{/if}', remote
+                    :
+                        '{if empty($labels._validation_handle_registered)}{t}Email address is already in registered{/t}{else}{$labels._validation_handle_registered|escape}{/if}',
 
 
-                    },
-                    'new-password':
+                    }
+                ,
+                    'new-password'
+                :
                     {
-                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}', minlength
+                    :
+                        '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
 
 
-
-                    },
+                    }
+                ,
                     password_confirm:
                     {
-                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                            equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}', equalTo
+                    :
+                        '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
 
-                        minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
-                    },
+                            minlength
+                    :
+                        '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                    }
+                ,
                     name:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     tel:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     terms:
                     {
                         required: '{if empty($labels._validation_accept_terms)}{t}Please accept our terms and conditions to proceed{/t}{else}{$labels._validation_accept_terms|escape}{/if}',
 
 
-                    },
+                    }
+                ,
                     administrativeArea:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     locality:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     dependentLocality:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     postalCode:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     addressLine1:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     addressLine2:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     sortingCode:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                     }
 
 
-
-
-                },
+                }
+            ,
 
                 // Do not change code below
-                errorPlacement: function(error, element)
-                {
+                errorPlacement: function (error, element) {
                     error.insertAfter(element.parent());
                 }
-            });
+            })
+                ;
 
 
             });
@@ -642,19 +617,17 @@
 
                 $("#password_reset_form").validate({
 
-                    submitHandler: function(form)
-                    {
+                    submitHandler: function (form) {
 
 
-                        var button=$('#change_password_button');
+                        var button = $('#change_password_button');
 
-                        if(button.hasClass('wait')){
+                        if (button.hasClass('wait')) {
                             return;
                         }
 
                         button.addClass('wait')
                         button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
-
 
 
                         var ajaxData = new FormData();
@@ -664,10 +637,8 @@
 
 
                         $.ajax({
-                            url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                            complete: function () {
+                            url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
                             }, success: function (data) {
-
 
 
                                 if (data.state == '200') {
@@ -690,51 +661,38 @@
                     },
 
                     // Rules for form validation
-                    rules:
-                        {
+                    rules: {
 
 
-                            password:
-                                {
-                                    required: true,
-                                    minlength: 8
-                                },
-                            password_confirm:
-                                {
-                                    required: true,
-                                    minlength: 8,
-                                    equalTo: "#password"
-                                }
+                        password: {
+                            required: true, minlength: 8
+                        }, password_confirm: {
+                            required: true, minlength: 8, equalTo: "#password"
+                        }
 
-                        },
+                    },
 
                     // Messages for form validation
-                    messages:
-                        {
+                    messages: {
 
-                            password:
-                                {
-                                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                                    minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                        password: {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
 
 
-                                },
-                            password_confirm:
-                                {
-                                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                                    equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+                        }, password_confirm: {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                            equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
 
-                                    minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
-                                }
-                        },
+                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                        }
+                    },
 
                     // Do not change code below
-                    errorPlacement: function(error, element)
-                    {
+                    errorPlacement: function (error, element) {
                         error.insertAfter(element.parent());
                     }
                 });
-
 
 
             })
@@ -750,41 +708,42 @@
                 getScript("/assets/datatables.min.js", function () {
 
                     console.log(parent_key)
-                    const request_data = {  "tipo": 'catalogue', "parent": parent, "parent_key": parent_key, "scope": scope, "device_prefix":'mobile'}
-                    $.ajax({
+                    const request_data = {
+                        "tipo": 'catalogue', "parent": parent, "parent_key": parent_key, "scope": scope, "device_prefix": 'mobile'}
+                        $.ajax({
 
-                        url: {if $logged_in}'/ar_web_tables.php'{else}'/ar_web_tables_logged_out.php'{/if}, type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-                            if (data.state == 200) {
+                            url: {if $logged_in}'/ar_web_tables.php'{else}'/ar_web_tables_logged_out.php'{/if}, type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                                if (data.state == 200) {
 
-                                state = data.app_state;
+                                    state = data.app_state;
 
-                                $('.breadcrumbs .department_nav').html(data.department_nav.label);
-                                $('.breadcrumbs .department_nav').attr('title',data.department_nav.title);
-                                $('.breadcrumbs .family_nav').html(data.family_nav.label);
-                                $('.breadcrumbs .family_nav').attr('title',data.family_nav.title);
+                                    $('.breadcrumbs .department_nav').html(data.department_nav.label);
+                                    $('.breadcrumbs .department_nav').attr('title', data.department_nav.title);
+                                    $('.breadcrumbs .family_nav').html(data.family_nav.label);
+                                    $('.breadcrumbs .family_nav').attr('title', data.family_nav.title);
 
-                                $('.table_top .title').html(data.title)
+                                    $('.table_top .title').html(data.title)
 
-                                $('.portfolio_data_feeds .images_zip').attr('href', data.images_zip_url);
-                                $('.portfolio_data_feeds .csv').attr('href', data.csv_url);
-                                $('.portfolio_data_feeds .xls').attr('href', data.xls_url);
-                                $('.portfolio_data_feeds .json').attr('href', data.json_url);
+                                    $('.portfolio_data_feeds .images_zip').attr('href', data.images_zip_url);
+                                    $('.portfolio_data_feeds .csv').attr('href', data.csv_url);
+                                    $('.portfolio_data_feeds .xls').attr('href', data.xls_url);
+                                    $('.portfolio_data_feeds .json').attr('href', data.json_url);
 
-                                $('.portfolio_data_feeds').removeClass('hide')
-                                {if $logged_in}
-                                $('.portfolio_data_feeds').removeClass('hide')
-                                $('.catalogue_data_feed_title').html(data.data_feed.title)
-                                $('.catalogue_data_feed_csv').attr('href',data.data_feed.urls.csv)
-                                $('.catalogue_data_feed_xlsx').attr('href',data.data_feed.urls.xlsx)
-                                $('.catalogue_data_feed_json').attr('href',data.data_feed.urls.json)
-                                {/if}
-                                $('#table_container').html(data.html)
+                                    $('.portfolio_data_feeds').removeClass('hide')
+                                    {if $logged_in}
+                                    $('.portfolio_data_feeds').removeClass('hide')
+                                    $('.catalogue_data_feed_title').html(data.data_feed.title)
+                                    $('.catalogue_data_feed_csv').attr('href', data.data_feed.urls.csv)
+                                    $('.catalogue_data_feed_xlsx').attr('href', data.data_feed.urls.xlsx)
+                                    $('.catalogue_data_feed_json').attr('href', data.data_feed.urls.json)
+                                    {/if}
+                                    $('#table_container').html(data.html)
 
+
+                                }
 
                             }
-
-                        }
-                    });
+                        });
 
 
                 })
@@ -794,7 +753,8 @@
 
             getScript("/assets/datatables.min.js", function () {
 
-                const request_data ={ "tipo":'portfolio',"device_prefix" :'mobile' };
+                const request_data = {
+                    "tipo": 'portfolio', "device_prefix": 'mobile'};
                 $.ajax({
 
                     url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
@@ -811,21 +771,21 @@
 
             {if $with_balance==1}
             getScript("/assets/datatables.min.js", function () {
-                const request_data ={ "tipo":'balance',"device_prefix" :'mobile'}
-                $.ajax({
+                const request_data = {
+                    "tipo": 'balance', "device_prefix": 'mobile'}
+                    $.ajax({
 
-                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-                        if (data.state == 200) {
-                            $('.customer_balance').html(data.balance)
-                            state = data.app_state;
-                            $('#table_container').html(data.html)
+                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                            if (data.state == 200) {
+                                $('.customer_balance').html(data.balance)
+                                state = data.app_state;
+                                $('#table_container').html(data.html)
 
+
+                            }
 
                         }
-
-                    }
-                });
-
+                    });
 
 
             })
@@ -835,16 +795,16 @@
                 getScript("/assets/desktop.forms.min.js", function () {
                     getScript("/assets/desktop.checkout.min.js", function () {
 
-                        let top_up_request="ar_web_top_up.php?tipo=get_top_up_html&device_prefix=mobile";
+                        let top_up_request = "ar_web_top_up.php?tipo=get_top_up_html&device_prefix=mobile";
 
 
                         $.getJSON(top_up_request, function (data) {
 
 
                             $('#top_up').html(data.html)
-                            $('.customer_balance').html('('+data.customer_balance+')')
+                            $('.customer_balance').html('(' + data.customer_balance + ')')
 
-                            $("form").on('submit',function(e) {
+                            $("form").on('submit', function (e) {
                                 e.preventDefault();
                                 e.returnValue = false;
                             });
@@ -852,19 +812,22 @@
 
                             function jQueryTabs3() {
                                 $(".tabs3").each(function () {
-                                    $(".tabs-panel3").not(":first").hide(), $("li", this).removeClass("active"), $("li:first-child", this).addClass("active"), $(".tabs-panel:first-child").show(), $("li", this).on( 'click',function (t){
-                                        var i=$("a",this).attr("href");
-                                        $(this).siblings().removeClass("active"),$(this).addClass("active"),$(i).siblings().hide(),$(i).fadeIn(400),t.preventDefault()}), $(window).width() < 100 && $(".tabs-panel3").show()
+                                    $(".tabs-panel3").not(":first").hide(), $("li", this).removeClass("active"), $("li:first-child", this).addClass("active"), $(".tabs-panel:first-child").show(), $("li", this).on('click', function (t) {
+                                        var i = $("a", this).attr("href");
+                                        $(this).siblings().removeClass("active"), $(this).addClass("active"), $(i).siblings().hide(), $(i).fadeIn(400), t.preventDefault()
+                                    }), $(window).width() < 100 && $(".tabs-panel3").show()
                                 })
                             }
+
                             jQueryTabs3();
-                            $(".tabs3 li a").each(function(){
-                                var t=$(this).attr("href"),i=$(this).html();$(t+" .tab-title3").prepend("<p><strong>"+i+"</strong></p>")})
-                            $(window).resize(function (){
+                            $(".tabs3 li a").each(function () {
+                                var t = $(this).attr("href"), i = $(this).html();
+                                $(t + " .tab-title3").prepend("<p><strong>" + i + "</strong></p>")
+                            })
+                            $(window).resize(function () {
                                 jQueryTabs3()
 
                             })
-
 
 
                         })
@@ -878,111 +841,113 @@
             getScript("/assets/mobile.forms.min.js", function () {
                 getScript("/assets/datatables.min.js", function () {
 
-                    const request_data ={ "tipo":'clients',"device_prefix" :'mobile' }
+                    const request_data = {
+                        "tipo": 'clients', "device_prefix": 'mobile'}
 
-                    $.ajax({
-                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                        $.ajax({
+                            url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
 
-                            if (data.state == 200) {
-                                state = data.app_state;
-                                $('#table_container').html(data.html)
+                                if (data.state == 200) {
+                                    state = data.app_state;
+                                    $('#table_container').html(data.html)
+                                }
+
                             }
-
-                        }
-                    });
+                        });
 
                 })
 
                 $(document).on('click', '#new_customer', function (e) {
-                    $( ".reg_form" ).removeClass( "hide" );
-                    $( ".clients" ).addClass( "hide" );
+                    $(".reg_form").removeClass("hide");
+                    $(".clients").addClass("hide");
                 });
 
-                $("form").on('submit',function(e) {
+                $("form").on('submit', function (e) {
                     e.preventDefault();
                     e.returnValue = false;
                 });
 
-                $("#new_client_form").validate(
-                    {
-                        submitHandler: function(form)
-                        {
+                $("#new_client_form").validate({
+                    submitHandler: function (form) {
 
-                            var button=$('#save_new_client_button');
+                        var button = $('#save_new_client_button');
 
-                            if(button.hasClass('wait')){
-                                return;
+                        if (button.hasClass('wait')) {
+                            return;
+                        }
+
+                        button.addClass('wait')
+                        button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                        var register_data = {}
+
+                            $("#new_client_form input:not(.ignore)").each(function (i, obj) {
+                                if (!$(obj).attr('name') == '') {
+                                    register_data[$(obj).attr('name')] = $(obj).val()
+                                }
+                            });
+
+                        $("#new_client_form select:not(.ignore)").each(function (i, obj) {
+                            if (!$(obj).attr('name') == '') {
+                                register_data[$(obj).attr('name')] = $(obj).val()
                             }
-
-                            button.addClass('wait')
-                            button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
-
-                            var register_data={ }
-
-                            $("#new_client_form input:not(.ignore)").each(function(i, obj) {
-                                if(!$(obj).attr('name')==''){
-                                    register_data[$(obj).attr('name')]=$(obj).val()
-                                }
-                            });
-
-                            $("#new_client_form select:not(.ignore)").each(function(i, obj) {
-                                if(!$(obj).attr('name')==''){
-                                    register_data[$(obj).attr('name')]=$(obj).val()
-                                }
-                            });
+                        });
 
 
+                        var ajaxData = new FormData();
 
-                            var ajaxData = new FormData();
-
-                            ajaxData.append("tipo", 'new_customer_client')
-                            ajaxData.append("data", JSON.stringify(register_data))
-
-
-                            $.ajax({
-                                url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                                complete: function () {
-                                }, success: function (data) {
+                        ajaxData.append("tipo", 'new_customer_client')
+                        ajaxData.append("data", JSON.stringify(register_data))
 
 
+                        $.ajax({
+                            url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+                            }, success: function (data) {
 
 
-                                    if (data.state == '200') {
+                                if (data.state == '200') {
 
-                                        rows.fetch({
-                                            reset: true
-                                        });
+                                    rows.fetch({
+                                        reset: true
+                                    });
 
-                                        $( ".reg_form" ).addClass( "hide" );
-                                        $( ".clients" ).removeClass( "hide" );
+                                    $(".reg_form").addClass("hide");
+                                    $(".clients").removeClass("hide");
 
-                                        for (var key in data.metadata.class_html) {
-                                            $('.' + key).html(data.metadata.class_html[key])
-                                        }
-
-                                    } else if (data.state == '400') {
-                                        swal("{t}Error{/t}!", data.msg, "error")
+                                    for (var key in data.metadata.class_html) {
+                                        $('.' + key).html(data.metadata.class_html[key])
                                     }
 
-
-                                    button.removeClass('wait')
-                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
-                                }, error: function () {
-                                    button.removeClass('wait')
-                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                } else if (data.state == '400') {
+                                    swal("{t}Error{/t}!", data.msg, "error")
                                 }
-                            });
 
 
-                        },
+                                button.removeClass('wait')
+                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                            }, error: function () {
+                                button.removeClass('wait')
+                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                            }
+                        });
 
-                        rules:
-                            {
+
+                    },
+
+                    rules: {
                 {foreach from=$required_fields item=required_field }
-                {$required_field}: { required: true },
+                {$required_field}:
+                {
+                    required: true
+                }
+            ,
                 {/foreach}
                 {foreach from=$no_required_fields item=no_required_field }
-                {$no_required_field}:{   required: false},
+                {$no_required_field}:
+                {
+                    required: false
+                }
+            ,
                 {/foreach}
 
             },
@@ -993,71 +958,76 @@
                     administrativeArea:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     locality:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     dependentLocality:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     postalCode:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     addressLine1:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     addressLine2:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     sortingCode:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                     }
 
 
-
-
-                },
-                errorPlacement: function(error, element)
-                {
+                }
+            ,
+                errorPlacement: function (error, element) {
                     error.insertAfter(element.parent());
                 }
-            });
+            })
+                ;
             })
             {/if}
             {if $with_client_order_new==1}
             getScript("/assets/desktop.forms.min.js", function () {
                 getScript("/assets/datatables.min.js", function () {
 
-                    const request_data ={ "tipo":'choose_client_for_order',"origin":'client_order_new',"device_prefix":'tablet'}
+                    const request_data = {
+                        "tipo": 'choose_client_for_order', "origin": 'client_order_new', "device_prefix": 'tablet'}
 
-                    $.ajax({
-                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
+                        $.ajax({
+                            url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
 
-                            if (data.state == 200) {
-                                state = data.app_state;
-                                $('#table_container').html(data.html)
+                                if (data.state == 200) {
+                                    state = data.app_state;
+                                    $('#table_container').html(data.html)
+                                }
+
                             }
-
-                        }
-                    });
+                        });
 
                 })
 
 
-
                 $(document).on('click', '#order_for_new_customer', function (e) {
-                    $(this).closest('.sky-form').addClass( "hide" );
-                    $( ".reg_form" ).removeClass( "hide" );
+                    $(this).closest('.sky-form').addClass("hide");
+                    $(".reg_form").removeClass("hide");
                     $('.type_new_order_chooser').addClass('hide')
 
-                    $('.new_order_options .order_for_new_customer').removeClass( "hide" );
-                    $('.new_order_options .order_for_existing_customer').addClass( "hide" );
+                    $('.new_order_options .order_for_new_customer').removeClass("hide");
+                    $('.new_order_options .order_for_existing_customer').addClass("hide");
                 });
 
                 $(document).on('click', '#order_for_existing_customer', function (e) {
@@ -1066,87 +1036,87 @@
 
 
                     $('.new_order_options .order_for_new_customer').addClass('hide')
-                    $('.new_order_options .order_for_existing_customer').removeClass( "hide" );
+                    $('.new_order_options .order_for_existing_customer').removeClass("hide");
 
                 });
 
-                $("form").submit(function(e) {
+                $("form").submit(function (e) {
                     e.preventDefault();
                     e.returnValue = false;
                 });
 
-                $("#order_for_new_customer_form").validate(
-                    {
-                        submitHandler: function(form)
-                        {
+                $("#order_for_new_customer_form").validate({
+                    submitHandler: function (form) {
 
-                            var button=$('#save_order_for_new_customer_button');
+                        var button = $('#save_order_for_new_customer_button');
 
-                            if(button.hasClass('wait')){
-                                return;
+                        if (button.hasClass('wait')) {
+                            return;
+                        }
+
+                        button.addClass('wait')
+                        button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                        var register_data = {}
+
+                            $("#order_for_new_customer_form input:not(.ignore)").each(function (i, obj) {
+                                if (!$(obj).attr('name') == '') {
+                                    register_data[$(obj).attr('name')] = $(obj).val()
+                                }
+                            });
+
+                        $("#order_for_new_customer_form select:not(.ignore)").each(function (i, obj) {
+                            if (!$(obj).attr('name') == '') {
+                                register_data[$(obj).attr('name')] = $(obj).val()
                             }
-
-                            button.addClass('wait')
-                            button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
-
-                            var register_data={ }
-
-                            $("#order_for_new_customer_form input:not(.ignore)").each(function(i, obj) {
-                                if(!$(obj).attr('name')==''){
-                                    register_data[$(obj).attr('name')]=$(obj).val()
-                                }
-                            });
-
-                            $("#order_for_new_customer_form select:not(.ignore)").each(function(i, obj) {
-                                if(!$(obj).attr('name')==''){
-                                    register_data[$(obj).attr('name')]=$(obj).val()
-                                }
-                            });
+                        });
 
 
+                        var ajaxData = new FormData();
 
-                            var ajaxData = new FormData();
-
-                            ajaxData.append("tipo", 'order_for_new_customer')
-                            ajaxData.append("data", JSON.stringify(register_data))
-
-
-                            $.ajax({
-                                url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                                complete: function () {
-                                }, success: function (data) {
+                        ajaxData.append("tipo", 'order_for_new_customer')
+                        ajaxData.append("data", JSON.stringify(register_data))
 
 
+                        $.ajax({
+                            url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+                            }, success: function (data) {
 
 
-                                    if (data.state == '200') {
-                                        window.location = 'client_basket.sys?client_id='+data.client_id
+                                if (data.state == '200') {
+                                    window.location = 'client_basket.sys?client_id=' + data.client_id
 
 
-                                    } else if (data.state == '400') {
-                                        swal("{t}Error{/t}!", data.msg, "error")
-                                        button.removeClass('wait')
-                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
-                                    }
-
-
-
-                                }, error: function () {
+                                } else if (data.state == '400') {
+                                    swal("{t}Error{/t}!", data.msg, "error")
                                     button.removeClass('wait')
                                     button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
                                 }
-                            });
 
 
-                        },
+                            }, error: function () {
+                                button.removeClass('wait')
+                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                            }
+                        });
 
-                        rules:
-                            {
+
+                    },
+
+                    rules: {
                 {foreach from=$required_fields item=required_field }
-                {$required_field}: { required: true },
+                {$required_field}:
+                {
+                    required: true
+                }
+            ,
                 {/foreach}
                 {foreach from=$no_required_fields item=no_required_field }
-                {$no_required_field}:{   required: false},
+                {$no_required_field}:
+                {
+                    required: false
+                }
+            ,
                 {/foreach}
 
             },
@@ -1157,45 +1127,46 @@
                     administrativeArea:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     locality:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     dependentLocality:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     postalCode:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     addressLine1:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     addressLine2:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                    },
+                    }
+                ,
                     sortingCode:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                     }
 
 
-
-
-                },
-                errorPlacement: function(error, element)
-                {
+                }
+            ,
+                errorPlacement: function (error, element) {
                     error.insertAfter(element.parent());
                 }
-            });
-
-
-
-
+            })
+                ;
 
 
             })
@@ -1213,20 +1184,19 @@
             getScript("/assets/datatables.min.js", function () {
 
 
+                const request_data = {
+                    "tipo": 'clients_orders'}
 
+                    $.ajax({
+                        url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
 
-                const request_data ={ "tipo":'clients_orders'}
+                            if (data.state == 200) {
+                                state = data.app_state;
+                                $('#table_container').html(data.html)
+                            }
 
-                $.ajax({
-                    url: '/ar_web_tables.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
-
-                        if (data.state == 200) {
-                            state = data.app_state;
-                            $('#table_container').html(data.html)
                         }
-
-                    }
-                });
+                    });
 
             })
             {/if}
@@ -1307,22 +1277,21 @@
                                     {else}
 
 
-                                    if(document.referrer.indexOf(location.protocol + "//" + location.host) === 0){
+                                    if (document.referrer.indexOf(location.protocol + "//" + location.host) === 0) {
                                         //console.log(document.referrer)
 
 
-                                        if(document.referrer.match(/login\.sys/g)){
+                                        if (document.referrer.match(/login\.sys/g)) {
 
                                             window.location.replace("index.php");
-                                        }else if(document.referrer.match(/register\.sys/g)){
+                                        } else if (document.referrer.match(/register\.sys/g)) {
                                             window.location.replace("index.php");
-                                        }else{
+                                        } else {
                                             window.location.replace(document.referrer);
                                         }
 
 
-
-                                    }else{
+                                    } else {
                                         window.location.replace("index.php");
                                     }
                                     {/if}
@@ -1334,8 +1303,6 @@
                                     button.removeClass('wait')
                                     button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
                                 }
-
-
 
 
                             }, error: function () {
@@ -1493,7 +1460,7 @@
 
                 })
 
-                $('.images figure a').on( 'click',function (event) {
+                $('.images figure a').on('click', function (event) {
                     event.preventDefault();
                     var options = {
                         index: $(this).index()
@@ -1523,9 +1490,11 @@
 
                 $('.iframe').each(function (i, obj) {
 
-                    $(this).css({ height: $(this).width() * $(this).data('h') / $(this).data('w')})
-                    $(this).find('iframe').css({ height:$(this).height(),width:$(this).width()})
-                    $(this).find('iframe').attr( 'src', $(this).data('src'));
+                    $(this).css({
+                        height: $(this).width() * $(this).data('h') / $(this).data('w')})
+                    $(this).find('iframe').css({
+                        height: $(this).height(), width: $(this).width()})
+                    $(this).find('iframe').attr('src', $(this).data('src'));
 
                 });
             }
@@ -1535,27 +1504,26 @@
             {if $with_blackboard==1}
 
 
-            $(".asset_description .show_all").on( 'click',function() {
+            $(".asset_description .show_all").on('click', function () {
 
                 totalHeight = 0
 
                 $el = $(this);
-                $p  = $el.parent();
+                $p = $el.parent();
                 $up = $p.parent();
                 $ps = $up.find("p:not('.read-more')");
 
-                $ps.each(function() {
+                $ps.each(function () {
                     totalHeight += $(this).outerHeight();
                 });
 
-                h=$(this).closest('.asset_description').find('.asset_description_wrap').outerHeight();
+                h = $(this).closest('.asset_description').find('.asset_description_wrap').outerHeight();
 
                 $up.css({
-                    "height": $up.height(),
-                    "max-height": 9999
+                    "height": $up.height(), "max-height": 9999
                 })
                     .animate({
-                        "height": h+30
+                        "height": h + 30
                     });
 
                 // fade out read-more
@@ -1566,55 +1534,70 @@
 
             });{/if}
             {if $logged_in}
+
+            $.post("ar_web_ping.php", {
+                store_type: "{$store->get('Store Type')}", webpage_key:{$webpage->id} , device: 'Mobile'}, function (data) {
+                {if $store->get('Store Type')=='Dropshipping'}
+                $('.DS_top_buttons .Customer_Balance').html(data.customer_balance)
+                {else}
+                $('#header_order_totals').find('.ordered_products_number').html(data.items);
+                $('#header_order_totals').find('.order_amount').html(data.total);
+                $('#header_order_totals').find('i').attr('title', data.label);
+                {/if}
+            }, "json");
+
+
+
+
             {if $store->get('Store Type')=='Dropshipping' }
             {if $with_products_portfolio==1}
-                $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
-                    $.each(data.products_in_portfolio, function (index, value) {
-                        var portfolio_row=$('.portfolio_row_' + index);
-                        portfolio_row.find('.add_to_portfolio').addClass('hide')
-                        portfolio_row.find('.remove_from_portfolio').removeClass('hide')
-                    });
-                    $.each(data.stock, function (index, value) {
-                        if (value[0] != '') {
-                            $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
-                            $('.product_stock_label_' + index).html(value[1])
-                        }
-                    });
+            $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
+                $.each(data.products_in_portfolio, function (index, value) {
+                    var portfolio_row = $('.portfolio_row_' + index);
+                    portfolio_row.find('.add_to_portfolio').addClass('hide')
+                    portfolio_row.find('.remove_from_portfolio').removeClass('hide')
+                });
+                $.each(data.stock, function (index, value) {
+                    if (value[0] != '') {
+                        $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
+                        $('.product_stock_label_' + index).html(value[1])
+                    }
+                });
 
-                    var number_items_in_family=0;
-                    var number_products_in_portfolio_in_family=0;
-                    $.each(data.stock, function (index, value) {
+                var number_items_in_family = 0;
+                var number_products_in_portfolio_in_family = 0;
+                $.each(data.stock, function (index, value) {
 
-                        if (value[2] === 'Category_Products_Item') {
-                            number_items_in_family++
-                            var _portfolio_row=$('.portfolio_row_' + index+' .add_to_portfolio');
-                            if(_portfolio_row.hasClass('hide')){
-                                number_products_in_portfolio_in_family++
+                    if (value[2] === 'Category_Products_Item') {
+                        number_items_in_family++
+                        var _portfolio_row = $('.portfolio_row_' + index + ' .add_to_portfolio');
+                        if (_portfolio_row.hasClass('hide')) {
+                            number_products_in_portfolio_in_family++
 
-                            }
-                        }
-
-                    });
-
-                    $('.top_menu .number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
-                    $('.top_menu .number_products_in_family').html(number_items_in_family)
-                    if(number_items_in_family>0){
-                        $('.top_menu .portfolio_in_family').removeClass('hide')
-                        $('.top_menu .add_family_label').addClass('hide')
-                        $('.top_menu .add_rest_label').addClass('hide')
-                        $('.top_menu .add_all_family_to_portfolio').removeClass('hide')
-
-                        if(number_products_in_portfolio_in_family==0) {
-                            $('.top_menu .add_family_label').removeClass('hide')
-                        }else if(number_products_in_portfolio_in_family<number_items_in_family){
-                            $('.top_menu .add_rest_label').removeClass('hide')
-                        }else{
-                            $('.top_menu .add_all_family_to_portfolio').addClass('hide')
                         }
                     }
 
-
                 });
+
+                $('.top_menu .number_products_in_portfolio_in_family').html(number_products_in_portfolio_in_family)
+                $('.top_menu .number_products_in_family').html(number_items_in_family)
+                if (number_items_in_family > 0) {
+                    $('.top_menu .portfolio_in_family').removeClass('hide')
+                    $('.top_menu .add_family_label').addClass('hide')
+                    $('.top_menu .add_rest_label').addClass('hide')
+                    $('.top_menu .add_all_family_to_portfolio').removeClass('hide')
+
+                    if (number_products_in_portfolio_in_family == 0) {
+                        $('.top_menu .add_family_label').removeClass('hide')
+                    } else if (number_products_in_portfolio_in_family < number_items_in_family) {
+                        $('.top_menu .add_rest_label').removeClass('hide')
+                    } else {
+                        $('.top_menu .add_all_family_to_portfolio').addClass('hide')
+                    }
+                }
+
+
+            });
 
             {/if}
             getScript("/assets/mobile.logged_in.min.js", function () {
@@ -1626,18 +1609,18 @@
 
             $.getJSON("ar_web_customer_products.php?with_category_products={if $with_category_products==1}Yes{else}No{/if}&tipo=category_products&webpage_key={$webpage->id}", function (data) {
 
-                $.each(data.ordered_products, function( index, value ) {
-                    $('.order_qty_'+index).val(value)
+                $.each(data.ordered_products, function (index, value) {
+                    $('.order_qty_' + index).val(value)
                 });
 
 
-                $.each(data.favourite, function( index, value ) {
-                    $('.favourite_'+index).removeClass('far').addClass('marked fas').data('favourite_key',value)
+                $.each(data.favourite, function (index, value) {
+                    $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
                 });
 
                 $.each(data.out_of_stock_reminders, function (index, value) {
 
-                    var reminder_icon=$('.out_of_stock_reminders_' + index)
+                    var reminder_icon = $('.out_of_stock_reminders_' + index)
                     reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
                 });
 
@@ -1650,27 +1633,11 @@
                     }
                 });
 
-                $('#header_order_totals').find('.ordered_products_number').html(data.items)
-                $('#header_order_totals').find('.order_amount').html(data.total)
-                $('#header_order_totals').find('i').attr('title',data.label)
-
-
 
             });
 
 
-            {else}
-            $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
 
-
-                $('#header_order_totals').find('.ordered_products_number').html(data.items)
-                $('#header_order_totals').find('.order_amount').html(data.total)
-                $('#header_order_totals').find('i').attr('title',data.label)
-
-
-
-
-            });
             {/if}
             getScript("/assets/mobile.logged_in.min.js", function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
@@ -1751,7 +1718,7 @@
             storageBucket: "{$firebase.projectId}.appspot.com",
             messagingSenderId: "{$firebase.messagingSenderId}",
             appId: "{$firebase.appId}",
-            measurementId:  "{$firebase.measurementId}"
+            measurementId: "{$firebase.measurementId}"
         };
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();

@@ -61,6 +61,7 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+
 $customer = get_object('Customer', $_SESSION['customer_key']);
 
 if (!$customer->id) {
@@ -92,7 +93,7 @@ if ($website->get('Website Type') != 'EcomDS') {
     $order->editor = $editor;
 }
 
-
+// tempral stuff until we renegerate old cookies
 if (!empty($_SESSION['website_locale'])) {
     $website_locale = $_SESSION['website_locale'];
 } else {

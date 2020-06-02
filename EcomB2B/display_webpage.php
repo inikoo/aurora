@@ -9,6 +9,7 @@
 
  Version 2.0
 */
+
 use ReallySimpleJWT\Token;
 
 
@@ -17,7 +18,6 @@ include_once __DIR__.'/utils/web_common.php';
 include_once __DIR__.'/utils/web_locale_functions.php';
 
 list($detected_device, $template_suffix) = get_device();
-
 
 
 date_default_timezone_set('UTC');
@@ -83,10 +83,18 @@ if (isset($is_homepage)) {
 
         if ($logged_in) {
 
-            $_SESSION['logged_in']            = true;
-            $_SESSION['customer_key']         = $customer_key;
-            $_SESSION['website_user_key']     = $website_user_key;
-            $_SESSION['UTK']=['C'=>$customer_key,'WU'=>$website_user_key,'WUL'=>$website_user_log_key];
+            $_SESSION['logged_in']        = true;
+            $_SESSION['customer_key']     = $customer_key;
+            $_SESSION['website_user_key'] = $website_user_key;
+
+            $_SESSION['UTK'] = [
+                'C'   => $customer_key,
+                'WU'  => $website_user_key,
+                'WUL' => $website_user_log_key,
+                'CUR' => $website->get('Currency Code'),
+                'LOC' => $website->get('Website Locale')
+            ];
+
             $token = Token::customPayload($_SESSION['UTK'], JWT_KEY);
             setcookie('UTK', $token, time() + 157680000);
             setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000);
@@ -104,8 +112,7 @@ if (isset($is_homepage)) {
     $smarty->assign('form_error', $form_error);
 
 
-}
-elseif (isset($is_unsubscribe)) {
+} elseif (isset($is_unsubscribe)) {
     include_once __DIR__.'/utils/public_object_functions.php';
     include_once __DIR__.'/utils/network_functions.php';
 
@@ -182,9 +189,7 @@ elseif (isset($is_unsubscribe)) {
 
     }
 
-}
-
-elseif (isset($is_404)) {
+} elseif (isset($is_404)) {
     include_once __DIR__.'/utils/public_object_functions.php';
     $website     = get_object('Website', $_SESSION['website_key']);
     $webpage_key = $website->get_system_webpage_key('not_found.sys');
@@ -203,34 +208,15 @@ if (isset($_REQUEST['snapshot'])) {
 
     if (isset($_REQUEST['logged_in']) and $_REQUEST['logged_in']) {
 
-        $logged_in                        = 1;
-        $_SESSION['logged_in']            = true;
-        $_SESSION['customer_key']         = 0;
-        $_SESSION['website_user_key']     = 0;
+        $logged_in                    = 1;
+        $_SESSION['logged_in']        = true;
+        $_SESSION['customer_key']     = 0;
+        $_SESSION['website_user_key'] = 0;
     }
 
 
 }
 
-
-if ($logged_in) {
-
-    include_once __DIR__.'/utils/new_fork.php';
-    try {
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'         => 'website_user_visit',
-            'server_data'  => $_SERVER,
-            'session_data' => $_SESSION,
-            'webpage_key'  => $webpage_key,
-            'device'       => $detected_device,
-            'datetime'     => gmdate('Y-m-d H:i:s')
-        ), DNS_ACCOUNT_CODE
-        );
-    } catch (Exception $e) {
-        Sentry\captureException($e);
-    }
-}
 
 
 $cache_id = ($logged_in ? 'in' : 'out').'_'.$webpage_key.'|'.$_SESSION['website_key'].'|'.DNS_ACCOUNT_CODE;
@@ -458,7 +444,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 }
 
-
+header('X-Cacheable: Yes');
 $smarty->display($template, $cache_id);
 
 

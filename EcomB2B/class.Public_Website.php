@@ -278,6 +278,20 @@ class Public_Website {
                 } else {
                     return $this->settings($key);
                 }
+            case 'Currency Code':
+                $sql  = "select `Store Currency Code` from `Store Dimension` where `Store Key`=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->data['Website Store Key']
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    return $row['Store Currency Code'];
+                }else{
+                    return '';
+                }
+
 
         }
 

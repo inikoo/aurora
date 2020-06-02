@@ -904,20 +904,20 @@ class Store extends DB_Table {
 
             case 'formatted_bis_dispatch_time_avg':
             case 'formatted_bis_sitting_time_avg':
-            $_key = preg_replace('/formatted_bis_/', '', $key);
+                $_key = preg_replace('/formatted_bis_/', '', $key);
 
-            $_sample_key = preg_replace('/_avg/', '_samples', $_key);
-            if ($args != '') {
-                $_sample_key .= '_'.strtolower(preg_replace('/\s/', '_', $args));
-            }
+                $_sample_key = preg_replace('/_avg/', '_samples', $_key);
+                if ($args != '') {
+                    $_sample_key .= '_'.strtolower(preg_replace('/\s/', '_', $args));
+                }
 
-            if ($this->properties($_sample_key) > 0) {
-                $dispatch_time_average = $this->get($_key, $args);
+                if ($this->properties($_sample_key) > 0) {
+                    $dispatch_time_average = $this->get($_key, $args);
 
-                return seconds_to_string($dispatch_time_average);
-            }else{
-                return '-';
-            }
+                    return seconds_to_string($dispatch_time_average);
+                } else {
+                    return '-';
+                }
 
             case 'dispatch_time_histogram':
 
@@ -928,31 +928,26 @@ class Store extends DB_Table {
                 }
 
 
-                $histogram= $this->properties($key);
+                $histogram = $this->properties($key);
 
 
-                if($histogram!=''){
-                    $histogram=json_decode($histogram,true);
+                if ($histogram != '') {
+                    $histogram = json_decode($histogram, true);
 
 
-
-                    if(isset($histogram[$args[0]])){
+                    if (isset($histogram[$args[0]])) {
                         return $histogram[$args[0]];
 
                     }
                 }
+
                 return 0;
 
 
             case 'percentage_dispatch_time_histogram':
                 return percentage(
-                   $this->get('dispatch_time_histogram',$args),
-                    $this->get('dispatch_time_samples',$args[1])
+                    $this->get('dispatch_time_histogram', $args), $this->get('dispatch_time_samples', $args[1])
                 );
-
-
-
-
 
 
         }
@@ -2744,7 +2739,6 @@ class Store extends DB_Table {
             foreach ($result as $row) {
 
 
-
                 $data['dispatched_today']['number']    = $row['num'];
                 $data['dispatched_today']['amount']    = $row['amount'];
                 $data['dispatched_today']['dc_amount'] = $row['dc_amount'];
@@ -3392,7 +3386,7 @@ class Store extends DB_Table {
 
             if ($customer->new) {
 
-                $customer->fast_update_json_field('Customer Metadata','cur',$this->get('Store Currency Code'));
+                $customer->fast_update_json_field('Customer Metadata', 'cur', $this->get('Store Currency Code'));
                 $this->new_customer = true;
 
                 include_once 'utils/new_fork.php';
@@ -3573,23 +3567,23 @@ class Store extends DB_Table {
             return false;
         }
 
-        $sql = sprintf(
-            "SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ", prepare_mysql($data['Product Code']), $this->id
-
+        $sql  = "SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $data['Product Code'],
+                $this->id
+            )
         );
+        if ($row = $stmt->fetch()) {
+            if ($row['num'] > 0) {
+                $this->error      = true;
+                $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Product Code']);
+                $this->error_code = 'duplicate_product_code_reference';
+                $this->metadata   = $data['Product Code'];
 
+                return get_object('Product', $row['Product ID']);
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['num'] > 0) {
-                    $this->error      = true;
-                    $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Product Code']);
-                    $this->error_code = 'duplicate_product_code_reference';
-                    $this->metadata   = $data['Product Code'];
-
-                    return get_object('Product', $row['Product ID']);
-
-                }
             }
         }
 
@@ -3707,21 +3701,22 @@ class Store extends DB_Table {
 
                 if (preg_match('/([0-9]*\.?[0-9]+)x\s+/', $part_data, $matches)) {
 
-                    $ratio     = floatval($matches[1]);
+                    $ratio = floatval($matches[1]);
 
 
-                    if($ratio<=0){
+                    if ($ratio <= 0) {
                         $this->error      = true;
-                        $this->msg        = sprintf(_('Invalid parts format, use: %s'),'<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
+                        $this->msg        = sprintf(_('Invalid parts format, use: %s'), '<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
                         $this->error_code = 'invalid_parts';
                         $this->metadata   = $data['Parts'];
+
                         return false;
 
                     }
                     $part_data = preg_replace('/([0-9]*\.?[0-9]+)x\s+/', '', $part_data);
                 } else {
                     $this->error      = true;
-                    $this->msg        = sprintf(_('Invalid parts format, use: %s'),'<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
+                    $this->msg        = sprintf(_('Invalid parts format, use: %s'), '<i>'._('number').'</i>>x '._('reference').', <i>'._('number').'</i>>x '._('reference').', ...');
                     $this->error_code = 'invalid_parts';
                     $this->metadata   = $data['Parts'];
 
@@ -3744,8 +3739,6 @@ class Store extends DB_Table {
 
             $data['Product Parts'] = json_encode($product_parts);
         }
-
-
 
 
         if (isset($data['Product Parts'])) {
@@ -3921,7 +3914,7 @@ class Store extends DB_Table {
                 }
 
 
-$product->update_web_state();
+                $product->update_web_state();
 
 
                 require_once 'utils/new_fork.php';
@@ -4434,7 +4427,7 @@ $product->update_web_state();
                     $this->error = true;
                     $this->msg   = _("Value can't be empty");
                 }
-                if (strlen($value)>4) {
+                if (strlen($value) > 4) {
                     $this->error = true;
                     $this->msg   = _("The max length of the code is 4 characters");
                 }
@@ -4809,12 +4802,11 @@ $product->update_web_state();
                 $this->id
             )
         );
-        $waiting_time_histogram=array();
+        $waiting_time_histogram = array();
         while ($row = $stmt->fetch()) {
-            $waiting_time_histogram[$row['days']]=$row['num'];
+            $waiting_time_histogram[$row['days']] = $row['num'];
         }
         $this->fast_update_json_field('Store Properties', 'dispatch_time_histogram_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), json_encode($waiting_time_histogram));
-
 
 
     }

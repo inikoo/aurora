@@ -29,8 +29,7 @@
                     {/if}
                     , function () {
 
-
-            {if $website->get('Website Text Font')!=''  and !$logged_in}
+                            {if $website->get('Website Text Font')!=''  and !$logged_in}
 
             WebFontConfig = {
                 google: { families: [ '{$website->get('Website Text Font')}:400,700' ] }
@@ -45,41 +44,23 @@
             s.parentNode.insertBefore(wf, s);
 
             {/if}
-
-
-            $("#bottom_header a.dropdown").hoverIntent(menu_in, menu_out);
-
-
-            $( "#bottom_header a.dropdown" ).on( 'mouseenter', menu_in_fast ).on( 'mouseleave', menu_out_fast );
-            $( "._menu_block" ).on( 'mouseenter', menu_block_in ).on( 'mouseleave', menu_block_out );
-
-
-
-
-            $('#_menu_blocks').width($('#top_header').width())
-
-
-
-
-            $('#header_search_icon').on("click", function () {
+                            $("#bottom_header a.dropdown").hoverIntent(menu_in, menu_out);
+                            $( "#bottom_header a.dropdown" ).on( 'mouseenter', menu_in_fast ).on( 'mouseleave', menu_out_fast );
+                            $( "._menu_block" ).on( 'mouseenter', menu_block_in ).on( 'mouseleave', menu_block_out );
+                            $('#_menu_blocks').width($('#top_header').width())
+                            $('#header_search_icon').on("click", function () {
 
                 window.location.href = "search.sys?q=" + encodeURIComponent($('#header_search_input').val());
 
 
             });
-
-
-
-
-            $("#header_search_input").on('keyup', function (e) {
+                            $("#header_search_input").on('keyup', function (e) {
                 if (e.keyCode == 13) {
                     window.location.href = "search.sys?q=" + encodeURIComponent($(this).val());
                 }
             });
 
-
-
-           {if $with_search==1}
+                            {if $with_search==1}
 
 
                             var _args=document.location.href.split("?")[1];
@@ -110,10 +91,6 @@
                             });
 
                             {/if}
-
-
-
-
             {if $with_reset_password==1}
             getScript("/assets/desktop.logged_in.min.js", function () {
                 getScript("/assets/desktop.forms.min.js", function () {
@@ -1239,8 +1216,7 @@
 
 
 
-
-            {if $with_login==1}
+                            {if $with_login==1}
             $('.control_panel').addClass('hide')
             getScript("/assets/desktop.forms.min.js", function () {
                 $('#open_recovery').on('click', function (e) {
@@ -1484,7 +1460,7 @@
 
             })
             {/if}
-            {if $with_gallery==1}
+                            {if $with_gallery==1}
 
 
             getScript("/assets/image_gallery.min.js", function () {
@@ -1513,13 +1489,11 @@
 
             })
             {/if}
-            {if $with_iframe==1}
-
-            $(document).ready(function () {
+                            {if $with_iframe==1}
+                            $(document).ready(function () {
                 resize_banners();
             });
-
-            $(window).resize(function () {
+                            $(window).resize(function () {
                 resize_banners();
 
             });
@@ -1535,9 +1509,24 @@
             }
             {/if}
 
-             {if $logged_in}
-             {if $store->get('Store Type')=='Dropshipping'}
-                    {if $with_products_portfolio==1}
+
+                            {if $logged_in}
+                            $.post( "ar_web_ping.php", { store_type: "{$store->get('Store Type')}", webpage_key:{$webpage->id} ,device: 'Desktop'  } ,
+                                function( data ) {
+                                    {if $store->get('Store Type')=='Dropshipping'}
+                                    $('.DS_top_buttons .Customer_Balance').html(data.customer_balance)
+                                    {else}
+                                    $('#header_order_totals').find('.ordered_products_number').html(data.items);
+                                    $('#header_order_totals').find('.order_amount').html(data.total);
+                                    $('#header_order_totals').find('i').attr('title', data.label);
+                                    {/if}
+                            }, "json");
+
+
+
+                            {if $store->get('Store Type')=='Dropshipping'}
+
+                            {if $with_products_portfolio==1}
                             $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
                                 $.each(data.products_in_portfolio, function (index, value) {
                                     var portfolio_row=$('.portfolio_row_' + index);
@@ -1592,61 +1581,47 @@
                             });
 
                     {/if}
-                    getScript("/assets/desktop.logged_in.min.js", function () {
-                        $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
-                    })
-                    $.getJSON("ar_web_customer_products.php?tipo=customer_balance ", function (data) {
-                        $('.DS_top_buttons .Customer_Balance').html(data.customer_balance)
-                    });
-             {else}
+
+                            getScript("/assets/desktop.logged_in.min.js", function () {
+                                $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
+                            })
+
+
+
+                            {else}
                     {if $with_product_order_input==1}
 
+                            $.getJSON("ar_web_customer_products.php?&tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
 
-
-                $.getJSON("ar_web_customer_products.php?&tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
-                $('.order_row i').removeClass('hide');
-                $('.order_row span').removeClass('hide');
-
-                $.each(data.ordered_products, function (index, value) {
+                                $('.order_row i').removeClass('hide');
+                                $('.order_row span').removeClass('hide');
+                                $.each(data.ordered_products, function (index, value) {
                     $('.order_row_' + index).find('input').val(value).data('ovalue', value)
                     $('.order_row_' + index).find('i').removeClass('fa-hand-pointer fa-flip-horizontal').addClass('fa-thumbs-up fa-flip-horizontal')
                     $('.order_row_' + index).find('.label span').html('{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}')
                 });
-
-                $.each(data.favourite, function (index, value) {
+                                $.each(data.favourite, function (index, value) {
                     $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
                 });
-
-                $.each(data.out_of_stock_reminders, function (index, value) {
+                                $.each(data.out_of_stock_reminders, function (index, value) {
                     var reminder_icon = $('.out_of_stock_reminders_' + index);
                     reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
                 });
-
-                $.each(data.stock, function (index, value) {
+                                $.each(data.stock, function (index, value) {
                     if (value[0] != '') {
                         $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
                         $('.product_stock_label_' + index).html(value[1])
                     }
                 });
 
-                $('#header_order_totals').find('.ordered_products_number').html(data.items);
-                $('#header_order_totals').find('.order_amount').html(data.total);
-                $('#header_order_totals').find('i').attr('title', data.label);
-                });
-                {else}
-                $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
-                    $('#header_order_totals').find('.ordered_products_number').html(data.items);
-                    $('#header_order_totals').find('.order_amount').html(data.total);
-                    $('#header_order_totals').find('i').attr('title', data.label);
+                            });
 
-                });
-                {/if}
+                            {/if}
                      getScript("/assets/desktop.logged_in.min.js", function () {
                         $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
                         {if $with_favourites==1}
 
-
-                    $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=", function (data) {
+                         $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=", function (data) {
 
 
                         $('#favourites').html(data.html)
@@ -1701,7 +1676,7 @@
                 {/if}
                     })
               {/if}
-              {/if}
+                            {/if}
 
 
 
