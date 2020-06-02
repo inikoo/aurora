@@ -8,6 +8,10 @@
  Version 3
 
 */
+
+if (extension_loaded('newrelic')) {
+newrelic_background_job();
+}
 require_once 'keyring/dns.php';
 require_once 'keyring/au_deploy_conf.php';
 
