@@ -369,18 +369,14 @@ class User extends DB_Table {
         switch ($key) {
             case 'User Display Timezone':
                 return $this->settings('Timezone');
-                break;
             case 'Display Timezone':
                 switch ($this->settings('Timezone')) {
                     case 'Account':
                         return _('Organization').' <small class="discreet small">('.$account->get('Timezone').')</small>';
-                        break;
-                    case 'Account':
+                    case 'Local':
                         return _('Local time').' <small class="discreet small">('.$_SESSION['local_timezone_label'].')</small>';
-                        break;
                     case 'UTC':
                         return 'UTC';
-                        break;
                     default:
                         return $this->settings('Timezone');
                 }
@@ -392,7 +388,6 @@ class User extends DB_Table {
                 }
 
                 return $theme;
-                break;
             case 'Theme':
 
                 switch ($this->get('User Theme')) {

@@ -4,7 +4,7 @@ Author: Raul Perusquia <raul@inikoo.com>
  Copyright (c) 2016, Inikoo
  Version 3.0
 */*}
-{strip}
+
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -16,27 +16,29 @@ Author: Raul Perusquia <raul@inikoo.com>
     <title>{t}Set up{/t}</title>
 
 
-    <link href="/css/login.min.css?v=3" rel="stylesheet">
+    <link href="/assets/login.min.css" rel="stylesheet">
 
     <script
-            src="https://browser.sentry-cdn.com/5.11.1/bundle.min.js"
-            integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV"
+            src="https://browser.sentry-cdn.com/5.16.0/bundle.min.js"
+            integrity="sha384-8XeHBuZ2XhMbhyH74W/+6MLGL3PfryfC87kUgxZXJ/z3cUmSETfEZLMo4CPVxh1r"
             crossorigin="anonymous"></script>
-
 
 
     <script>
         Sentry.init({
-            dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169'});
+            dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169'
+        });
     </script>
 
+    <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous"></script>
 
-    <script src="js_libs/jquery-3.3.1.min.js"></script>
+
     <script src="js_libs/sha256.js"></script>
     <script src="js_libs/aes.js"></script>
     <script src="/js_libs/base64.js"></script>
-
-
 
 
 </head>
@@ -53,6 +55,7 @@ Author: Raul Perusquia <raul@inikoo.com>
         </div>
         <form class="form form--login" name="login_form" id="login_form" method="post" autocomplete="off"
               action="setup.php">
+            <input type="hidden" id="timezone" name="timezone" value="">
 
 
             <div class="form__field">
@@ -62,7 +65,7 @@ Author: Raul Perusquia <raul@inikoo.com>
                        required>
             </div>
             <div class="form__field">
-                <button onclick="document.getElementById("loginform").submit()">{t}Set up{/t}</button>
+                <button onclick="submit_set_up()">{t}Set up{/t}</button>
             </div>
         </form>
         <div id="error_message" class="text--center error" style="visibility:{if $error==1}visible{else}hidden{/if}">
@@ -72,9 +75,13 @@ Author: Raul Perusquia <raul@inikoo.com>
 </div>
 <script>
 
-    $(document).ready(function () {
+    var submit_set_up = function () {
+        $('#timezone').val(moment.tz.guess())
+        $("#login_form").trigger('submit');
+    }
 
-        $("#login__password").focus();
+    $(function() {
+        $("#login__password").trigger("focus")
 
 
         $("#error_message").animate({
@@ -82,12 +89,11 @@ Author: Raul Perusquia <raul@inikoo.com>
         }, 5000, function () {
             $("#error_message").css('visibility', 'hidden')
         });
-
-    })
+    });
 
 </script>
 
 </body>
 </html>
-{/strip}
+
 

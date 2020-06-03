@@ -19,7 +19,6 @@
 function get_modules($user) {
     $modules = array();
 
-
     switch ($user->get('User Type')) {
         case 'Staff':
         case 'Contractor':
@@ -76,8 +75,23 @@ function get_modules($user) {
             $modules['help']    = get_help_module();
 
             return $modules;
-            break;
+
+        case 'Administrator':
+            foreach (glob("utils/modules/*.mod.php") as $filename) {
+                include $filename;
+            }
+            $modules['dashboard'] = get_dashboard_module();
+
+            $modules['hr'] = get_hr_module();
+
+            $modules['profile'] = get_profile_module();
+            $modules['users']   = get_users_module();
+            $modules['account'] = get_account_module();
+            $modules['utils']   = get_utils_module();
+            $modules['help']    = get_help_module();
+            return $modules;
         case 'Supplier':
+
             return $modules;
             break;
         case 'Agent':

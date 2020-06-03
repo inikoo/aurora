@@ -10,6 +10,7 @@
 
  Version 2.0
 */
+use Elasticsearch\ClientBuilder;
 
 
 class Data_Sets extends DB_Table {
@@ -300,45 +301,6 @@ class Data_Sets extends DB_Table {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-
-
-        } elseif ($this->data['Data Sets Code'] == 'ISF') {
-
-            $client   = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
-            $response = $client->count(
-                [
-                    'index' => strtolower('au_isf_'.strtolower(DNS_ACCOUNT_CODE)),
-
-                ]
-            );
-
-            $number_items = $response['count'];
-
-
-            $response = $client->indices()->stats(
-                [
-                    'index' => strtolower('au_isf')
-                ]
-            );
-
-            $total_size       = $response['indices']['au_isf']['primaries']['store']['size_in_bytes'];
-            $total_docs = $response['indices']['au_isf']['primaries']['docs']['count'];
-
-            if ($total_docs > 0) {
-                $size = $total_size * $number_items / $total_docs;
-            } else {
-                $size = 0;
-            }
-
-
-            $this->fast_update(
-                array(
-                    'Data Sets Number Sets'  => 1,
-                    'Data Sets Number Items' => $number_items,
-                    'Data Sets Size'         => $size
-
-                )
-            );
 
 
         } elseif ($this->data['Data Sets Code'] == 'Uploads') {

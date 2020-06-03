@@ -102,12 +102,11 @@ class Warehouse extends DB_Table {
         }
 
 
-        $data = $this->base_data();
-        foreach ($raw_data as $key => $value) {
-            if (array_key_exists($key, $data)) {
-                $data[$key] = _trim($value);
-            }
-        }
+
+
+        $data = $raw_data;
+        unset($data['editor']);
+
 
 
         if ($data['Warehouse Code'] == '') {
@@ -172,25 +171,17 @@ class Warehouse extends DB_Table {
 
 
         $this->new = false;
-        $base_data = $this->base_data();
-
-
-        foreach ($data as $key => $value) {
-            if (array_key_exists($key, $base_data)) {
-                $base_data[$key] = _trim($value);
-            }
-        }
 
 
         $sql = sprintf(
-            "INSERT INTO `Warehouse Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+            "INSERT INTO `Warehouse Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
 
 
         $i = 1;
-        foreach ($base_data as $key => $value) {
+        foreach ($data as $key => $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -1367,8 +1358,6 @@ class Warehouse extends DB_Table {
                 $response = $client->search($params);
 
                 $data['locations'] = $response['aggregations']['locations']['value'];;
-
-
 
 
                 $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();

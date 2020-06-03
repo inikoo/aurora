@@ -16,7 +16,6 @@ $current_section = $data['section'];
 
 $nav_menu = array();
 
-
 if ($user->can_view('customers')) {
 
 
@@ -248,18 +247,18 @@ if ($user->can_view('orders')) {
 
 }
 
-
-if ($user->can_view('sales_reports') or $user->can_view('customers_reports') or $user->can_view('suppliers_reports') or $user->can_view('inventory_reports') or $user->can_view('kpis_reports') or $user->can_view('users_reports')) {
-    $nav_menu[] = array(
-        '<i class="button far fa-chart-line fa-fw"></i>',
-        _('Reports'),
-        'reports',
-        'reports',
-        'module',
-        ''
-    );
+if($user->get('User Type')!='Administrator') {
+    if ($user->can_view('sales_reports') or $user->can_view('customers_reports') or $user->can_view('suppliers_reports') or $user->can_view('inventory_reports') or $user->can_view('kpis_reports') or $user->can_view('users_reports')) {
+        $nav_menu[] = array(
+            '<i class="button far fa-chart-line fa-fw"></i>',
+            _('Reports'),
+            'reports',
+            'reports',
+            'module',
+            ''
+        );
+    }
 }
-
 
 if ($user->get('User Type') == 'Agent') {
 

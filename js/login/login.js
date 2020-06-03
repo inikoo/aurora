@@ -13,10 +13,7 @@ var on_my_Submit = function () {
 
 }
 
-
-$(document).ready(function () {
-
-
+$(function() {
     $("#login__username").trigger("focus")
 
 
@@ -33,6 +30,5 @@ $(document).ready(function () {
     }, 5000, function () {
         $("#error_message").css('visibility', 'hidden')
     });
+});
 
-
-})

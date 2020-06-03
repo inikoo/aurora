@@ -8,6 +8,7 @@
  Version 3
 
 */
+use Elasticsearch\ClientBuilder;
 
 require_once 'vendor/autoload.php';
 
@@ -28,6 +29,8 @@ require_once 'utils/password_functions.php';
 require_once 'utils/system_functions.php';
 require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
+require_once 'utils/timezones.php';
+
 
 include_once 'utils/i18n.php';
 include_once 'class.User.php';
@@ -77,13 +80,13 @@ if (!$account->id) {
 
     // TODO get account create data from setup.inikoo.com
     $account_data = array(
-        'Account Code'              => 'ES',
-        'Account Name'              => 'Spain',
+        'Account Code'              => 'INDO',
+        'Account Name'              => 'Indonesia',
         'Account System Public URL' => 'au.bali',
-        'Account Country Code'      => 'ESP',
-        'Account Currency'          => 'EUR',
-        'Account Currency Symbol'   => '€',
-        'Account Timezone'          => 'Europe/Madrid',
+        'Account Country Code'      => 'IDN',
+        'Account Currency'          => 'IDR',
+        'Account Currency Symbol'   => 'Rp',
+        'Account Timezone'          => 'Asia/Makassar',
 
         'Account Setup Metadata' => json_encode(
             array(
@@ -140,6 +143,8 @@ if (!$account->id) {
     }
     $keys   = preg_replace('/,$/', ')', $keys);
     $values = preg_replace('/,$/', ')', $values);
+
+
 
     $sql = sprintf("INSERT INTO `Account Dimension` %s %s", $keys, $values);
 
@@ -253,6 +258,9 @@ if (!$account->id) {
         $data_set->update_stats();
     }
 
+    
+     create_elastic_tenant_instances($account->get('Account Code'));
+    
 
     $parts_fmap_data = array(
         'Category Code'    => 'FMap',
@@ -289,7 +297,8 @@ if (!$account->id) {
 
 
     $warehouse_data=array(
-        'Warehouse Code'=>'W'
+        'Warehouse Code'=>'W',
+        'Warehouse Name'=>'W'
     );
     $account->create_warehouse($warehouse_data);
 
@@ -298,6 +307,9 @@ if (!$account->id) {
     $_SESSION['user_key']    = $user->id;
     $_SESSION['text_locale'] = $user->get('User Preferred Locale');
     $_SESSION['state']    = array();
+    $_SESSION['timezone']             = date_default_timezone_get();
+    $_SESSION['local_timezone']       = $_REQUEST['timezone'];
+    $_SESSION['local_timezone_label'] = get_normalized_timezones_formatted_label($_REQUEST['timezone']);
 
     header('Location: dashboard');
 
@@ -308,3 +320,159 @@ if (!$account->id) {
 
 
 
+function create_elastic_tenant_instances($account_code){
+
+
+    $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+
+
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_web_search_analytics',
+                    'alias'   => 'au_web_search_analytics_'.strtolower($account_code),
+                    "routing" => $account_code,
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_web_search',
+                    'alias'   => 'au_web_search_'.strtolower($account_code),
+                    "routing" => $account_code,
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+
+
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_q_search_analytics',
+                    'alias'   => 'au_q_search_analytics_'.strtolower($account_code),
+                    "routing" => $account_code,
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_search',
+                    'alias'   => 'au_search_'.strtolower($account_code),
+                    "routing" => $account_code,
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+
+
+
+
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_customers',
+                    'alias'   => 'au_customers_'.strtolower($account_code),
+                    "routing" => $account_code,
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_part_isf',
+                    'alias'   => 'au_part_isf_'.strtolower($account_code),
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_part_location_isf',
+                    'alias'   => 'au_part_location_isf_'.strtolower($account_code),
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+
+    $params['body'] = array(
+        'actions' => array(
+            array(
+                'add' => array(
+                    'index'   => 'au_warehouse_isf',
+                    'alias'   => 'au_warehouse_isf_'.strtolower($account_code),
+                    "filter"  => [
+                        "term" => [
+                            "tenant" => $account_code
+                        ]
+                    ]
+                )
+            )
+        )
+    );
+    $client->indices()->updateAliases($params);
+    
+}

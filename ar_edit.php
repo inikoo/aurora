@@ -2867,7 +2867,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 exit;
             }
 
-            $object = $parent->user;
 
 
             $smarty->assign('account', $account);

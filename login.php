@@ -24,6 +24,7 @@ define("_DEVEL", isset($_SERVER['devel']));
 include_once 'keyring/dns.php';
 require_once 'keyring/au_deploy_conf.php';
 include_once 'keyring/key.php';
+include_once 'utils/minify_html_output.php';
 
 
 require_once 'utils/system_functions.php';
@@ -46,13 +47,16 @@ $smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
 
+
+$smarty->registerFilter("output","minify_html_output");
+
+
 $smarty->assign('is_devel', (ENVIRONMENT=='DEVEL'?true:false));
 
 if (defined('SENTRY_DNS_AUJS')) {
     $smarty->assign('sentry_js',SENTRY_DNS_AUJS);
 
 }
-
 
 
 $db = new PDO("mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd);
@@ -94,12 +98,8 @@ if ($account->id and $account->get('Account State') == 'Active') {
 
     }
 
-
-
-
-
     $bg_image="/art/bg/".strtolower($account->get('Account Country Code')).".jpg";
-
+    
     $smarty->assign('bg_image', $bg_image);
 
 
@@ -115,4 +115,4 @@ if ($account->id and $account->get('Account State') == 'Active') {
     $smarty->display("login.setup.tpl");
 }
 
-?>
+

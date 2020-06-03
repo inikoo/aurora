@@ -15,7 +15,6 @@ $ar_file = 'ar_products_tables.php';
 $tipo    = 'stores';
 
 
-
 if($account->get('Account Warehouses')==0){
 
     $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';

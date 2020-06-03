@@ -162,7 +162,7 @@ class Account extends DB_Table {
         $data['editor'] = $this->editor;
 
 
-        //  print_r($data);
+        $data['Store Status'] = 'Normal';
 
 
         $data['Store Valid From'] = gmdate('Y-m-d H:i:s');
@@ -676,7 +676,7 @@ class Account extends DB_Table {
         $number_stores   = 0;
         $number_websites = 0;
 
-        $sql = "SELECT count(*) AS num FROM `Store Dimension` WHERE `Store Status`='Normal'";
+        $sql = "SELECT count(*) AS num FROM `Store Dimension` ";
         if ($row = $this->db->query($sql)->fetch()) {
             $number_stores = $row['num'];
         }
@@ -781,6 +781,7 @@ class Account extends DB_Table {
 
         $data['Warehouse State']      = 'Active';
         $data['Warehouse Valid From'] = gmdate('Y-m-d H:i:s');
+
 
         $warehouse = new Warehouse('find', $data, 'create');
 
