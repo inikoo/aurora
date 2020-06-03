@@ -82,7 +82,7 @@ if (!$account->id) {
     $account_data = array(
         'Account Code'              => 'INDO',
         'Account Name'              => 'Indonesia',
-        'Account System Public URL' => 'au.bali',
+        'Account System Public URL' => 'bali.aurora.systems',
         'Account Country Code'      => 'IDN',
         'Account Currency'          => 'IDR',
         'Account Currency Symbol'   => 'Rp',
