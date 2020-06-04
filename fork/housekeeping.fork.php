@@ -546,81 +546,32 @@ function fork_housekeeping($job) {
 
             break;
         case 'update_parts_stock_run':
-
-
-            foreach ($data['parts_data'] as $part_sku => $from_date) {
-
-
-                $part         = get_object('Part', $part_sku);
-                $part->editor = $data['editor'];
-
-                if ($account->get('Account Add Stock Value Type') == 'Last Price') {
-                    // update if is last placement
-
-
-                    $sql = sprintf(
-                        'select `ITF POTF Costing Done POTF Key`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko 
-from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
-    left join `Purchase Order Transaction Fact` POTF on  (`Purchase Order Transaction Fact Key`=`ITF POTF Costing Done POTF Key`) 
-where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0   and  `Inventory Transaction Section`="In"    and ITF.`Part SKU`=%d    order by `Date` desc  limit 1 ', $part->id
-                    );
-
-
-                    //  print "$sql\n";
-
-                    if ($result = $db->query($sql)) {
-                        foreach ($result as $row) {
-
-
-                            print_r($row);
-
-
-                            $part->update_field_switcher('Part Cost in Warehouse', $row['value_per_sko'], 'no_history');
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                }
-
-
-            }
-
-
-            foreach ($data['parts_data'] as $part_sku => $from_date) {
-
-
-                $part         = get_object('Part', $part_sku);
-                $part->editor = $data['editor'];
-
-
-                $part->update_stock_run();
-                $part->update_part_inventory_snapshot_fact($from_date);
-
-
-            }
-
-            $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
-            if ($result2 = $db->query($sql)) {
-                foreach ($result2 as $row2) {
-                    $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
-                    $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
+            include_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_long_operations', array(
+                'type'               => 'update_parts_stock_run',
+                'parts_data'         => $data['parts_data'],
+                'editor'             => $editor,
+                'all_parts_min_date' => $data['all_parts_min_date'],
+            ), $account->get('Account Code')
+            );
 
             break;
+
         case 'part_stock_run':
-            /**
-             * @var $part \Part
-             */ $part = get_object('Part', $data['part_sku']);
-            $part->update_stock_run();
+
+            include_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_long_operations', array(
+                'type'     => 'part_stock_run',
+                'part_sku' => $data['part_sku'],
+                'editor'   => $editor,
+            ), $account->get('Account Code')
+            );
+
             break;
+
+
         case 'update_part_status':
 
             /**
@@ -1179,7 +1130,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
 
-            if($customer->id) {
+            if ($customer->id) {
                 $customer->editor = $data['editor'];
                 $customer->update_orders();
                 $customer->update_activity();
@@ -1214,7 +1165,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 }
             }
 
-            if($customer->id) {
+            if ($customer->id) {
                 $customer->update_orders();
                 $customer->update_activity();
             }
@@ -1964,7 +1915,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
 
-
             break;
 
 
@@ -1973,7 +1923,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
             print $delivery_note->get('Deliver Note ID')."\n";
 
-            $store         = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+            $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
             $store->load_acc_data();
 
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
@@ -2201,7 +2151,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
 
 
-
         case 'start_purge':
 
             $purge         = get_object('purge', $data['purge_key']);
@@ -2342,8 +2291,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
         case 'update_product_webpages':
 
-            $product = get_object('product', $data['product_id']);
-            $product->editor= $data['editor'];
+            $product         = get_object('product', $data['product_id']);
+            $product->editor = $data['editor'];
             $product->update_webpages($data['type']);
 
 
@@ -2728,7 +2677,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
 
 
-
         case 'update_marketing_customers':
 
 
@@ -2955,8 +2903,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $webpage->clear_cache();
             break;
         case 'update_public_db':
-            $image = get_object('Image', $data['image_key']);
-            $image->fork=true;
+            $image       = get_object('Image', $data['image_key']);
+            $image->fork = true;
             $image->update_public_db();
             break;
         default:
@@ -2964,7 +2912,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
-    $db=null;
+    $db = null;
 
     return false;
 }

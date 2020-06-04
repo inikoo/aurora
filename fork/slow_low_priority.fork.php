@@ -172,6 +172,84 @@ function fork_long_operations($job) {
 
     switch ($data['type']) {
 
+        case 'update_parts_stock_run':
+
+
+            foreach ($data['parts_data'] as $part_sku => $from_date) {
+
+
+                $part         = get_object('Part', $part_sku);
+                $part->editor = $data['editor'];
+
+                if ($account->get('Account Add Stock Value Type') == 'Last Price') {
+                    // update if is last placement
+
+
+                    $sql = sprintf(
+                        'select `ITF POTF Costing Done POTF Key`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko 
+from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
+    left join `Purchase Order Transaction Fact` POTF on  (`Purchase Order Transaction Fact Key`=`ITF POTF Costing Done POTF Key`) 
+where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0   and  `Inventory Transaction Section`="In"    and ITF.`Part SKU`=%d    order by `Date` desc  limit 1 ', $part->id
+                    );
+
+
+                    //  print "$sql\n";
+
+                    if ($result = $db->query($sql)) {
+                        foreach ($result as $row) {
+
+
+                            print_r($row);
+
+
+                            $part->update_field_switcher('Part Cost in Warehouse', $row['value_per_sko'], 'no_history');
+                        }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                }
+
+
+            }
+
+
+            foreach ($data['parts_data'] as $part_sku => $from_date) {
+
+
+                $part         = get_object('Part', $part_sku);
+                $part->editor = $data['editor'];
+
+
+                $part->update_stock_run();
+                $part->update_part_inventory_snapshot_fact($from_date);
+
+
+            }
+
+            $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
+                    $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            break;
+        case 'part_stock_run':
+            /**
+             * @var $part \Part
+             */
+            $part = get_object('Part', $data['part_sku']);
+            $part->update_stock_run();
+            break;
+
         case 'redo_day_ISF':
             $date = $data['date'];
 
