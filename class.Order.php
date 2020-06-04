@@ -616,58 +616,6 @@ class Order extends DB_Table {
                 }
 
 
-            case('Submitted by Customer Interval'):
-                if ($this->data['Order Submitted by Customer Date'] == '') {
-                    return '';
-                }
-                include_once 'common_natural_language.php';
-
-                return seconds_to_string(
-                    gmdate('U', strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) - gmdate('U', strtotime($this->data['Order Created Date'].' +0:00'))
-                );
-                break;
-            case('Send to Warehouse Interval'):
-                if ($this->data['Order Submitted by Customer Date'] == '' or $this->data['Order Send to Warehouse Date'] == '') {
-                    return '';
-                }
-                include_once 'common_natural_language.php';
-
-                return seconds_to_string(
-                    gmdate(
-                        'U', strtotime($this->data['Order Send to Warehouse Date'].' +0:00')
-                    ) - gmdate(
-                        'U', strtotime(
-                               $this->data['Order Submitted by Customer Date'].' +0:00'
-                           )
-                    )
-                );
-                break;
-            case('Packed Done Interval'):
-                if ($this->data['Order Send to Warehouse Date'] == '' or $this->data['Order Packed Done Date'] == '') {
-                    return '';
-                }
-                include_once 'common_natural_language.php';
-
-                return seconds_to_string(
-                    gmdate(
-                        'U', strtotime($this->data['Order Packed Done Date'].' +0:00')
-                    ) - gmdate(
-                        'U', strtotime($this->data['Order Send to Warehouse Date'].' +0:00')
-                    )
-                );
-                break;
-            case('Dispatched Interval'):
-                if ($this->data['Order Packed Done Date'] == '' or $this->data['Order Dispatched Date'] == '') {
-                    return '';
-                }
-                include_once 'common_natural_language.php';
-
-                return seconds_to_string(
-                    gmdate('U', strtotime($this->data['Order Dispatched Date'].' +0:00')) - gmdate(
-                        'U', strtotime($this->data['Order Packed Done Date'].' +0:00')
-                    )
-                );
-                break;
 
 
             case ('Estimated Weight'):
@@ -892,94 +840,26 @@ class Order extends DB_Table {
                 if ($this->data['Order Tax Number'] != '') {
                     if ($this->data['Order Tax Number Valid'] == 'Yes') {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Order Tax Number'].$source
+                            '<i style="margin-right: 0" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Order Tax Number'].$source
                         );
                     } elseif ($this->data['Order Tax Number Valid'] == 'Unknown') {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fal fa-question-circle discreet" title="'._('Unknown if is valid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Order Tax Number'].$source
+                            '<i style="margin-right: 0" class="fal fa-question-circle discreet" title="'._('Unknown if is valid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Order Tax Number'].$source
                         );
                     } elseif ($this->data['Order Tax Number Valid'] == 'API_Down') {
                         return sprintf(
-                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Order Tax Number'],
+                            '<i style="margin-right: 0"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Order Tax Number'],
                             ' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
                         );
                     } else {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Order Tax Number'].$source
+                            '<i style="margin-right: 0" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Order Tax Number'].$source
                         );
                     }
                 }
 
                 break;
-            case('Tax Number Valid'):
-                if ($this->data['Order Tax Number'] != '') {
 
-                    if ($this->data['Order Tax Number Validation Date'] != '') {
-                        $_tmp = gmdate("U") - gmdate(
-                                "U", strtotime(
-                                       $this->data['Order Tax Number Validation Date'].' +0:00'
-                                   )
-                            );
-                        if ($_tmp < 3600) {
-                            $date = strftime(
-                                "%e %b %Y %H:%M:%S %Z", strtotime(
-                                                          $this->data['Order Tax Number Validation Date'].' +0:00'
-                                                      )
-                            );
-
-                        } elseif ($_tmp < 86400) {
-                            $date = strftime(
-                                "%e %b %Y %H:%M %Z", strtotime(
-                                                       $this->data['Order Tax Number Validation Date'].' +0:00'
-                                                   )
-                            );
-
-                        } else {
-                            $date = strftime(
-                                "%e %b %Y", strtotime(
-                                              $this->data['Order Tax Number Validation Date'].' +0:00'
-                                          )
-                            );
-                        }
-                    } else {
-                        $date = '';
-                    }
-
-                    $msg = $this->data['Order Tax Number Validation Message'];
-
-                    if ($this->data['Order Tax Number Validation Source'] == 'Online') {
-                        $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
-
-
-                    } elseif ($this->data['Order Tax Number Validation Source'] == 'Staff') {
-                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-hand-rock\'></i>';
-                    } else {
-                        $source = '';
-                    }
-
-                    $validation_data = trim($date.' '.$source.' '.$msg);
-                    if ($validation_data != '') {
-                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
-                    }
-
-                    switch ($this->data['Order Tax Number Valid']) {
-                        case 'Unknown':
-                        case 'API_Down':
-                            return _('Not validated').$validation_data;
-                            break;
-                        case 'Yes':
-                            return _('Validated').$validation_data;
-                            break;
-                        case 'No':
-                            return _('Not valid').$validation_data;
-                            break;
-                        default:
-                            return $this->data['Order Tax Number Valid'].$validation_data;
-
-                            break;
-                    }
-                }
-                break;
 
             case 'Recargo Equivalencia':
                 if ($this->metadata('RE') == 'Yes') {
@@ -1382,7 +1262,7 @@ class Order extends DB_Table {
 
 
                     $history_data = array(
-                        'History Abstract' => _('Delivery note cancelled, order back to submited state'),
+                        'History Abstract' => _('Delivery note cancelled, order back to submitted state'),
                         'History Details'  => '',
                     );
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
@@ -1762,16 +1642,13 @@ class Order extends DB_Table {
                     }
 
 
-              
+
                     $this->fast_update(
                         array(
                             'Order State' => $value,
                             'Order Dispatched Date'  => null
                         )
                     );
-
-
-
                     $history_data = array(
                         'History Abstract' => _('Order set as not dispatched'),
                         'History Details'  => '',
@@ -1911,7 +1788,7 @@ class Order extends DB_Table {
                 ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
                                <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
                                 <a title="%s" class="pdf_link %s" target="_blank" href="/pdf/order_pick_aid.pdf.php?id=%d"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
-                                <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                                <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif" alt=""></a>
                                </span>
                                 <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
                                </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
@@ -2097,9 +1974,7 @@ class Order extends DB_Table {
         );
 
 
-        $invoice = new Invoice ('create', $data_invoice);
-
-        return $invoice;
+        return new Invoice ('create', $data_invoice);
 
     }
 
@@ -2114,7 +1989,7 @@ class Order extends DB_Table {
                 $where = " and `Invoice Type`='Refund'";
                 break;
             case 'invoices_only':
-                $where = " and `Invoice Type`='Refund'";
+                $where = " and `Invoice Type`!='Refund'";
                 break;
             default:
                 $where = '';
@@ -2213,7 +2088,7 @@ class Order extends DB_Table {
             if ($settings['provider'] == 'reviews.io') {
 
                 if (isset($settings['data']['delay'])) {
-                    $delay = settings['data']['delay'];
+                    $delay = $settings['data']['delay'];
                 } else {
                     $delay = '7';
                 }
@@ -2534,214 +2409,7 @@ class Order extends DB_Table {
         return $number;
     }
 
-    /*
-    function update_insurance($dn_key = false) {
 
-        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
-            return;
-        }
-
-        $valid_insurances = $this->get_insurances($dn_key);
-
-        $sql = sprintf(
-            "SELECT `Transaction Type Key`,`Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' ", $this->id
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if (!array_key_exists($row['Transaction Type Key'], $valid_insurances)) {
-
-                    $sql = sprintf(
-                        "DELETE FROM `Order No Product Transaction Fact` WHERE `Order No Product Transaction Fact Key`=%d ", $row['Order No Product Transaction Fact Key']
-                    );
-                    $this->db->exec($sql);
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update_totals();
-        // $this->apply_payment_from_customer_account();
-
-    }
-
-    function get_insurances($dn_key = false) {
-
-
-        include_once('class.TaxCategory.php');
-
-        $insurances = array();
-        if ($this->data['Order Number Items'] == 0) {
-
-            return $insurances;
-        }
-
-
-        $sql = sprintf(
-            "SELECT * FROM `Insurance Dimension` WHERE `Insurance Trigger`='Order' AND (`Insurance Trigger Key`=%d  OR `Insurance Trigger Key` IS NULL) AND `Insurance Store Key`=%d", $this->id, $this->data['Order Store Key']
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $apply_insurance = false;
-
-                $order_amount = $this->data[$row['Insurance Terms Type']];
-
-
-                if ($dn_key) {
-                    switch ($row['Insurance Terms Type']) {
-
-                        case 'Order Items Net Amount':
-
-                            $sql = sprintf(
-                                "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0", $this->id, $dn_key
-                            );
-
-
-                            if ($result2 = $this->db->query($sql)) {
-                                if ($row2 = $result2->fetch()) {
-                                    $order_amount = $row2['amount'];
-                                } else {
-                                    $order_amount = 0;
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
-                            }
-
-
-                            break;
-
-
-                        case 'Order Items Gross Amount':
-                        default:
-                            $sql = sprintf(
-                                "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0", $this->id, $dn_key
-                            );
-
-
-                            if ($result2 = $this->db->query($sql)) {
-                                if ($row2 = $result2->fetch()) {
-                                    $order_amount = $row2['amount'];
-                                } else {
-                                    $order_amount = 0;
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
-                            }
-                            break;
-                    }
-                }
-
-
-                $terms_components = preg_split(
-                    '/;/', $row['Insurance Terms Metadata']
-                );
-                $operator         = $terms_components[0];
-                $amount           = $terms_components[1];
-
-                //print_r($order_amount);
-
-
-                switch ($operator) {
-                    case('<'):
-                        if ($order_amount < $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                    case('>'):
-                        if ($order_amount > $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                    case('<='):
-                        if ($order_amount <= $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                    case('>='):
-                        if ($order_amount >= $amount) {
-                            $apply_insurance = true;
-                        }
-                        break;
-                }
-
-
-                if ($row['Insurance Tax Category Code'] == '') {
-                    $tax_category_code = $this->data['Order Tax Code'];
-                    $tax_rate          = $this->data['Order Tax Rate'];
-                } else {
-                    $tax_category      = new TaxCategory(
-                        $row['Insurance Tax Category Code']
-                    );
-                    $tax_category_code = $tax_category->data['Tax Category Code'];
-                    $tax_rate          = $tax_category->data['Tax Category Rate'];
-
-                }
-
-
-                if ($row['Insurance Type'] == 'Amount') {
-                    $charge_net_amount = $row['Insurance Metadata'];
-
-
-                    $charge_tax_amount = $row['Insurance Metadata'] * $tax_rate;
-                } else {
-
-                    exit("still to do");
-                }
-
-
-                $sql = sprintf(
-                    "SELECT `Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' AND `Transaction Type Key`=%d ", $this->id, $row['Insurance Key']
-                );
-
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-                        $onptf_key = $row2['Order No Product Transaction Fact Key'];
-                    } else {
-                        $onptf_key = 0;
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                if ($apply_insurance) {
-                    $insurances[$row['Insurance Key']] = array(
-                        'Insurance Net Amount'                  => $charge_net_amount,
-                        'Insurance Tax Amount'                  => $charge_tax_amount,
-                        'Insurance Formatted Net Amount'        => money($this->exchange * $charge_net_amount, $this->currency_code),
-                        'Insurance Formatted Tax Amount'        => money($this->exchange * $charge_tax_amount, $this->currency_code),
-                        'Insurance Tax Code'                    => $tax_category_code,
-                        'Insurance Key'                         => $row['Insurance Key'],
-                        'Insurance Description'                 => $row['Insurance Name'],
-                        'Order No Product Transaction Fact Key' => $onptf_key
-                    );
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $insurances;
-
-    }
-    */
     function create_refund($date, $transactions, $tax_only = false) {
 
 
@@ -2949,10 +2617,7 @@ class Order extends DB_Table {
         );
 
 
-        $refund = new Invoice('create refund', $refund_data, $transactions);
-
-
-        return $refund;
+        return new Invoice('create refund', $refund_data, $transactions);
     }
 
     function get_refund_public_id($refund_id, $suffix_counter = '') {
