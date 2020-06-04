@@ -39,7 +39,7 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 if (!empty($_REQUEST['webpage_key']) and !empty($_REQUEST['device'])) {
     try {
         new_housekeeping_fork(
-            'au_housekeeping', array(
+            'au_web_analytics', array(
             'type'         => 'website_user_visit',
             'server_data'  => $_SERVER,
             'session_data' => $_SESSION,
