@@ -266,11 +266,23 @@ class Image extends DB_Table {
         if ($this->fork) {
             $account          = get_object('Account', 1);
             $destination_path = preg_replace('/^img/', 'img_'.$account->get('Code'), $data['Image Path']);
-
+            $path_root='img_'.$account->get('Code');
         } else {
             $destination_path = $data['Image Path'];
+
+            $path_root='img';
+
+
         }
 
+        if (!is_dir($path_root.'/db/'.$data['Image File Checksum'][0])) {
+            mkdir($path_root.'/db/'.$data['Image File Checksum'][0]);
+        }
+
+
+        if (!is_dir($path_root.'/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1])) {
+            mkdir($path_root.'/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1]);
+        }
 
         copy($tmp_file, $destination_path);
         //chmod($destination_path,0664);
