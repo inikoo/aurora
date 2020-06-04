@@ -71,28 +71,28 @@ function category_products($data, $db, $customer_key, $order) {
 
 
     $website = get_object('Website', $_SESSION['website_key']);
-    /*
+
 
     $labels  = $website->get('Localised Labels');
 
+    /*
+      if (!$order->id) {
+          $total = 0;
+          $label = (isset($labels['_total']) ? $labels['_total'] : _('Total'));
+          $items = 0;
+      } else {
+          if (!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net') {
+              $total = $order->get('Items Net Amount');
+              $label = (isset($labels['_items_net']) ? $labels['_items_net'] : _('Items Net'));
+              $items = $order->get('Products');
 
-    if (!$order->id) {
-        $total = 0;
-        $label = (isset($labels['_total']) ? $labels['_total'] : _('Total'));
-        $items = 0;
-    } else {
-        if (!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net') {
-            $total = $order->get('Items Net Amount');
-            $label = (isset($labels['_items_net']) ? $labels['_items_net'] : _('Items Net'));
-            $items = $order->get('Products');
-
-        } else {
-            $total = $order->get('Items Net Amount');
-            $label = (isset($labels['_total']) ? $labels['_total'] : _('Total'));
-            $items = $order->get('Products');
-        }
-    }
-*/
+          } else {
+              $total = $order->get('Items Net Amount');
+              $label = (isset($labels['_total']) ? $labels['_total'] : _('Total'));
+              $items = $order->get('Products');
+          }
+      }
+  */
 
     $favourite              = array();
     $out_of_stock_reminders = array();
