@@ -2293,7 +2293,7 @@ function fork_housekeeping($job) {
 
             $product         = get_object('product', $data['product_id']);
             $product->editor = $data['editor'];
-            $product->update_webpages($data['type']);
+            $product->update_webpages($data['scope']);
 
 
             break;

@@ -1454,7 +1454,11 @@ class Product extends Asset {
         $web_state = $this->get_web_state();
 
 
-        $this->update_field('Product Web State', $web_state, 'no_history');
+        $this->fast_update(
+            [
+                'Product Web State' => $web_state
+            ]
+        );
 
 
         if ($web_state == 'For Sale') {
@@ -1464,9 +1468,9 @@ class Product extends Asset {
         }
 
 
-        if ($old_web_state != $web_state) {
-            $this->update_availability($use_fork);
-        }
+        //   if ($old_web_state != $web_state) {
+        //   $this->update_availability($use_fork);
+        //  }
 
 
         $web_availability_updated = ($old_web_availability != $web_availability ? true : false);
@@ -1562,7 +1566,6 @@ class Product extends Asset {
 
         if ($use_fork) {
             include_once 'utils/new_fork.php';
-            $account = new Account($this->db);
 
 
             new_housekeeping_fork(
@@ -1571,7 +1574,7 @@ class Product extends Asset {
                 'web_availability_updated' => $web_availability_updated,
                 'product_id'               => $this->id,
                 'editor'                   => $this->editor
-            ), $account->get('Account Code')
+            ), DNS_ACCOUNT_CODE
             );
 
 
@@ -1622,7 +1625,7 @@ class Product extends Asset {
     function update_web_state_slow_forks($web_availability_updated) {
 
 
-        if ($web_availability_updated) {
+        if ($web_availability_updated and false) {
 
 
             $sql = sprintf(
@@ -1644,9 +1647,6 @@ class Product extends Asset {
                         $order->remove_out_of_stocks_from_basket($this->id);
                     }
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -1663,9 +1663,6 @@ class Product extends Asset {
                         $order->restore_back_to_stock_to_basket($this->id);
                     }
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -1692,14 +1689,16 @@ class Product extends Asset {
             $webpage->update(array('Webpage State' => $_state), 'no_history');
         }
 
+
         if ($web_availability_updated) {
+
 
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'       => 'update_product_webpages',
                 'product_id' => $this->id,
-                'type'       => 'web_state',
+                'scope'      => 'web_state',
                 'editor'     => $this->editor
             ), DNS_ACCOUNT_CODE
             );
@@ -1805,12 +1804,23 @@ class Product extends Asset {
                 $date = gmdate('Y-m-d H:i:s');
                 foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
                     if ($webpage_to_reindex_key > 0) {
-                        $sql = sprintf(
-                            'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (%s,%s,%s,%d,%s) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s , `Stack Metadata`=%s , `Stack Counter`=`Stack Counter`+1 ',
-                            prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql('from_product_'.$change_type), prepare_mysql($date), prepare_mysql('from_product_'.$change_type)
+                        $sql =
+                            "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (?,?,?, ?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? , `Stack Metadata`=? , `Stack Counter`=`Stack Counter`+1";
 
+
+                        $this->db->prepare($sql)->execute(
+                            array(
+                                $date,
+                                $date,
+                                'reindex_webpage',
+                                $webpage_to_reindex_key,
+                                'from_product_'.$change_type,
+                                $date,
+                                'from_product_'.$change_type
+
+                            )
                         );
-                        $this->db->exec($sql);
+
 
                     }
 
@@ -2254,7 +2264,7 @@ class Product extends Asset {
                     'au_housekeeping', array(
                     'type'       => 'update_product_webpages',
                     'product_id' => $this->id,
-                    'type'       => 'next_shipment',
+                    'scope'      => 'next_shipment',
                     'editor'     => $this->editor
                 ), DNS_ACCOUNT_CODE
                 );
@@ -2515,7 +2525,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'weight',
+                        'scope'      => 'weight',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2579,7 +2589,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'dimensions',
+                        'scope'      => 'dimensions',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2696,7 +2706,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'materials',
+                        'scope'      => 'materials',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2761,7 +2771,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'code',
+                        'scope'      => 'code',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2794,7 +2804,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'name',
+                        'scope'      => 'name',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2840,7 +2850,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'label',
+                        'scope'      => 'label',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2867,7 +2877,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'label_in_family',
+                        'scope'      => 'label_in_family',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2928,7 +2938,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'price',
+                        'scope'      => 'price',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -2966,7 +2976,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'rrp',
+                        'scope'      => 'rrp',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -3032,7 +3042,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'units_per_case',
+                        'scope'      => 'units_per_case',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -3414,7 +3424,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'mix_properties',
+                        'scope'      => 'mix_properties',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -3473,7 +3483,7 @@ class Product extends Asset {
                         'au_housekeeping', array(
                         'type'       => 'update_product_webpages',
                         'product_id' => $this->id,
-                        'type'       => 'country_origin',
+                        'scope'      => 'country_origin',
                         'editor'     => $this->editor
                     ), DNS_ACCOUNT_CODE
                     );
@@ -3667,7 +3677,7 @@ class Product extends Asset {
                 'au_housekeeping', array(
                 'type'       => 'update_product_webpages',
                 'product_id' => $this->id,
-                'type'       => 'weight',
+                'scope'      => 'weight',
                 'editor'     => $this->editor
             ), DNS_ACCOUNT_CODE
             );
@@ -3744,7 +3754,7 @@ class Product extends Asset {
                 'au_housekeeping', array(
                 'type'       => 'update_product_webpages',
                 'product_id' => $this->id,
-                'type'       => 'weight',
+                'scope'      => 'weight',
                 'editor'     => $this->editor
             ), DNS_ACCOUNT_CODE
             );
