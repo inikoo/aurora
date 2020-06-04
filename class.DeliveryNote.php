@@ -1721,8 +1721,12 @@ class DeliveryNote extends DB_Table {
                     } else {
                         $value = 'Packed Done';
                     }
+
+
+
                 } else {
                     $value = 'Approved';
+
                 }
 
                 $this->fast_update(
@@ -1733,8 +1737,12 @@ class DeliveryNote extends DB_Table {
                     )
                 );
 
+                if ($this->data['Delivery Note Type'] == 'Order') {
+
+                    $order->update_state('un_dispatch');
 
 
+                }
 
                 $note = _('Delivery note un dispatched');
 

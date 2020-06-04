@@ -1762,8 +1762,14 @@ class Order extends DB_Table {
                     }
 
 
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Dispatched Date', '', 'no_history');
+              
+                    $this->fast_update(
+                        array(
+                            'Order State' => $value,
+                            'Order Dispatched Date'  => null
+                        )
+                    );
+
 
 
                     $history_data = array(
