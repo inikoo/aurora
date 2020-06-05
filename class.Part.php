@@ -3246,9 +3246,11 @@ class Part extends Asset {
 
 
             new_housekeeping_fork(
-                'au_update_part_products_availability', array(
-                'part_sku' => $this->id
-            ), DNS_ACCOUNT_CODE, 'High'
+                'au_housekeeping', array(
+                'type' => 'update_part_products_availability',
+                'part_sku' => $this->id,
+                'editor' => $this->editor
+            ), DNS_ACCOUNT_CODE, 'Low'
             );
 
 
