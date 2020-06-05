@@ -73,7 +73,7 @@ function category_products($data, $db, $customer_key, $order) {
     $website = get_object('Website', $_SESSION['website_key']);
 
 
-    $labels  = $website->get('Localised Labels');
+    $labels = $website->get('Localised Labels');
 
     /*
       if (!$order->id) {
@@ -151,7 +151,7 @@ function category_products($data, $db, $customer_key, $order) {
 
 
         $sql =
-            "SELECT `Product Availability State`,`Product Availability`,`Product ID` FROM `Customer Favourite Product Fact`    left join `Product Dimension` P on (P.`Product ID`=`Customer Favourite Product Product ID`)  WHERE `Customer Favourite Product Customer Key`=? ";
+            "SELECT `Product Availability State`,`Product Availability`,`Product ID`,`Product Web Configuration`,`Product Web State` FROM `Customer Favourite Product Fact`    left join `Product Dimension` P on (P.`Product ID`=`Customer Favourite Product Product ID`)  WHERE `Customer Favourite Product Customer Key`=? ";
 
         $stmt = $db->prepare($sql);
         $stmt->execute(
@@ -159,49 +159,64 @@ function category_products($data, $db, $customer_key, $order) {
         );
         while ($row = $stmt->fetch()) {
 
-            switch ($row['Product Availability State']) {
-                case 'OnDemand':
-                    $stock_label = (!empty($labels['_stock_OnDemand']) ? $labels['_stock_OnDemand'] : _('Product made on demand'));
-                    break;
-                case 'Excess':
-                    $stock_label = (!empty($labels['_stock_Excess']) ? $labels['_stock_Excess'] : _('Plenty of stock'));
-                    if ($show_stock_value == 'Yes') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
-                case 'Normal':
-                    $stock_label = (!empty($labels['_stock_Normal']) ? $labels['_stock_Normal'] : _('Plenty of stock'));
-                    if ($show_stock_value == 'Yes') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
-                case 'Low':
-                    $stock_label = (!empty($labels['_stock_Low']) ? $labels['_stock_Low'] : _('Limited stock'));
-                    if ($show_stock_value == 'Yes') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
-                case 'VeryLow':
-                    $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Very low stock'));
-                    if ($show_stock_value == 'Yes' or $show_stock_value == 'Only_if_very_low') {
-                        $stock_label .= ' ('.number($row['Product Availability']).')';
-                    }
-                    break;
 
-                case 'OutofStock':
-                case 'Error':
+            //'For Sale','Out of Stock','Discontinued','Offline'
 
-                    $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Out of stock'));
-                    break;
-                default:
-                    $stock_label = $row['Product Availability State'];
+            if ($row['Product Web State'] == 'For Sale') {
+                switch ($row['Product Availability State']) {
+                    case 'OnDemand':
+                        $stock_label = (!empty($labels['_stock_OnDemand']) ? $labels['_stock_OnDemand'] : _('Product made on demand'));
+                        break;
+                    case 'Excess':
+                        $stock_label = (!empty($labels['_stock_Excess']) ? $labels['_stock_Excess'] : _('Plenty of stock'));
+                        if ($show_stock_value == 'Yes') {
+                            $stock_label .= ' ('.number($row['Product Availability']).')';
+                        }
+                        break;
+                    case 'Normal':
+                        $stock_label = (!empty($labels['_stock_Normal']) ? $labels['_stock_Normal'] : _('Plenty of stock'));
+                        if ($show_stock_value == 'Yes') {
+                            $stock_label .= ' ('.number($row['Product Availability']).')';
+                        }
+                        break;
+                    case 'Low':
+                        $stock_label = (!empty($labels['_stock_Low']) ? $labels['_stock_Low'] : _('Limited stock'));
+                        if ($show_stock_value == 'Yes') {
+                            $stock_label .= ' ('.number($row['Product Availability']).')';
+                        }
+                        break;
+                    case 'VeryLow':
+                        $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Very low stock'));
+                        if ($show_stock_value == 'Yes' or $show_stock_value == 'Only_if_very_low') {
+                            $stock_label .= ' ('.number($row['Product Availability']).')';
+                        }
+                        break;
+
+                    case 'OutofStock':
+                    case 'Error':
+
+                        $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Out of stock'));
+                        break;
+                    default:
+                        $stock_label = $row['Product Availability State'];
+                }
+
+
+                $stock[$row['Product ID']] = array(
+                    $row['Product Availability State'],
+                    $stock_label
+                );
+
+            } else {
+                $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Out of stock'));
+                $stock[$row['Product ID']] = array(
+                    'OutofStock',
+                    $stock_label
+                );
+
             }
 
 
-            $stock[$row['Product ID']] = array(
-                $row['Product Availability State'],
-                $stock_label
-            );
 
         }
     }
