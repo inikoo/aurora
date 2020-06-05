@@ -12,7 +12,7 @@
 */
 
 
-function new_fork($type, $data, $account_code, $db) {
+function new_fork($type, $data, $account_code, $db, $priority = 'Normal') {
 
 
     if (class_exists('GearmanClient')) {
@@ -48,14 +48,28 @@ function new_fork($type, $data, $account_code, $db) {
             )
         );
 
-        $client  = new GearmanClient();
+        $client = new GearmanClient();
 
         include_once 'keyring/au_deploy_conf.php';
         $servers = explode(",", GEARMAN_SERVERS);
         shuffle($servers);
         $servers = implode(",", $servers);
         $client->addServers($servers);
-        $msg = $client->doBackground($type, $fork_metadata);
+
+
+        switch ($priority) {
+            case 'High':
+                $msg = $client->doHighBackground($type, $fork_metadata);
+                break;
+            case 'Low':
+                $msg = $client->doLowBackground($type, $fork_metadata);
+                break;
+            default:
+                $msg = $client->doBackground($type, $fork_metadata);
+                break;
+
+        }
+
 
         return array(
             $fork_key,
@@ -70,7 +84,7 @@ function new_fork($type, $data, $account_code, $db) {
 }
 
 
-function new_housekeeping_fork($type, $data, $account_code) {
+function new_housekeeping_fork($type, $data, $account_code, $priority = 'Normal') {
 
     if (class_exists('GearmanClient')) {
         $client        = new GearmanClient();
@@ -87,7 +101,17 @@ function new_housekeeping_fork($type, $data, $account_code) {
         $servers = implode(",", $servers);
         $client->addServers($servers);
 
-        return $client->doBackground($type, $fork_metadata);
+        switch ($priority) {
+            case 'High':
+                return $client->doHighBackground($type, $fork_metadata);
+            case 'Low':
+                return $client->doLowBackground($type, $fork_metadata);
+            default:
+                return $client->doBackground($type, $fork_metadata);
+
+
+        }
+
     } else {
         return 'Gearman Client class not found';
     }

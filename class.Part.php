@@ -1732,7 +1732,7 @@ class Part extends Asset {
 
             case 'label unit':
             case 'label sko':
-                $this->fast_update_json_field('Part Properties', preg_replace('/\s/','_',$field), $value);
+                $this->fast_update_json_field('Part Properties', preg_replace('/\s/', '_', $field), $value);
 
                 break;
 
@@ -2947,7 +2947,7 @@ class Part extends Asset {
 
 
         if ($exclude_unknown) {
-            
+
             $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
             $where     = sprintf('and PL.`Location Key`!=%d  ', $warehouse->get('Warehouse Unknown Location Key'));
 
@@ -2978,8 +2978,7 @@ class Part extends Asset {
 
 
                     $picking_location_icon = sprintf(
-                        '<i onclick="set_as_picking_location('.$this->id.','. $row['Location Key'].')" class="fa fa-fw fa-shopping-basket %s"  title="%s" ></i></span>',
-                        ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
+                        '<i onclick="set_as_picking_location('.$this->id.','.$row['Location Key'].')" class="fa fa-fw fa-shopping-basket %s"  title="%s" ></i></span>', ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
                         ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
                     );
@@ -3244,13 +3243,12 @@ class Part extends Asset {
 
 
             include_once 'utils/new_fork.php';
-            $account = get_object('Account', 1);
 
 
             new_housekeeping_fork(
                 'au_update_part_products_availability', array(
                 'part_sku' => $this->id
-            ), $account->get('Account Code')
+            ), DNS_ACCOUNT_CODE, 'High'
             );
 
 
@@ -3527,7 +3525,7 @@ class Part extends Asset {
 
 
         if (!$unknown_location_key) {
-            
+
 
             $warehouse            = get_object('Warehouse', $_SESSION['current_warehouse']);
             $unknown_location_key = $warehouse->get('Warehouse Unknown Location Key');
@@ -3798,7 +3796,7 @@ class Part extends Asset {
 
             $this->fast_update(
                 array(
-                    'Part Stock Lost SKOs'   => -$skos,
+                    'Part Stock Lost SKOs'  => -$skos,
                     'Part Stock Lost Value' => -$amount
 
 
@@ -3829,7 +3827,7 @@ class Part extends Asset {
 
             $this->fast_update(
                 array(
-                    'Part Stock Damaged SKOs'   => -$skos,
+                    'Part Stock Damaged SKOs'  => -$skos,
                     'Part Stock Damaged Value' => -$amount
 
 
@@ -3860,7 +3858,7 @@ class Part extends Asset {
 
             $this->fast_update(
                 array(
-                    'Part Stock Errors SKOs'   => -$skos,
+                    'Part Stock Errors SKOs'  => -$skos,
                     'Part Stock Errors Value' => -$amount
 
 
@@ -3891,7 +3889,7 @@ class Part extends Asset {
 
             $this->fast_update(
                 array(
-                    'Part Stock Found SKOs'   => $skos,
+                    'Part Stock Found SKOs'  => $skos,
                     'Part Stock Found Value' => $amount
 
 
@@ -4083,7 +4081,7 @@ class Part extends Asset {
                 "Part $db_interval Acc 1YB Invoiced Amount"  => $sales_data['invoiced_amount'],
                 "Part $db_interval Acc 1YB Required"         => $sales_data['required'],
                 "Part $db_interval Acc 1YB Dispatched"       => $sales_data['dispatched'],
-                "Part $db_interval Acc 1YB Keeping Days"      => $sales_data['keep_days'],
+                "Part $db_interval Acc 1YB Keeping Days"     => $sales_data['keep_days'],
                 "Part $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
 
             );
@@ -4216,7 +4214,7 @@ class Part extends Asset {
                 "Part $i Year Ago Invoiced Amount"  => $data_iy_ago['invoiced_amount'],
                 "Part $i Year Ago Required"         => $data_iy_ago['required'],
                 "Part $i Year Ago Dispatched"       => $data_iy_ago['dispatched'],
-                "Part $i Year Ago Keeping Days"      => $data_iy_ago['keep_days'],
+                "Part $i Year Ago Keeping Days"     => $data_iy_ago['keep_days'],
                 "Part $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
             );
 
@@ -4250,7 +4248,7 @@ class Part extends Asset {
                 "Part $i Quarter Ago Invoiced Amount"  => $sales_data['invoiced_amount'],
                 "Part $i Quarter Ago Required"         => $sales_data['required'],
                 "Part $i Quarter Ago Dispatched"       => $sales_data['dispatched'],
-                "Part $i Quarter Ago Keeping Days"      => $sales_data['keep_days'],
+                "Part $i Quarter Ago Keeping Days"     => $sales_data['keep_days'],
                 "Part $i Quarter Ago With Stock Days"  => $sales_data['with_stock_days'],
 
                 "Part $i Quarter Ago 1YB Customers"        => $sales_data_1yb['customers'],
@@ -4260,7 +4258,7 @@ class Part extends Asset {
                 "Part $i Quarter Ago 1YB Invoiced Amount"  => $sales_data_1yb['invoiced_amount'],
                 "Part $i Quarter Ago 1YB Required"         => $sales_data_1yb['required'],
                 "Part $i Quarter Ago 1YB Dispatched"       => $sales_data_1yb['dispatched'],
-                "Part $i Quarter Ago 1YB Keeping Days"      => $sales_data_1yb['keep_days'],
+                "Part $i Quarter Ago 1YB Keeping Days"     => $sales_data_1yb['keep_days'],
                 "Part $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
             $this->fast_update($data_to_update, 'Part Data');
@@ -4701,16 +4699,16 @@ class Part extends Asset {
                 } else {
 
 
-                    $sales_1q=$product->get('Product 1 Year Acc Quantity Invoiced');
-                    if($sales_1q==''){
-                        $sales_1q=0;
+                    $sales_1q = $product->get('Product 1 Year Acc Quantity Invoiced');
+                    if ($sales_1q == '') {
+                        $sales_1q = 0;
                     }
-                    $product_ratio= $product_data['Product Part Ratio'];
-                    if(!is_numeric($product_ratio) or $product_ratio<0){
-                        $product_ratio=1;
+                    $product_ratio = $product_data['Product Part Ratio'];
+                    if (!is_numeric($product_ratio) or $product_ratio < 0) {
+                        $product_ratio = 1;
                     }
 
-                    $sales = $sales_1q*$product_ratio;
+                    $sales = $sales_1q * $product_ratio;
 
                 }
 
@@ -4785,7 +4783,6 @@ class Part extends Asset {
     function update_number_locations() {
 
 
-        
         $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
         $locations = 0;
@@ -4809,7 +4806,6 @@ class Part extends Asset {
     function update_unknown_location() {
 
 
-        
         $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
         $stock = 0;
