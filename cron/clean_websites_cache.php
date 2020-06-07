@@ -11,6 +11,31 @@
 
 require_once 'common.php';
 
+$sql  = 'Select `Website Key` from `Website Dimension`';
+$stmt = $db->prepare($sql);
+$stmt->execute();
+while ($row = $stmt->fetch()) {
+
+    foreach(VARNISH_URLS as $varnish_url ) {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL,$varnish_url);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "BAN");
+        curl_setopt($curl, CURLOPT_PORT, VARNISH_PORT);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wk: '.$this->id]);
+
+        curl_exec($curl);
+
+        //print $server_output;
+        curl_close($curl);
+    }
+
+}
+
+/*
 $smarty_web               = new Smarty();
 $smarty_web->caching_type = 'redis';
 $smarty_web->template_dir = 'EcomB2B/templates';
@@ -48,4 +73,4 @@ while ($row = $stmt->fetch()) {
     }
 }
 
-
+*/

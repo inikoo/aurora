@@ -9,9 +9,30 @@
 
  Version 2.0
 */
+
 use ReallySimpleJWT\Token;
 
 function get_device() {
+
+
+
+    if (isset($_SERVER['HTTP_X_DEVICE'])) {
+        $detected_device = $_SERVER['HTTP_X_DEVICE'];
+    } else {
+        $detected_device = 'desktop';
+    }
+
+    if ($detected_device == 'desktop') {
+        $template_suffix = '';
+    } else {
+        $template_suffix = '.'.$detected_device;
+
+    }
+
+
+    //  print_r($_SERVER);
+
+    /*
     require_once 'external_libs/mobile_detect/Mobile_Detect.php';
     $detect = new Mobile_Detect;
 
@@ -26,6 +47,7 @@ function get_device() {
         $template_suffix = '';
 
     }
+    */
 
     return array(
         $detected_device,
@@ -36,16 +58,17 @@ function get_device() {
 
 function get_logged_in() {
 
-    if(!empty($_SESSION['UTK'])){
-        $logged_in=true;
-    }elseif(!empty($_COOKIE['UTK'])  and  Token::validate($_COOKIE['UTK'], JWT_KEY) ){
-        $logged_in=true;
-        $_SESSION['UTK']=  Token::getPayload($_COOKIE['UTK'], JWT_KEY);
-        $_SESSION['logged_in']            = true;
-        $_SESSION['customer_key']         = $_SESSION['UTK']['C'];
-        $_SESSION['website_user_key']     = $_SESSION['UTK']['WU'];
-    }else{
-        $logged_in=false;
+
+    if (!empty($_SESSION['UTK'])) {
+        $logged_in = true;
+    } elseif (!empty($_COOKIE['UTK']) and Token::validate($_COOKIE['UTK'], JWT_KEY)) {
+        $logged_in                    = true;
+        $_SESSION['UTK']              = Token::getPayload($_COOKIE['UTK'], JWT_KEY);
+        $_SESSION['logged_in']        = true;
+        $_SESSION['customer_key']     = $_SESSION['UTK']['C'];
+        $_SESSION['website_user_key'] = $_SESSION['UTK']['WU'];
+    } else {
+        $logged_in = false;
     }
 
 

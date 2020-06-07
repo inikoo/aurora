@@ -917,6 +917,24 @@ class Website extends DB_Table {
 
     function clean_cache() {
 
+        foreach(VARNISH_URLS as $varnish_url ) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL,$varnish_url);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "BAN");
+            curl_setopt($curl, CURLOPT_PORT, VARNISH_PORT);
+
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
+            curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wk: '.$this->id]);
+
+            curl_exec($curl);
+
+            //print $server_output;
+            curl_close($curl);
+        }
+
+        /*
 
         $smarty_web               = new Smarty();
         $smarty_web->caching_type = 'redis';
@@ -929,7 +947,7 @@ class Website extends DB_Table {
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
         $smarty_web->clearAllCache();
-
+*/
 
         $_redis = new Redis();
         $_redis->connect(REDIS_HOST, REDIS_PORT);

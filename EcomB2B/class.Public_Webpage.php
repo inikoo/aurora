@@ -40,12 +40,9 @@ class Public_Webpage {
     function get_data($tipo, $tag, $tag2 = false) {
 
         if ($tipo == 'scope') {
-
-
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
             );
-
         } elseif ($tipo == 'store_page_code') {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS WHERE `Webpage Code`=%s AND `Webpage Store Key`=%d ", prepare_mysql($tag2), $tag
@@ -54,7 +51,6 @@ class Public_Webpage {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS  WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
             );
-
         } else {
             $sql = sprintf("SELECT * FROM `Page Store Dimension` PS  WHERE  PS.`Page Key`=%d", $tag);
         }
@@ -62,6 +58,7 @@ class Public_Webpage {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Page Key'];
+            $this->properties = json_decode($this->data['Webpage Properties'], true);
 
 
         }
@@ -69,6 +66,9 @@ class Public_Webpage {
 
     }
 
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
 
     function get($key) {
 

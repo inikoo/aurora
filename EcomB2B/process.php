@@ -21,13 +21,11 @@ require_once 'utils/sentry.php';
 $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
-session_start();
 
 
-if (empty($_SESSION['website_key'])) {
     include_once('utils/find_website_key.include.php');
-    $_SESSION['website_key'] = get_website_key_from_domain($redis);
-}
+    $website_key = get_website_key_from_domain($redis);
+
 
 
 $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
@@ -49,14 +47,15 @@ if ($url == 'sitemap.xml') {
 
     $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
     $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+
+
+    $website = get_object('Website', $website_key);
+    $site_protocol = 'https';
+
     $sql = sprintf(
-        "select `Sitemap Name` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Website Key`=%d", $_SESSION['website_key']
+        "select `Sitemap Name` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Website Key`=%d", $website_key
     );
 
-    $website = get_object('Website', $_SESSION['website_key']);
-
-
-    $site_protocol = 'https';
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -91,7 +90,7 @@ if ($url == 'sitemap.xml') {
 
 
     $sql = sprintf(
-        "SELECT `Sitemap Content` FROM  `Sitemap Dimension` WHERE `Sitemap Website Key`=%d and `Sitemap Name`='%s' ", $_SESSION['website_key'], addslashes($sitemap_name)
+        "SELECT `Sitemap Content` FROM  `Sitemap Dimension` WHERE `Sitemap Website Key`=%d and `Sitemap Name`='%s' ", $website_key, addslashes($sitemap_name)
     );
 
     if ($result = $db->query($sql)) {
@@ -114,7 +113,7 @@ if ($url == 'sitemap.xml') {
 }
 
 
-$url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$_SESSION['website_key'].'_'.$url;
+$url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$website_key.'_'.$url;
 
 if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
@@ -126,7 +125,7 @@ if ($redis->exists($url_cache_key)) {
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    $webpage_id = get_url($db,$_SESSION['website_key'], $url);
+    $webpage_id = get_url($db,$website_key, $url);
 
 
     $redis_write = new Redis();
@@ -136,7 +135,7 @@ if ($redis->exists($url_cache_key)) {
 
 
 if (is_numeric($webpage_id)) {
-    $website_key = $_SESSION['website_key'];
+
     $webpage_key = $webpage_id;
 
 

@@ -249,7 +249,7 @@ class Page extends DB_Table {
 
         if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
-            if(!$this->id){
+            if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
             }
 
@@ -658,7 +658,27 @@ class Page extends DB_Table {
 
     function clear_cache() {
 
+        //        print $this->get('URL');
 
+             foreach(VARNISH_URLS as $varnish_url ) {
+
+
+                 $curl = curl_init();
+                 curl_setopt($curl, CURLOPT_URL, $varnish_url);
+                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "BAN");
+                 curl_setopt($curl, CURLOPT_PORT, VARNISH_PORT);
+                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
+                 curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wpk: '.$this->id]);
+
+                 curl_exec($curl);
+
+                 //print $server_output;
+                 curl_close($curl);
+             }
+
+        /*
         $cache_id = '_'.$this->id.'|'.$this->get('Webpage Website Key').'|'.DNS_ACCOUNT_CODE;
 
 
@@ -676,12 +696,11 @@ class Page extends DB_Table {
         $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tpl', 'out'.$cache_id);
 
         $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl', 'in'.$cache_id);
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl','out'.$cache_id);
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.tablet.tpl', 'out'.$cache_id);
 
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile,tpl',  'in'.$cache_id);
-        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile.tpl',  'out'.$cache_id);
-
-
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile,tpl', 'in'.$cache_id);
+        $smarty_web->clearCache($theme.'/webpage_blocks.'.$theme.'.'.$website_type.'.mobile.tpl', 'out'.$cache_id);
+        */
 
     }
 
@@ -807,9 +826,16 @@ class Page extends DB_Table {
 
         $content_data = $this->get('Content Data');
 
-        $sql = sprintf(
-            'DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  ', $this->id
+        $sql = "DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=?";
+
+
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id
+            )
         );
+
+
         $this->db->exec($sql);
 
         if (isset($content_data['blocks'])) {
@@ -843,6 +869,35 @@ class Page extends DB_Table {
         $this->updated = true;
 
 
+        /*
+         *
+         * Only usefful is you want to reindex directjy in pweb
+        $category_keys = [];
+        $product_keys  = [];
+
+        $sql  = "select `Website Webpage Scope Scope`,`Website Webpage Scope Scope Webpage Key` from `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if ($row['Website Webpage Scope Scope'] == 'Category') {
+                $category_keys[] = $row['Website Webpage Scope Scope Webpage Key'];
+            } else {
+                $product_keys[] = $row['Website Webpage Scope Scope Webpage Key'];
+            }
+
+        }
+
+        $this->fast_update_json_field('Webpage Properties', 'category_keys', join($category_keys, " "));
+        $this->fast_update_json_field('Webpage Properties', 'products_keys', join($product_keys, " "));
+*/
+
+        $this->clear_cache();
+
+        /*
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
@@ -850,7 +905,7 @@ class Page extends DB_Table {
             'webpage_key' => $this->id
         ), DNS_ACCOUNT_CODE, $this->db
         );
-
+        */
 
         $redis = new Redis();
         if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
@@ -1285,8 +1340,7 @@ class Page extends DB_Table {
         if ($this->get('Webpage Scope') == 'Category Products') {
 
 
-
-            $category = get_object('Category',$this->get('Webpage Scope Key'));
+            $category = get_object('Category', $this->get('Webpage Scope Key'));
 
 
             $items = array();

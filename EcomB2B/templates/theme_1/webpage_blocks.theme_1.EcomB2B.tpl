@@ -394,5 +394,4 @@
 </div>
 
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl"}
-
 </body></html>

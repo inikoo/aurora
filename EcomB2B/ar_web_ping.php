@@ -9,6 +9,8 @@
 
 */
 use ReallySimpleJWT\Token;
+require_once '../vendor/autoload.php';
+require __DIR__.'/keyring/au_deploy_conf.php';
 
 require __DIR__.'/utils/web_common.php';
 require __DIR__.'/utils/natural_language.php';
