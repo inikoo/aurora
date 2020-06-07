@@ -1,5 +1,5 @@
 
-
+/*
 $(function () {
 
     if($('body').data('ws')=='y') {
@@ -102,4 +102,4 @@ function connect_websocket() {
 
 
 }
-
+*/
