@@ -926,7 +926,7 @@ class Website extends DB_Table {
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 
-            curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wk: '.$this->id]);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wk: '.DNS_ACCOUNT_CODE.'-'.$this->id]);
 
             curl_exec($curl);
 

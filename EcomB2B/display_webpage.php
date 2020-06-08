@@ -442,9 +442,8 @@ if ($webpage->get('Webpage Code') == 'register.sys' or $webpage->get('Webpage Co
 $smarty->assign('webpage', $webpage);
 $smarty->assign('content', sanitize($webpage->get('Content Data')));
 
-header('X-WPK: '.$webpage->id);
-header('X-WK: '.$website->id);
-header('X-CatK: '.$website->id);
+header('X-WPK: '.DNS_ACCOUNT_CODE.'-'.$webpage->id);
+header('X-WK: '.DNS_ACCOUNT_CODE.'-'.$website->id);
 //header('X-CatK: '.$webpage->properties('category_keys'));
 //header('X-ProdK: '.$webpage->properties('products_keys'));
 

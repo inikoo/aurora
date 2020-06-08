@@ -670,7 +670,7 @@ class Page extends DB_Table {
                  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 
-                 curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wpk: '.$this->id]);
+                 curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wpk: '.DNS_ACCOUNT_CODE.'-'.$this->id]);
 
                  curl_exec($curl);
 
