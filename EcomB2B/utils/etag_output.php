@@ -15,7 +15,7 @@
 function etag_output($tpl_output, Smarty_Internal_Template $template){
 
 
-    $etag = md5($tpl_output);
+    $etag = 'W/"'.md5($tpl_output).'"';
     header('ETag: '.$etag);
     if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strpos($_SERVER['HTTP_IF_NONE_MATCH'], $etag) !== FALSE)
     {
