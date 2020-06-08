@@ -45,7 +45,7 @@
             <h1 style="margin-bottom: 10px">{$order->get('Order Public ID')} <span style="margin-left: 10px;font-weight: normal;font-size: smaller">{$order->get('State')}</span></h1>
             <div style="margin-bottom: 10px;border-bottom: 1px solid #eee;width: 90%;">
                 {if $order->get('Order Invoice Key')}
-                <span >{t}Invoice{/t} <a  target="_blank" href="invoice.pdf.php?id={$order->get('Order Invoice Key')}"><img style="margin-left: 10px" src="art/pdf.gif"></a></span>
+                <span >{t}Invoice{/t} <a  target="_blank" href="ar_web_invoice.pdf.php?id={$order->get('Order Invoice Key')}"><img style="margin-left: 10px" src="art/pdf.gif"></a></span>
                 {/if}
             </div>
             <div class=" text_blocks  text_template_2">

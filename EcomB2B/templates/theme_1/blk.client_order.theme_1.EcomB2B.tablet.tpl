@@ -303,7 +303,7 @@
                     <span class="node_label">
                         <i class="fal fa-file-invoice-dollar fa-fw {if $invoice->get('Invoice Type')=='Refund'}error {/if}" aria-hidden="true"></i>
                         <span class=" {if $invoice->get('Invoice Type')=='Refund'}error{/if}">{$invoice->get('Invoice Public ID')}</span>
-                        <a target="_blank" href="invoice.pdf.php?id={$invoice->id}"><img class=" pdf_link"  style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                        <a target="_blank" href="ar_web_invoice.pdf.php?id={$invoice->id}"><img class=" pdf_link"  style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>
                         <div class="red" style="float: right;padding-right: 10px;padding-top: 5px">{if $invoice->get('Invoice Type')=='Refund'} {$invoice->get('Refund Total Amount')} {if $invoice->get('Invoice Paid')!='Yes'}
                                 <i class="fa fa-exclamation-triangle warning fa-fw" aria-hidden="true" title="{t}Return payment pending{/t}"></i>

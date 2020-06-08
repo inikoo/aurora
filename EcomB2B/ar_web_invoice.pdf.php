@@ -15,7 +15,6 @@ require_once 'utils/public_object_functions.php';
 require_once __DIR__.'/../vendor/autoload.php';
 
 
-
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit;
@@ -31,7 +30,7 @@ include_once 'ar_web_common_logged_in.php';
 $account = get_object('Account', 1);
 
 $smarty = new Smarty();
-$smarty->caching_type = 'redis';
+//$smarty->caching_type = 'redis';
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');

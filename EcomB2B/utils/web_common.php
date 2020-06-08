@@ -59,6 +59,7 @@ function get_device() {
 function get_logged_in() {
 
 
+
     if (!empty($_SESSION['UTK'])) {
         $logged_in = true;
     } elseif (!empty($_COOKIE['UTK']) and Token::validate($_COOKIE['UTK'], JWT_KEY)) {
@@ -70,7 +71,6 @@ function get_logged_in() {
     } else {
         $logged_in = false;
     }
-
 
     return $logged_in;
 

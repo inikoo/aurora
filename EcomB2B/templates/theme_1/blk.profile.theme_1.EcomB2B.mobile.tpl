@@ -560,7 +560,7 @@
                         <td>{$_order.state}</td>
                         <td class="text-right">{$_order.total}</td>
                         <td style="width: 55px">
-                            <a target="_blank" href="invoice.pdf.php?id={$_order.invoice_key}"><img class="button  {if !$_order.invoice_key}hide{/if}" style=";height:16px;position: relative;top:6px;padding: 0px 5px"
+                            <a target="_blank" href="ar_web_invoice.pdf.php?id={$_order.invoice_key}"><img class="button  {if !$_order.invoice_key}hide{/if}" style=";height:16px;position: relative;top:6px;padding: 0px 5px"
                                                                                                     src="/art/pdf.gif"></a>
                         </td>
                     </tr>

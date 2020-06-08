@@ -32,6 +32,7 @@ if (empty($_SESSION['website_key'])) {
 $logged_in = get_logged_in();
 
 
+
 if (!$logged_in) {
 
     if (empty($redirect_to_login)) {
