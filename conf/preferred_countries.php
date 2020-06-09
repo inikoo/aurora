@@ -10,7 +10,9 @@
 */
 
 $preferred_countries_data = array(
-    'GB' => array('IE')
+    'GB' => array('IE'),
+    'ES' => array('PT'),
+    'PT' => array('ES'),
 );
 
-?>
+

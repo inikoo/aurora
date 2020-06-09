@@ -677,7 +677,7 @@ $supplier_part_fields[] = array(
             'right_code'               => 'PE',
             'options'                  => get_countries($db),
             'scope'                    => 'countries',
-            'value'                    => htmlspecialchars($object->part->get('Part Origin Country Code')),
+            'value'                    => strtolower(country_3alpha_to_2alpha($object->part->get('Part Origin Country Code'))),
             'formatted_value'          => $object->part->get('Origin Country Code'),
             'stripped_formatted_value' => ($object->part->get('Part Origin Country Code') != '' ? $object->part->get('Origin Country').' ('.$object->part->get(
                     'Part Origin Country Code'

@@ -373,15 +373,15 @@
 
 
                         $.fn.countrySelect.setCountryData({$field.options});
-                        $("#{$field.id}").countrySelect();
-                         $("#{$field.id}").countrySelect("selectCountryfromCode",'{$field.value}') ;
-                          $("#{$field.id}").on("change", function(event,arg) {
-                          if(event.type=='change'){
-                            console.log(this)
-                          //  $(this).attr('has_been_changed',1)
-                          }
+                        $("#{$field.id}").countrySelect(
+                            {
+                                defaultCountry: '{$field.value}'
+                            }
+                        );
 
-                             on_changed_value('{$field.id}',  $("#{$field.id}").countrySelect("getSelectedCountryData").code)
+                          $("#{$field.id}").on("change", function(event,arg) {
+
+                              on_changed_value('{$field.id}',  $("#{$field.id}").countrySelect("getSelectedCountryData").code)
                          })
 
                     </script>

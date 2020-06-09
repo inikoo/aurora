@@ -379,7 +379,7 @@ $product_fields = array(
                 'render'                   => ($new ? false : true),
                 'options'                  => get_countries($db),
                 'scope'                    => 'countries',
-                'value'                    => $object->get('Product Origin Country Code'),
+                'value'                    => strtolower(country_3alpha_to_2alpha($object->get('Product Origin Country Code'))),
                 'formatted_value'          => $object->get('Origin Country Code'),
                 'stripped_formatted_value' => ($object->get(
                     'Product Origin Country Code'

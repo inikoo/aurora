@@ -12,23 +12,18 @@
 function get_currencies($db) {
 
     $data = array();
-    $sql  = sprintf(
-        "SELECT `Currency Name`,`Currency Code`,`Currency Symbol`,`Currency Country 2 Alpha Code` FROM kbase.`Currency Dimension` WHERE `Currency Status`='Active' "
-    );
+    $sql  = "SELECT `Currency Name`,`Currency Code`,`Currency Symbol`,`Currency Country 2 Alpha Code` FROM kbase.`Currency Dimension` WHERE `Currency Status`='Active' ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $data[] = array(
+            'name' => _($row['Currency Name']).' ('.$row['Currency Code'].')',
+            'iso2' => strtolower($row['Currency Country 2 Alpha Code']),
+            'code' => $row['Currency Code'],
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $data[] = array(
-                'name' => _($row['Currency Name']).' ('.$row['Currency Code'].')',
-                'iso2' => strtolower($row['Currency Country 2 Alpha Code']),
-                'code' => $row['Currency Code'],
-
-            );
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+        );
     }
+
 
     usort($data, "cmp");
 
@@ -42,6 +37,23 @@ function get_currencies($db) {
     $formatted_data .= ']';
 
     return $formatted_data;
+
+}
+
+function get_country_code_from_currency($db, $currency) {
+    $sql  = "SELECT `Currency Country 2 Alpha Code` FROM kbase.`Currency Dimension` WHERE `Currency Code`=? ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $currency
+        )
+    );
+    if ($row = $stmt->fetch()) {
+        return $row['Currency Country 2 Alpha Code'];
+    } else {
+        return 'XX';
+    }
+
 
 }
 
@@ -94,4 +106,4 @@ function cmp($a, $b) {
 }
 
 
-?>
+

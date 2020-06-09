@@ -20,12 +20,8 @@ if ($state['parent'] == 'agent') {
     $country_2alpha_code = strtoupper(
         $state['_parent']->get('Agent Contact Address Country 2 Alpha Code')
     );
-    $currency            = $state['_parent']->get(
-        'Agent Default Currency Code'
-    );
-    $country_origin      = ($state['_parent']->get(
-        'Agent Products Origin Country Code'
-    ) == ''
+    $currency            = $state['_parent']->get('Agent Default Currency Code');
+    $country_origin      = ($state['_parent']->get('Agent Products Origin Country Code') == ''
         ? $account->get('Account Country Code')
         : $state['_parent']->get(
             'Agent Products Origin Country Code'
@@ -47,9 +43,7 @@ $object_fields = get_object_fields(
 
 
 $smarty->assign('default_country', $country_2alpha_code);
-$smarty->assign(
-    'preferred_countries', '"'.join('", "', preferred_countries($country_2alpha_code)).'"'
-);
+$smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($country_2alpha_code)).'"');
 
 
 $smarty->assign(

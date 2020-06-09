@@ -593,9 +593,7 @@ $part_fields[] = array(
             'right_code'      => 'PE',
             'options'                  => get_countries($db),
             'scope'                    => 'countries',
-            'value'                    => (($new and $supplier_part_scope) ? $options['parent_object']->get(
-                'Supplier Products Origin Country Code'
-            ) : htmlspecialchars($object->get('Part Origin Country Code'))),
+            'value'                    => (($new and $supplier_part_scope) ? strtolower(country_3alpha_to_2alpha($options['parent_object']->get('Supplier Products Origin Country Code'))) : strtolower(country_3alpha_to_2alpha(($object->get('Part Origin Country Code'))))),
             'formatted_value'          => (($new and $supplier_part_scope) ? $options['parent_object']->get('Products Origin Country Code') : $object->get('Origin Country Code')),
             'stripped_formatted_value' => (($new and $supplier_part_scope)
                 ? ($options['parent_object']->get('Part Origin Country Code') != '' ? $options['parent_object']->get('Origin Country').' ('.$options['parent_object']->get('Part Origin Country Code').')' : '')

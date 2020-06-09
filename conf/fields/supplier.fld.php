@@ -92,8 +92,8 @@ $object_fields = array(
                 'type'              => 'value'
             ),
             array(
-                'id'   => 'Supplier_Nickname',
-                'edit' => ($edit ? 'string' : ''),
+                'id'              => 'Supplier_Nickname',
+                'edit'            => ($edit ? 'string' : ''),
                 'value'           => htmlspecialchars($object->get('Supplier Nickname')),
                 'formatted_value' => $object->get('Nickname'),
                 'label'           => ucfirst($object->get_field_label('Supplier Nickname')),
@@ -101,8 +101,8 @@ $object_fields = array(
                 'type'            => 'value'
             ),
             array(
-                'id'   => 'Supplier_Company_Name',
-                'edit' => ($edit ? 'string' : ''),
+                'id'              => 'Supplier_Company_Name',
+                'edit'            => ($edit ? 'string' : ''),
                 'value'           => htmlspecialchars($object->get('Supplier Company Name')),
                 'formatted_value' => $object->get('Company Name'),
                 'label'           => ucfirst($object->get_field_label('Supplier Company Name')),
@@ -131,8 +131,7 @@ $object_fields = array(
     ),
 
 
-
-     array(
+    array(
         'label'      => _('Our Id in Supplier records'),
         'show_title' => false,
         'fields'     => array(
@@ -146,8 +145,8 @@ $object_fields = array(
                 'required'        => false,
                 'type'            => 'value'
             ),
-        )),
-
+        )
+    ),
 
 
     array(
@@ -237,8 +236,7 @@ $object_fields = array(
                 'formatted_value' => $object->get('Main Plain Mobile'),
                 'label'           => ucfirst(
                         $object->get_field_label('Supplier Main Plain Mobile')
-                    ).($object->get('Supplier Main Plain Mobile') != '' ? ($object->get('Supplier Preferred Contact Number') == 'Mobile'
-                        ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                    ).($object->get('Supplier Main Plain Mobile') != '' ? ($object->get('Supplier Preferred Contact Number') == 'Mobile' ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
                         : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
@@ -249,16 +247,13 @@ $object_fields = array(
                 'id'   => 'Supplier_Main_Plain_Telephone',
                 'edit' => ($edit ? 'telephone' : ''),
 
-                'value'           => $object->get(
-                    'Supplier Main Plain Telephone'
-                ),
+                'value'           => $object->get('Supplier Main Plain Telephone'),
                 'formatted_value' => $object->get('Main Plain Telephone'),
                 'label'           => ucfirst(
                         $object->get_field_label(
                             'Supplier Main Plain Telephone'
                         )
-                    ).($object->get('Supplier Main Plain Telephone') != '' ? ($object->get('Supplier Preferred Contact Number') == 'Telephone'
-                        ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                    ).($object->get('Supplier Main Plain Telephone') != '' ? ($object->get('Supplier Preferred Contact Number') == 'Telephone' ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
                         : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
@@ -349,7 +344,8 @@ $object_fields = array(
 
                 'value'           => htmlspecialchars($object->get('Supplier Contact Address')),
                 'formatted_value' => $object->get('Contact Address'),
-                'label'           => ucfirst($object->get_field_label('Supplier Contact Address')
+                'label'           => ucfirst(
+                    $object->get_field_label('Supplier Contact Address')
                 ),
                 'invalid_msg'     => get_invalid_message('address'),
                 'required'        => false,
@@ -388,16 +384,10 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'edit'                     => ($edit ? 'country_select' : ''),
                 'options'                  => get_countries($db),
                 'scope'                    => 'countries',
-                'value'                    => ($new
-                    ? $options['country_origin']
-                    : htmlspecialchars(
-                        $object->get('Supplier Products Origin Country Code')
-                    )),
+                'value'                    => ($new ? strtolower(country_3alpha_to_2alpha($options['country_origin'])) : strtolower(country_3alpha_to_2alpha($object->get('Supplier Products Origin Country Code')))),
                 'formatted_value'          => ($new ? $options['country_origin'] : $object->get('Products Origin Country Code')),
                 'stripped_formatted_value' => ($new ? $options['country_origin'] : $object->get('Products Origin Country Code')),
-                'label'                    => ucfirst(
-                    $object->get_field_label('Part Origin Country Code')
-                ),
+                'label'                    => ucfirst($object->get_field_label('Part Origin Country Code')),
                 'required'                 => false,
                 'type'                     => 'value',
 
@@ -430,7 +420,6 @@ if ($object->get('Supplier Type') != 'Archived') {
             ),
 
 
-
         )
     );
 
@@ -461,11 +450,7 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'edit'            => ($edit ? 'country_select' : ''),
                 'options'         => get_currencies($db),
                 'scope'           => 'currencies',
-                'value'           => ($new
-                    ? $options['currency']
-                    : $object->get(
-                        'Supplier Default Currency Code'
-                    )),
+                'value'           => ($new ? strtolower(get_country_code_from_currency($db,$options['currency'])) : strtolower(get_country_code_from_currency($db,$object->get('Supplier Default Currency Code')))),
                 'formatted_value' => $object->get('Default Currency'),
                 'label'           => ucfirst(
                     $object->get_field_label('Supplier Default Currency Code')
@@ -484,7 +469,6 @@ if ($object->get('Supplier Type') != 'Archived') {
             ),
         )
     );
-
 
 
     if ($options['parent'] != 'agent') {
@@ -538,99 +522,100 @@ if ($object->get('Supplier Type') != 'Archived') {
                     'type'            => 'value'
                 ),
 
-/*
-                array(
-                    'id'              => 'Supplier_Skip_Inputting',
-                    'edit'            => ($edit ? 'option' : ''),
-                    'options'         => $options_yn,
-                    'value'           => ($new
-                        ? 'Yes'
-                        : $object->get(
-                            'Supplier Skip Inputting'
-                        )),
-                    'formatted_value' => ($new
-                        ? _('Yes')
-                        : $object->get(
-                            'Skip Inputting'
-                        )),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Supplier Skip Inputting')
-                    ),
-                    'required'        => false,
-                    'type'            => ''
-                ),
+                /*
+                                array(
+                                    'id'              => 'Supplier_Skip_Inputting',
+                                    'edit'            => ($edit ? 'option' : ''),
+                                    'options'         => $options_yn,
+                                    'value'           => ($new
+                                        ? 'Yes'
+                                        : $object->get(
+                                            'Supplier Skip Inputting'
+                                        )),
+                                    'formatted_value' => ($new
+                                        ? _('Yes')
+                                        : $object->get(
+                                            'Skip Inputting'
+                                        )),
+                                    'label'           => ucfirst(
+                                        $object->get_field_label('Supplier Skip Inputting')
+                                    ),
+                                    'required'        => false,
+                                    'type'            => ''
+                                ),
 
-                array(
-                    'id'              => 'Supplier_Skip_Mark_as_Received',
-                    'edit'            => ($edit ? 'option' : ''),
-                    'options'         => $options_yn,
-                    'value'           => ($new
-                        ? 'Yes'
-                        : $object->get(
-                            'Supplier Skip Mark as Received'
-                        )),
-                    'formatted_value' => ($new
-                        ? _('Yes')
-                        : $object->get(
-                            'Skip Mark as Received'
-                        )),
-                    'label'           => ucfirst(
-                        $object->get_field_label(
-                            'Supplier Skip Mark as Received'
-                        )
-                    ),
-                    'required'        => false,
-                    'type'            => ''
-                ),
-                array(
-                    'id'              => 'Supplier_Skip_Checking',
-                    'edit'            => ($edit ? 'option' : ''),
-                    'options'         => $options_yn,
-                    'value'           => ($new
-                        ? 'Yes'
-                        : $object->get(
-                            'Supplier Skip Checking'
-                        )),
-                    'formatted_value' => ($new
-                        ? _('Yes')
-                        : $object->get(
-                            'Skip Checking'
-                        )),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Supplier Skip Checking')
-                    ),
-                    'required'        => false,
-                    'type'            => ''
-                ),
-                array(
-                    'id'              => 'Supplier_Automatic_Placement_Location',
-                    'edit'            => ($edit ? 'option' : ''),
-                    'options'         => $options_yn,
-                    'value'           => ($new
-                        ? 'Yes'
-                        : $object->get(
-                            'Supplier Automatic Placement Location'
-                        )),
-                    'formatted_value' => ($new
-                        ? _('Yes')
-                        : $object->get(
-                            'Automatic Placement Location'
-                        )),
-                    'label'           => ucfirst(
-                        $object->get_field_label(
-                            'Supplier Automatic Placement Location'
-                        )
-                    ),
-                    'required'        => false,
-                    'type'            => ''
-                ),
+                                array(
+                                    'id'              => 'Supplier_Skip_Mark_as_Received',
+                                    'edit'            => ($edit ? 'option' : ''),
+                                    'options'         => $options_yn,
+                                    'value'           => ($new
+                                        ? 'Yes'
+                                        : $object->get(
+                                            'Supplier Skip Mark as Received'
+                                        )),
+                                    'formatted_value' => ($new
+                                        ? _('Yes')
+                                        : $object->get(
+                                            'Skip Mark as Received'
+                                        )),
+                                    'label'           => ucfirst(
+                                        $object->get_field_label(
+                                            'Supplier Skip Mark as Received'
+                                        )
+                                    ),
+                                    'required'        => false,
+                                    'type'            => ''
+                                ),
+                                array(
+                                    'id'              => 'Supplier_Skip_Checking',
+                                    'edit'            => ($edit ? 'option' : ''),
+                                    'options'         => $options_yn,
+                                    'value'           => ($new
+                                        ? 'Yes'
+                                        : $object->get(
+                                            'Supplier Skip Checking'
+                                        )),
+                                    'formatted_value' => ($new
+                                        ? _('Yes')
+                                        : $object->get(
+                                            'Skip Checking'
+                                        )),
+                                    'label'           => ucfirst(
+                                        $object->get_field_label('Supplier Skip Checking')
+                                    ),
+                                    'required'        => false,
+                                    'type'            => ''
+                                ),
+                                array(
+                                    'id'              => 'Supplier_Automatic_Placement_Location',
+                                    'edit'            => ($edit ? 'option' : ''),
+                                    'options'         => $options_yn,
+                                    'value'           => ($new
+                                        ? 'Yes'
+                                        : $object->get(
+                                            'Supplier Automatic Placement Location'
+                                        )),
+                                    'formatted_value' => ($new
+                                        ? _('Yes')
+                                        : $object->get(
+                                            'Automatic Placement Location'
+                                        )),
+                                    'label'           => ucfirst(
+                                        $object->get_field_label(
+                                            'Supplier Automatic Placement Location'
+                                        )
+                                    ),
+                                    'required'        => false,
+                                    'type'            => ''
+                                ),
 
-*/
+                */
                 array(
                     'edit'     => ($edit ? 'string' : ''),
                     'id'       => 'Supplier_Order_Public_ID_Format',
                     'value'    => $object->get('Supplier Order Public ID Format'),
-                    'label'    => ucfirst($object->get_field_label('Supplier Order Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+                    'label'    => ucfirst($object->get_field_label('Supplier Order Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders')
+                        .'" ></i>',
                     'required' => true,
 
                     'type' => 'value'
@@ -642,7 +627,8 @@ if ($object->get('Supplier Type') != 'Archived') {
                     'edit'     => ($edit ? 'numeric' : ''),
                     'id'       => 'Supplier_Order_Last_Order_ID',
                     'value'    => $object->get('Supplier Order Last Order ID'),
-                    'label'    => ucfirst($object->get_field_label('Supplier Order Last Order ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+                    'label'    => ucfirst($object->get_field_label('Supplier Order Last Order ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders')
+                        .'" ></i>',
                     'required' => true,
 
                     'type' => 'value'
@@ -855,8 +841,7 @@ if ($object->get('Supplier Type') != 'Archived') {
 
 
             $sql = sprintf(
-                'SELECT `Agent Key`,`Agent Code` FROM `Agent Supplier Bridge`  LEFT JOIN `Agent Dimension` ON (`Agent Key`=`Agent Supplier Agent Key`) WHERE `Agent Supplier Supplier Key`=%d ',
-                $object->id
+                'SELECT `Agent Key`,`Agent Code` FROM `Agent Supplier Bridge`  LEFT JOIN `Agent Dimension` ON (`Agent Key`=`Agent Supplier Agent Key`) WHERE `Agent Supplier Supplier Key`=%d ', $object->id
             );
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
@@ -867,8 +852,8 @@ if ($object->get('Supplier Type') != 'Archived') {
                         'id'        => 'unlink_agent_'.$row['Agent Key'],
                         'class'     => 'operation',
                         'value'     => '',
-                        'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-                            .$object->get_object_name().'", "key":"'.$object->id.'", "agent_key":"'.$row['Agent Key'].'"}\' onClick="unlink_agent(this)" class="delete_object ">'.sprintf(
+                        'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'", "agent_key":"'
+                            .$row['Agent Key'].'"}\' onClick="unlink_agent(this)" class="delete_object ">'.sprintf(
                                 _("Unlink agent %s"), $row['Agent Code']
                             ).' <i class="fa fa-unlink new_button button"></i></span>',
                         'reference' => '',
@@ -889,9 +874,8 @@ if ($object->get('Supplier Type') != 'Archived') {
             'id'        => 'archive_supplier',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-                .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="archive_object(this)" class="delete_object ">'._("Archive supplier")
-                .' <i class="fa fa-archive new_button button"></i></span>',
+            'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="archive_object(this)" class="delete_object ">'._("Archive supplier").' <i class="fa fa-archive new_button button"></i></span>',
             'reference' => '',
             'type'      => 'operation'
         );
@@ -902,9 +886,8 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'id'        => 'delete_supplier',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products")
-                    .' <i class="fa fa-trash new_button "></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products").' <i class="fa fa-trash new_button "></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             );
@@ -931,8 +914,8 @@ if ($object->get('Supplier Type') != 'Archived') {
         'id'        => 'unarchive_supplier',
         'class'     => 'operation',
         'value'     => '',
-        'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-            .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="unarchive_object(this)" class="delete_object ">'._(
+        'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+            .'"}\' onClick="unarchive_object(this)" class="delete_object ">'._(
                 "Unarchive supplier"
             ).' <i class="fa fa-folder-open new_button button"></i></span>',
         'reference' => '',
@@ -945,9 +928,8 @@ if ($object->get('Supplier Type') != 'Archived') {
             'id'        => 'delete_supplier',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name()
-                .'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products")
-                .' <i class="fa fa-trash new_button "></i></span>',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products").' <i class="fa fa-trash new_button "></i></span>',
             'reference' => '',
             'type'      => 'operation'
         );

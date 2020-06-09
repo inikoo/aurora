@@ -315,19 +315,17 @@ $object_fields = array(
                 'options'                  => get_countries($db),
                 'scope'                    => 'countries',
                 'value'                    => ($new
-                    ? $account->get('Account Country Code')
-                    : htmlspecialchars(
-                        $object->get('Agent Products Origin Country Code')
-                    )),
+                    ? strtolower(country_3alpha_to_2alpha($account->get('Account Country Code')))
+                    :
+                        strtolower(country_3alpha_to_2alpha($object->get('Agent Products Origin Country Code')))
+                    ),
                 'formatted_value'          => ($new ? $account->get(
                     'Account Country Code'
                 ) : $object->get('Products Origin Country Code')),
                 'stripped_formatted_value' => ($new ? $account->get(
                     'Account Country Code'
                 ) : $object->get('Products Origin Country Code')),
-                'label'                    => ucfirst(
-                    $object->get_field_label('Products Origin Country Code')
-                ),
+                'label'                    => ucfirst($object->get_field_label('Products Origin Country Code')),
                 'required'                 => false,
                 'type'                     => 'value',
 
@@ -387,7 +385,7 @@ $object_fields = array(
                 'edit'            => ($edit ? 'country_select' : ''),
                 'options'         => get_currencies($db),
                 'scope'           => 'currencies',
-                'value'           => ($new ? $account->get('Account Currency') : $object->get('Agent Default Currency Code')),
+                'value'           => ($new ? strtolower(get_country_code_from_currency($db,$account->get('Account Currency'))) : strtolower(get_country_code_from_currency($db,$object->get('Agent Default Currency Code')))),
                 'formatted_value' => $object->get('Default Currency'),
                 'label'           => ucfirst(
                     $object->get_field_label('Agent Default Currency Code')

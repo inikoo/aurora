@@ -11,7 +11,6 @@
 */
 
 
-
 include_once 'utils/static_data.php';
 
 
@@ -26,9 +25,6 @@ $options_locale = array(
     'pt_PT' => 'pt_PT '._('Portuguese'),
 );
 asort($options_locale);
-
-
-
 
 
 $options_timezones = array();
@@ -81,16 +77,16 @@ $object_fields = array(
                 'edit'                     => ($edit ? 'country_select' : ''),
                 'options'                  => get_countries($db),
                 'scope'                    => 'countries',
-                'value'                    => $object->get('Account Country Code'),
+                'value'                    => strtolower(country_3alpha_to_2alpha($object->get('Account Country Code'))),
                 'formatted_value'          => $object->get('Country Code'),
                 'stripped_formatted_value' => $object->get('Country Code'),
-                'label' => _('Country'),
+                'label'                    => _('Country'),
                 'required'                 => true,
                 'type'                     => 'value',
 
             ),
-            
-             array(
+
+            array(
                 'id'              => 'Account_Currency',
                 'edit'            => ($edit ? 'option' : ''),
                 'options'         => $options_currencies,
@@ -99,9 +95,9 @@ $object_fields = array(
                 'label'           => ucfirst($object->get_field_label('Account Currency')),
                 'type'            => 'value'
             ),
-            
-            
-              array(
+
+
+            array(
                 'id'              => 'Account_Timezone',
                 'edit'            => ($edit ? 'option' : ''),
                 'options'         => $options_timezones,
@@ -124,8 +120,7 @@ $object_fields = array(
                 ),
                 'type'            => 'value'
             ),
-            
-          
+
 
         )
     ),

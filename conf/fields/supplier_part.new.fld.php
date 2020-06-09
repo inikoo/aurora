@@ -626,9 +626,7 @@ $supplier_part_fields[] = array(
             'edit'                     => 'country_select',
             'options'                  => get_countries($db),
             'scope'                    => 'countries',
-            'value'                    => (($new ) ? $supplier->get(
-                'Supplier Products Origin Country Code'
-            ) : htmlspecialchars($part->get('Part Origin Country Code'))),
+            'value'                    => (($new ) ? strtolower(country_3alpha_to_2alpha($supplier->get('Supplier Products Origin Country Code'))) : strtolower(country_3alpha_to_2alpha($part->get('Part Origin Country Code')))),
             'formatted_value'          => $supplier->get('Products Origin Country Code'),
             'stripped_formatted_value' => (($new )
                 ? ($supplier->get('Part Origin Country Code') != '' ? $supplier->get('Origin Country').' ('.$supplier->get('Part Origin Country Code').')' : '')

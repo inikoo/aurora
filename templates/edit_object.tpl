@@ -370,9 +370,15 @@
                                     <span id="{$field.id}_msg" class="msg"></span>
                                     <span id="{$field.id}_info" class="hide"></span>
                                     <script>
+
+                                        console.log({$field.options})
+
                                         $.fn.countrySelect.setCountryData({$field.options});
-                                        $("#{$field.id}").countrySelect();
-                                        $("#{$field.id}").countrySelect("selectCountryfromCode", '{$field.value}');
+                                        $("#{$field.id}").countrySelect(
+                                            {
+                                                defaultCountry: '{$field.value}'
+                                            }
+                                        );
                                         $("#{$field.id}").on("change", function (event, arg) {
                                             on_changed_value('{$field.id}', $("#{$field.id}").countrySelect("getSelectedCountryData").code)
                                         })
