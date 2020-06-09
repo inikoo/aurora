@@ -55,7 +55,7 @@ function is_type($type, $value) {
 
 function prepare_values($data, $value_names) {
 
-    global $user;
+
     if (!is_array($data)) {
         exit(json_encode(
             array(
@@ -116,45 +116,7 @@ function prepare_values($data, $value_names) {
 
                 $parsed_data[$value_name] = $data[$value_name];
                 break;
-            case('json with html array'):
-                // I did this bacause inputing a &nbsp; dont work with the json array one
-                $tmp = $data[$value_name];
 
-
-                $raw_data = json_decode($tmp, true);
-                if (is_array($raw_data)) {
-                    if (!isset($extra_data['required elements'])) {
-                        $extra_data['required elements'] = array();
-                    }
-                    foreach (
-                        $extra_data['required elements'] as $element_name => $element_type
-                    ) {
-                        if (!isset($raw_data[$element_name]) or !is_type(
-                                $element_type, $raw_data[$element_name]
-                            )
-                        ) {
-                            exit(json_encode(
-                                array(
-                                    'state' => 400,
-                                    'msg'   => "Error wrong 5 value  $element_name  "
-                                )
-                            ));
-                        }
-                    }
-
-
-                    $parsed_data[$value_name] = $raw_data;
-                } else {
-                    exit(json_encode(
-                        array(
-                            'state' => 400,
-                            'msg'   => 'Error wrong value json'
-                        )
-                    ));
-                }
-
-
-                break;
             case('json array'):
 
                 $tmp = $data[$value_name];
@@ -204,9 +166,7 @@ function prepare_values($data, $value_names) {
 
     }
 
-    //$parsed_data['user']=$user;
+
     return $parsed_data;
 }
 
-
-?>
