@@ -15,8 +15,8 @@ function get_agent_parts_module() {
       'sections' => array(
           'parts' => array(
               'type'      => 'navigation',
-              'label'     => _("Parts"),
-              'icon'      => 'hand-receiving',
+              'label'     => _("Products"),
+              'icon'      => 'box',
               'reference' => 'agent_parts',
               'tabs'      => array(
                   'agent.parts' => array()
@@ -32,9 +32,7 @@ function get_agent_parts_module() {
 
 
                   'supplier_part.details' => array(
-                      'label' => _(
-                          'Data'
-                      ),
+                      'label' => _('Data'),
                       'icon'  => 'database'
                   ),
 

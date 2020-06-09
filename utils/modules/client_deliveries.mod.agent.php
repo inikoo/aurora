@@ -17,7 +17,7 @@ function get_agent_client_deliveries_module() {
                 'type'      => 'navigation',
                 'label'     => _("Deliveries"),
                 'icon'      => 'truck',
-                'reference' => 'delveries',
+                'reference' => 'agent_client_deliveries',
                 'tabs'      => array(
                     'agent.deliveries' => array()
                 )

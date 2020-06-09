@@ -22,8 +22,6 @@ function get_agent_client_orders_module() {
                     'agent.client_orders' => array()
                 )
             ),
-
-
             'client_order' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -57,7 +55,6 @@ function get_agent_client_orders_module() {
                 )
 
             ),
-
             'agent_supplier_order' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -87,7 +84,6 @@ function get_agent_client_orders_module() {
                 )
 
             ),
-
             'deleted_order' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -110,7 +106,6 @@ function get_agent_client_orders_module() {
                 )
 
             ),
-
 
         )
     );

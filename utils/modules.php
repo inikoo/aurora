@@ -89,6 +89,7 @@ function get_modules($user) {
             $modules['account'] = get_account_module();
             $modules['utils']   = get_utils_module();
             $modules['help']    = get_help_module();
+
             return $modules;
         case 'Supplier':
 
@@ -107,6 +108,7 @@ function get_modules($user) {
             $modules['agent_client_orders']     = get_agent_client_orders_module();
             $modules['agent_client_deliveries'] = get_agent_client_deliveries_module();
             $modules['agent_parts']             = get_agent_parts_module();
+            $modules['utils']                   = get_utils_module();
 
             return $modules;
             break;
@@ -119,9 +121,8 @@ function get_modules($user) {
 function get_sections($module, $parent_key = false) {
     global $modules;
 
-    $sections = array(
+    $sections = array();
 
-    );
 
 
     foreach ($modules[$module]['sections'] as $key => $value) {

@@ -17,7 +17,7 @@ function get_parts_navigation($data, $smarty, $user, $db, $account) {
     $left_buttons = array();
 
     $right_buttons = array();
-    $sections      = get_sections('agent_client_deliveries', '');
+    $sections      = get_sections('agent_parts', '');
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -47,7 +47,6 @@ function get_parts_navigation($data, $smarty, $user, $db, $account) {
 
 function get_deliveries_navigation($data, $smarty, $user, $db, $account) {
 
-    $block_view   = $data['section'];
     $left_buttons = array();
 
     $right_buttons = array();
@@ -817,8 +816,7 @@ function get_agent_client_order_navigation($data, $smarty, $user, $db, $account)
 
             }
 
-
-            $sections = get_sections('orders', $object->get('Order Store Key'));
+            $sections = get_sections('agent_client_orders', $object->get('Order Store Key'));
 
             $search_placeholder = _('Search orders');
 
