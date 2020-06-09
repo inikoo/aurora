@@ -16,9 +16,9 @@
     <thead>
     {if $order->get('Order State')=='InBasket'}
     <tr class="operations" >
-        <td colspan=2 class="text-left"><i class="hide fa fa-upload"></i></td>
 
-        <td colspan=2 class="text-right">
+
+        <td colspan=4 class="text-right">
 
 
             <div style="" class="add_item_form" >

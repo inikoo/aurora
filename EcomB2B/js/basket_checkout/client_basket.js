@@ -4,38 +4,34 @@
  Version 3.0*/
 
 
-
 var special_instructions_timeout
 
-$(document).on('input propertychange', "#special_instructions", function(ev){
+$(document).on('input propertychange', "#special_instructions", function (ev) {
 
 
     if (special_instructions_timeout) clearTimeout(special_instructions_timeout);
 
 
-    var value=$(this).val();
-    var order_key=$(this).data('order_key');
+    var value = $(this).val();
+    var order_key = $(this).data('order_key');
 
     special_instructions_timeout = setTimeout(function () {
 
         var ajaxData = new FormData();
 
         ajaxData.append("tipo", 'update_special_instructions');
-        ajaxData.append("value",value);
-        ajaxData.append("order_key",order_key);
+        ajaxData.append("value", value);
+        ajaxData.append("order_key", order_key);
 
         $.ajax({
-            url: "/ar_web_client_basket.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-            complete: function () {
+            url: "/ar_web_client_basket.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
             }, success: function (data) {
-
 
 
                 if (data.state == '200') {
 
                 } else if (data.state == '400') {
                 }
-
 
 
             }, error: function () {
@@ -46,156 +42,143 @@ $(document).on('input propertychange', "#special_instructions", function(ev){
     }, 400);
 
 
-
-
-
-
 });
 
 
-
+var previous_request_add_item_form, previous_timer_add_item_form;
 
 
 $(document).on('input propertychange', '.add_item_form', function (evt) {
+
+
     if ($(evt.target).hasClass('item')) {
-        var delay = 100;
-        delayed_on_change_add_item_field($(this), delay)
+
+        previous_request_add_item_form && previous_request_add_item_form.abort();
+        clearTimeout(previous_timer_add_item_form);
+
+        var delay = 250;
+        var element = $(this)
+
+        previous_timer_add_item_form = setTimeout(function () {
+
+
+            element.removeClass('invalid')
+
+
+            var form_data = new FormData();
+            form_data.append("tipo", 'find_product')
+            form_data.append("product_code", element.find('.item').val())
+
+            previous_request_add_item_form = $.ajax({
+
+                url: "/ar_web_find_product.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+            })
+
+            previous_request_add_item_form.done(function (data) {
+
+
+                if (data.state == 200) {
+
+                    if (data.number_results > 0) {
+
+                        var item_input = element.find('.item')
+                        var save_button = element.find('.add_item_save')
+                        var search_results_container = element.find('.search_results_container');
+
+                        item_input.removeClass('invalid')
+
+                        if (item_input.data('device') == 'Desktop') {
+                            search_results_container.removeClass('hide').addClass('show').offset({top: item_input.offset().top - 14, left: save_button.offset().left - search_results_container.width()})
+
+                        } else if (item_input.data('device') == 'Tablet') {
+                            search_results_container.removeClass('hide').addClass('show').offset({top: item_input.offset().top + 30, left: save_button.offset().left - search_results_container.width() + 20})
+
+                        } else if (item_input.data('device') == 'Mobile') {
+                            search_results_container.removeClass('hide').addClass('show').offset({top: item_input.offset().top + 30, left: save_button.offset().left - search_results_container.width() + 20})
+
+                        }
+
+
+                    } else {
+
+                        element.find('.search_results_container').addClass('hide').removeClass('show')
+
+                        if (element.find('.item').val() != '') {
+                            element.find('.item').addClass('invalid')
+                        } else {
+                            element.find('.item').removeClass('invalid')
+                        }
+
+                        element.find('.add_item_save').data('item_key', '')
+                        element.find('.add_item_save').data('item_historic_key', '')
+
+                        validate_add_item(element)
+
+                    }
+
+
+                    element.find(".add_item_results .result").remove();
+
+                    var first = true;
+
+                    for (var result_key in data.results) {
+
+
+                        var clone = element.find(".add_item_search_result_template").clone()
+
+                        clone.addClass(data.results[result_key].state)
+                        clone.prop('id', 'add_item_result_' + result_key);
+                        clone.addClass('result').removeClass('hide add_item_search_result_template')
+
+
+                        clone.data('item_key', data.results[result_key].value)
+                        clone.data('item_historic_key', data.results[result_key].item_historic_key)
+
+                        clone.data('formatted_value', data.results[result_key].formatted_value)
+                        if (first) {
+                            clone.addClass('selected')
+                            first = false
+                        }
+
+                        clone.children(".label").html(data.results[result_key].description)
+                        clone.children(".code").html(data.results[result_key].code)
+
+                        element.find(".add_item_results").append(clone)
+
+
+                    }
+
+
+                } else if (data.state == 400) {
+                    alert('error')
+
+                }
+
+            })
+
+
+        }, delay);
+
+
     } else {
         validate_add_item($(this).closest('.add_item_form'))
     }
 });
 
-function delayed_on_change_add_item_field(object, timeout) {
-    window.clearTimeout(object.data("timeout"));
-    object.data("timeout", setTimeout(function () {
-        get_items_select_for_add_item_to_order(object)
-    }, timeout));
-}
-
-
-function get_items_select_for_add_item_to_order(element) {
-
-    element.removeClass('invalid')
-
-
-    var form_data = new FormData();
-    form_data.append("tipo", 'find_product')
-    form_data.append("product_code", element.find('.item').val() )
-
-
-    var request = $.ajax({
-
-        url: "/ar_web_find_product.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
-
-    })
-
-    request.done(function (data) {
-
-
-        if (data.state == 200) {
-
-            if (data.number_results > 0) {
-
-                var item_input=element.find('.item')
-                var save_button=element.find('.add_item_save')
-                var search_results_container=element.find('.search_results_container');
-
-                item_input.removeClass('invalid')
-
-                if(item_input.data('device')=='Desktop'){
-                    search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top-14, left: save_button.offset().left-search_results_container.width()   })
-
-                }else if(item_input.data('device')=='Tablet'){
-                    search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top+30, left: save_button.offset().left-search_results_container.width()+20   })
-
-                }else if(item_input.data('device')=='Mobile'){
-                    search_results_container.removeClass('hide').addClass('show').offset({ top: item_input.offset().top+30, left: save_button.offset().left-search_results_container.width()+20   })
-
-                }
-
-
-
-            } else {
-
-                element.find('.search_results_container').addClass('hide').removeClass('show')
-
-                if (element.find('.item').val() != '') {
-                    element.find('.item').addClass('invalid')
-                } else {
-                    element.find('.item').removeClass('invalid')
-                }
-
-                element.find('.add_item_save').data('item_key', '')
-                element.find('.add_item_save').data('item_historic_key', '')
-
-                validate_add_item(element)
-
-            }
-
-
-            element.find(".add_item_results .result").remove();
-
-            var first = true;
-
-            for (var result_key in data.results) {
-
-
-
-                var clone = element.find(".add_item_search_result_template").clone()
-
-                clone.addClass(data.results[result_key].state)
-                clone.prop('id', 'add_item_result_' + result_key);
-                clone.addClass('result').removeClass('hide add_item_search_result_template')
-
-
-                clone.data('item_key', data.results[result_key].value)
-                clone.data('item_historic_key', data.results[result_key].item_historic_key)
-
-                clone.data('formatted_value', data.results[result_key].formatted_value)
-                if (first) {
-                    clone.addClass('selected')
-                    first = false
-                }
-
-                clone.children(".label").html(data.results[result_key].description)
-                clone.children(".code").html(data.results[result_key].code)
-
-                element.find(".add_item_results").append(clone)
-
-
-            }
-
-
-
-
-        } else if (data.state == 400) {
-            alert('error')
-
-        }
-
-    })
-
-
-
-}
 
 function select_add_item_option(element) {
 
-    if($(element).hasClass('out_of_stock')){
+    if ($(element).hasClass('out_of_stock')) {
         return;
     }
 
-    var form=$(element).closest('.add_item_form')
+    var form = $(element).closest('.add_item_form')
     form.find('.item').val($(element).data('formatted_value'))
     form.find('.add_item_save').data('item_key', $(element).data('item_key')).data('item_historic_key', $(element).data('item_historic_key'))
     form.find('.search_results_container').addClass('hide').removeClass('show')
 
-    form.find('.qty').trigger( "focus" )
+    form.find('.qty').trigger("focus")
     validate_add_item(form)
 }
 
@@ -203,9 +186,9 @@ function validate_add_item(form) {
 
 
     var invalid = false;
-    var input_qty=$(form).find('.qty')
-    var input_item=$(form).find('.item')
-    var save_button=$(form).find('.add_item_save')
+    var input_qty = $(form).find('.qty')
+    var input_item = $(form).find('.item')
+    var save_button = $(form).find('.add_item_save')
 
 
     if (input_qty.val() == '') {
@@ -244,18 +227,16 @@ function validate_add_item(form) {
 
 function save_add_item(save_button) {
 
-    if( !$(save_button).hasClass('valid')){
+    if (!$(save_button).hasClass('valid')) {
         return
     }
 
 
-
-    var form=$(save_button).closest('.add_item_form')
+    var form = $(save_button).closest('.add_item_form')
 
 
     $(save_button).addClass('fa-spinner fa-spin');
 
-    
 
     var form_data = new FormData();
 
@@ -274,12 +255,7 @@ function save_add_item(save_button) {
 
     var request = $.ajax({
 
-        url: "/ar_web_update_client_order_item.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_web_update_client_order_item.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
@@ -297,15 +273,12 @@ function save_add_item(save_button) {
             $(save_button).addClass('super_discreet').removeClass('invalid valid ')
 
 
-            var transaction_tr=$('.order_item_otf_'+data.otf_key)
+            var transaction_tr = $('.order_item_otf_' + data.otf_key)
             transaction_tr.find('.order_qty').val(data.quantity)
-            transaction_tr.find('.order_qty').attr('ovalue',data.quantity)
-
+            transaction_tr.find('.order_qty').attr('ovalue', data.quantity)
 
 
             post_save_change_item_in_basket(data)
-
-
 
 
         } else if (data.state == 400) {
@@ -328,34 +301,29 @@ function save_add_item(save_button) {
 }
 
 
+function web_toggle_selected_by_customer_charge(element) {
 
-function  web_toggle_selected_by_customer_charge(element){
 
-
-    if($(element).hasClass('wait')){
+    if ($(element).hasClass('wait')) {
         return;
     }
 
-    if($(element).hasClass('fa-toggle-on')){
-        var operation='remove_charge';
-    }else{
-        var operation='add_charge';
+    if ($(element).hasClass('fa-toggle-on')) {
+        var operation = 'remove_charge';
+    } else {
+        var operation = 'add_charge';
     }
 
 
     $(element).addClass('wait fa-spin fa-spinner').removeClass('fa-toggle-on fa-toggle-off')
 
 
-
     var ajaxData = new FormData();
 
-    ajaxData.append("tipo",'web_toggle_charge')
-    ajaxData.append("operation",operation)
+    ajaxData.append("tipo", 'web_toggle_charge')
+    ajaxData.append("operation", operation)
     ajaxData.append("charge_key", $(element).data('charge_key'))
-    ajaxData.append("order_key",$(element).data('order_key'));
-
-
-
+    ajaxData.append("order_key", $(element).data('order_key'));
 
 
     $.ajax({
@@ -363,28 +331,22 @@ function  web_toggle_selected_by_customer_charge(element){
         }, success: function (data) {
 
 
-
-
             $(element).removeClass('wait')
-
-
 
 
             if (data.state == '200') {
 
 
-                if(data.charges){
+                if (data.charges) {
                     $('.order_charges_container').removeClass('hide')
 
-                }else{
+                } else {
                     $('.order_charges_container').addClass('hide')
 
                 }
 
 
-
-
-                if(data.operation=='add_charge' ) {
+                if (data.operation == 'add_charge') {
                     $(element).addClass('fa-toggle-on').removeClass('fa-spinner fa-spin');
                     $(element).closest('tr').find('.selected_by_customer_charge').html(data.transaction_data.amount)
 
@@ -393,7 +355,7 @@ function  web_toggle_selected_by_customer_charge(element){
                     $('.priority_label').removeClass('hide')
 
 
-                }else{
+                } else {
 
                     $(element).addClass('fa-toggle-off').removeClass('fa-spinner fa-spin');
                     $(element).closest('tr').find('.selected_by_customer_charge').html('')
@@ -402,7 +364,6 @@ function  web_toggle_selected_by_customer_charge(element){
                     $('.priority_label').addClass('hide')
 
                 }
-
 
 
                 $('.Total_Amount').attr('amount', data.metadata.to_pay)
@@ -455,18 +416,16 @@ function  web_toggle_selected_by_customer_charge(element){
                 }
 
 
+            } else {
 
-            }
-            else {
-
-                swal("Error!",'', "error")
+                swal("Error!", '', "error")
 
 
                 $(element).removeClass('fa-spinner fa-spin');
 
-                if(operation=='remove_charge'){
+                if (operation == 'remove_charge') {
                     $(element).addClass('fa-toggle-on')
-                }else{
+                } else {
                     $(element).addClass('fa-toggle-off')
                 }
             }
@@ -475,15 +434,14 @@ function  web_toggle_selected_by_customer_charge(element){
         }, error: function () {
             $(element).removeClass('fa-spinner fa-spin');
 
-            if(operation=='remove_charge'){
+            if (operation == 'remove_charge') {
                 $(element).addClass('fa-toggle-on')
-            }else{
+            } else {
                 $(element).addClass('fa-toggle-off')
             }
 
         }
     });
-
 
 
 }
