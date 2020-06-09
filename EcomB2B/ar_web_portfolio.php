@@ -57,7 +57,7 @@ switch ($tipo) {
                      )
         );
 
-        add_product_to_portfolio($data, $db, $customer, $account);
+        add_product_to_portfolio($data, $db, $customer);
 
         break;
     case 'add_category_to_portfolio':
@@ -216,8 +216,8 @@ function portfolio_items($_data, $db) {
             }
 
             if ($data['Product Status'] == 'Discontinued') {
-                $stock_status='';
-                $status_icon = ' <i class="fa fa-skull discontinued" title="'._('Discontinued').'"></i>';
+                $stock_status = '';
+                $status_icon  = ' <i class="fa fa-skull discontinued" title="'._('Discontinued').'"></i>';
 
             } elseif ($data['Product Status'] == 'Discontinuing') {
                 $status_icon = ' <i class="far discontinuing  fa-skull" title="'._('Discontinuing').'"></i>';
@@ -229,32 +229,32 @@ function portfolio_items($_data, $db) {
             $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
             if ($data['Webpage URL'] == '') {
-                $code = sprintf('<span  class="%s"  title="%s">%s</span>', ($data['Product Status'] == 'Discontinued'?'strikethrough':''),  $name, $data['Product Code']);
+                $code = sprintf('<span  class="%s"  title="%s">%s</span>', ($data['Product Status'] == 'Discontinued' ? 'strikethrough' : ''), $name, $data['Product Code']);
 
             } else {
-                $code = sprintf('<a class="link %s " style="display: inline" href="%s" title="%s">%s</a>',  ($data['Product Status'] == 'Discontinued'?'strikethrough':''),$data['Webpage URL'], $name, $data['Product Code']);
+                $code = sprintf('<a class="link %s " style="display: inline" href="%s" title="%s">%s</a>', ($data['Product Status'] == 'Discontinued' ? 'strikethrough' : ''), $data['Webpage URL'], $name, $data['Product Code']);
 
             }
 
             if ($data['Customer Portfolio Reference'] == '') {
-                $reference = sprintf(
+                $reference        = sprintf(
                     '<span id="portfolio_ref_%d" class="table_inline_edit edit_object_reference_container  " data-object="Portfolio_Item"  data-object_key="%d"><span class="very_discreet italic like_button edit_object_reference">%s</span> <span class="editor hide">
 <input class="" data-old_value="" />  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Portfolio Key'], $data['Customer Portfolio Key'], _('Add reference')
                 );
-                $reference_mobile='';
+                $reference_mobile = '';
             } else {
-                $reference = sprintf(
+                $reference        = sprintf(
                     '<span id="portfolio_ref_%d" class="table_inline_edit edit_object_reference_container  "  data-object="Portfolio_Item"  data-object_key="%d"><span class="  like_button edit_object_reference">%s</span> <span class="editor hide">
 <input class="" data-old_value="%s" value="%s"/>  <i class="fa fa-fw fa-cloud save "></i> </span></span>  ', $data['Customer Portfolio Key'], $data['Customer Portfolio Key'], $data['Customer Portfolio Reference'], $data['Customer Portfolio Reference'],
                     $data['Customer Portfolio Reference']
                 );
-                $reference_mobile=' ('.$data['Customer Portfolio Reference'].')';
+                $reference_mobile = ' ('.$data['Customer Portfolio Reference'].')';
             }
 
 
             if ($data['Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/rwi/50x50_%d.%s" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Image Key'],$data['Image File Format']
+                    '<img src="/rwi/50x50_%d.%s" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Image Key'], $data['Image File Format']
                 );
             } else {
                 $image = 'x';
@@ -268,16 +268,16 @@ function portfolio_items($_data, $db) {
                 'name'         => $name,
                 'reference'    => $reference,
                 'stock_status' => $stock_status.$status_icon,
-                'image' => $image,
-                'description'=>$code.$status_icon.' '.$reference_mobile.'<br>'.$name.' <b>'.money($data['Product Price'], $data['Store Currency Code']).'</b>',
+                'image'        => $image,
+                'description'  => $code.$status_icon.' '.$reference_mobile.'<br>'.$name.' <b>'.money($data['Product Price'], $data['Store Currency Code']).'</b>',
                 'price'        => money($data['Product Price'], $data['Store Currency Code']),
                 'rrp'          => money($data['Product RRP'], $data['Store Currency Code']),
                 'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),
-                'amount' => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
-                'qty'        => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
-                'orders'     => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
-                'clients'    => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients'])),
-                'operations' => '<i class="far like_button fa-trash-alt" onclick="remove_item_from_portfolio(this,'.$data['Customer Portfolio Customer Key'].','.$data['Product ID'].')" ></i>'
+                'amount'       => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
+                'qty'          => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
+                'orders'       => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
+                'clients'      => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients'])),
+                'operations'   => '<i class="far like_button fa-trash-alt" onclick="remove_item_from_portfolio(this,'.$data['Customer Portfolio Customer Key'].','.$data['Product ID'].')" ></i>'
 
             );
 
@@ -427,9 +427,8 @@ function category_products($data, $db, $customer_key) {
  * @param $data     array
  * @param $db       \PDO
  * @param $customer \Public_Customer
- * @param $account  \Public_Account
  */
-function add_product_to_portfolio($data, $db, $customer, $account) {
+function add_product_to_portfolio($data, $db, $customer) {
 
     include_once 'utils/new_fork.php';
 
@@ -446,7 +445,7 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
     }
 
 
-    $sql  = "select `Customer Portfolio Key`,`Customer Portfolio Customers State` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? and `Customer Portfolio Customers State`='Active'";
+    $sql  = "select `Customer Portfolio Key`,`Customer Portfolio Customers State` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=?";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
@@ -456,16 +455,58 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
     );
     if ($row = $stmt->fetch()) {
 
-        $response = array(
-            'state'           => 200,
-            'result'          => 'no_change',
-            'msg'             => _('Product already in portfolio'),
-            'update_metadata' => [
-                'class_html' => []
-            ]
-        );
-        echo json_encode($response);
-        exit;
+
+        if ($row['Customer Portfolio Customers State'] == 'Active') {
+
+            $response = array(
+                'state'           => 200,
+                'result'          => 'no_change',
+                'msg'             => _('Product already in portfolio'),
+                'update_metadata' => [
+                    'class_html' => []
+                ]
+            );
+            echo json_encode($response);
+            exit;
+        } else {
+            $date = gmdate('Y-m-d H:i:s');
+            $sql  = "update  `Customer Portfolio Fact` set `Customer Portfolio Customers State`='Active'  where  `Customer Portfolio Key`=? ";
+            $db->prepare($sql)->execute(
+                array(
+                    $row['Customer Portfolio Key']
+                )
+            );
+
+            $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $row['Customer Portfolio Key'],
+                    'Add',
+                    $date
+
+                )
+            );
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'         => 'customer_portfolio_changed',
+                'customer_key' => $customer->id,
+            ), DNS_ACCOUNT_CODE
+            );
+
+
+            $response = array(
+                'state'           => 200,
+                'result'          => 'add',
+                'update_metadata' => [
+                    'class_html' => []
+                ]
+            );
+            echo json_encode($response);
+            exit;
+
+        }
 
 
     } else {
@@ -484,28 +525,27 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
             )
         );
         $customer_portfolio_key = $db->lastInsertId();
-        if(!$customer_portfolio_key){
-            throw new Exception('Error inserting customer_portfolio');
+        if ($customer_portfolio_key) {
+            $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $customer_portfolio_key,
+                    'Add',
+                    $date
+
+                )
+            );
+
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'         => 'customer_portfolio_changed',
+                'customer_key' => $customer->id,
+            ), DNS_ACCOUNT_CODE
+            );
         }
 
-        $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array(
-                $customer_portfolio_key,
-                'Add',
-                $date
-
-            )
-        );
-
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'         => 'customer_portfolio_changed',
-            'customer_key' => $customer->id,
-        ), $account->get('Account Code')
-        );
 
         $response = array(
             'state'           => 200,
@@ -664,33 +704,53 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
         $date = gmdate('Y-m-d H:i:s');
 
 
-        $sql  =
-            "INSERT INTO `Customer Portfolio Fact` (`Customer Portfolio Store Key`,`Customer Portfolio Customer Key`,`Customer Portfolio Product ID`,`Customer Portfolio Creation Date`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `Customer Portfolio Customers State`='Active'";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
+        $sql   = "select `Customer Portfolio Key`,`Customer Portfolio Customers State` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? and `Customer Portfolio Customers State`='Removed'  ";
+        $stmt2 = $db->prepare($sql);
+        $stmt2->execute(
             array(
-                $customer->get('Store Key'),
                 $customer->id,
                 $product_id,
-                $date
-
             )
         );
-        $customer_portfolio_key = $db->lastInsertId();
-        if(!$customer_portfolio_key){
-            throw new Exception('Error inserting customer_portfolio');
+        if ($row2 = $stmt2->fetch()) {
+            $sql = "update  `Customer Portfolio Fact` set `Customer Portfolio Customers State`='Active'  where  `Customer Portfolio Key`=? ";
+            $db->prepare($sql)->execute(
+                array(
+                    $row2['Customer Portfolio Key']
+                )
+            );
+
+        } else {
+
+
+            $sql  =
+                "INSERT INTO `Customer Portfolio Fact` (`Customer Portfolio Store Key`,`Customer Portfolio Customer Key`,`Customer Portfolio Product ID`,`Customer Portfolio Creation Date`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `Customer Portfolio Customers State`='Active'";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $customer->get('Store Key'),
+                    $customer->id,
+                    $product_id,
+                    $date
+
+                )
+            );
+            $customer_portfolio_key = $db->lastInsertId();
+            if ($customer_portfolio_key) {
+                $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
+                $stmt = $db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $customer_portfolio_key,
+                        'Add',
+                        $date
+
+                    )
+                );
+            }
+
+
         }
-
-        $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array(
-                $customer_portfolio_key,
-                'Add',
-                $date
-
-            )
-        );
 
 
     }
