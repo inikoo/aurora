@@ -178,7 +178,7 @@ function fork_export_from_elastic_search($job) {
 
 
     }
- 
+
     $row_index++;
     $show_feedback = (float)microtime(true) + .250;
 
