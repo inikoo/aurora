@@ -189,7 +189,7 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
 
             $row['qty'] = $qty;
-            if ($carton > 1 and fmod($_qty, $carton) == 0) {
+            if (   $qty>0 and $carton > 1 and fmod($_qty, $carton) == 0) {
                 $row['qty'] .= '<div style="font-style: italic;">('.number($qty / $carton).'c)</div>';
             }
 
