@@ -717,7 +717,7 @@ function stock_history_day($_data, $db, $user, $account) {
     $results = get_elastic_stock_history_day($_data);
 
 
-    list($rtext, $total, $filtered) = get_table_totals(
+    $table_totals_data = get_table_totals(
         $db, false, '', $rtext_label, [
                'filtered'      => 0,
                'total_records' => $results['total']['value'],
@@ -725,6 +725,8 @@ function stock_history_day($_data, $db, $user, $account) {
            ]
     );
 
+    $rtext=$table_totals_data[0];
+    $total=$table_totals_data[1];
 
     $record_data = array();
 
@@ -765,89 +767,6 @@ function stock_history_day($_data, $db, $user, $account) {
             'rtext'         => $rtext,
             'sort_key'      => 'Date',
             'sort_dir'      => $order_direction,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-
-function stock_history_day_old($_data, $db, $user, $account) {
-
-
-    $rtext_label = 'part';
-
-    include_once 'prepare_table/init.php';
-
-    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-
-
-    $_datagms_1_year_back = gmdate('U', strtotime($parameters['parent_key'].' - 1 year'));
-
-
-    $record_data = array();
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-
-            if (gmdate('U', strtotime($data['Part Valid From'])) > $_datagms_1_year_back) {
-
-                $no_sales_1_year       = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
-                $stock_left_1_year_ago = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
-
-
-            } else {
-                switch ($data['no_sales_1_year']) {
-                    case 'Yes':
-                        $no_sales_1_year = '<span class="error"><i class="fa fa-snooze"></i></span>';
-                        break;
-                    case 'No':
-                        $no_sales_1_year = '<span class="success"><i class="fa fa-check"></i></span>';
-                        break;
-                    case '':
-                        $no_sales_1_year = '<span class="error"><i class="fa fa-question"></i></span>';
-                        break;
-                    default:
-                        $no_sales_1_year = $data['no_sales_1_year'];
-                }
-                $stock_left_1_year_ago = ($data['stock_left_1_year_ago'] == '' ? '' : number($data['stock_left_1_year_ago']));
-            }
-
-
-            $record_data[] = array(
-                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-
-                'description' => $data['Part Package Description'],
-
-                'stock'                 => number($data['stock']),
-                'stock_value'           => money($data['stock_value'], $account->get('Currency Code')),
-                'cost'                  => money($data['cost'], $account->get('Currency Code')),
-                'in'                    => number($data['book_in']),
-                'sold'                  => number($data['sold']),
-                'lost'                  => number($data['lost']),
-                'given'                 => number($data['given']),
-                'stock_left_1_year_ago' => $stock_left_1_year_ago,
-                'no_sales_1_year'       => $no_sales_1_year
-            );
-
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $record_data,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
             'total_records' => $total
 
         )

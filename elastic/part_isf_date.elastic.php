@@ -22,23 +22,23 @@ function get_elastic_stock_history_day($_data) {
 
     $params = [
         'index' => strtolower('au_part_isf_'.strtolower(DNS_ACCOUNT_CODE)),
-
-        'body' => [
-            "sort" => [
-                [
-                    $_data['o'] => [
-                        "order" => $_data['od']
-                    ]
-                ]
-            ],
-
-
-        ],
-
-
-        'from' => $_data['nr'] * ($_data['page'] - 1),
-        'size' => $_data['nr']
     ];
+
+
+    if(isset($_data['o']) and isset($_data['od'])){
+        $params['body']['sort']=[
+            [
+                $_data['o'] => [
+                    "order" => $_data['od']
+                ]
+            ]
+        ];
+    }
+
+    if(isset($_data['nr']) and isset($_data['page'])){
+        $params['from']= $_data['nr'] * ($_data['page'] - 1);
+        $params['size']= $_data['nr'];
+    }
 
 
     $params['body']['query'] = [

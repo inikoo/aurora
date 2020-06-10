@@ -25,8 +25,6 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
-
-
 $_data = prepare_values(
     $_REQUEST, array(
                  'state'      => array('type' => 'json array'),
@@ -44,10 +42,65 @@ $_data['page']         = 1;
 
 $_data['type'] = strtolower($_data['type']);
 
+
 include 'conf/export_fields.php';
 
+if ($_data['type'] == 'excel') {
+    $output = 'xls';
+} else {
+    $output = $_export_data['type'];
+}
 
-if ($_data['tipo'] == 'timeserie_records') {
+
+if ($_data['tipo'] == 'stock.history.day') {
+
+
+    $_sql = "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Creator Key`) VALUES (?,?,?) ";
+
+    $db->prepare($_sql)->execute(
+        array(
+            gmdate('Y-m-d H:i:s'),
+            'inventory_stock_history_day',
+            $user->id
+        )
+    );
+
+
+    $download_key = $db->lastInsertId();
+
+    unset($_data['parameters']['view']);
+    unset($_data['parameters']['rpp_options']);
+
+    $export_data = array(
+        'tipo'         => 'ISH_day',
+        'download_key' => $download_key,
+        'output'       => $output,
+        'ws_key'       => 'real_time.'.strtolower(DNS_ACCOUNT_CODE).'.'.$user->id,
+        'parameters'   => $_data['parameters'],
+
+        'fields'    => $_data['fields'],
+        'field_set' => get_export_fields('inventory_stock_history_day'),
+    );
+
+
+    new_housekeeping_fork(
+        'au_export_from_elastic_search', $export_data, DNS_ACCOUNT_CODE
+    );
+
+
+    $response = array(
+        'state'        => 200,
+        'download_key' => $download_key,
+        'txt'          => '<i class="fa background fa-spinner fa-spin"></i> '._('Queued').'</span>',
+
+        'type' => $_data['type'],
+        'tipo' => $_data['tipo']
+    );
+    echo json_encode($response);
+    exit;
+
+
+} elseif ($_data['tipo'] == 'timeserie_records') {
 
     include_once 'class.Timeserie.php';
     $timeseries = new Timeseries($_data['parameters']['parent_key']);
@@ -97,9 +150,9 @@ if ($_data['tipo'] == 'timeserie_records') {
         $_tipo = $_data['tipo'];
     }
 
-    $export_fields=get_export_fields($_tipo);
+    $export_fields = get_export_fields($_tipo);
 
-    if (count($export_fields)==0) {
+    if (count($export_fields) == 0) {
         $response = array(
             'state' => 405,
             'resp'  => 'field set not found: '.$_tipo
@@ -141,13 +194,6 @@ if ($fields == '') {
 $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
 
 
-if ($_export_data['type'] == 'excel') {
-    $output = 'xls';
-} else {
-    $output = $_export_data['type'];
-}
-
-
 if ($_export_data['tipo'] == 'products') {
 
     $placeholders = array(
@@ -175,7 +221,7 @@ $export_data = array(
     'table'        => $_export_data['tipo'],
     'download_key' => $download_key,
     'output'       => $output,
-    'ws_key'     => 'real_time.'.strtolower(DNS_ACCOUNT_CODE).'.'.$user->id,
+    'ws_key'       => 'real_time.'.strtolower(DNS_ACCOUNT_CODE).'.'.$user->id,
     'sql_count'    => $sql_totals,
     'sql_data'     => $sql,
     'fetch_type'   => 'simple',

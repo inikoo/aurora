@@ -1959,37 +1959,37 @@ function get_export_fields($element, $account_currency_code = '') {
 
         'inventory_stock_history_day' => array(
             array(
-                'name'    => '`Part Reference`',
+                'name'    => 'part_reference',
                 'label'   => _('Part'),
                 'checked' => 1
             ),
             array(
-                'name'    => '`Part Package Description`',
+                'name'    => 'part_description',
                 'label'   => _('Part SKO description'),
                 'checked' => 0
             ),
             array(
-                'name'    => 'inventory_stock_history_day_stock',
+                'name'    => 'stock_on_hand',
                 'label'   => _('Stock'),
                 'checked' => 1
             ),
             array(
-                'name'    => 'inventory_stock_history_day_stock_value',
+                'name'    => 'stock_cost',
                 'label'   => _('Stock value'),
                 'checked' => 1
             ),
             array(
-                'name'    => '`Inventory Spanshot Warehouse SKO Value`',
+                'name'    => 'sko_cost',
                 'label'   => _('SKO value'),
                 'checked' => 1
             ),
             array(
-                'name'    => '`Dormant 1 Year`',
+                'name'    => 'no_sales_1_year',
                 'label'   => _('Dormant (No sales 1 year)'),
                 'checked' => 1
             ),
             array(
-                'name'    => '`Inventory Spanshot Stock Left 1 Year Ago`',
+                'name'    => 'stock_left_1_year_ago',
                 'label'   => _('Stock older than 1 year'),
                 'checked' => 1
             ),
