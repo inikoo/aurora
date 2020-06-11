@@ -528,13 +528,16 @@ class Supplier extends SubjectSupplier {
             case 'unlink agent':
 
 
-                include_once 'class.Agent.php';
-                $agent = new Agent($value);
+                $agent = get_object('Agent',$value);
 
-                $sql = sprintf(
-                    'DELETE FROM `Agent Supplier Bridge` WHERE `Agent Supplier Agent Key`=%d AND `Agent Supplier Supplier Key`=%d', $value, $this->id
+                $sql = "DELETE FROM `Agent Supplier Bridge` WHERE `Agent Supplier Agent Key`=? AND `Agent Supplier Supplier Key`=?";
+
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $value, $this->id
+                    )
                 );
-                $this->db->exec($sql);
+
 
                 $this->update_type('Free', 'no_history');
                 $agent->update_supplier_parts();
@@ -549,6 +552,52 @@ class Supplier extends SubjectSupplier {
 
                 $this->add_subject_history(
                     $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
+
+                break;
+            case 'Supplier Purchase Order Type':
+
+
+                $this->update_field($field, $value, $options);
+
+                if ($value == 'International') {
+                    $this->other_fields_updated = array(
+                        'Supplier_Default_Incoterm' => array(
+                            'field'  => 'Supplier_Default_Incoterm',
+                            'render' => true,
+                        ),'Supplier_Default_Port_of_Export' => array(
+                            'field'  => 'Supplier_Default_Port_of_Export',
+                            'render' => true,
+                        ),'Supplier_Default_Port_of_Import' => array(
+                            'field'  => 'Supplier_Default_Port_of_Import',
+                            'render' => true,
+                        ),
+                    );
+                    $hide=[];
+                    $show=['import_settings_tr'];
+
+                } else {
+                    $this->other_fields_updated = array(
+                        'Supplier_Default_Incoterm' => array(
+                            'field'  => 'Supplier_Default_Incoterm',
+                            'render' => false,
+                        ),'Supplier_Default_Port_of_Export' => array(
+                            'field'  => 'Supplier_Default_Port_of_Export',
+                            'render' => false,
+                        ),'Supplier_Default_Port_of_Import' => array(
+                            'field'  => 'Supplier_Default_Port_of_Import',
+                            'render' => false,
+                        ),
+
+                    );
+                    $hide=['import_settings_tr'];
+                    $show=[];
+                }
+
+
+                $this->update_metadata = array(
+                    'hide'       => $hide,
+                    'show'       => $show
                 );
 
                 break;
@@ -591,13 +640,13 @@ class Supplier extends SubjectSupplier {
             case 'Supplier cooling order interval days':
             case 'Supplier minimum order amount':
 
-                return $this->metadata(preg_replace('/\s/','_',preg_replace('/^Supplier /', '', $key)));
+                return $this->metadata(preg_replace('/\s/', '_', preg_replace('/^Supplier /', '', $key)));
                 break;
             case 'minimum order amount':
 
-                $_value=$this->metadata(preg_replace('/\s/','_',$key));
-                if(is_numeric($_value)){
-                    return money($_value,$this->data['Supplier Default Currency Code']);
+                $_value = $this->metadata(preg_replace('/\s/', '_', $key));
+                if (is_numeric($_value)) {
+                    return money($_value, $this->data['Supplier Default Currency Code']);
 
                 }
 
@@ -605,10 +654,9 @@ class Supplier extends SubjectSupplier {
             case 'cooling order interval days':
 
 
-
-                $_value=$this->metadata(preg_replace('/\s/','_',$key));
-                if(is_numeric($_value)){
-                    return number($_value,$this->data['Supplier Default Currency Code']);
+                $_value = $this->metadata(preg_replace('/\s/', '_', $key));
+                if (is_numeric($_value)) {
+                    return number($_value, $this->data['Supplier Default Currency Code']);
 
                 }
 
@@ -1520,40 +1568,6 @@ class Supplier extends SubjectSupplier {
 
     }
 
-    function get_part_family_keys() {
-
-
-        $part_family_keys = '';
-
-
-        $sql = sprintf(
-            'SELECT `Part Family Category Key` FROM `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) WHERE `Supplier Part Supplier Key`=%d group by `Part Family Category Key` ', $this->id
-        );
-
-
-        //  print "$sql\n";
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if (is_numeric($row['Part Family Category Key']) and $row['Part Family Category Key'] > 0) {
-                    $part_family_keys .= $row['Part Family Category Key'].',';
-
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-        $part_family_keys = preg_replace('/\,$/', '', $part_family_keys);
-
-
-        return $part_family_keys;
-
-    }
-
-
     function get_categories($scope = 'keys') {
 
         if ($scope == 'objects') {
@@ -1595,7 +1609,9 @@ class Supplier extends SubjectSupplier {
 
 
         switch ($field) {
-
+            case 'Supplier Purchase Order Type':
+                $label = _('purchase type');
+                break;
             case 'Supplier Code':
                 $label = _('code');
                 break;
@@ -1734,13 +1750,12 @@ class Supplier extends SubjectSupplier {
 
     }
 
-
     /**
      * @param string $scope
      *
      * @return array
      */
-    public function get_agents($scope='keys'){
+    public function get_agents($scope = 'keys') {
 
         $agents_data = array();
         $sql         = sprintf(
@@ -1749,17 +1764,17 @@ class Supplier extends SubjectSupplier {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                if($scope=='data'){
+                if ($scope == 'data') {
                     $agents_data[$row['Agent Key']] = array(
                         'Agent Key'  => $row['Agent Key'],
                         'Agent Code' => $row['Agent Code'],
                         'Agent Name' => $row['Agent Name'],
 
                     );
-                }elseif($scope=='objects'){
-                    $agents_data[$row['Agent Key']] =get_object('Agent',$row['Agent Key']);
-                }else{
-                    $agents_data[$row['Agent Key']] =$row['Agent Key'];
+                } elseif ($scope == 'objects') {
+                    $agents_data[$row['Agent Key']] = get_object('Agent', $row['Agent Key']);
+                } else {
+                    $agents_data[$row['Agent Key']] = $row['Agent Key'];
                 }
 
 
@@ -1769,8 +1784,6 @@ class Supplier extends SubjectSupplier {
         return $agents_data;
 
     }
-
-
 
     function archive() {
 
@@ -1791,7 +1804,6 @@ class Supplier extends SubjectSupplier {
 
 
     }
-
 
     function unarchive() {
 
@@ -1888,29 +1900,6 @@ class Supplier extends SubjectSupplier {
 
     }
 
-    /*
-
-    function update_timseries_date($date) {
-        include_once 'class.Timeserie.php';
-        $sql = sprintf(
-            'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Supplier" AND `Timeseries Parent Key`=%d ', $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $timeseries = new Timeseries($row['Timeseries Key']);
-                $this->update_timeseries_record($timeseries, $date, $date);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-    */
-
     function create_timeseries($data, $fork_key = 0) {
 
 
@@ -1981,6 +1970,29 @@ class Supplier extends SubjectSupplier {
         }
 
     }
+
+    /*
+
+    function update_timseries_date($date) {
+        include_once 'class.Timeserie.php';
+        $sql = sprintf(
+            'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Supplier" AND `Timeseries Parent Key`=%d ', $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $timeseries = new Timeseries($row['Timeseries Key']);
+                $this->update_timeseries_record($timeseries, $date, $date);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+    }
+    */
 
     function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
@@ -2215,6 +2227,39 @@ class Supplier extends SubjectSupplier {
             $this->db->exec($sql);
 
         }
+
+    }
+
+    function get_part_family_keys() {
+
+
+        $part_family_keys = '';
+
+
+        $sql = sprintf(
+            'SELECT `Part Family Category Key` FROM `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) WHERE `Supplier Part Supplier Key`=%d group by `Part Family Category Key` ', $this->id
+        );
+
+
+        //  print "$sql\n";
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if (is_numeric($row['Part Family Category Key']) and $row['Part Family Category Key'] > 0) {
+                    $part_family_keys .= $row['Part Family Category Key'].',';
+
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+        $part_family_keys = preg_replace('/\,$/', '', $part_family_keys);
+
+
+        return $part_family_keys;
 
     }
 

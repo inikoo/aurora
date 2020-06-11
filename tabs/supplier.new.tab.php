@@ -69,9 +69,6 @@ $smarty->assign('object_name', $supplier->get_object_name());
 
 $smarty->assign('object_fields', $object_fields);
 
-//$smarty->assign('default_country', $account->get('Account Country 2 Alpha Code'));
-//$smarty->assign('preferred_countries', '"'.join('", "', preferred_countries($account->get('Account Country 2 Alpha Code'))).'"');
-
 $smarty->assign(
     'js_code', 'js/injections/supplier_new.'.(_DEVEL ? '' : 'min.').'js'
 );
@@ -79,4 +76,4 @@ $smarty->assign(
 
 $html = $smarty->fetch('new_object.tpl');
 
-?>
+

@@ -586,7 +586,6 @@ function on_changed_value(field, new_value) {
 
     var validation = validate(field, new_value)
 
-
     process_validation(validation, field, false)
 
 
@@ -1394,12 +1393,8 @@ function update_field(data) {
 
 
     var field = data.field
-    var type = $('#' + field + '_container').attr('c')
-    console.log(data)
+    var type = $('#' + field + '_container').attr('field_type')
 
-
-    //console.log(data.render)
-    console.log(field)
 
     if (data.render) {
         $('#' + field + '_field').removeClass('hide')
@@ -1463,7 +1458,7 @@ function update_field(data) {
     }
 
 
-    console.log(type)
+
 
     if (data.value != undefined) {
 
@@ -2505,7 +2500,7 @@ function launch_website(element){
         return;
     }
 
-
+    var referer=$(element).data('referer')
 
     $(element).addClass('wait')
     $(element).find('i').addClass('fa-spinner fa-spin').removeClass('fa-rocket')
@@ -2527,10 +2522,17 @@ function launch_website(element){
         }, success: function (data) {
 
             if (data.state == '200') {
-                $('.website_status_icon').removeClass('discreet').addClass('success')
 
-                $('#launch_webpage_field').addClass('hide')
-                $('.launch_website_header').addClass('hide')
+                if(referer!=''){
+                    change_view(referer);
+                }else{
+                    $('.website_status_icon').removeClass('discreet').addClass('success')
+
+                    $('#launch_webpage_field').addClass('hide')
+                    $('.launch_website_header').addClass('hide')
+                }
+
+
 
 
             } else if (data.state == '400') {

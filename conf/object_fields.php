@@ -454,7 +454,13 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     include 'fields/agent_supplier.fld.php';
 
                 } else {
-                    include 'fields/supplier.fld.php';
+                    if (isset($options['new']) and $options['new'] ) {
+                        include 'fields/supplier.new.fld.php';
+                    }else{
+                        include 'fields/supplier.fld.php';
+                    }
+
+
 
                 }
 

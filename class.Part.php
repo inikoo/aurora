@@ -1861,8 +1861,6 @@ class Part extends Asset {
                     ),
                     'hide'       => $hide,
                     'show'       => $show
-
-
                 );
 
 
@@ -4412,7 +4410,7 @@ class Part extends Asset {
                 $label = _('Unit description');
                 break;
             case 'Part Production Supply':
-                $label = _('used in production');
+                $label = _('raw material');
                 break;
             case 'Part Carton Barcode':
                 $label = _('carton barcode');

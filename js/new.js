@@ -179,8 +179,11 @@ function process_form_validation(validation, submitting) {
 
 function post_process_form_validation(){
 
+
     if($('#fields').attr('Object')=='Customers_List'){
         post_process_new_customer_list_form_validation()
+    }else if($('#fields').attr('Object')=='Supplier'){
+        post_process_new_supplier_form_validation()
     }
 
 
