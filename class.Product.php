@@ -276,9 +276,18 @@ class Product extends Asset {
                 return $price;
             case 'Cost':
                 $account=get_object('Account',1);
-                return money(
-                    $this->data['Product Cost'] , $account->get('Account Currency')
-                );
+                $cost= money($this->data['Product Cost'] , $account->get('Account Currency'));
+
+                if ($this->data['Product Units Per Case'] != 1 and $this->data['Product Units Per Case'] > 0) {
+
+                    $cost .= ' ('.money(
+                            $this->data['Product Cost'] / $this->data['Product Units Per Case'], $account->get('Account Currency')
+                        ).'/'.$this->data['Product Unit Label'].')';
+
+
+                }
+
+                return $cost;
             case 'Unit Price':
                 return money(
                     $this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
