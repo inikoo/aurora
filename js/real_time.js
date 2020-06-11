@@ -183,13 +183,8 @@ function connect_websocket() {
             }
 
 
-
             if(_data.id_html!=undefined){
                 for (var i in _data.id_html){
-
-            console.log(i)
-                    console.log( _data.id_html)
-
                     $('#' + i).html(_data.id_html[i])
                 }
             }

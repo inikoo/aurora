@@ -118,8 +118,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                  )
     );
 
-    //print_r($data);
-
 
     $old_weblocation = (isset($data['old_state']['module']) ? $data['old_state']['module'] : '').'|'.(isset($data['old_state']['section']) ? $data['old_state']['section'] : '');
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
@@ -162,6 +160,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         $store = get_object('Store', $state['store_key']);
     }
 
+
     switch ($state['parent']) {
 
         case 'store':
@@ -190,7 +189,31 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             $store                  = $_parent;
 
             if ($state['object'] == 'website' and $state['key'] == '') {
+
+
                 $state['key'] = $store->get('Store Website Key');
+                if (!$state['key']) {
+
+
+                    $state = array(
+                        'old_state'  => $state,
+                        'module'     => 'utils',
+                        'section'    => 'not_found',
+                        'tab'        => 'not_found',
+                        'subtab'     => '',
+                        'parent'     => 'store',
+                        'parent_key' => $store->id,
+                        'object'     => 'website',
+                        'store'      => $store,
+                        'website'    => '',
+                        'warehouse'  => '',
+                        'key'        => '',
+                        'request'    => $state['request']
+                    );
+
+
+                }
+
             }
 
 
@@ -209,7 +232,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             break;
         case 'website':
-
 
             $_parent = get_object('Website', $state['parent_key']);
             $website = $_parent;
@@ -476,7 +498,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         }
 
 
-        if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
+
+
+        if ($state['object'] == 'website' and !( $state['tab'] == 'website.new' or  $state['tab'] == 'not_found'  ) ) {
 
 
             $store = get_object('Store', $_object->get('Website Store Key'));
@@ -1328,7 +1352,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             json_encode(
                 array(
                     'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                    'iu' => $real_time_users,
+                    'iu'      => $real_time_users,
                 )
             )
         );
@@ -1386,11 +1410,11 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
 
     //cleaning mess can removed later
-    if(!is_string($tab) ){
-        $tab='';
+    if (!is_string($tab)) {
+        $tab = '';
     }
-    if(!is_string($subtab) ){
-        $subtab='';
+    if (!is_string($subtab)) {
+        $subtab = '';
     }
     //=================
 
@@ -1434,12 +1458,12 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
         if (!empty($_subtab)) {
 
 
-            if(isset($_SESSION['tab_state'])) {
-                $tmp        = $_SESSION['tab_state'];
-                $tmp[$_tab] = $_subtab;
+            if (isset($_SESSION['tab_state'])) {
+                $tmp                   = $_SESSION['tab_state'];
+                $tmp[$_tab]            = $_subtab;
                 $_SESSION['tab_state'] = $tmp;
-            }else{
-                $_SESSION['tab_state'][$_tab]=$_subtab;
+            } else {
+                $_SESSION['tab_state'][$_tab] = $_subtab;
             }
 
         }
@@ -3689,8 +3713,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
 
     //cleaning mess can removed later
-    if(empty($data['subtab']) or !is_string($data['subtab']) ){
-        $data['subtab']='';
+    if (empty($data['subtab']) or !is_string($data['subtab'])) {
+        $data['subtab'] = '';
     }
     //=================
 

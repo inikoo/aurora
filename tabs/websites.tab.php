@@ -15,7 +15,6 @@ $ar_file = 'ar_websites_tables.php';
 $tipo    = 'websites';
 
 
-
 if($account->get('Account Stores')==0){
 
     $html='<div style="padding:20px">'.sprintf(_('There are not stores, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
