@@ -274,7 +274,11 @@ class Product extends Asset {
 
 
                 return $price;
-
+            case 'Cost':
+                $account=get_object('Account',1);
+                return money(
+                    $this->data['Product Cost'] , $account->get('Account Currency')
+                );
             case 'Unit Price':
                 return money(
                     $this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
@@ -3622,10 +3626,14 @@ class Product extends Asset {
 
         $this->update_weight();
         $this->update_part_numbers();
+        $this->update_cost();
 
         $this->update_metadata = array(
             'class_html' => array(
                 'Package_Weight' => $this->get('Package Weight'),
+                'Product_Cost' => $this->get('Cost'),
+                'Product_Price' => $this->get('Price'),
+
             )
 
         );
@@ -3703,6 +3711,9 @@ class Product extends Asset {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
         }
+
+
+
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(

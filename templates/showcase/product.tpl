@@ -205,6 +205,10 @@
 
             <table class="overview" >
                 <tr class="main">
+                    <td>{t}Cost{/t}</td>
+                    <td class="aright  Product_Cost">{$product->get('Cost')} </td>
+                </tr>
+                <tr class="main">
                     <td>{t}Price{/t}</td>
                     <td class="aright  Product_Price">{$product->get('Price')} </td>
                 </tr>
