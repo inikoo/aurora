@@ -62,8 +62,7 @@ function connect_websocket() {
 
                     for (var j in data.objects[i].update_metadata.class_html) {
 
-                        console.log('.' + j)
-                        console.log(data.objects[i].update_metadata.class_html[j])
+
 
                         $('.' + j).html(data.objects[i].update_metadata.class_html[j])
                     }
@@ -174,6 +173,25 @@ function connect_websocket() {
 
                 }
 
+            }
+
+
+            if(_data.class_html!=undefined){
+                for (var i in _data.class_html){
+                    $('.' + i).html(_data.class_html[i])
+                }
+            }
+
+
+
+            if(_data.id_html!=undefined){
+                for (var i in _data.id_html){
+
+            console.log(i)
+                    console.log( _data.id_html)
+
+                    $('#' + i).html(_data.id_html[i])
+                }
             }
 
 

@@ -124,13 +124,10 @@ class Barcode extends DB_Table {
                 $this->get_data('id', $this->found_key);
                 $this->duplicated_field = 'Barcode Number';
 
-$this->msg=_('Barcode already in the system');
+                $this->msg = _('Barcode already in the system');
 
                 return;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -176,9 +173,6 @@ $this->msg=_('Barcode already in the system');
         }
 
 
-
-
-
         if ($base_data['Barcode Type'] == 'EAN') {
 
 
@@ -190,8 +184,7 @@ $this->msg=_('Barcode already in the system');
 
                 if ($this->get_check_digit(
                         $base_data['Barcode Type'], substr($base_data['Barcode Number'], 0, 12)
-                    ) != substr($base_data['Barcode Number'], -1)
-                ) {
+                    ) != substr($base_data['Barcode Number'], -1)) {
 
                     $this->error = true;
                     $this->msg   = _('Barcode check digit error');
@@ -245,17 +238,18 @@ $this->msg=_('Barcode already in the system');
             // try to find orphans barcodes
 
 
-            $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Barcode Number`=%s and  (`Part Barcode Key`=0 or `Part Barcode Key` is null) ',
+            $sql = sprintf(
+                'select `Part SKU` from `Part Dimension` where `Part Barcode Number`=%s and  (`Part Barcode Key`=0 or `Part Barcode Key` is null) ',
 
-                         $this->get('Barcode Number')
+                $this->get('Barcode Number')
 
-                         );
-            if ($result=$this->db->query($sql)) {
+            );
+            if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
 
                     include_once 'class.Part.php';
 
-                    $part=new Part($row['Part SKU']);
+                    $part = new Part($row['Part SKU']);
 
                     $asset_data = array(
                         'Barcode Asset Type'          => 'Part',
@@ -266,13 +260,11 @@ $this->msg=_('Barcode already in the system');
                     $this->assign_asset_to_barcode($asset_data);
 
                 }
-            }else {
-            	print_r($error_info=$this->db->errorInfo());
-            	print "$sql\n";
-            	exit;
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
-
 
 
             return;
@@ -281,142 +273,6 @@ $this->msg=_('Barcode already in the system');
             print $sql;
             exit;
         }
-    }
-
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-        if ($this->deleted) {
-            return;
-        }
-
-        switch ($field) {
-            default:
-                $base_data = $this->base_data();
-                if (array_key_exists($field, $base_data)) {
-                    if ($value != $this->data[$field]) {
-                        $this->update_field($field, $value, $options);
-                    }
-                }
-        }
-    }
-
-
-    function assign_asset_to_barcode($asset_data) {
-
-        $this->new_assigned_asset = false;
-
-        $asset_data['Barcode Asset Barcode Key'] = $this->id;
-
-        if (!array_key_exists('Barcode Asset Assigned Date', $asset_data) or $asset_data['Barcode Asset Assigned Date'] == '') {
-            $asset_data['Barcode Asset Assigned Date'] = gmdate('Y-m-d H:i:s');
-        }
-
-
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($asset_data as $key => $value) {
-            $keys .= "`$key`,";
-            $values .= prepare_mysql($value).",";
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Barcode Asset Bridge` %s %s", $keys, $values
-        );
-
-
-
-        if ($this->db->exec($sql)) {
-
-            $this->msg                = _("Barcode assigned to asset");
-            $this->new_assigned_asset = true;
-
-            $this->update_status();
-
-
-
-
-            if ($asset_data['Barcode Asset Type'] == 'Part') {
-                $asset       = get_object($asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']);
-                $asset_label = sprintf(
-                    '<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $asset->get('Part SKU'), $asset->get('Part Reference')
-                );
-
-
-
-
-                $asset->update(
-                    array(
-                        'Part Barcode Number' => $this->get('Barcode Number'),
-                        'Part Barcode Key'    => $this->id
-                    ), 'no_history'
-                );
-
-
-            } else {
-                $asset_label = 'asset';
-            }
-
-            $history_data = array(
-                'History Abstract' => sprintf(_('%s associated'), $asset_label),
-                'History Details'  => '',
-                'Action'           => 'associated'
-            );
-
-            $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-            );
-
-            $this->assigned=true;
-            return;
-        } else {
-            $this->error=true;
-            $this->assigned=false;
-            $this->msg = _("Error, can't associate asset");
-
-        }
-
-
-    }
-
-    function update_status() {
-
-
-        if ($this->get('Barcode Status') != 'Reserved') {
-
-            $sql = sprintf(
-                "SELECT count(*) AS num,min(`Barcode Asset Assigned Date`) AS from_date FROM  `Barcode Asset Bridge` WHERE `Barcode Asset Barcode Key`=%d AND `Barcode Asset Status`='Assigned' ",
-                $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-
-                    if ($row['num'] > 0) {
-                        $status = 'Used';
-                    } else {
-                        $status = 'Available';
-                    }
-                    $this->update(
-                        array('Barcode Status' => $status), 'no_history'
-                    );
-                    if ($row['from_date'] != '') {
-
-                        $this->update(
-                            array('Barcode Used From' => $row['from_date']), 'no_history'
-                        );
-
-                    }
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-        }
-
     }
 
     function get($key, $data = false) {
@@ -431,8 +287,7 @@ $this->msg=_('Barcode already in the system');
             case 'Parts':
                 $parts = '';
                 $sql   = sprintf(
-                    'SELECT `Part SKU`,`Part Reference` FROM `Barcode Asset Bridge` LEFT JOIN `Part Dimension` ON (`Barcode Asset Type`="Part" AND `Barcode Asset Key`=`Part SKU`) WHERE `Barcode Asset Status`="Assigned" AND `Barcode Asset Barcode Key`=%d',
-                    $this->id
+                    'SELECT `Part SKU`,`Part Reference` FROM `Barcode Asset Bridge` LEFT JOIN `Part Dimension` ON (`Barcode Asset Type`="Part" AND `Barcode Asset Key`=`Part SKU`) WHERE `Barcode Asset Status`="Assigned" AND `Barcode Asset Barcode Key`=%d', $this->id
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -489,6 +344,136 @@ $this->msg=_('Barcode already in the system');
         }
 
         return '';
+    }
+
+    function assign_asset_to_barcode($asset_data) {
+
+        $this->new_assigned_asset = false;
+
+        $asset_data['Barcode Asset Barcode Key'] = $this->id;
+
+        if (!array_key_exists('Barcode Asset Assigned Date', $asset_data) or $asset_data['Barcode Asset Assigned Date'] == '') {
+            $asset_data['Barcode Asset Assigned Date'] = gmdate('Y-m-d H:i:s');
+        }
+
+
+        $keys   = '(';
+        $values = 'values(';
+        foreach ($asset_data as $key => $value) {
+            $keys   .= "`$key`,";
+            $values .= prepare_mysql($value).",";
+        }
+        $keys   = preg_replace('/,$/', ')', $keys);
+        $values = preg_replace('/,$/', ')', $values);
+        $sql    = sprintf(
+            "INSERT INTO `Barcode Asset Bridge` %s %s", $keys, $values
+        );
+
+
+        if ($this->db->exec($sql)) {
+
+            $this->msg                = _("Barcode assigned to asset");
+            $this->new_assigned_asset = true;
+
+            $this->update_status();
+
+
+            if ($asset_data['Barcode Asset Type'] == 'Part') {
+                $asset       = get_object($asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']);
+                $asset_label = sprintf(
+                    '<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $asset->get('Part SKU'), $asset->get('Part Reference')
+                );
+
+
+                $asset->update(
+                    array(
+                        'Part Barcode Number' => $this->get('Barcode Number'),
+                        'Part Barcode Key'    => $this->id
+                    ), 'no_history'
+                );
+
+
+            } else {
+                $asset_label = 'asset';
+            }
+
+            $history_data = array(
+                'History Abstract' => sprintf(_('%s associated'), $asset_label),
+                'History Details'  => '',
+                'Action'           => 'associated'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
+            $this->assigned = true;
+
+            return;
+        } else {
+            $this->error    = true;
+            $this->assigned = false;
+            $this->msg      = _("Error, can't associate asset");
+
+        }
+
+
+    }
+
+    function update_status() {
+
+
+        if ($this->get('Barcode Status') != 'Reserved') {
+
+            $sql = sprintf(
+                "SELECT count(*) AS num,min(`Barcode Asset Assigned Date`) AS from_date FROM  `Barcode Asset Bridge` WHERE `Barcode Asset Barcode Key`=%d AND `Barcode Asset Status`='Assigned' ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    if ($row['num'] > 0) {
+                        $status = 'Used';
+                    } else {
+                        $status = 'Available';
+                    }
+                    $this->update(
+                        array('Barcode Status' => $status), 'no_history'
+                    );
+                    if ($row['from_date'] != '') {
+
+                        $this->update(
+                            array('Barcode Used From' => $row['from_date']), 'no_history'
+                        );
+
+                    }
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+        }
+
+    }
+
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        if ($this->deleted) {
+            return;
+        }
+
+        switch ($field) {
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    if ($value != $this->data[$field]) {
+                        $this->update_field($field, $value, $options);
+                    }
+                }
+        }
     }
 
     function get_field_label($field) {
@@ -551,8 +536,8 @@ $this->msg=_('Barcode already in the system');
 
 
         $sql = sprintf(
-            'INSERT INTO `Barcode Deleted Dimension`  (`Barcode Deleted Key`,`Barcode Deleted Type`,`Barcode Deleted Number`,`Barcode Deleted Sticky Note`) VALUES (%d,%s,%s,%s) ', $this->id,
-            prepare_mysql($this->get('Barcode Type')), prepare_mysql($this->get('Barcode Number')), prepare_mysql($this->get('Barcode Sticky Note'))
+            'INSERT INTO `Barcode Deleted Dimension`  (`Barcode Deleted Key`,`Barcode Deleted Type`,`Barcode Deleted Number`,`Barcode Deleted Sticky Note`) VALUES (%d,%s,%s,%s) ', $this->id, prepare_mysql($this->get('Barcode Type')),
+            prepare_mysql($this->get('Barcode Number')), prepare_mysql($this->get('Barcode Sticky Note'))
 
 
         );
@@ -585,18 +570,17 @@ $this->msg=_('Barcode already in the system');
 
 
         $sql = sprintf(
-            "UPDATE  `Barcode Asset Bridge` SET `Barcode Asset Status`='Historic',`Barcode Asset Withdrawn Date`=%s  WHERE `Barcode Asset Status`='Assigned' AND `Barcode Asset Type`=%s AND `Barcode Asset Key`=%d ",
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($asset_data['Barcode Asset Type']), $asset_data['Barcode Asset Key']
+            "UPDATE  `Barcode Asset Bridge` SET `Barcode Asset Status`='Historic',`Barcode Asset Withdrawn Date`=%s  WHERE `Barcode Asset Status`='Assigned' AND `Barcode Asset Type`=%s AND `Barcode Asset Key`=%d ", prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql($asset_data['Barcode Asset Type']), $asset_data['Barcode Asset Key']
         );
-
-
 
 
         $this->db->exec($sql);
         $this->update_status();
 
         if ($asset_data['Barcode Asset Type'] == 'Part') {
-            $asset       = get_object($asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']
+            $asset       = get_object(
+                $asset_data['Barcode Asset Type'], $asset_data['Barcode Asset Key']
             );
             $asset_label = sprintf(
                 '<i class="fa fa-square fa-fw"></i> <span class="link" onClick="change_view(\'part/%d\')">%s</span>', $asset->get('Part SKU'), $asset->get('Part Reference')

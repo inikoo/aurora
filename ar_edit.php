@@ -2766,7 +2766,20 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Barcode':
             include_once 'class.Barcode.php';
-            $object = $parent->create_barcode($data['fields_data']);
+            $object = $parent->create_barcode($data['fields_data'],$user);
+
+            if($object=='fork'){
+
+                $response = array(
+                    'state'             => 200,
+                    'msg'               => '<i class="fa fa-check"></i> '._('Adding barcodes in the background'),
+
+                );
+
+                echo json_encode($response);
+                exit;
+            }
+
             if (!$parent->error) {
 
             }

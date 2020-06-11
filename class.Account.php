@@ -696,9 +696,11 @@ class Account extends DB_Table {
 
     }
 
-    function create_barcode($data) {
+    function create_barcode($data,$user) {
 
         $this->new_object = false;
+
+
 
         $data['editor'] = $this->editor;
 
@@ -737,22 +739,19 @@ class Account extends DB_Table {
             }
         } elseif (count($range) == 2) {
 
-            for ($i = $range[0]; $i <= $range[1]; $i++) {
-                $data['Barcode Number']    = $i;
-                $data['Barcode Used From'] = gmdate('Y-m-d H:i:s');
-                $data['editor']['Date']    = gmdate('Y-m-d H:i:s');
 
-                $barcode = new Barcode('find', $data, 'create');
-                if (!$barcode->id) {
-                    $this->errors++;
-                } else {
-                    if ($barcode->new) {
-                        $this->new++;
-                    } else {
-                        $this->errors++;
-                    }
-                }
-            }
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'   => 'add_barcode_range',
+                'ws_key'       => 'real_time.'.strtolower(DNS_ACCOUNT_CODE).'.'.$user->id,
+                'range'  => $range,
+                'editor' => $this->editor
+            ), DNS_ACCOUNT_CODE, $this->db
+            );
+
+            return 'fork';
+
         } else {
             $this->error = true;
             $this->msg   = _('None of the bar codes could be added');

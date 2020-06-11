@@ -1365,7 +1365,7 @@ function fork_housekeeping($job) {
              */
 
             $part = get_object('Part', $data['part_sku']);
-           // print $part->get('Reference')."\n";
+            // print $part->get('Reference')."\n";
 
             if (isset($data['editor'])) {
                 $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
@@ -1390,7 +1390,6 @@ function fork_housekeeping($job) {
 
                 $product->update_availability(false);
             }
-
 
 
             break;
@@ -2938,6 +2937,106 @@ function fork_housekeeping($job) {
             $image       = get_object('Image', $data['image_key']);
             $image->fork = true;
             $image->update_public_db();
+            break;
+        case 'add_barcode_range':
+
+            include_once 'class.Barcode.php';
+
+            $account->editor = $editor;
+
+            $range = $data['range'];
+
+            $_data['editor'] = $editor;
+
+            $ws_key        = $data['ws_key'];
+            $sockets       = get_zqm_message_sockets();
+            $show_feedback = (float)microtime(true) + .250;
+
+
+            $added      = 0;
+            $duplicated = 0;
+            $error      = 0;
+
+            for ($i = $range[0]; $i <= $range[1]; $i++) {
+                $_data['Barcode Number']    = $i;
+                $_data['Barcode Used From'] = gmdate('Y-m-d H:i:s');
+                $_data['editor']['Date']    = gmdate('Y-m-d H:i:s');
+
+                $barcode = new Barcode('find', $_data, 'create');
+                if ($barcode->new) {
+                    $added++;
+                }elseif($barcode->found) {
+                    $duplicated++;
+                }else{
+                    $error++;
+                }
+
+
+                if (microtime(true) > $show_feedback) {
+
+                    $msg = _('Adding barcodes');
+                    $msg.=' <span style="font-weight: bold" class="'.($added>0?'success':'').'">'.
+                        sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
+                    if($duplicated>0){
+                        $msg.=' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
+
+                    }
+                    if($error>0){
+                        $msg.=' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
+                    }
+                    foreach ($sockets as $socket) {
+                        $socket->send(
+                            json_encode(
+                                array(
+                                    'channel'    => $ws_key,
+                                    'id_html' => array(
+                                        'inline_new_object_msg' => $msg
+
+
+                                    ),
+
+
+                                )
+                            )
+                        );
+                    }
+
+                    $show_feedback = (float)microtime(true) + .250;
+                }
+
+            }
+
+
+
+            $msg ='<span class="success"><i class="fa fa-check"></i> '. _('Completed').'</span>';
+            $msg.=' <span style="font-weight: bold" class="success">'.
+                sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
+            if($duplicated>0){
+                $msg.=' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
+
+            }
+            if($error>0){
+                $msg.=' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
+            }
+            foreach ($sockets as $socket) {
+                $socket->send(
+                    json_encode(
+                        array(
+                            'channel'    => $ws_key,
+                            'id_html' => array(
+                                'inline_new_object_msg' => $msg
+
+
+                            ),
+
+
+                        )
+                    )
+                );
+            }
+
+
+
             break;
         default:
             break;
