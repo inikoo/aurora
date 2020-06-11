@@ -848,6 +848,9 @@ class SupplierDelivery extends DB_Table {
 
 
                 break;
+            case 'History Note':
+                $this->add_note($value, '', '', $metadata['deletable']);
+                break;
             default:
 
 
@@ -868,6 +871,7 @@ class SupplierDelivery extends DB_Table {
     }
 
     function update_state($value, $options = '', $metadata = array()) {
+
         $date = gmdate('Y-m-d H:i:s');
 
 
@@ -922,6 +926,14 @@ class SupplierDelivery extends DB_Table {
                     'dispatched_operations'
                 );
 
+                $history_data = array(
+                    'History Abstract' => _('Supplier delivery set as in process'),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
 
                 break;
 
@@ -956,6 +968,14 @@ class SupplierDelivery extends DB_Table {
                     'received_operations'
                 );
 
+                $history_data = array(
+                    'History Abstract' => _('Supplier delivery set as dispatched'),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
 
                 break;
             case 'Received':
@@ -1026,6 +1046,15 @@ class SupplierDelivery extends DB_Table {
 
                 }
 
+                $history_data = array(
+                    'History Abstract' => _('Supplier delivery set as received'),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
+
 
                 break;
             case 'Checked':
@@ -1044,6 +1073,15 @@ class SupplierDelivery extends DB_Table {
                     'cancel_operations',
                     'undo_send_operations',
                     'received_operations'
+                );
+
+                $history_data = array(
+                    'History Abstract' => _('Supplier delivery set as checked'),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                 );
 
 
@@ -1139,6 +1177,15 @@ class SupplierDelivery extends DB_Table {
 
                     }
 
+                    $history_data = array(
+                        'History Abstract' => _('Supplier delivery set as placed'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
 
                 }
 
@@ -1160,6 +1207,16 @@ class SupplierDelivery extends DB_Table {
 
                     $operations = array('undo_costing_operations');
 
+                    $history_data = array(
+                        'History Abstract' => _('Setting costs'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+
                 }
 
 
@@ -1178,6 +1235,15 @@ class SupplierDelivery extends DB_Table {
                     );
 
                     $operations = array('');
+
+                    $history_data = array(
+                        'History Abstract' => _('Redoing costing'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
 
                 }
 
@@ -1200,6 +1266,15 @@ class SupplierDelivery extends DB_Table {
                     $this->update_supplier_delivery_items_state();
 
                     $operations = array('');
+
+                    $history_data = array(
+                        'History Abstract' => _('Costing done'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
 
                 }
 
@@ -1257,6 +1332,7 @@ class SupplierDelivery extends DB_Table {
             $this->update_totals();
 
         }
+
 
 
         require_once 'utils/new_fork.php';

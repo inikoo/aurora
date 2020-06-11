@@ -30,6 +30,30 @@ $parameters = array(
 
 );
 
+$table_buttons   = array();
+$table_buttons[] = array(
+    'icon'  => 'sticky-note',
+    'title' => _('New note'),
+    'id'    => "show_history_note_dialog"
+);
+$smarty->assign('table_buttons', $table_buttons);
+
+
+
+$smarty->assign('history_notes_data',
+                array(
+
+                    'object'=>'supplier_delivery',
+                    'key'=>$state['_object']->id
+                )
+);
+
+
+
+
+$smarty->assign('aux_templates', array('history_notes.tpl'));
+$smarty->assign('state', $state);
+
 include('utils/get_table_html.php');
 
 

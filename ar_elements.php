@@ -290,6 +290,8 @@ switch ($tab) {
     case 'deal.history':
     case 'campaign.history':
     case 'supplier.order.history':
+    case 'supplier.delivery.history':
+
     case 'category.webpage.logbook':
     case 'supplier.history':
     case 'charge.history':
@@ -1721,6 +1723,10 @@ function get_history_elements($db, $data) {
     } elseif ($data['parent'] == 'purchase_order') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Purchase Order History Bridge` WHERE  `Purchase Order Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    }  elseif ($data['parent'] == 'supplierdelivery') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Supplier Delivery History Bridge` WHERE  `Supplier Delivery Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } elseif ($data['parent'] == 'webpage_logbook') {
         $sql = sprintf(

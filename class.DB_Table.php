@@ -229,9 +229,8 @@ abstract class DB_Table extends stdClass {
                 $save_history = true;
             }
 
-
             if (preg_match(
-                    '/product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema|customer client|clocking machine|clocking machine nfc tag/i',
+                    '/product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema|customer client|clocking machine|clocking machine nfc tag|purchase order|supplier delivery/i',
                     $table_name
                 ) and !$this->new and $save_history) {
 
@@ -239,6 +238,7 @@ abstract class DB_Table extends stdClass {
                 if ($formatted_field == 'Tax Number') {
                     $formatted_field = 'Tax Number Formatted';
                 }
+
 
 
                 $new_formatted_value = $this->get($formatted_field);
@@ -275,7 +275,6 @@ abstract class DB_Table extends stdClass {
             $sql = sprintf(
                 "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
             );
-
 
             $this->db->exec($sql);
 

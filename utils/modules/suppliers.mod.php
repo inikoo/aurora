@@ -276,7 +276,11 @@ function get_suppliers_module() {
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
                     ),
                     'supplier.delivery.attachments' => array(
                         'label'         => '',

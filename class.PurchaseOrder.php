@@ -1,9 +1,11 @@
 <?php
 
 include_once 'class.DB_Table.php';
+include_once 'trait.NotesSubject.php';
 
 
 class PurchaseOrder extends DB_Table {
+    use  NotesSubject;
 
     public $table_name = 'Purchase Order';
 
@@ -2045,6 +2047,9 @@ class PurchaseOrder extends DB_Table {
                     )
                 );
 
+                break;
+            case 'History Note':
+                $this->add_note($value, '', '', $metadata['deletable']);
                 break;
             default:
 
