@@ -803,7 +803,6 @@ class Website extends DB_Table {
         while ($row = $stmt->fetch()) {
 
 
-
             if ($row['Webpage State'] == 'Online') {
                 $number_online_webpages = $row['number'];
             } elseif ($row['Webpage State'] == 'Offline') {
@@ -917,9 +916,9 @@ class Website extends DB_Table {
 
     function clean_cache() {
 
-        foreach(VARNISH_URLS as $varnish_url ) {
+        foreach (VARNISH_URLS as $varnish_url) {
             $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL,$varnish_url);
+            curl_setopt($curl, CURLOPT_URL, $varnish_url);
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "BAN");
             curl_setopt($curl, CURLOPT_PORT, VARNISH_PORT);
 
@@ -1346,39 +1345,37 @@ class Website extends DB_Table {
         $this->update(array('Website Status' => 'Active'));
 
 
-        $sql = sprintf(
-            "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Type Code` IN ('Info','Home','Ordering','Customer','Portfolio','Sys')   ",
-            $this->id
+        $sql  = "SELECT `Page Key` FROM `Page Store Dimension`   WHERE `Webpage Website Key`=?   ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        while ($row = $stmt->fetch()) {
+            $webpage         = get_object('Webpage', $row['Page Key']);
+            $webpage->editor = $this->editor;
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $webpage         = get_object('Webpage', $row['Page Key']);
-                $webpage->editor = $this->editor;
-
-                if ($webpage->get('Webpage Code') == 'launching.sys') {
-                    $webpage->update(array('Webpage State' => 'Offline'));
-                } else {
-                    $webpage->update(array('Webpage State' => 'Online'));
-                    $webpage->fast_update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')));
-                }
-
-
+            if ($webpage->get('Webpage Code') == 'launching.sys') {
+                $webpage->update(array('Webpage State' => 'Offline'));
+            } else {
+                $webpage->update(array('Webpage State' => 'Online'));
+                $webpage->fast_update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')));
             }
         }
+
 
         $this->clean_cache();
 
         include_once 'utils/new_fork.php';
-        global $account;
+
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'        => 'website_launched',
             'website_key' => $this->id,
             'editor'      => $this->editor,
 
-        ), $account->get('Account Code')
+        ), DNS_ACCOUNT_CODE
         );
 
 

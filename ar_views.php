@@ -119,6 +119,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     );
 
 
+
     $old_weblocation = (isset($data['old_state']['module']) ? $data['old_state']['module'] : '').'|'.(isset($data['old_state']['section']) ? $data['old_state']['section'] : '');
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
 
@@ -142,7 +143,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
     $state = parse_request($data, $db, $modules, $account, $user);
-
+    //print_r($state);
 
     $state['current_website']    = (!empty($_SESSION['current_website']) ? $_SESSION['current_website'] : '');
     $state['current_store']      = (!empty($_SESSION['current_store']) ? $_SESSION['current_store'] : '');
@@ -159,7 +160,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     if (!empty($state['store_key'])) {
         $store = get_object('Store', $state['store_key']);
     }
-
 
     switch ($state['parent']) {
 
@@ -189,31 +189,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             $store                  = $_parent;
 
             if ($state['object'] == 'website' and $state['key'] == '') {
-
-
                 $state['key'] = $store->get('Store Website Key');
-                if (!$state['key']) {
-
-
-                    $state = array(
-                        'old_state'  => $state,
-                        'module'     => 'utils',
-                        'section'    => 'not_found',
-                        'tab'        => 'not_found',
-                        'subtab'     => '',
-                        'parent'     => 'store',
-                        'parent_key' => $store->id,
-                        'object'     => 'website',
-                        'store'      => $store,
-                        'website'    => '',
-                        'warehouse'  => '',
-                        'key'        => '',
-                        'request'    => $state['request']
-                    );
-
-
-                }
-
             }
 
 
@@ -232,6 +208,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             break;
         case 'website':
+
 
             $_parent = get_object('Website', $state['parent_key']);
             $website = $_parent;
@@ -394,6 +371,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     }
 
+
     $state['_parent'] = $_parent;
 
     if ($state['object'] != '') {
@@ -499,8 +477,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
 
-
-        if ($state['object'] == 'website' and !( $state['tab'] == 'website.new' or  $state['tab'] == 'not_found'  ) ) {
+        if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
 
 
             $store = get_object('Store', $_object->get('Website Store Key'));
@@ -508,7 +485,11 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             $state['current_website'] = $state['key'];
             $state['current_store']   = $store->id;
-            if ($state['_parent'] == 'store' and !$state['_parent']->get('Store Website Key')) {
+            if ($state['parent'] == 'store' and !$state['_parent']->get('Store Website Key')) {
+
+
+
+
                 $state = array(
                     'old_state'  => $state,
                     'module'     => 'products',
@@ -518,16 +499,21 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     'parent'     => $state['parent'],
                     'parent_key' => $state['parent_key'],
                     'object'     => '',
-                    'store'      => $store,
+                    'store'      => $state['_parent'],
                     'website'    => $website,
                     'warehouse'  => $warehouse,
                     'key'        => '',
                     'request'    => $state['request']
                 );
+
+
+
             }
 
 
         }
+
+
 
         if ($state['module'] != 'production') {
 
@@ -603,6 +589,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         if (empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))) {
             $store = get_object('Store', $state['_parent']->get('Store Key'));
         }
+
 
         if (!$_object->id and $modules[$state['module']]['sections'][$state['section']]['type'] == 'object') {
 
@@ -741,7 +728,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 }
             }
 
-            if (!$_object->id) {
+
+            if (!$_object->id  and !($state['tab']=='no_website')  ) {
 
                 $state = array(
                     'old_state'  => $state,
@@ -1352,7 +1340,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             json_encode(
                 array(
                     'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-                    'iu'      => $real_time_users,
+                    'iu' => $real_time_users,
                 )
             )
         );
@@ -1410,11 +1398,11 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
 
     //cleaning mess can removed later
-    if (!is_string($tab)) {
-        $tab = '';
+    if(!is_string($tab) ){
+        $tab='';
     }
-    if (!is_string($subtab)) {
-        $subtab = '';
+    if(!is_string($subtab) ){
+        $subtab='';
     }
     //=================
 
@@ -1458,12 +1446,12 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
         if (!empty($_subtab)) {
 
 
-            if (isset($_SESSION['tab_state'])) {
-                $tmp                   = $_SESSION['tab_state'];
-                $tmp[$_tab]            = $_subtab;
+            if(isset($_SESSION['tab_state'])) {
+                $tmp        = $_SESSION['tab_state'];
+                $tmp[$_tab] = $_subtab;
                 $_SESSION['tab_state'] = $tmp;
-            } else {
-                $_SESSION['tab_state'][$_tab] = $_subtab;
+            }else{
+                $_SESSION['tab_state'][$_tab]=$_subtab;
             }
 
         }
@@ -3713,8 +3701,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
 
     //cleaning mess can removed later
-    if (empty($data['subtab']) or !is_string($data['subtab'])) {
-        $data['subtab'] = '';
+    if(empty($data['subtab']) or !is_string($data['subtab']) ){
+        $data['subtab']='';
     }
     //=================
 

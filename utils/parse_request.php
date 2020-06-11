@@ -5886,6 +5886,7 @@ function parse_tabs($module, $section, $_data, $modules) {
 
         $tmp = $_SESSION['state'];
 
+      //  print_r($tmp);
 
         if (!empty($tmp[$module][$section]['tab'])) {
 

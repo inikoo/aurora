@@ -82,7 +82,7 @@ if($website->get('Website Status')=='InProcess'){
                     'render'    => true,
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  data-website_key="'.$website->id.'" onClick="launch_website(this)" class="save changed valid">'._("Launch website")
+                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  data-referer="" data-website_key="'.$website->id.'" onClick="launch_website(this)" class="save changed valid">'._("Launch website")
                         .' <i class="fa fa-fw fa-rocket save changed valid"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'

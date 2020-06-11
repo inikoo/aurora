@@ -8,13 +8,16 @@
  Version 3
 */
 
+$website=$state['_object'];
 
-if(!$state['_object']->id){
 
-    $html='<div style="padding:20px">'.sprintf(_('Website not set up, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
+
+if($state['_object']->get('Website Status')=='InProcess'){
+
+    $html='<div style="clear: both;margin-top:50px;margin-left: 40px"><span style="margin:10px 0px;padding:10px;border:1px solid #ccc" data-referer="/website/'.$website->id.'/analytics" data-website_key="'.$website->id.'" onclick="launch_website(this)" class="save changed valid">'._('Launch website').' <i class="fa fa-fw fa-rocket save changed valid"></i></span></div>';
+
     return;
 }
-
 
 $smarty->assign('website',$state['_object']);
 

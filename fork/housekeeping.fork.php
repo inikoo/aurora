@@ -2456,6 +2456,11 @@ function fork_housekeeping($job) {
 
             $webpage = get_object('Webpage', $data['webpage_key']);
 
+
+
+            $webpage_type=get_object('Webpage_Type',$webpage->get('Webpage Type Key'));
+            $webpage_type->update_number_webpages();
+
             $webpage->clear_cache();
 
 
@@ -2965,9 +2970,9 @@ function fork_housekeeping($job) {
                 $barcode = new Barcode('find', $_data, 'create');
                 if ($barcode->new) {
                     $added++;
-                }elseif($barcode->found) {
+                } elseif ($barcode->found) {
                     $duplicated++;
-                }else{
+                } else {
                     $error++;
                 }
 
@@ -2975,20 +2980,19 @@ function fork_housekeeping($job) {
                 if (microtime(true) > $show_feedback) {
 
                     $msg = _('Adding barcodes');
-                    $msg.=' <span style="font-weight: bold" class="'.($added>0?'success':'').'">'.
-                        sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
-                    if($duplicated>0){
-                        $msg.=' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
+                    $msg .= ' <span style="font-weight: bold" class="'.($added > 0 ? 'success' : '').'">'.sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
+                    if ($duplicated > 0) {
+                        $msg .= ' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
 
                     }
-                    if($error>0){
-                        $msg.=' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
+                    if ($error > 0) {
+                        $msg .= ' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
                     }
                     foreach ($sockets as $socket) {
                         $socket->send(
                             json_encode(
                                 array(
-                                    'channel'    => $ws_key,
+                                    'channel' => $ws_key,
                                     'id_html' => array(
                                         'inline_new_object_msg' => $msg
 
@@ -3007,22 +3011,20 @@ function fork_housekeeping($job) {
             }
 
 
-
-            $msg ='<span class="success"><i class="fa fa-check"></i> '. _('Completed').'</span>';
-            $msg.=' <span style="font-weight: bold" class="success">'.
-                sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
-            if($duplicated>0){
-                $msg.=' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
+            $msg = '<span class="success"><i class="fa fa-check"></i> '._('Completed').'</span>';
+            $msg .= ' <span style="font-weight: bold" class="success">'.sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
+            if ($duplicated > 0) {
+                $msg .= ' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
 
             }
-            if($error>0){
-                $msg.=' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
+            if ($error > 0) {
+                $msg .= ' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
             }
             foreach ($sockets as $socket) {
                 $socket->send(
                     json_encode(
                         array(
-                            'channel'    => $ws_key,
+                            'channel' => $ws_key,
                             'id_html' => array(
                                 'inline_new_object_msg' => $msg
 
@@ -3036,6 +3038,30 @@ function fork_housekeeping($job) {
             }
 
 
+            break;
+        case 'website_created':
+
+            include_once 'class.Page.php';
+
+            $website = get_object('Website', $data['website_key']);
+            $store   = get_object('Store', $website->get('Website Store Key'));
+
+
+            $sql  = "SELECT `Product ID` FROM `Product Dimension` WHERE `Product Store Key`=? and `Product Status`!='Discontinued' and `Product Public`='Yes' ";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $store->id
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $website->create_product_webpage($row['Product ID']);
+            }
+
+
+            $store->update_websites_data();
+
+            $account->update_stores_data();
 
             break;
         default:

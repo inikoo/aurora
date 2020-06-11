@@ -18,13 +18,7 @@ function get_products_module() {
     return array(
         'section'  => 'products',
         'sections' => array(
-            /*
-            'dashboard'=>array('type'=>'navigation', 'label'=>_('Dashboard'), 'title'=>_("Products's dashboard"), 'icon'=>'dashboard', 'reference'=>'store/%d/dashboard',
-                'tabs'=>array(
-                    'store.dashboard'=>array()
-                )
-            ),
-   */
+
             'store' => array(
                 'type'      => 'left_button',
                 'label'     => _('Dashboard'),
@@ -64,19 +58,7 @@ function get_products_module() {
                 )
 
             ),
-/*
 
-            'services' => array(
-                'type'      => 'navigation',
-                'label'     => _('Services'),
-                'icon'      => 'wrench',
-                'class'     => 'hide',
-                'reference' => 'services/%d',
-                'tabs'      => array(
-                    'services' => array()
-                )
-            ),
-*/
             'products' => array(
                 'type'      => 'navigation',
                 'label'     => _('Products'),
@@ -221,7 +203,16 @@ function get_products_module() {
             ),
 
 
+            'no_website' => array(
+                'type'  => 'object',
+                'tabs' => array(
+                    'no_website' => array(
+                        'label' => _('No website')
+                    ),
 
+                )
+
+            ),
 
 
 

@@ -3390,7 +3390,7 @@ class Store extends DB_Table {
                 $this->new_customer = true;
 
                 include_once 'utils/new_fork.php';
-                global $account;
+
 
                 if ($customer->get('Customer Main Plain Email') != '') {
 
@@ -3418,7 +3418,7 @@ class Store extends DB_Table {
                     'customer_key'     => $customer->id,
                     'website_user_key' => $website_user_key,
                     'editor'           => $this->editor
-                ), $account->get('Account Code')
+                ), DNS_ACCOUNT_CODE
                 );
 
 
@@ -4267,9 +4267,19 @@ class Store extends DB_Table {
                 );
 
 
-                $this->update_websites_data();
 
-                $account->update_stores_data();
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'             => 'website_created',
+                    'website_key'     => $website->id,
+
+                    'editor'           => $this->editor
+                ), DNS_ACCOUNT_CODE
+                );
+
+
+
 
             } else {
                 $this->error = true;

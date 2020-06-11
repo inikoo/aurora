@@ -708,6 +708,8 @@ class Page extends DB_Table {
 
         $this->update_state('Offline');
 
+        $webpage_type=get_object('Webpage_Type',$this->get('Webpage Type Key'));
+        $webpage_type->update_number_webpages();
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
@@ -2998,14 +3000,12 @@ class Page extends DB_Table {
 
         $this->get_data('id', $this->id);
 
-
-        $account = get_object('Account', 1);
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'        => 'webpage_published',
             'webpage_key' => $this->id,
-        ), $account->get('Account Code'), $this->db
+        ), DNS_ACCOUNT_CODE, $this->db
         );
 
 
@@ -3582,9 +3582,8 @@ class Page extends DB_Table {
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
 
-            require_once 'class.Webpage_Type.php';
 
-            $webpage_type = new Webpage_Type($this->get('Webpage Type Key'));
+            $webpage_type=get_object('Webpage_Type',$this->get('Webpage Type Key'));
             $webpage_type->update_number_webpages();
 
 

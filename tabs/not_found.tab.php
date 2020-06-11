@@ -11,15 +11,10 @@
 */
 
 
-if($state['parent']=='website' and !empty($state['store']->id)  and  !$state['store']->get('Store Website Key') ){
+$html = '<div style="padding:20px;font-size:30px;opacity:.5;font-family: "Courier New", Courier, monospace"><i class="fal fa-bug"></i> 404</div>';
 
-    $html='<div style="padding:20px">'.sprintf(_('Website not set up, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/'.$state['store']->id .'/settings\')" >'._('here').'</span>').'</div>';
+return;
 
-    return;
-}else{
-    $html = '<div style="padding:20px;font-size:30px;opacity:.5;font-family: "Courier New", Courier, monospace"><i class="fal fa-bug"></i> 404</div>';
-    return;
-}
 
 
 
