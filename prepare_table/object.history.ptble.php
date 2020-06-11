@@ -10,7 +10,6 @@
 */
 
 
-
 if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_customer') {
     $where   = sprintf(
         ' where   B.`Customer Key`=%d   ', $parameters['parent_key']
@@ -69,11 +68,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Purchase Order';
-} elseif ($parameters['parent'] == 'supplier_dn') {
+} elseif ($parameters['parent'] == 'supplierdelivery') {
     $where   = sprintf(
-        ' where   B.`Supplier Delivery Note Key`=%d   ', $parameters['parent_key']
+        ' where   B.`Supplier Delivery Key`=%d   ', $parameters['parent_key']
     );
-    $subject = 'Supplier Delivery Note';
+    $subject = 'Supplier Delivery';
 } elseif ($parameters['parent'] == 'supplier_invoice') {
     $where   = sprintf(
         ' where   B.`Supplier Invoice Key`=%d   ', $parameters['parent_key']

@@ -2057,6 +2057,22 @@ $tab_defaults = array(
         'elements_type' => array_keys(get_elements_option('supplier_order_history'))[0],
         'elements'      => get_elements_option('supplier_order_history')
     ),
+
+    'supplier.delivery.history'            => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+        'elements_type' => array_keys(get_elements_option('supplier_delivery_history'))[0],
+        'elements'      => get_elements_option('supplier_delivery_history')
+    ),
+
+
+
+
+
     'supplier.order.items'              => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

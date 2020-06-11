@@ -302,7 +302,22 @@ function get_elements_option($option) {
 
             )
         ),
+        'supplier_delivery_history' => array(
+            'type' => array(
+                'label' => _('Type'),
+                'items' => array(
+                    'Notes'   => array(
+                        'label'    => _('Notes'),
+                        'selected' => true
+                    ),
+                    'Changes' => array(
+                        'label'    => _('Changes'),
+                        'selected' => true
+                    ),
+                ),
 
+            )
+        ),
 
         'supplier_part_history' => array(
             'type' => array(
