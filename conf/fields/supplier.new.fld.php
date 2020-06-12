@@ -19,8 +19,8 @@ $options_yn = array(
 );
 
 $options_supplier_order_type = [
-    'Local'         => _('Local'),
-    'International' => _('International'),
+    'Parcel'         => _('Parcels'),
+    'Container' => _('Containers'),
 ];
 
 $options_incoterms = array();
@@ -87,8 +87,8 @@ if ($options['parent'] != 'agent') {
                 'edit' => ($edit ? 'option' : ''),
 
                 'options'         => $options_supplier_order_type,
-                'value'           => 'Local',
-                'formatted_value' => _('Local'),
+                'value'           => 'Parcel',
+                'formatted_value' => _('Parcels'),
                 'label'           => ucfirst($object->get_field_label('Supplier Purchase Order Type')),
                 'required'        => false,
                 'type'            => 'value'

@@ -19,8 +19,8 @@ $options_yn = array(
 );
 
 $options_supplier_order_type = [
-    'Local'         => _('Local'),
-    'International' => _('International'),
+    'Parcel'         => _('Parcels'),
+    'Container' => _('Containers'),
 ];
 
 $options_incoterms = array();
@@ -599,13 +599,13 @@ if ($object->get('Supplier Type') != 'Archived') {
         $object_fields[] = array(
             'label'      => _('Import settings'),
             'show_title' => false,
-            'class'      => 'import_settings_tr '.($object->get('Supplier Purchase Order Type') == 'International' ? '' : 'hide'),
+            'class'      => 'import_settings_tr '.($object->get('Supplier Purchase Order Type') == 'Container' ? '' : 'hide'),
             'fields'     => array(
 
                 array(
                     'id'              => 'Supplier_Default_Incoterm',
                     'edit'            => ($edit ? 'option' : ''),
-                    'render'          => ($object->get('Supplier Purchase Order Type') == 'International' ? true : false),
+                    'render'          => ($object->get('Supplier Purchase Order Type') == 'Container' ? true : false),
                     'options'         => $options_incoterms,
                     'value'           => $object->get('Supplier Default Incoterm'),
                     'formatted_value' => $object->get('Default Incoterm'),
@@ -618,7 +618,7 @@ if ($object->get('Supplier Type') != 'Archived') {
                 array(
                     'id'              => 'Supplier_Default_Port_of_Export',
                     'edit'            => ($edit ? 'string' : ''),
-                    'render'          => ($object->get('Supplier Purchase Order Type') == 'International' ? true : false),
+                    'render'          => ($object->get('Supplier Purchase Order Type') == 'Container' ? true : false),
                     'value'           => $object->get('Supplier Default Port of Export'),
                     'formatted_value' => $object->get('Default Port of Export'),
                     'label'           => ucfirst($object->get_field_label('Supplier Default Port of Export')),
@@ -628,7 +628,7 @@ if ($object->get('Supplier Type') != 'Archived') {
                 array(
                     'id'              => 'Supplier_Default_Port_of_Import',
                     'edit'            => ($edit ? 'string' : ''),
-                    'render'          => ($object->get('Supplier Purchase Order Type') == 'International' ? true : false),
+                    'render'          => ($object->get('Supplier Purchase Order Type') == 'Container' ? true : false),
                     'value'           => $object->get('Supplier Default Port of Import'),
                     'formatted_value' => $object->get('Default Port of Import'),
                     'label'           => ucfirst($object->get_field_label('Supplier Default Port of Import')),

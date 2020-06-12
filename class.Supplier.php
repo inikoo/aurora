@@ -560,7 +560,7 @@ class Supplier extends SubjectSupplier {
 
                 $this->update_field($field, $value, $options);
 
-                if ($value == 'International') {
+                if ($value == 'Container') {
                     $this->other_fields_updated = array(
                         'Supplier_Default_Incoterm' => array(
                             'field'  => 'Supplier_Default_Incoterm',
@@ -1610,7 +1610,7 @@ class Supplier extends SubjectSupplier {
 
         switch ($field) {
             case 'Supplier Purchase Order Type':
-                $label = _('purchase type');
+                $label = _('delivery type');
                 break;
             case 'Supplier Code':
                 $label = _('code');
