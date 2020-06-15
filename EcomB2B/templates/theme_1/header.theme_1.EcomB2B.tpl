@@ -134,19 +134,19 @@
 
             {else}
                 <div class="control_panel">
-                    <a  id="header_order_totals" href="basket.sys" class="button">
+                    <a  id="header_order_totals" href="basket.sys" class="button" style="margin-right:5px">
                         <span class="ordered_products_number">0</span>
                         <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}"
                            aria-hidden="true"></i>
                         <span class="order_amount" style="padding-right:10px" title="">{$zero_money}</span>
                     </a>
-                    <a id="favorites_button" href="favourites.sys" class="button">
+                    <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px">
                         <i class=" far fa-heart fa-flip-horizontal  "  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
                     </a>
-                    <a id="profile_button" href="profile.sys" class="button"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
+                    <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
 
-                    <a href="#" id="logout" class="button">
+                    <a href="#" id="logout" class="button" style="margin-left: 0px;">
                         <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
                     </a>

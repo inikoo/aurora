@@ -218,7 +218,7 @@ function get_production_module() {
             'order' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'supplier.order.items'   => array(
+                    'job_order.items'   => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
@@ -228,7 +228,7 @@ function get_production_module() {
                     ),
 
 
-                    'supplier.order.items_in_process' => array(
+                    'job_order.items_in_process' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
@@ -237,13 +237,7 @@ function get_production_module() {
                         'label' => _("All supplier's products"),
                         'icon'  => 'th-list'
                     ),
-                    /*
-                                        'supplier.order.tac.editor' => array(
-                                            'label' => _('Terms and conditions'),
-                                            'icon'  => 'gavel',
-                                            'class' => ''
-                                        ),
-                    */
+
                     'supplier.order.history'            => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
