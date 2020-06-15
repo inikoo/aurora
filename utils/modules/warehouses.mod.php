@@ -175,7 +175,7 @@ function get_warehouses_module() {
             'warehouse_area.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
-                    'warehouse.new' => array(
+                    'warehouse_area.new' => array(
                         'label' => _('New warehouse area')
                     ),
 
