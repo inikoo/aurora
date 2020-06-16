@@ -99,7 +99,7 @@ function get_store_navigation($data, $smarty, $user, $db, $account) {
             'title' => $website_data['Website Name'],
             'click'=>"change_view('/website/".$website_data['Website Key']."')",
             'pre_text'=> $website_data['Website Code'],
-            'class'=>'text'
+            'class'=>'text width_250'
         );
 
     }

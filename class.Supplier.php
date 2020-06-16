@@ -671,7 +671,17 @@ class Supplier extends SubjectSupplier {
             case 'Number Images':
 
                 return number($this->data['Supplier '.$key]);
-                break;
+            case ('Purchase Order Type'):
+                switch ($this->data['Supplier Purchase Order Type']) {
+                    case 'Parcel':
+                        return _('Parcels');
+                    case 'Container':
+                        return _('Containers');
+                    case 'Production':
+                        return _('Job orders');
+                    default:
+                        return $this->data['Supplier Purchase Order Type'];
+                }
 
             default;
 

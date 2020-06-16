@@ -266,7 +266,7 @@ function get_elements_option($option) {
             )
         ),
 
-        'supplier_history'       => array(
+        'supplier_history'          => array(
             'type' => array(
                 'label' => _('Type'),
                 'items' => array(
@@ -286,7 +286,7 @@ function get_elements_option($option) {
 
             )
         ),
-        'supplier_order_history' => array(
+        'supplier_order_history'    => array(
             'type' => array(
                 'label' => _('Type'),
                 'items' => array(
@@ -1905,7 +1905,7 @@ function get_elements_option($option) {
                         'selected' => true
                     ),
                     'Cancelled'  => array(
-                        'label'    => _('No received'),
+                        'label'    => _('Cancelled'),
                         'selected' => true
                     ),
 
@@ -1914,6 +1914,43 @@ function get_elements_option($option) {
             ),
         ),
 
+        'job_order_items'    => array(
+            'state' => array(
+                'label' => _('Status'),
+                'items' => array(
+                    'InProcess'  => array(
+                        'label'    => _('Planning'),
+                        'selected' => true
+                    ),
+                    'Submitted'  => array(
+                        'label'    => _('Queued'),
+                        'selected' => true
+                    ),
+                    'Confirmed'  => array(
+                        'label'    => _('Manufacturing'),
+                        'selected' => true
+                    ),
+                    'Dispatched' => array(
+                        'label'    => _('Done'),
+                        'selected' => true
+                    ),
+                    'Checked'  => array(
+                        'label'    => _('QC passed'),
+                        'selected' => true
+                    ),
+                    'Placed'   => array(
+                        'label'    => _('In Location'),
+                        'selected' => true
+                    ),
+                    'Cancelled'  => array(
+                        'label'    => _('Cancelled'),
+                        'selected' => true
+                    ),
+
+                ),
+
+            ),
+        ),
         'customer_portfolio' => array(
             'status_availability_state' => array(
                 'label' => _('Stock state'),
@@ -1935,14 +1972,14 @@ function get_elements_option($option) {
                         'selected' => true
                     ),
                     'Discontinuing' => array(
-                        'label'    => _('Discontinuing'),
-                        'selected' => true,
-                        'suffix_icon'=>'far fa-skull discontinuing'
+                        'label'       => _('Discontinuing'),
+                        'selected'    => true,
+                        'suffix_icon' => 'far fa-skull discontinuing'
                     ),
                     'Discontinued'  => array(
-                        'label'    => _('Discontinued'),
-                        'selected' => true,
-                        'suffix_icon'=>'fa fa-skull discontinued'
+                        'label'       => _('Discontinued'),
+                        'selected'    => true,
+                        'suffix_icon' => 'fa fa-skull discontinued'
                     ),
 
 
@@ -1951,31 +1988,31 @@ function get_elements_option($option) {
 
             ),
         ),
-        'attendance' => array(
+        'attendance'         => array(
             'status' => array(
                 'label' => _('Working status'),
                 'items' => array(
-                    'Work'            => array(
+                    'Work'    => array(
                         'label'    => _('On premises'),
                         'selected' => true
                     ),
-                    'Home'           => array(
+                    'Home'    => array(
                         'label'    => _('Working at home'),
                         'selected' => true
                     ),
-                    'Outside'       => array(
+                    'Outside' => array(
                         'label'    => _('Working outside'),
                         'selected' => true
                     ),
-                    'Break'    => array(
+                    'Break'   => array(
                         'label'    => _('Break'),
                         'selected' => true
                     ),
-                    'Finish'    => array(
+                    'Finish'  => array(
                         'label'    => _('Finish'),
                         'selected' => true
                     ),
-                    'Off'    => array(
+                    'Off'     => array(
                         'label'    => _('Off'),
                         'selected' => false
                     )

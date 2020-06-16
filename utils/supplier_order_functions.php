@@ -361,3 +361,79 @@ function get_purchase_order_transaction_data($data) {
 }
 
 
+function get_job_order_transaction_data($data) {
+
+    //print_r($data);
+
+
+    if (empty($data['Metadata'])) {
+        $metadata = array();
+    } else {
+        $metadata = json_decode($data['Metadata'], true);
+    }
+
+
+    $state = '';
+
+
+    $delivery_link=' ('.sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')">%s</span>)',strtolower($data['Supplier Delivery Parent']),$data['Supplier Key'],$data['Supplier Delivery Key'],$data['Supplier Delivery Public ID']);
+
+    switch ($data['Purchase Order Transaction State']) {
+        case 'InProcess':
+            $state .= _('In process');
+            break;
+        case 'Submitted':
+            $state.='<i class="fa error fa-minus-circle button padding_right_10 "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
+
+            $state .= sprintf('<span  title="%s">%s</span>', _('Queued'), _('Queued'));
+            break;
+
+        case 'Confirmed':
+            $state .= _('Manufacturing').' <i class=" fal padding_left_10 padding_right_10  fa-flag-checkered"></i>';
+            break;
+        case 'ReceivedAgent':
+            $state .= sprintf('<span title="%s">%s</span>', _('Goods received from supplier'), _('In agent warehouse'));
+
+            break;
+        case 'InDelivery':
+            $state .= _('In transit');
+            break;
+        case 'Inputted':
+            $state .= _('Delivery in process').$delivery_link;
+            break;
+        case 'Dispatched':
+            $state .= '<i class="error fal padding_right_10  fa-flag-checkered"></i> '._('Manufactured').' <i class="far padding_left_10 padding_right_10  fa-siren-on"></i>';
+            break;
+        case 'Received':
+            $state .= _('Received').$delivery_link;
+            break;
+        case 'Checked':
+            $state .= _('Checked').$delivery_link;
+            break;
+        case 'Placed':
+            $state .= _('Booked in').$delivery_link;
+            break;
+        case 'InvoiceChecked':
+            $state .= _('Booked in, costing done').$delivery_link;
+            break;
+        case 'Cancelled':
+            $state .= _('Cancelled');
+            break;
+        case 'NoReceived':
+            $state .= _('No received');
+            break;
+        default:
+            $state .= $data['Purchase Order Transaction State'];
+            break;
+    }
+
+
+
+
+    return array(
+
+        $state
+
+    );
+
+}

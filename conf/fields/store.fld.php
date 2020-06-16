@@ -572,7 +572,7 @@ $object_fields = array(
                 'options'         => $options_yes_no,
                 'value'           => $object->settings('send_invoice_attachment_in_delivery_confirmation'),
                 'formatted_value' => $object->get('send invoice attachment in delivery confirmation'),
-                'label'           => sprintf(_('Send %s in delivery conformation email'), '<i class="fal fa-paperclip"></i>'),
+                'label'           => sprintf(_('Send %s in delivery confirmation email'), '<i class="fal fa-paperclip"></i>'),
                 'type'            => ''
             ),
 
@@ -593,7 +593,7 @@ $object_fields = array(
                 'options'         => $options_yes_no,
                 'value'           => $object->settings('send_dn_attachment_in_delivery_confirmation'),
                 'formatted_value' => $object->get('send dn attachment in delivery confirmation'),
-                'label'           => sprintf(_('Send %s in delivery conformation email'), '<i class="fal fa-paperclip"></i>'),
+                'label'           => sprintf(_('Send %s in delivery confirmation email'), '<i class="fal fa-paperclip"></i>'),
                 'type'            => ''
             ),
 

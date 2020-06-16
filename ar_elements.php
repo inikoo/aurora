@@ -465,6 +465,10 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_attendance_elements($db, $data['parameters'], $user);
         break;
+    case 'job_order.items':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        job_order_items_elements($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -566,6 +570,7 @@ function get_purchase_order_items_elements($db, $data) {
         'type' => array(
             'InProcess'  => 0,
             'Submitted'  => 0,
+            'Confirmed'  => 0,
             'InDelivery' => 0,
             'Receiving'  => 0,
             'Received'   => 0,
@@ -580,9 +585,71 @@ function get_purchase_order_items_elements($db, $data) {
     );
     while ($row = $stmt->fetch()) {
 
-        if ($row['element'] == 'ProblemSupplier' or $row['element'] == 'Confirmed' or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted') {
+        if ($row['element'] == 'ProblemSupplier'  or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted') {
             $row['element'] = 'Submitted';
         }
+        if ($row['element'] == 'Dispatched') {
+            $row['element'] = 'InDelivery';
+        }
+
+        if ($row['element'] == 'Received' or $row['element'] == 'Checked') {
+            $row['element'] = 'Receiving';
+        }
+
+        if ($row['element'] == 'Placed' or $row['element'] == 'InvoiceChecked') {
+            $row['element'] = 'Received';
+        }
+
+        if ($row['element'] == 'NoReceived') {
+            $row['element'] = 'Cancelled';
+        }
+
+        $elements_numbers['type'][$row['element']] = $row['number'];
+
+    }
+
+    foreach ($elements_numbers['type'] as $key => $value) {
+        $elements_numbers['type'][$key] = number($value);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+}
+
+
+/**
+ * @param $db \PDO
+ * @param $data
+ */
+function job_order_items_elements($db, $data) {
+
+    $elements_numbers = array(
+        'type' => array(
+            'InProcess'  => 0,
+            'Submitted'  => 0,
+            'Confirmed'  => 0,
+            'InDelivery' => 0,
+            'Receiving'  => 0,
+            'Received'   => 0,
+            'Cancelled'  => 0
+        ),
+    );
+
+    $sql  = "select count(*) as number,`Purchase Order Transaction State` as element from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction State` ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($data['parent_key'])
+    );
+    while ($row = $stmt->fetch()) {
+
+        if ($row['element'] == 'ProblemSupplier' or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted') {
+            $row['element'] = 'Submitted';
+        }
+
         if ($row['element'] == 'Dispatched') {
             $row['element'] = 'InDelivery';
         }

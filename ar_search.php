@@ -371,6 +371,8 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
     ];
 
 
+
+
     if (count($modules) > 0) {
 
         $params['body']['query']['bool']['filter'][] = array(

@@ -234,9 +234,7 @@ function get_suppliers_module() {
                         'icon'  => 'bars'
                     ),
                     'deleted.supplier.order.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),

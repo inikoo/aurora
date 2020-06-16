@@ -10,6 +10,11 @@
  Version 3.0
 */
 
+$options_supplier_order_type = [
+    'Parcel'         => _('Parcel'),
+    'Container' => _('Container'),
+];
+
 
 $options_Incoterm = array();
 $sql              = sprintf(
@@ -19,13 +24,25 @@ foreach ($db->query($sql) as $row) {
     $options_Incoterm[$row['Incoterm Code']] = '<b>'.$row['Incoterm Code'].'</b> '.$row['Incoterm Name'];
 }
 asort($options_Incoterm);
-
+asort($options_supplier_order_type);
 
 $object_fields = array(
     array(
-        'label'      => _('Id'),
+        'label'      => _('Purchase order'),
         'show_title' => true,
         'fields'     => array(
+
+            array(
+                'id'                => 'Purchase_Order_Type',
+                'edit' => ($edit ? 'option' : ''),
+
+                'options'         => $options_supplier_order_type,
+                'value'             => htmlspecialchars($object->get('Purchase Order Type')),
+                'formatted_value'   => $object->get('Type'),
+                'label'             => ucfirst($object->get_field_label('Purchase Order Type')),
+                'required'          => true,
+
+            ),
 
             array(
                 'id'                => 'Purchase_Order_Public_ID',
@@ -46,13 +63,13 @@ $object_fields = array(
                 'type'              => 'value'
             ),
 
-
         )
     ),
+
     array(
         'label'      => _('Estimated procession dates'),
         'show_title' => true,
-        'class'=>($object->get('State Index')==10?'hide':''),
+        'class'=>(($object->get('State Index')<40 or  $object->get('State Index')>70) ?'hide':''),
 
         'fields'     => array(
 
@@ -61,7 +78,7 @@ $object_fields = array(
 
                 'id'   => 'Purchase_Order_Estimated_Production_Date',
                 'edit' => ($edit ? 'date' : ''),
-                'render'=>($object->get('State Index')==10?false:true),
+                'render'=>(($object->get('State Index')<40 or  $object->get('State Index')>70)?false:true),
 
                 'time'            => '00:00:00',
                 'value'           => $object->get('Purchase Order Estimated Production Date'),
@@ -78,7 +95,7 @@ $object_fields = array(
 
                 'id'   => 'Purchase_Order_Estimated_Receiving_Date',
                 'edit' => ($edit ? 'date' : ''),
-                'render'=>($object->get('State Index')==10?false:true),
+                'render'=>(($object->get('State Index')<40 or  $object->get('State Index')>70)?false:true),
 
                 'time'            => '00:00:00',
                 'value'           => $object->get('Purchase Order Estimated Receiving Date'),
@@ -121,14 +138,11 @@ $object_fields = array(
 
                 'id'              => 'Purchase_Order_Incoterm',
                 'edit'            => ($edit ? 'option' : ''),
+                'render'=>($object->get('Purchase Order Type')=='Container'?true:false),
                 'options'         => $options_Incoterm,
-                'value'           => htmlspecialchars(
-                    $object->get(' v')
-                ),
+                'value'           => htmlspecialchars($object->get(' v')),
                 'formatted_value' => $object->get('Incoterm'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Purchase Order Incoterm')
-                ),
+                'label'           => ucfirst($object->get_field_label('Purchase Order Incoterm')),
                 'required'        => false,
                 'type'            => 'value'
 
@@ -137,26 +151,20 @@ $object_fields = array(
             array(
                 'id'              => 'Purchase_Order_Port_of_Export',
                 'edit'            => ($edit ? 'string' : ''),
-                'value'           => htmlspecialchars(
-                    $object->get('Purchase Order Port of Export')
-                ),
+                'render'=>($object->get('Purchase Order Type')=='Container'?true:false),
+                'value'           => htmlspecialchars($object->get('Purchase Order Port of Export')),
                 'formatted_value' => $object->get('Port of Export'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Purchase Order Port of Export')
-                ),
+                'label'           => ucfirst($object->get_field_label('Purchase Order Port of Export')),
                 'required'        => false,
                 'type'            => 'value'
             ),
             array(
                 'id'              => 'Purchase_Order_Port_of_Import',
                 'edit'            => ($edit ? 'string' : ''),
-                'value'           => htmlspecialchars(
-                    $object->get('Purchase Order Port of Import')
-                ),
+                'render'=>($object->get('Purchase Order Type')=='Container'?true:false),
+                'value'           => htmlspecialchars($object->get('Purchase Order Port of Import')),
                 'formatted_value' => $object->get('Port of Import'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Purchase Order Port of Import')
-                ),
+                'label'           => ucfirst($object->get_field_label('Purchase Order Port of Import')),
                 'required'        => false,
                 'type'            => 'value'
             ),

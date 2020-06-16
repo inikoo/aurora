@@ -4179,7 +4179,21 @@ class Product extends Asset {
                             $date                = '';
                             $formatted_state     = '<span class="very_discreet italic">'._('Draft').'</span>';
                             $link                = sprintf(
-                                '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-seedling" title="%s" ></i> <span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
+                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
+                                $row['Purchase Order Public ID']
+                            );
+                            $qty                 = '<span class="very_discreet italic">+'.number($raw_outer_qty).'</span>';
+
+                        }elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
+
+                            $raw_units_qty = $row['Purchase Order Submitted Units'];
+                            $raw_outer_qty = $raw_units_qty / $row['Part Units Per Package'] / $part_data['Ratio'];
+
+                            $_next_delivery_time = 0;
+                            $date                = '';
+                            $formatted_state     = '<span class="very_discreet italic">'._('Submitted').'</span>';
+                            $link                = sprintf(
+                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('Submitted'), $row['Purchase Order Key'],
                                 $row['Purchase Order Public ID']
                             );
                             $qty                 = '<span class="very_discreet italic">+'.number($raw_outer_qty).'</span>';
@@ -4194,7 +4208,7 @@ class Product extends Asset {
 
                             $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
                             $link            = sprintf(
-                                '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-paper-plane" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Submitted'), $row['Purchase Order Key'],
+                                '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Confirmed'), $row['Purchase Order Key'],
                                 $row['Purchase Order Public ID']
                             );
                             $qty             = '+'.number($raw_outer_qty);

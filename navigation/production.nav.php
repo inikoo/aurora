@@ -746,6 +746,8 @@ function get_production_supplier_deliveries_navigation($data, $smarty, $user, $d
         $sections[$data['section']]['selected'] = true;
     }
 
+
+
     $_content = array(
 
         'sections_class' => '',
@@ -1083,6 +1085,18 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = _('Job order').' <span class="Purchase_Order_Public_ID id">'.$object->get('Public ID').'</span>';
+
+
+    //  class="order_operation {if ( $order->get('State Index') < 30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='No' }hide{/if}">
+
+    $items_not_in_delivery=$object->get('Purchase Order Ordered Number Items')-$object->get('Purchase Order Number Supplier Delivery Items');
+    $right_buttons[]=array(
+        'icon'  => 'plus',
+        'title' => _('Create production sheet'),
+        'click'=>"show_create_delivery()",
+        'pre_text'=> _('Create production sheet'),
+        'class'=>'text width_auto quick_create_delivery_button '.(  ($items_not_in_delivery==0 or $object->get('State Index')<40 ) ?'hide':''  )
+    );
 
 
     $_content = array(

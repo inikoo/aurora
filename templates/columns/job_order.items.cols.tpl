@@ -21,7 +21,7 @@ cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
 
 {
 name: "reference",
-label: "{t}S. Code{/t}",
+label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='reference'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -76,6 +76,36 @@ cell: Backgrid.HtmlCell.extend({ className: ""} ),
 
 },
 {
+name: "ordered_units",
+label: "{t}Units{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='ordered_units'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+
+},
+{
+name: "ordered_skos",
+label: "{t}SKOs{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='ordered_skos'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+
+},
+{
+name: "ordered_cartons",
+label: "{t}Cartons{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='ordered_cartons'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+
+},
+{
 name: "weight",
 label: "{t}Weight{/t}",
 defaultOrder:1,
@@ -97,7 +127,7 @@ cell: Backgrid.HtmlCell.extend({ className: ""} ),
 },
 {
 name: "amount",
-label: "{t}Amount{/t}",
+label: "{t}Cost{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
@@ -105,14 +135,18 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: ""} ),
 
 },
+
+
+
+
 {
 name: "state",
 label: "{t}State{/t}",
 editable: false,
-cell: "html"
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
 
 },
-
 {
 name: "operations",
 renderable:false,
@@ -121,6 +155,7 @@ editable: false,
 cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
 
 },
+
 {
 name: "quantity_units",
 label: "{t}Units{/t}",
@@ -150,7 +185,7 @@ sortType: "toggle",
 {if $sort_key=='quantity_cartons'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}
+},
 
 ]
 
@@ -170,32 +205,37 @@ grid.columns.findWhere({ name: 'description_cartons'} ).set("renderable", false)
 
 
 
+grid.columns.findWhere({ name: 'items_qty'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'ordered_units'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'ordered_skos'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'ordered_cartons'} ).set("renderable", false)
+
+
+
+
+grid.columns.findWhere({ name: 'weight'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'cbm'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'amount'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'quantity_cartons'} ).set("renderable", false)
 
+
 if(view=='overview'){
 
 grid.columns.findWhere({ name: 'description_units'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'ordered_skos'} ).set("renderable", true)
 
-
-}else if(view=='cartons'){
-grid.columns.findWhere({ name: 'description_cartons'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'quantity_cartons'} ).set("renderable", true)
-//grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", true)
-
-}else if(view=='skos'){
+{if $job_order->get('State Index')>=40}
 grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'description_skos'} ).set("renderable", true)
-//grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", true)
+{/if}
 
-
-}else if(view=='units'){
-grid.columns.findWhere({ name: 'description_units'} ).set("renderable", true)
-
-grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", true)
-//grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", true)
+}else if(view=='properties'){
+grid.columns.findWhere({ name: 'items_qty'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'cbm'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'amount'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'amount'} ).set("renderable", true)
 
 }
 

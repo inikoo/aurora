@@ -229,6 +229,9 @@ abstract class DB_Table extends stdClass {
                 $save_history = true;
             }
 
+
+            //print $table_name;
+
             if (preg_match(
                     '/product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema|customer client|clocking machine|clocking machine nfc tag|purchase order|supplier delivery/i',
                     $table_name
@@ -290,10 +293,11 @@ abstract class DB_Table extends stdClass {
     function add_history($raw_data, $force = false, $post_arg1 = false, $options = '') {
 
 
-        return $this->add_table_history($raw_data, $force, $post_arg1, $options, $this->table_name, $this->id);
+        return $this->add_table_history($raw_data, $force,  $this->table_name, $this->id);
     }
 
-    function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
+    function add_table_history($raw_data, $force,$table_name, $table_key) {
+
 
 
         $editor_data = $this->get_editor_data();
@@ -887,7 +891,7 @@ abstract class DB_Table extends stdClass {
             $table_key = $this->id;
         }
 
-        $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
+        $history_key = $this->add_table_history($history_data, $force_save,$table_name, $table_key);
 
 
         if ($table_name == 'Page') {
@@ -897,6 +901,7 @@ abstract class DB_Table extends stdClass {
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
         );
+
 
         $this->db->exec($sql);
 

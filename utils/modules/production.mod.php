@@ -222,26 +222,34 @@ function get_production_module() {
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'supplier.order.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-
-
-                    'job_order.items_in_process' => array(
+                    'supplier.order.items_in_process' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
 
+
+
+
+
                     'supplier.order.all_supplier_parts' => array(
-                        'label' => _("All supplier's products"),
+                        'label' => _("All products"),
                         'icon'  => 'th-list'
                     ),
+
 
                     'supplier.order.history'            => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                    ),
+                    'supplier.order.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'class'=>'right'
                     ),
 
                 )
@@ -254,9 +262,7 @@ function get_production_module() {
 
 
                     'deleted.supplier.order.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
+                        'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
                     'deleted.supplier.order.history' => array(
