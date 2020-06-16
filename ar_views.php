@@ -4437,7 +4437,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     } elseif ($data['section'] == 'order') {
-
         if ($data['module'] == 'orders') {
 
 
@@ -4482,7 +4481,32 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        } else {
+        }
+        elseif($data['module'] == 'production') {
+            if ($data['_object']->get('Purchase Order State') == 'InProcess') {
+
+                $_content['tabs']['supplier.order.all_supplier_parts']['class'] = '';
+                $_content['tabs']['supplier.order..items_in_process']['class']   = '';
+                $_content['tabs']['job_order.items']['class']              = 'hide';
+
+
+                if ($data['tab'] == 'job_order.items') {
+                    $data['tab'] = 'job_order.items_in_process';
+                }
+
+            } else {
+
+
+                $_content['tabs']['supplier.order.all_supplier_parts']['class'] = 'hide';
+                $_content['tabs']['supplier.order.items_in_process']['class']   = 'hide';
+
+                if ($data['tab'] == 'job_order.items_in_process' || $data['tab'] == 'job_order.all_supplier_parts') {
+                    $data['tab'] = 'job_order.items';
+                }
+
+            }
+        }
+        else {
             if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
                 $_content['tabs']['supplier.order.all_supplier_parts']['class'] = '';
@@ -4495,6 +4519,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }
 
             } else {
+
+                exit('xx');
+
                 $_content['tabs']['supplier.order.all_supplier_parts']['class'] = 'hide';
                 $_content['tabs']['supplier.order.items_in_process']['class']   = 'hide';
 

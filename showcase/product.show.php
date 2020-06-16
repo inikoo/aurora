@@ -31,6 +31,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
     //   $product->update_availability();
     //}
 
+    //$product->get_next_deliveries_data();
 
     $images = $product->get_images_slideshow();
 

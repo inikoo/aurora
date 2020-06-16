@@ -1586,8 +1586,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
             );
 
         }
-        $sections           = get_sections('suppliers', '');
-        $search_placeholder = _('Search suppliers');
+
 
 
     } elseif ($data['parent'] == 'agent') {
@@ -1634,8 +1633,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
             );
 
         }
-        $sections           = get_sections('suppliers', '');
-        $search_placeholder = _('Search suppliers');
+
 
 
     } elseif ($data['parent'] == 'account') {
@@ -1680,9 +1678,6 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-        $sections = get_sections('orders', $object->get('Order Store Key'));
-
-        $search_placeholder = _('Search orders');
 
 
     } elseif ($data['parent'] == 'supplier_part') {
@@ -1736,11 +1731,41 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-        $sections = get_sections('suppliers', '');
-
-        $search_placeholder = _('Search suppliers');
-
     }
+
+
+    //             class="delivery_node {if   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
+
+
+    $items_not_in_delivery=$object->get('Purchase Order Ordered Number Items')-$object->get('Purchase Order Number Supplier Delivery Items');
+
+    $right_buttons[]=array(
+        'icon'  => 'plus',
+        'title' => _('Set delivery'),
+        'click'=>"show_create_delivery()",
+        'pre_text'=> _('New Delivery'),
+        'class'=>'text width_auto setting_delivery_button '.(  ($items_not_in_delivery==0 or $object->get('State Index')<40 ) ?'hide':''  )
+    );
+
+    /*
+    $right_buttons[]=array(
+        'icon'  => 'arrow-to-bottom',
+        'title' => _('Associate to existing delivery'),
+        'click'=>"show_associate_with_delivery()",
+        'pre_text'=> _('Append to open delivery'),
+        'class'=>'text width_auto  setting_delivery_button  '.(  ($items_not_in_delivery==0 or $object->get('State Index')<40 ) ?'hide':''  )
+    );
+    */
+
+    $right_buttons[]=array(
+        'icon'  => 'hand-paper error',
+        'title' => _('Cancel setting up delivery'),
+        'click'=>"close_create_delivery()",
+        'pre_text'=> _('Cancel setting up delivery'),
+        'class'=>'text hide width_auto close_setting_delivery_button'
+    );
+
+
 
 
     $sections           = get_sections('suppliers', '');

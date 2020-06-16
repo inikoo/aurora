@@ -10,14 +10,14 @@
 *}
 
 {assign deliveries $order->get_deliveries('objects')}
-
-<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
+<div class="showcase_purchase_order">
+<div class="timeline_horizontal  {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
 
 
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
-                <span class="state ">{t}Submitted{/t}</span>
+                <span class="state ">{t}Sent to queue{/t}</span>
             </div>
             <div class="timestamp">
                 <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span
@@ -26,13 +26,23 @@
             <div class="dot">
             </div>
         </li>
-
+        <li id="confirm_node"
+            class="li  {if $order->get('State Index')>=40  }complete{/if}">
+            <div class="label">
+                <span class="state ">{t}Start{/t} <span></i></span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Purchase_Order_Confirmed_Date">{$order->get('Confirmed Date')}&nbsp;</span>
+            </div>
+            <div class="industry">
+            </div>
+        </li>
 
         <li id="production_node"
-            class="li   {if $order->get('State Index')>=60}hide{/if}  {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
-            <div class="label">
+            class="li   { {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
+            <div class="label" title="{t}Finish Manufacturing{/t}">
                 <span class="state ">
-                                        <span class="state ">{t}Manufacturing{/t} <span></i></span></span>
+                                        <span class="state ">{t}Finish{/t} <span></i></span></span>
                 </span>
             </div>
             <div class="timestamp">
@@ -49,99 +59,34 @@
         </li>
 
 
-        <li id="delivery_node"
-            class="li  {if $order->get('State Index')<60}hide{/if}   {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
-            <div class="label">
-                <span class="state ">&nbsp;
+        <li id="checked_node"
+            class="li   { {if $order->get('State Index')>=90 and $order->get('Max State Index')>=90   }complete{elseif $order->get('Max State Index')>=90 }semi_complete{/if}">
+            <div class="label" title="{t}Quality control passed{/t}">
+                <span class="state ">
+                                        <span class="state ">{t}QC Passed{/t} <span></i></span></span>
                 </span>
             </div>
             <div class="timestamp">
-                <span >&nbsp;
 
-                    {foreach from=$deliveries item=dn name=dns}
-                        <span class="link" onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')">{$dn->get('Public ID')}</span>{if $smarty.foreach.dns.last}{else},{/if}
-
-                    {/foreach}
-
+                <span class="Purchase_Order_Estimated_Production_Date ">
+                <span class="Purchase_Order_Checked_Date">{$order->get('Checked Date')}&nbsp;</span>
                 </span>
-            </div>
-            <div class="truck">
-            </div>
-        </li>
 
 
 
-            <li id="dispatched_node"
-                class="li  {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
-                <div class="label">
-                    <span class="state ">{t}Dispatched{/t} <span></i></span></span>
-                </div>
-                <div class="timestamp">
-                    <span class="Supplier_Delivery_Dispatched_Date">&nbsp;</span>
-                </div>
-                <div class="dot">
-                </div>
-            </li>
-
-
-
-            <li id="estimated_send_node" class=" li {if $order->get('State Index')>=80  }hide{/if}"  ">
-                <div class="label">
-                    <span class="state ">{t}Estimated delivery date{/t} <span></i></span></span>
-                </div>
-                <div class="timestamp">
-                    <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp;
-                        {if $order->get('Estimated Receiving Formatted Date')==''}<span class="error" title="{t}No estimated delivery date{/t}"><i class=" fa fa-exclamation-circle" ></i> <span class="error discreet italic">{t}No estimated delivery{/t}</span> {else}{$order->get('Estimated Receiving Formatted Date')}{/if} &nbsp;</span>
-                </div>
-                <div class="dot">
-                </div>
-            </li>
-
-        <li id="send_node" class=" li {if $order->get('State Index')>=80 and $order->get('Max State Index')>=80   }complete{elseif $order->get('Max State Index')>=80 }semi_complete{/if} ">
-            <div class="label">
-                <span class="state ">{t}Received{/t} <span></i></span></span>
-            </div>
-            <div class="timestamp">
-                <span class="Purchase_Order_Receiving_Date">&nbsp; &nbsp;</span>
             </div>
             <div class="dot">
             </div>
         </li>
 
-            <li id="checked_node"
-                class="li  {if $order->get('State Index')>=90 and $order->get('Max State Index')>=90   }complete{elseif $order->get('Max State Index')>=90 }semi_complete{/if} ">
+
+            <li id="estimated_send_node" class=" li {if $order->get('State Index')>=80  }hide{/if}"  ">
                 <div class="label">
-                    <span class="state">{t}Checked{/t}</span>
+                    <span class="state ">{t}Estimated in location date{/t} <span></i></span></span>
                 </div>
                 <div class="timestamp">
-                    <span class="Supplier_Delivery_Checked_Percentage_or_Date">&nbsp;</span>
-                </div>
-                <div class="dot">
-                </div>
-            </li>
-
-
-
-
-            <li id="placed_node"
-                class="li {if $order->get('State Index')>=100 and $order->get('Max State Index')>=100   }complete{elseif $order->get('Max State Index')>=100 }semi_complete{/if} ">
-                <div class="label">
-                    <span class="state">{t}Booked in{/t}</span>
-                </div>
-                <div class="timestamp">
-                    <span class="Supplier_Delivery_Placed_Percentage_or_Date">&nbsp;</span>
-                </div>
-                <div class="dot">
-                </div>
-            </li>
-
-            <li id="costing_done_node"
-                class="li {if $order->get('State Index')>=110 and $order->get('Max State Index')>=110   }complete{elseif $order->get('Max State Index')>=110 }semi_complete{/if} ">
-                <div class="label">
-                    <span class="state">{t}Costing done{/t}</span>
-                </div>
-                <div class="timestamp">
-                    <span class="Supplier_Delivery_Costing_Date">&nbsp;</span>
+                    <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp;
+                        {if $order->get('Estimated Receiving Formatted Date')==''}<span class="error" title="{t}No estimated delivery date{/t}"><i class="very_discreet far fa-exclamation-circle" ></i> <span class=" very_discreet italic">{t}No estimated in location date{/t}</span> {else}{$order->get('Estimated Receiving Formatted Date')}{/if} &nbsp;</span>
                 </div>
                 <div class="dot">
                 </div>
@@ -158,7 +103,7 @@
     </ul>
 </div>
 
-<div class="timeline_horizontal  {if $order->get('Purchase Order State')!='Cancelled'}hide{/if}">
+<div class="timeline_horizontal production  {if $order->get('Purchase Order State')!='Cancelled'}hide{/if}">
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li complete">
             <div class="label">
@@ -254,8 +199,7 @@
                 <div id="cancel_operations"
                      class="order_operation {if  $order->get('State Index')>30  or  $order->get('State Index')<20   }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
-                        <i class="fa fa-minus-circle error " aria-hidden="true"
-                           onclick="toggle_order_operation_dialog('cancel')"></i>
+                        <i class="fa fa-minus-circle error "   onclick="toggle_order_operation_dialog('cancel')"></i>
                         <table id="cancel_dialog" class="order_operation_dialog hide">
                             <tr class="top ">
                                 <td class="label" colspan="2">{t}Cancel purchase order{/t}</td>
@@ -280,9 +224,9 @@
                 <div id="undo_submit_operations"
                      class="order_operation {if   $order->get('State Index')!=30   }hide{/if}">
                     <div class="square_button left" title="{t}Stop manufacturing, send back to planning{/t}">
-                        <span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')"> <i
-                                    class="fa fa-fill-drip discreet " aria-hidden="true"></i> <i
-                                    class="fa fa-ban fa-stack-1x discreet error"></i> </span>
+                        <i class="fal fa-user-clock error "   onclick="toggle_order_operation_dialog('undo_submit')"></i>
+
+
                         <table id="undo_submit_dialog" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send back to planning{/t}</td>
@@ -299,6 +243,49 @@
                         </table>
                     </div>
                 </div>
+                <div id="undo_confirm_operations"
+                     class="order_operation {if   $order->get('State Index')!=40   }hide{/if}">
+                    <div class="square_button left" title="{t}Send back to queue{/t}">
+                        <i class="fal  fa-fill error "  onclick="toggle_order_operation_dialog('undo_confirm')"></i>
+
+                        <table id="undo_confirm_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Send back to queue{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('undo_confirm')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Purchase Order State","value": "undo_confirm","dialog_name":"undo_confirm"}'
+                                            id="undo_confirm_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="undo_dispatch_operations"
+                     class="order_operation {if   $order->get('State Index')!=70   }hide{/if}">
+                    <div class="square_button left" title="{t}Set back as manufacturing{/t}">
+                        <i class="fal  fa-flag-checkered error "  onclick="toggle_order_operation_dialog('undo_dispatch')"></i>
+
+                        <table id="undo_dispatch_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Set back as manufacturing{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('undo_dispatch')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Purchase Order State","value": "undo_dispatch","dialog_name":"undo_dispatch"}'
+                                            id="undo_dispatch_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
             </div>
             <span style="float: left;padding-left: 10px" class="Purchase_Order_State"> {$order->get('State')} </span>
@@ -308,12 +295,12 @@
                 <div id="submit_operations" class="order_operation {if $order->get('Purchase Order State')!='InProcess'  or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
                     <div id="submit_operation"
                          class="square_button right"
-                         title="{t}Start manufacturing{/t}">
-                        <i class="fa fa-fill-drip   " aria-hidden="true"
+                         title="{t}Add to to-do list{/t}">
+                        <i class="fal fa-user-clock   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('submit')"></i>
                         <table id="submit_dialog" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Start manufacturing{/t}</td>
+                                <td class="label" colspan="2">{t}Add to to-do list{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
@@ -327,16 +314,81 @@
                         </table>
                     </div>
                 </div>
+                <div id="confirm_operations" class="order_operation {if $order->get('Purchase Order State')!='Submitted'  or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
+                    <div id="confirm_operation"
+                         class="square_button right"
+                         title="{t}Start manufacturing{/t}">
+                        <i class="fa fa-fill-drip   " aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('confirm')"></i>
+                        <table id="confirm_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Start manufacturing{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('confirm')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Purchase Order State","value": "Confirmed","dialog_name":"confirm"}'
+                                            id="confirm_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
-                <div id="quick_create_delivery_operations"
-                     class="order_operation {if ( $order->get('State Index') < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='No' }hide{/if}">
-                    <div id="quick_create_delivery_operation" class="square_button right  "
-                         title="{t}Fill production sheet{/t}">
-                        <i class="fa fa-clipboard-check   " aria-hidden="true" onclick="quick_create_delivery()"></i>
+                <div id="dispatch_operations" class="order_operation {if $order->get('Purchase Order State')!='Confirmed'  or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
+                    <div id="dispatch_operation"
+                         class="square_button right"
+                         title="{t}Set manufacturing as{/t}">
+                        <i class="fa fa-flag-checkered   " aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('dispatch')"></i>
+                        <table id="dispatch_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Job order done{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('dispatch')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Purchase Order State","value": "Manufactured_Done","dialog_name":"dispatch"}'
+                                            id="dispatch_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
 
 
+                <div id="check_operations" class="order_operation {if $order->get('State Index')<=40  or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
+                    <div id="check_operation"
+                         class="square_button right"
+                         title="{t}Quality control{/t}">
+                        <i class="far fa-siren-on   " aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('check')"></i>
+                        <table id="check_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Set all manufactured product as QC pass{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('check')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Purchase Order State","value": "Checked","dialog_name":"check"}'
+                                            id="check_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+
+
+                
+                
             </div>
         </div>
 
@@ -432,35 +484,20 @@
     <div style="clear:both">
     </div>
 </div>
+</div>
 
-<style>
-
-
-    </style>
-
-<div id="new_delivery" class="table_new_fields hide">
-    <div style="align-items: stretch;flex: 1;padding:20px 5px;">
+<div id="new_delivery" class="table_new_fields hide" style="margin:20px 0px;border:none">
 
 
-
+    <div style="flex-grow: 1;border:none;text-align: right;padding-right: 30px"  >
+        <span class="error_msg"></span>
+        {t}Production sheet number{/t}
+        <input class="new_delivery_field" id="delivery_number" style="width: 300px" value="{$order->get('Public ID')}" placeholder="{t}Production sheet number{/t}"/>
+        <span style="flex-grow: 4" class="buttons save" onclick="save_create_delivery(this)"  ><span>{t}Save{/t}</span> <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i></span>
 
     </div>
-    <div style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
-        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
-            <tr>
-                <td class="label ">{t}Delivery number{/t}</td>
-                <td>
-                    <input class="new_delivery_field" id="delivery_number" placeholder="{t}Delivery number{/t}">
-                </td>
-            </tr>
-            <tr>
-                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
-                       onclick="close_create_delivery()"></i></td>
-                <td class="buttons save" onclick="save_create_delivery(this)"><span>{t}Save{/t}</span> <i
-                            class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i>
-                    <span class="error_msg"></span>
-                </td>
-            </tr>
-        </table>
-    </div>
+
+
+
+
 </div>

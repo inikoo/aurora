@@ -2085,6 +2085,19 @@ $tab_defaults = array(
         'elements'      => get_elements_option('supplier_order_items')
 
     ),
+
+    'job_order.items'              => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 1000,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'export_fields' => get_export_fields('supplier.order.items'),
+        'elements_type' => array_keys(get_elements_option('job_order_items'))[0],
+        'elements'      => get_elements_option('job_order_items')
+
+    ),
     'supplier.order.items_in_process'   => array(
         'view'        => 'cartons',
         'sort_key'    => 'id',

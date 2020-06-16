@@ -236,7 +236,7 @@ abstract class DBW_Table extends stdClass {
     function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key, $update_history_records_data = true) {
 
 
-        $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
+        $history_key = $this->add_table_history($history_data, $force_save, $table_name, $table_key);
 
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
@@ -400,10 +400,10 @@ abstract class DBW_Table extends stdClass {
     function add_history($raw_data, $force = false, $post_arg1 = false, $options = '') {
 
 
-        return $this->add_table_history($raw_data, $force, $post_arg1, $options, $this->table_name, $this->id);
+        return $this->add_table_history($raw_data, $force, $this->table_name, $this->id);
     }
 
-    function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
+    function add_table_history($raw_data, $force, $table_name, $table_key) {
 
 
         $editor_data = $this->editor;

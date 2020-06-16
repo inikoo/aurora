@@ -12,7 +12,7 @@
 
 .timeline_horizontal {
 
- ul{
+  ul{
    padding-left: 0px;margin-bottom:12px;line-height: normal;
  }
 
@@ -103,6 +103,8 @@
 
   }
 
+
+
   .truck,.industry {
     padding: 0 40px;
     display: flex;
@@ -117,6 +119,20 @@
   &.with_time {
     .dot, .truck,.industry {
       padding: 0 50px;
+    }
+
+  }
+
+  &.purchase_order {
+    .dot, .truck,.industry {
+      padding: 0 80px;
+    }
+
+  }
+
+  &.production {
+    .dot, .truck,.industry {
+      padding: 0 97.5px;
     }
 
   }
@@ -253,6 +269,8 @@
       transition: all 200ms ease-in;
     }
   }
+
+
 
 }
 

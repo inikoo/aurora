@@ -203,8 +203,15 @@ class SupplierDelivery extends DB_Table {
                 'History Details'  => '',
                 'Action'           => 'created'
             );
-            $this->add_history($history_data);
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
+
             $this->new = true;
+
+
 
             if ($this->data['Supplier Delivery Parent'] != 'Order') {
                 $parent->update_purchase_orders();
@@ -340,6 +347,17 @@ class SupplierDelivery extends DB_Table {
                 }
 
                 break;
+            case ('Type'):
+                switch ($this->data['Supplier Delivery Type']) {
+                    case 'Parcel':
+                        return _('Parcel');
+                    case 'Container':
+                        return _('Container');
+                    case 'Production':
+                        return _('Job order');
+                    default:
+                        return $this->data['Supplier Delivery Type'];
+                }
             case ('Return State'):
                 switch ($this->data['Supplier Delivery State']) {
 

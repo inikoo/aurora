@@ -293,6 +293,7 @@ class Part extends Asset {
 
         $data = $this->get_next_deliveries_data();
 
+        //print_r($data);
 
         $this->fast_update(
             array(
@@ -459,6 +460,8 @@ class Part extends Asset {
                 foreach ($result as $row) {
 
 
+
+
                     if ($row['Purchase Order Transaction State'] == 'InProcess') {
                         $number_draft_POs++;
 
@@ -469,36 +472,67 @@ class Part extends Asset {
                         $date                = '';
                         $formatted_state     = '<span class="very_discreet italic">'._('Draft').'</span>';
                         $link                = sprintf(
-                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-seedling" title="%s" ></i> <span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
+                            '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
+                            $row['Purchase Order Public ID']
+                        );
+                        $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
+
+                    }elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
+                        $number_draft_POs++;
+
+                        $raw_units_qty = $row['Purchase Order Submitted Units'];
+                        $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+
+                        $_next_delivery_time = 0;
+                        $date                = '';
+                        $formatted_state     = '<span class="very_discreet italic">'._('Submitted').'</span>';
+                        $link                = sprintf(
+                            '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('Submitted'), $row['Purchase Order Key'],
                             $row['Purchase Order Public ID']
                         );
                         $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
                     } else {
+
+                        //print_r($row);
                         $number_non_draft_POs++;
                         $raw_units_qty = $row['Purchase Order Submitted Units'];
                         $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
-                        $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
 
+                        if($row['Purchase Order Estimated Receiving Date']!=''){
+                            $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
+                            $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                            if ($_next_delivery_time < gmdate('U')) {
+                                $formatted_state = '<span class="discreet error italic" title="'.strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')).'" >'._('Delayed').'</span>';
 
-                        $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                            } else {
 
-                        if ($_next_delivery_time < gmdate('U')) {
-                            $formatted_state = '<span class="discreet error italic" title="'.strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')).'" >'._('Delayed').'</span>';
+                                $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
 
-                        } else {
+                            }
 
-                            $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-
+                        }else{
+                            $_next_delivery_time=0;
+                            $date='';
+                            $formatted_state='';
                         }
 
+
+
+
+
                         $link = sprintf(
-                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-paper-plane" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Submitted'), $row['Purchase Order Key'],
+                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Confirmed'), $row['Purchase Order Key'],
                             $row['Purchase Order Public ID']
                         );
                         $qty  = '+'.number($raw_skos_qty);
+
+
+
                     }
+
+
 
 
                     $next_deliveries_data[] = array(
@@ -524,10 +558,6 @@ class Part extends Asset {
                     }
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
         }

@@ -10,6 +10,12 @@ function show_create_delivery() {
     if ($('#new_delivery').hasClass('hide')) {
 
 
+        $('.showcase_purchase_order').addClass('hide')
+        $('.setting_delivery_button').addClass('hide')
+        $('.close_setting_delivery_button').removeClass('hide')
+
+
+
         if (state.tab == 'supplier.order.items') {
 
             grid.columns.findWhere({
@@ -49,11 +55,7 @@ function show_create_delivery() {
         }
 
         $('.submitted_items_qty').addClass('button')
-
-
         $('#new_delivery').removeClass('hide')
-
-
         $('#delivery_number').val('').focus()
 
         validate_new_supplier_delivery();
@@ -66,6 +68,9 @@ function show_create_delivery() {
 }
 
 function close_create_delivery() {
+
+    $('.showcase_purchase_order').removeClass('hide')
+
     $('#tabs').removeClass('hide')
     $('#new_delivery').addClass('hide')
 
@@ -79,9 +84,7 @@ function close_create_delivery() {
         name: 'operations'
     }).set("renderable", false)
 
-    grid.columns.findWhere({
-        name: 'delivery_quantity'
-    }).set("renderable", false)
+
 }
 
 function save_delivery_qty_change(element) {
@@ -120,6 +123,7 @@ function change_on_delivery(element) {
 function quick_create_delivery() {
 
     var object_data = $('#object_showcase div.order').data("object")
+    console.log(object_data)
     $('#delivery_number').val(object_data.purchase_order_number)
     $('#quick_create_delivery_operation').addClass('valid')
     save_create_delivery('#quick_create_delivery_operation')
@@ -289,7 +293,6 @@ $(document).on('input propertychange', '.new_delivery_field', function (evt) {
 
 function validate_new_supplier_delivery(){
 
-    //$('#new_delivery').find('td.buttons i').addClass('fa-spinner fa-spin').removeClass('fa-cloud')
 
     var with_error=false;
 
@@ -332,9 +335,9 @@ function validate_new_supplier_delivery(){
 
     });
 
-    console.log(with_error)
 
-    var save_buttons=$('#new_delivery').find('td.buttons')
+
+    var save_buttons=$('#new_delivery').find('.buttons')
 
     if(with_error){
         save_buttons.addClass('invalid changed').removeClass('valid')

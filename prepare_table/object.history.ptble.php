@@ -68,7 +68,7 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Purchase Order Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Purchase Order';
-} elseif ($parameters['parent'] == 'supplierdelivery') {
+} elseif ($parameters['parent'] == 'supplierdelivery' or $parameters['parent'] == 'supplier_delivery') {
     $where   = sprintf(
         ' where   B.`Supplier Delivery Key`=%d   ', $parameters['parent_key']
     );

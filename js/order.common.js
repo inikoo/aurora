@@ -281,26 +281,9 @@ function close_dialog(dialog_name) {
 
 function save_order_operation(element) {
 
-
-    console.log($('#table').data("metadata"))
-    console.log($(element).data("data"))
-
-
     var data = $(element).data("data")
-
     var table_metadata = $('#table').data("metadata")
-
-
-
-
-
-
-
     var object_data = $('#object_showcase div.order').data("object")
-
-
-    console.log(object_data)
-
     var dialog_name = data.dialog_name
     var field = data.field
     var value = data.value
@@ -309,7 +292,6 @@ function save_order_operation(element) {
 
 
     if (!$('#' + dialog_name + '_save_buttons').hasClass('button')) {
-        console.log('#' + dialog_name + '_save_buttons')
         return;
     }
 
@@ -335,20 +317,11 @@ function save_order_operation(element) {
 
     });
 
-    //console.log(field)
 
     if(field=='Replacement State'){
         metadata['Delivery Note Key']=data.replacement_key;
     }
 
-
-   // var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
-
-
-
-    //console.log(request)
-    //  return;
-    //=====
     var form_data = new FormData();
 
     form_data.append("tipo", 'edit_field')
@@ -367,7 +340,6 @@ function save_order_operation(element) {
 
     request.done(function (data) {
 
-        console.log(data)
 
         $('#' + dialog_name + '_save_buttons').addClass('button');
         $('#' + dialog_name + '_save_buttons i').removeClass('fa-spinner fa-spin')
@@ -597,58 +569,144 @@ function save_order_operation(element) {
 
             }
             else if (object == 'purchase_order') {
-                if (data.update_metadata.state_index >= 30) {
-                    $('#submitted_node').addClass('complete')
-                }
-
-                if (field == 'Purchase Order State') {
-
-                    console.log(state.tab)
-
-                    if (data.value == 'InProcess') {
-                        $('#create_delivery').addClass('hide')
-
-                        $('#all_available_items,#new_item').removeClass('hide')
-
-                        change_tab('supplier.order.items_in_process')
-                    } else if (data.value == 'Submitted') {
-                        $('#all_available_items,#new_item').addClass('hide')
 
 
-                       // if (state.tab == 'supplier.order.all_supplier_parts') {
+                if(object_data.type=='Production'){
+
+                    if (data.update_metadata.state_index >= 30) {
+                        $('#submitted_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 40) {
+                        $('#confirm_node').addClass('complete')
+                    }
+
+                    if (field == 'Purchase Order State') {
+
+
+                        if (data.value == 'InProcess') {
+                            $('#create_delivery').addClass('hide')
+
+                            $('#all_available_items,#new_item').removeClass('hide')
+
+                            change_tab('supplier.order.items_in_process')
+                        } else if (data.value == 'Submitted') {
+                            $('#all_available_items,#new_item').addClass('hide')
+
+                            change_tab('job_order.items')
+
+
+
+                        }else if (data.value == 'Confirmed') {
+                            $('#all_available_items,#new_item').addClass('hide')
+
+
+                            change_tab('job_order.items')
+
+
+
+
+
+                            if (data.update_metadata.pending_items_in_delivery > 0) {
+
+                                if (object_data.skip_inputting == 'No') {
+                                    $('#create_delivery').removeClass('hide')
+
+                                } else {
+
+                                    $('#quick_create_delivery_operations').removeClass('hide')
+
+
+                                }
+
+                            } else {
+                                $('#create_delivery').addClass('hide')
+                                $('#quick_create_delivery_operations').addClass('hide')
+
+                            }
+
+                        }
+
+
+
+                    }
+
+                    if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
+                        rows.fetch({
+                            reset: true
+                        });
+                    }
+
+                }else{
+                    if (data.update_metadata.state_index >= 30) {
+                        $('#submitted_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 40) {
+                        $('#confirm_node').addClass('complete')
+                    }
+
+                    if (field == 'Purchase Order State') {
+
+                        console.log(state.tab)
+
+                        if (data.value == 'InProcess') {
+                            $('#create_delivery').addClass('hide')
+
+                            $('#all_available_items,#new_item').removeClass('hide')
+
+                            change_tab('supplier.order.items_in_process')
+                        } else if (data.value == 'Submitted') {
+                            $('#all_available_items,#new_item').addClass('hide')
+
+
+                            // if (state.tab == 'supplier.order.all_supplier_parts') {
+                            change_tab('supplier.order.items')
+
+
+
+                        }else if (data.value == 'Confirmed') {
+                            $('#all_available_items,#new_item').addClass('hide')
+
+
+                            // if (state.tab == 'supplier.order.all_supplier_parts') {
                             change_tab('supplier.order.items')
 
 
 
 
 
-                        if (data.update_metadata.pending_items_in_delivery > 0) {
+                            if (data.update_metadata.pending_items_in_delivery > 0) {
 
-                            if (object_data.skip_inputting == 'No') {
-                                $('#create_delivery').removeClass('hide')
+                                if (object_data.skip_inputting == 'No') {
+                                    $('#create_delivery').removeClass('hide')
+
+                                } else {
+
+                                    $('#quick_create_delivery_operations').removeClass('hide')
+
+
+                                }
 
                             } else {
-
-                                $('#quick_create_delivery_operations').removeClass('hide')
-
+                                $('#create_delivery').addClass('hide')
+                                $('#quick_create_delivery_operations').addClass('hide')
 
                             }
 
-                        } else {
-                            $('#create_delivery').addClass('hide')
-                            $('#quick_create_delivery_operations').addClass('hide')
-
                         }
+
+
 
                     }
 
+                    if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
+                        rows.fetch({
+                            reset: true
+                        });
+                    }
                 }
 
-               if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
-                    rows.fetch({
-                        reset: true
-                    });
-                }
+
+
 
 
             }

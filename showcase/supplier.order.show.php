@@ -27,16 +27,15 @@ function get_supplier_order_showcase($data, $smarty, $user) {
     } else {
 
 
-        $smarty->assign('no_production_date_label', sprintf(_('No estimated %s'), '<i class="far fa-industry-alt"></i>'));
+        $smarty->assign('no_production_date_label', _('No estimated production date'));
 
         $smarty->assign('order', $purchase_order);
 
-/**
-        foreach($purchase_order->get_deliveries('objects')  as $delivery){
-            $delivery->update_supplier_delivery_items_state();
-        }
+
+        //foreach($purchase_order->get_deliveries('objects')  as $delivery){
+        //    $delivery->update_supplier_delivery_items_state();
+        //}
         $purchase_order->update_purchase_order_items_state();
-**/
 
 
         $_parent = get_object(
@@ -59,12 +58,15 @@ function get_supplier_order_showcase($data, $smarty, $user) {
                                  'skip_mark_as_dispatched' => $_parent->get('Parent Skip Mark as Dispatched'),
                                  'skip_mark_as_received'   => $_parent->get('Parent Skip Mark as Received'),
                                  'skip_checking'           => $_parent->get('Parent Skip Checking'),
+                                 'type'                    => $purchase_order->get('Purchase Order Type'),
 
 
                              )
                          )
 
         );
+
+
 
 
         if ($purchase_order->get('Purchase Order Submitted Date') != '') {
