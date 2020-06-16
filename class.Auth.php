@@ -100,6 +100,7 @@ class Auth {
         );
 
 
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 

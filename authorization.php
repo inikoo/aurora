@@ -9,7 +9,6 @@
 */
 error_reporting(E_ALL);
 
-
 require_once 'vendor/autoload.php';
 
 include_once 'utils/object_functions.php';
