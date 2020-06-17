@@ -35,7 +35,7 @@ function get_supplier_order_showcase($data, $smarty, $user) {
         //foreach($purchase_order->get_deliveries('objects')  as $delivery){
         //    $delivery->update_supplier_delivery_items_state();
         //}
-        $purchase_order->update_purchase_order_items_state();
+      //  $purchase_order->update_purchase_order_items_state();
 
 
         $_parent = get_object(

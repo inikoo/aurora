@@ -157,32 +157,27 @@ cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
 },
 
 {
-name: "quantity_units",
-label: "{t}Units{/t}",
-defaultOrder:1,
+name: "operations_units",
+label: "",
 editable: false,
-sortType: "toggle",
-{if $sort_key=='quantity_units'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortable:false,
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "quantity_skos",
-label: "{t}SKOs{/t}",
-defaultOrder:1,
+name: "operations_skos",
+label: "",
 editable: false,
-sortType: "toggle",
-{if $sort_key=='quantity_skos'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortable:false,
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "quantity_cartons",
-label: "{t}Cartons{/t}",
-defaultOrder:1,
+name: "operations_cartons",
+label: "",
 editable: false,
-sortType: "toggle",
-{if $sort_key=='quantity_cartons'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortable:false,
+
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
@@ -217,9 +212,9 @@ grid.columns.findWhere({ name: 'weight'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'cbm'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'amount'} ).set("renderable", false)
 
-grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'quantity_cartons'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'operations_units'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'operations_skos'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'operations_cartons'} ).set("renderable", false)
 
 
 if(view=='overview'){
@@ -228,7 +223,7 @@ grid.columns.findWhere({ name: 'description_units'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'ordered_skos'} ).set("renderable", true)
 
 {if $job_order->get('State Index')>=40}
-grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'operations_skos'} ).set("renderable", true)
 {/if}
 
 }else if(view=='properties'){

@@ -1918,24 +1918,28 @@ function get_elements_option($option) {
             'state' => array(
                 'label' => _('Status'),
                 'items' => array(
-                    'InProcess'  => array(
+                    'Planning'  => array(
                         'label'    => _('Planning'),
                         'selected' => true
                     ),
-                    'Submitted'  => array(
+                    'Queued'  => array(
                         'label'    => _('Queued'),
                         'selected' => true
                     ),
-                    'Confirmed'  => array(
+                    'Start_Production'  => array(
                         'label'    => _('Manufacturing'),
                         'selected' => true
                     ),
-                    'Dispatched' => array(
+                    'Finish_Production' => array(
                         'label'    => _('Done'),
                         'selected' => true
                     ),
-                    'Checked'  => array(
+                    'QC_Pass'  => array(
                         'label'    => _('QC passed'),
+                        'selected' => true
+                    ),
+                    'Delivered'  => array(
+                        'label'    => _('Delivered'),
                         'selected' => true
                     ),
                     'Placed'   => array(

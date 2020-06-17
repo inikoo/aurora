@@ -629,16 +629,16 @@ function job_order_items_elements($db, $data) {
 
     $elements_numbers = array(
         'type' => array(
-            'InProcess'  => 0,
-            'Submitted'  => 0,
-            'Confirmed'  => 0,
-            'InDelivery' => 0,
-            'Receiving'  => 0,
-            'Received'   => 0,
+            'Planning'  => 0,
+            'Queued'  => 0,
+            'Start_Production'  => 0,
+            'Finish_Production' => 0,
+            'QC_Pass'  => 0,
+            'Delivered'   => 0,
+            'Placed'   => 0,
             'Cancelled'  => 0
         ),
     );
-
     $sql  = "select count(*) as number,`Purchase Order Transaction State` as element from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction State` ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
@@ -646,23 +646,22 @@ function job_order_items_elements($db, $data) {
     );
     while ($row = $stmt->fetch()) {
 
-        if ($row['element'] == 'ProblemSupplier' or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted') {
-            $row['element'] = 'Submitted';
-        }
 
-        if ($row['element'] == 'Dispatched') {
+        if ($row['element'] == 'InProcess') {
             $row['element'] = 'InDelivery';
-        }
-
-        if ($row['element'] == 'Received' or $row['element'] == 'Checked') {
-            $row['element'] = 'Receiving';
-        }
-
-        if ($row['element'] == 'Placed' or $row['element'] == 'InvoiceChecked') {
-            $row['element'] = 'Received';
-        }
-
-        if ($row['element'] == 'NoReceived') {
+        }elseif ($row['element'] == 'Submitted') {
+            $row['element'] = 'Queued';
+        }elseif ($row['element'] == 'Confirmed') {
+            $row['element'] = 'Start_Production';
+        }elseif ($row['element'] == 'Manufactured') {
+            $row['element'] = 'Finish_Production';
+        }elseif ($row['element'] == 'QC_Pass') {
+            $row['element'] = 'QC_Pass';
+        }elseif ( in_array($row['element'] == 'QC_Pass',['InDelivery','Inputted','Dispatched','Received','Checked'])) {
+            $row['element'] = 'Delivered';
+        }elseif ( in_array($row['element'] == 'QC_Pass',['Placed','InvoiceChecked'])) {
+            $row['element'] = 'Placed';
+        }elseif ($row['element'] == 'NoReceived' or $row['element'] == 'Cancelled') {
             $row['element'] = 'Cancelled';
         }
 

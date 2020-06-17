@@ -1,0 +1,1 @@
+ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Manufactured Date` DATETIME NULL DEFAULT NULL AFTER `Purchase Order Confirmed Date`, ADD `Purchase Order QC Pass Date` DATETIME NULL DEFAULT NULL AFTER `Purchase Order Manufactured Date`;

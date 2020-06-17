@@ -105,4 +105,3 @@ function terminate_employment($account, $db, $data, $editor) {
 }
 
 
-?>

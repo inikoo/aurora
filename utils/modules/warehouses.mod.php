@@ -367,6 +367,15 @@ function get_warehouses_module() {
                 )
 
             ),
+            'production_deliveries' => array(
+                'type'      => 'navigation',
+                'label'     => _('Production deliveries'),
+                'icon'      => 'industry',
+                'reference' => 'warehouse/%d/production_deliveries',
+                'tabs'      => array(
+                    'warehouse.production_deliveries' => array()
+                )
+            ),
             'returns'  => array(
                 'type'      => 'navigation',
                 'label'     => _('Returns'),
@@ -381,6 +390,7 @@ function get_warehouses_module() {
 
                 )
             ),
+
             'feedback' => array(
                 'type'      => 'navigation',
                 'label'     => _('Issues'),
@@ -395,6 +405,7 @@ function get_warehouses_module() {
 
                 )
             ),
+
 
             'return' => array(
                 'type' => 'object',

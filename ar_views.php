@@ -4486,7 +4486,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
                 $_content['tabs']['supplier.order.all_supplier_parts']['class'] = '';
-                $_content['tabs']['supplier.order..items_in_process']['class']   = '';
+                $_content['tabs']['supplier.order.items_in_process']['class']   = '';
                 $_content['tabs']['job_order.items']['class']              = 'hide';
 
 

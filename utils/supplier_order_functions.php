@@ -11,13 +11,12 @@
 */
 
 
-
-function get_purchase_order_items_qty($data){
+function get_purchase_order_items_qty($data) {
 
     $items_qty = $data['units_qty'].'<span class="small discreet">u.</span> | ';
 
 
-    if($data['Part Units Per Package']!=0  and $data['Supplier Part Packages Per Carton']!=0) {
+    if ($data['Part Units Per Package'] != 0 and $data['Supplier Part Packages Per Carton'] != 0) {
 
         if ($data['units_qty'] % $data['Part Units Per Package'] != 0) {
             $items_qty .= '<span class="error">'.number($data['units_qty'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
@@ -27,18 +26,15 @@ function get_purchase_order_items_qty($data){
 
         }
 
-        if ($data['units_qty'] % ($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton']) != 0){
-            $items_qty .='<span class="error">'.number($data['units_qty'] /$data['Part Units Per Package']/$data['Supplier Part Packages Per Carton'],3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
+        if ($data['units_qty'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0) {
+            $items_qty .= '<span class="error">'.number($data['units_qty'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
 
-        }else{
-            $items_qty .=number($data['units_qty'] /$data['Part Units Per Package']/$data['Supplier Part Packages Per Carton'],3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
+        } else {
+            $items_qty .= number($data['units_qty'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
 
         }
 
     }
-
-
-
 
 
     return $items_qty;
@@ -49,27 +45,26 @@ function get_purchase_order_subtotals($data) {
     if ($data['units_qty'] > 0) {
 
 
+        $subtotals .= get_purchase_order_items_qty($data);
 
-        $subtotals.=get_purchase_order_items_qty($data);
 
+        $amount = $data['units_qty'] * $data['Supplier Part Unit Cost'];
 
-        $amount = $data['units_qty'] *$data['Supplier Part Unit Cost'];
-
-        $subtotals .= '<br>'.money($amount,  $data['currency_code']  );
+        $subtotals .= '<br>'.money($amount, $data['currency_code']);
 
         if ($data['currency_code'] != $data['account_currency_code']) {
-            $subtotals .= ' <span >('.money($amount *$data['exchange'], $data['account_currency_code']).')</span>';
+            $subtotals .= ' <span >('.money($amount * $data['exchange'], $data['account_currency_code']).')</span>';
 
         }
 
         if ($data['Part Package Weight'] > 0) {
             $subtotals .= ' '.weight(
-                    $data['Part Package Weight'] * $data['units_qty'] /$data['Part Units Per Package']
+                    $data['Part Package Weight'] * $data['units_qty'] / $data['Part Units Per Package']
                 );
         }
         if ($data['Supplier Part Carton CBM'] > 0) {
             $subtotals .= ' '.number(
-                    $data['units_qty'] * $data['Supplier Part Carton CBM']/$data['Part Units Per Package']/$data['Supplier Part Packages Per Carton']
+                    $data['units_qty'] * $data['Supplier Part Carton CBM'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']
                 ).' m³';
         }
     }
@@ -99,7 +94,8 @@ function get_agent_purchase_order_transaction_data($data) {
             $back_operations .= sprintf(
                 '<span onclick="log_problem_with_supplier_item(this)" data-title="%s" data-transaction_key="%d" data-metadata=\'%s\'  class="button padding_left_20" title="%s"><i class="fa fa-exclamation-circle fa-fw error"></i></span>',
 
-                $data['Supplier Part Reference'].' ('.money($data['Supplier Part Unit Cost'], $data['Currency Code']).') '.number($data['Purchase Order Submitted Units']).'C', $data['Purchase Order Transaction Fact Key'], $data['Metadata'], _('Log problem with supplier')
+                $data['Supplier Part Reference'].' ('.money($data['Supplier Part Unit Cost'], $data['Currency Code']).') '.number($data['Purchase Order Submitted Units']).'C', $data['Purchase Order Transaction Fact Key'], $data['Metadata'],
+                _('Log problem with supplier')
             );
 
             $forward_operations .= sprintf('<span onclick="confirm_item(%d)" class="button padding_left_20" title="%s"><i class="fa fa-check-circle fa-fw"></i></span>', $data['Purchase Order Transaction Fact Key'], _('Confirm'));
@@ -109,7 +105,8 @@ function get_agent_purchase_order_transaction_data($data) {
             $back_operations .= sprintf(
                 '<span onclick="log_problem_with_supplier_item(this)" data-title="%s" data-transaction_key="%d" data-metadata=\'%s\'  class="button padding_left_20" title="%s"><i class="fa fa-exclamation-circle fa-fw error"></i></span>',
 
-                $data['Supplier Part Reference'].' ('.money($data['Supplier Part Unit Cost'], $data['Currency Code']).') '.number($data['Purchase Order Submitted Units']).'C', $data['Purchase Order Transaction Fact Key'], $data['Metadata'], _('Log problem with supplier')
+                $data['Supplier Part Reference'].' ('.money($data['Supplier Part Unit Cost'], $data['Currency Code']).') '.number($data['Purchase Order Submitted Units']).'C', $data['Purchase Order Transaction Fact Key'], $data['Metadata'],
+                _('Log problem with supplier')
             );
 
 
@@ -118,7 +115,8 @@ function get_agent_purchase_order_transaction_data($data) {
             $back_operations .= sprintf(
                 '<span onclick="log_problem_with_supplier_item(this)" data-title="%s" data-transaction_key="%d" data-metadata=\'%s\'  class="button padding_left_20" title="%s"><i class="fa fa-exclamation-circle fa-fw error"></i></span>',
 
-                $data['Supplier Part Reference'].' ('.money($data['Supplier Part Unit Cost'], $data['Currency Code']).') '.number($data['Purchase Order Submitted Units']).'C', $data['Purchase Order Transaction Fact Key'], $data['Metadata'], _('Log problem with supplier')
+                $data['Supplier Part Reference'].' ('.money($data['Supplier Part Unit Cost'], $data['Currency Code']).') '.number($data['Purchase Order Submitted Units']).'C', $data['Purchase Order Transaction Fact Key'], $data['Metadata'],
+                _('Log problem with supplier')
             );
 
             $back_operations    .= sprintf('<span onclick="unconfirm_item(%d)" class="button padding_left_10" title="%s"><i class="fa fa-arrow-circle-left fa-fw"></i></span>', $data['Purchase Order Transaction Fact Key'], _('Unconfirm'));
@@ -249,7 +247,7 @@ function get_purchase_order_transaction_data($data) {
     $state = '';
 
 
-    $delivery_link=' ('.sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')">%s</span>)',strtolower($data['Supplier Delivery Parent']),$data['Supplier Key'],$data['Supplier Delivery Key'],$data['Supplier Delivery Public ID']);
+    $delivery_link = ' ('.sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')">%s</span>)', strtolower($data['Supplier Delivery Parent']), $data['Supplier Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']);
 
     switch ($data['Purchase Order Transaction State']) {
         case 'InProcess':
@@ -257,7 +255,7 @@ function get_purchase_order_transaction_data($data) {
             break;
         case 'Submitted':
             $state .= sprintf('<span  title="%s">%s</span>', _('Submitted to agent'), _('Submitted'));
-            $state.='<br/> <i class="fa error fa-minus-circle button "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
+            $state .= '<br/> <i class="fa error fa-minus-circle button "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
             break;
         case 'ProblemSupplier':
             $state .= sprintf('<span class="error" title="%s">%s</span>', _('Problem with supplier supplier'), _('Problem'));
@@ -350,8 +348,6 @@ function get_purchase_order_transaction_data($data) {
     }
 
 
-
-    
     return array(
 
         $state
@@ -376,20 +372,43 @@ function get_job_order_transaction_data($data) {
     $state = '';
 
 
-    $delivery_link=' ('.sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')">%s</span>)',strtolower($data['Supplier Delivery Parent']),$data['Supplier Key'],$data['Supplier Delivery Key'],$data['Supplier Delivery Public ID']);
+    $delivery_link = ' ('.sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')">%s</span>)', strtolower($data['Supplier Delivery Parent']), $data['Supplier Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']);
 
     switch ($data['Purchase Order Transaction State']) {
         case 'InProcess':
             $state .= _('In process');
             break;
         case 'Submitted':
-            $state.='<i class="fa error fa-minus-circle button padding_right_10 "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
+            $state .= '<i class="fa error fa-minus-circle button padding_right_10 "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
 
             $state .= sprintf('<span  title="%s">%s</span>', _('Queued'), _('Queued'));
             break;
 
         case 'Confirmed':
-            $state .= _('Manufacturing').' <i class=" fal padding_left_10 padding_right_10  fa-flag-checkered"></i>';
+            $state = '<span class="action_container">';
+
+            $state .= _('Manufacturing');
+
+            $state .= ' <i class="action_container_trigger  button fal padding_left_10 padding_right_10  fa-flag-checkered"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
+            $state .= '<span class="follow_on_finish_manufacture hide">'._('Finishing').'</span>';
+            $state .= '</span>';
+
+            break;
+        case 'Manufactured':
+            $state = '<span class="action_container">';
+            $state .= ' <i class="action_container_trigger error button fal padding_left_10 padding_right_10  fa-flip-horizontal fa-flag-checkered"  data-action="confirm" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i> ';
+
+            $state .= _('Manufactured');
+            $state .= ' <i class="action_container_trigger  button fal padding_left_10 padding_right_10  fa-siren-on"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
+            $state .= '<span class="follow_on hide">'._('Finishing').'</span>';
+            $state .= '</span>';
+            break;
+        case 'QC_Pass':
+            $state = '<span class="action_container">';
+            $state .= ' <i class="action_container_trigger error button fal padding_left_10 padding_right_10 fa-siren"  data-action="undo_qc_pass" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i> ';
+
+            $state .= _('QC passed');
+            $state .= '</span>';
             break;
         case 'ReceivedAgent':
             $state .= sprintf('<span title="%s">%s</span>', _('Goods received from supplier'), _('In agent warehouse'));
@@ -428,12 +447,95 @@ function get_job_order_transaction_data($data) {
     }
 
 
-
-
     return array(
 
         $state
 
     );
+
+}
+
+function get_job_order_operations($data) {
+
+    $skos_per_carton  = $data['Purchase Order Submitted SKOs Per Carton'];
+    $units_per_sko    = $data['Purchase Order Submitted Units Per SKO'];
+
+    $units_qty = $data['Purchase Order Submitted Units'];
+    if ($skos_per_carton != 0) {
+        $skos_qty = $units_qty / $units_per_sko;
+    } else {
+        $skos_qty = 0;
+    }
+    if ($skos_per_carton != 0) {
+        $cartons_qty = $skos_qty / $skos_per_carton;
+    } else {
+        $cartons_qty = 0;
+
+    }
+    $transaction_key = $data['Purchase Order Transaction Fact Key'];
+
+    if (
+
+        floor($data['Purchase Order Submitted Units']) != $data['Purchase Order Submitted Units'] or floor($skos_qty) != $skos_qty
+
+    ) {
+        $class = 'error';
+    } else {
+        $class = '';
+    }
+
+
+    if ($data['Purchase Order Transaction State'] == 'Confirmed') {
+
+        $operation_units = sprintf(
+            '<span   class="invisible delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{ "key":%d,  "type": "Units", "sko_factor":%d , "carton_factor":%d }\'   >
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input  data-qty_type="unit"  class=" create_delivery_item_qty order_units_qty %s width_50" style="text-align: center" value="%s" ovalue="%s">
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+            $transaction_key, $transaction_key, $units_per_sko, $skos_per_carton * $units_per_sko, $class, ($units_qty == 0 ? '' : $units_qty + 0), ($units_qty == 0 ? '' : $units_qty + 0)
+
+        );
+
+        $operation_skos = sprintf(
+            '<span  class="invisible delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{"type": "SKOs", "unit_factor":%d , "carton_factor":%d }\'   >
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input data-qty_type="sko" class=" create_delivery_item_qty order_skos_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s">
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i>
+                <i class="padding_left_10 padding_right_10 fa-fw save changed fa fa-cloud" onclick="save_job_order_action(this)" ></i>
+                </span>
+                
+                ',
+
+
+            $transaction_key, $units_per_sko, $skos_per_carton, $class, ($skos_qty == 0 ? '' : $skos_qty + 0), ($skos_qty == 0 ? '' : $skos_qty + 0)
+
+        );
+
+        $operation_cartons = sprintf(
+            '<span   class="invisible delivery_quantity_%d delivery_quantity_item_container on"   data-settings=\'{"type": "Cartons", "unit_factor":%d , "sko_factor":%d }\'   >
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input data-qty_type="carton"  class=" create_delivery_item_qty order_cartons_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s">
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+            $transaction_key, $units_per_sko * $skos_per_carton, $skos_per_carton, $class, ($cartons_qty == 0 ? '' : $cartons_qty + 0), ($cartons_qty == 0 ? '' : $cartons_qty + 0)
+
+        );
+
+    } else {
+        $operation_units   = '';
+        $operation_skos    = '';
+        $operation_cartons = '';
+    }
+
+
+    return [
+        $operation_units,
+        $operation_skos,
+        $operation_cartons
+    ];
+
 
 }

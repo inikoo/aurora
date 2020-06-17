@@ -569,15 +569,20 @@ function save_order_operation(element) {
 
             }
             else if (object == 'purchase_order') {
-
+                console.log(object_data.type)
 
                 if(object_data.type=='Production'){
 
+                    console.log(data)
+                    console.log(field)
                     if (data.update_metadata.state_index >= 30) {
                         $('#submitted_node').addClass('complete')
                     }
                     if (data.update_metadata.state_index >= 40) {
                         $('#confirm_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 50) {
+                        $('#production_node').addClass('complete')
                     }
 
                     if (field == 'Purchase Order State') {

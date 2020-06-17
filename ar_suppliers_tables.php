@@ -1776,8 +1776,6 @@ function job_order_items($_data, $db, $user, $account) {
             }
 
 
-
-
             $units_per_carton = $data['Purchase Order Submitted Units Per SKO'] * $data['Purchase Order Submitted SKOs Per Carton'];
             $skos_per_carton  = $data['Purchase Order Submitted SKOs Per Carton'];
             $units_per_sko    = $data['Purchase Order Submitted Units Per SKO'];
@@ -1822,14 +1820,14 @@ function job_order_items($_data, $db, $user, $account) {
             $state .= '</span>';
 
 
-            $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
-            $ordered_units=$data['Purchase Order Submitted Units'];
+            $items_qty     = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
+            $ordered_units = $data['Purchase Order Submitted Units'];
 
             if ($units_per_sko == 0) {
                 $items_qty .= '<span class="error">Units per SKO=0</span> ';
             } else {
 
-                $ordered_skos=number($data['Purchase Order Submitted Units'] / $units_per_sko, 3);
+                $ordered_skos = number($data['Purchase Order Submitted Units'] / $units_per_sko, 3);
 
                 if ($data['Purchase Order Submitted Units'] % $units_per_sko != 0) {
                     $items_qty .= '<span class="error">'.$ordered_skos.'<span class="small discreet">sko.</span></span> | ';
@@ -1839,7 +1837,7 @@ function job_order_items($_data, $db, $user, $account) {
 
                 }
 
-                $ordered_cartons=number($data['Purchase Order Submitted Units'] / $units_per_sko / $skos_per_carton, 3);
+                $ordered_cartons = number($data['Purchase Order Submitted Units'] / $units_per_sko / $skos_per_carton, 3);
 
                 if ($data['Purchase Order Submitted Units'] % ($units_per_sko * $skos_per_carton) != 0) {
                     $items_qty .= '<span class="error">'.$ordered_cartons.'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
@@ -1851,7 +1849,6 @@ function job_order_items($_data, $db, $user, $account) {
             }
 
             $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
-
 
 
             $amount = money($data['Purchase Order Net Amount'], $purchase_order->get('Purchase Order Currency Code'));
@@ -1957,49 +1954,7 @@ function job_order_items($_data, $db, $user, $account) {
             }
 
 
-
-            if ($data['Purchase Order Transaction State'] == 'Confirmed') {
-                $operations = sprintf('<i key="%d" class="far fa-fw fa-check-square  button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']);
-
-                $quantity_units = sprintf(
-                    '<span   class="delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{ "key":%d,  "type": "Units", "sko_factor":%d , "carton_factor":%d }\'   >
-                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                <input  class=" create_delivery_item_qty order_units_qty %s width_50" style="text-align: center" value="%s" ovalue="%s">
-                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-
-
-                    $transaction_key, $transaction_key, $units_per_sko, $skos_per_carton * $units_per_sko, $class, ($units_qty == 0 ? '' : $units_qty + 0), ($units_qty == 0 ? '' : $units_qty + 0)
-
-                );
-
-                $quantity_skos = sprintf(
-                    '<span  class="delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{"type": "SKOs", "unit_factor":%d , "carton_factor":%d }\'   >
-                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                <input class=" create_delivery_item_qty order_skos_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s">
-                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-
-
-                    $transaction_key, $units_per_sko, $skos_per_carton, $class, ($skos_qty == 0 ? '' : $skos_qty + 0), ($skos_qty == 0 ? '' : $skos_qty + 0)
-
-                );
-
-                $quantity_cartons = sprintf(
-                    '<span   class="delivery_quantity_%d delivery_quantity_item_container on"   data-settings=\'{"type": "Cartons", "unit_factor":%d , "sko_factor":%d }\'   >
-                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                <input class=" create_delivery_item_qty order_cartons_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s">
-                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-
-
-                    $transaction_key, $units_per_sko * $skos_per_carton, $skos_per_carton, $class, ($cartons_qty == 0 ? '' : $cartons_qty + 0), ($cartons_qty == 0 ? '' : $cartons_qty + 0)
-
-                );
-
-            } else {
-                $operations       = '';
-                $quantity_units   = '';
-                $quantity_skos    = '';
-                $quantity_cartons = '';
-            }
+            list($operations_units, $operations_skos, $operations_cartons) = get_job_order_operations($data);
 
 
             $description_skos .= '<i  onclick="show_item_po_note(this)" class="item_po_note_new  very_discreet_on_hover  '.($data['Note to Supplier'] == '' ? '' : 'hide')
@@ -2015,7 +1970,7 @@ function job_order_items($_data, $db, $user, $account) {
             $table_data[] = array(
 
                 'id'                  => (integer)$data['Purchase Order Transaction Fact Key'],
-                'operations'          => $operations,
+                //  'operations'          => $operations,
                 'reference'           => $reference,
                 'unit_description'    => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
                 'units_per_sko'       => number($units_per_sko),
@@ -2027,16 +1982,16 @@ function job_order_items($_data, $db, $user, $account) {
                 'description_units'   => $description_units,
                 'description_skos'    => $description_skos,
                 'description_cartons' => $description_cartons,
-                'quantity_units'      => $quantity_units,
-                'quantity_skos'       => $quantity_skos,
-                'quantity_cartons'    => $quantity_cartons,
+                'ordered_units'       => $ordered_units,
+                'ordered_skos'        => $ordered_skos,
+                'ordered_cartons'     => $ordered_cartons,
                 'items_qty'           => $items_qty,
                 'amount'              => $amount,
                 'weight'              => $weight,
                 'cbm'                 => $cbm,
-                'ordered_units'=>$ordered_units,
-                'ordered_skos'=>$ordered_skos,
-                'ordered_cartons'=>$ordered_cartons,
+                'operations_units'    => $operations_units,
+                'operations_skos'     => $operations_skos,
+                'operations_cartons'  => $operations_cartons,
 
             );
 
@@ -2747,8 +2702,6 @@ function delivery_checking_items($_data, $db, $user, $account) {
     $rtext_label = 'item';
     include_once 'utils/supplier_order_functions.php';
 
-    
-
 
     $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
 
@@ -3198,7 +3151,6 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
     $purchase_order = get_object('PurchaseOrder', $_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
-
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
