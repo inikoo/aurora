@@ -3,7 +3,6 @@
     "aws/aws-sdk-php": "^3.55",
     "aws/aws-php-sns-message-validator": "^1.4",
     "symfony/http-foundation": "^3.4",
-    "mpdf/mpdf": "^7.1",
     "commerceguys/addressing": "^1.0",
     "braintree/braintree_php" : "4.5.0",
     "smarty/smarty": "^3.1",
@@ -30,6 +29,7 @@
     "ext-soap": "*",
     "ext-imagick": "*",
     "cloudflare/sdk": "^1.1",
-    "postmen/sdk-php": "^1.0"
+    "postmen/sdk-php": "^1.0",
+    "mpdf/mpdf": "^8.0"
   }
 }
