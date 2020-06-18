@@ -2935,7 +2935,7 @@ class Order extends DB_Table {
         include_once 'class.SupplierDelivery.php';
 
         $account = get_object('Account', 1);
-        // $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
+
 
         $store = get_object('Store', $this->data['Order Store Key']);
 
@@ -2958,8 +2958,7 @@ class Order extends DB_Table {
             'Supplier Delivery Currency Exchange'   => 1,
             'Supplier Delivery Dispatched Date'     => gmdate('Y-m-d H:i:s'),
             'Supplier Delivery State'               => 'Dispatched',
-            //'Supplier Delivery Warehouse Key'=>$warehouse->id,
-            //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
+
 
             'editor' => $this->editor
         );

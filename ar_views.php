@@ -4520,7 +4520,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
             } else {
 
-                exit('xx');
+
 
                 $_content['tabs']['supplier.order.all_supplier_parts']['class'] = 'hide';
                 $_content['tabs']['supplier.order.items_in_process']['class']   = 'hide';

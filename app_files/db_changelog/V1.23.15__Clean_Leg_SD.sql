@@ -1,0 +1,1 @@
+ALTER TABLE `Supplier Delivery Dimension` DROP `Supplier Delivery Receipt Confirmed Date`;

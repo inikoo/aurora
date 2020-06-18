@@ -92,13 +92,12 @@
         </li>
 
 
-            <li id="estimated_send_node" class=" li {if $order->get('State Index')>=80  }hide{/if}"  ">
+            <li id="estimated_send_node" class=" li {if $order->get('State Index')>=100 }complete{/if}  ">
                 <div class="label">
                     <span class="state ">{t}In location{/t} <span></i></span></span>
                 </div>
                 <div class="timestamp">
-                    <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp;
-{$order->get('Estimated Receiving Formatted Date')}
+                    <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp; {$order->get('Production In Location Formatted Date')}
                 </div>
                 <div class="dot">
                 </div>
@@ -483,6 +482,41 @@
         </table>
 
     </div>
+
+    <div class="block " style="align-items: stretch;flex: 1 ;padding-top: 0px">
+
+        <div id="create_delivery"
+             class="delivery_node {if   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
+             style="height:30px;clear:both;border-bottom:1px solid #ccc">
+            <div id="back_operations">
+            </div>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t}</span>
+            <div id="forward_operations">
+                <div id="received_operations"
+                     class="order_operation">
+                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
+                         title="{t}Input delivery note{/t}">
+                        <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+
+            {foreach from=$deliveries item=dn}
+
+                <div class="delivery_node" style="height:30px;clear:both;border-bottom:1px solid #ccc">
+                    <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onclick="change_view('production/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')">
+                            <i class="fal fa-hand-holding-heart padding_right_5"></i> {$dn->get('Public ID')}</span> <span class="small">({$dn->get('State')})</span></span>
+                </div>
+            {/foreach}
+        </div>
+
+
+
+            <div style="clear:both">
+        </div>
+    </div>
     <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px ">
 
 
@@ -505,38 +539,6 @@
         <div style="clear:both">
         </div>
     </div>
-    <div class="block " style="align-items: stretch;flex: 1 ;padding-top: 0px">
-        <div id="create_delivery"
-             class="delivery_node {if   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
-             style="height:30px;clear:both;border-bottom:1px solid #ccc">
-            <div id="back_operations">
-            </div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t}</span>
-            <div id="forward_operations">
-                <div id="received_operations"
-                     class="order_operation">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
-                         title="{t}Input delivery note{/t}">
-                        <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div>
-            {foreach from=$deliveries item=dn}
-                <div class="delivery_node" style="height:30px;clear:both;border-bottom:1px solid #ccc">
-                    <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onclick="change_view('production/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')">
-                            <i class="fal fa-clipboard-check"></i> {$dn->get('Public ID')}</span> <span class="small">({$dn->get('State')})</span></span>
-                </div>
-            {/foreach}
-        </div>
-
-
-
-            <div style="clear:both">
-        </div>
-    </div>
-
     <div style="clear:both">
     </div>
 </div>

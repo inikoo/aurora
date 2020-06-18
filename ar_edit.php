@@ -2558,7 +2558,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.SupplierDelivery.php';
 
             $data['fields_data']['user'] = $user;
-            $object                      = $parent->create_delivery($data['fields_data']);
+            $object                      = $parent->create_supplier_delivery($data['fields_data']);
 
             if (!$parent->error) {
 

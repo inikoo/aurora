@@ -363,27 +363,16 @@ function save_order_operation(element) {
             for (var key in data.update_metadata.class_html) {
                 $('.' + key).html(data.update_metadata.class_html[key])
             }
-
             for (var key in data.update_metadata.hide) {
                 $('.' + data.update_metadata.hide[key]).addClass('hide')
             }
-
             for (var key in data.update_metadata.show) {
                 $('.' + data.update_metadata.show[key]).removeClass('hide')
             }
-
-
             $('.order_operation').addClass('hide')
-           // $('.items_operation').addClass('hide')
-
-
             for (var key in data.update_metadata.operations) {
-                //console.log('#' + data.update_metadata.operations[key])
                 $('#' + data.update_metadata.operations[key]).removeClass('hide')
             }
-
-
-
 
             $('.timeline .li').removeClass('complete')
 
@@ -573,75 +562,12 @@ function save_order_operation(element) {
 
                 if(object_data.type=='Production'){
 
-                    console.log(data)
-                    console.log(field)
-                    if (data.update_metadata.state_index >= 30) {
-                        $('#submitted_node').addClass('complete')
-                    }
-                    if (data.update_metadata.state_index >= 40) {
-                        $('#confirm_node').addClass('complete')
-                    }
-                    if (data.update_metadata.state_index >= 50) {
-                        $('#production_node').addClass('complete')
-                    }
 
-                    if (field == 'Purchase Order State') {
+                    post_production_job_order_state_change(data)
 
 
-                        if (data.value == 'InProcess') {
-                            $('#create_delivery').addClass('hide')
-
-                            $('#all_available_items,#new_item').removeClass('hide')
-
-                            change_tab('supplier.order.items_in_process')
-                        } else if (data.value == 'Submitted') {
-                            $('#all_available_items,#new_item').addClass('hide')
-
-                            change_tab('job_order.items')
-
-
-
-                        }else if (data.value == 'Confirmed') {
-                            $('#all_available_items,#new_item').addClass('hide')
-
-
-                            change_tab('job_order.items')
-
-
-
-
-
-                            if (data.update_metadata.pending_items_in_delivery > 0) {
-
-                                if (object_data.skip_inputting == 'No') {
-                                    $('#create_delivery').removeClass('hide')
-
-                                } else {
-
-                                    $('#quick_create_delivery_operations').removeClass('hide')
-
-
-                                }
-
-                            } else {
-                                $('#create_delivery').addClass('hide')
-                                $('#quick_create_delivery_operations').addClass('hide')
-
-                            }
-
-                        }
-
-
-
-                    }
-
-                    if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
-                        rows.fetch({
-                            reset: true
-                        });
-                    }
-
-                }else{
+                }
+            else{
                     if (data.update_metadata.state_index >= 30) {
                         $('#submitted_node').addClass('complete')
                     }

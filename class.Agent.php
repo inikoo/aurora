@@ -753,9 +753,9 @@ class Agent extends SubjectSupplier {
     }
 
 
-    function create_delivery($data) {
+    function create_supplier_delivery($data) {
 
-
+        $account=get_object('Account',1);
         $delivery_data = array(
             'Supplier Delivery Public ID'           => $this->get_next_delivery_public_id(),
             'Supplier Delivery Parent'              => 'Agent',
@@ -771,10 +771,8 @@ class Agent extends SubjectSupplier {
             'Supplier Delivery Incoterm'       => $this->get('Default Incoterm'),
             'Supplier Delivery Port of Import' => $this->get('Default Port of Import'),
             'Supplier Delivery Port of Export' => $this->get('Default Port of Export'),
-            //  'Supplier Delivery Purchase Order Key'  => $this->id,
+            'Supplier Delivery Warehouse Key'       => $account->get('Account Default Warehouse'),
 
-            //'Supplier Delivery Warehouse Key'=>$warehouse->id,
-            //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
 
             'editor' => $this->editor
         );

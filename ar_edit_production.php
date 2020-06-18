@@ -28,7 +28,7 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
-    case 'update_job_order_item':
+    case 'job_order_forward_item_action':
         $data = prepare_values(
             $_REQUEST, array(
                          'key'      => array('type' => 'key'),
@@ -38,8 +38,20 @@ switch ($tipo) {
 
                      )
         );
-        update_job_order_item($data, $db, $editor);
+        job_order_forward_item_action($data, $db, $editor);
         break;
+    case 'job_order_backward_item_action':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'      => array('type' => 'key'),
+                         'action'   => array('type' => 'string'),
+
+                     )
+        );
+        job_order_backward_item_action($data, $db, $editor);
+        break;
+
+
 
 
     default:
@@ -53,7 +65,7 @@ switch ($tipo) {
 }
 
 
-function update_job_order_item($data, $db, $editor) {
+function job_order_forward_item_action($data, $db, $editor) {
 
     print_r($data);
 
@@ -104,6 +116,77 @@ function update_job_order_item($data, $db, $editor) {
         }
 
 
+    }
+
+
+}
+
+
+
+function job_order_backward_item_action($data, $db, $editor) {
+
+
+
+    $sql  =
+        "select `Purchase Order Submitted Units`,`Purchase Order Manufactured Units`,`Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Submitted SKOs Per Carton` from  `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $data['key']
+        )
+    );
+    if ($row = $stmt->fetch()) {
+        $purchase_order         = get_object('Purchase_Order', $row['Purchase Order Key']);
+        $purchase_order->editor = $editor;
+
+
+
+        switch ($data['action']) {
+
+            case 'undo_manufactured':
+
+                if ($row['Purchase Order Transaction State'] == 'Manufactured') {
+                    $purchase_order->update_purchase_order_transaction($row['Purchase Order Transaction Fact Key'], 'undo_manufactured', $row['Purchase Order Submitted Units']);
+
+                } else {
+                    $response = array(
+                        'state' => 405,
+                        'resp'  => 'Can not do this '.$row['Purchase Order Transaction State']
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+
+
+                break;
+            case 'undo_qc_pass':
+
+                if ($row['Purchase Order Transaction State'] == 'QC_Pass') {
+                    $purchase_order->update_purchase_order_transaction($row['Purchase Order Transaction Fact Key'], 'Manufactured', $row['Purchase Order Manufactured Units']);
+
+                } else {
+                    $response = array(
+                        'state' => 405,
+                        'resp'  => 'Can not do this '.$row['Purchase Order Transaction State']
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+
+
+                break;
+            default:
+                break;
+        }
+
+
+        $response = array(
+            'state'              => 200,
+            'update_metadata'    => $purchase_order->get_update_metadata(),
+
+        );
+        echo json_encode($response);
+        exit;
     }
 
 

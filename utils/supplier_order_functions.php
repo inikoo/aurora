@@ -389,17 +389,17 @@ function get_job_order_transaction_data($data) {
 
             $state .= _('Manufacturing');
 
-            $state .= ' <i class="action_container_trigger  button fal padding_left_10 padding_right_10  fa-flag-checkered"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
+            $state .= ' <i class="action_container_trigger  button fal padding_left_10 padding_right_10  fa-flag-checkered"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="save_job_order_forward_action(this)" ></i>';
             $state .= '<span class="follow_on_finish_manufacture hide">'._('Finishing').'</span>';
             $state .= '</span>';
 
             break;
         case 'Manufactured':
             $state = '<span class="action_container">';
-            $state .= ' <i class="action_container_trigger error button fal padding_left_10 padding_right_10  fa-flip-horizontal fa-flag-checkered"  data-action="confirm" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i> ';
+            $state .= ' <i class="action_container_trigger error button fal padding_left_10 padding_right_10  fa-flip-horizontal fa-flag-checkered"  data-action="undo_manufactured" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i> ';
 
             $state .= _('Manufactured');
-            $state .= ' <i class="action_container_trigger  button fal padding_left_10 padding_right_10  fa-siren-on"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
+            $state .= ' <i class="action_container_trigger  button fal padding_left_10 padding_right_10  fa-siren-on"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="save_job_order_forward_action(this)" ></i>';
             $state .= '<span class="follow_on hide">'._('Finishing').'</span>';
             $state .= '</span>';
             break;

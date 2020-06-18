@@ -264,12 +264,45 @@ class PurchaseOrder extends DB_Table {
         }
     }
 
-    function create_delivery($data) {
+    function create_supplier_delivery($data) {
 
         include_once 'utils/currency_functions.php';
 
         $account = get_object('Account', 1);
-        // $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
+
+        $ok_items = false;
+        if ($this->get('Purchase Order Type') == 'Production') {
+
+            $sql = "SELECT count(*) as num  FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction State`='QC_Pass' and `Purchase Order QC Pass Units`>0  and  `Purchase Order Key`=?";
+
+            $stmt = $this->db->prepare($sql);
+
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                if ($row['num'] > 0) {
+                    $ok_items = true;
+                }
+
+            }
+        } else {
+            foreach ($data['items'] as $units_qty) {
+                if (is_nmeric($units_qty) and $units_qty > 0) {
+                    $ok_items = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$ok_items) {
+            $this->error = true;
+            $this->msg   = _('No items found');
+
+            return false;
+        }
 
 
         $delivery_data = array(
@@ -291,13 +324,9 @@ class PurchaseOrder extends DB_Table {
             'Supplier Delivery Production'         => $this->get('Purchase Order Production'),
             'Supplier Delivery Purchase Order Key' => $this->id,
             'Supplier Delivery Type'               => $this->get('Purchase Order Type'),
-            'Supplier Delivery Currency Exchange'  => currency_conversion(
-                $this->db, $this->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'
-            ),
+            'Supplier Delivery Warehouse Key'      => $account->get('Account Default Warehouse'),
+            'Supplier Delivery Currency Exchange'  => currency_conversion($this->db, $this->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'),
 
-
-            //'Supplier Delivery Warehouse Key'=>$warehouse->id,
-            //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
 
             'editor' => $this->editor
         );
@@ -312,82 +341,63 @@ class PurchaseOrder extends DB_Table {
             $this->error = true;
             $this->msg   = $delivery->msg;
 
-        } elseif ($delivery->new or true) {
+        } elseif ($delivery->new) {
 
 
-            foreach ($data['items'] as $potf_key => $units_qty) {
-
+            if ($delivery->get('Supplier Delivery Type') == 'Production') {
 
                 $sql =
-                    "SELECT `Purchase Order Submitted Unit Cost`,`Purchase Order Weight`,`Purchase Order CBM`,`Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Submitted Units` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=?";
-
+                    "SELECT `Purchase Order QC Pass Units`,`Purchase Order Transaction Fact Key`,`Purchase Order Submitted Unit Cost`,`Purchase Order Weight`,`Purchase Order CBM`,`Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Submitted Units` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction State`='QC_Pass' and `Purchase Order QC Pass Units`>0  and  `Purchase Order Key`=?";
 
                 $stmt = $this->db->prepare($sql);
+
                 $stmt->execute(
                     array(
-                        $potf_key
+                        $this->id
                     )
                 );
-                if ($row = $stmt->fetch()) {
-                    if ($row['Purchase Order Submitted Units'] != 0) {
-                        $net   = $units_qty * $row['Purchase Order Submitted Unit Cost'];
-                        $extra = $units_qty * $row['Purchase Order Extra Cost Amount'] / $row['Purchase Order Submitted Units'];
+                while ($row = $stmt->fetch()) {
 
-                        if ($row['Purchase Order Weight'] == '') {
-                            $weight = '';
-                        } else {
-                            $weight = $units_qty * $row['Purchase Order Weight'] / $row['Purchase Order Submitted Units'];
-                        }
-
-                        if ($row['Purchase Order CBM'] == '') {
-                            $cbm = '';
-                        } else {
-                            $cbm = $units_qty * $row['Purchase Order CBM'] / $row['Purchase Order Submitted Units'];
-                        }
-
-
-                    } else {
-                        $net    = 0;
-                        $extra  = 0;
-                        $weight = 0;
-                        $cbm    = 0;
-                    }
-
-
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET 
-                                `Purchase Order Transaction State`=?,
-                                `Supplier Delivery Net Amount`=?,
-                                `Supplier Delivery Extra Cost Amount`=?,
-                                `Supplier Delivery Units`=?,
-                                `Supplier Delivery Weight`=?,
-                                 `Supplier Delivery CBM`=?,
-                                
-                                `Supplier Delivery Key`=?,`Supplier Delivery Transaction State`=?  ,`Supplier Delivery Transaction Placed`='No' WHERE `Purchase Order Transaction Fact Key`=?";
-
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            'Inputted',
-                            $net,
-                            $extra,
-                            $units_qty,
-                            $weight,
-                            $cbm,
-                            $delivery->id,
-                            'InProcess',
-                            $potf_key
-                        )
-                    );
+                    $this->create_delivery_transaction($row['Purchase Order QC Pass Units'], $delivery->id, $row);
 
                 }
 
 
+            } else {
+                foreach ($data['items'] as $purchase_order_transaction_key => $units_qty) {
+
+
+                    $sql =
+                        "SELECT `Purchase Order Transaction Fact Key`,`Purchase Order Submitted Unit Cost`,`Purchase Order Weight`,`Purchase Order CBM`,`Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Submitted Units` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=?";
+
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $purchase_order_transaction_key
+                        )
+                    );
+                    if ($row = $stmt->fetch()) {
+
+
+                        $this->create_delivery_transaction($units_qty, $delivery->id, $row);
+
+
+                    }
+
+
+                }
             }
+
+
             $delivery->update_totals();
+
             $this->update_totals();
 
             $parent = get_object(
                 $this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']
             );
+
 
             if ($parent->get('Parent Skip Mark as Received') == 'Yes') {
                 $delivery->update_state('Received');
@@ -400,6 +410,81 @@ class PurchaseOrder extends DB_Table {
         return $delivery;
 
     }
+
+    private function create_delivery_transaction($units_qty, $delivery_key, $data) {
+        $ratio_delivered = $units_qty / $data['Purchase Order Submitted Units'];
+
+        if ($data['Purchase Order Submitted Units'] != 0) {
+            $net   = $units_qty * $data['Purchase Order Submitted Unit Cost'];
+            $extra = $ratio_delivered * $data['Purchase Order Extra Cost Amount'];
+
+            if ($data['Purchase Order Weight'] == '') {
+                $weight = null;
+            } else {
+                $weight = $ratio_delivered * $data['Purchase Order Weight'];
+            }
+
+            if ($data['Purchase Order CBM'] == '') {
+                $cbm = null;
+            } else {
+                $cbm = $ratio_delivered * $data['Purchase Order CBM'];
+            }
+
+
+        } else {
+            $net    = 0;
+            $extra  = 0;
+            $weight = 0;
+            $cbm    = 0;
+        }
+
+
+        $sql = "UPDATE `Purchase Order Transaction Fact` SET 
+                                `Purchase Order Transaction State`=?,
+                                `Supplier Delivery Net Amount`=?,
+                                `Supplier Delivery Extra Cost Amount`=?,
+                                `Supplier Delivery Units`=?,
+                                `Supplier Delivery Weight`=?,
+                                 `Supplier Delivery CBM`=?,
+                                
+                                `Supplier Delivery Key`=?,`Supplier Delivery Transaction State`=?  ,`Supplier Delivery Transaction Placed`='No' WHERE `Purchase Order Transaction Fact Key`=?";
+
+
+        $stmt = $this->db->prepare($sql);
+
+
+        if (!$stmt->execute(
+            array(
+                'Inputted',
+                $net,
+                $extra,
+                $units_qty,
+                $weight,
+                $cbm,
+                $delivery_key,
+                'InProcess',
+                $data['Purchase Order Transaction Fact Key']
+            )
+        )) {
+
+            print_r(
+                array(
+                    'Inputted',
+                    $net,
+                    $extra,
+                    $units_qty,
+                    $weight,
+                    $cbm,
+                    $delivery_key,
+                    'InProcess',
+                    $data['Purchase Order Transaction Fact Key']
+                )
+            );
+            print_r($stmt->errorInfo());
+        }
+
+    }
+
 
     function get($key = '') {
         $account = get_object('account', 1);
@@ -706,7 +791,7 @@ class PurchaseOrder extends DB_Table {
                 if ($this->data['Purchase Order Manufactured Date'] == '') {
 
                     if ($this->data['Purchase Order Estimated Production Date'] == '') {
-                        return '<span class="very_discreet italic"><i class="fal fa-exclamation-circle"></i> '._('No estimated in production date').'</span>';
+                        return '<span class="very_discreet italic"><i class="fal fa-exclamation-circle"></i> '._('No ETA').'</span>';
                     } else {
                         return strftime(
                             "%e %b %Y", strtotime($this->data['Purchase Order Estimated Production Dat'].' +0:00')
@@ -744,6 +829,74 @@ class PurchaseOrder extends DB_Table {
                         "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order QC Pass Date'].' +0:00')
                     );
                 }
+
+            case 'Production Delivered Formatted Date':
+                if ($this->data['Purchase Order Received Date'] == '') {
+                    return '';
+                }
+
+                if (date('Y-m-d', strtotime($this->data['Purchase Order QC Pass Date'])) == date('Y-m-d', strtotime($this->data['Purchase Order Received Date']))) {
+                    return strftime(
+                        "%l:%M%p ", strtotime($this->data['Purchase Order Received Date'].' +0:00')
+                    );
+
+                } else {
+                    return strftime(
+                        "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Received Date'].' +0:00')
+                    );
+                }
+            case 'Production In Location Formatted Date':
+
+                if ($this->get('State Index') <= 90 and $this->get('State Index') > 0) {
+
+                    //if ($this->get('Estimated Receiving Datetime')) {
+                    //    return strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Datetime').' +0:00'));
+                    //} else {
+                    //    return '';
+                    //}
+
+                    $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+
+                    if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
+
+
+                        if ($this->get('State Index') <= 50) {
+                            return '<span class="discreet">'.sprintf(_('%s after production'), $parent->get('Delivery Time')).'</span>';
+
+                        } else {
+
+
+                            $_date = strtotime($this->data['Purchase Order Received Date'].' +'.$parent->get($parent->table_name.' Average Delivery Days').' days');
+
+                            return '<span class="discreet italic">'.strftime("%e %b %Y", $_date).'</span>';
+
+                        }
+
+                    } else {
+
+
+                        return '';
+                    }
+
+                } elseif ($this->get('State Index') > 90) {
+                    if ($this->data['Purchase Order Consolidated Date'] == '') {
+                        return '';
+                    }
+
+                    if (date('Y-m-d', strtotime($this->data['Purchase Order Received Date'])) == date('Y-m-d', strtotime($this->data['Purchase Order Consolidated Date']))) {
+                        return strftime(
+                            "%l:%M%p ", strtotime($this->data['Purchase Order Consolidated Date'].' +0:00')
+                        );
+
+                    } else {
+                        return strftime(
+                            "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Consolidated Date'].' +0:00')
+                        );
+                    }
+                }
+
+                break;
 
 
             case 'Received Date':
@@ -838,7 +991,7 @@ class PurchaseOrder extends DB_Table {
 
             case ('State'):
 
-                if ($this->data['Purchase Order Production'] == 'Yes') {
+                if ($this->data['Purchase Order Type'] == 'Production') {
                     switch ($this->data['Purchase Order State']) {
                         case 'InProcess':
                             return _('Planning');
@@ -852,25 +1005,16 @@ class PurchaseOrder extends DB_Table {
                         case 'QC_Pass':
                             return _('QC Passed');
                         case 'Inputted':
-                            return _('Delivery in process');
-
                         case 'Dispatched':
-                            return _('Manufacturing completed');
-
                         case 'Received':
-                            return _('Received');
-
                         case 'Checked':
-                            return _('Checked');
+                            return '<i class="success fa fa-check padding_right_5"></i>'._('Delivered');
 
                         case 'Placed':
-                            return _('Booked in');
-
                         case 'Costing':
-                            return _('Booked in').' ('._('Review costing').')';
-
                         case 'InvoiceChecked':
-                            return _('Booked in').' ('._('Costing done').')';
+                            return '<i class="success fa fa-check padding_right_5"></i>'._('Delivered').' <i class="far padding_left_5 fa-inventory"></i>';
+
 
                         case 'Cancelled':
                             return _('Cancelled');
@@ -1347,32 +1491,33 @@ class PurchaseOrder extends DB_Table {
 
     public function get_deliveries($scope = 'keys') {
 
-        if ($scope == 'objects') {
-            include_once 'class.SupplierDelivery.php';
-        }
-
 
         $deliveries = array();
-        $sql        = sprintf(
-            "SELECT `Supplier Delivery Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d  GROUP BY `Supplier Delivery Key`", $this->id
+        $sql        = "SELECT `Supplier Delivery Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=?  GROUP BY `Supplier Delivery Key`";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        while ($row = $stmt->fetch()) {
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Supplier Delivery Key'] == '') {
-                    continue;
-                }
+            if ($row['Supplier Delivery Key'] == '') {
+                continue;
+            }
 
-                if ($scope == 'objects') {
+            if ($scope == 'objects') {
 
-                    $deliveries[$row['Supplier Delivery Key']] = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
+                $deliveries[$row['Supplier Delivery Key']] = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
 
-                } else {
-                    $deliveries[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
-                }
+            } else {
+                $deliveries[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
             }
         }
+
 
         return $deliveries;
 
@@ -1711,6 +1856,8 @@ class PurchaseOrder extends DB_Table {
     }
 
     function update_purchase_order_transaction($item_key, $state, $qty) {
+
+        $old_state_index = $this->get('State Index');
         switch ($state) {
             case 'Manufactured':
                 $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Manufactured Units`=? ,`Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
@@ -1721,11 +1868,73 @@ class PurchaseOrder extends DB_Table {
                         $item_key
                     )
                 );
+                $operations = array(
+                    'check_operations',
+                    'undo_dispatch_operations',
+                );
+                $this->update_purchase_order_items_state();
+                if ($old_state_index != $this->get('State Index')) {
 
+                    if ($this->get('Purchase Order State') == 'Manufactured') {
+                        $this->fast_update(
+                            array(
+                                'Purchase Order Manufactured Date' => gmdate('Y-m-d H:i:s'),
+                            )
+                        );
+                    }
 
+                    $history_abstract = _('Job order manufactured');
+                    $history_data     = array(
+                        'History Abstract' => $history_abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+                }
                 break;
+            case 'undo_manufactured':
+                $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Manufactured Units`=0 ,`Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        'Confirmed',
+                        $item_key
+                    )
+                );
+                $operations = array(
+                    'undo_confirm_operations',
+                    'dispatch_operations'
+                );
+                $this->update_purchase_order_items_state();
+
+                if ($this->get('Purchase Order State') == 'Confirm') {
+                    $this->fast_update(
+                        array(
+                            'Purchase Order Manufactured Date' => null,
+                        )
+                    );
+                }
+
+
+                if ($old_state_index != $this->get('State Index')) {
+                    $history_abstract = _('Job order set back as manufacturing');
+                    $history_data     = array(
+                        'History Abstract' => $history_abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+                }
+                break;
+            default:
+                $operations = [];
         }
 
+
+        $this->prepare_update_metadata($operations);
 
     }
 
@@ -1751,6 +1960,7 @@ class PurchaseOrder extends DB_Table {
         );
         while ($row = $stmt->fetch()) {
 
+            // print_r($row);
 
             $old_state                       = $row['Purchase Order Transaction State'];
             $purchase_orders_units_cancelled = $row['Purchase Order Submitted Cancelled Units'];
@@ -1768,29 +1978,21 @@ class PurchaseOrder extends DB_Table {
             $submitted = $row['Purchase Order Submitted Units'] - $purchase_orders_units_cancelled;
 
 
-            if ($submitted_delivery_units > 0 and ($submitted < $submitted_delivery_units)) {
+            if ($submitted_delivery_units > 0 and ($submitted <= $submitted_delivery_units)) {
+
 
                 $deliveries_data   = array();
-                $deliveries_data[] = array('state' => $row['Supplier Delivery Transaction State'],);
+                $deliveries_data[] = array('state' => $row['Supplier Delivery Transaction State']);
 
                 $state = $this->get_supplier_delivery_item_state($deliveries_data);
-                $sql   = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=?";
+
+                $this->_update_item_state($state, $old_state, $row['Purchase Order Transaction Fact Key'], $update_part_next_deliveries_data, $row['Purchase Order Transaction Part SKU']);
 
 
-                $this->db->prepare($sql)->execute(
-                    array(
-                        $state,
-                        $row['Purchase Order Transaction Fact Key']
-                    )
-                );
+            } elseif ($this->get('State Index') >= 60) {
 
-                if ($old_state != $state and $update_part_next_deliveries_data) {
-                    /**
-                     * @var $part \Part
-                     */
-                    $part = get_object('Part', $row['Purchase Order Transaction Part SKU']);
-                    $part->update_next_deliveries_data();
-                }
+                $state = $this->get_purchase_order_item_state($submitted);
+                $this->_update_item_state($state, $old_state, $row['Purchase Order Transaction Fact Key'], $update_part_next_deliveries_data, $row['Purchase Order Transaction Part SKU']);
 
 
             }
@@ -1798,6 +2000,26 @@ class PurchaseOrder extends DB_Table {
 
         }
 
+    }
+
+    private function _update_item_state($state, $old_state, $key, $update_part_next_deliveries_data, $part_sku) {
+        $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=?";
+        //print $state;
+        //'Cancelled','NoReceived','InProcess','Submitted','ProblemSupplier','Confirmed','Manufactured','QC_Pass','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','InvoiceChecked'
+        $this->db->prepare($sql)->execute(
+            array(
+                $state,
+                $key
+            )
+        );
+
+        if ($old_state != $state and $update_part_next_deliveries_data) {
+            /**
+             * @var $part \Part
+             */
+            $part = get_object('Part', $part_sku);
+            $part->update_next_deliveries_data();
+        }
     }
 
 
@@ -1810,16 +2032,14 @@ class PurchaseOrder extends DB_Table {
         } else {
             if ($submitted_quantity > 0) {
 
-                if (in_array(
-                    $this->data['Purchase Order State'], array(
-                                                           'Submitted',
-                                                           'Dispatched',
-                                                           'Manufactured'
-                                                       )
-                )) {
-                    return $this->data['Purchase Order State'];
+                if ($this->get('State Index') >= 60) {
+                    if ($this->data['Purchase Order Type'] == 'Production') {
+                        return 'QC_Pass';
+                    } else {
+                        return 'Confirmed';
+                    }
                 } else {
-                    return 'Confirmed';
+                    return $this->data['Purchase Order State'];
                 }
 
 
@@ -2487,12 +2707,19 @@ class PurchaseOrder extends DB_Table {
                         $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                     );
 
+                    if ($this->get('Purchase Order Type') == 'Production') {
+                        $operations = array(
 
-                    $operations = array(
-                        'cancel_operations',
-                        'undo_confirm_operations',
-                        'received_operations'
-                    );
+                            'undo_confirm_operations',
+                            'dispatch_operations'
+                        );
+                    } else {
+                        $operations = array(
+                            'cancel_operations',
+                            'undo_confirm_operations',
+                            'received_operations'
+                        );
+                    }
 
                     $this->update_purchase_order_items_state();
 
@@ -2508,7 +2735,7 @@ class PurchaseOrder extends DB_Table {
 
                     $this->update_purchase_order_date();
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE `Purchase Order Transaction State`='Manufactured' and  `Purchase Order Key`=?";
+                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=?,`Purchase Order Manufactured Units`=NULL WHERE `Purchase Order Transaction State`='Manufactured' and  `Purchase Order Key`=?";
 
                     $this->db->prepare($sql)->execute(
                         array(
@@ -2518,9 +2745,7 @@ class PurchaseOrder extends DB_Table {
                     );
 
                     $history_abstract = _('Job order set back as manufacturing');
-
-
-                    $history_data = array(
+                    $history_data     = array(
                         'History Abstract' => $history_abstract,
                         'History Details'  => '',
                         'Action'           => 'edited'
@@ -2601,7 +2826,7 @@ class PurchaseOrder extends DB_Table {
 
                     $this->update_purchase_order_date();
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE  `Purchase Order Transaction State`='Confirmed' and  `Purchase Order Key`=?";
+                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=?,`Purchase Order Manufactured Units`=`Purchase Order Submitted Units` WHERE  `Purchase Order Transaction State`='Confirmed' and  `Purchase Order Key`=?";
                     $this->db->prepare($sql)->execute(
                         array(
                             'Manufactured',
@@ -2610,8 +2835,7 @@ class PurchaseOrder extends DB_Table {
                     );
 
                     $history_abstract = _('Job order manufactured');
-
-                    $history_data = array(
+                    $history_data     = array(
                         'History Abstract' => $history_abstract,
                         'History Details'  => '',
                         'Action'           => 'edited'
@@ -2643,7 +2867,7 @@ class PurchaseOrder extends DB_Table {
 
                     $this->update_purchase_order_date();
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE  `Purchase Order Transaction State`='Manufactured' and  `Purchase Order Key`=?";
+                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? ,`Purchase Order QC Pass Units`=`Purchase Order Manufactured Units`  WHERE  `Purchase Order Transaction State`='Manufactured' and  `Purchase Order Key`=?";
                     $this->db->prepare($sql)->execute(
                         array(
                             'QC_Pass',
@@ -2685,7 +2909,7 @@ class PurchaseOrder extends DB_Table {
 
                     $this->update_purchase_order_date();
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE  `Purchase Order Transaction State`='QC_Pass' and  `Purchase Order Key`=?";
+                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=?,`Purchase Order QC Pass Units`=NULL WHERE  `Purchase Order Transaction State`='QC_Pass' and  `Purchase Order Key`=?";
                     $this->db->prepare($sql)->execute(
                         array(
                             'Manufactured',
@@ -2762,12 +2986,10 @@ class PurchaseOrder extends DB_Table {
 
 
                     foreach ($metadata as $key => $_value) {
-                        $this->update_field(
-                            $key, $_value, 'no_history'
-                        );
+                        $this->update_field($key, $_value, 'no_history');
                     }
 
-                    exit;
+
                     $this->update_purchase_order_items_state();
 
                     if ($this->get('State Index') >= 80) {
@@ -2818,11 +3040,59 @@ class PurchaseOrder extends DB_Table {
 
                     }
 
+                    if ($this->get('State Index') >= 100) {
+
+                        $sql =
+                            "select max(`Supplier Delivery Checked Date`) as consolidated_date ,  count(*) as num from `Supplier Delivery Dimension` where `Supplier Delivery Checked Date`!='' and `Supplier Delivery Purchase Order Key`=? and `Supplier Delivery State` in ('Placed','Costing','InvoiceChecked') ";
+
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $this->id
+                            )
+                        );
+                        if ($row = $stmt->fetch()) {
+                            if ($row['num'] > 0) {
+                                $this->fast_update(
+                                    array(
+                                        'Purchase Order Consolidated Date' => $row['consolidated_date'],
+                                    )
+                                );
+                            }
+
+                        }
+
+                    }
+
                     $this->update_purchase_order_date();
 
                     break;
 
+                case 'Deliver_Production':
 
+                    include_once 'class.SupplierDelivery.php';
+
+                    $delivery = $this->create_supplier_delivery(
+                        [
+                            'Supplier Delivery Public ID' => $this->get('Purchase Order Public ID').'.del'
+                        ]
+                    );
+
+
+                    if ($delivery->new) {
+
+
+                        $this->fast_update(
+                            array(
+                                'Purchase Order Locked'        => 'Yes',
+                                'Purchase Order Inputted Date' => $date,
+                                'Purchase Order Received Date' => $date,
+                                'Purchase Order Checked Date'  => $date,
+                            )
+                        );
+                    }
+
+                    break;
                 default:
                     exit('unknown state:'.$value);
                     break;
@@ -2847,6 +3117,13 @@ class PurchaseOrder extends DB_Table {
 
 
         }
+        $this->prepare_update_metadata($operations);
+
+
+    }
+
+
+    private function prepare_update_metadata($operations) {
 
         $this->update_metadata = array(
             'class_html'                => array(
@@ -2861,15 +3138,16 @@ class PurchaseOrder extends DB_Table {
             ),
             'operations'                => $operations,
             'state_index'               => $this->get('State Index'),
+            'state'                     => $this->get('Purchase Order State'),
             'pending_items_in_delivery' => $this->get('Purchase Order Ordered Number Items') - $this->get('Purchase Order Number Supplier Delivery Items')
         );
 
 
         if ($this->get('Purchase Order Type') == 'Production') {
-            $this->update_metadata['class_html']['Production_Confirmed_Formatted_Date']    = $this->get('Production Confirmed Formatted Date');
-            $this->update_metadata['class_html']['Production_Submitted_Formatted_Date']    = $this->get('Production Submitted Formatted Date');
-            $this->update_metadata['class_html']['Production_Manufactured_Formatted_Date'] = $this->get('Production Manufactured Formatted Date');
-            $this->update_metadata['class_html']['Production_QC_Pass_Formatted_Date']      = $this->get('Production QC Pass Formatted Date');
+            $this->update_metadata['class_html']['Production_Confirmed_Formatted_Date']    = '&nbsp;'.$this->get('Production Confirmed Formatted Date');
+            $this->update_metadata['class_html']['Production_Submitted_Formatted_Date']    = '&nbsp;'.$this->get('Production Submitted Formatted Date');
+            $this->update_metadata['class_html']['Production_Manufactured_Formatted_Date'] = '&nbsp;'.$this->get('Production Manufactured Formatted Date');
+            $this->update_metadata['class_html']['Production_QC_Pass_Formatted_Date']      = '&nbsp;'.$this->get('Production QC Pass Formatted Date');
 
 
         }
@@ -2885,8 +3163,6 @@ class PurchaseOrder extends DB_Table {
                 $this->update_metadata['show'] = array('setting_delivery_button');
                 break;
         }
-
-
     }
 
     function update_purchase_order_date() {

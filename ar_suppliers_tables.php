@@ -4996,7 +4996,14 @@ function delivery_items_done($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql        = "select $fields from $table $where $wheref $group_by  order by $order $order_direction  limit $start_from,$number_results";
+
+    $sql        = "select $fields from $table $where $wheref $group_by ";
+    if($order!=''){
+        $sql        = " order by $order $order_direction ";
+
+    }
+    $sql        .= " limit $start_from,$number_results";
+
     $table_data = array();
 
     if ($result = $db->query($sql)) {

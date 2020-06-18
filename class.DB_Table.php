@@ -299,7 +299,6 @@ abstract class DB_Table extends stdClass {
     function add_table_history($raw_data, $force,$table_name, $table_key) {
 
 
-
         $editor_data = $this->get_editor_data();
         if ($this->no_history) {
             return;
@@ -517,12 +516,12 @@ abstract class DB_Table extends stdClass {
                 );
         }
 
-
         $sql =
             "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) 
                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $stmt = $this->db->prepare($sql);
+
 
         $stmt->bindValue(1, $data['Author Name']);
         $stmt->bindValue(2, $data['Date']);
@@ -548,8 +547,8 @@ abstract class DB_Table extends stdClass {
             }
             return $history_key;
         } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit();
+            print_r($error_info = $stmt->errorInfo());
+
         }
 
 
@@ -891,6 +890,8 @@ abstract class DB_Table extends stdClass {
             $table_key = $this->id;
         }
 
+
+
         $history_key = $this->add_table_history($history_data, $force_save,$table_name, $table_key);
 
 
@@ -898,10 +899,11 @@ abstract class DB_Table extends stdClass {
             $table_name = 'Webpage';
         }
 
+
+
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
         );
-
 
         $this->db->exec($sql);
 

@@ -130,10 +130,8 @@ class SupplierDelivery extends DB_Table {
 
     function create($data) {
 
-        global $account;
+        $account = get_object('Account', 1);
 
-
-        include_once 'utils/natural_language.php';
 
         $parent = get_object(
             $data['Supplier Delivery Parent'], $data['Supplier Delivery Parent Key']
@@ -154,46 +152,47 @@ class SupplierDelivery extends DB_Table {
         );
 
 
-        //print_r($data);
+        $data['Supplier Delivery Date']              = gmdate('Y-m-d H:i:s');
         $data['Supplier Delivery Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Supplier Delivery Last Updated Date'] = gmdate('Y-m-d H:i:s');
+        $data['Supplier Delivery Date Type']         = 'Creation';
+
+        $data['Supplier Delivery File As'] = get_file_as($data['Supplier Delivery Public ID']);
 
 
-        $data['Supplier Delivery File As'] = get_file_as(
-            $data['Supplier Delivery Public ID']
-        );
-        $base_data                         = $this->base_data();
+        $base_data = $this->base_data();
 
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
-                $base_data[$key] = _trim($value);
+                if ($value == '') {
+                    $base_data[$key] = null;
+                } else {
+                    $base_data[$key] = _trim($value);
+                }
+
             }
         }
-        //  print_r($base_data);
 
-
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-
-            if (preg_match('/XHTML|Supplier Delivery POs/', $key)) {
-                $values .= "'".addslashes($value)."',";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
         $sql = sprintf(
-            "INSERT INTO `Supplier Delivery Dimension` %s %s", $keys, $values
+            "INSERT INTO `Supplier Delivery Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
 
+        $stmt = $this->db->prepare($sql);
 
-        if ($this->db->exec($sql)) {
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+        if ($stmt->execute()) {
+
+
+            $this->new = 1;
+
             $this->id = $this->db->lastInsertId();
-
 
             $this->get_data('id', $this->id);
 
@@ -209,16 +208,13 @@ class SupplierDelivery extends DB_Table {
             );
 
 
-            $this->new = true;
-
-
-
             if ($this->data['Supplier Delivery Parent'] != 'Order') {
                 $parent->update_purchase_orders();
             }
 
 
         } else {
+            print_r($stmt->errorInfo());
             print "Error can not create supplier delivery\n $sql\n";
         }
 
@@ -998,6 +994,7 @@ class SupplierDelivery extends DB_Table {
                 break;
             case 'Received':
 
+
                 $this->update_field(
                     'Supplier Delivery Received Date', $date, 'no_history'
                 );
@@ -1052,7 +1049,7 @@ class SupplierDelivery extends DB_Table {
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
-                        exit;
+
                     }
 
 
@@ -1069,6 +1066,7 @@ class SupplierDelivery extends DB_Table {
                     'History Details'  => '',
                     'Action'           => 'edited'
                 );
+
                 $this->add_subject_history(
                     $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                 );
@@ -1164,7 +1162,8 @@ class SupplierDelivery extends DB_Table {
                                             $sql = "insert into `ITF POTF Costing Done Bridge` (`ITF POTF Costing Done ITF Key`,`ITF POTF Costing Done POTF Key`)  values (?,?) ";
                                             $this->db->prepare($sql)->execute(
                                                 array(
-                                                    $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']
+                                                    $placement_data['oif_key'],
+                                                    $row['Purchase Order Transaction Fact Key']
                                                 )
                                             );
 
@@ -1352,7 +1351,6 @@ class SupplierDelivery extends DB_Table {
         }
 
 
-
         require_once 'utils/new_fork.php';
         $account = get_object('Account', 1);
         new_housekeeping_fork(
@@ -1379,7 +1377,6 @@ class SupplierDelivery extends DB_Table {
             'operations'  => $operations,
             'state_index' => $this->get('State Index')
         );
-
 
     }
 
@@ -1838,7 +1835,6 @@ class SupplierDelivery extends DB_Table {
             $over  = $row['over_qty'];
             $under = $row['under_qty'];
         }
-
 
         $this->fast_update(
             array(
