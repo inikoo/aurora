@@ -102,11 +102,8 @@ class Warehouse extends DB_Table {
         }
 
 
-
-
         $data = $raw_data;
         unset($data['editor']);
-
 
 
         if ($data['Warehouse Code'] == '') {
@@ -2189,20 +2186,19 @@ and `Part Distinct Locations`>1
 
     function update_current_timeseries_record($type) {
 
-        $sql = sprintf(
-            'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=%s AND `Timeseries Parent`="Warehouse" AND `Timeseries Parent key`=%d ', prepare_mysql($type), $this->id
+        $sql = "SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Type`=? AND `Timeseries Parent`='Warehouse' AND `Timeseries Parent key`=?";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $type,
+                $this->id
+            )
         );
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $timeseries = get_object('timeseries', $row['Timeseries Key']);
-                $this->update_timeseries_record($timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        while ($row = $stmt->fetch()) {
+            $timeseries = get_object('timeseries', $row['Timeseries Key']);
+            $this->update_timeseries_record($timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
         }
 
 
