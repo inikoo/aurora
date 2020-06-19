@@ -21,7 +21,7 @@ require_once 'trait.AttachmentSubject.php';
 require_once 'trait.ImageSubject.php';
 
 class Staff extends DB_Table {
-
+//'Staff','Order Basket Purge','Email Campaign','Deal Campaign','Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website','Prospect'
     /**
      * @var \PDO
      */
@@ -774,27 +774,33 @@ class Staff extends DB_Table {
                 }
 
 
-
-
-
-
-            case('Staff Position'):
+            case 'Staff Position':
 
                 $positions = '';
-                $sql       = sprintf(
-                    'SELECT GROUP_CONCAT(`Role Code`) AS positions  FROM `Staff Role Bridge` WHERE  `Staff Key`=%d ', $this->id
+                $sql       = "SELECT GROUP_CONCAT(`Role Code`) AS positions  FROM `Staff Role Bridge` WHERE  `Staff Key`=?";
+                $stmt      = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
                 );
-
-                if ($row = $this->db->query($sql)->fetch()) {
+                if ($row = $stmt->fetch()) {
                     $positions = $row['positions'];
                 }
 
-                return $positions;
-            case('Position'):
-                $positions = '';
 
                 return $positions;
+            case 'Position':
+                include_once 'conf/roles.php';
+                $roles=get_roles();
+                $positions='';
+                foreach(preg_split('/\,/',$this->get('Staff Position')) as $position){
+                    $positions.=$roles[$position]['title'].', ';
+                }
 
+                $positions =preg_replace('/, $/','',$positions);
+
+                return $positions;
 
             case ('Valid From'):
             case ('Valid To'):
@@ -1143,16 +1149,83 @@ class Staff extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
-        global $account;
-
         if (is_string($value)) {
             $value = _trim($value);
         }
 
-
         switch ($field) {
 
-            case('Staff Telephone'):
+            case 'Staff Position':
+
+                include_once 'conf/roles.php';
+                $roles=get_roles();
+
+                $current_positions = preg_split('/\,/', $this->get('Staff Position'));
+
+                $positions = preg_split('/\,/', $value);
+
+
+                $positions_to_add = array_diff($positions, $current_positions);
+                $positions_to_remove = array_diff($current_positions,$positions);
+
+
+                foreach($positions_to_add as $position_to_add){
+                    $sql  = "insert into `Staff Role Bridge` (`Role Code`,`Staff Key`) values (?,?) ";
+                    $stmt = $this->db->prepare($sql);
+
+                    $stmt->execute(
+                        array(
+                            $position_to_add,
+                            $this->id
+                        )
+                    );
+
+                    if ($stmt->rowCount()) {
+                        $this->updated    = true;
+                        $history_abstract = sprintf(_('%s new job position as %s'),$this->get('Name'),$roles[$position_to_add]['title']);
+                        $history_data     = array(
+                            'History Abstract' => $history_abstract,
+                            'History Details'  => '',
+                            'Action'           => 'edited'
+                        );
+                        $this->add_subject_history(
+                            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                        );
+                    }
+                }
+
+
+                foreach($positions_to_remove as $position_to_remove){
+                    $sql  = "delete from  `Staff Role Bridge` where `Role Code`=? and `Staff Key`=? ";
+                    $stmt = $this->db->prepare($sql);
+
+                    $stmt->execute(
+                        array(
+                            $position_to_remove,
+                            $this->id
+                        )
+                    );
+
+                    if ($stmt->rowCount()) {
+                        $this->updated    = true;
+                        $history_abstract = sprintf(_('%s no longer has %s position'),$this->get('Name'),$roles[$position_to_remove]['title']);
+                        $history_data     = array(
+                            'History Abstract' => $history_abstract,
+                            'History Details'  => '',
+                            'Action'           => 'edited'
+                        );
+                        $this->add_subject_history(
+                            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                        );
+                    }
+                }
+
+
+
+
+
+                break;
+            case'Staff Telephone':
                 if ($value == '') {
                     $formatted_value = '';
                 } else {
@@ -1167,6 +1240,7 @@ class Staff extends DB_Table {
 
                 break;
             case 'Staff Valid From':
+                $account = get_object('Account', 1);
                 require_once 'utils/date_functions.php';
 
 
@@ -1211,6 +1285,7 @@ class Staff extends DB_Table {
                 break;
 
             case 'Staff Valid To':
+                $account = get_object('Account', 1);
                 require_once 'utils/date_functions.php';
 
 
@@ -1255,6 +1330,7 @@ class Staff extends DB_Table {
                 break;
 
             case('Staff Working Hours'):
+                $account = get_object('Account', 1);
                 require_once 'utils/date_functions.php';
 
                 $this->update_field($field, $value, $options);
@@ -1865,7 +1941,7 @@ class Staff extends DB_Table {
 
     function add_supervisor($value) {
 
-        $sql     = sprintf(
+        $sql = sprintf(
             "INSERT INTO `Staff Supervisor Bridge` (`Supervisor Key`, `Staff Key`) VALUES (%d, %d)   ON DUPLICATE KEY UPDATE  `Supervisor Key`= %d", $value, $this->id, $value
         );
         if ($result = $this->db->query($sql)) {
@@ -1927,7 +2003,6 @@ class Staff extends DB_Table {
         ), prepare_mysql($this->get('Staff ID'), true), prepare_mysql($this->get('Staff Alias'), true), prepare_mysql($this->get('Staff Name'), true), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress($metadata, 9))
 
         );
-
 
 
         $stmt = $this->db->prepare($sql);
@@ -2037,9 +2112,6 @@ class Staff extends DB_Table {
                 $history_key
             )
         );
-
-
-
 
 
         $this->deleted = true;

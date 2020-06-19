@@ -1505,8 +1505,8 @@ function positions($_data, $db, $user) {
      * @var string $_dir
      * @var string $total
      */
-    include 'conf/roles.php';
-
+    include_once 'conf/roles.php';
+    $roles=get_roles();
     $sql = "select $fields from $table $where $wheref $group_by ";
 
     // print $sql;

@@ -36,7 +36,7 @@ class Job_Position {
 	function get_data($tag,$key) {
 
 		include_once 'conf/roles.php';
-
+		$roles=get_roles();
 
 
 		if (isset($roles[$key])) {

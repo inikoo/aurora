@@ -2074,7 +2074,8 @@ function get_position_navigation($data, $smarty, $user, $db) {
         $sql        = trim($sql_totals." $wheref");
 
 
-        include 'conf/roles.php';
+        include_once 'conf/roles.php';
+        $roles=get_roles();
 
         $sql = "select $fields from $table $where $wheref $group_by ";
 

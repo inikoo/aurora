@@ -217,7 +217,8 @@ if (!$new) {
         );
 
 
-        include 'conf/roles.php';
+        include_once 'conf/roles.php';
+        $roles=get_roles();
         foreach ($roles as $_key => $_data) {
             if (in_array(
                 $account->get('Setup Metadata')['size'], $_data['size']

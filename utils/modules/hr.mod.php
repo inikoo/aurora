@@ -57,9 +57,7 @@ function get_hr_module() {
                 'tabs'      => array(
                     'contractors'         => array('label' => _('Contractors')),
                     'deleted.contractors' => array(
-                        'label' => _(
-                            'Deleted contractors'
-                        ),
+                        'label' => _('Deleted contractors'),
                         'icon'  => 'trash',
                         'class' => 'right icon_only'
                     ),
@@ -140,32 +138,26 @@ function get_hr_module() {
 
                 'tabs' => array(
                     'employee.details'                 => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
                     'employee.today_timesheet.records' => array(
-                        'label' => _(
-                            'Today timesheet'
-                        )
+                        'label' => _('Today timesheet')
                     ),
                     'employee.timesheets'              => array(
-                        'label' => _(
-                            'Timesheets'
-                        )
+                        'label' => _('Timesheets')
                     ),
                     'employee.history'                 => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
+                        'label' => _('History, notes'),
                         'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
                     ),
                     'employee.images'                  => array(
-                        'label' => _(
-                            'Images'
-                        ),
+                        'label' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),

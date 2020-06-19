@@ -54,7 +54,8 @@ $options_yn         = array(
     'Yes' => _('Yes'),
     'No'  => _('No')
 );
-include 'conf/roles.php';
+include_once 'conf/roles.php';
+$roles=get_roles();
 foreach ($roles as $_key => $_data) {
     if (in_array($account->get('Setup Metadata')['size'], $_data['size'])) {
 
@@ -374,9 +375,7 @@ $object_fields = array(
                 'time'            => '09:00:00',
                 'value'           => $employee->get('Staff Valid From'),
                 'formatted_value' => $employee->get('Valid From'),
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Valid From')
-                ),
+                'label'           => ucfirst($employee->get_field_label('Staff Valid From')),
                 'invalid_msg'     => get_invalid_message('date'),
                 'type'            => 'value',
                 'required'        => false,
@@ -406,11 +405,8 @@ $object_fields = array(
 
                 'id'   => 'Staff_Job_Title',
                 'edit' => ($edit ? 'string' : ''),
-
                 'value'    => $employee->get('Staff Job Title'),
-                'label'    => ucfirst(
-                    $employee->get_field_label('Staff Job Title')
-                ),
+                'label'    => ucfirst($employee->get_field_label('Staff Job Title')),
                 'required' => false,
                 'type'     => 'value'
             ),
@@ -422,9 +418,7 @@ $object_fields = array(
                 'value'           => $employee->get('Staff Position'),
                 'formatted_value' => $employee->get('Position'),
                 'options'         => $options_Staff_Position,
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Position')
-                ),
+                'label'           => ucfirst($employee->get_field_label('Staff Position')),
             ),
             array(
                 //   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
