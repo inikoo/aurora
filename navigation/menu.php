@@ -22,7 +22,7 @@ if ($user->can_view('customers')) {
     $nav_menu[] = array(
         '<i class="button far fa-users fa-fw"></i>',
         _('Customers'),
-        'customers/all',
+        '',
         'customers',
         'module',
         ''
@@ -38,7 +38,7 @@ if ($user->can_view('mailroom')) {
     $nav_menu[] = array(
         '<i class="button far fa-mail-bulk fa-fw"></i>',
         _('Mailroom'),
-        'mailroom',
+        '',
         'mailroom',
         'module',
         ''
@@ -53,7 +53,7 @@ if ($user->can_view('stores')) {
     $nav_menu[] = array(
         '<i class="button far fa-store-alt fa-fw"></i>',
         _('Products'),
-        'stores',
+        '',
         'products',
         'module',
         ''
@@ -63,7 +63,7 @@ if ($user->can_view('stores')) {
     $nav_menu[] = array(
         '<i class="button far fa-badge-percent fa-fw"></i>',
         _('Offers'),
-        'offers',
+        '',
         'offers',
         'module',
         ''
@@ -72,7 +72,7 @@ if ($user->can_view('stores')) {
     $nav_menu[] = array(
         '<i class="button far fa-globe fa-fw"></i>',
         _('Websites'),
-        'websites',
+        '',
         'websites',
         'module',
         ''
@@ -89,7 +89,7 @@ if ($user->can_view('orders')) {
     $nav_menu[] = array(
         '<i class="button far fa-shopping-cart fa-fw"></i>',
         _('Orders'),
-        'orders/all/dashboard',
+        '',
         'orders',
         'module',
         ''
@@ -100,7 +100,7 @@ if ($user->can_view('orders')) {
     $nav_menu[] = array(
         '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
         _('Delivering'),
-        'delivery_notes/all',
+        '',
         'delivery_notes',
         'module',
         ''
@@ -115,22 +115,12 @@ if ($user->can_view('locations')) {
     if ($account->get('Account Warehouses') == 1) {
 
 
-        $sql  = 'SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`=?';
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array(
-                'Active'
-            )
-        );
-        if ($row = $stmt->fetch()) {
-            $warehouse_key = $row['Warehouse Key'];
-        }
 
 
         $nav_menu[] = array(
             '<i class="button far fa-warehouse-alt fa-fw"></i>',
             _('Warehouse'),
-            'warehouse/'.$warehouse_key.'/dashboard',
+            '',
             'warehouses',
             'module',
             ''
@@ -140,7 +130,7 @@ if ($user->can_view('locations')) {
         $nav_menu[] = array(
             '<i class="button far fa-forklift fa-fw"></i>',
             _('Warehouse'),
-            'warehouses',
+            '',
             'warehouses',
             'module',
             ''
@@ -156,7 +146,7 @@ if ($user->can_view('parts')) {
     $nav_menu[] = array(
         '<i class="button far fa-box fa-fw"></i>',
         _('Inventory'),
-        'inventory/dashboard',
+        '',
         'inventory',
         'module',
         ''
@@ -170,7 +160,7 @@ if ($user->can_view('suppliers')) {
     $nav_menu[] = array(
         '<i class="button far fa-hand-holding-box fa-fw"></i>',
         _('Suppliers'),
-        'suppliers/dashboard',
+        '',
         'suppliers',
         'module',
         ''
@@ -181,7 +171,9 @@ if ($user->can_view('suppliers')) {
 if ($user->can_view('production') and $account->get('Account Manufacturers') > 0) {
 
 
+
     if ($account->get('Account Manufacturers') == 1) {
+
 
 
         $sql = 'SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!=?';
@@ -225,7 +217,7 @@ if ($user->can_view('staff')) {
     $nav_menu[] = array(
         '<i class="button far fa-clipboard-user fa-fw"></i>',
         _('Staff'),
-        'hr',
+        '',
         'hr',
         'module',
         ''
@@ -238,7 +230,7 @@ if ($user->can_view('orders')) {
     $nav_menu[] = array(
         '<i class="button fal fa-abacus fa-fw"></i>',
         _('Accounting'),
-        'invoices/per_store',
+        '',
         'accounting',
         'module',
         ''
@@ -252,7 +244,7 @@ if($user->get('User Type')!='Administrator') {
         $nav_menu[] = array(
             '<i class="button far fa-chart-line fa-fw"></i>',
             _('Reports'),
-            'reports',
+            '',
             'reports',
             'module',
             ''
@@ -266,7 +258,7 @@ if ($user->get('User Type') == 'Agent') {
     $nav_menu[] = array(
         '<i class="button far fa-clipboard fa-fw"></i>',
         _("Client's orders"),
-        'orders',
+        '',
         'agent_client_orders',
         'module',
         ''
@@ -276,7 +268,7 @@ if ($user->get('User Type') == 'Agent') {
     $nav_menu[] = array(
         '<i class="button far fa-truck-container fa-fw"></i>',
         _('Deliveries'),
-        'agent_deliveries',
+        '',
         'agent_client_deliveries',
         'module',
         ''
@@ -285,7 +277,7 @@ if ($user->get('User Type') == 'Agent') {
     $nav_menu[] = array(
         '<i class="button far fa-industry fa-fw"></i>',
         _('Suppliers'),
-        'suppliers',
+        '',
         'agent_suppliers',
         'module',
         ''
@@ -294,7 +286,7 @@ if ($user->get('User Type') == 'Agent') {
     $nav_menu[] = array(
         '<i class="button far fa-box fa-fw"></i>',
         _('Products'),
-        'agent_parts',
+        '',
         'agent_parts',
         'module',
         ''
@@ -327,7 +319,7 @@ if ($user->can_view('account')) {
     $nav_menu[] = array(
         '<i class="button fal fa-users-class fa-fw"></i>',
         _('Users'),
-        '/users',
+        '',
         'users',
         'module',
         ''
