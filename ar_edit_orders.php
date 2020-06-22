@@ -454,7 +454,6 @@ function cancel_purchase_order_submitted_item($data, $db) {
             if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
                 $cbm = $unit_qty * $supplier_part->get('Supplier Part Carton CBM') / $supplier_part->get('Supplier Part Packages Per Carton') / $supplier_part->part->get('Part Units Per Package');
             } else {
-
                 if ($unit_qty == 0) {
                     $cbm = 0;
                 } else {

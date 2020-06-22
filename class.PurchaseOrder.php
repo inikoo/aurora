@@ -666,8 +666,13 @@ class PurchaseOrder extends DB_Table {
                 break;
             case 'State Index':
             case 'Max State Index':
+            case 'Max Supplier Delivery State':
 
-                switch (($key == 'State Index' ? $this->data['Purchase Order State'] : $this->data['Purchase Order Max Supplier Delivery State'])) {
+
+                $_key='Purchase Order '.preg_replace('/ Index/','',$key);
+
+
+                switch ($this->data[$_key]) {
                     case 'InProcess':
                         return 10;
                     case 'Submitted':
@@ -771,8 +776,6 @@ class PurchaseOrder extends DB_Table {
                 if ($this->data['Purchase Order Cancelled Date'] == '') {
                     return '&nbsp;';
                 }
-
-
 
 
                 if (date('Y-m-d', strtotime($this->data['Purchase Order Submitted Date'])) == date('Y-m-d', strtotime($this->data['Purchase Order Cancelled Date']))) {
@@ -1303,13 +1306,12 @@ class PurchaseOrder extends DB_Table {
         }
 
 
-
-
-
         $this->fast_update(
             array(
-                'Purchase Order State'                       => $this->get_purchase_order_state(),
-                'Purchase Order Max Supplier Delivery State' => $this->get_max_purchase_order_state()
+                'Purchase Order State'     => $this->get_purchase_order_state('min'),
+                'Purchase Order Max State' => $this->get_purchase_order_state('max'),
+
+                'Purchase Order Max Supplier Delivery State' => $this->get_purchase_order_max_delivery_state()
             )
         );
 
@@ -1317,7 +1319,7 @@ class PurchaseOrder extends DB_Table {
     }
 
 
-    private function get_purchase_order_state() {
+    private function get_purchase_order_state($mode = 'min') {
 
 
         $index = 0;
@@ -1337,10 +1339,16 @@ class PurchaseOrder extends DB_Table {
 
             if ($_index > 0) {
                 if ($i > 0) {
-
-                    if ($_index < $index) {
-                        $index = $_index;
+                    if ($mode == 'min') {
+                        if ($_index < $index) {
+                            $index = $_index;
+                        }
+                    } else {
+                        if ($_index > $index) {
+                            $index = $_index;
+                        }
                     }
+
                 } else {
                     $index = $_index;
                 }
@@ -1467,7 +1475,7 @@ class PurchaseOrder extends DB_Table {
     }
 
 
-    private function get_max_purchase_order_state() {
+    private function get_purchase_order_max_delivery_state() {
 
         $index = 0;
 
@@ -1909,6 +1917,41 @@ class PurchaseOrder extends DB_Table {
                     );
                 }
                 break;
+            case 'QC_Pass':
+                $sql = "update `Purchase Order Transaction Fact` set `Purchase Order QC Pass Units`=? ,`Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $qty,
+                        'QC_Pass',
+                        $item_key
+                    )
+                );
+                $operations = array(
+                    'undo_qc_pass_operations',
+                    'deliver_operations'
+                );
+                $this->update_purchase_order_items_state();
+                if ($old_state_index != $this->get('State Index')) {
+
+                    if ($this->get('Purchase Order State') == 'QC_Pass') {
+                        $this->fast_update(
+                            array(
+                                'Purchase Order QC Pass Date' => gmdate('Y-m-d H:i:s'),
+                            )
+                        );
+                    }
+
+                    $history_abstract = _('Job order quality control done');
+                    $history_data     = array(
+                        'History Abstract' => $history_abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+                }
+                break;
             case 'undo_manufactured':
                 $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Manufactured Units`=0 ,`Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
                 $this->db->prepare($sql)->execute(
@@ -2020,7 +2063,7 @@ class PurchaseOrder extends DB_Table {
     private function _update_item_state($state, $old_state, $key, $update_part_next_deliveries_data, $part_sku) {
 
         $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=?";
-          $this->db->prepare($sql)->execute(
+        $this->db->prepare($sql)->execute(
             array(
                 $state,
                 $key
@@ -2520,8 +2563,6 @@ class PurchaseOrder extends DB_Table {
 
 
                     break;
-
-
                 case 'Submitted':
 
 

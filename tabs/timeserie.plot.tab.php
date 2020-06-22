@@ -15,4 +15,3 @@ $smarty->assign('timeseries', $state['_object']);
 $html = $smarty->fetch('plot.tpl');
 
 
-?>

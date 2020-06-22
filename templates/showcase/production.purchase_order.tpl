@@ -12,7 +12,7 @@
 {assign deliveries $order->get_deliveries('objects')}
 <div class="showcase_purchase_order">
 <div class="timeline_horizontal  {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
-
+    {$order->get('State Index')} {$order->get('Max State Index')}
 
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
@@ -29,7 +29,7 @@
         <li id="confirm_node"
             class="li  {if $order->get('State Index')>=40  }complete{/if}">
             <div class="label">
-                <span class="state ">{t}Start{/t} <span></i></span></span>
+                <span class="state ">{t}Start{/t} </span>
             </div>
             <div class="timestamp">
                 <span class="Production_Confirmed_Formatted_Date">{$order->get('Production Confirmed Formatted Date')}&nbsp;</span>
@@ -38,12 +38,9 @@
             </div>
         </li>
 
-        <li id="production_node"
-            class="li   {if $order->get('State Index')>=50 }complete{/if}">
+        <li id="production_node"  class="li   {if $order->get('State Index')>=50 }complete{elseif  $order->get('Max State Index')>=50}semi_complete{/if} ">
             <div class="label" title="{t}Finish Manufacturing{/t}">
-                <span class="state ">
-                                        <span class="state ">{t}Finish{/t} <span></i></span></span>
-                </span>
+                <span class="state "><span class="state ">{t}Finish{/t} </span></span>
             </div>
             <div class="timestamp">
 
@@ -57,12 +54,10 @@
         </li>
 
 
-        <li id="checked_node"
-            class="li   {if $order->get('State Index')>=55 }complete{/if}">
-            <div class="label" title="{t}Quality control passed{/t}">
-                <span class="state ">
-                                        <span class="state ">{t}QC Passed{/t} <span></i></span></span>
-                </span>
+        <li id="checked_node"  class="li   {if $order->get('State Index')>=55 }complete{elseif  $order->get('Max State Index')>=55}semi_complete{/if} ">
+
+        <div class="label" title="{t}Quality control passed{/t}">
+                <span class="state "><span class="state ">{t}QC Passed{/t} </span></span>
             </div>
             <div class="timestamp">
 

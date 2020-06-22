@@ -125,8 +125,11 @@ module.exports = function (grunt) {
 
             }, aurora_libs: {
                 options: {
+                    sourceMap: {
+                        filename: "aurora_libs.min.js.map",
+                        url: "aurora_libs.min.js.map"
+                    },
 
-                    sourceMap: true,
                 }, src: ['bower_components/jquery/dist/jquery.js', 'js_libs/jquery-migrate-3.0.1.js', 'js_libs/jquery-ui.1.12.1.js', 'js_libs/jquery.nice-select.js','js_libs/jquery-barcodeListener.js',
 
 
@@ -157,7 +160,11 @@ module.exports = function (grunt) {
             }, aurora: {
                 options: {
 
-                    sourceMap: true,
+                    sourceMap: {
+                        filename: "aurora.min.js.map",
+                        url: "assets/aurora.min.js.map"
+                    },
+
                 }, src: [
                     'js/common.js', 'js/help.js', 'js/keyboard_shortcuts.js', 'js/barcode_scanner.js', 'js/edit.js',
 
@@ -259,7 +266,14 @@ module.exports = function (grunt) {
             au: {
                 files: {
                     'assets/au_app.min.css': [
-                        'css/jquery-ui.css', 'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/intlTelInput.css', 'css/countrySelect.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css', 'bower_components/select2/dist/css/select2.css',
+                        'css/jquery-ui.css',
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css',
+                        'css/intlTelInput.css',
+                        'css/countrySelect.css',
+                        'css/d3fc.css',
+                        'css/backgrid.css',
+                        'css/backgrid-filter.css',
+                        'bower_components/select2/dist/css/select2.css',
 
                         'node_modules/froala-editor/css/froala_editor.pkgd.min.css',
                         'node_modules/froala-editor/css/froala_style.css',
@@ -277,7 +291,11 @@ module.exports = function (grunt) {
                         'node_modules/froala-editor/css/table.css',
                         'node_modules/froala-editor/css/video.css',
                         'node_modules/froala-editor/css/draggable.css',
-                        'css/amcharts/style.css', 'css/jquery.fancybox.min.css', 'css/tooltipster.bundle.min.css', 'css/staging/app.css']
+                        'css/amcharts/style.css',
+                        'css/jquery.fancybox.min.css',
+                        'css/tooltipster.bundle.min.css',
+                        'css/staging/app.css'
+                    ]
 
                 }
             },

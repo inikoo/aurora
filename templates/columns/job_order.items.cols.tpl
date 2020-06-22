@@ -152,7 +152,7 @@ name: "operations",
 renderable:false,
 label: "",
 editable: false,
-cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
+cell: Backgrid.HtmlCell.extend({ className: "width_20 col_operations"} ),
 
 },
 
@@ -161,7 +161,7 @@ name: "operations_units",
 label: "",
 editable: false,
 sortable:false,
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright col_operations_units"} ),
 headerCell: integerHeaderCell
 },
 {
@@ -169,7 +169,7 @@ name: "operations_skos",
 label: "",
 editable: false,
 sortable:false,
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright col_operations_skos"} ),
 headerCell: integerHeaderCell
 },
 {
@@ -178,7 +178,7 @@ label: "",
 editable: false,
 sortable:false,
 
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright col_operations_cartons"} ),
 headerCell: integerHeaderCell
 },
 

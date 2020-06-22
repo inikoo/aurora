@@ -28,7 +28,7 @@
         </li>
 
         <li id="production_node"
-            class="li   {if $order->get('State Index')>=60}hide{/if}  {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
+            class="li   {if $order->get('State Index')>=60}hide{/if}  {if $order->get('State Index')>=70 and $order->get('Max Supplier Delivery State Index')>=70   }complete{elseif $order->get('Max Supplier Delivery State Index')>=70 }semi_complete{/if}">
             <div class="label">
                 <span class="state ">
                                         <span class="state manufacturing_label">{t}Estimated dispatch date{/t}</span>

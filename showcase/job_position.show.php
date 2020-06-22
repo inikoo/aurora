@@ -25,5 +25,3 @@ function get_showcase($data, $smarty, $user, $db) {
 
 }
 
-
-?>

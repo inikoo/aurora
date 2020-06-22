@@ -67,7 +67,7 @@ switch ($tipo) {
 
 function job_order_forward_item_action($data, $db, $editor) {
 
-    print_r($data);
+
 
     $sql  =
         "select `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Submitted SKOs Per Carton` from  `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
@@ -111,12 +111,33 @@ function job_order_forward_item_action($data, $db, $editor) {
 
 
                 break;
+            case 'qc_check':
+                if ($row['Purchase Order Transaction State'] == 'Manufactured') {
+                    $purchase_order->update_purchase_order_transaction($row['Purchase Order Transaction Fact Key'], 'QC_Pass', $qty);
+
+                } else {
+                    $response = array(
+                        'state' => 405,
+                        'resp'  => 'Can not do this '.$row['Purchase Order Transaction State']
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
             default:
                 break;
         }
 
 
     }
+
+
+    $response = array(
+        'state'              => 200,
+        'update_metadata'    => $purchase_order->get_update_metadata(),
+
+    );
+    echo json_encode($response);
+    exit;
 
 
 }

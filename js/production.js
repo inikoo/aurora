@@ -18,7 +18,9 @@ function job_order_item_action(element) {
             const cell = $(element).closest('td')
 
             cell.find('.action_container').addClass('hide')
-            cell.find('.follow_on').removeClass('hide')
+            console.log(row)
+            console.log('.follow_on_'+action)
+            row.find('.follow_on_'+action).removeClass('hide')
 
             const action_container = row.find('.delivery_quantity_item_container')
             action_container.removeClass('invisible')
@@ -52,8 +54,12 @@ function save_job_order_forward_action(element) {
     const row = $(element).closest('tr')
     const cell = $(element).closest('td')
 
+    const action=$(element).data('action');
 
-    const action_container_trigger = row.find('.action_container_trigger')
+    const action_container_trigger = row.find('.action_container_trigger_'+action)
+
+    console.log(action_container_trigger)
+
     const input = cell.find('input')
 
 
@@ -75,11 +81,11 @@ function save_job_order_forward_action(element) {
         complete: function () {
 
         }, success: function (data) {
-            save.removeClass('fa-spin fa-spinner wait')
+            $(element).removeClass('fa-spin fa-spinner wait')
 
 
         }, error: function () {
-            save.removeClass('fa-spin fa-spinner wait')
+            $(element).removeClass('fa-spin fa-spinner wait')
         }
     });
 
