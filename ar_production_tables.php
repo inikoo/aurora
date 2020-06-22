@@ -88,7 +88,6 @@ function replenishments($_data, $db, $user, $account) {
     $rtext_label = 'replenishment';
     include_once 'prepare_table/init.php';
 
-    
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
@@ -262,20 +261,15 @@ function manufacture_tasks($_data, $db, $user, $account) {
 function suppliers($_data, $db, $user, $account) {
 
 
-
-
-
-        if (!$user->can_view('production')) {
-            echo json_encode(
-                array(
-                    'state' => 405,
-                    'resp'  => 'Forbidden'
-                )
-            );
-            exit;
-        }
-
-    
+    if (!$user->can_view('production')) {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
 
 
     $rtext_label = 'supplier';
@@ -542,8 +536,6 @@ function bill_of_materials($_data, $db, $user, $account) {
     $adata = array();
 
 
-    
-
     $production_key = $_SESSION['current_production'];
 
 
@@ -796,7 +788,7 @@ function production_deliveries($_data, $db, $user) {
 
 function production_orders($_data, $db, $user, $account) {
 
-  
+
     $rtext_label = 'job order';
 
 
@@ -809,7 +801,7 @@ function production_orders($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-
+            //'Cancelled','NoReceived','InProcess','Submitted','Confirmed','Manufactured','QC_Pass','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked'
             switch ($data['Purchase Order State']) {
 
 
@@ -817,25 +809,31 @@ function production_orders($_data, $db, $user, $account) {
                     $state = _('Planning');
                     break;
                 case 'Submitted':
+                    $state = _('Queued');
+                    break;
+                case 'Confirmed':
                     $state = _('Manufacturing');
+                    break;
+                case 'Manufactured':
+                    $state = _('Manufactured');
+                    break;
+                case 'QC Pass':
+                    $state = _('QC passed');
                     break;
                 case 'Inputted':
                 case 'Dispatched':
                 case 'Received':
-                    $state = _('In quality control');
-                    break;
                 case 'Checked':
-                    $state = _('In quality control').' ('._('Check done').')';
+                    $state = _('Delivered');
+
                     break;
                 case 'Placed':
                 case 'InvoiceChecked':
-
-                $state = _('Booked in');
-                    break;
                 case 'Costing':
-
-                $state = _('Booked in').' ('._('Review costing').')';
+                    $state = _('Placed');
                     break;
+
+
 
                 case 'Cancelled':
                     $state = _('Cancelled');
@@ -932,7 +930,6 @@ function production_deliveries_with_part($_data, $db, $user) {
             }
 
 
-
             $table_data[] = array(
                 'id' => (integer)$data['Supplier Delivery Key'],
 
@@ -945,7 +942,7 @@ function production_deliveries_with_part($_data, $db, $user) {
                 ),
 
 
-                'state'        => $state,
+                'state' => $state,
                 //'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
 
 
@@ -1036,29 +1033,28 @@ function production_orders_with_part($_data, $db, $user, $account) {
             }
 
 
-            if($data['Purchase Order State']=='InProccess'){
-                $qty_units=number($data['Purchase Order Ordering Units']);
-                $qty_skos=number($data['Purchase Order Ordering Units']/$data['Part Units Per Package']);
+            if ($data['Purchase Order State'] == 'InProccess') {
+                $qty_units = number($data['Purchase Order Ordering Units']);
+                $qty_skos  = number($data['Purchase Order Ordering Units'] / $data['Part Units Per Package']);
 
-            }else{
-                $qty_units=number($data['Purchase Order Submitted Units']);
-                $qty_skos=number($data['Purchase Order Submitted Units']/$data['Purchase Order Submitted Units Per SKO']);
+            } else {
+                $qty_units = number($data['Purchase Order Submitted Units']);
+                $qty_skos  = number($data['Purchase Order Submitted Units'] / $data['Purchase Order Submitted Units Per SKO']);
 
             }
 
 
-
             $table_data[] = array(
-                'id'           => (integer)$data['Purchase Order Key'],
-                'public_id'    => sprintf(
+                'id'        => (integer)$data['Purchase Order Key'],
+                'public_id' => sprintf(
                     '<span class="link" onclick="change_view(\'production/%d/order/%d\')" >%s</span>  ', $data['Purchase Order Parent Key'], $data['Purchase Order Key'],
                     ($data['Purchase Order Public ID'] == '' ? '<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>' : $data['Purchase Order Public ID'])
                 ),
-                'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
-                'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
-                'state'        => $state,
-                'qty_units'=>$qty_units,
-                'qty_skos'=>$qty_skos
+                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+                'state'     => $state,
+                'qty_units' => $qty_units,
+                'qty_skos'  => $qty_skos
 
                 //'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
 

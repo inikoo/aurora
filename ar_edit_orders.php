@@ -59,7 +59,7 @@ switch ($tipo) {
 
                      )
         );
-        create_replacement($data, $editor, $smarty, $db, $account, $user);
+        create_replacement($data, $editor);
         break;
     case 'create_return':
         $data = prepare_values(
@@ -68,7 +68,7 @@ switch ($tipo) {
                          'transactions' => array('type' => 'json array'),
                      )
         );
-        create_return($data, $editor, $smarty, $db, $account, $user);
+        create_return($data, $editor);
         break;
     case 'create_refund':
         $data = prepare_values(
@@ -80,7 +80,7 @@ switch ($tipo) {
                      )
         );
 
-        create_refund($data, $editor, $smarty, $db, $account, $user);
+        create_refund($data, $editor);
         break;
     case 'create_refund_tax_only':
         $data = prepare_values(
@@ -92,7 +92,7 @@ switch ($tipo) {
                      )
         );
 
-        create_refund_tax_only($data, $editor, $smarty, $db, $account, $user);
+        create_refund_tax_only($data, $editor);
 
         break;
 
@@ -298,10 +298,10 @@ switch ($tipo) {
     case 'toggle_deal_component_choose_by_customer':
         $data = prepare_values(
             $_REQUEST, array(
-                         'order_key'          => array('type' => 'key'),
-                         'deal_component_key' => array('type' => 'key'),
-                         'product_id'         => array('type' => 'key'),
-                         'otdb_key'           => array('type' => 'otdb_key'),
+                         'order_key'                         => array('type' => 'key'),
+                         'deal_component_key'                => array('type' => 'key'),
+                         'product_id'                        => array('type' => 'key'),
+                         'order_transaction_deal_bridge_key' => array('type' => 'order_transaction_deal_bridge_key'),
 
 
                      )
@@ -312,13 +312,13 @@ switch ($tipo) {
     case 'update_po_item_note':
         $data = prepare_values(
             $_REQUEST, array(
-                         'potf_key' => array('type' => 'key'),
-                         'note'     => array('type' => 'string'),
+                         'purchase_order_transaction_fact_key' => array('type' => 'key'),
+                         'note'                                => array('type' => 'string'),
 
 
                      )
         );
-        update_po_item_note($data, $editor, $smarty, $db, $account, $user);
+        update_po_item_note($data, $db);
         break;
     case 'clone_order':
         $data = prepare_values(
@@ -326,7 +326,7 @@ switch ($tipo) {
                          'order_key' => array('type' => 'key'),
                      )
         );
-        clone_order($data, $editor, $smarty, $db, $account, $user);
+        clone_order($data, $editor);
         break;
     case 'cancel_purchase_order_submitted_item':
         $data = prepare_values(
@@ -344,7 +344,7 @@ switch ($tipo) {
 
                      )
         );
-        send_orders_to_warehouse($data, $editor,$smarty);
+        send_orders_to_warehouse($data, $editor, $smarty);
         break;
     default:
         $response = array(
@@ -357,7 +357,7 @@ switch ($tipo) {
 }
 
 
-function send_orders_to_warehouse($data, $editor,$smarty) {
+function send_orders_to_warehouse($data, $editor, $smarty) {
 
     $updated = [];
     foreach ($data['order_keys'] as $order_key) {
@@ -365,44 +365,40 @@ function send_orders_to_warehouse($data, $editor,$smarty) {
         $order->editor = $editor;
 
 
-        if ($delivery_key=$order->update_state('InWarehouse')) {
+        if ($delivery_key = $order->update_state('InWarehouse')) {
             $updated[] = $delivery_key;
         }
 
     }
 
-    $number_updated=count($updated);
+    $number_updated = count($updated);
 
-    if($number_updated>0){
-        $html='<i class="fa fa-check success  padding_left_5"></i>';
+    if ($number_updated > 0) {
+        $html = '<i class="fa fa-check success  padding_left_5"></i>';
 
-    }else{
-        $html='';
+    } else {
+        $html = '';
     }
 
-    $html.=' '.number($number_updated).' '.ngettext('order send to warehouse', 'orders send to warehouse',$number_updated);
+    $html .= ' '.number($number_updated).' '.ngettext('order send to warehouse', 'orders send to warehouse', $number_updated);
 
 
-
-
-
-    if($number_updated>0){
-        $html.=' <div style="float:right;margin-left:20px" class="orders_operations ">';
-        $html.='<span class="orders_picking_sheets orders_op orders_pdf " data-type="orders_picking_sheets"> '._('Picking sheets');
-        $html.=' <i data-source="fix" data-ids="'.join(',',$updated).'"   data-type="picking_aid"  class="fal fa-fw fa-clipboard-list-check button"></i>';
-        $html.=' <i data-source="fix"  data-ids="'.join(',',$updated).'" data-type="picking_aid_with_labels"  class="fal fa-fw fa-pager button"></i>';
-        $html.='</span>';
-        $html.= $smarty->fetch('control_order_operation_progress_bar.tpl');
-        $html.='</div>';
+    if ($number_updated > 0) {
+        $html .= ' <div style="float:right;margin-left:20px" class="orders_operations ">';
+        $html .= '<span class="orders_picking_sheets orders_op orders_pdf " data-type="orders_picking_sheets"> '._('Picking sheets');
+        $html .= ' <i data-source="fix" data-ids="'.join(',', $updated).'"   data-type="picking_aid"  class="fal fa-fw fa-clipboard-list-check button"></i>';
+        $html .= ' <i data-source="fix"  data-ids="'.join(',', $updated).'" data-type="picking_aid_with_labels"  class="fal fa-fw fa-pager button"></i>';
+        $html .= '</span>';
+        $html .= $smarty->fetch('control_order_operation_progress_bar.tpl');
+        $html .= '</div>';
 
     }
 
     $response = array(
         'state' => 200,
-        'msg'  => $html
+        'msg'   => $html
     );
     echo json_encode($response);
-
 
 
 }
@@ -414,13 +410,16 @@ function send_orders_to_warehouse($data, $editor,$smarty) {
 function cancel_purchase_order_submitted_item($data, $db) {
 
     $sql  =
-        "select `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units` ,`Supplier Delivery Units` ,`Supplier Delivery Transaction State` ,`Purchase Order Submitted Cancelled Units`, `Purchase Order Transaction Part SKU` ,`Supplier Part Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
+        "select `Purchase Order Submitted SKOs Per Carton`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units` ,`Supplier Delivery Units` ,`Supplier Delivery Transaction State` ,`Purchase Order Submitted Cancelled Units`, `Purchase Order Transaction Part SKU` ,`Supplier Part Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($data['transaction_key'])
     );
     if ($row = $stmt->fetch()) {
         // print_r($row);
+
+        $units_per_carton = $row['Purchase Order Submitted Units Per SKO'] * $row['Purchase Order Submitted SKOs Per Carton'];
+        $units_per_sko    = $row['Purchase Order Submitted Units Per SKO'];
 
         if ($row['Purchase Order Transaction State'] != 'Submitted') {
             $response = array(
@@ -431,14 +430,23 @@ function cancel_purchase_order_submitted_item($data, $db) {
             exit;
         }
 
+
         /**
          * @var $purchase_order \PurchaseOrder
          */
         $purchase_order = get_object('Purchase_Order', $row['Purchase Order Key']);
         if ($purchase_order->id) {
 
-            $date          = gmdate('Y-m-d H:i:s');
-            $unit_qty      = $row['Supplier Delivery Units'];
+
+            $old_state=$purchase_order->get('Purchase Order State');
+
+            $unit_qty = ($row['Supplier Delivery Units'] == '' ? 0 : $row['Supplier Delivery Units']);
+
+            $to_cancel_qty = $row['Purchase Order Submitted Units'] - $unit_qty;
+
+
+            $date = gmdate('Y-m-d H:i:s');
+
             $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
             $amount        = $unit_qty * $supplier_part->get('Supplier Part Unit Cost');
             $extra_amount  = $unit_qty * $supplier_part->get('Supplier Part Unit Extra Cost');
@@ -446,14 +454,26 @@ function cancel_purchase_order_submitted_item($data, $db) {
             if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
                 $cbm = $unit_qty * $supplier_part->get('Supplier Part Carton CBM') / $supplier_part->get('Supplier Part Packages Per Carton') / $supplier_part->part->get('Part Units Per Package');
             } else {
-                $cbm = 'NULL';
+
+                if ($unit_qty == 0) {
+                    $cbm = 0;
+                } else {
+                    $cbm = null;
+                }
+
             }
 
 
             if (is_numeric($supplier_part->part->get('Part Package Weight'))) {
                 $weight = $unit_qty * $supplier_part->part->get('Part Package Weight') / $supplier_part->part->get('Part Units Per Package');
             } else {
-                $weight = 'NULL';
+                if ($unit_qty == 0) {
+                    $weight = 0;
+                } else {
+                    $weight = null;
+                }
+
+
             }
 
             $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Submitted Cancelled Units`=?,`Purchase Order Last Updated Date`=?,`Purchase Order Net Amount`=? ,
@@ -464,9 +484,10 @@ function cancel_purchase_order_submitted_item($data, $db) {
 
             $stmt = $db->prepare($sql);
 
+
             $stmt->execute(
                 array(
-                    $row['Purchase Order Submitted Units'] - $row['Supplier Delivery Units'],
+                    $to_cancel_qty,
                     $date,
                     $amount,
                     $extra_amount,
@@ -477,11 +498,69 @@ function cancel_purchase_order_submitted_item($data, $db) {
             );
 
 
+            if ($row['Supplier Delivery Units'] == 0) {
+                $sql  = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=?  where  `Purchase Order Transaction Fact Key`=? ";
+                $stmt = $db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        'Cancelled',
+                        $row['Purchase Order Transaction Fact Key']
+                    )
+                );
+            }
+
+
+            if ($to_cancel_qty > 0) {
+                $ordered_units   = '<span class="discreet strikethrough">'.number($to_cancel_qty).'</span>';
+                $ordered_skos    = '<span class="discreet strikethrough">'.number($to_cancel_qty / $units_per_sko, 3).'</span>';
+                $ordered_cartons = '<span class="discreet strikethrough">'.number($to_cancel_qty / $units_per_carton, 3).'</span>';
+
+                if ($unit_qty > 0) {
+                    $ordered_units   = ' '.number($unit_qty);
+                    $ordered_skos    = ' '.number($unit_qty / $units_per_sko, 3);
+                    $ordered_cartons = ' '.number($unit_qty / $units_per_carton, 3);
+
+                }
+
+            } else {
+                $ordered_units   = number($unit_qty);
+                $ordered_skos    = number($unit_qty / $units_per_sko, 3);
+                $ordered_cartons = number($unit_qty / $units_per_carton, 3);
+            }
+
+
             $purchase_order->update_purchase_order_item_state($row['Purchase Order Transaction Fact Key']);
             $purchase_order->update_totals();
 
+            if($old_state!=$purchase_order->get('Purchase Order State') and $purchase_order->get('Purchase Order State')=='Cancelled'){
+                $purchase_order->fast_update(
+                    array(
+                        'Purchase Order Locked'                   => 'Yes',
+                        'Purchase Order Cancelled Date'           => gmdate('Y-m-d H:i:s'),
+                        'Purchase Order Estimated Receiving Date' => '',
+                    )
+                );
+                $purchase_order->update_purchase_order_date();
+
+                $history_data = array(
+                    'History Abstract' => _('Purchase order cancelled'),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+                $purchase_order->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $purchase_order->get_object_name(), $purchase_order->id
+                );
+
+            }
+
+
             $response = array(
                 'state'           => 200,
+                'ordered_units'   => $ordered_units,
+                'ordered_skos'    => $ordered_skos,
+                'ordered_cartons' => $ordered_cartons,
+                'purchase_order_state' => $purchase_order->get('Purchase Order State'),
+
                 'update_metadata' => array(
                     'class_html' => array(
                         'transaction_state_'.$row['Purchase Order Transaction Fact Key'] => _('Cancelled'),
@@ -496,6 +575,7 @@ function cancel_purchase_order_submitted_item($data, $db) {
                         'Purchase_Order_Weight'                            => $purchase_order->get('Weight'),
                         'Purchase_Order_CBM'                               => $purchase_order->get('CBM'),
                         'Purchase_Order_Number_Items'                      => $purchase_order->get('Number Items'),
+                        'Purchase_Order_Ordered_Number_Items'              => $purchase_order->get('Ordered Number Items'),
                         'Purchase_Order_State'                             => $purchase_order->get('State'),
 
                     )
@@ -527,8 +607,12 @@ function cancel_purchase_order_submitted_item($data, $db) {
 }
 
 
-function clone_order($data, $editor, $smarty, $db, $account, $user) {
+function clone_order($data, $editor) {
 
+    /**
+     * @var $order        Order
+     * @var $target_order Order
+     */
     $order    = get_object('Order', $data['order_key']);
     $customer = get_object('Customer', $order->get('Order Customer Key'));
 
@@ -536,14 +620,15 @@ function clone_order($data, $editor, $smarty, $db, $account, $user) {
 
     if ($target_order_key) {
         $target_order = get_object('Order', $target_order_key);
-    }
 
+    }
 
     if (!(isset($target_order) and $target_order->id)) {
         $target_order = $customer->create_order('{}');
-    }
 
-    $target_items_data = array();
+    }
+    $target_order->editor = $editor;
+    $target_items_data    = array();
     foreach ($target_order->get_items() as $_item) {
 
         $target_items_data[$_item['product_id']] = $_item['qty'];
@@ -610,20 +695,22 @@ function clone_order($data, $editor, $smarty, $db, $account, $user) {
 
 }
 
-
-function update_po_item_note($data, $editor, $smarty, $db, $account, $user) {
-
+/**
+ * @param $data
+ * @param $db \PDO
+ */
+function update_po_item_note($data, $db) {
 
     $note = trim(strip_tags($data['note']));
 
-    $sql = sprintf(
-        'update  `Purchase Order Transaction Fact` set `Note to Supplier`=%s where `Purchase Order Transaction Fact Key`=%d      ', prepare_mysql($note),
-
-        $data['potf_key']
+    $sql = "update  `Purchase Order Transaction Fact` set `Note to Supplier`=? where `Purchase Order Transaction Fact Key`=?";
+    $db->prepare($sql)->execute(
+        array(
+            $note,
+            $data['purchase_order_transaction_fact_key']
+        )
     );
 
-
-    $db->exec($sql);
     $response = array(
         'state' => 200,
         'note'  => $note
@@ -1092,15 +1179,23 @@ function new_payment($data, $editor, $db, $account, $user) {
 
     if ($payment_account->get('Payment Account Block') == 'Accounts') {
 
-        $sql = sprintf(
-            'INSERT INTO `Credit Transaction Fact` 
+        $sql = "INSERT INTO `Credit Transaction Fact` 
                     (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
-                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$data['amount'], prepare_mysql($order->get('Currency Code')), $exchange, $order->get('Customer Key'), $payment->id
+                    VALUES (?,?,?,?,?,?)";
 
 
+        $db->prepare($sql)->execute(
+            array(
+                $date,
+                round(-$data['amount'], 2),
+                $order->get('Currency Code'),
+                $exchange,
+                $order->get('Customer Key'),
+                $payment->id
+
+            )
         );
 
-        $db->exec($sql);
 
         $reference = $db->lastInsertId();
 
@@ -1482,15 +1577,21 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
             $refund = $payment_account->create_payment($payment_data);
 
-            $sql = sprintf(
-                'INSERT INTO `Credit Transaction Fact` 
+            $sql = "INSERT INTO `Credit Transaction Fact` 
                     (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
-                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), $data['amount'], prepare_mysql($order->get('Currency Code')), $exchange, $order->get('Customer Key'), $refund->id
+                    VALUES (?,?,?,?,?,?)";
 
-
+            $db->prepare($sql)->execute(
+                array(
+                    $date,
+                    round($data['amount'], 2),
+                    $order->get('Currency Code'),
+                    $exchange,
+                    $order->get('Customer Key'),
+                    $refund->id
+                )
             );
 
-            $db->exec($sql);
 
             $reference = $db->lastInsertId();
 
@@ -1586,7 +1687,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 }
 
 
-function create_refund($data, $editor, $smarty, $db) {
+function create_refund($data, $editor) {
 
 
     $object         = get_object('order', $data['key']);
@@ -1617,7 +1718,7 @@ function create_refund($data, $editor, $smarty, $db) {
 }
 
 
-function create_refund_tax_only($data, $editor, $smarty, $db) {
+function create_refund_tax_only($data, $editor) {
 
 
     $object         = get_object('order', $data['key']);
@@ -1648,14 +1749,16 @@ function create_refund_tax_only($data, $editor, $smarty, $db) {
 }
 
 
-function create_replacement($data, $editor, $smarty, $db) {
+function create_replacement($data, $editor) {
+
+    /**
+     * @var  $order Order
+     */
+    $order         = get_object('order', $data['key']);
+    $order->editor = $editor;
 
 
-    $object         = get_object('order', $data['key']);
-    $object->editor = $editor;
-
-
-    $replacement = $object->create_replacement($data['transactions']);
+    $replacement = $order->create_replacement($data['transactions']);
 
 
     if ($replacement->id) {
@@ -1668,7 +1771,7 @@ function create_replacement($data, $editor, $smarty, $db) {
     } else {
         $response = array(
             'state' => 400,
-            'msg'   => $object->msg
+            'msg'   => $order->msg
         );
     }
 
@@ -1678,7 +1781,7 @@ function create_replacement($data, $editor, $smarty, $db) {
 }
 
 
-function create_return($data, $editor, $smarty, $db) {
+function create_return($data, $editor) {
 
 
     $object         = get_object('order', $data['key']);
@@ -1749,36 +1852,35 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
                     if ($data['type'] == 'cost') {
 
-                        //todo $supplier_part_historic_key is not necesary tru can be other this can be a mess, $supplier_part_historic_keys hould come from the UI
-
-                        $sql = sprintf(
-                            'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Cost`=%.4f ,`Purchase Order Net Amount`=%.2f, `Supplier Part Historic Key`=%d  where `Purchase Order Transaction Fact Key`=%d  ',
-
-                            $row['Supplier Part Unit Cost'], $net_amount, $supplier_part_historic_key,
-
-                            $row['Purchase Order Transaction Fact Key']
-                        );
-
+                        //todo $supplier_part_historic_key is not necessary tru can be other this can be a mess, $supplier_part_historic_keys should come from the UI
 
                         $unit_cost = $row['Supplier Part Unit Cost'];
+                        $sql       = "update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Cost`=? ,`Purchase Order Net Amount`=?, `Supplier Part Historic Key`=?  where `Purchase Order Transaction Fact Key`=?";
 
 
-                        // print "$sql\n";
-                        $db->exec($sql);
-                    } elseif ($data['type'] == 'extra_cost') {
-
-                        $sql = sprintf(
-                            'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Extra Cost Percentage`=%.4f  where `Purchase Order Transaction Fact Key`=%d  ',
-
-                            $row['Supplier Part Unit Extra Cost Percentage'],
-
-                            $row['Purchase Order Transaction Fact Key']
+                        $db->prepare($sql)->execute(
+                            array(
+                                round($row['Supplier Part Unit Cost'], 4),
+                                round($net_amount, 2),
+                                $supplier_part_historic_key,
+                                $row['Purchase Order Transaction Fact Key']
+                            )
                         );
 
-                        // print "$sql\n";
-                        $db->exec($sql);
+
+                    } elseif ($data['type'] == 'extra_cost') {
 
                         $extra_unit_cost = $row['Supplier Part Unit Extra Cost Percentage'];
+                        $sql             = "update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Extra Cost Percentage`=?  where `Purchase Order Transaction Fact Key`=?";
+
+                        $db->prepare($sql)->execute(
+                            array(
+                                round($row['Supplier Part Unit Extra Cost Percentage'], 4),
+                                $row['Purchase Order Transaction Fact Key']
+                            )
+                        );
+
+
                     }
 
                     if ($row['Supplier Delivery Key']) {
@@ -1786,16 +1888,15 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
                         if ($data['type'] == 'cost') {
 
-                            $sql = sprintf(
-                                'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
+                            $sql = "update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=? where `Purchase Order Transaction Fact Key`=?";
 
-                                $row['Supplier Part Unit Cost'] * $row['Supplier Delivery Units'],
-
-                                $row['Purchase Order Transaction Fact Key']
+                            $db->prepare($sql)->execute(
+                                array(
+                                    round($row['Supplier Part Unit Cost'] * $row['Supplier Delivery Units'], 4),
+                                    $row['Purchase Order Transaction Fact Key']
+                                )
                             );
 
-                            //   print "$sql\n";
-                            $db->exec($sql);
                         }
 
                         $delivery->update_totals();
@@ -2122,7 +2223,7 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
 function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user) {
 
 
-    $sql = sprintf('select * from `Order Transaction Deal Bridge` where `Order Transaction Deal Key`=%d ', $data['otdb_key']);
+    $sql = sprintf('select * from `Order Transaction Deal Bridge` where `Order Transaction Deal Key`=%d ', $data['order_transaction_deal_bridge_key']);
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
@@ -2177,7 +2278,7 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
 
             $sql = sprintf(
                 'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ', $product->id, $product->get('Product Current Key'),
-                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['otdb_key']
+                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['order_transaction_deal_bridge_key']
             );
 
             $db->exec($sql);

@@ -118,7 +118,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'deal_component_key' => array('type' => 'key'),
                          'product_id'         => array('type' => 'key'),
-                         'otdb_key'           => array('type' => 'otdb_key'),
+                         'order_transaction_deal_bridge_key'           => array('type' => 'order_transaction_deal_bridge_key'),
 
 
                      )
@@ -686,7 +686,7 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
 function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $order, $customer) {
 
 
-    $sql = sprintf('select * from `Order Transaction Deal Bridge`  OTDB  left join `Deal Dimension` DD  on (DD.`Deal Key`=OTDB.`Deal Key`)  where `Order Transaction Deal Key`=%d ', $data['otdb_key']);
+    $sql = sprintf('select * from `Order Transaction Deal Bridge`  OTDB  left join `Deal Dimension` DD  on (DD.`Deal Key`=OTDB.`Deal Key`)  where `Order Transaction Deal Key`=%d ', $data['order_transaction_deal_bridge_key']);
 
 
     if ($result = $db->query($sql)) {
@@ -748,7 +748,7 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
 
             $sql = sprintf(
                 'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ', $product->id, $product->get('Product Current Key'),
-                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['otdb_key']
+                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['order_transaction_deal_bridge_key']
             );
 
             $db->exec($sql);

@@ -1867,6 +1867,17 @@ $tab_defaults = array(
 
         'export_fields' => get_export_fields('supplier_parts')
     ),
+    'suppliers.supplier_parts.all' => array(
+        'view'        => 'reorder',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
+
+        'export_fields' => get_export_fields('supplier_parts')
+    ),
 
     'category.suppliers'     => array(
         'view'        => 'overview',
@@ -1995,6 +2006,15 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
+    'job_order.all_production_parts' => array(
+        'view'        => 'batches',
+        'sort_key'    => 'reference',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+
+    ),
     'supplier.orders'                   => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -2047,6 +2067,41 @@ $tab_defaults = array(
         'elements_type' => array_keys(get_elements_option('production_deliveries'))[0],
         'elements'      => get_elements_option('production_deliveries')
     ),
+    'warehouse.production_deliveries.todo'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+
+    ),
+    'warehouse.production_deliveries.done'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+
+    ),
+    'warehouse.production_deliveries.cancelled'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+
+    ),
+
+
     'supplier.order.history'            => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
@@ -2100,6 +2155,17 @@ $tab_defaults = array(
     ),
     'supplier.order.items_in_process'   => array(
         'view'        => 'cartons',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'export_fields' => get_export_fields('supplier.order.items')
+
+
+    ),
+    'job_order.items_in_process'   => array(
+        'view'        => 'batches',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 1000,

@@ -80,17 +80,23 @@ if (isset($parameters['elements_type'])) {
                     $num_elements_checked++;
 
 
-                    if ($_key == 'InProcess') {
+                    if ($_key == 'Planning') {
                         $_elements .= ",'InProcess'";
-                    }elseif ($_key == 'Manufacturing') {
+                    }elseif ($_key == 'Queued') {
                         $_elements .= ",'Submitted'";
-                    } elseif ($_key == 'ReceivedChecked') {
+                    }elseif ($_key == 'Manufacturing') {
+                        $_elements .= ",'Confirmed'";
+                    }elseif ($_key == 'Manufactured') {
+                        $_elements .= ",'Manufactured'";
+                    }elseif ($_key == 'QC_Pass') {
+                        $_elements .= ",'QC_Pass'";
+                    } elseif ($_key == 'Delivered') {
                         $_elements .= ",'Received','Checked','Inputted','Dispatched'";
                     }  elseif ($_key == 'Placed') {
                         $_elements .= ",'Placed','Costing','InvoiceChecked'";
-                    } else {
+                    } elseif ($_key == 'Cancelled') {
+                        $_elements .= ",'Cancelled','NoReceived'";
 
-                        $_elements .= ",'".addslashes($_key)."'";
                     }
                 }
             }

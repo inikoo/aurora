@@ -156,7 +156,7 @@ function post_production_job_order_state_change(data) {
 
         $('#all_available_items,#new_item').removeClass('hide')
 
-        change_tab('supplier.order.items_in_process')
+        change_tab('job_order.items_in_process')
     } else if (data.update_metadata.state == 'Submitted') {
         $('#all_available_items,#new_item').addClass('hide')
 

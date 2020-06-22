@@ -1819,27 +1819,42 @@ function job_order_items($_data, $db, $user, $account) {
             $state .= $_state;
             $state .= '</span>';
 
+            $_items_qty=$data['Purchase Order Submitted Units']-$data['Purchase Order Submitted Cancelled Units'];
 
-            $items_qty     = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
-            $ordered_units = $data['Purchase Order Submitted Units'];
+
+            $items_qty     = $_items_qty.'<span class="small discreet">u.</span> | ';
+            $ordered_units = $_items_qty;
 
             if ($units_per_sko == 0) {
                 $items_qty .= '<span class="error">Units per SKO=0</span> ';
             } else {
 
-                $ordered_skos = number($data['Purchase Order Submitted Units'] / $units_per_sko, 3);
 
-                if ($data['Purchase Order Submitted Units'] % $units_per_sko != 0) {
-                    $items_qty .= '<span class="error">'.$ordered_skos.'<span class="small discreet">sko.</span></span> | ';
 
-                } else {
-                    $items_qty .= number($data['Purchase Order Submitted Units'] / $units_per_sko, 3).'<span class="small discreet">sko.</span> | ';
+
+                if($data['Purchase Order Submitted Cancelled Units']>0){
+                    $ordered_skos = '<span class="discreet strikethrough">'.number($data['Purchase Order Submitted Cancelled Units'] / $units_per_sko, 3).'</span>';
+                    if($_items_qty>0){
+                        $ordered_skos = ' '.number($_items_qty / $units_per_sko, 3);
+
+                    }
+
+                }else{
+                    $ordered_skos = number($_items_qty / $units_per_sko, 3);
 
                 }
 
-                $ordered_cartons = number($data['Purchase Order Submitted Units'] / $units_per_sko / $skos_per_carton, 3);
+                if ($_items_qty % $units_per_sko != 0) {
+                    $items_qty .= '<span class="error">'.$ordered_skos.'<span class="small discreet">sko.</span></span> | ';
 
-                if ($data['Purchase Order Submitted Units'] % ($units_per_sko * $skos_per_carton) != 0) {
+                } else {
+                    $items_qty .= number($_items_qty / $units_per_sko, 3).'<span class="small discreet">sko.</span> | ';
+
+                }
+
+                $ordered_cartons = number($_items_qty / $units_per_sko / $skos_per_carton, 3);
+
+                if ($_items_qty % ($units_per_sko * $skos_per_carton) != 0) {
                     $items_qty .= '<span class="error">'.$ordered_cartons.'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
 
                 } else {
@@ -1848,7 +1863,7 @@ function job_order_items($_data, $db, $user, $account) {
                 }
             }
 
-            $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
+            $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$_items_qty.')">'.$items_qty.'</span>';
 
 
             $amount = money($data['Purchase Order Net Amount'], $purchase_order->get('Purchase Order Currency Code'));
@@ -1880,14 +1895,14 @@ function job_order_items($_data, $db, $user, $account) {
 
             if ($data['Part Package Weight'] > 0 and $units_per_sko != 0) {
                 $weight = weight(
-                    $data['Part Package Weight'] * $data['Purchase Order Submitted Units'] / $units_per_sko
+                    $data['Part Package Weight'] * $_items_qty / $units_per_sko
                 );
             } else {
                 $weight = '<i class="error fa fa-exclamation-circle"></i>';
             }
             if ($data['Supplier Part Carton CBM'] > 0 and $units_per_sko != 0 and $skos_per_carton != 0) {
                 $cbm = number(
-                        $data['Purchase Order Submitted Units'] * $data['Supplier Part Carton CBM'] / $units_per_sko / $skos_per_carton
+                        $_items_qty * $data['Supplier Part Carton CBM'] / $units_per_sko / $skos_per_carton
                     ).' m³';
             } else {
                 $cbm = '<i class="error fa fa-exclamation-circle"></i>';
@@ -1929,7 +1944,7 @@ function job_order_items($_data, $db, $user, $account) {
             }
 
 
-            $units_qty = $data['Purchase Order Submitted Units'];
+            $units_qty = $_items_qty;
             if ($skos_per_carton != 0) {
                 $skos_qty = $units_qty / $units_per_sko;
             } else {
@@ -1945,7 +1960,7 @@ function job_order_items($_data, $db, $user, $account) {
 
             if (
 
-                floor($data['Purchase Order Submitted Units']) != $data['Purchase Order Submitted Units'] or floor($skos_qty) != $skos_qty
+                floor($_items_qty) != $_items_qty or floor($skos_qty) != $skos_qty
 
             ) {
                 $class = 'error';

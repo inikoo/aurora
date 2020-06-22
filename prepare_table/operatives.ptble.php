@@ -11,9 +11,9 @@
 
 
 $table
-    = '`Staff Dimension` SD left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`)  ';
+    = '`Staff Dimension` SD left join `Staff Role Bridge` B on (B.`Staff Key`=SD.`Staff Key`)  ';
 $where
-    = ' where `Company Position Code`="PROD.O"  and `Staff Currently Working`="Yes" ';
+    = ' where `Role Code`="PRODO"  and `Staff Currently Working`="Yes" ';
 
 
 $wheref = '';
@@ -78,4 +78,4 @@ $fields
 	
 	
 ";
-?>
+

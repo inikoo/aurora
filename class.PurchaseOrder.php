@@ -746,7 +746,7 @@ class PurchaseOrder extends DB_Table {
                 break;
             case 'Production Creation Formatted Date':
                 if ($this->data['Purchase Order Creation Date'] == '') {
-                    return '';
+                    return '&nbsp;';
                 }
 
                 return strftime(
@@ -754,7 +754,7 @@ class PurchaseOrder extends DB_Table {
                 );
             case 'Production Submitted Formatted Date':
                 if ($this->data['Purchase Order Submitted Date'] == '') {
-                    return '';
+                    return '&nbsp;';
                 }
 
                 if (date('Y-m-d', strtotime($this->data['Purchase Order Creation Date'])) == date('Y-m-d', strtotime($this->data['Purchase Order Submitted Date']))) {
@@ -767,8 +767,25 @@ class PurchaseOrder extends DB_Table {
                         "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Submitted Date'].' +0:00')
                     );
                 }
+            case 'Production Cancelled Formatted Date':
+                if ($this->data['Purchase Order Cancelled Date'] == '') {
+                    return '&nbsp;';
+                }
 
 
+
+
+                if (date('Y-m-d', strtotime($this->data['Purchase Order Submitted Date'])) == date('Y-m-d', strtotime($this->data['Purchase Order Cancelled Date']))) {
+                    return strftime(
+                        "%l:%M%p ", strtotime($this->data['Purchase Order Cancelled Date'].' +0:00')
+                    );
+
+                } else {
+                    return strftime(
+                        "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Cancelled Date'].' +0:00')
+                    );
+                }
+                break;
             case 'Production Confirmed Formatted Date':
                 if ($this->data['Purchase Order Confirmed Date'] == '') {
                     return '';
@@ -849,11 +866,6 @@ class PurchaseOrder extends DB_Table {
 
                 if ($this->get('State Index') <= 90 and $this->get('State Index') > 0) {
 
-                    //if ($this->get('Estimated Receiving Datetime')) {
-                    //    return strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Datetime').' +0:00'));
-                    //} else {
-                    //    return '';
-                    //}
 
                     $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
 
@@ -862,14 +874,14 @@ class PurchaseOrder extends DB_Table {
 
 
                         if ($this->get('State Index') <= 50) {
-                            return '<span class="discreet">'.sprintf(_('%s after production'), $parent->get('Delivery Time')).'</span>';
+                            return '<span class="italic discreet">'.sprintf(_('ETA %s after delivered'), $parent->get('Delivery Time')).'</span>';
 
                         } else {
 
 
                             $_date = strtotime($this->data['Purchase Order Received Date'].' +'.$parent->get($parent->table_name.' Average Delivery Days').' days');
 
-                            return '<span class="discreet italic">'.strftime("%e %b %Y", $_date).'</span>';
+                            return '<span class="discreet italic">'.'<span class="very_discreet">'._('ETA').'</span> '.strftime("%e %b", $_date).'</span>';
 
                         }
 
@@ -1289,6 +1301,9 @@ class PurchaseOrder extends DB_Table {
                 );
             }
         }
+
+
+
 
 
         $this->fast_update(
@@ -2003,10 +2018,9 @@ class PurchaseOrder extends DB_Table {
     }
 
     private function _update_item_state($state, $old_state, $key, $update_part_next_deliveries_data, $part_sku) {
+
         $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=?";
-        //print $state;
-        //'Cancelled','NoReceived','InProcess','Submitted','ProblemSupplier','Confirmed','Manufactured','QC_Pass','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','InvoiceChecked'
-        $this->db->prepare($sql)->execute(
+          $this->db->prepare($sql)->execute(
             array(
                 $state,
                 $key

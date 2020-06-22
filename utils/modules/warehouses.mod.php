@@ -373,8 +373,48 @@ function get_warehouses_module() {
                 'icon'      => 'industry',
                 'reference' => 'warehouse/%d/production_deliveries',
                 'tabs'      => array(
-                    'warehouse.production_deliveries' => array()
+                    'warehouse.production_deliveries.todo' => array(
+                        'label' => _('To-do'),
+                        'icon'  => 'clipboard-list'
+                    ),
+                    'warehouse.production_deliveries.done' => array(
+                        'label' => _('Done'),
+                        'icon'  => 'clipboard-check'
+                    ),
+                    'warehouse.production_deliveries.cancelled' => array(
+                        'label' => _('Cancelled')
+                    )
                 )
+            ),
+            'delivery' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'supplier.delivery.items'   => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+
+                    'supplier.delivery.items_mismatch' => array(
+                        'label' => _('Under/Over delivered items'),
+                        'icon'  => 'box-open'
+                    ),
+                    'supplier.delivery.items_done'     => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+
+
+                    'supplier.delivery.history'     => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
             ),
             'returns'  => array(
                 'type'      => 'navigation',

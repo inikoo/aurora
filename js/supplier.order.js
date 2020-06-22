@@ -661,7 +661,7 @@ function save_po_note(element){
     var form_data = new FormData();
 
     form_data.append("tipo", 'update_po_item_note')
-    form_data.append("potf_key", item_po_note.data('potfk'))
+    form_data.append("purchase_order_transaction_fact_key", item_po_note.data('potfk'))
     form_data.append("note", item_po_note.val())
 
 
@@ -726,7 +726,7 @@ function save_po_note(element){
 
 }
 
-function cancel_purchase_order_submitted_item(transaction_key){
+function cancel_purchase_order_submitted_item(element,transaction_key){
 
 
     $(element).addClass('fa-spin fa-spinner')
@@ -756,9 +756,24 @@ function cancel_purchase_order_submitted_item(transaction_key){
 
         if (data.state == 200) {
 
-            for (var key in data.update_metadata.class_html) {
-                $('.' + key).html(data.update_metadata.class_html[key])
+
+            if(data.purchase_order_state=='Cancelled'){
+                change_view(state.request, { 'reload_showcase': 1})
+
+
+            }else{
+                var tr=$(element).closest('tr')
+
+                tr.find('.col_ordered_units').html(data.ordered_units)
+                tr.find('.col_ordered_skos').html(data.ordered_skos)
+                tr.find('.col_ordered_cartons').html(data.ordered_cartons)
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
             }
+
+
 
 
         } else if (data.state == 400) {

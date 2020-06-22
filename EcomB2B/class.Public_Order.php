@@ -606,7 +606,7 @@ class Public_Order extends DBW_Table {
 
                 //  print_r($allowances);
 
-                $options = '<div data-selected="'.$selected.'"  data-deal_component_key="'.$row['Deal Component Key'].'"  data-otdb_key="'.$row['Order Transaction Deal Key'].'" class="deal_component_choose_by_customer">';
+                $options = '<div data-selected="'.$selected.'"  data-deal_component_key="'.$row['Deal Component Key'].'"  data-order_transaction_deal_bridge_key="'.$row['Order Transaction Deal Key'].'" class="deal_component_choose_by_customer">';
                 foreach ($allowances['options'] as $product_id => $option) {
                     $options .= '<span onclick="web_select_deal_component_choose_by_customer(this)" data-product_id="'.$product_id.'" class="deal_component_item deal_component_item_'.$product_id.'    margin_right_30"  style="cursor:pointer"> <span>'
                         .$option['Description'].'</span>

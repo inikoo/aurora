@@ -37,8 +37,8 @@ function get_production_module() {
 
             'production_parts' => array(
                 'type'      => 'navigation',
-                'label'     => _('Parts'),
-                'icon'      => 'hand-receiving',
+                'label'     => _('Products'),
+                'icon'      => 'box-heart',
                 'reference' => 'production/%d/parts',
                 'tabs'      => array(
                     'production.production_parts' => array('label' => _('Parts'))
@@ -61,26 +61,16 @@ function get_production_module() {
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-
-
-                    'bill_of_materials' => array(
-                        'label' => _('Bill of materials'),
-                        'icon'  => 'puzzle-piece'
+                    'production_part.batch' => array(
+                        'label' => _('Batch'),
+                        'icon'  => 'conveyor-belt'
                     ),
 
-                    'bill_of_materials_edit' => array(
-                        'class' => 'hide',
-                        'label' => _('Edit bill of materials'),
-                        'icon'  => 'puzzle-piece'
-                    ),
-                    'production_part.tasks'  => array(
-                        'label' => _('List of tasks'),
-                        'icon'  => 'tasks'
-                    ),
+
 
 
                     'production_part.purchase_orders' => array(
-                        'label'   => _('Job orders / production sheets'),
+                        'label'   => _('Job orders'),
                         'icon'    => 'clipboard',
                         'subtabs' => array(
 
@@ -89,8 +79,8 @@ function get_production_module() {
                                 'icon'  => 'clipboard'
                             ),
                             'production_part.supplier.deliveries' => array(
-                                'label' => _("Production sheets"),
-                                'icon'  => 'clipboard-check'
+                                'label' => _("Deliveries"),
+                                'icon'  => 'hand-holding-heart'
                             ),
 
                         )
@@ -102,18 +92,34 @@ function get_production_module() {
                         'icon'  => 'database'
                     ),
 
-                    'production_part.images'  => array(
-                        'label' => '',
-                        'title' => _('Images'),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
-                    ),
+
                     'production_part.history' => array(
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
+                    'production_part.images'  => array(
+                        'label' => '',
+                        'title' => _('Images'),
+                        'icon'  => 'camera-retro',
+                        'class' => 'right icon_only'
+                    ),
+                    'bill_of_materials' => array(
+                        'title' => _('Bill of materials'),
+                        'label'=>'',
+                        'icon'  => 'puzzle-piece',
+                        'class' => 'right icon_only'
+
+                    ),
+
+                    'production_part.tasks'  => array(
+                        'title' => _('List of tasks'),
+                        'icon'  => 'tasks',
+                         'label'=>'',
+                        'class' => 'right icon_only'
+                    ),
+
 
 
                 )
@@ -201,16 +207,16 @@ function get_production_module() {
                 'icon'      => 'clipboard',
                 'reference' => 'production/%d/orders',
                 'tabs'      => array(
-                    'production_supplier.orders' => array()
-                )
-            ),
-            'production_supplier_deliveries' => array(
-                'type'      => 'navigation',
-                'label'     => _('Production sheets'),
-                'icon'      => 'clipboard-check',
-                'reference' => 'production/%d/deliveries',
-                'tabs'      => array(
-                    'production_supplier.deliveries' => array()
+
+                    'production_supplier.orders' => array(
+                        'label' => _('Job orders')
+                    )
+                    /*
+                    'production_supplier.deliveries'       => array(
+                        'label' => _('Deliveries')
+                    )
+                    */
+
                 )
             ),
 
@@ -218,29 +224,26 @@ function get_production_module() {
             'order' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'job_order.items'   => array(
+                    'job_order.items'                 => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'supplier.order.items_in_process' => array(
+                    'job_order.items_in_process' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
 
 
-
-
-
-                    'supplier.order.all_supplier_parts' => array(
+                    'job_order.all_production_parts' => array(
                         'label' => _("All products"),
                         'icon'  => 'th-list'
                     ),
 
 
-                    'supplier.order.history'            => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only',
+                    'supplier.order.history' => array(
+                        'label'         => _('History/Notes'),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number History Records'
@@ -249,7 +252,7 @@ function get_production_module() {
                     'supplier.order.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
-                        'class'=>'right'
+                        'class' => 'right'
                     ),
 
                 )

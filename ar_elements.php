@@ -469,6 +469,10 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         job_order_items_elements($db, $data['parameters'], $user);
         break;
+    case 'warehouse.production_deliveries':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        warehouse_production_deliveries($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -585,7 +589,7 @@ function get_purchase_order_items_elements($db, $data) {
     );
     while ($row = $stmt->fetch()) {
 
-        if ($row['element'] == 'ProblemSupplier'  or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted') {
+        if ($row['element'] == 'ProblemSupplier' or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted') {
             $row['element'] = 'Submitted';
         }
         if ($row['element'] == 'Dispatched') {
@@ -629,18 +633,18 @@ function job_order_items_elements($db, $data) {
 
     $elements_numbers = array(
         'type' => array(
-            'Planning'  => 0,
-            'Queued'  => 0,
+            'Planning'          => 0,
+            'Queued'            => 0,
             'Start_Production'  => 0,
             'Finish_Production' => 0,
-            'QC_Pass'  => 0,
-            'Delivered'   => 0,
-            'Placed'   => 0,
-            'Cancelled'  => 0
+            'QC_Pass'           => 0,
+            'Delivered'         => 0,
+            'Placed'            => 0,
+            'Cancelled'         => 0
         ),
     );
-    $sql  = "select count(*) as number,`Purchase Order Transaction State` as element from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction State` ";
-    $stmt = $db->prepare($sql);
+    $sql              = "select count(*) as number,`Purchase Order Transaction State` as element from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction State` ";
+    $stmt             = $db->prepare($sql);
     $stmt->execute(
         array($data['parent_key'])
     );
@@ -649,21 +653,87 @@ function job_order_items_elements($db, $data) {
 
         if ($row['element'] == 'InProcess') {
             $row['element'] = 'InDelivery';
-        }elseif ($row['element'] == 'Submitted') {
+        } elseif ($row['element'] == 'Submitted') {
             $row['element'] = 'Queued';
-        }elseif ($row['element'] == 'Confirmed') {
+        } elseif ($row['element'] == 'Confirmed') {
             $row['element'] = 'Start_Production';
-        }elseif ($row['element'] == 'Manufactured') {
+        } elseif ($row['element'] == 'Manufactured') {
             $row['element'] = 'Finish_Production';
-        }elseif ($row['element'] == 'QC_Pass') {
+        } elseif ($row['element'] == 'QC_Pass') {
             $row['element'] = 'QC_Pass';
-        }elseif ( in_array($row['element'] == 'QC_Pass',['InDelivery','Inputted','Dispatched','Received','Checked'])) {
+        } elseif (in_array(
+            $row['element'], [
+            'InDelivery',
+            'Inputted',
+            'Dispatched',
+            'Received',
+            'Checked'
+        ]
+        )) {
             $row['element'] = 'Delivered';
-        }elseif ( in_array($row['element'] == 'QC_Pass',['Placed','InvoiceChecked'])) {
+        } elseif (in_array(
+            $row['element'], [
+            'Placed',
+            'InvoiceChecked'
+        ]
+        )) {
             $row['element'] = 'Placed';
-        }elseif ($row['element'] == 'NoReceived' or $row['element'] == 'Cancelled') {
+        } elseif ($row['element'] == 'NoReceived' or $row['element'] == 'Cancelled') {
             $row['element'] = 'Cancelled';
         }
+
+        $elements_numbers['type'][$row['element']] = $row['number'];
+
+    }
+
+    foreach ($elements_numbers['type'] as $key => $value) {
+        $elements_numbers['type'][$key] = number($value);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+}
+
+
+/**
+ * @param $db \PDO
+ * @param $data
+ */
+function warehouse_production_deliveries($db, $data) {
+
+    $elements_numbers = array(
+        'type' => array(
+            'Todo'      => 0,
+            'Done'      => 0,
+            'Cancelled' => 0,
+
+        ),
+    );
+    $sql              = "select count(*) as number,`Supplier Delivery State` as element from `Supplier Delivery Dimension` where `Supplier Delivery Warehouse Key`=?  and `Supplier Delivery Type`='Production' group by `Supplier Delivery State` ";
+    $stmt             = $db->prepare($sql);
+    $stmt->execute(
+        array($data['parent_key'])
+    );
+    while ($row = $stmt->fetch()) {
+
+        if ($row['element'] == 'NoReceived' or $row['element'] == 'Cancelled') {
+            $row['element'] = 'Cancelled';
+        } elseif (in_array(
+            $row['element'], [
+            'Placed',
+            'InvoiceChecked'
+        ]
+        )) {
+            $row['element'] = 'Placed';
+        } else {
+            $row['element'] = 'Todo';
+
+        }
+
 
         $elements_numbers['type'][$row['element']] = $row['number'];
 
@@ -1790,7 +1860,7 @@ function get_history_elements($db, $data) {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Purchase Order History Bridge` WHERE  `Purchase Order Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
-    }  elseif ($data['parent'] == 'supplierdelivery') {
+    } elseif ($data['parent'] == 'supplierdelivery') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Supplier Delivery History Bridge` WHERE  `Supplier Delivery Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
@@ -2590,44 +2660,49 @@ function get_production_orders_elements($db, $data) {
     $elements_numbers = array(
         'state' => array(
 
-            'InProcess'       => 0,
-            'Manufacturing'   => 0,
-            'ReceivedChecked' => 0,
-            'Placed'          => 0,
-            'Cancelled'       => 0
+            'Planning'      => 0,
+            'Queued'        => 0,
+            'Manufacturing' => 0,
+            'Manufactured'  => 0,
+            'Delivered'  => 0,
+            'QC_Pass'       => 0,
+            'Placed'        => 0,
+            'Cancelled'     => 0
         ),
     );
 
 
-    //USE INDEX (`Main Source Type Store Key`)
     $sql = sprintf(
         "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s %s %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
     );
-
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
 
             if ($row['element'] == 'InProcess') {
-                $element = 'InProcess';
+                $element = 'Planning';
             } elseif ($row['element'] == 'Submitted') {
+                $element = 'Queued';
+            } elseif ($row['element'] == 'Confirmed') {
                 $element = 'Manufacturing';
-            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
-                $element = 'ReceivedChecked';
+            } elseif ($row['element'] == 'Manufactured') {
+                $element = 'Manufactured';
+            }elseif ($row['element'] == 'QC_Pass') {
+                $element = 'QC_Pass';
+            } elseif ( $row['element'] == 'Received' or $row['element'] == 'Checked' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+                $element = 'Delivered';
             } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing' or $row['element'] == 'InvoiceChecked') {
                 $element = 'Placed';
-            } else {
-                $element = $row['element'];
+            } elseif ($row['element'] == 'Cancelled' or $row['element'] == 'NoReceived') {
+                $element = 'Cancelled';
             }
+
+
             if (isset($elements_numbers['state'][$element])) {
                 $elements_numbers['state'][$element] += $row['number'];
             }
         }
-    } else {
-        print "$sql";
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
@@ -3899,14 +3974,14 @@ function get_email_campaign_sent_emails_elements($db, $data) {
     $elements_numbers = array(
 
         'state' => array(
-            'Rejected by SES'   => 0,
-            'Sending'   => 0,
-            'Delivered' => 0,
-            'Opened'    => 0,
-            'Clicked'   => 0,
-            'Bounced'   => 0,
-            'Spam'      => 0,
-            'Error'     => 0,
+            'Rejected by SES' => 0,
+            'Sending'         => 0,
+            'Delivered'       => 0,
+            'Opened'          => 0,
+            'Clicked'         => 0,
+            'Bounced'         => 0,
+            'Spam'            => 0,
+            'Error'           => 0,
 
         )
     );
@@ -4344,16 +4419,14 @@ function get_attendance_elements($db, $data) {
     $elements_numbers = array(
         'status' => array(
             'Work       ' => 0,
-            'Home'    => 0,
-            'Outside'        => 0,
-            'Break'         => 0,
-            'Finish'         => 0,
+            'Home'        => 0,
+            'Outside'     => 0,
+            'Break'       => 0,
+            'Finish'      => 0,
             'Off'         => 0,
         ),
 
     );
-
-
 
 
     $sql  =
@@ -4369,9 +4442,6 @@ function get_attendance_elements($db, $data) {
 
         $elements_numbers['status'][$row['element']] = number($row['number']);
     }
-
-
-
 
 
     $response = array(

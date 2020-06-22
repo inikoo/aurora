@@ -12,7 +12,7 @@
 {assign deliveries $order->get_deliveries('objects')}
 <div class="showcase_purchase_order">
 <div class="timeline_horizontal  {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
-    {$order->get('State Index')}
+
 
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
@@ -20,8 +20,8 @@
                 <span class="state ">{t}Sent to queue{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Production_Submitted_Formatted_Date"> {$order->get('Production Submitted Formatted Date')}</span> <span style="left: -155%"
-                        class="Production_Creation_Formatted_Date start_date">{$order->get('Production Creation Formatted Date')}</span>
+                <span class="Production_Submitted_Formatted_Date"> {$order->get('Production Submitted Formatted Date')}</span>
+                <span style="left: -155%"  class="Production_Creation_Formatted_Date start_date">{$order->get('Production Creation Formatted Date')}</span>
             </div>
             <div class="dot">
             </div>
@@ -94,7 +94,7 @@
 
             <li id="estimated_send_node" class=" li {if $order->get('State Index')>=100 }complete{/if}  ">
                 <div class="label">
-                    <span class="state ">{t}In location{/t} <span></i></span></span>
+                    <span class="state ">{t}Placed{/t} <span></i></span></span>
                 </div>
                 <div class="timestamp">
                     <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp; {$order->get('Production In Location Formatted Date')}
@@ -121,8 +121,8 @@
                 <span class="state ">{t}Submitted{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span
-                        class="start_date">{$order->get('Creation Date')} </span>
+                <span class="Production_Submitted_Formatted_Date"> {$order->get('Production Submitted Formatted Date')}</span>
+                <span style="left: -155%"  class="Production_Creation_Formatted_Date start_date">{$order->get('Production Creation Formatted Date')}</span>
             </div>
             <div class="dot">
             </div>
@@ -133,7 +133,7 @@
                 <span class="state ">{t}Cancelled{/t} <span></i></span></span>
             </div>
             <div class="timestamp">
-                <span class="Cancelled_Date">{$order->get('Cancelled Date')} </span>
+                <span class="Cancelled_Date">{$order->get('Production Cancelled Formatted Date')} </span>
             </div>
             <div class="dot">
             </div>
@@ -153,7 +153,7 @@
 
             <tr>
                 <td style="text-align: center" colspan="2">
-                    <span ><i class="fa fa-bars fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
+                    <span ><i class="fa fa-bars fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Ordered_Number_Items">{$order->get('Ordered Number Items')}</span></span>
                     <span class="{if $order->get('State Index')<60}super_discreet{/if}" style="padding-left:20px"><i
                                 class="fa fa-arrow-circle-down  fa-fw discreet" aria-hidden="true"></i> <span
                                 class="Purchase_Order_Number_Supplier_Delivery_Items">{$order->get('Number Supplier Delivery Items')}</span></span>
@@ -328,12 +328,12 @@
                 <div id="submit_operations" class="order_operation {if $order->get('Purchase Order State')!='InProcess'  or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
                     <div id="submit_operation"
                          class="square_button right"
-                         title="{t}Add to to-do list{/t}">
+                         title="{t}Send to queue{/t}">
                         <i class="fal fa-user-clock   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('submit')"></i>
                         <table id="submit_dialog" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Add to to-do list{/t}</td>
+                                <td class="label" colspan="2">{t}Send to queue{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"

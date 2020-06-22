@@ -82,7 +82,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='ordered_units'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: ""} ),
+cell: Backgrid.HtmlCell.extend({ className: "col_ordered_units"} ),
 
 },
 {
@@ -92,7 +92,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='ordered_skos'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: ""} ),
+cell: Backgrid.HtmlCell.extend({ className: "col_ordered_skos"} ),
 
 },
 {
@@ -102,7 +102,7 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='ordered_cartons'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: ""} ),
+cell: Backgrid.HtmlCell.extend({ className: "col_ordered_cartons"} ),
 
 },
 {

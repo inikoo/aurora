@@ -255,7 +255,7 @@ function get_purchase_order_transaction_data($data) {
             break;
         case 'Submitted':
             $state .= sprintf('<span  title="%s">%s</span>', _('Submitted to agent'), _('Submitted'));
-            $state .= '<br/> <i class="fa error fa-minus-circle button "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
+            $state .= '<br/> <i class="fa error fa-minus-circle button "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item(this,'.$data['Purchase Order Transaction Fact Key'].')" ></i>';
             break;
         case 'ProblemSupplier':
             $state .= sprintf('<span class="error" title="%s">%s</span>', _('Problem with supplier supplier'), _('Problem'));
@@ -379,9 +379,9 @@ function get_job_order_transaction_data($data) {
             $state .= _('In process');
             break;
         case 'Submitted':
-            $state .= '<i class="fa error fa-minus-circle button padding_right_10 "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
+            $state .= '<i class="fa error fa-minus-circle button  "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item(this,'.$data['Purchase Order Transaction Fact Key'].')" ></i>';
 
-            $state .= sprintf('<span  title="%s">%s</span>', _('Queued'), _('Queued'));
+            $state .= sprintf('<span class="padding_left_10" title="%s">%s</span>', _('Queued'), _('Queued'));
             break;
 
         case 'Confirmed':

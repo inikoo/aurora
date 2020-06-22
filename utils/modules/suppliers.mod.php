@@ -81,6 +81,7 @@ function get_suppliers_module() {
                     'suppliers.supplier_parts.low'          => 'suppliers.supplier_parts',
                     'suppliers.supplier_parts.critical'     => 'suppliers.supplier_parts',
                     'suppliers.supplier_parts.out_of_stock' => 'suppliers.supplier_parts',
+                    'suppliers.supplier_parts.all'          => 'suppliers.supplier_parts',
 
 
                 ),
@@ -109,6 +110,10 @@ function get_suppliers_module() {
                             'suppliers.supplier_parts.out_of_stock' => array(
                                 'label' => _('Out of stock')
                             ),
+                            'suppliers.supplier_parts.all'          => array(
+                                'label' => _('All'),
+                                'class' => 'right'
+                            )
 
                         )
                     ),
@@ -150,18 +155,6 @@ function get_suppliers_module() {
 
             ),
 
-
-            /*
-            'deliveries' => array(
-                'type'      => 'navigation',
-                'label'     => _('Deliveries'),
-                'icon'      => 'truck',
-                'reference' => 'deliveries',
-                'tabs'      => array(
-                    'suppliers.deliveries' => array()
-                )
-            ),
-  */
 
             'settings' => array(
 
@@ -271,10 +264,10 @@ function get_suppliers_module() {
 
 
                     'supplier.delivery.history'     => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only',
+                        'label'         => '',
+                        'title'         => _('History/Notes'),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number History Records'
@@ -462,7 +455,6 @@ function get_suppliers_module() {
                                     'Sales history'
                                 )
                             ),
-
 
 
                             'supplier.sales.info' => array(

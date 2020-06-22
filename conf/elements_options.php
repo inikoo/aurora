@@ -1319,21 +1319,33 @@ function get_elements_option($option) {
                 'items' => array(
 
 
-                    'InProcess'       => array(
+                    'Planning'       => array(
                         'label'    => _('Planning'),
+                        'selected' => true
+                    ),
+                    'Queued'       => array(
+                        'label'    => _('Queued'),
                         'selected' => true
                     ),
                     'Manufacturing'   => array(
                         'label'    => _('Manufacturing'),
                         'selected' => true
                     ),
-                    'ReceivedChecked' => array(
-                        'label'    => _('In quality control'),
+                    'Manufactured' => array(
+                        'label'    => _('Finished'),
                         'selected' => true
                     ),
-                    'Placed'          => array(
-                        'label'    => _('Booked in'),
+                    'QC_Pass' => array(
+                        'label'    => _('QC Passed'),
                         'selected' => true
+                    ),
+                    'Delivered'          => array(
+                        'label'    => _('Delivered'),
+                        'selected' => false
+                    ),
+                    'Placed'          => array(
+                        'label'    => _('Placed'),
+                        'selected' => false
                     ),
 
                     'Cancelled' => array(
@@ -1377,6 +1389,31 @@ function get_elements_option($option) {
             ),
 
 
+        ),
+        'warehouse_production_deliveries'=>array(
+            'state' => array(
+                'label' => _('State'),
+                'items' => array(
+
+
+
+                    'Todo' => array(
+                        'label'    => _('To-do'),
+                        'selected' => true
+                    ),
+                    'Done'  => array(
+                        'label'    => _('Done'),
+                        'selected' => false
+                    ),
+
+                    'Cancelled' => array(
+                        'label'    => _('Cancelled'),
+                        'selected' => false
+                    ),
+                ),
+
+
+            ),
         ),
 
         'agent_client_orders'     => array(

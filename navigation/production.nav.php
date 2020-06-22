@@ -754,7 +754,7 @@ function get_production_supplier_deliveries_navigation($data, $smarty, $user, $d
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _('Production sheets'),
+        'title'          => _('Deliveries'),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search production')
@@ -867,7 +867,7 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
 
     $up_button = array(
         'icon'      => 'arrow-up',
-        'title'     => _("Production sheets"),
+        'title'     => _("Deliveries"),
         'reference' => 'production/'.$data['parent_key'].'/deliveries'
     );
 

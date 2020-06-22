@@ -3498,8 +3498,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $section    = 'categories';
                                 $parent     = 'warehouse';
                                 $parent_key = $view_path[0];
-                            } else {
-                                if ($view_path[1] == 'category') {
+                            } elseif ($view_path[1] == 'category') {
                                     $section = 'category';
                                     $object  = 'category';
 
@@ -3614,6 +3613,40 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     }
 
                                 }
+                            elseif ($view_path[1] == 'production_deliveries') {
+
+
+                                $section = 'production_deliveries';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $key = $view_path[2];
+
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+                                                $section    = 'delivery';
+                                                $parent     = 'warehouse';
+                                                $parent_key = $view_path[2];
+                                                $object     = 'supplier_delivery';
+
+                                                $key = $view_path[3];
+
+
+                                            }
+
+                                        }
+
+
+                                    }
+
+                                }
+
+
                             }
 
 
@@ -5886,7 +5919,6 @@ function parse_tabs($module, $section, $_data, $modules) {
 
         $tmp = $_SESSION['state'];
 
-      //  print_r($tmp);
 
         if (!empty($tmp[$module][$section]['tab'])) {
 
@@ -5899,6 +5931,8 @@ function parse_tabs($module, $section, $_data, $modules) {
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
                 print "problem with M: $module S: >$section<";
             }
+
+
 
 
             $tab = array_keys($modules[$module]['sections'][$section]['tabs'])[0];

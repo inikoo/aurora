@@ -143,7 +143,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
     $state = parse_request($data, $db, $modules, $account, $user);
-    //print_r($state);
+
 
     $state['current_website']    = (!empty($_SESSION['current_website']) ? $_SESSION['current_website'] : '');
     $state['current_store']      = (!empty($_SESSION['current_store']) ? $_SESSION['current_store'] : '');
@@ -816,12 +816,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         }
     }
 
-    //if ($state['module'] == 'production') {
-    //    $production = $state['_object'];
-    // }
-    //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
 
-    // print 'x1x'.$state['current_store'];
     $state['store']      = $store;
     $state['website']    = $website;
     $state['warehouse']  = $warehouse;
@@ -833,9 +828,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     if (is_object($warehouse) and $warehouse->id) {
         $state['current_warehouse'] = $warehouse->id;
     }
-    //if (is_object($production) and $production->id) {
-    //    $state['current_production'] = $production->id;
-    //}
+
     $sql = sprintf(
         'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']),
         prepare_mysql($state['section']), prepare_mysql(
@@ -845,7 +838,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     );
     $db->exec($sql);
 
-    //$_SESSION['request'] = $state['request'];
     $response = array('app_state' => array());
 
 
@@ -1297,7 +1289,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Job orders'));
                         break;
                     case 'production_supplier_deliveries':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Production sheets'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Deliveries'));
                         break;
                     case 'settings':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Settings'));
@@ -1423,6 +1415,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
 
     $smarty->assign('data', $state);
+
 
 
     if (file_exists('tabs/'.$actual_tab.'.tab.php')) {
@@ -4485,22 +4478,34 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         elseif($data['module'] == 'production') {
             if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
-                $_content['tabs']['supplier.order.all_supplier_parts']['class'] = '';
-                $_content['tabs']['supplier.order.items_in_process']['class']   = '';
+                $_content['tabs']['job_order.all_production_parts']['class'] = '';
+                $_content['tabs']['job_order.items_in_process']['class']   = '';
                 $_content['tabs']['job_order.items']['class']              = 'hide';
 
+                if($data['_object']->get('Purchase Order Number Items')==0){
+                    $data['tab'] = 'job_order.all_production_parts';
+                    $_content['tabs']['job_order.items_in_process']['class']        = 'hide';
 
-                if ($data['tab'] == 'job_order.items') {
-                    $data['tab'] = 'job_order.items_in_process';
+                }else{
+                    if ($data['tab'] == 'job_order.items') {
+                        $data['tab'] = 'job_order.items_in_process';
+                    }
+                    $_content['tabs']['job_order.items_in_process']['class']        = '';
+
                 }
+
+
+
+
+
 
             } else {
 
 
-                $_content['tabs']['supplier.order.all_supplier_parts']['class'] = 'hide';
-                $_content['tabs']['supplier.order.items_in_process']['class']   = 'hide';
+                $_content['tabs']['job_order.all_production_parts']['class'] = 'hide';
+                $_content['tabs']['job_order.items_in_process']['class']   = 'hide';
 
-                if ($data['tab'] == 'job_order.items_in_process' || $data['tab'] == 'job_order.all_supplier_parts') {
+                if ($data['tab'] == 'job_order.items_in_process' || $data['tab'] == 'job_order.all_production_parts') {
                     $data['tab'] = 'job_order.items';
                 }
 

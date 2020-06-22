@@ -1992,7 +1992,7 @@ function select_deal_component_choose_by_customer(element) {
 
     ajaxData.append("order_key", object_data.key)
     ajaxData.append("deal_component_key", container.data('deal_component_key'))
-    ajaxData.append("otdb_key", container.data('otdb_key'))
+    ajaxData.append("order_transaction_deal_bridge_key", container.data('order_transaction_deal_bridge_key'))
     ajaxData.append("product_id",$(element).data('product_id'))
 
 

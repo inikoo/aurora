@@ -1841,7 +1841,7 @@ function order_items($_data, $db, $user) {
 
             //  print_r($allowances);
 
-            $options = '<span data-selected="'.$selected.'"  data-deal_component_key="'.$row['Deal Component Key'].'"  data-otdb_key="'.$row['Order Transaction Deal Key'].'" class="deal_component_choose_by_customer">';
+            $options = '<span data-selected="'.$selected.'"  data-deal_component_key="'.$row['Deal Component Key'].'"  data-order_transaction_deal_bridge_key="'.$row['Order Transaction Deal Key'].'" class="deal_component_choose_by_customer">';
             foreach ($allowances['options'] as $product_id => $option) {
                 $options .= '<span onclick="select_deal_component_choose_by_customer(this)" data-product_id="'.$product_id.'" class="deal_component_item deal_component_item_'.$product_id.'   button margin_right_30"><i class="far '.($selected == $product_id
                         ? 'fa-dot-circle' : 'fa-circle').' "></i> <span  title="'.$option['Description'].'">'.$option['Code'].'</span></span>';

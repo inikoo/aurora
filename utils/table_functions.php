@@ -542,7 +542,7 @@ function get_rtext($record_label, $total_records) {
         );
     } elseif ($record_label == 'production sheet') {
         return sprintf(
-            ngettext('%s production sheet', '%s production sheets', $total_records), number($total_records)
+            ngettext('%s delivery', '%s deliveries', $total_records), number($total_records)
         );
     } elseif ($record_label == 'job order') {
         return sprintf(
@@ -1078,7 +1078,7 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
     } elseif ($record_label == 'production sheet') {
         return sprintf(
             ngettext(
-                '%s production sheet of %s', '%s production sheets of %s', $total_with_filter
+                '%s delivery of %s', '%s deliveries of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'job order') {
