@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "27d6747b924afe21217f54f0aff73639",
+    "content-hash": "7f3d7e0e27368ac3cb5a6e2c2bd19989",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -1831,6 +1831,63 @@
                 }
             ],
             "time": "2020-05-25T09:08:39+00:00"
+        },
+        {
+            "name": "mpdf/qrcode",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mpdf/qrcode.git",
+                "reference": "62817403c88758aee3f13eb53f313f64ecc5f478"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mpdf/qrcode/zipball/62817403c88758aee3f13eb53f313f64ecc5f478",
+                "reference": "62817403c88758aee3f13eb53f313f64ecc5f478",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": "^1.4|^2.0|9.99.99",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "^5.0",
+                "squizlabs/php_codesniffer": "^3.4",
+                "tracy/tracy": "^2.5"
+            },
+            "suggest": {
+                "ext-gd": "To output QR codes to PNG files"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mpdf\\QrCode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Matěj Humpál",
+                    "role": "maintainer"
+                },
+                {
+                    "name": "Laurent Minguet",
+                    "role": "author"
+                }
+            ],
+            "description": "QR code generator for mPDF",
+            "keywords": [
+                "mpdf",
+                "pdf",
+                "php",
+                "qr",
+                "qrcode"
+            ],
+            "time": "2019-01-16T18:40:23+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
