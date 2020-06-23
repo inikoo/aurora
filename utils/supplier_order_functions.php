@@ -360,7 +360,6 @@ function get_purchase_order_transaction_data($data) {
 function get_job_order_transaction_data($data) {
 
 
-
     $state = '';
 
 
@@ -381,7 +380,8 @@ function get_job_order_transaction_data($data) {
 
             $state .= _('Manufacturing');
 
-            $state .= ' <i class="action_container_trigger_finish_manufacture  button fal padding_left_10 padding_right_10  fa-flag-checkered"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
+            $state .= ' <i class="action_container_trigger_finish_manufacture  button fal padding_left_10 padding_right_10  fa-flag-checkered"  data-action="finish_manufacture" data-key="'.$data['Purchase Order Transaction Fact Key']
+                .'" onclick="job_order_item_action(this)" ></i>';
             $state .= '</span>';
             $state .= '<span class="follow_on_finish_manufacture hide">'._('Finishing').'</span>';
 
@@ -389,7 +389,8 @@ function get_job_order_transaction_data($data) {
             break;
         case 'Manufactured':
             $state = '<span class="action_container">';
-            $state .= ' <i class="action_container_trigger_undo_manufactured error button fal padding_left_10 padding_right_10  fa-flip-horizontal fa-flag-checkered"  data-action="undo_manufactured" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i> ';
+            $state .= ' <i class="action_container_trigger_undo_manufactured error button fal padding_left_10 padding_right_10  fa-flip-horizontal fa-flag-checkered"  data-action="undo_manufactured" data-key="'.$data['Purchase Order Transaction Fact Key']
+                .'" onclick="job_order_item_action(this)" ></i> ';
 
             $state .= _('Manufactured');
             $state .= ' <i class="action_container_trigger_qc_check  button fal padding_left_10 padding_right_10  fa-siren-on"  data-action="qc_check" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
@@ -441,26 +442,20 @@ function get_job_order_transaction_data($data) {
     }
 
 
-    return array(
-
-        $state
-
-    );
+    return $state;
 
 }
 
 
 function get_job_order_operations($data) {
 
-    $skos_per_carton  = $data['Purchase Order Submitted SKOs Per Carton'];
-    $units_per_sko    = $data['Purchase Order Submitted Units Per SKO'];
+    $skos_per_carton = $data['Purchase Order Submitted SKOs Per Carton'];
+    $units_per_sko   = $data['Purchase Order Submitted Units Per SKO'];
     $transaction_key = $data['Purchase Order Transaction Fact Key'];
 
 
-
-
     if ($data['Purchase Order Transaction State'] == 'Confirmed') {
-        list($units_qty,$skos_qty,$cartons_qty,$class)=get_job_order_operations_quantities($data['Purchase Order Submitted Units'], $data);
+        list($units_qty, $skos_qty, $cartons_qty, $class) = get_job_order_operations_quantities($data['Purchase Order Submitted Units'], $data);
 
         $operation_units = sprintf(
             '<span   class="invisible delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{ "key":%d,  "type": "Units", "sko_factor":%d , "carton_factor":%d }\'   >
@@ -499,8 +494,8 @@ function get_job_order_operations($data) {
 
         );
 
-    }elseif ($data['Purchase Order Transaction State'] == 'Manufactured') {
-        list($units_qty,$skos_qty,$cartons_qty,$class)=get_job_order_operations_quantities($data['Purchase Order Manufactured Units'], $data);
+    } elseif ($data['Purchase Order Transaction State'] == 'Manufactured') {
+        list($units_qty, $skos_qty, $cartons_qty, $class) = get_job_order_operations_quantities($data['Purchase Order Manufactured Units'], $data);
 
         $operation_units = sprintf(
             '<span   class="invisible delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{ "key":%d,  "type": "Units", "sko_factor":%d , "carton_factor":%d }\'   >
@@ -556,9 +551,9 @@ function get_job_order_operations($data) {
 }
 
 
-function get_job_order_operations_quantities($qty,$data){
-    $skos_per_carton  = $data['Purchase Order Submitted SKOs Per Carton'];
-    $units_per_sko    = $data['Purchase Order Submitted Units Per SKO'];
+function get_job_order_operations_quantities($qty, $data) {
+    $skos_per_carton = $data['Purchase Order Submitted SKOs Per Carton'];
+    $units_per_sko   = $data['Purchase Order Submitted Units Per SKO'];
 
     $units_qty = $qty;
     if ($skos_per_carton != 0) {
@@ -580,5 +575,62 @@ function get_job_order_operations_quantities($qty,$data){
         $class = '';
     }
 
-    return [$units_qty,$skos_qty,$cartons_qty,$class];
+    return [
+        $units_qty,
+        $skos_qty,
+        $cartons_qty,
+        $class
+    ];
+}
+
+function get_purchase_order_transaction_ordered_data($data) {
+
+    $skos_per_carton  = $data['Purchase Order Submitted SKOs Per Carton'];
+    $units_per_sko    = $data['Purchase Order Submitted Units Per SKO'];
+
+    $_items_qty = $data['Purchase Order Submitted Units'] - $data['Purchase Order Submitted Cancelled Units'];
+
+
+    $items_qty     = $_items_qty.'<span class="small discreet">u.</span> | ';
+    $ordered_units = $_items_qty;
+
+    if ($units_per_sko == 0) {
+        $items_qty .= '<span class="error">Units per SKO=0</span> ';
+    } else {
+
+
+        if ($data['Purchase Order Submitted Cancelled Units'] > 0) {
+            $ordered_skos = '<span class="discreet strikethrough">'.number($data['Purchase Order Submitted Cancelled Units'] / $units_per_sko, 3).'</span>';
+            if ($_items_qty > 0) {
+                $ordered_skos = ' '.number($_items_qty / $units_per_sko, 3);
+
+            }
+
+        } else {
+            $ordered_skos = number($_items_qty / $units_per_sko, 3);
+
+        }
+
+        if ($_items_qty % $units_per_sko != 0) {
+            $items_qty .= '<span class="error">'.$ordered_skos.'<span class="small discreet">sko.</span></span> | ';
+
+        } else {
+            $items_qty .= number($_items_qty / $units_per_sko, 3).'<span class="small discreet">sko.</span> | ';
+
+        }
+
+        $ordered_cartons = number($_items_qty / $units_per_sko / $skos_per_carton, 3);
+
+        if ($_items_qty % ($units_per_sko * $skos_per_carton) != 0) {
+            $items_qty .= '<span class="error">'.$ordered_cartons.'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
+
+        } else {
+            $items_qty .= $ordered_cartons.'<span title="'._('Cartons').'" class="small discreet">C.</span>';
+
+        }
+    }
+
+    $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$_items_qty.')">'.$items_qty.'</span>';
+    return [$items_qty,$ordered_units,$ordered_skos,$ordered_cartons];
+
 }

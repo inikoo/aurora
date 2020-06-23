@@ -83,6 +83,9 @@ function save_job_order_forward_action(element) {
         }, success: function (data) {
             $(element).removeClass('fa-spin fa-spinner wait')
 
+            post_production_job_order_state_change(data,element)
+
+
 
         }, error: function () {
             $(element).removeClass('fa-spin fa-spinner wait')
@@ -125,7 +128,16 @@ function save_job_order_backward_action(element) {
 }
 
 
-function post_production_job_order_state_change(data) {
+function post_production_job_order_state_change(data,element) {
+
+
+    if(data.transaction_data!= undefined){
+        const tr=$(element).closest('tr')
+        for (var key in data.transaction_data) {
+            tr.find('.col_' + key).html(data.transaction_data[key])
+        }
+
+    }
 
     for (var key in data.update_metadata.class_html) {
         $('.' + key).html(data.update_metadata.class_html[key])

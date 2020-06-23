@@ -1812,58 +1812,14 @@ function job_order_items($_data, $db, $user, $account) {
             }
 
 
-            list($_state) = get_job_order_transaction_data($data);
-
-
-            $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">';
-            $state .= $_state;
-            $state .= '</span>';
-
-            $_items_qty=$data['Purchase Order Submitted Units']-$data['Purchase Order Submitted Cancelled Units'];
-
-
-            $items_qty     = $_items_qty.'<span class="small discreet">u.</span> | ';
-            $ordered_units = $_items_qty;
-
-            if ($units_per_sko == 0) {
-                $items_qty .= '<span class="error">Units per SKO=0</span> ';
-            } else {
+            $_items_qty=$data['Purchase Order Submitted Units'] - $data['Purchase Order Submitted Cancelled Units'];
+            $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">'.get_job_order_transaction_data($data).'</span>';
 
 
 
+            list($items_qty,$ordered_units,$ordered_skos,$ordered_cartons)=get_purchase_order_transaction_ordered_data($data);
 
-                if($data['Purchase Order Submitted Cancelled Units']>0){
-                    $ordered_skos = '<span class="discreet strikethrough">'.number($data['Purchase Order Submitted Cancelled Units'] / $units_per_sko, 3).'</span>';
-                    if($_items_qty>0){
-                        $ordered_skos = ' '.number($_items_qty / $units_per_sko, 3);
 
-                    }
-
-                }else{
-                    $ordered_skos = number($_items_qty / $units_per_sko, 3);
-
-                }
-
-                if ($_items_qty % $units_per_sko != 0) {
-                    $items_qty .= '<span class="error">'.$ordered_skos.'<span class="small discreet">sko.</span></span> | ';
-
-                } else {
-                    $items_qty .= number($_items_qty / $units_per_sko, 3).'<span class="small discreet">sko.</span> | ';
-
-                }
-
-                $ordered_cartons = number($_items_qty / $units_per_sko / $skos_per_carton, 3);
-
-                if ($_items_qty % ($units_per_sko * $skos_per_carton) != 0) {
-                    $items_qty .= '<span class="error">'.$ordered_cartons.'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
-
-                } else {
-                    $items_qty .= $ordered_cartons.'<span title="'._('Cartons').'" class="small discreet">C.</span>';
-
-                }
-            }
-
-            $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$_items_qty.')">'.$items_qty.'</span>';
 
 
             $amount = money($data['Purchase Order Net Amount'], $purchase_order->get('Purchase Order Currency Code'));

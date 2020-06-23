@@ -43,15 +43,13 @@ switch ($tipo) {
     case 'job_order_backward_item_action':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'      => array('type' => 'key'),
-                         'action'   => array('type' => 'string'),
+                         'key'    => array('type' => 'key'),
+                         'action' => array('type' => 'string'),
 
                      )
         );
         job_order_backward_item_action($data, $db, $editor);
         break;
-
-
 
 
     default:
@@ -67,7 +65,7 @@ switch ($tipo) {
 
 function job_order_forward_item_action($data, $db, $editor) {
 
-
+    include_once 'utils/supplier_order_functions.php';
 
     $sql  =
         "select `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Submitted SKOs Per Carton` from  `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
@@ -128,12 +126,43 @@ function job_order_forward_item_action($data, $db, $editor) {
         }
 
 
+
     }
 
 
+    $transaction_data=[];
+    $sql  =
+        "select `Supplier Delivery Public ID`,`Supplier Delivery Key`,`Supplier Key`,`Supplier Delivery Parent`,`Purchase Order Submitted Cancelled Units`,`Purchase Order Submitted Units`,`Purchase Order Manufactured Units`,`Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Submitted SKOs Per Carton` from  
+            `Purchase Order Transaction Fact` POTF left join `Supplier Delivery Dimension` SD on (POTF.`Supplier Delivery Key`=SD.`Supplier Delivery Key`)
+            where `Purchase Order Transaction Fact Key`=?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $data['key']
+        )
+    );
+    if ($row = $stmt->fetch()) {
+        list($operations_units, $operations_skos, $operations_cartons) = get_job_order_operations($row);
+        list($items_qty, $ordered_units, $ordered_skos, $ordered_cartons) = get_purchase_order_transaction_ordered_data($row);
+
+        $transaction_data = [
+
+            'state'              => '<span class="transaction_state_'.$row['Purchase Order Transaction Fact Key'].'">'.get_job_order_transaction_data($row).'</span>',
+            'operations_units'   => $operations_units,
+            'operations_skos'    => $operations_skos,
+            'operations_cartons' => $operations_cartons,
+            'ordered_units'      => $ordered_units,
+            'ordered_skos'       => $ordered_skos,
+            'ordered_cartons'    => $ordered_cartons,
+            'items_qty'          => $items_qty,
+
+        ];
+    }
+
     $response = array(
-        'state'              => 200,
-        'update_metadata'    => $purchase_order->get_update_metadata(),
+        'state'            => 200,
+        'update_metadata'  => $purchase_order->get_update_metadata(),
+        'transaction_data' => $transaction_data
 
     );
     echo json_encode($response);
@@ -143,9 +172,7 @@ function job_order_forward_item_action($data, $db, $editor) {
 }
 
 
-
 function job_order_backward_item_action($data, $db, $editor) {
-
 
 
     $sql  =
@@ -159,7 +186,6 @@ function job_order_backward_item_action($data, $db, $editor) {
     if ($row = $stmt->fetch()) {
         $purchase_order         = get_object('Purchase_Order', $row['Purchase Order Key']);
         $purchase_order->editor = $editor;
-
 
 
         switch ($data['action']) {
@@ -202,8 +228,8 @@ function job_order_backward_item_action($data, $db, $editor) {
 
 
         $response = array(
-            'state'              => 200,
-            'update_metadata'    => $purchase_order->get_update_metadata(),
+            'state'           => 200,
+            'update_metadata' => $purchase_order->get_update_metadata(),
 
         );
         echo json_encode($response);

@@ -143,7 +143,7 @@ cell: Backgrid.HtmlCell.extend({ className: ""} ),
 name: "state",
 label: "{t}State{/t}",
 editable: false,
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ className: "aright col_state"} ),
 headerCell: integerHeaderCell
 
 },
