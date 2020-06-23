@@ -4486,8 +4486,14 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 $_content['tabs']['job_order.items_in_process']['class']   = '';
                 $_content['tabs']['job_order.items']['class']              = 'hide';
 
-                if($data['_object']->get('Purchase Order Number Items')==0){
-                    $data['tab'] = 'job_order.all_production_parts';
+                if($data['_object']->get('Purchase Order Number Items')==0 ){
+
+                    if( $data['tab'] == 'job_order.items_in_process'){
+                        $data['tab'] = 'job_order.all_production_parts';
+                    }
+
+
+
                     $_content['tabs']['job_order.items_in_process']['class']        = 'hide';
 
                 }else{

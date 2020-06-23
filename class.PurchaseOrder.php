@@ -309,8 +309,6 @@ class PurchaseOrder extends DB_Table {
         $replacement_public_id = $this->get_supplier_delivery_public_id($data['Supplier Delivery Public ID']);
 
 
-
-
         $delivery_data = array(
             'Supplier Delivery Public ID'           => $replacement_public_id,
             'Supplier Delivery Parent'              => $this->get('Purchase Order Parent'),
@@ -500,6 +498,8 @@ class PurchaseOrder extends DB_Table {
         }
 
         switch ($key) {
+
+
             case 'Estimated Production Datetime':
 
 
@@ -740,6 +740,7 @@ class PurchaseOrder extends DB_Table {
                 break;
             case 'Estimated Receiving Date':
             case 'Estimated Production Date':
+            case 'Estimated Start Production Date':
             case 'Agreed Receiving Date':
             case 'Creation Date':
             case 'Submitted Date':
@@ -751,7 +752,7 @@ class PurchaseOrder extends DB_Table {
                 }
 
                 return strftime(
-                    "%e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00')
+                    "%a %e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00')
                 );
 
                 break;
@@ -796,8 +797,13 @@ class PurchaseOrder extends DB_Table {
                 }
                 break;
             case 'Production Confirmed Formatted Date':
+
                 if ($this->data['Purchase Order Confirmed Date'] == '') {
-                    return '';
+                    if ($this->data['Purchase Order Estimated Start Production Date'] == '') {
+                        return '';
+                    } else {
+                        return '<span class="discreet italic">'.'<span class="very_discreet"></span> '.strftime("%a %e %b", strtotime($this->data['Purchase Order Estimated Start Production Date'])).'</span>';
+                    }
                 }
 
 
@@ -816,13 +822,7 @@ class PurchaseOrder extends DB_Table {
             case 'Production Manufactured Formatted Date':
                 if ($this->data['Purchase Order Manufactured Date'] == '') {
 
-                    if ($this->data['Purchase Order Estimated Production Date'] == '') {
-                        return '<span class="very_discreet italic"><i class="fal fa-exclamation-circle"></i> '._('No ETA').'</span>';
-                    } else {
-                        return strftime(
-                            "%e %b %Y", strtotime($this->data['Purchase Order Estimated Production Date'].' +0:00')
-                        );
-                    }
+                    return '&nbsp;';
 
 
                 } else {
@@ -873,51 +873,26 @@ class PurchaseOrder extends DB_Table {
                 }
             case 'Production In Location Formatted Date':
 
-                if ($this->get('State Index') <= 90 and $this->get('State Index') > 0) {
 
-
-                    $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
-
-
-                    if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
-
-
-                        if ($this->get('State Index') <= 50) {
-                            return '<span class="italic discreet">'.sprintf(_('ETA %s after delivered'), $parent->get('Delivery Time')).'</span>';
-
-                        } else {
-
-
-                            $_date = strtotime($this->data['Purchase Order Received Date'].' +'.$parent->get($parent->table_name.' Average Delivery Days').' days');
-
-                            return '<span class="discreet italic">'.'<span class="very_discreet">'._('ETA').'</span> '.strftime("%e %b", $_date).'</span>';
-
-                        }
-
-                    } else {
-
-
+                if ($this->data['Purchase Order Received Date'] == '') {
+                    if ($this->data['Purchase Order Estimated Receiving Date'] == '') {
                         return '';
-                    }
-
-                } elseif ($this->get('State Index') > 90) {
-                    if ($this->data['Purchase Order Consolidated Date'] == '') {
-                        return '';
-                    }
-
-                    if (date('Y-m-d', strtotime($this->data['Purchase Order Received Date'])) == date('Y-m-d', strtotime($this->data['Purchase Order Consolidated Date']))) {
-                        return strftime(
-                            "%l:%M%p ", strtotime($this->data['Purchase Order Consolidated Date'].' +0:00')
-                        );
-
                     } else {
-                        return strftime(
-                            "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Consolidated Date'].' +0:00')
-                        );
+                        return '<span class="discreet italic">'.'<span class="very_discreet"></span> '.strftime("%a %e %b", strtotime($this->data['Purchase Order Estimated Receiving Date'])).'</span>';
                     }
                 }
 
-                break;
+
+                if (date('Y-m-d', strtotime($this->data['Purchase Order Received Date'])) == date('Y-m-d', strtotime($this->data['Purchase Order Consolidated Date']))) {
+                    return strftime(
+                        "%l:%M%p ", strtotime($this->data['Purchase Order Consolidated Date'].' +0:00')
+                    );
+
+                } else {
+                    return strftime(
+                        "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Consolidated Date'].' +0:00')
+                    );
+                }
 
 
             case 'Received Date':
@@ -1174,7 +1149,7 @@ class PurchaseOrder extends DB_Table {
 
 
             case 'Number Items':
-                return number($this->data ['Purchase Order Number Items']);
+                return number($this->data['Purchase Order Number Items']);
 
             case 'Number Supplier Delivery Items':
 
@@ -2505,11 +2480,9 @@ class PurchaseOrder extends DB_Table {
 
                     $this->fast_update(
                         array(
-                            'Purchase Order Submitted Date'            => '',
-                            'Purchase Order Send Date'                 => '',
-                            'Purchase Order Estimated Production Date' => '',
-                            'Purchase Order Estimated Receiving Date'  => '',
-                            'Purchase Order State'                     => $value,
+                            'Purchase Order Submitted Date' => '',
+                            'Purchase Order Send Date'      => '',
+                            'Purchase Order State'          => $value,
                         )
                     );
 
@@ -2574,11 +2547,10 @@ class PurchaseOrder extends DB_Table {
 
                     $this->fast_update(
                         array(
-                            'Purchase Order Submitted Date'            => $date,
-                            'Purchase Order Send Date'                 => '',
-                            'Purchase Order State'                     => $value,
-                            'Purchase Order Estimated Production Date' => null,
-                            'Purchase Order Estimated Receiving Date'  => null,
+                            'Purchase Order Submitted Date' => $date,
+                            'Purchase Order Send Date'      => '',
+                            'Purchase Order State'          => $value,
+
                         )
                     );
 
@@ -2665,12 +2637,11 @@ class PurchaseOrder extends DB_Table {
 
                     $this->fast_update(
                         array(
-                            'Purchase Order Submitted Date'            => $date,
-                            'Purchase Order Send Date'                 => '',
-                            'Purchase Order Confirmed Date'            => '',
-                            'Purchase Order State'                     => 'Submitted',
-                            'Purchase Order Estimated Production Date' => null,
-                            'Purchase Order Estimated Receiving Date'  => null,
+                            'Purchase Order Submitted Date' => $date,
+                            'Purchase Order Send Date'      => '',
+                            'Purchase Order Confirmed Date' => '',
+                            'Purchase Order State'          => 'Submitted',
+
                         )
                     );
 
@@ -2716,37 +2687,40 @@ class PurchaseOrder extends DB_Table {
                     );
 
 
-                    $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+                    if ($this->get('Purchase Order Type') != 'Production') {
 
-                    if ($parent->get($parent->table_name.' Average Production Days') != '' and is_numeric($parent->get($parent->table_name.' Average Production Days')) and $parent->get($parent->table_name.' Average Production Days') > 0) {
-                        $manufacturing_days = $parent->get($parent->table_name.' Average Production Days');
-                    } else {
-                        $manufacturing_days = 0;
+
+                        $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+                        if ($parent->get($parent->table_name.' Average Production Days') != '' and is_numeric($parent->get($parent->table_name.' Average Production Days')) and $parent->get($parent->table_name.' Average Production Days') > 0) {
+                            $manufacturing_days = $parent->get($parent->table_name.' Average Production Days');
+                        } else {
+                            $manufacturing_days = 0;
+                        }
+
+
+                        if ($manufacturing_days > 0) {
+                            $this->fast_update(
+                                array(
+                                    'Purchase Order Estimated Production Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$manufacturing_days.' days +0:00')),
+                                )
+                            );
+                        }
+
+
+                        if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days')) and $parent->get($parent->table_name.' Average Delivery Days') > 0) {
+
+
+                            $delivery_days = $parent->get($parent->table_name.' Average Delivery Days') + $manufacturing_days;
+
+                            $this->fast_update(
+                                array(
+
+                                    'Purchase Order Estimated Receiving Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$delivery_days.' days +0:00')),
+                                )
+                            );
+                        }
                     }
-
-
-                    if ($manufacturing_days > 0) {
-                        $this->fast_update(
-                            array(
-                                'Purchase Order Estimated Production Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$manufacturing_days.' days +0:00')),
-                            )
-                        );
-                    }
-
-
-                    if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days')) and $parent->get($parent->table_name.' Average Delivery Days') > 0) {
-
-
-                        $delivery_days = $parent->get($parent->table_name.' Average Delivery Days') + $manufacturing_days;
-
-                        $this->fast_update(
-                            array(
-
-                                'Purchase Order Estimated Receiving Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$delivery_days.' days +0:00')),
-                            )
-                        );
-                    }
-
                     $this->update_purchase_order_date();
 
                     $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE `Purchase Order Key`=?";
@@ -3004,10 +2978,11 @@ class PurchaseOrder extends DB_Table {
 
                     $this->fast_update(
                         array(
-                            'Purchase Order Locked'                   => 'Yes',
-                            'Purchase Order Cancelled Date'           => $date,
-                            'Purchase Order Estimated Receiving Date' => '',
-                            'Purchase Order State'                    => 'Cancelled',
+                            'Purchase Order Locked'                    => 'Yes',
+                            'Purchase Order Cancelled Date'            => $date,
+                            'Purchase Order Estimated Production Date' => null,
+                            'Purchase Order Estimated Receiving Date'  => null,
+                            'Purchase Order State'                     => 'Cancelled',
                         )
                     );
                     $this->update_purchase_order_date();
@@ -3345,7 +3320,12 @@ class PurchaseOrder extends DB_Table {
                 $label = _('port of import');
                 break;
             case 'Purchase Order Estimated Receiving Date':
-                $label = _('estimated receiving date');
+                if ($this->get('Purchase Order Type') == 'Production') {
+                    $label = _('estimated deliver date');
+                } else {
+                    $label = _('estimated receiving date');
+                }
+
                 break;
             case 'Purchase Order Agreed Receiving Date':
                 $label = _('agreed receiving date');
@@ -3362,12 +3342,16 @@ class PurchaseOrder extends DB_Table {
             case 'Purchase Order Estimated Production Date':
                 $label = _('estimated production date');
                 break;
+            case 'Purchase Order Estimated Start Production Date':
+                $label = _('scheduled start');
+                break;
             case 'payment terms':
                 $label = _('payment terms');
                 break;
             case 'Purchase Order Type':
-                $label = _('dalivery type');
+                $label = _('delivery type');
                 break;
+
             default:
                 $label = $field;
 

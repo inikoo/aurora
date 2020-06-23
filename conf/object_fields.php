@@ -189,7 +189,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $category_fields;
             break;
         case 'Purchase Order':
-            include 'fields/supplier.order.fld.php';
+
+            if($object->get('Purchase Order Type')=='Production'){
+                include 'fields/job_order.fld.php';
+
+            }else{
+                include 'fields/supplier.order.fld.php';
+
+            }
 
             return $object_fields;
             break;
