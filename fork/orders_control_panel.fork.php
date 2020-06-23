@@ -206,7 +206,7 @@ function mergePDFFiles($type, array $filenames, $outFile, $title = '', $author =
     $mpdf->SetAuthor($author);
     $mpdf->SetSubject($subject);
     if ($filenames) {
-        $mpdf->SetImportUse();
+
         for ($i = 0; $i < count($filenames); $i++) {
             $curFile = $filenames[$i];
             if (file_exists($curFile)) {
