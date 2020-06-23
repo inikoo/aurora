@@ -820,7 +820,7 @@ class PurchaseOrder extends DB_Table {
                         return '<span class="very_discreet italic"><i class="fal fa-exclamation-circle"></i> '._('No ETA').'</span>';
                     } else {
                         return strftime(
-                            "%e %b %Y", strtotime($this->data['Purchase Order Estimated Production Dat'].' +0:00')
+                            "%e %b %Y", strtotime($this->data['Purchase Order Estimated Production Date'].' +0:00')
                         );
                     }
 
