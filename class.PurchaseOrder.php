@@ -2486,6 +2486,16 @@ class PurchaseOrder extends DB_Table {
                         )
                     );
 
+                    if ($this->get('Purchase Order Type') != 'Production') {
+                        $this->fast_update(
+                            array(
+                                'Purchase Order Estimated Production Date' => null,
+                                'Purchase Order Estimated Receiving Date'  => null,
+
+                            )
+                        );
+                    }
+
                     $this->update_purchase_order_date();
 
                     $operations = array(
@@ -2554,6 +2564,15 @@ class PurchaseOrder extends DB_Table {
                         )
                     );
 
+                    if ($this->get('Purchase Order Type') != 'Production') {
+                        $this->fast_update(
+                            array(
+                                'Purchase Order Estimated Production Date' => null,
+                                'Purchase Order Estimated Receiving Date'  => null,
+
+                            )
+                        );
+                    }
 
                     $operations = array(
                         'cancel_operations',
@@ -2644,6 +2663,16 @@ class PurchaseOrder extends DB_Table {
 
                         )
                     );
+
+                    if ($this->get('Purchase Order Type') != 'Production') {
+                        $this->fast_update(
+                            array(
+                                'Purchase Order Estimated Production Date' => null,
+                                'Purchase Order Estimated Receiving Date'  => null,
+
+                            )
+                        );
+                    }
 
 
                     $operations = array(

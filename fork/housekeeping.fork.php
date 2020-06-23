@@ -1365,7 +1365,7 @@ function fork_housekeeping($job) {
              */
 
             $part = get_object('Part', $data['part_sku']);
-            if($part->id) {
+            if ($part->id) {
                 // print $part->get('Reference')."\n";
 
                 if (isset($data['editor'])) {
@@ -2214,22 +2214,22 @@ function fork_housekeeping($job) {
             $po         = get_object('purchase_order', $data['po_key']);
             $po->editor = $editor;
             if ($po->id) {
-                $sql = sprintf(
-                    "SELECT `Supplier Part Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $po->id
+                $sql = "SELECT `Supplier Part Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=?";
+
+                $stmt = $db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $po->id
+                    )
                 );
-
-
-                if ($result = $db->query($sql)) {
-                    foreach ($result as $row) {
-                        $supplier_part         = get_object('SupplierPart', $row['Supplier Part Key']);
-                        $supplier_part->editor = $editor;
-                        if (isset($supplier_part->part)) {
-                            $supplier_part->part->update_next_deliveries_data();
-                        }
-
-
+                while ($row = $stmt->fetch()) {
+                    $supplier_part         = get_object('SupplierPart', $row['Supplier Part Key']);
+                    $supplier_part->editor = $editor;
+                    if (isset($supplier_part->part)) {
+                        $supplier_part->part->update_next_deliveries_data();
                     }
                 }
+
             }
 
 
@@ -2458,8 +2458,7 @@ function fork_housekeeping($job) {
             $webpage = get_object('Webpage', $data['webpage_key']);
 
 
-
-            $webpage_type=get_object('Webpage_Type',$webpage->get('Webpage Type Key'));
+            $webpage_type = get_object('Webpage_Type', $webpage->get('Webpage Type Key'));
             $webpage_type->update_number_webpages();
 
             $webpage->clear_cache();

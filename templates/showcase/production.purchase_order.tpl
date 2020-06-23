@@ -12,7 +12,7 @@
 {assign deliveries $order->get_deliveries('objects')}
 <div class="showcase_purchase_order">
 <div class="timeline_horizontal  {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
-    {$order->get('State Index')} {$order->get('Max State Index')}
+
 
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
