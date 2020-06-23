@@ -75,24 +75,25 @@ class SupplierDelivery extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Public ID`=%s  AND `Supplier Delivery Parent`=%s AND `Supplier Delivery Parent Key`=%d ", prepare_mysql($data['Supplier Delivery Public ID']),
-            prepare_mysql($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key']
+        $sql = "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Public ID`=?  AND `Supplier Delivery Parent`=? AND `Supplier Delivery Parent Key`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $data['Supplier Delivery Public ID'],
+                $data['Supplier Delivery Parent'],
+                $data['Supplier Delivery Parent Key']
+
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $this->found     = true;
+            $this->found_key = $row['Supplier Delivery Key'];
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $this->found     = true;
-                $this->found_key = $row['Supplier Delivery Key'];
-
-                $this->found     = true;
-                $this->found_key = $row['Supplier Delivery Key'];
-                $this->get_data('id', $this->found_key);
-                $this->duplicated_field = 'Supplier Delivery Public ID';
-
-
-            }
+            $this->found     = true;
+            $this->found_key = $row['Supplier Delivery Key'];
+            $this->get_data('id', $this->found_key);
+            $this->duplicated_field = 'Supplier Delivery Public ID';
         }
 
 

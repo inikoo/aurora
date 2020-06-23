@@ -288,6 +288,8 @@ class PurchaseOrder extends DB_Table {
                 }
 
             }
+
+
         } else {
             foreach ($data['items'] as $units_qty) {
                 if (is_nmeric($units_qty) and $units_qty > 0) {
@@ -304,9 +306,13 @@ class PurchaseOrder extends DB_Table {
             return false;
         }
 
+        $replacement_public_id = $this->get_supplier_delivery_public_id($data['Supplier Delivery Public ID']);
+
+
+
 
         $delivery_data = array(
-            'Supplier Delivery Public ID'           => $data['Supplier Delivery Public ID'],
+            'Supplier Delivery Public ID'           => $replacement_public_id,
             'Supplier Delivery Parent'              => $this->get('Purchase Order Parent'),
             'Supplier Delivery Parent Key'          => $this->get('Purchase Order Parent Key'),
             'Supplier Delivery Parent Name'         => $this->get('Purchase Order Parent Name'),
@@ -669,7 +675,7 @@ class PurchaseOrder extends DB_Table {
             case 'Max Supplier Delivery State':
 
 
-                $_key='Purchase Order '.preg_replace('/ Index/','',$key);
+                $_key = 'Purchase Order '.preg_replace('/ Index/', '', $key);
 
 
                 switch ($this->data[$_key]) {
@@ -3371,8 +3377,36 @@ class PurchaseOrder extends DB_Table {
 
     }
 
+    function get_supplier_delivery_public_id($dn_id, $suffix_counter = '') {
+
+        $sql = "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE  `Supplier Delivery Parent`=? AND `Supplier Delivery Parent Key`=? AND `Supplier Delivery Public ID`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->data['Purchase Order Parent'],
+                $this->data['Purchase Order Parent Key'],
+                $dn_id.$suffix_counter
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($suffix_counter > 100) {
+                return $dn_id.$suffix_counter;
+            }
+
+            if (!$suffix_counter) {
+                $suffix_counter = 2;
+            } else {
+                $suffix_counter++;
+            }
+
+            return $this->get_supplier_delivery_public_id($dn_id, $suffix_counter);
+        } else {
+            return $dn_id.$suffix_counter;
+        }
+    }
+
 
 }
-
 
 

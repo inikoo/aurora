@@ -802,20 +802,21 @@ class Agent extends SubjectSupplier {
         $code = $this->get('Code');
 
         $line_number = 1;
-        $sql         = sprintf(
-            "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`=%s  and `Supplier Delivery Parent Key`=%d ORDER BY REPLACE(`Supplier Delivery Public ID`,%s,'') DESC LIMIT 1", prepare_mysql('Agent'), $this->id,
-            prepare_mysql($code)
+        $sql         =  "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`=?  and `Supplier Delivery Parent Key`=? ORDER BY REPLACE(`Supplier Delivery Public ID`,?,'') DESC LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                'Agent',
+                $this->id,
+                $code
+
+            )
         );
+        if ($row = $stmt->fetch()) {
+            $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row['Supplier Delivery Public ID'])) + 1;
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $line_number = (int)preg_replace('/[^\d]/', '', preg_replace('/^'.$code.'/', '', $row['Supplier Delivery Public ID'])) + 1;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
         return sprintf('%s%04d', $code, $line_number);
 

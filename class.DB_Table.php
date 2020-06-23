@@ -547,6 +547,7 @@ abstract class DB_Table extends stdClass {
             }
             return $history_key;
         } else {
+            print_r($data);
             print_r($error_info = $stmt->errorInfo());
 
         }

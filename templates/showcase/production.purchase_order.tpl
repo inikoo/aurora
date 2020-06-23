@@ -389,6 +389,30 @@
                 </div>
 
 
+
+
+                <div id="deliver_operations" class="order_operation {if !(  $order->get('State Index')==55  or $order->get('Max State Index')==55   ) or $order->get('Purchase Order Number Items')==0 }hide{/if}">
+                    <div id="deliver_operation"
+                         class="square_button right"
+                         title="{t}Deliver{/t}">
+                        <i class="far fa-hand-holding-box   " aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('deliver')"></i>
+                        <table id="deliver_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Deliver QC pass items{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('deliver')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Purchase Order State","value": "Deliver_Production","dialog_name":"deliver"}'
+                                            id="deliver_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
                 <div id="check_operations" class="order_operation {if  $order->get('State Index')<50 or $order->get('State Index')>=55 or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
                     <div id="check_operation"
                          class="square_button right"
@@ -411,30 +435,6 @@
                         </table>
                     </div>
                 </div>
-
-                <div id="deliver_operations" class="order_operation {if  $order->get('State Index')!=55 or $order->get('Purchase Order Number Items')==0 }hide{/if}">
-                    <div id="deliver_operation"
-                         class="square_button right"
-                         title="{t}Deliver{/t}">
-                        <i class="far fa-hand-holding-box   " aria-hidden="true"
-                           onclick="toggle_order_operation_dialog('deliver')"></i>
-                        <table id="deliver_dialog" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Deliver{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
-                                       onclick="close_dialog('deliver')"></i></td>
-                                <td class="aright"><span
-                                            data-data='{  "field": "Purchase Order State","value": "Deliver_Production","dialog_name":"deliver"}'
-                                            id="deliver_save_buttons" class="valid save button"
-                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
-                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
 
 
                 

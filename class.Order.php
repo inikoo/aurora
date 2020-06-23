@@ -616,8 +616,6 @@ class Order extends DB_Table {
                 }
 
 
-
-
             case ('Estimated Weight'):
                 include_once 'utils/natural_language.php';
 
@@ -891,7 +889,6 @@ class Order extends DB_Table {
 
         return false;
     }
-
 
 
     function post_operation_order_totals_changed() {
@@ -1291,7 +1288,7 @@ class Order extends DB_Table {
 
                 case 'InWarehouse':
 
-                    
+
                     $warehouse_key = $_SESSION['current_warehouse'];
 
                     include_once('class.DeliveryNote.php');
@@ -1348,8 +1345,8 @@ class Order extends DB_Table {
                     );
 
 
-                    $delivery_note = new DeliveryNote('create', $data_dn, $this);
-                    $delivery_note_key_send_to_warehouse=$delivery_note->id;
+                    $delivery_note                       = new DeliveryNote('create', $data_dn, $this);
+                    $delivery_note_key_send_to_warehouse = $delivery_note->id;
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
@@ -1642,11 +1639,10 @@ class Order extends DB_Table {
                     }
 
 
-
                     $this->fast_update(
                         array(
-                            'Order State' => $value,
-                            'Order Dispatched Date'  => null
+                            'Order State'           => $value,
+                            'Order Dispatched Date' => null
                         )
                     );
                     $history_data = array(
@@ -1852,13 +1848,13 @@ class Order extends DB_Table {
 
         if ($old_value != $this->get('Order State')) {
             $this->fork_index_elastic_search();
-            if(isset($delivery_note_key_send_to_warehouse)){
+            if (isset($delivery_note_key_send_to_warehouse)) {
                 return $delivery_note_key_send_to_warehouse;
-            }else{
+            } else {
                 return true;
             }
 
-        }else{
+        } else {
             return false;
         }
 
@@ -2058,11 +2054,10 @@ class Order extends DB_Table {
     }
 
 
-
     function send_review_invitation() {
 
 
-        if (ENVIRONMENT=='DEVEL' or $this->get('Order Email') == '') {
+        if (ENVIRONMENT == 'DEVEL' or $this->get('Order Email') == '') {
             return;
         }
 
@@ -2649,8 +2644,6 @@ class Order extends DB_Table {
 
     function create_replacement($transactions) {
 
-        
-
 
         include_once 'utils/new_fork.php';
 
@@ -2742,34 +2735,31 @@ class Order extends DB_Table {
     }
 
     function get_replacement_public_id($dn_id, $suffix_counter = '') {
-        $sql = sprintf(
-            "SELECT `Delivery Note ID` FROM `Delivery Note Dimension` WHERE `Delivery Note Store Key`=%d AND `Delivery Note ID`=%s ", $this->data['Order Store Key'], prepare_mysql($dn_id.$suffix_counter)
+
+        $sql = "SELECT `Delivery Note ID` FROM `Delivery Note Dimension` WHERE `Delivery Note Store Key`=? AND `Delivery Note ID`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->data['Order Store Key'],
+                $dn_id.$suffix_counter
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($suffix_counter > 100) {
-                    return $dn_id.$suffix_counter;
-                }
-
-                if (!$suffix_counter) {
-                    $suffix_counter = 2;
-                } else {
-                    $suffix_counter++;
-                }
-
-                return $this->get_replacement_public_id($dn_id, $suffix_counter);
-            } else {
+        if ($row = $stmt->fetch()) {
+            if ($suffix_counter > 100) {
                 return $dn_id.$suffix_counter;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+
+            if (!$suffix_counter) {
+                $suffix_counter = 2;
+            } else {
+                $suffix_counter++;
+            }
+
+            return $this->get_replacement_public_id($dn_id, $suffix_counter);
+        }else{
+            return $dn_id.$suffix_counter;
         }
-
-
     }
 
     function update_number_replacements($update_parents = true) {
