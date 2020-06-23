@@ -292,7 +292,7 @@ class PurchaseOrder extends DB_Table {
 
         } else {
             foreach ($data['items'] as $units_qty) {
-                if (is_nmeric($units_qty) and $units_qty > 0) {
+                if (is_numeric($units_qty) and $units_qty > 0) {
                     $ok_items = true;
                     break;
                 }
