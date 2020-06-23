@@ -9,7 +9,7 @@
 
 */
 
-$tab     = 'warehouse.production_deliveries';
+$tab     = 'warehouse.production_deliveries.done';
 $ar_file = 'ar_warehouse_tables.php';
 $tipo    = 'production_deliveries';
 
@@ -24,6 +24,7 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
+    'section'    => 'done',
 
 );
 

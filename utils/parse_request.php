@@ -3622,30 +3622,22 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
 
+                                if (isset($view_path[2]) and in_array($view_path[2],['todo','all','done','cancelled']) ) {
 
-                                if (isset($view_path[2])) {
-                                    if (is_numeric($view_path[2])) {
-                                        $key = $view_path[2];
+                                    if (isset($view_path[3])) {
+                                        if (is_numeric($view_path[3])) {
+                                            $key = $view_path[3];
 
-                                        if (isset($view_path[3])) {
-                                            if (is_numeric($view_path[3])) {
-                                                $section    = 'delivery';
-                                                $parent     = 'warehouse';
-                                                $parent_key = $view_path[2];
-                                                $object     = 'supplier_delivery';
+                                            $extra=$view_path[2];
+                                            $section = 'production_delivery';
+                                            $parent  = 'warehouse';
+                                            $object  = 'supplier_delivery';
 
-                                                $key = $view_path[3];
-
-
-                                            }
 
                                         }
 
-
                                     }
-
                                 }
-
 
                             }
 

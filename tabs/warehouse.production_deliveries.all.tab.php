@@ -2,14 +2,14 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 12:37 am Saturday, 20 June 2020 (MYT), Kuala Lumpur, Malaysia
+ Created: Tuesday, 23 June 2020, 3:17 pm, Kuala Lumpur, Malaysia
  Copyright (c) 2020, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'warehouse.production_deliveries';
+$tab     = 'warehouse.production_deliveries.all';
 $ar_file = 'ar_warehouse_tables.php';
 $tipo    = 'production_deliveries';
 
@@ -24,6 +24,7 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
+    'section'    => 'all',
 
 );
 

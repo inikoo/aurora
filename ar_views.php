@@ -3133,6 +3133,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_deleted_location_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+                case 'production_deliveries':
+                    return get_production_deliveries_navigation($data, $smarty);
+                case 'production_delivery':
+                    return get_production_delivery_navigation($data, $smarty, $user, $db);
                 case ('categories'):
                     return get_categories_navigation(
                         $data, $smarty, $user, $db, $account
@@ -8284,7 +8288,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'warehouses'
                 );
             }
-
             switch ($state['section']) {
 
 
@@ -8581,6 +8584,40 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $branch[] = array(
                         'label'     => '<span class="id">'.$state['_object']->get('Code').'</span>',
                         'icon'      => 'table',
+                        'reference' => ''
+                    );
+                    break;
+                case 'production_deliveries':
+
+                    $branch[] = array(
+                        'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Production deliveries'),
+                        'icon'      => 'industry',
+                        'reference' => ''
+                    );
+
+                    break;
+                case 'production_delivery':
+
+                    $branch[] = array(
+                        'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Production deliveries'),
+                        'icon'      => 'industry',
+                        'reference' => 'warehouse/'.$state['parent_key'].'/production_deliveries'
+                    );
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$state['_object']->get('Public ID').'</span>',
+                        'icon'      => 'boxes',
                         'reference' => ''
                     );
                     break;

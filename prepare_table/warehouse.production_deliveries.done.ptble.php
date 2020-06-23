@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoD.com>
- Created: 11:02 pm Sunday, 21 June 2020 (MYT Kuala Lumpur, Malaysia
+ Created: Tuesday, 23 June 2020, 3:03 pm Kuala Lumpur, Malaysia
  Copyright (c) 2020, Inikoo
 
  Version 3
@@ -20,7 +20,7 @@ $table = '`Supplier Delivery Dimension` D';
 
 
 $where = sprintf(
-    "where  `Supplier Delivery Warehouse Key`=%d  and `Supplier Delivery Type`='Production'  ", $parameters['parent_key']
+    "where  `Supplier Delivery Warehouse Key`=%d  and `Supplier Delivery Type`='Production' and `Supplier Delivery State` in ('Placed','Costing','InvoiceChecked')  ", $parameters['parent_key']
 );
 
 
@@ -42,41 +42,7 @@ if (isset($parameters['elements_type'])) {
 
 
     switch ($parameters['elements_type']) {
-        case('state'):
-            $_elements            = '';
-            $num_elements_checked = 0;
 
-
-            foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
-                $_value = $_value['selected'];
-                if ($_value) {
-                    $num_elements_checked++;
-
-
-                    if ($_key == 'InProcess') {
-                        $_elements .= ",'InProcess','Dispatched','Consolidated','Received'";
-                    }
-                    if ($_key == 'Placed') {
-                        $_elements .= ",'Placed','Costing','InvoiceChecked'";
-                    } else {
-
-                        $_elements .= ",'".addslashes($_key)."'";
-                    }
-                }
-            }
-
-
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($num_elements_checked < 4) {
-
-
-                $_elements = preg_replace('/^,/', '', $_elements);
-
-
-                $where .= ' and `Supplier Delivery State` in ('.$_elements.')';
-            }
-            break;
     }
 }
 
@@ -112,7 +78,7 @@ if ($order == 'public_id') {
 }
 
 $fields = '`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,D.`Supplier Delivery Key`,`Supplier Delivery State`,`Supplier Delivery Public ID`,D.`Supplier Delivery Last Updated Date`,`Supplier Delivery Creation Date`,
-`Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Supplier Delivery Total Amount`,`Supplier Delivery Currency Code`
+`Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Supplier Delivery Total Amount`,`Supplier Delivery Currency Code`,`Supplier Delivery Warehouse Key`
 ';
 
 $sql_totals = "select count(Distinct D.`Supplier Delivery Key`) as num from $table $where ";

@@ -1957,7 +1957,7 @@ function feedback($_data, $db, $user,$account) {
 
 
 function production_deliveries($_data, $db, $user) {
-    $rtext_label = 'production sheet';
+    $rtext_label = 'production delivery';
 
 
     include_once 'prepare_table/init.php';
@@ -2004,7 +2004,9 @@ function production_deliveries($_data, $db, $user) {
 
 
                 'public_id' => sprintf(
-                    '<span class="link" onclick="change_view(\'/production/%d/delivery/%d\')" >%s</span>  ', $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                    '<span class="link" onclick="change_view(\'/warehouse/%d/production_deliveries/%s/%d\')" >%s</span>  ', $data['Supplier Delivery Warehouse Key'],
+                    $_data['parameters']['section'],
+                    $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
                 ),
 
 

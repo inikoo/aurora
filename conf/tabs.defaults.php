@@ -2100,7 +2100,18 @@ $tab_defaults = array(
         'period'        => 'all',
 
     ),
+    'warehouse.production_deliveries.all'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
 
+    ),
 
     'supplier.order.history'            => array(
         'view'          => 'overview',

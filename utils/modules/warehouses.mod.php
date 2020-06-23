@@ -383,10 +383,15 @@ function get_warehouses_module() {
                     ),
                     'warehouse.production_deliveries.cancelled' => array(
                         'label' => _('Cancelled')
+                    ),
+                    'warehouse.production_deliveries.all' => array(
+                        'label' => _('All'),
+                        'class'=>'right'
                     )
+
                 )
             ),
-            'delivery' => array(
+            'production_delivery' => array(
                 'type' => 'object',
                 'tabs' => array(
                     'supplier.delivery.items'   => array(
