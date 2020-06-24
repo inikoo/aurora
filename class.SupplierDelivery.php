@@ -284,7 +284,7 @@ class SupplierDelivery extends DB_Table {
 
                         break;
                     case 'InvoiceChecked':
-                        if ($this->data['Supplier Delivery Production'] == 'Yes') {
+                        if ($this->data['Supplier Delivery Type'] == 'Production') {
                             return _('Booked in');
                         } else {
 

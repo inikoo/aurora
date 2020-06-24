@@ -9,8 +9,9 @@
 -->
 *}
 
+<input id="purchase_order_key_value" type="hidden" value="{$order->id}">
 {assign deliveries $order->get_deliveries('objects')}
-<div class="showcase_purchase_order">
+<div class="showcase_purchase_order" >
 <div class="timeline_horizontal  {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
 
 
@@ -73,7 +74,7 @@
             class="li   {if $order->get('State Index')>=80 }complete{/if}">
             <div class="label" title="{t}Delivered{/t}">
                 <span class="state ">
-                                        <span class="state ">{t}Delivered{/t} <span></i></span></span>
+                                        <span class="state ">{t}Delivered{/t} <span></input></span></span>
                 </span>
             </div>
             <div class="timestamp">
@@ -523,10 +524,46 @@
                 <td style="padding-top: 0px;padding-bottom: 0px"  class="aright Purchase_Order_Total_Amount">{$order->get('Total Amount')}</td>
             </tr>
 
+            <tr style="border-bottom:1px solid #ccc;" >
+                <td>
+            <label>{t}Worker{/t}</label>
+                </td>
+                <td >
+                    <div style="position:relative;">
+            <input id="set_operator" type="hidden" data-field="Purchase Order Operator Key" class=" input_field" value="" has_been_valid="0"/>
 
+            <input id="set_operator_dropdown_select_label" field="set_operator" style="width:170px"  name="operator" autocomplete="off"
+                   scope="employee" parent="account"
+                   parent_key="1" class="dropdown_select"
+                   data-metadata='{ "option":"only_working", "role":"PRODO"}'
+                   value="{$order->get('Operator Alias')}"
+                   has_been_valid="0"
+                   placeholder="{t}Name{/t}"/>
+            <span id="set_operator_msg" class="msg"></span>
 
+            <div id="set_operator_results_container" class="search_results_container hide" style="position:absolute;right:0px;width: 500px">
 
+                <table id="set_operator_results" >
 
+                    <tr class="hide" id="set_operator_search_result_template"  data-shortcut="select_operator" field="" value="" formatted_value="" onClick="select_dropdown_handler('operator',this);post_select_dropdown_operator_handler('operator',this)">
+                        <td class="code"></td>
+                        <td style="width:85%" class="label"></td>
+
+                    </tr>
+                </table>
+
+            </div>
+            <script>
+                $("#set_operator_dropdown_select_label").on("input propertychange", function (evt) {
+
+                    var delay = 100;
+                    if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+                    delayed_on_change_dropdown_select_field($(this), delay)
+                });
+            </script>
+                    </div>
+                </td>
+            </tr>
 
         </table>
 

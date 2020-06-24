@@ -141,14 +141,36 @@ function enter_hit(e) {
 
             case 'dropdown_select':
 
-                var field = $("#" + key_scope.field + "_results .result.selected").attr('field')
-                var value = $("#" + key_scope.field + "_results .result.selected").attr('value')
-                var formatted_value = $("#" + key_scope.field + "_results .result.selected").attr('formatted_value')
+                const  element =$("#" + key_scope.field + "_results .result.selected")
+
+                const field = element.attr('field')
+                const value = element.attr('value')
+                const formatted_value = element.attr('formatted_value')
+                const shortcut=element.data('shortcut')
 
 
-                if (field) {
-                    select_dropdown_option(field, value, formatted_value)
+                if(shortcut=='select_operator') {
+                    select_dropdown_handler(operator, element)
+                    post_select_dropdown_operator_handler('operator', element)
+                }else if(shortcut=='select_packer'){
+                    select_dropdown_handler('packer',element);
+                    post_select_dropdown_picker_packer_handler('packer',element)
+                }else if(shortcut=='select_picker'){
+                    select_dropdown_handler('picker',element);
+                    post_select_dropdown_picker_packer_handler('picker',element)
+                }else if(shortcut=='select_packer_picking_aid'){
+                    select_dropdown_handler('packer',element);
+                    validate_data_entry_picking_aid();
+                }else if(shortcut=='select_picker_picking_aid'){
+                    select_dropdown_handler('picker',element);
+                    validate_data_entry_picking_aid();
+                }else{
+                    if (field) {
+                        select_dropdown_option(field, value, formatted_value)
+                    }
                 }
+
+
                 break;
 
             case 'option':

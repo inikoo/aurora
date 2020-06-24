@@ -2544,7 +2544,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $new_object_html = '';
                 $updated_data    = array();
 
-                if ($object->get('Purchase Order Production') == 'Yes') {
+                if ($object->get('Purchase Order Type') == 'Production') {
                     $redirect = sprintf('production/%d/order/%d', $object->get('Purchase Order Parent Key'), $object->id);
 
                 } else {

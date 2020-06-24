@@ -5912,7 +5912,7 @@ function parse_tabs($module, $section, $_data, $modules) {
         $tmp = $_SESSION['state'];
 
 
-        if (!empty($tmp[$module][$section]['tab'])) {
+        if (!empty($tmp[$module][$section]['tab']) ) {
 
 
             $tab = $tmp[$module][$section]['tab'];
@@ -5923,7 +5923,6 @@ function parse_tabs($module, $section, $_data, $modules) {
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
                 print "problem with M: $module S: >$section<";
             }
-
 
 
 

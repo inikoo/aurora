@@ -23,8 +23,8 @@
 
                     <table id="set_packer_results" >
 
-                        <tr class="hide" id="set_packer_search_result_template" field="" value=""
-                                                       formatted_value="" onClick="select_dropdown_handler('packer',this)">
+                        <tr class="hide" id="set_packer_search_result_template" field="" value="" data-shortcut="select_packer"
+                                                       formatted_value="" onClick="select_dropdown_handler('packer',this);post_select_dropdown_picker_packer_handler('packer',this)"">
 
                             <td class="code"></td>
                             <td style="width:85%" class="label"></td>

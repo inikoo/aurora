@@ -852,7 +852,7 @@ function search_production($db, $account, $user, $data) {
             }
 
             $sql = sprintf(
-                "SELECT `Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Supplier Delivery Dimension`   WHERE `Supplier Delivery Production`='Yes' and  `Supplier Delivery Public ID`  LIKE '%s%%' LIMIT 20 ", $q
+                "SELECT `Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Supplier Delivery Dimension`   WHERE `Supplier Delivery Type`='Production' and  `Supplier Delivery Public ID`  LIKE '%s%%' LIMIT 20 ", $q
             );
 
             if ($result = $db->query($sql)) {
@@ -890,7 +890,7 @@ function search_production($db, $account, $user, $data) {
         }
 
         $sql = sprintf(
-            "SELECT `Purchase Order Key`,`Purchase Order Public ID` FROM `Purchase Order Dimension`   WHERE `Purchase Order Production`='Yes' and  `Purchase Order Public ID`  LIKE '%s%%' LIMIT 20 ", $q
+            "SELECT `Purchase Order Key`,`Purchase Order Public ID` FROM `Purchase Order Dimension`   WHERE `Purchase Order Type`='Production' and  `Purchase Order Public ID`  LIKE '%s%%' LIMIT 20 ", $q
         );
 
         if ($result = $db->query($sql)) {

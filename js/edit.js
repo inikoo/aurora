@@ -1785,7 +1785,6 @@ function get_dropdown_select(dropdown_input, new_value) {
     }
 
 
-    console.log(request)
     $.getJSON(request, function (data) {
 
 
@@ -1802,7 +1801,6 @@ function get_dropdown_select(dropdown_input, new_value) {
 
             if (new_value.length > 0) {
 
-                console.log('caca')
 
                 if ($('#' + dropdown_input).attr('create_new') == 1) {
 
@@ -2547,3 +2545,27 @@ function launch_website(element){
     });
 
 }
+
+function select_dropdown_handler(type, element) {
+
+
+    const field = $(element).attr('field')
+    const value = $(element).attr('value')
+
+    console.log(element)
+    console.log(value)
+
+    if (value == 0) {
+        return 0;
+    }
+
+    formatted_value = $(element).attr('formatted_value')
+    $('#' + field + '_dropdown_select_label').val(formatted_value)
+    $('#' + field).val(value)
+    $('#' + field + '_results_container').addClass('hide').removeClass('show')
+
+    return value;
+
+}
+
+

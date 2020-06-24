@@ -50,7 +50,16 @@ switch ($tipo) {
         );
         job_order_backward_item_action($data, $db, $editor);
         break;
+    case 'set_operator':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'purchase_order_key'    => array('type' => 'key'),
+                         'staff_key' => array('type' => 'key'),
 
+                     )
+        );
+        set_operator($data, $editor);
+        break;
 
     default:
         $response = array(
@@ -62,6 +71,21 @@ switch ($tipo) {
 
 }
 
+function set_operator($data, $editor){
+
+    $purchase_order         = get_object('Purchase_Order', $data['purchase_order_key']);
+    $purchase_order->editor = $editor;
+    $purchase_order->update(['Purchase Order Operator Key'=>$data['staff_key']]);
+
+    $response = array(
+        'state'            => 200,
+        'update_metadata'  => $purchase_order->get_update_metadata(),
+        'operator_key' => $purchase_order->get('Purchase Order Operator Key')
+
+    );
+    echo json_encode($response);
+
+}
 
 function job_order_forward_item_action($data, $db, $editor) {
 

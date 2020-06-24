@@ -1,0 +1,1 @@
+ALTER TABLE `Purchase Order Transaction Fact` ADD `Purchase Order Transaction Operator Key` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Purchase Order Transaction Return ITF Key`, ADD INDEX (`Purchase Order Transaction Operator Key`);

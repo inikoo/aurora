@@ -569,30 +569,7 @@ function update_no_picked_info(){
 
 }
 
-function select_dropdown_handler_for_fast_track_packing(type, element) {
 
-
-    field = $(element).attr('field')
-    value = $(element).attr('value')
-
-    if (value == 0) {
-        return;
-    }
-
-
-    formatted_value = $(element).attr('formatted_value')
-    //metadata = $(element).data('metadata')
-
-
-    $('#' + field + '_dropdown_select_label').val(formatted_value)
-
-
-    $('#' + field).val(value)
-
-    $('#' + field + '_results_container').addClass('hide').removeClass('show')
-    validate_data_entry_picking_aid()
-
-}
 
 
 function change_order_data_entry_picking_aid_state_after_save(element) {

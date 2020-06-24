@@ -3349,6 +3349,7 @@ function find_employees($db, $data) {
             break;
     }
 
+    $join_tables='';
 
     if (isset($data['metadata']['option'])) {
         switch ($data['metadata']['option']) {
@@ -3361,6 +3362,12 @@ function find_employees($db, $data) {
         }
 
     }
+    if (isset($data['metadata']['role'])) {
+        $join_tables=' left join `Staff Role Bridge` B on (S.`Staff Key`=B.`Staff Key`)';
+                $where .= "and `Role Code`='".addslashes($data['metadata']['role'])."'";
+
+
+    }
 
 
     $candidates      = array();
@@ -3368,7 +3375,7 @@ function find_employees($db, $data) {
 
 
     $sql = sprintf(
-        "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff ID` like '%s%%' %s  limit $max_results ", $q, $where
+        "select S.`Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension` S $join_tables  where  `Staff ID` like '%s%%' %s  limit $max_results ", $q, $where
     );
 
 
@@ -3401,7 +3408,7 @@ function find_employees($db, $data) {
 
 
     $sql = sprintf(
-        "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Alias` like '%s%%' %s  limit $max_results ", $q, $where
+        "select S.`Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension` S $join_tables   where  `Staff Alias` like '%s%%' %s  limit $max_results ", $q, $where
     );
 
     //print $sql;
@@ -3432,7 +3439,7 @@ function find_employees($db, $data) {
         exit;
     }
 
-    $sql = "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP ? $where  limit $max_results ";
+    $sql = "select S.`Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension` S $join_tables   where  `Staff Name`   REGEXP ? $where  limit $max_results ";
 
 
     $stmt = $db->prepare($sql);

@@ -52,4 +52,4 @@ $smarty->assign(
 
 include 'utils/get_table_html.php';
 
-?>
+

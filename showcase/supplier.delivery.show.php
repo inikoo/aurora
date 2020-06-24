@@ -83,7 +83,7 @@ function get_supplier_delivery_showcase($data, $smarty) {
         }
         $smarty->assign('min_date_send_order', $min_date_send_order);
 
-        if ($delivery->get('Supplier Delivery Production') == 'Yes') {
+        if ($delivery->get('Supplier Delivery Type') == 'Production') {
             return $smarty->fetch('showcase/production.delivery.tpl');
         } else {
             return $smarty->fetch('showcase/supplier.delivery.tpl');

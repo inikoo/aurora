@@ -21,8 +21,8 @@
 
                     <table id="set_picker_results" >
 
-                        <tr class="hide" id="set_picker_search_result_template" field="" value=""
-                            formatted_value="" onClick="select_dropdown_handler('picker',this)">
+                        <tr class="hide" id="set_picker_search_result_template" field="" value="" data-shortcut="select_picker"
+                            formatted_value="" onClick="select_dropdown_handler('picker',this);post_select_dropdown_picker_packer_handler('picker',this)">
                             <td class="code"></td>
                             <td style="width:85%" class="label"></td>
 

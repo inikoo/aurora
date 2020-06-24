@@ -215,3 +215,25 @@ function post_production_job_order_state_change(data,element) {
         });
     }
 }
+
+function post_select_dropdown_operator_handler(type, element) {
+
+
+    const value=$('#' + $(element).attr('field')).val();
+
+    const request = '/ar_edit_production.php?tipo=set_' + type + '&purchase_order_key=' + $('#purchase_order_key_value').val() + '&staff_key=' + value
+    console.log(request)
+
+
+    $.getJSON(request, function (data) {
+
+        if (data.state == 200) {
+
+
+
+        }
+
+    })
+
+
+}

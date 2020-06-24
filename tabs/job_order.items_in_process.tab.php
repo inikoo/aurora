@@ -11,7 +11,7 @@
 
 $ar_file = 'ar_suppliers_tables.php';
 $tipo    = 'supplier.order.items_in_process';
-$tab     = 'supplier.order.items_in_process';
+$tab     = 'job_order.items_in_process';
 
 
 /**

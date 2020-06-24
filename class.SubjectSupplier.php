@@ -53,7 +53,6 @@ class SubjectSupplier extends Subject {
             'Purchase Order Warehouse Telephone'      => $warehouse->data['Warehouse Telephone'],
             'Purchase Order Warehouse Email'          => $warehouse->data['Warehouse Email'],
             'Purchase Order Account Number'           => $this->get('Account Number'),
-            'Purchase Order Production'               => ($this->get('Supplier Production') == 'Yes' ? 'Yes' : 'No'),
             'Purchase Order Terms and Conditions'     => $this->get('Default PO Terms and Conditions'),
             'Purchase Order Main Buyer Key'           => $staff->id,
             'Purchase Order Main Buyer Name'          => $staff->get('Staff Name'),

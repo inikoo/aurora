@@ -89,7 +89,7 @@ function get_supplier_order_showcase($data, $smarty, $user) {
 
         if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
 
-            if ($purchase_order->get('Purchase Order Production') == 'Yes') {
+            if ($purchase_order->get('Purchase Order Type') == 'Production') {
                 return $smarty->fetch('showcase/production.purchase_order.tpl');
 
             } else {

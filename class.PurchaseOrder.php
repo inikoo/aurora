@@ -325,7 +325,6 @@ class PurchaseOrder extends DB_Table {
             'Supplier Delivery Incoterm'           => $this->get('Purchase Order Incoterm'),
             'Supplier Delivery Port of Import'     => $this->get('Purchase Order Port of Import'),
             'Supplier Delivery Port of Export'     => $this->get('Purchase Order Port of Export'),
-            'Supplier Delivery Production'         => $this->get('Purchase Order Production'),
             'Supplier Delivery Purchase Order Key' => $this->id,
             'Supplier Delivery Type'               => $this->get('Purchase Order Type'),
             'Supplier Delivery Warehouse Key'      => $account->get('Account Default Warehouse'),
@@ -1178,6 +1177,16 @@ class PurchaseOrder extends DB_Table {
             case 'payment terms':
 
                 return $this->metadata(preg_replace('/\s/', '_', $key));
+            case 'Operator Alias':
+                if($this->get('Purchase Order Operator Key')>0){
+                    $staff=get_object('Staff',$this->get('Purchase Order Operator Key'));
+                    return $staff->get(preg_replace('/Operator /','',$key));
+                }else{
+                    return '';
+                }
+
+
+
             default:
 
 
@@ -2383,7 +2392,19 @@ class PurchaseOrder extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         switch ($field) {
+            case 'Purchase Order Operator Key':
+                $this->update_field($field, $value, $options);
 
+                $sql="update `Purchase Order Transaction Fact` set `Purchase Order Transaction Operator Key`=? where `Purchase Order Key`=? ";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $value,
+                        $this->id
+                    )
+                );
+
+
+                break;
             case 'payment terms':
                 $this->fast_update_json_field('Purchase Order Metadata', preg_replace('/\s/', '_', $field), $value);
 

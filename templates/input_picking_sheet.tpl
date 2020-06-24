@@ -92,8 +92,8 @@
 
                 <table id="set_picker_results" >
 
-                    <tr class="hide" id="set_picker_search_result_template" field="" value=""
-                        formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('picker',this)">
+                    <tr class="hide" id="set_picker_search_result_template" field="" value="" data-shortcut="select_picker_picking_aid"
+                        formatted_value="" onClick="select_dropdown_handler('picker',this);validate_data_entry_picking_aid()">
                         <td class="code"></td>
                         <td style="width:85%" class="label"></td>
 
@@ -212,8 +212,8 @@
 
                 <table id="set_packer_results" >
 
-                    <tr class="hide" id="set_packer_search_result_template" field="" value=""
-                        formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('packer',this)">
+                    <tr class="hide" id="set_packer_search_result_template" field="" value="" data-shortcut="select_packer_picking_aid"
+                        formatted_value="" onClick="select_dropdown_handler('packer',this);validate_data_entry_picking_aid()">
                         <td class="code"></td>
                         <td style="width:85%" class="label"></td>
 

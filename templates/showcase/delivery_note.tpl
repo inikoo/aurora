@@ -253,7 +253,7 @@
                                         <table id="set_picker_results" >
 
                                             <tr class="hide" id="set_picker_search_result_template" field="" value=""
-                                                formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('picker',this)">
+                                                formatted_value="" onClick="select_dropdown_handler('picker',this);validate_data_entry_picking_aid()">
                                                 <td class="code"></td>
                                                 <td style="width:85%" class="label"></td>
 
@@ -541,7 +541,7 @@
 
                         <table id="set_picker_results" >
 
-                            <tr class="hide" id="set_picker_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_handler('picker',this)">
+                            <tr class="hide" id="set_picker_search_result_template" field="" value="" formatted_value="" data-shortcut="select_picker" onClick="select_dropdown_handler('picker',this);post_select_dropdown_picker_packer_handler('picker',this)">
                                 <td class="code"></td>
                                 <td style="width:85%" class="label"></td>
 
@@ -586,7 +586,7 @@
 
                         <table id="set_packer_results" >
 
-                            <tr class="hide" id="set_packer_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_handler('packer',this)">
+                            <tr class="hide" id="set_packer_search_result_template" field="" value="" formatted_value="" data-shortcut="select_packer" onClick="select_dropdown_handler('packer',this);post_select_dropdown_picker_packer_handler('packer',this)">
 
                                 <td class="code"></td>
                                 <td style="width:85%" class="label"></td>

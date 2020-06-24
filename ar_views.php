@@ -534,7 +534,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             //print_r($state);
 
-            if ($state['object'] == 'purchase_order' and $_object->get('Purchase Order Production') == 'Yes') {
+            if ($state['object'] == 'purchase_order' and $_object->get('Purchase Order Type') == 'Production') {
 
 
                 $state['request'] = 'production/'.$_object->get('Purchase Order Parent Key').'/order/'.$_object->id;
@@ -553,7 +553,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             }
 
 
-            if ($state['object'] == 'supplierdelivery' and $_object->get('Supplier Delivery Production') == 'Yes') {
+            if ($state['object'] == 'supplierdelivery' and $_object->get('Supplier Delivery Type') == 'Production') {
 
 
                 $state['request']    = 'production/'.$_object->get('Supplier Delivery Parent Key').'/delivery/'.$_object->id;
@@ -3697,6 +3697,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
 
+
     //cleaning mess can removed later
     if(empty($data['subtab']) or !is_string($data['subtab']) ){
         $data['subtab']='';
@@ -4488,8 +4489,15 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
                 if($data['_object']->get('Purchase Order Number Items')==0 ){
 
+
+
+
+
                     if( $data['tab'] == 'job_order.items_in_process'){
                         $data['tab'] = 'job_order.all_production_parts';
+                        $_content['tabs']['job_order.all_production_parts']['selected'] = true;
+                        $_content['tabs']['job_order.items_in_process']['selected'] = false;
+
                     }
 
 
@@ -4499,6 +4507,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }else{
                     if ($data['tab'] == 'job_order.items') {
                         $data['tab'] = 'job_order.items_in_process';
+                        $_content['tabs']['job_order.items_in_process']['selected'] = true;
+                        $_content['tabs']['job_order.items']['selected'] = false;
+
                     }
                     $_content['tabs']['job_order.items_in_process']['class']        = '';
 

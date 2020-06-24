@@ -4,30 +4,15 @@
  Version 3.0*/
 
 
-function select_dropdown_handler(type, element) {
+function post_select_dropdown_picker_packer_handler(type, element) {
 
 
-    field = $(element).attr('field')
-    value = $(element).attr('value')
-
-    if (value == 0) {
+    const value=$('#' + $(element).attr('field')).val();
+    if(value==0){
         return;
     }
 
-
-    formatted_value = $(element).attr('formatted_value')
-    //metadata = $(element).data('metadata')
-
-
-    $('#' + field + '_dropdown_select_label').val(formatted_value)
-
-
-    $('#' + field).val(value)
-
-    $('#' + field + '_results_container').addClass('hide').removeClass('show')
-
-
-    var request = '/ar_edit_orders.php?tipo=set_' + type + '&delivery_note_key=' + $('#dn_data').attr('dn_key') + '&staff_key=' + value
+    const request = '/ar_edit_orders.php?tipo=set_' + type + '&delivery_note_key=' + $('#dn_data').attr('dn_key') + '&staff_key=' + value
     console.log(request)
 
 
