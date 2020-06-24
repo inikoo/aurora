@@ -1685,14 +1685,15 @@ class PurchaseOrder extends DB_Table {
                     }
 
 
-                    $sql = "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Transaction Part SKU`,`Purchase Order Item Index`,`Supplier Part Key`,`Supplier Part Historic Key`,`Currency Code`,`Purchase Order Last Updated Date`,`Purchase Order Transaction State`,
+                    $sql = "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Transaction Type`,`Purchase Order Transaction Part SKU`,`Purchase Order Item Index`,`Supplier Part Key`,`Supplier Part Historic Key`,`Currency Code`,`Purchase Order Last Updated Date`,`Purchase Order Transaction State`,
 					`Supplier Key`,`Agent Key`,`Purchase Order Key`,`Purchase Order Ordering Units`,`Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Note to Supplier`,`Purchase Order CBM`,`Purchase Order Weight`,
 					`User Key`,`Creation Date`
-					) VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?)";
+					) VALUES (?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?)";
 
 
                     $this->db->prepare($sql)->execute(
                         array(
+                            $this->get('Purchase Order Type'),
                             $supplier_part->get('Supplier Part Part SKU'),
                             $item_index,
                             $item_key,

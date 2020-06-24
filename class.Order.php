@@ -2996,15 +2996,15 @@ class Order extends DB_Table {
                                 $extra_amount = 0;
 
                                 $sql = sprintf(
-                                    "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Transaction Return ITF Key`,`Purchase Order Transaction Part SKU`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Delivery Transaction State`,
+                                    "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Transaction Type`,`Purchase Order Transaction Return ITF Key`,`Purchase Order Transaction Part SKU`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Delivery Transaction State`,
 					`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Supplier Delivery Extra Cost Amount`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
 					`User Key`,`Creation Date`,`Supplier Delivery Key`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Last Updated Date`
 					)
-					VALUES (%d,%d,%s,%s,%s,
+					VALUES (%s,%d,%d,%s,%s,%s,
 			          %.6f,%.2f,%.2f,%s,%s,
 					 %d,%s,
 					 %d,'No',%s
-					 )", $row['Inventory Transaction Key'], $part->id, prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
+					 )",prepare_mysql('Return'), $row['Inventory Transaction Key'], $part->id, prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
 
                                     $unit_qty, $amount, $extra_amount, $cbm, $weight, $this->editor['User Key'], prepare_mysql($date), $delivery->id, prepare_mysql($date)
 
