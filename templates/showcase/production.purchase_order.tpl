@@ -242,7 +242,7 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('undo_submit')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{  "field": "Purchase Order State","value": "InProcess","dialog_name":"undo_submit"}'
+                                            data-data='{  "field": "Purchase Order State","value": "undo_submit","dialog_name":"undo_submit"}'
                                             id="undo_submit_save_buttons" class="valid save button"
                                             onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
@@ -369,7 +369,7 @@
                 <div id="dispatch_operations" class="order_operation {if $order->get('Purchase Order State')!='Confirmed'  or  $order->get('Purchase Order Number Items')==0 }hide{/if}">
                     <div id="dispatch_operation"
                          class="square_button right"
-                         title="{t}Set manufacturing as{/t}">
+                         title="{t}Set manufacturing as completed{/t}">
                         <i class="fa fa-flag-checkered   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('dispatch')"></i>
                         <table id="dispatch_dialog" class="order_operation_dialog hide">

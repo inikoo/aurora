@@ -350,7 +350,7 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('undo_submit')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{  "field": "Purchase Order State","value": "InProcess","dialog_name":"undo_submit"}'
+                                            data-data='{  "field": "Purchase Order State","value": "undo_submit","dialog_name":"undo_submit"}'
                                             id="undo_submit_save_buttons" class="valid save button"
                                             onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>

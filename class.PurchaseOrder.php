@@ -1178,13 +1178,13 @@ class PurchaseOrder extends DB_Table {
 
                 return $this->metadata(preg_replace('/\s/', '_', $key));
             case 'Operator Alias':
-                if($this->get('Purchase Order Operator Key')>0){
-                    $staff=get_object('Staff',$this->get('Purchase Order Operator Key'));
-                    return $staff->get(preg_replace('/Operator /','',$key));
-                }else{
+                if ($this->get('Purchase Order Operator Key') > 0) {
+                    $staff = get_object('Staff', $this->get('Purchase Order Operator Key'));
+
+                    return $staff->get(preg_replace('/Operator /', '', $key));
+                } else {
                     return '';
                 }
-
 
 
             default:
@@ -2395,7 +2395,7 @@ class PurchaseOrder extends DB_Table {
             case 'Purchase Order Operator Key':
                 $this->update_field($field, $value, $options);
 
-                $sql="update `Purchase Order Transaction Fact` set `Purchase Order Transaction Operator Key`=? where `Purchase Order Key`=? ";
+                $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction Operator Key`=? where `Purchase Order Key`=? ";
                 $this->db->prepare($sql)->execute(
                     array(
                         $value,
@@ -2496,14 +2496,14 @@ class PurchaseOrder extends DB_Table {
 
         if ($old_value != $value) {
             switch ($value) {
-                case 'InProcess':
+                case 'undo_submit':
 
 
                     $this->fast_update(
                         array(
                             'Purchase Order Submitted Date' => '',
                             'Purchase Order Send Date'      => '',
-                            'Purchase Order State'          => $value,
+                            'Purchase Order State'          => 'InProcess',
                         )
                     );
 
@@ -2528,7 +2528,7 @@ class PurchaseOrder extends DB_Table {
 
 
                     $history_data = array(
-                        'History Abstract' => _('Purchase order send back to process'),
+                        'History Abstract' => _('Purchase order send back to planing'),
                         'History Details'  => '',
                         'Action'           => 'created'
                     );
@@ -2537,7 +2537,7 @@ class PurchaseOrder extends DB_Table {
                     );
 
 
-                    $sql = 'select `Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Supplier Part Unit Extra Cost`,`Purchase Order Ordering Units`,SPD.`Supplier Part Historic Key`  
+                    $sql = 'select `Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Supplier Part Unit Extra Cost`,`Purchase Order Ordering Units`,SPD.`Supplier Part Historic Key` ,`Purchase Order Submitted Cancelled Units`
                                 from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Key`=?';
 
                     $stmt = $this->db->prepare($sql);
@@ -2546,25 +2546,44 @@ class PurchaseOrder extends DB_Table {
                     );
                     while ($row = $stmt->fetch()) {
 
-                        $sql = "UPDATE `Purchase Order Transaction Fact` SET 
+                        $submitted_qty=$row['Purchase Order Ordering Units']-$row['Purchase Order Submitted Cancelled Units'];
+                        if($submitted_qty<=0){
+
+                            $sql="delete from `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=?";
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $row['Purchase Order Transaction Fact Key']
+                                )
+                            );
+
+                        }else{
+                            $sql = "UPDATE `Purchase Order Transaction Fact` SET 
+                                             `Purchase Order Ordering Units`=?,
                             `Purchase Order Transaction State`=? ,
-                            `Purchase Order Submitted Units`=NULL ,`Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL,`Purchase Order Submitted Unit Extra Cost Percentage`=NULL,
+                            `Purchase Order Submitted Units`=NULL ,
+                                             `Purchase Order Submitted Cancelled Units`=NULL ,
+                                             `Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL,`Purchase Order Submitted Unit Extra Cost Percentage`=NULL,
                                               `Purchase Order Net Amount`=?,`Purchase Order Extra Cost Amount`=? ,`Supplier Part Historic Key`=?
                             
                             WHERE `Purchase Order Transaction Fact Key`=?";
 
 
-                        $this->db->prepare($sql)->execute(
-                            array(
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $submitted_qty,
+                                    'InProcess',
+                                    round($row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'], 2),
+                                    round($row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'], 2),
+                                    $row['Supplier Part Historic Key'],
 
-                                $value,
-                                round($row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'], 2),
-                                round($row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'], 2),
-                                $row['Supplier Part Historic Key'],
+                                    $row['Purchase Order Transaction Fact Key']
+                                )
+                            );
 
-                                $row['Purchase Order Transaction Fact Key']
-                            )
-                        );
+                        }
+
+
+
 
 
                     }
@@ -2580,7 +2599,7 @@ class PurchaseOrder extends DB_Table {
                         array(
                             'Purchase Order Submitted Date' => $date,
                             'Purchase Order Send Date'      => '',
-                            'Purchase Order State'          => $value,
+                            'Purchase Order State'          => 'Submitted',
 
                         )
                     );
@@ -2601,73 +2620,70 @@ class PurchaseOrder extends DB_Table {
                         'confirm_operations'
                     );
 
-                    if ($old_value != 'Submitted') {
-                        if ($this->get('State Index') <= 30) {
-                            $history_abstract = _('Purchase order submitted');
-
-                            if ($this->data['Purchase Order Parent'] == 'Agent') {
-                                $this->create_agent_supplier_purchase_orders();
-                            }
 
 
-                        } else {
-                            $history_abstract = _('Purchase order set back as submitted');
 
-                        }
-
-
-                        $sql = sprintf('select `Purchase Order Transaction Fact Key` ,`Supplier Part Key`,`Purchase Order Ordering Units` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d  ', $this->id);
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-
-
-                                $supplier_part = get_object('Supplier_Part', $row['Supplier Part Key']);
-
-                                if ($supplier_part->get('Supplier Part Unit Extra Cost Percentage') == '') {
-                                    $extra_cost_percentage = 0;
-                                } else {
-                                    $extra_cost_percentage = floatval($supplier_part->get('Supplier Part Unit Extra Cost Fraction'));
-
-                                }
-
-                                //print $supplier_part->get('Supplier Part Unit Extra Cost Percentage');
-                                //print_r($supplier_part->data);
-
-                                $sql = sprintf(
-                                    'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Units`=%f ,`Purchase Order Submitted Unit Cost`=%f,`Purchase Order Submitted Units Per SKO`=%d,`Purchase Order Submitted SKOs Per Carton`=%d ,`Purchase Order Submitted Unit Extra Cost Percentage`=%f ,`Supplier Part Historic Key`=%d where `Purchase Order Transaction Fact Key`=%d   ',
-
-                                    $row['Purchase Order Ordering Units'], $supplier_part->get('Supplier Part Unit Cost'), $supplier_part->part->get('Part Units Per Package'), $supplier_part->get('Supplier Part Packages Per Carton'), $extra_cost_percentage,
-                                    $supplier_part->get('Supplier Part Historic Key'), $row['Purchase Order Transaction Fact Key']
-                                );
-
-                                // print "$sql\n";
-                                $this->db->exec($sql);
-                            }
-                        }
-
-
-                        $history_data = array(
-                            'History Abstract' => $history_abstract,
-                            'History Details'  => '',
-                            'Action'           => 'edited'
-                        );
-                        $this->add_subject_history(
-                            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                        );
-
+                    if ($this->data['Purchase Order Parent'] == 'Agent') {
+                        $this->create_agent_supplier_purchase_orders();
                     }
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE `Purchase Order Key`=?";
-                    $this->db->prepare($sql)->execute(
+
+                    $sql = "select `Purchase Order Transaction Fact Key` ,`Supplier Part Key`,`Purchase Order Ordering Units` from `Purchase Order Transaction Fact` where  `Purchase Order Transaction State`='InProcess' and `Purchase Order Key`=? ";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
                         array(
-                            $value,
                             $this->id
                         )
                     );
+                    while ($row = $stmt->fetch()) {
+                        $supplier_part = get_object('Supplier_Part', $row['Supplier Part Key']);
+
+                        if ($supplier_part->get('Supplier Part Unit Extra Cost Percentage') == '') {
+                            $extra_cost_percentage = 0;
+                        } else {
+                            $extra_cost_percentage = floatval($supplier_part->get('Supplier Part Unit Extra Cost Fraction'));
+
+                        }
 
 
-                    $this->db->exec($sql);
+                        $sql = "update `Purchase Order Transaction Fact` set 
+                                             `Purchase Order Transaction State`=?,
+                                             `Purchase Order Submitted Units`=? ,
+                                             `Purchase Order Submitted Unit Cost`=?,
+                                             `Purchase Order Submitted Units Per SKO`=?,
+                                             `Purchase Order Submitted SKOs Per Carton`=? ,
+                                             `Purchase Order Submitted Unit Extra Cost Percentage`=? ,
+                                             `Supplier Part Historic Key`=? 
+                                                where `Purchase Order Transaction Fact Key`=? ";
+
+                        $this->db->prepare($sql)->execute(
+                            array(
+                                'Submitted',
+                                $row['Purchase Order Ordering Units'],
+                                $supplier_part->get('Supplier Part Unit Cost'),
+                                $supplier_part->part->get('Part Units Per Package'),
+                                $supplier_part->get('Supplier Part Packages Per Carton'),
+                                $extra_cost_percentage,
+                                $supplier_part->get('Supplier Part Historic Key'),
+                                $row['Purchase Order Transaction Fact Key']
+                            )
+                        );
+
+
+                    }
+
+                    $history_abstract = _('Purchase order submitted');
+                    $history_data = array(
+                        'History Abstract' => $history_abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+
                     $this->update_purchase_order_items_state();
 
                     break;
@@ -2685,7 +2701,11 @@ class PurchaseOrder extends DB_Table {
                         )
                     );
 
-                    if ($this->get('Purchase Order Type') != 'Production') {
+                    if ($this->get('Purchase Order Type') == 'Production') {
+                        $history_abstract = _('Sent back to queue');
+
+                    }else{
+                        $history_abstract = _('Cancel confirmation');
                         $this->fast_update(
                             array(
                                 'Purchase Order Estimated Production Date' => null,
@@ -2702,7 +2722,7 @@ class PurchaseOrder extends DB_Table {
                         'confirm_operations'
                     );
 
-                    $history_abstract = _('Cancel confirmation');
+
 
                     $history_data = array(
                         'History Abstract' => $history_abstract,
@@ -2714,7 +2734,7 @@ class PurchaseOrder extends DB_Table {
                     );
 
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE `Purchase Order Key`=?";
+                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE `Purchase Order Transaction State`='Confirmed' and `Purchase Order Key`=?";
                     $this->db->prepare($sql)->execute(
                         array(
                             'Submitted',
@@ -2732,7 +2752,7 @@ class PurchaseOrder extends DB_Table {
                     $this->fast_update(
                         array(
                             'Purchase Order Confirmed Date' => $date,
-                            'Purchase Order State'          => $value,
+                            'Purchase Order State'          => 'Confirmed',
                         )
                     );
 
@@ -2773,15 +2793,35 @@ class PurchaseOrder extends DB_Table {
                     }
                     $this->update_purchase_order_date();
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE `Purchase Order Key`=?";
+                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE  `Purchase Order Transaction State`='Submitted' and  `Purchase Order Key`=?";
                     $this->db->prepare($sql)->execute(
                         array(
-                            $value,
+                            'Confirmed',
                             $this->id
                         )
                     );
 
-                    $history_abstract = _('Purchase order confirmed');
+
+
+
+
+                    if ($this->get('Purchase Order Type') == 'Production') {
+                        $history_abstract = _('Job order start manufacturing');
+
+                        $operations = array(
+
+                            'undo_confirm_operations',
+                            'dispatch_operations'
+                        );
+                    } else {
+                        $history_abstract = _('Purchase order confirmed by supplier');
+
+                        $operations = array(
+                            'cancel_operations',
+                            'undo_confirm_operations',
+                            'received_operations'
+                        );
+                    }
 
                     $history_data = array(
                         'History Abstract' => $history_abstract,
@@ -2791,21 +2831,6 @@ class PurchaseOrder extends DB_Table {
                     $this->add_subject_history(
                         $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                     );
-
-                    if ($this->get('Purchase Order Type') == 'Production') {
-                        $operations = array(
-
-                            'undo_confirm_operations',
-                            'dispatch_operations'
-                        );
-                    } else {
-                        $operations = array(
-                            'cancel_operations',
-                            'undo_confirm_operations',
-                            'received_operations'
-                        );
-                    }
-
                     $this->update_purchase_order_items_state();
 
                     break;
@@ -2845,6 +2870,46 @@ class PurchaseOrder extends DB_Table {
                         'dispatch_operations'
                     );
 
+
+                    $this->update_purchase_order_items_state();
+
+                    break;
+                case 'Manufactured':
+
+
+                    $this->fast_update(
+                        array(
+                            'Purchase Order Manufactured Date' => $date,
+                            'Purchase Order State'             => 'Manufactured',
+                        )
+                    );
+
+
+                    $this->update_purchase_order_date();
+
+                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=?,`Purchase Order Manufactured Units`=`Purchase Order Submitted Units` WHERE  `Purchase Order Transaction State`='Confirmed' and  `Purchase Order Key`=?";
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            'Manufactured',
+                            $this->id
+                        )
+                    );
+
+                    $history_abstract = _('Job order manufactured');
+                    $history_data     = array(
+                        'History Abstract' => $history_abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+
+                    $operations = array(
+                        'check_operations',
+                        'undo_dispatch_operations',
+                    );
 
                     $this->update_purchase_order_items_state();
 
@@ -2898,46 +2963,7 @@ class PurchaseOrder extends DB_Table {
 
                     break;
 
-                case 'Manufactured':
 
-
-                    $this->fast_update(
-                        array(
-                            'Purchase Order Manufactured Date' => $date,
-                            'Purchase Order State'             => 'Manufactured',
-                        )
-                    );
-
-
-                    $this->update_purchase_order_date();
-
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=?,`Purchase Order Manufactured Units`=`Purchase Order Submitted Units` WHERE  `Purchase Order Transaction State`='Confirmed' and  `Purchase Order Key`=?";
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            'Manufactured',
-                            $this->id
-                        )
-                    );
-
-                    $history_abstract = _('Job order manufactured');
-                    $history_data     = array(
-                        'History Abstract' => $history_abstract,
-                        'History Details'  => '',
-                        'Action'           => 'edited'
-                    );
-                    $this->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                    );
-
-
-                    $operations = array(
-                        'check_operations',
-                        'undo_dispatch_operations',
-                    );
-
-                    $this->update_purchase_order_items_state();
-
-                    break;
 
                 case 'QC_Pass':
 
