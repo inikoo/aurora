@@ -1874,14 +1874,42 @@ class PurchaseOrder extends DB_Table {
         $old_state_index = $this->get('State Index');
         switch ($state) {
             case 'Manufactured':
-                $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Manufactured Units`=? ,`Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
-                $this->db->prepare($sql)->execute(
-                    array(
-                        $qty,
-                        'Manufactured',
-                        $item_key
-                    )
-                );
+
+
+                if($qty==0){
+
+                    $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`='Cancelled', `Purchase Order Submitted Cancelled Units`=`Purchase Order Submitted Units`,`Purchase Order Last Updated Date`=?,`Purchase Order Net Amount`=? ,
+                        `Purchase Order Extra Cost Amount`=? ,
+                        `Purchase Order CBM`=?,
+                        `Purchase Order Weight`=?  where  `Purchase Order Transaction Fact Key`=? ";
+
+
+                    $stmt = $this->db->prepare($sql);
+
+
+                    $stmt->execute(
+                        array(
+                            gmdate('Y-m-d H:i:s'),
+                            0,
+                            0,
+                            0,
+                            0,
+                            $item_key
+                        )
+                    );
+
+                }else{
+                    $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Manufactured Units`=? ,`Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $qty,
+                            'Manufactured',
+                            $item_key
+                        )
+                    );
+                }
+
+
                 $operations = array(
                     'check_operations',
                     'undo_dispatch_operations',

@@ -132,7 +132,8 @@ $fields
 `Part Quarter To Day Acc Dispatched`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Reference`,`Part Total Acc Dispatched`,
 `Part Products Web Status`,`Part On Demand`,`Part Days Available Forecast`,`Part Fresh`,P.`Part SKU`,`Part 1 Year Acc Dispatched`,`Part Main Image Key`,`Part Next Deliveries Data`,`Supplier Name`,
 `Purchase Order Submitted Units Per SKO`,`Purchase Order Submitted SKOs Per Carton`,`Purchase Order Submitted Units Per SKO`,
-`Purchase Order Submitted Cancelled Units`,`Purchase Order Manufactured Units`
+`Purchase Order Submitted Cancelled Units`,`Purchase Order Manufactured Units`,
+`Purchase Order Transaction Type`,`Purchase Order QC Pass Units`
 
 ";
 

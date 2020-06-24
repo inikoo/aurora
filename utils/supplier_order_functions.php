@@ -388,14 +388,24 @@ function get_job_order_transaction_data($data) {
 
             break;
         case 'Manufactured':
-            $state = '<span class="action_container">';
-            $state .= ' <i class="action_container_trigger_undo_manufactured error button fal padding_left_10 padding_right_10  fa-flip-horizontal fa-flag-checkered"  data-action="undo_manufactured" data-key="'.$data['Purchase Order Transaction Fact Key']
-                .'" onclick="job_order_item_action(this)" ></i> ';
 
-            $state .= _('Manufactured');
-            $state .= ' <i class="action_container_trigger_qc_check  button fal padding_left_10 padding_right_10  fa-siren-on"  data-action="qc_check" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
-            $state .= '</span>';
-            $state .= '<span class="follow_on_qc_check hide">'._('QC check').'</span>';
+
+            if($data['Purchase Order Manufactured Units']==0){
+
+                $state = _('Not manufactured');
+
+            }else{
+                $state = '<span class="action_container">';
+                $state .= ' <i class="action_container_trigger_undo_manufactured error button fal padding_left_10 padding_right_10  fa-flip-horizontal fa-flag-checkered"  data-action="undo_manufactured" data-key="'.$data['Purchase Order Transaction Fact Key']
+                    .'" onclick="job_order_item_action(this)" ></i> ';
+
+                $state .= _('Manufactured');
+                $state .= ' <i class="action_container_trigger_qc_check  button fal padding_left_10 padding_right_10  fa-siren-on"  data-action="qc_check" data-key="'.$data['Purchase Order Transaction Fact Key'].'" onclick="job_order_item_action(this)" ></i>';
+                $state .= '</span>';
+                $state .= '<span class="follow_on_qc_check hide">'._('QC check').'</span>';
+            }
+
+
 
             break;
         case 'QC_Pass':
@@ -598,18 +608,53 @@ function get_purchase_order_transaction_ordered_data($data) {
         $items_qty .= '<span class="error">Units per SKO=0</span> ';
     } else {
 
-
+        $ordered_skos='';
         if ($data['Purchase Order Submitted Cancelled Units'] > 0) {
             $ordered_skos = '<span class="discreet strikethrough">'.number($data['Purchase Order Submitted Cancelled Units'] / $units_per_sko, 3).'</span>';
-            if ($_items_qty > 0) {
-                $ordered_skos = ' '.number($_items_qty / $units_per_sko, 3);
+
+
+        }
+
+
+        if ($_items_qty > 0) {
+            $ordered_skos .= ' '.number($_items_qty / $units_per_sko, 3);
+
+
+            if($data['Purchase Order Transaction Type']=='Production'){
+
+                $manufactured_skos='';
+                $qc_passed_skos='';
+
+                if($data['Purchase Order Manufactured Units']!=''){
+                    $manufactured_skos .= '<i style="font-size: x-small" class=" fal fa-flag-checkered"></i> '.number($data['Purchase Order Manufactured Units'] / $units_per_sko, 3);
+                }
+
+                if($data['Purchase Order QC Pass Units']!=''   ){
+                    $qc_passed_skos .= '<i style="font-size: x-small" class=" fal fa-siren-on"></i> '.number($data['Purchase Order QC Pass Units'] / $units_per_sko, 3);
+                    if( $data['Purchase Order Manufactured Units']==$data['Purchase Order Manufactured Units'] ){
+                        $manufactured_skos='';
+                    }
+
+                }
+
+                if($manufactured_skos!='' or $qc_passed_skos!=''){
+                    $ordered_skos='<span style="font-size: x-small">'.$ordered_skos.'</span>';
+                }
+
+                if($manufactured_skos!=''){
+                    $ordered_skos.=' | '.$manufactured_skos;
+                }
+                if($qc_passed_skos!=''){
+                    $ordered_skos.=' | '.$qc_passed_skos;
+                }
+
 
             }
 
-        } else {
-            $ordered_skos = number($_items_qty / $units_per_sko, 3);
-
         }
+
+
+
 
         if ($_items_qty % $units_per_sko != 0) {
             $items_qty .= '<span class="error">'.$ordered_skos.'<span class="small discreet">sko.</span></span> | ';
