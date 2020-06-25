@@ -843,6 +843,19 @@ function production_orders($_data, $db, $user, $account) {
                     break;
             }
 
+            if($data['Staff Alias']==''){
+                $worker='<span class="super_discreet italic">'._('Not set').'</span>';
+            }else{
+                $worker=sprintf('<span class="link" onclick="change_view(\'production/%d/operatives/%d\')" >%s</span>',$data['Purchase Order Parent Key'],$data['Purchase Order Operator Key'],$data['Staff Alias']);
+
+            }
+
+
+            if($data['Purchase Order Total Amount']=='' or $data['Purchase Order Total Amount']==0 ){
+                $total_amount='';
+            }else{
+                $total_amount=money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'], $locale = false,'NO_FRACTION_DIGITS');
+            }
 
             $table_data[] = array(
                 'id'           => (integer)$data['Purchase Order Key'],
@@ -853,7 +866,11 @@ function production_orders($_data, $db, $user, $account) {
                 'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
                 'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'        => $state,
-                'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
+                'weight' => weight($data['Purchase Order Weight'],'',0,true),
+                'products' =>$data['Purchase Order Ordered Number Items'],
+
+                'total_amount' =>$total_amount,
+                'worker' =>$worker
 
 
             );

@@ -25,6 +25,20 @@ cell: Backgrid.HtmlCell.extend({
 })
 },
 {
+name: "worker",
+label: "{t}Worker{/t}",
+editable: false,
+sortType: "toggle",
+cell: "html"
+},
+{
+name: "state",
+label: "{t}State{/t}",
+editable: false,
+sortType: "toggle",
+cell: "html"
+},
+{
 name: "date",
 label: "{t}Date{/t}",
 editable: false,
@@ -34,20 +48,38 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
-name: "state",
-label: "{t}State{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
-name: "total_amount",
-label: "{t}Total{/t}",
+name: "products",
+label: "{t}Products{/t}",
 editable: false,
 sortable: false,
-
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
+},
+{
+name: "weight",
+label: "{t}Weight{/t} (Kg)",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "total_amount",
+label: "{t}Value{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "notes",
+label: "",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
 }
 ]
 
-function change_table_view(view,save_state){}
+function change_table_view(view,save_state){
+
+}
