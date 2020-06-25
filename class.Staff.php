@@ -1228,9 +1228,8 @@ class Staff extends DB_Table {
                     }
                 }
 
-
-
-
+                $operative = get_object('Operative', $this->id);
+                $operative->update_operative_status();
 
                 break;
             case'Staff Telephone':
@@ -1632,7 +1631,8 @@ class Staff extends DB_Table {
             }
 
 
-        } else {
+        }
+        else {
 
 
             if ($this->get('Staff Official ID') != '') {
@@ -1734,6 +1734,9 @@ class Staff extends DB_Table {
 
 
         }
+
+        $operative = get_object('Operative', $this->id);
+        $operative->update_operative_status();
 
         $this->other_fields_updated = array(
             'Staff_Valid_To' => array(
