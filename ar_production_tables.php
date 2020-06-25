@@ -809,13 +809,20 @@ function production_orders($_data, $db, $user, $account) {
                 case 'InProcess':
                     $state = _('Planning');
                     if($data['Purchase Order Estimated Start Production Date']!=''){
-                        $notes.=' <span title="'._('Scheduled start production date').'"><i class="fa fa-play success small"></i> <span class="discreet italic">'.strftime(
+                        $notes.=' <span class="super_discreet" title="'._('Scheduled start production date').'"><i class="fal fa-play success small"></i> <span class="discreet italic">'.strftime(
                                 "%a %e %b", strtotime($data['Purchase Order Estimated Start Production Date'].' +0:00')
                             ).'</span>';
                     }
                     break;
                 case 'Submitted':
                     $state = _('Queued');
+
+                    if($data['Purchase Order Estimated Start Production Date']!=''){
+                        $notes.=' <span title="'._('Scheduled start production date').'"><i class="fa fa-play success small"></i> <span class="discreet italic">'.strftime(
+                                "%a %e %b", strtotime($data['Purchase Order Estimated Start Production Date'].' +0:00')
+                            ).'</span>';
+                    }
+                    break;
                     break;
                 case 'Confirmed':
                     $state = _('Manufacturing');
