@@ -44,9 +44,9 @@ $smarty->assign('table_buttons', $table_buttons);
 $smarty->assign('tipo', $tipo);
 
 
-$smarty->assign('title', _('Operatives'));
+$smarty->assign('title', _('Workers'));
 
 include('utils/get_table_html.php');
 
 
-?>
+

@@ -11,9 +11,9 @@
 
 
 $table
-    = '`Staff Dimension` SD left join `Staff Role Bridge` B on (B.`Staff Key`=SD.`Staff Key`)  ';
+    = '`Staff Dimension` SD left join `Staff Operative Data` B on (B.`Staff Operative Key`=SD.`Staff Key`)  ';
 $where
-    = ' where `Role Code`="PRODO"  and `Staff Currently Working`="Yes" ';
+    = ' where `Staff Operative Status`="Worker"   ';
 
 
 $wheref = '';
@@ -32,50 +32,27 @@ $_dir   = $order_direction;
 
 if ($order == 'name') {
     $order = '`Staff Name`';
-} elseif ($order == 'code' or $order == 'code_link') {
+} elseif ($order == 'code') {
     $order = '`Staff Alias`';
-} elseif ($order == 'birthday') {
-    $order = '`Staff Birthday`';
-} elseif ($order == 'official_id') {
-    $order = '`Staff Official ID`';
-} elseif ($order == 'telephone') {
-    $order = '`Staff Telephone Formatted`';
-} elseif ($order == 'email') {
-    $order = '`Staff Email`';
-} elseif ($order == 'next_of_kind') {
-    $order = '`Staff Next of Kind`';
-} elseif ($order == 'job_title') {
-    $order = '`Staff Job Title`';
-} elseif ($order == 'roles') {
-    $order = 'roles';
-} elseif ($order == 'supervisors') {
-    $order = 'supervisors';
-} elseif ($order == 'from') {
-    $order = '`Staff Valid From`';
-} elseif ($order == 'until') {
-    $order = '`Staff Valid To`';
 } elseif ($order == 'payroll_id') {
     $order = '`Staff ID`';
-} elseif ($order == 'type') {
-    $order = '`Staff Type`';
-} elseif ($order == 'id') {
-    $order = 'SD.`Staff Key`';
+}  elseif ($order == 'po_queued') {
+    $order = '`Staff Operative Purchase Orders po_manufacturing`';
+} elseif ($order == 'po_queued') {
+    $order = '`Staff Operative Purchase Orders Manufacturing`';
 } else {
     $order = 'SD.`Staff Key`';
 }
 
 
-//( select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.SD.`Staff Key`= SD.`Staff Key`) as roles
 
 
 $sql_totals
     = "select count(Distinct SD.`Staff Key`) as num from $table  $where  ";
 
 $fields
-    = "`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formatted`,`Staff Telephone`,`Staff Next of Kind`,
-`Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,
-(select GROUP_CONCAT(`Staff Alias`  order by `Staff Alias` separator \", \")    from  `Staff Supervisor Bridge` B left join `Staff Dimension` S on (B.`Supervisor Key`=S.`Staff Key`)  where  B.`Staff Key`=SD.`Staff Key` ) as supervisors
-	
+    = "`Staff ID`,
+`Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,`Staff Operative Purchase Orders Queued`,`Staff Operative Purchase Orders Manufacturing`	
 	
 ";
 

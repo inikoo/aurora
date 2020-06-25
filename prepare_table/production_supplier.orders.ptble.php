@@ -16,23 +16,21 @@ $wheref   = '';
 $currency = '';
 
 
+$table = '`Purchase Order Dimension` O left join `Staff Dimension` on (`Staff Key`=O.`Purchase Order Operator Key`)  ';
 
-
-
-    $table = '`Purchase Order Dimension` O left join `Staff Dimension` on (`Staff Key`=O.`Purchase Order Operator Key`)  ';
-
-    $where = sprintf('where `Purchase Order Type`="Production"');
+$where = sprintf('where `Purchase Order Type`="Production"');
 
 
 if (isset($parameters['period'])) {
     include_once 'utils/date_functions.php';
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
 
     $where_interval = prepare_mysql_dates($from, $to, 'O.`Purchase Order Creation Date`');
-    $where .= $where_interval['mysql'];
+    $where          .= $where_interval['mysql'];
 }
 
 
@@ -54,17 +52,17 @@ if (isset($parameters['elements_type'])) {
 
                     if ($_key == 'Planning') {
                         $_elements .= ",'InProcess'";
-                    }elseif ($_key == 'Queued') {
+                    } elseif ($_key == 'Queued') {
                         $_elements .= ",'Submitted'";
-                    }elseif ($_key == 'Manufacturing') {
+                    } elseif ($_key == 'Manufacturing') {
                         $_elements .= ",'Confirmed'";
-                    }elseif ($_key == 'Manufactured') {
+                    } elseif ($_key == 'Manufactured') {
                         $_elements .= ",'Manufactured'";
-                    }elseif ($_key == 'QC_Pass') {
+                    } elseif ($_key == 'QC_Pass') {
                         $_elements .= ",'QC_Pass'";
                     } elseif ($_key == 'Delivered') {
                         $_elements .= ",'Received','Checked','Inputted','Dispatched'";
-                    }  elseif ($_key == 'Placed') {
+                    } elseif ($_key == 'Placed') {
                         $_elements .= ",'Placed','Costing','InvoiceChecked'";
                     } elseif ($_key == 'Cancelled') {
                         $_elements .= ",'Cancelled','NoReceived'";
@@ -89,8 +87,6 @@ if (isset($parameters['elements_type'])) {
 }
 
 
-
-
 if (($parameters['f_field'] == 'number') and $f_value != '') {
 
     $wheref = sprintf(
@@ -98,11 +94,7 @@ if (($parameters['f_field'] == 'number') and $f_value != '') {
     );
 
 
-
-
 }
-
-
 
 
 $_order = $order;
@@ -115,28 +107,26 @@ if ($order == 'public_id') {
     $order = 'O.`Purchase Order Last Updated Date`';
 } elseif ($order == 'date') {
     $order = 'O.`Purchase Order Creation Date`';
-}  elseif ($order == 'state') {
+} elseif ($order == 'state') {
     $order = 'O.`Purchase Order State`';
 } elseif ($order == 'total_amount') {
     $order = 'O.`Purchase Order Total Amount`';
-}elseif ($order == 'products') {
+} elseif ($order == 'products') {
     $order = 'O.`Purchase Order Ordered Number Items`';
-}elseif ($order == 'weight') {
+} elseif ($order == 'weight') {
     $order = 'O.`Purchase Order Weight`';
-}elseif ($order == 'worker') {
+} elseif ($order == 'worker') {
     $order = '`Staff Alias`';
 } else {
     $order = 'O.`Purchase Order Key`';
 }
 
-$fields
-    = '`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
+$fields = '`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
 `Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`,`Purchase Order Currency Exchange`,
 `Purchase Order Weight`,`Purchase Order Ordered Number Items`,`Staff Alias`,`Purchase Order Operator Key`,`Purchase Order Estimated Start Production Date`
 ';
 
-$sql_totals
-    = "select count(Distinct O.`Purchase Order Key`) as num from $table $where ";
+$sql_totals = "select count(Distinct O.`Purchase Order Key`) as num from $table $where ";
 
 
 

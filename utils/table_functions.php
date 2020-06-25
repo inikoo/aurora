@@ -284,9 +284,9 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s packer', '%s packers', $total_records), number($total_records)
         );
-    } elseif ($record_label == 'operative') {
+    } elseif ($record_label == 'worker') {
         return sprintf(
-            ngettext('%s operative', '%s operatives', $total_records), number($total_records)
+            ngettext('%s worker', '%s workers', $total_records), number($total_records)
         );
     } elseif ($record_label == 'charge') {
         return sprintf(
@@ -779,10 +779,10 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext('%s day of %s', '%s days of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );
-    } elseif ($record_label == 'operative') {
+    } elseif ($record_label == 'worker') {
         return sprintf(
             ngettext(
-                '%s operative of %s', '%s operatives of %s', $total_with_filter
+                '%s worker of %s', '%s workers of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'time series') {

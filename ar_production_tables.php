@@ -151,7 +151,7 @@ function replenishments($_data, $db, $user, $account) {
 
 function operatives($_data, $db, $user) {
 
-    $rtext_label = 'operative';
+    $rtext_label = 'worker';
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -162,33 +162,18 @@ function operatives($_data, $db, $user) {
 
         foreach ($result as $data) {
 
-            switch ($data['Staff Type']) {
-                case 'Employee':
-                    $type = _('Employee');
-                    break;
-                case 'Volunteer':
-                    $type = _('Volunteer');
-                    break;
-                case 'TemporalWorker':
-                    $type = _("Temporal worker");
-                    break;
-                case 'WorkExperience':
-                    $type = _("Work experience");
-                    break;
-                default:
-                    $type = $data['Staff Type'];
-                    break;
-            }
+
+
+
 
             $adata[] = array(
-                'id'           => (integer)$data['Staff Key'],
-                'formatted_id' => sprintf("%04d", $data['Staff Key']),
+                'id'=> $data['Staff Key'],
                 'payroll_id'   => $data['Staff ID'],
                 'name'         => $data['Staff Name'],
                 'code'         => $data['Staff Alias'],
-                'code_link'    => $data['Staff Alias'],
-                'type'         => $type,
-                'supervisors'  => $data['supervisors']
+                'po_queued'=>($data['Staff Operative Purchase Orders Queued']>0?number($data['Staff Operative Purchase Orders Queued']):'<span class="super_discreet">0</span>'),
+                'po_manufacturing'=>($data['Staff Operative Purchase Orders Manufacturing']>0?number($data['Staff Operative Purchase Orders Manufacturing']):'<span class="super_discreet">0</span>'),
+
             );
 
         }
@@ -818,7 +803,7 @@ function production_orders($_data, $db, $user, $account) {
                     $state = _('Queued');
 
                     if($data['Purchase Order Estimated Start Production Date']!=''){
-                        $notes.=' <span title="'._('Scheduled start production date').'"><i class="fa fa-play success small"></i> <span class="discreet italic">'.strftime(
+                        $notes.=' <span title="'._('Scheduled start production date').'"><i class="fal fa-play success small"></i> <span class="discreet italic">'.strftime(
                                 "%a %e %b", strtotime($data['Purchase Order Estimated Start Production Date'].' +0:00')
                             ).'</span>';
                     }

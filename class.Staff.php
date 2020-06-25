@@ -221,6 +221,14 @@ class Staff extends DB_Table {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
 
+            $sql="insert into `Staff Operative Data` (`Staff Operative Key`) values (?)";
+            $this->db->prepare($sql)->execute(
+                array(
+                    $this->id
+                )
+            );
+
+
 
             $from = gmdate('Y-m-d');
             $to   = gmdate(
@@ -1564,6 +1572,7 @@ class Staff extends DB_Table {
             $this->update_field('Staff Valid To', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
+
             $delete_from = date(
                 'Y-m-d', strtotime($this->get('Staff Valid To').' + 1 day')
             );
@@ -1620,9 +1629,6 @@ class Staff extends DB_Table {
 
                 }
 
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 

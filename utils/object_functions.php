@@ -172,6 +172,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Staff.php';
             $object = new Staff($key);
             break;
+        case 'operative':
+            include_once 'class.Operative.php';
+            $object = new Operative($key);
+            break;
         case 'user':
         case 'User':
             include_once 'class.User.php';

@@ -125,19 +125,7 @@ function get_production_module() {
                 )
             ),
 
-            /*
-            'batches'        => array(
-                'type'      => 'navigation',
-                'label'     => _('Batches'),
-                'icon'      => 'clone',
-                'reference' => 'production/%d/batches',
-                'tabs'      => array(
-                    'batches' => array('label' => _('Batches'))
-                )
 
-
-            ),
-  */
             'materials'        => array(
                 'type'      => 'navigation',
                 'label'     => _('Materials'),
@@ -195,6 +183,26 @@ function get_production_module() {
                 'reference' => 'production/%d/operatives',
                 'tabs'      => array(
                     'operatives' => array('label' => _('Workers'))
+                )
+
+
+            ),
+            'operative' => array(
+                'type'  => 'object',
+                'label' => _('Worker'),
+                'icon'  => 'digging',
+                'tabs'  => array(
+                    'operative.details' => array('label' => _('Data')),
+                    'operative.history' => array(
+                        'label'         => _('History/Notes'),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                    ),
+
                 )
 
 

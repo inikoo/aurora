@@ -720,7 +720,7 @@ abstract class DB_Table extends stdClass {
             );
 
 
-            //print "$sql\n";
+
 
             $stmt = $this->db->prepare($sql);
 
@@ -735,7 +735,6 @@ abstract class DB_Table extends stdClass {
 
 
             $stmt->execute();
-            //print_r($stmt->errorInfo());
 
 
             $this->data[$field] = $value;

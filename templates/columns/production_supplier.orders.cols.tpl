@@ -31,13 +31,7 @@ editable: false,
 sortType: "toggle",
 cell: "html"
 },
-{
-name: "state",
-label: "{t}State{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-},
+
  {
 name: "products",
 label: "{t}Products{/t}",
@@ -61,6 +55,13 @@ editable: false,
 sortable: false,
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
+},
+{
+name: "state",
+label: "{t}State{/t}",
+editable: false,
+sortType: "toggle",
+cell: "html"
 },
 {
 name: "date",
