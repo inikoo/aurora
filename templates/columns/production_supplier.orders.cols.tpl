@@ -38,16 +38,7 @@ editable: false,
 sortType: "toggle",
 cell: "html"
 },
-{
-name: "date",
-label: "{t}Date{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-}, {
+ {
 name: "products",
 label: "{t}Products{/t}",
 editable: false,
@@ -68,6 +59,16 @@ name: "total_amount",
 label: "{t}Value{/t}",
 editable: false,
 sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "date",
+label: "{t}Date{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },

@@ -801,12 +801,18 @@ function production_orders($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+            $notes='';
             //'Cancelled','NoReceived','InProcess','Submitted','Confirmed','Manufactured','QC_Pass','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked'
             switch ($data['Purchase Order State']) {
 
 
                 case 'InProcess':
                     $state = _('Planning');
+                    if($data['Purchase Order Estimated Start Production Date']!=''){
+                        $notes.=' <span title="'._('Scheduled start production date').'"><i class="fa fa-play success small"></i> <span class="discreet italic">'.strftime(
+                                "%a %e %b", strtotime($data['Purchase Order Estimated Start Production Date'].' +0:00')
+                            ).'</span>';
+                    }
                     break;
                 case 'Submitted':
                     $state = _('Queued');
@@ -857,6 +863,11 @@ function production_orders($_data, $db, $user, $account) {
                 $total_amount=money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'], $locale = false,'NO_FRACTION_DIGITS');
             }
 
+
+
+
+
+
             $table_data[] = array(
                 'id'           => (integer)$data['Purchase Order Key'],
                 'public_id'    => sprintf(
@@ -870,7 +881,8 @@ function production_orders($_data, $db, $user, $account) {
                 'products' =>$data['Purchase Order Ordered Number Items'],
 
                 'total_amount' =>$total_amount,
-                'worker' =>$worker
+                'worker' =>$worker,
+                'notes' =>$notes
 
 
             );
