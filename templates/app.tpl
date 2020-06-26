@@ -136,13 +136,12 @@
             <div id="menu"></div>
             <ul class="bookmarks">
 
-
                 {if  $user->can_view('account')  }
-                    <li onclick="change_view('/account')"><i class="fal fa-sliders-h-square fa-fw"></i><span class="label"> </span>
+                    <li onclick="change_view('/account')"><i class="fal fa-sliders-h fa-fw"></i><span class="label"> {t}Settings{/t}</span>
                     </li>
                 {/if}
                 {if  $user->get('User Type')=='Staff' or   $user->get('User Type')=='Contractor' }
-                <li onclick="change_view('/fire')"><i class="fa fa-chess-clock fa-fw"  title="{t}Attendance{/t}"></i></li>
+                <li class="hide_desktop" onclick="change_view('/fire')"><i class="fa fa-chess-clock fa-fw"  title="{t}Attendance{/t}"></i> <span class="label"> {t}Attendance{/t}</span> </li>
                 {/if}
 
 

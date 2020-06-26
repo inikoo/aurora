@@ -69,7 +69,9 @@
       }
     }
     .bookmarks{
-      display: block;
+
+      .hide_desktop{ display: block;}
+
     }
   }
 
