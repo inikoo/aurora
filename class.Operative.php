@@ -10,6 +10,7 @@
 
 */
 
+include_once 'class.Staff.php';
 class Operative extends Staff {
 
 
