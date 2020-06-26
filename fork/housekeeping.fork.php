@@ -3085,7 +3085,7 @@ function fork_housekeeping($job) {
                 )
             );
             while ($row = $stmt->fetch()) {
-                $operative = get_object('Operative', $data['operative_key']);
+                $operative = get_object('Operative', $row['Purchase Order Transaction Operator Key']);
                 $operative->update_operative_purchase_order_stats();
                 $operative->update_operative_transaction_stats();
             }
