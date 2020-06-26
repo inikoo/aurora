@@ -16,7 +16,22 @@ $tipo    = 'operatives';
 
 $default = $user->get_tab_defaults($tab);
 
-$table_views = array();
+
+
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview')
+    ),
+    'purchase_orders' => array(
+        'label' => _('Purchase orders')
+    ),
+    'tasks' => array(
+        'label' => _('Tasks')
+    ),
+    'products' => array(
+        'label' => _('Products')
+    )
+);
 
 $table_filters = array(
     'name' => array(
@@ -29,6 +44,7 @@ $table_filters = array(
 $parameters = array(
     'parent'     => 'account',
     'parent_key' => 1,
+    'production_key'=>$state['parent_key']
 
 );
 

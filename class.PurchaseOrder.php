@@ -1876,7 +1876,7 @@ class PurchaseOrder extends DB_Table {
             case 'Manufactured':
 
 
-                if($qty==0){
+                if ($qty == 0) {
 
                     $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction State`='Cancelled', `Purchase Order Submitted Cancelled Units`=`Purchase Order Submitted Units`,`Purchase Order Last Updated Date`=?,`Purchase Order Net Amount`=? ,
                         `Purchase Order Extra Cost Amount`=? ,
@@ -1898,7 +1898,7 @@ class PurchaseOrder extends DB_Table {
                         )
                     );
 
-                }else{
+                } else {
                     $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Manufactured Units`=? ,`Purchase Order Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
                     $this->db->prepare($sql)->execute(
                         array(
@@ -2008,6 +2008,24 @@ class PurchaseOrder extends DB_Table {
                 break;
             default:
                 $operations = [];
+        }
+
+        $sql  = "select `Purchase Order Transaction Operator Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?  ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $item_key
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'   => 'update_operative_stats',
+                'operative_key' => $row['Purchase Order Transaction Operator Key']
+            ), DNS_ACCOUNT_CODE, $this->db
+            );
+
         }
 
 
@@ -2422,6 +2440,9 @@ class PurchaseOrder extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         switch ($field) {
             case 'Purchase Order Operator Key':
+
+                $old_value = $this->get('Purchase Order Operator Key');
+
                 $this->update_field($field, $value, $options);
 
                 $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Transaction Operator Key`=? where `Purchase Order Key`=? ";
@@ -2433,6 +2454,26 @@ class PurchaseOrder extends DB_Table {
                 );
 
 
+                if ($old_value > 0) {
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'          => 'update_operative_stats',
+                        'operative_key' => $old_value
+
+                    ), DNS_ACCOUNT_CODE, $this->db
+                    );
+                }
+                if ($value > 0) {
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'          => 'update_operative_stats',
+                        'operative_key' => $value
+
+                    ), DNS_ACCOUNT_CODE, $this->db
+                    );
+                }
                 break;
             case 'payment terms':
                 $this->fast_update_json_field('Purchase Order Metadata', preg_replace('/\s/', '_', $field), $value);
@@ -2575,17 +2616,17 @@ class PurchaseOrder extends DB_Table {
                     );
                     while ($row = $stmt->fetch()) {
 
-                        $submitted_qty=$row['Purchase Order Ordering Units']-$row['Purchase Order Submitted Cancelled Units'];
-                        if($submitted_qty<=0){
+                        $submitted_qty = $row['Purchase Order Ordering Units'] - $row['Purchase Order Submitted Cancelled Units'];
+                        if ($submitted_qty <= 0) {
 
-                            $sql="delete from `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=?";
+                            $sql = "delete from `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=?";
                             $this->db->prepare($sql)->execute(
                                 array(
                                     $row['Purchase Order Transaction Fact Key']
                                 )
                             );
 
-                        }else{
+                        } else {
                             $sql = "UPDATE `Purchase Order Transaction Fact` SET 
                                              `Purchase Order Ordering Units`=?,
                             `Purchase Order Transaction State`=? ,
@@ -2610,9 +2651,6 @@ class PurchaseOrder extends DB_Table {
                             );
 
                         }
-
-
-
 
 
                     }
@@ -2648,8 +2686,6 @@ class PurchaseOrder extends DB_Table {
                         'undo_submit_operations',
                         'confirm_operations'
                     );
-
-
 
 
                     if ($this->data['Purchase Order Parent'] == 'Agent') {
@@ -2703,7 +2739,7 @@ class PurchaseOrder extends DB_Table {
                     }
 
                     $history_abstract = _('Purchase order submitted');
-                    $history_data = array(
+                    $history_data     = array(
                         'History Abstract' => $history_abstract,
                         'History Details'  => '',
                         'Action'           => 'edited'
@@ -2733,7 +2769,7 @@ class PurchaseOrder extends DB_Table {
                     if ($this->get('Purchase Order Type') == 'Production') {
                         $history_abstract = _('Sent back to queue');
 
-                    }else{
+                    } else {
                         $history_abstract = _('Cancel confirmation');
                         $this->fast_update(
                             array(
@@ -2750,7 +2786,6 @@ class PurchaseOrder extends DB_Table {
                         'undo_submit_operations',
                         'confirm_operations'
                     );
-
 
 
                     $history_data = array(
@@ -2829,9 +2864,6 @@ class PurchaseOrder extends DB_Table {
                             $this->id
                         )
                     );
-
-
-
 
 
                     if ($this->get('Purchase Order Type') == 'Production') {
@@ -2991,7 +3023,6 @@ class PurchaseOrder extends DB_Table {
                     $this->update_purchase_order_items_state();
 
                     break;
-
 
 
                 case 'QC_Pass':
@@ -3260,6 +3291,15 @@ class PurchaseOrder extends DB_Table {
         }
         $this->prepare_update_metadata($operations);
 
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'   => 'update_purchase_order_operatives_stats',
+            'po_key' => $this->id,
+            'editor' => $this->editor
+        ), DNS_ACCOUNT_CODE, $this->db
+        );
+
 
     }
 
@@ -3394,7 +3434,6 @@ class PurchaseOrder extends DB_Table {
 
     function update_parts_next_delivery() {
 
-        $account = get_object('account', 1);
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
@@ -3402,7 +3441,7 @@ class PurchaseOrder extends DB_Table {
             'type'   => 'update_parts_next_delivery',
             'po_key' => $this->id,
             'editor' => $this->editor
-        ), $account->get('Account Code'), $this->db
+        ), DNS_ACCOUNT_CODE, $this->db
         );
 
 

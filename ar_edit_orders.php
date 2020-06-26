@@ -410,7 +410,7 @@ function send_orders_to_warehouse($data, $editor, $smarty) {
 function cancel_purchase_order_submitted_item($data, $db) {
 
     $sql  =
-        "select `Purchase Order Submitted SKOs Per Carton`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units` ,`Supplier Delivery Units` ,`Supplier Delivery Transaction State` ,`Purchase Order Submitted Cancelled Units`, `Purchase Order Transaction Part SKU` ,`Supplier Part Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
+        "select `Purchase Order Transaction Operator Key`,`Purchase Order Submitted SKOs Per Carton`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units` ,`Supplier Delivery Units` ,`Supplier Delivery Transaction State` ,`Purchase Order Submitted Cancelled Units`, `Purchase Order Transaction Part SKU` ,`Supplier Part Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($data['transaction_key'])
@@ -438,7 +438,7 @@ function cancel_purchase_order_submitted_item($data, $db) {
         if ($purchase_order->id) {
 
 
-            $old_state=$purchase_order->get('Purchase Order State');
+            $old_state = $purchase_order->get('Purchase Order State');
 
             $unit_qty = ($row['Supplier Delivery Units'] == '' ? 0 : $row['Supplier Delivery Units']);
 
@@ -531,7 +531,7 @@ function cancel_purchase_order_submitted_item($data, $db) {
             $purchase_order->update_purchase_order_item_state($row['Purchase Order Transaction Fact Key']);
             $purchase_order->update_totals();
 
-            if($old_state!=$purchase_order->get('Purchase Order State') and $purchase_order->get('Purchase Order State')=='Cancelled'){
+            if ($old_state != $purchase_order->get('Purchase Order State') and $purchase_order->get('Purchase Order State') == 'Cancelled') {
                 $purchase_order->fast_update(
                     array(
                         'Purchase Order Locked'                   => 'Yes',
@@ -552,12 +552,19 @@ function cancel_purchase_order_submitted_item($data, $db) {
 
             }
 
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'          => 'update_operative_stats',
+                'operative_key' => $row['Purchase Order Transaction Operator Key'],
+            ), DNS_ACCOUNT_CODE, $db
+            );
 
             $response = array(
-                'state'           => 200,
-                'ordered_units'   => $ordered_units,
-                'ordered_skos'    => $ordered_skos,
-                'ordered_cartons' => $ordered_cartons,
+                'state'                => 200,
+                'ordered_units'        => $ordered_units,
+                'ordered_skos'         => $ordered_skos,
+                'ordered_cartons'      => $ordered_cartons,
                 'purchase_order_state' => $purchase_order->get('Purchase Order State'),
 
                 'update_metadata' => array(

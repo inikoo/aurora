@@ -188,23 +188,7 @@ function post_production_job_order_state_change(data,element) {
         change_tab('job_order.items')
 
 
-        if (data.update_metadata.pending_items_in_delivery > 0) {
-
-            if (object_data.skip_inputting == 'No') {
-                $('#create_delivery').removeClass('hide')
-
-            } else {
-
-                $('#quick_create_delivery_operations').removeClass('hide')
-
-
-            }
-
-        } else {
-            $('#create_delivery').addClass('hide')
-            $('#quick_create_delivery_operations').addClass('hide')
-
-        }
+     
 
     }
 

@@ -3064,6 +3064,34 @@ function fork_housekeeping($job) {
             $account->update_stores_data();
 
             break;
+        case 'update_operative_stats':
+
+
+            $operative = get_object('Operative', $data['operative_key']);
+            if ($operative->id) {
+                $operative->update_operative_purchase_order_stats();
+                $operative->update_operative_transaction_stats();
+            }
+
+
+            break;
+        case 'update_purchase_order_operatives_stats':
+
+            $sql  = "select `Purchase Order Transaction Operator Key` from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction Operator Key` ";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $data['po_key']
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $operative = get_object('Operative', $data['operative_key']);
+                $operative->update_operative_purchase_order_stats();
+                $operative->update_operative_transaction_stats();
+            }
+
+
+            break;
         default:
             break;
 

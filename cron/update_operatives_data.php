@@ -22,7 +22,8 @@ while ($row = $stmt->fetch()) {
 
     $operative = get_object('Operative', $staff->id);
     $operative->update_operative_status();
-    $operative->update_operative_stats();
+    $operative->update_operative_purchase_order_stats();
+    $operative->update_operative_transaction_stats();
 
 
 }

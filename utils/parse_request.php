@@ -3991,7 +3991,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                             } elseif ($view_path[1] == 'operatives') {
                                 $section = 'operatives';
-
+                                $parent     = 'supplier';
+                                $parent_key = $key;
                             } elseif ($view_path[1] == 'orders') {
                                 $section = 'production_supplier_orders';
 

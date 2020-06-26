@@ -52,7 +52,24 @@ $sql_totals
 
 $fields
     = "`Staff ID`,
-`Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,`Staff Operative Purchase Orders Queued`,`Staff Operative Purchase Orders Manufacturing`	
-	
+`Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,
+`Staff Operative Purchase Orders Queued`,
+`Staff Operative Purchase Orders Manufacturing`,
+(`Staff Operative Purchase Orders Waiting QC`+`Staff Operative Purchase Orders QC Pass`) as po_manufactured,
+`Staff Operative Purchase Orders Waiting Placing`,
+`Staff Operative Purchase Orders`,
+
+`Staff Operative Products Queued`,
+`Staff Operative Products Manufacturing`,
+(`Staff Operative Products Waiting QC`+`Staff Operative Products QC Pass`) as products_manufactured,
+`Staff Operative Products Waiting Placing`,
+`Staff Operative Products`,
+
+`Staff Operative Transactions Queued`,
+`Staff Operative Transactions Manufacturing`,
+(`Staff Operative Transactions Waiting QC`+`Staff Operative Transactions QC Pass`) as transactions_manufactured,
+`Staff Operative Transactions Waiting Placing`,
+`Staff Operative Transactions`
+
 ";
 

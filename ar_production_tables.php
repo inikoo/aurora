@@ -154,6 +154,7 @@ function operatives($_data, $db, $user) {
     $rtext_label = 'worker';
     include_once 'prepare_table/init.php';
 
+
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
@@ -170,9 +171,26 @@ function operatives($_data, $db, $user) {
                 'id'=> $data['Staff Key'],
                 'payroll_id'   => $data['Staff ID'],
                 'name'         => $data['Staff Name'],
-                'code'         => $data['Staff Alias'],
+                'code'         => sprintf('<span class="link" onclick="change_view(\'production/%d/operatives/%d\')">%s</span>',$_data['parameters']['production_key'],$data['Staff Key'],$data['Staff Alias']),
                 'po_queued'=>($data['Staff Operative Purchase Orders Queued']>0?number($data['Staff Operative Purchase Orders Queued']):'<span class="super_discreet">0</span>'),
                 'po_manufacturing'=>($data['Staff Operative Purchase Orders Manufacturing']>0?number($data['Staff Operative Purchase Orders Manufacturing']):'<span class="super_discreet">0</span>'),
+                'po_manufactured'=>($data['po_manufactured']>0?number($data['po_manufactured']):'<span class="super_discreet">0</span>'),
+                'po_placing'=>($data['Staff Operative Purchase Orders Waiting Placing']>0?number($data['Staff Operative Purchase Orders Waiting Placing']):'<span class="super_discreet">0</span>'),
+                'po_placed'=>($data['Staff Operative Purchase Orders']>0?number($data['Staff Operative Purchase Orders']):'<span class="super_discreet">0</span>'),
+                
+                'products_queued'=>($data['Staff Operative Products Queued']>0?number($data['Staff Operative Products Queued']):'<span class="super_discreet">0</span>'),
+                'products_manufacturing'=>($data['Staff Operative Products Manufacturing']>0?number($data['Staff Operative Products Manufacturing']):'<span class="super_discreet">0</span>'),
+                'products_manufactured'=>($data['products_manufactured']>0?number($data['products_manufactured']):'<span class="super_discreet">0</span>'),
+                'products_placing'=>($data['Staff Operative Products Waiting Placing']>0?number($data['Staff Operative Products Waiting Placing']):'<span class="super_discreet">0</span>'),
+                'products_placed'=>($data['Staff Operative Products']>0?number($data['Staff Operative Products']):'<span class="super_discreet">0</span>'),
+
+
+                
+                'transactions_queued'=>($data['Staff Operative Transactions Queued']>0?number($data['Staff Operative Transactions Queued']):'<span class="super_discreet">0</span>'),
+                'transactions_manufacturing'=>($data['Staff Operative Transactions Manufacturing']>0?number($data['Staff Operative Transactions Manufacturing']):'<span class="super_discreet">0</span>'),
+                'transactions_manufactured'=>($data['transactions_manufactured']>0?number($data['transactions_manufactured']):'<span class="super_discreet">0</span>'),
+                'total_transactions'=>($data['Staff Operative Transactions']>0?number($data['Staff Operative Transactions']):'<span class="super_discreet">0</span>'),
+
 
             );
 
