@@ -23,6 +23,8 @@ cell: "string",
 {
 name: "code",
 label: "{t}Code{/t}",
+editable: false,
+
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 })
@@ -31,6 +33,8 @@ cell: Backgrid.HtmlCell.extend({
 {
 name: "name",
 label: "{t}Name{/t}",
+editable: false,
+
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 events: {
@@ -41,6 +45,8 @@ events: {
 {
 name: "payroll_id",
 label: "{t}Id{/t}",
+editable: false,
+
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 })

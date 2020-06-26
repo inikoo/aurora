@@ -184,12 +184,7 @@ function post_production_job_order_state_change(data,element) {
     } else if (data.update_metadata.state == 'Confirmed') {
         $('#all_available_items,#new_item').addClass('hide')
 
-
         change_tab('job_order.items')
-
-
-     
-
     }
 
 
