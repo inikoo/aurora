@@ -1298,12 +1298,16 @@ function order_items_in_process($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
+
+
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
     //$exchange   = -1;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
 
             /*
                         switch ($data['Supplier Part Status']) {
@@ -1531,7 +1535,7 @@ function order_items_in_process($_data, $db, $user, $account) {
 
             $description_units = $description_units.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($data['Part Current On Hand Stock'] * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($stock_available * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
                 .$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
@@ -1555,7 +1559,7 @@ function order_items_in_process($_data, $db, $user, $account) {
 
             $description_skos = $description_skos.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($data['Part Current On Hand Stock']).'<span class="small">sko.</span></span> '.$stock_status.'
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($stock_available).'<span class="small">sko.</span></span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_skos.'</span>
                     </div>
@@ -1579,7 +1583,7 @@ function order_items_in_process($_data, $db, $user, $account) {
             if ($data['Supplier Part Packages Per Carton'] != 0) {
                 $description_cartons = $description_cartons.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton'])
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($stock_available / $data['Supplier Part Packages Per Carton'])
                     .'<span class="small discreet">C.</span></span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_cartons.'</span>
@@ -2971,7 +2975,7 @@ function order_supplier_parts($_data, $db, $user) {
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'       => number(floor($data['Part Current On Hand Stock']))." $stock_status"
+                'stock'       => number(floor($stock_available))." $stock_status"
             );
 
 
@@ -3115,6 +3119,7 @@ function category_all_suppliers($_data, $db, $user, $account) {
 
 function order_supplier_all_parts($_data, $db, $user, $account) {
 
+
     include_once 'utils/supplier_order_functions.php';
 
     $rtext_label = 'supplier part';
@@ -3127,12 +3132,17 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
+
+
     //print $sql;
 
     $table_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
+
 
             switch ($data['Supplier Part Status']) {
                 case 'Available':
@@ -3304,7 +3314,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             $description_units = $description_units.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($data['Part Current On Hand Stock'] * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($stock_available * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
                 .$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
@@ -3328,7 +3338,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             $description_skos = $description_skos.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($data['Part Current On Hand Stock']).'<span class="small">sko.</span></span> '.$stock_status.'
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($stock_available).'<span class="small">sko.</span></span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_skos.'</span>
                     </div>
@@ -3351,7 +3361,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             $description_cartons = $description_cartons.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton'])
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($stock_available / $data['Supplier Part Packages Per Carton'])
                 .'<span class="small discreet">C.</span></span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_cartons.'</span>
@@ -3494,7 +3504,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 'packing' => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'   => number(floor($data['Part Current On Hand Stock']))." $stock_status",
+                'stock'   => number(floor($stock_available))." $stock_status",
 
                 'description_units'        => $description_units,
                 'description_skos'         => $description_skos,
