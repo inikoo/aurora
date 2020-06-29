@@ -15,10 +15,18 @@ $wheref   = '';
 
 $currency = '';
 
-
 $table = '`Purchase Order Dimension` O left join `Staff Dimension` on (`Staff Key`=O.`Purchase Order Operator Key`)  ';
 
-$where = sprintf('where `Purchase Order Type`="Production"');
+
+if($parameters['parent']=='operative'){
+
+    $where = sprintf('where `Purchase Order Operator Key`=%d and  `Purchase Order Type`="Production"',$parameters['parent_key']);
+}else{
+
+    $where = sprintf('where `Purchase Order Type`="Production"');
+}
+
+
 
 
 if (isset($parameters['period'])) {

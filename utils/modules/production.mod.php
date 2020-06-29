@@ -61,12 +61,10 @@ function get_production_module() {
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'production_part.batch' => array(
+                    'production_part.batch'   => array(
                         'label' => _('Batch'),
                         'icon'  => 'conveyor-belt'
                     ),
-
-
 
 
                     'production_part.purchase_orders' => array(
@@ -105,28 +103,27 @@ function get_production_module() {
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
-                    'bill_of_materials' => array(
+                    'bill_of_materials'       => array(
                         'title' => _('Bill of materials'),
-                        'label'=>'',
+                        'label' => '',
                         'icon'  => 'puzzle-piece',
                         'class' => 'right icon_only'
 
                     ),
 
-                    'production_part.tasks'  => array(
+                    'production_part.tasks' => array(
                         'title' => _('List of tasks'),
                         'icon'  => 'tasks',
-                         'label'=>'',
+                        'label' => '',
                         'class' => 'right icon_only'
                     ),
-
 
 
                 )
             ),
 
 
-            'materials'        => array(
+            'materials' => array(
                 'type'      => 'navigation',
                 'label'     => _('Materials'),
                 'icon'      => 'puzzle-piece',
@@ -187,20 +184,17 @@ function get_production_module() {
 
 
             ),
-            'operative' => array(
+            'operative'  => array(
                 'type'  => 'object',
                 'label' => _('Worker'),
                 'icon'  => 'digging',
                 'tabs'  => array(
-                    'operative.details' => array('label' => _('Data')),
-                    'operative.history' => array(
-                        'label'         => _('History/Notes'),
-                        'icon'          => 'road',
-                        'class'         => 'right icon_only',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number History Records'
-                        ),
+                    'operative.tasks'      => array('label' => _('Tasks')),
+                    'operative.job_orders' => array('label' => _('Job orders')),
+
+                    'operative.products' => array(
+                        'label' => _('Products'),
+                        'class' => 'right'
                     ),
 
                 )
@@ -209,7 +203,7 @@ function get_production_module() {
             ),
 
 
-            'production_supplier_orders'     => array(
+            'production_supplier_orders' => array(
                 'type'      => 'navigation',
                 'label'     => _('Job orders'),
                 'icon'      => 'clipboard',
@@ -232,7 +226,7 @@ function get_production_module() {
             'order' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'job_order.items'                 => array(
+                    'job_order.items'            => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),

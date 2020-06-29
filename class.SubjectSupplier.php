@@ -306,6 +306,28 @@ class SubjectSupplier extends Subject {
                     $this->metadata(preg_replace('/\s/', '_', $key))
                 );
 
+            case 'Production to do parts':
+
+                $number = 0;
+                $sql    =
+                    "select count(*) as num from `Part Dimension` P left join `Supplier Part Dimension` SP on (SP.`Supplier Part Part SKU`=P.`Part SKU`) where `Supplier Part Supplier Key`=? and `Part Status` ='In Use' and `Supplier Part Status`!='Discontinued'  and `Part Stock Status` in ('Critical','Out_Of_Stock') and  (`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid`)>=0";
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $number = $row['num'];
+                }
+
+                return array(
+                    true,
+                    $number
+                );
+
+
             case 'Supplier Number Todo Parts':
             case 'Agent Number Todo Parts':
 

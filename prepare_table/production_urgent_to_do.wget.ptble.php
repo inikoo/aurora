@@ -18,7 +18,7 @@ $table = sprintf(
 
 
 $where = sprintf(
-    "where  (`Part Current On Hand Stock`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )<0 and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0 and `Supplier Part Supplier Key`=%d  ",
+    "where  (`Part Current On Hand Stock`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )<0 and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>=0 and `Supplier Part Supplier Key`=%d  ",
     $parameters['parent_key']
 );
 
@@ -51,7 +51,7 @@ if ($order == 'stock') {
 }elseif ($order == 'required') {
     $order = '(`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)';
 }elseif ($order == 'stock') {
-    $order = '`Part Current Stock`';
+    $order = '`Part Current Stock` ';
 } else {
 
     $order = 'P.`Part SKU`';
@@ -67,8 +67,10 @@ $sql_totals
 $fields
     .= "
 `Part Reference`,`Part Package Description`,`Supplier Part Reference`,`Supplier Part Status`,`Part Stock Status`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Unit Cost`,`Supplier Part Description`,`Part Package Description`,`Supplier Part Currency Code`,
-`Supplier Part Minimum Carton Order`,`Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Part SKU`,`Part Current Stock`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as required,`Part Next Deliveries Data`,`Part Current On Hand Stock`
+`Supplier Part Minimum Carton Order`,`Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Part SKU`,`Part Current Stock`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as required,`Part Next Deliveries Data`,`Part Current On Hand Stock`,
+`Part Current Stock In Process` , `Part Current Stock Ordered Paid`
+
 ";
 
 
-?>
+

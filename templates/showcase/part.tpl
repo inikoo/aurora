@@ -538,18 +538,30 @@
             {assign "next_deliveries" $part->get('Next Deliveries Data')}
 
 
-
             <table class="overview with_title next_deliveries {if $next_deliveries|@count==0}hide{/if}  ">
                 <tr class="top">
                     <td colspan="3">{t}Next deliveries{/t}</td>
                 </tr>
-                {foreach from=$next_deliveries item=next_delivery }
-                    <tr class="main ">
-                        <td>{$next_delivery.formatted_link}</td>
-                        <td>{$next_delivery.formatted_state}</td>
-                        <td class="aright highlight">{$next_delivery.qty}</td>
-                    </tr>
-                {/foreach}
+
+
+                {if $part->get('Part Production')=='Yes'}
+                    {foreach from=$next_deliveries item=next_delivery }
+                        <tr class="main ">
+                            <td>{$next_delivery.formatted_link}</td>
+
+                        </tr>
+                    {/foreach}
+                {else}
+                    {foreach from=$next_deliveries item=next_delivery }
+                        <tr class="main ">
+                            <td>{$next_delivery.formatted_link}</td>
+                            <td>{$next_delivery.formatted_state}</td>
+                            <td class="aright highlight">{$next_delivery.qty}</td>
+                        </tr>
+                    {/foreach}
+                {/if}
+
+
             </table>
 
 

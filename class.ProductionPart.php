@@ -30,7 +30,7 @@ class ProductionPart extends SupplierPart {
         }
 
 
-        $sql = sprintf("SELECT * FROM `Supplier Part Production Dimension`  WHERE `Supplier Part Key`=%d", $this->id);
+        $sql = sprintf("SELECT * FROM `Production Part Dimension`  WHERE `Production Part Supplier Part Key`=%d", $this->id);
 
 
         if ($result = $this->db->query($sql)) {
@@ -176,7 +176,7 @@ class ProductionPart extends SupplierPart {
         }
 
 
-        $this->fast_update(array('Supplier Part Available to Make up' => $available_to_make_up), 'Supplier Part Production Dimension');
+        $this->fast_update(array('Production Part Available to Make up' => $available_to_make_up), 'Production Part Dimension');
 
 
         return $available_to_make_up;

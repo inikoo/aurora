@@ -49,7 +49,7 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
     }
 
     $data = get_widget_data(
-        $supplier->get('Supplier Number Todo Parts'), $supplier->get('Supplier Number Parts'), $supplier->get('Supplier Tolerable Percentage Todo Parts'),
+        $supplier->get('Production to do parts'), $supplier->get('Supplier Number Parts'), $supplier->get('Supplier Tolerable Percentage Todo Parts'),
         $supplier->get('Supplier Max Percentage Todo Parts')
 
     );
@@ -114,12 +114,6 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
         $html .= $smarty->fetch('dashboard/supplier.location_parts_to_replenish.dbard.tpl');
     }
 
-//L67D63zNu3bns5R5
-    //MNdv1paS6IZJ6b6f  <- inikoo
-
-    // pZv4DTV506Tr2ofS
-    //uwHg99f5IdEjRHTp FB
-
 
     return $html;
 
@@ -127,6 +121,8 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
 
 
 function get_widget_data($value, $total, $min, $max) {
+
+
 
     $data = array(
         'ok'        => false,

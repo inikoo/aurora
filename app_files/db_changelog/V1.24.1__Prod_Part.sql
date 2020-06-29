@@ -1,0 +1,3 @@
+ALTER TABLE `Supplier Part Production Dimension` CHANGE `Supplier Part Available to Make up` `Supplier Part Available to Make up` DOUBLE NULL DEFAULT NULL;
+ALTER TABLE `Supplier Part Production Dimension` CHANGE `Supplier Part Key` `Production Part Supplier Part Key` MEDIUMINT UNSIGNED NOT NULL, CHANGE `Supplier Part Available to Make up` `Production Part Available to Make up` DOUBLE UNSIGNED NULL DEFAULT NULL, CHANGE `Supplier Part Batch Size` `Production Part Batch Size` MEDIUMINT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Supplier Part Production Dimension` RENAME TO `Production Part Dimension`;

@@ -9,8 +9,8 @@
 
 */
 
-$tab     = 'supplier.todo_parts.wget';
-$ar_file = 'ar_suppliers_tables.php';
+$tab     = 'production.todo_parts.wget';
+$ar_file = 'ar_production_tables.php';
 $tipo    = 'todo_parts';
 
 $default = $user->get_tab_defaults($tab);
@@ -28,5 +28,3 @@ $parameters = array(
 
 include 'utils/get_table_html.php';
 
-
-?>

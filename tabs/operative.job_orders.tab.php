@@ -2,15 +2,14 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 15-07-2019 16:39:14 MYT, Kuala Lumpur, Malaysia
- Copyright (c) 2019, Inikoo
+ Created: 5:08 pm Friday, 26 June 2020 (MYT) Kuala Lumpur, Malaysia
+ Copyright (c) 2020, Inikoo
 
  Version 3
 
 */
 
-
-$tab     = 'production_supplier.orders';
+$tab     = 'operative.job_orders';
 $ar_file = 'ar_production_tables.php';
 $tipo    = 'production_orders';
 
@@ -26,12 +25,12 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'production_supplier',
+    'parent'     => 'operative',
     'parent_key' => $state['key'],
 
 );
 
-
+/*
 $table_buttons[] = array(
     'icon'  => 'plus',
     'title' => _('New job order'),
@@ -40,15 +39,13 @@ $table_buttons[] = array(
         'parent'     => $state['object'],
         'parent_key' => $state['key'],
     )
-
-
 );
 
-
 $smarty->assign('table_buttons', $table_buttons);
-
-
 $smarty->assign('js_code', 'js/injections/supplier.orders.'.(_DEVEL ? '' : 'min.').'js');
+
+*/
+
 
 include 'utils/get_table_html.php';
 

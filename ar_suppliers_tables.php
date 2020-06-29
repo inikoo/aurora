@@ -111,13 +111,8 @@ switch ($tipo) {
             'Surplus', get_table_parameters(), $db, $user, $account
         );
         break;
-    case 'todo_parts':
 
-        parts_by_stock_status('Todo', get_table_parameters(), $db, $user, $account);
-        break;
-    case 'todo_paid_parts':
-        todo_paid_parts(get_table_parameters(), $db, $user, $account);
-        break;
+
     case 'supplier_categories':
         supplier_categories(get_table_parameters(), $db, $user, $account);
         break;
@@ -1309,30 +1304,7 @@ function order_items_in_process($_data, $db, $user, $account) {
 
             $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
 
-            /*
-                        switch ($data['Supplier Part Status']) {
-                            case 'Available':
-                                $status = sprintf(
-                                    '<i class="fa fa-stop success" title="%s"></i>', _('Available')
-                                );
-                                break;
-                            case 'NoAvailable':
-                                $status = sprintf(
-                                    '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
-                                );
 
-                                break;
-                            case 'Discontinued':
-                                $status = sprintf(
-                                    '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
-                                );
-
-                                break;
-                            default:
-                                $status = $data['Supplier Part Status'];
-                                break;
-                        }
-            */
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
@@ -4095,58 +4067,32 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             );
 
 
-            $next_deliveries = '';
 
+            $next_deliveries = '';
 
             if ($data['Part Next Deliveries Data'] != '') {
                 $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
                 if (count($next_deliveries_data) > 0) {
                     foreach ($next_deliveries_data as $delivery) {
-
-                        if ($delivery['type'] == 'delivery') {
-                            $next_deliveries .= sprintf(
-                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery['link']), $delivery['order_id'], number($delivery['qty'])
-                            );
-                        } else {
-                            $next_deliveries .= sprintf(
-                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $delivery['link'], $delivery['order_id'],
-                                ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($delivery['qty'])
-                            );
-
-                        }
-
+                        $next_deliveries .= sprintf(
+                            ', '.$delivery['formatted_link']
+                        );
                     }
                 }
 
 
             }
+            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
+
+            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
 
 
-            /*
-                            $next_deliveries.= '||';
+            $stock='<span class="very_discreet small padding_right_10"><i class="fal fa-inventory"></i> '.number($data['Part Current On Hand Stock']).' <i class="fal fa-shopping-cart"></i> '.number($data['Part Current Stock In Process'] + $data['Part Current Stock Ordered Paid']).'</span>';
 
-                            if ($data['in_deliveries'] != '') {
-                                foreach (preg_split('/\,/', $data['in_deliveries']) as $delivery) {
-                                    $delivery        = preg_split('/\|/', $delivery);
-                                    $next_deliveries .= sprintf(
-                                        ', <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery[0]), $delivery[1], $delivery[2], $delivery[3], number($delivery[4])
-                                    );
-                                }
-                            }
-
-                            if ($data['in_purchase_orders'] != '') {
-                                foreach (preg_split('/\,/', $data['in_purchase_orders']) as $purchase_order) {
-                                    $purchase_order  = preg_split('/\|/', $purchase_order);
-                                    $next_deliveries .= sprintf(
-                                        ', <span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $purchase_order[0], $purchase_order[1],
-                                        ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($purchase_order[2])
-                                    );
-                                }
-                            }
+            $stock.='<b>'.number($stock_available).'</b>';
 
 
 
-            */
             $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
 
             $table_data[] = array(
@@ -4164,9 +4110,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
                 'packing'             => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'               => number(
-                        floor($data['Part Current On Hand Stock'])
-                    )." $stock_status",
+                'stock'               => $stock,
                 'available_forecast'  => $available_forecast,
                 'dispatched_per_week' => $dispatched_per_week,
                 'next_deliveries'     => $next_deliveries
@@ -4197,159 +4141,6 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
     echo json_encode($response);
 }
 
-
-function todo_paid_parts($_data, $db, $user) {
-
-
-    $rtext_label = 'part to produce as soon as possible';
-
-
-    include_once 'prepare_table/init.php';
-
-
-    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction limit $start_from,$number_results";
-
-    //print $sql;
-
-    $table_data = array();
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-
-            switch ($data['Part Stock Status']) {
-                case 'Surplus':
-                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Optimal':
-                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Low':
-                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Critical':
-                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Out_Of_Stock':
-                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Error':
-                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
-                    break;
-                default:
-                    $stock_status = $data['Part Stock Status'];
-                    break;
-            }
-
-
-            $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
-
-
-            $transaction_key = '';
-
-            $description = $data['Supplier Part Description'].' <span class="discreet">('.number($units_per_carton).'/C '.money(
-                    $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
-                ).')</span>';
-
-            if ($data['Supplier Part Minimum Carton Order'] > 0) {
-                $description .= sprintf(
-                    ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
-                );
-            }
-
-            $next_deliveries = '';
-
-            if ($data['Part Next Deliveries Data'] != '') {
-                $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
-                if (count($next_deliveries_data) > 0) {
-                    foreach ($next_deliveries_data as $delivery) {
-
-                        if ($delivery['type'] == 'delivery') {
-                            $next_deliveries .= sprintf(
-                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery['link']), $delivery['order_id'], number($delivery['qty'])
-                            );
-                        } else {
-                            $next_deliveries .= sprintf(
-                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $delivery['link'], $delivery['order_id'],
-                                ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($delivery['qty'])
-                            );
-
-                        }
-
-                    }
-                }
-
-
-            }
-
-
-            /*
-            if ($data['in_deliveries'] != '') {
-                foreach (preg_split('/\,/', $data['in_deliveries']) as $delivery) {
-                    $delivery        = preg_split('/\|/', $delivery);
-                    $next_deliveries .= sprintf(
-                        ', <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery[0]), $delivery[1], $delivery[2], $delivery[3], number($delivery[4])
-                    );
-                }
-            }
-
-            if ($data['in_purchase_orders'] != '') {
-                foreach (preg_split('/\,/', $data['in_purchase_orders']) as $purchase_order) {
-                    $purchase_order  = preg_split('/\|/', $purchase_order);
-                    $next_deliveries .= sprintf(
-                        ', <span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $purchase_order[0], $purchase_order[1],
-                        ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($purchase_order[2])
-                    );
-                }
-            }
-            */
-
-            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
-
-
-            $table_data[] = array(
-                'id'              => (integer)$data['Supplier Part Key'],
-                'supplier_key'    => (integer)$data['Supplier Part Supplier Key'],
-
-
-                //  'reference' => $data['Supplier Part Reference'],
-                'reference'       => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Supplier Part Part SKU'], $data['Part Reference']),
-
-                // 'description' => $description,
-                'description'     => $data['Part Package Description'],
-                'cost'            => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
-                'packing'         => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
-                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
-                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'           => number(floor($data['Part Current On Hand Stock']))." $stock_status",
-                //'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
-                'required'        => number(ceil($data['required']), 0),
-                'next_deliveries' => $next_deliveries
-
-            );
-
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $table_data,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 
 function supplier_categories($_data, $db, $user) {

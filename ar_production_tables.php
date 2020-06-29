@@ -71,6 +71,13 @@ switch ($tipo) {
     case 'replenishments':
         replenishments(get_table_parameters(), $db, $user, $account);
         break;
+    case 'production_urgent_to_do':
+        production_urgent_to_do(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'todo_parts':
+
+        todo_parts(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -164,32 +171,28 @@ function operatives($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-
-
-
             $adata[] = array(
-                'id'=> $data['Staff Key'],
-                'payroll_id'   => $data['Staff ID'],
-                'name'         => $data['Staff Name'],
-                'code'         => sprintf('<span class="link" onclick="change_view(\'production/%d/operatives/%d\')">%s</span>',$_data['parameters']['production_key'],$data['Staff Key'],$data['Staff Alias']),
-                'po_queued'=>($data['Staff Operative Purchase Orders Queued']>0?number($data['Staff Operative Purchase Orders Queued']):'<span class="super_discreet">0</span>'),
-                'po_manufacturing'=>($data['Staff Operative Purchase Orders Manufacturing']>0?number($data['Staff Operative Purchase Orders Manufacturing']):'<span class="super_discreet">0</span>'),
-                'po_manufactured'=>($data['po_manufactured']>0?number($data['po_manufactured']):'<span class="super_discreet">0</span>'),
-                'po_placing'=>($data['Staff Operative Purchase Orders Waiting Placing']>0?number($data['Staff Operative Purchase Orders Waiting Placing']):'<span class="super_discreet">0</span>'),
-                'po_placed'=>($data['Staff Operative Purchase Orders']>0?number($data['Staff Operative Purchase Orders']):'<span class="super_discreet">0</span>'),
-                
-                'products_queued'=>($data['Staff Operative Products Queued']>0?number($data['Staff Operative Products Queued']):'<span class="super_discreet">0</span>'),
-                'products_manufacturing'=>($data['Staff Operative Products Manufacturing']>0?number($data['Staff Operative Products Manufacturing']):'<span class="super_discreet">0</span>'),
-                'products_manufactured'=>($data['products_manufactured']>0?number($data['products_manufactured']):'<span class="super_discreet">0</span>'),
-                'products_placing'=>($data['Staff Operative Products Waiting Placing']>0?number($data['Staff Operative Products Waiting Placing']):'<span class="super_discreet">0</span>'),
-                'products_placed'=>($data['Staff Operative Products']>0?number($data['Staff Operative Products']):'<span class="super_discreet">0</span>'),
+                'id'               => $data['Staff Key'],
+                'payroll_id'       => $data['Staff ID'],
+                'name'             => $data['Staff Name'],
+                'code'             => sprintf('<span class="link" onclick="change_view(\'production/%d/operatives/%d\')">%s</span>', $_data['parameters']['production_key'], $data['Staff Key'], $data['Staff Alias']),
+                'po_queued'        => ($data['Staff Operative Purchase Orders Queued'] > 0 ? number($data['Staff Operative Purchase Orders Queued']) : '<span class="super_discreet">0</span>'),
+                'po_manufacturing' => ($data['Staff Operative Purchase Orders Manufacturing'] > 0 ? number($data['Staff Operative Purchase Orders Manufacturing']) : '<span class="super_discreet">0</span>'),
+                'po_manufactured'  => ($data['po_manufactured'] > 0 ? number($data['po_manufactured']) : '<span class="super_discreet">0</span>'),
+                'po_placing'       => ($data['Staff Operative Purchase Orders Waiting Placing'] > 0 ? number($data['Staff Operative Purchase Orders Waiting Placing']) : '<span class="super_discreet">0</span>'),
+                'po_placed'        => ($data['Staff Operative Purchase Orders'] > 0 ? number($data['Staff Operative Purchase Orders']) : '<span class="super_discreet">0</span>'),
+
+                'products_queued'        => ($data['Staff Operative Products Queued'] > 0 ? number($data['Staff Operative Products Queued']) : '<span class="super_discreet">0</span>'),
+                'products_manufacturing' => ($data['Staff Operative Products Manufacturing'] > 0 ? number($data['Staff Operative Products Manufacturing']) : '<span class="super_discreet">0</span>'),
+                'products_manufactured'  => ($data['products_manufactured'] > 0 ? number($data['products_manufactured']) : '<span class="super_discreet">0</span>'),
+                'products_placing'       => ($data['Staff Operative Products Waiting Placing'] > 0 ? number($data['Staff Operative Products Waiting Placing']) : '<span class="super_discreet">0</span>'),
+                'products_placed'        => ($data['Staff Operative Products'] > 0 ? number($data['Staff Operative Products']) : '<span class="super_discreet">0</span>'),
 
 
-                
-                'transactions_queued'=>($data['Staff Operative Transactions Queued']>0?number($data['Staff Operative Transactions Queued']):'<span class="super_discreet">0</span>'),
-                'transactions_manufacturing'=>($data['Staff Operative Transactions Manufacturing']>0?number($data['Staff Operative Transactions Manufacturing']):'<span class="super_discreet">0</span>'),
-                'transactions_manufactured'=>($data['transactions_manufactured']>0?number($data['transactions_manufactured']):'<span class="super_discreet">0</span>'),
-                'total_transactions'=>($data['Staff Operative Transactions']>0?number($data['Staff Operative Transactions']):'<span class="super_discreet">0</span>'),
+                'transactions_queued'        => ($data['Staff Operative Transactions Queued'] > 0 ? number($data['Staff Operative Transactions Queued']) : '<span class="super_discreet">0</span>'),
+                'transactions_manufacturing' => ($data['Staff Operative Transactions Manufacturing'] > 0 ? number($data['Staff Operative Transactions Manufacturing']) : '<span class="super_discreet">0</span>'),
+                'transactions_manufactured'  => ($data['transactions_manufactured'] > 0 ? number($data['transactions_manufactured']) : '<span class="super_discreet">0</span>'),
+                'total_transactions'         => ($data['Staff Operative Transactions'] > 0 ? number($data['Staff Operative Transactions']) : '<span class="super_discreet">0</span>'),
 
 
             );
@@ -804,15 +807,15 @@ function production_orders($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            $notes='';
+            $notes = '';
             //'Cancelled','NoReceived','InProcess','Submitted','Confirmed','Manufactured','QC_Pass','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked'
             switch ($data['Purchase Order State']) {
 
 
                 case 'InProcess':
                     $state = _('Planning');
-                    if($data['Purchase Order Estimated Start Production Date']!=''){
-                        $notes.=' <span class="super_discreet" title="'._('Scheduled start production date').'"><i class="fal fa-play success small"></i> <span class="discreet italic">'.strftime(
+                    if ($data['Purchase Order Estimated Start Production Date'] != '') {
+                        $notes .= ' <span class="super_discreet" title="'._('Scheduled start production date').'"><i class="fal fa-play success small"></i> <span class="discreet italic">'.strftime(
                                 "%a %e %b", strtotime($data['Purchase Order Estimated Start Production Date'].' +0:00')
                             ).'</span>';
                     }
@@ -820,15 +823,22 @@ function production_orders($_data, $db, $user, $account) {
                 case 'Submitted':
                     $state = _('Queued');
 
-                    if($data['Purchase Order Estimated Start Production Date']!=''){
-                        $notes.=' <span title="'._('Scheduled start production date').'"><i class="fal fa-play success small"></i> <span class="discreet italic">'.strftime(
+                    if ($data['Purchase Order Estimated Start Production Date'] != '') {
+                        $notes .= ' <span title="'._('Scheduled start production date').'"><i class="fal fa-play success small"></i> <span class="discreet italic">'.strftime(
                                 "%a %e %b", strtotime($data['Purchase Order Estimated Start Production Date'].' +0:00')
                             ).'</span>';
                     }
                     break;
-                    break;
+
                 case 'Confirmed':
                     $state = _('Manufacturing');
+
+                    if ($data['Purchase Order Estimated Receiving Date'] != '') {
+                        $notes .= ' <span title="'._('Estimated production date').'"><i class="fal fa-play  purple small"></i> <span class="discreet italic">'.strftime(
+                                "%a %e %b", strtotime($data['Purchase Order Estimated Receiving Date'].' +0:00')
+                            ).'</span>';
+                    }
+
                     break;
                 case 'Manufactured':
                     $state = _('Manufactured');
@@ -850,7 +860,6 @@ function production_orders($_data, $db, $user, $account) {
                     break;
 
 
-
                 case 'Cancelled':
                     $state = _('Cancelled');
                     break;
@@ -859,40 +868,36 @@ function production_orders($_data, $db, $user, $account) {
                     break;
             }
 
-            if($data['Staff Alias']==''){
-                $worker='<span class="super_discreet italic">'._('Not set').'</span>';
-            }else{
-                $worker=sprintf('<span class="link" onclick="change_view(\'production/%d/operatives/%d\')" >%s</span>',$data['Purchase Order Parent Key'],$data['Purchase Order Operator Key'],$data['Staff Alias']);
+            if ($data['Staff Alias'] == '') {
+                $worker = '<span class="super_discreet italic">'._('Not set').'</span>';
+            } else {
+                $worker = sprintf('<span class="link" onclick="change_view(\'production/%d/operatives/%d\')" >%s</span>', $data['Purchase Order Parent Key'], $data['Purchase Order Operator Key'], $data['Staff Alias']);
 
             }
 
 
-            if($data['Purchase Order Total Amount']=='' or $data['Purchase Order Total Amount']==0 ){
-                $total_amount='';
-            }else{
-                $total_amount=money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'], $locale = false,'NO_FRACTION_DIGITS');
+            if ($data['Purchase Order Total Amount'] == '' or $data['Purchase Order Total Amount'] == 0) {
+                $total_amount = '';
+            } else {
+                $total_amount = money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'], $locale = false, 'NO_FRACTION_DIGITS');
             }
-
-
-
-
 
 
             $table_data[] = array(
-                'id'           => (integer)$data['Purchase Order Key'],
-                'public_id'    => sprintf(
+                'id'        => (integer)$data['Purchase Order Key'],
+                'public_id' => sprintf(
                     '<span class="link" onclick="change_view(\'production/%d/order/%d\')" >%s</span>  ', $data['Purchase Order Parent Key'], $data['Purchase Order Key'],
                     ($data['Purchase Order Public ID'] == '' ? '<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>' : $data['Purchase Order Public ID'])
                 ),
-                'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
-                'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
-                'state'        => $state,
-                'weight' => weight($data['Purchase Order Weight'],'',0,true),
-                'products' =>$data['Purchase Order Ordered Number Items'],
+                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+                'state'     => $state,
+                'weight'    => weight($data['Purchase Order Weight'], '', 0, true),
+                'products'  => $data['Purchase Order Ordered Number Items'],
 
-                'total_amount' =>$total_amount,
-                'worker' =>$worker,
-                'notes' =>$notes
+                'total_amount' => $total_amount,
+                'worker'       => $worker,
+                'notes'        => $notes
 
 
             );
@@ -1123,4 +1128,307 @@ function production_orders_with_part($_data, $db, $user, $account) {
 }
 
 
+function production_urgent_to_do($_data, $db, $user) {
+
+
+    $rtext_label = 'part to produce as soon as possible';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Part Stock Status']) {
+                case 'Surplus':
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Optimal':
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Low':
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Critical':
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Out_Of_Stock':
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Error':
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    break;
+                default:
+                    $stock_status = $data['Part Stock Status'];
+                    break;
+            }
+
+
+            $next_deliveries = '';
+
+            if ($data['Part Next Deliveries Data'] != '') {
+                $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
+                if (count($next_deliveries_data) > 0) {
+                    foreach ($next_deliveries_data as $delivery) {
+                        $next_deliveries .= sprintf(
+                            ', '.$delivery['formatted_link']
+                        );
+                    }
+                }
+
+
+            }
+
+            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
+
+
+            $stock='<span class="very_discreet small padding_right_10"><i class="fal fa-inventory"></i> '.number($data['Part Current On Hand Stock']).' <i class="fal fa-shopping-cart"></i> '.number($data['Part Current Stock In Process'] + $data['Part Current Stock Ordered Paid']).'</span>';
+
+            $stock.='<b>'.number($stock_available).'</b>';
+
+            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
+
+
+            $table_data[] = array(
+                'id'              => (integer)$data['Supplier Part Key'],
+                'supplier_key'    => (integer)$data['Supplier Part Supplier Key'],
+
+
+                'reference'       => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Supplier Part Part SKU'], $data['Part Reference']),
+
+                'description'     => $data['Part Package Description'],
+                'cost'            => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+                'packing'         => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                'stock_status'=>$stock_status,
+                'stock'           => $stock,
+                'required'        => number(ceil($data['required']), 0),
+                'next_deliveries' => $next_deliveries
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function todo_parts($_data, $db, $user) {
+
+
+    $rtext_label = 'part with critical stock or out of stock';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql_totals;
+
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Supplier Part Status']) {
+                case 'Available':
+                    $status = sprintf(
+                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
+                    );
+                    break;
+                case 'NoAvailable':
+                    $status = sprintf(
+                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
+                    );
+
+                    break;
+                case 'Discontinued':
+                    $status = sprintf(
+                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                    );
+
+                    break;
+                default:
+                    $status = $data['Supplier Part Status'];
+                    break;
+            }
+
+            switch ($data['Part Stock Status']) {
+                case 'Surplus':
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Optimal':
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Low':
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Critical':
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Out_Of_Stock':
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Error':
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    break;
+                default:
+                    $stock_status = $data['Part Stock Status'];
+                    break;
+            }
+
+
+
+
+
+            $description = $data['Part Package Description'];
+
+
+            $description .= '
+
+  <div class="as_table asset_sales discreet">
+
+          <div class="as_row header">
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -12 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -9 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -6 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -3 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			</div>
+		 <div class="as_row header">
+			<div class="as_cell width_75">'.number(
+                    $data['Part 4 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part 3 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part 2 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part 1 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part Quarter To Day Acc Dispatched']
+                ).'</div>
+			</div>
+			</div>
+
+
+
+			';
+
+
+            $available_forecast = seconds_to_until(
+                $data['Part Days Available Forecast'] * 86400
+            );
+
+
+            $dispatched_per_week = number(
+                $data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0
+            );
+
+
+            $next_deliveries = '';
+
+            if ($data['Part Next Deliveries Data'] != '') {
+                $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
+                if (count($next_deliveries_data) > 0) {
+                    foreach ($next_deliveries_data as $delivery) {
+                        $next_deliveries .= sprintf(
+                            ', '.$delivery['formatted_link']
+                        );
+                    }
+                }
+
+
+            }
+            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
+
+            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
+
+
+            $stock='<span class="very_discreet small padding_right_10"><i class="fal fa-inventory"></i> '.number($data['Part Current On Hand Stock']).' <i class="fal fa-shopping-cart"></i> '.number($data['Part Current Stock In Process'] + $data['Part Current Stock Ordered Paid']).'</span>';
+
+            $stock.='<b>'.number($stock_available).'</b>';
+
+
+            $table_data[] = array(
+                'id'        => (integer)$data['Supplier Part Key'],
+
+                'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Supplier Part Part SKU'], $data['Part Reference']),
+
+                'description'         => $description,
+                'simple_description'  => $data['Part Package Description'],
+                'status'              => $status,
+                'cost'                => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+                'packing'             => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                'stock'               =>$stock,
+                'available_forecast'  => $available_forecast,
+                'dispatched_per_week' => $dispatched_per_week,
+                'next_deliveries'     => $next_deliveries
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 

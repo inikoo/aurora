@@ -329,7 +329,7 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                "SELECT  `Supplier Delivery Estimated Receiving Date`,`Supplier Part Packages Per Carton`,`Purchase Order Key`,`Supplier Delivery Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Part Units Per Package`,
+                "SELECT  `Purchase Order Transaction Type`,`Supplier Delivery Estimated Receiving Date`,`Supplier Part Packages Per Carton`,`Purchase Order Key`,`Supplier Delivery Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Part Units Per Package`,
                 `Supplier Delivery Units`, `Supplier Delivery Checked Units`,
                 ifnull(`Supplier Delivery Placed Units`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM 
                 `Purchase Order Transaction Fact` POTF LEFT JOIN 
@@ -340,13 +340,13 @@ class Part extends Asset {
                 
 
                 
-                 ", join($supplier_parts, ',')
+                 ", implode(',', $supplier_parts)
             );
 
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
+                    //print_r($row);
 
                     if ($row['Supplier Delivery Checked Units'] > 0 or $row['Supplier Delivery Checked Units'] == '') {
 
@@ -366,29 +366,6 @@ class Part extends Asset {
 
                             $supplier_delivery = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
 
-
-                            switch ($row['Supplier Delivery Transaction State']) {
-                                case 'InProcess':
-                                    $state = sprintf('%s', _('In Process'));
-                                    break;
-                                case 'Consolidated':
-                                    $state = sprintf('%s', _('Consolidated'));
-                                    break;
-                                case 'Dispatched':
-                                    $state = sprintf('%s', _('Dispatched'));
-                                    break;
-                                case 'Received':
-                                    $state = sprintf('%s', _('Received'));
-                                    break;
-                                case 'Checked':
-                                    $state = sprintf('%s', _('Checked'));
-                                    break;
-
-
-                                default:
-                                    $state = $row['Supplier Delivery State'];
-                                    break;
-                            }
 
                             $number_non_draft_POs++;
                             $date = '';
@@ -423,19 +400,69 @@ class Part extends Asset {
                             }
 
 
-                            $next_deliveries_data[] = array(
-                                'type'            => 'delivery',
-                                'qty'             => '+'.number($raw_skos_qty),
-                                'raw_sko_qty'     => $raw_skos_qty,
-                                'raw_units_qty'   => $raw_units_qty,
-                                'date'            => $date,
-                                'formatted_link'  => sprintf(
+                            if ($row['Purchase Order Transaction Type'] == 'Production') {
+
+                                $state = _('Delivered');
+
+
+                                $link = sprintf('production/%d/delivery/%d', $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']);
+
+                                $formatted_link = sprintf(
+                                    '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'%s\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-hand-holding-heart" title="%s" ></i> <span class="strong">%s</span>', $link,
+                                    $row['Supplier Delivery Public ID'], _('Delivered'), number($row['Supplier Delivery Checked Units'] / $row['Part Units Per Package'])
+                                );
+
+                                $formatted_state = '<span class=" italic">'._('Delivered').'</span>';
+
+
+                            } else {
+
+
+                                switch ($row['Supplier Delivery Transaction State']) {
+                                    case 'InProcess':
+                                        $state = sprintf('%s', _('In Process'));
+                                        break;
+                                    case 'Consolidated':
+                                        $state = sprintf('%s', _('Consolidated'));
+                                        break;
+                                    case 'Dispatched':
+                                        $state = sprintf('%s', _('Dispatched'));
+                                        break;
+                                    case 'Received':
+                                        $state = sprintf('%s', _('Received'));
+                                        break;
+                                    case 'Checked':
+                                        $state = sprintf('%s', _('Checked'));
+                                        break;
+
+
+                                    default:
+                                        $state = $row['Supplier Delivery State'];
+                                        break;
+                                }
+
+
+                                $formatted_link = sprintf(
                                     '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']),
                                     $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
-                                ),
-                                'link'            => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
+                                );
+                                $link           = sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']);
+
+                                $formatted_state = ($date == '' ? '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>' : $date);
+                            }
+
+
+                            $next_deliveries_data[] = array(
+                                'type'           => 'delivery',
+                                'qty'            => '+'.number($raw_skos_qty),
+                                'raw_sko_qty'    => $raw_skos_qty,
+                                'raw_units_qty'  => $raw_units_qty,
+                                'date'           => $date,
+                                'formatted_link' => $formatted_link,
+                                'link'           => $link,
+
                                 'order_id'        => $row['Supplier Delivery Public ID'],
-                                'formatted_state' => ($date == '' ? '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>' : $date),
+                                'formatted_state' => $formatted_state,
                                 'state'           => $state,
 
                                 'po_key' => $row['Purchase Order Key']
@@ -447,19 +474,17 @@ class Part extends Asset {
             }
 
             $sql = sprintf(
-                "SELECT `Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
-                `Part Units Per Package`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`
+                "SELECT `Purchase Order Submitted Units`-`Purchase Order Submitted Cancelled Units` submitted_units,`Purchase Order Manufactured Units`,`Purchase Order QC Pass Units`,`Purchase Order Estimated Receiving Date`,`Purchase Order Estimated Start Production Date`,`Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
+                `Part Units Per Package`,`Purchase Order Ordering Units`,`Purchase Order Transaction Type`,`Supplier Key`,`Purchase Order Type`
         FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  
           left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
                 `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
         
-        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ('Placed','Cancelled') ", join($supplier_parts, ',')
+        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ('Placed','Cancelled','InvoiceChecked','NoReceived') ", implode(',', $supplier_parts)
             );
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
-
 
 
                     if ($row['Purchase Order Transaction State'] == 'InProcess') {
@@ -471,68 +496,149 @@ class Part extends Asset {
                         $_next_delivery_time = 0;
                         $date                = '';
                         $formatted_state     = '<span class="very_discreet italic">'._('Draft').'</span>';
-                        $link                = sprintf(
-                            '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
-                            $row['Purchase Order Public ID']
-                        );
-                        $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
-                    }elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
+                        if ($row['Purchase Order Transaction Type'] == 'Production') {
+                            $formatted_link = sprintf(
+                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'production/%d/order/%d\')"> %s</span>', _('In process'),
+                                $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID']
+                            );
+                        } else {
+                            $formatted_link = sprintf(
+                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'),
+                                $row['Purchase Order Key'], $row['Purchase Order Public ID']
+                            );
+                        }
+
+
+                        $qty = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
+
+                    } elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
                         $number_draft_POs++;
 
-                        $raw_units_qty = $row['Purchase Order Submitted Units'];
+                        $raw_units_qty = $row['submitted_units'];
                         $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
                         $_next_delivery_time = 0;
                         $date                = '';
-                        $formatted_state     = '<span class="very_discreet italic">'._('Submitted').'</span>';
-                        $link                = sprintf(
-                            '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('Submitted'), $row['Purchase Order Key'],
-                            $row['Purchase Order Public ID']
-                        );
-                        $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
-
-                    } else {
-
-                        //print_r($row);
-                        $number_non_draft_POs++;
-                        $raw_units_qty = $row['Purchase Order Submitted Units'];
-                        $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
 
-                        if($row['Purchase Order Estimated Receiving Date']!=''){
-                            $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
-                            $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                            if ($_next_delivery_time < gmdate('U')) {
-                                $formatted_state = '<span class="discreet error italic" title="'.strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')).'" >'._('Delayed').'</span>';
+                        if ($row['Purchase Order Transaction Type'] == 'Production') {
+                            $formatted_state = '<span class="very_discreet italic">'._('Queued').'</span>';
+                            $formatted_link  = sprintf(
+                                '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-user-clock" title="%s" ></i> <span class="strong">%s</span>',
+                                $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], _('Queued'), number($row['submitted_units'] / $row['Part Units Per Package'])
+                            );
 
-                            } else {
-
-                                $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                            if ($row['Purchase Order Estimated Start Production Date'] != '') {
+                                $formatted_link .= ' <span title="'._('Scheduled start production date').'"><i class="fal fa-play success small"></i> <span class="discreet italic">'.strftime(
+                                        "%a %e %b", strtotime($row['Purchase Order Estimated Start Production Date'].' +0:00')
+                                    ).'</span>';
 
                             }
 
-                        }else{
-                            $_next_delivery_time=0;
-                            $date='';
-                            $formatted_state='';
+                        } else {
+                            $formatted_state = '<span class="very_discreet italic">'._('Submitted').'</span>';
+                            $formatted_link  = sprintf(
+                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('Submitted'),
+                                $row['Purchase Order Key'], $row['Purchase Order Public ID']
+                            );
                         }
 
 
+                        $qty = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
+
+                    } else {
+
+                        if ($row['Purchase Order Transaction Type'] == 'Production') {
+
+                            //'','','','','','Confirmed','Manufactured','QC_Pass','','InDelivery','Inputted','Dispatched','Received','Checked','',''
+
+                            switch ($row['Purchase Order Transaction State']) {
+                                case 'Confirmed':
+                                    $formatted_state = _('Manufacturing');
+                                    $formatted_link  = sprintf(
+                                        '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-fill-drip" title="%s" ></i> <span class="strong">%s</span>',
+                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order Manufacturing Units'] / $row['Part Units Per Package'])
+                                    );
+
+                                    if($row['Purchase Order Estimated Receiving Date']!=''){
+                                        $formatted_link.=' <span title="'._('Estimated production date').'"><i class="fal fa-play  purple small"></i> <span class="discreet italic">'.strftime(
+                                                "%a %e %b", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')
+                                            ).'</span>';
+                                    }
+
+                                    break;
+                                case 'Manufactured':
+                                    $formatted_state = _('Manufactured');
+                                    $formatted_link  = sprintf(
+                                        '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-flag-checkered" title="%s" ></i> <span class="strong">%s</span>',
+                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package'])
+                                    );
+                                    break;
+                                case 'QC_Pass':
+                                    $formatted_state = _('QC pass');
+                                    $formatted_link  = sprintf(
+                                        '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-siren-on" title="%s" ></i> <span class="strong">%s</span>',
+                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
+                                    );
+                                    break;
+                                case 'Dispatched':
+                                case 'InDelivery':
+                                case 'Inputted':
+                                case 'Received':
+                                case 'Checked':
+
+                                    $formatted_state =_('Delivered');
+                                    $formatted_link  = sprintf(
+                                        '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-user-clock" title="%s" ></i> <span class="strong">%s</span>',
+                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
+                                    );
+                                    break;
+                                default:
+                                    $formatted_state =_('Unknown');
+                                    $formatted_link  = sprintf(
+                                        '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span>',
+                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID']
+                                    );
+                                    break;
+                            }
+
+                        } else {
+
+                            //print_r($row);
+                            $number_non_draft_POs++;
+                            $raw_units_qty = $row['submitted_units'];
+                            $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
 
+                            if ($row['Purchase Order Estimated Receiving Date'] != '') {
+                                $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
+                                $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                                if ($_next_delivery_time < gmdate('U')) {
+                                    $formatted_state = '<span class="discreet error italic" title="'.strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')).'" >'._('Delayed').'</span>';
 
-                        $link = sprintf(
-                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Confirmed'), $row['Purchase Order Key'],
-                            $row['Purchase Order Public ID']
-                        );
-                        $qty  = '+'.number($raw_skos_qty);
+                                } else {
 
+                                    $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+
+                                }
+
+                            } else {
+                                $_next_delivery_time = 0;
+                                $date                = '';
+                                $formatted_state     = '';
+                            }
+
+
+                            $formatted_link = sprintf(
+                                '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Confirmed'), $row['Purchase Order Key'],
+                                $row['Purchase Order Public ID']
+                            );
+                            $qty            = '+'.number($raw_skos_qty);
+                        }
 
 
                     }
-
-
 
 
                     $next_deliveries_data[] = array(
@@ -544,8 +650,8 @@ class Part extends Asset {
                         'date'            => $date,
                         'formatted_state' => $formatted_state,
 
-                        'formatted_link' => $link,
-                        'link'           => sprintf('suppliers/order/%d', $row['Purchase Order Key']),
+                        'formatted_link' => $formatted_link,
+                        'link'           => ($row['Purchase Order Transaction Type'] == 'Production' ? sprintf('production/%d/order/%d', $row['Supplier Key'], $row['Purchase Order Key']) : sprintf('suppliers/order/%d', $row['Purchase Order Key'])),
                         'order_id'       => $row['Purchase Order Public ID'],
                         'state'          => $row['Purchase Order Transaction State'],
                         'po_key'         => $row['Purchase Order Key']
@@ -562,10 +668,12 @@ class Part extends Asset {
 
         }
 
+
         if (!$valid_next_delivery_time) {
             $next_delivery_time = 0;
         }
 
+       // print_r($next_deliveries_data);
 
         return array(
             'deliveries'           => $next_deliveries_data,
@@ -3275,9 +3383,9 @@ class Part extends Asset {
 
             new_housekeeping_fork(
                 'au_housekeeping', array(
-                'type' => 'update_part_products_availability',
+                'type'     => 'update_part_products_availability',
                 'part_sku' => $this->id,
-                'editor' => $this->editor
+                'editor'   => $this->editor
             ), DNS_ACCOUNT_CODE, 'Low'
             );
 

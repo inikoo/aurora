@@ -1,5 +1,5 @@
 <div class="button widget"
-     onClick="get_widget_details(this,'supplier.todo_paid_parts.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
+     onClick="get_widget_details(this,'production_urgent_to_do.wget',{ parent: 'supplier','parent_key':{$supplier->id}})">
     <div id="todo_urgent" style="padding:10px;"></div>
     <div style="color:#aaa">{t}Urgent{/t}</div>
 </div>

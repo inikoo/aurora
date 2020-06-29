@@ -129,30 +129,13 @@ class Supplier_Production extends Supplier {
 
     function update_paid_ordered_parts() {
 
-        $paid_ordered_parts      = 0;
+
         $todo_paid_ordered_parts = 0;
-        /*
-        $sql=sprintf('select count(distinct P.`Part SKU`) as num  from `Order Transaction Fact` OTF left join `Product Part Bridge` PPB on (OTF.`Product ID`=PPB.`Product Part Product ID`)    left join `Part Dimension` P on (PPB.`Product Part Part SKU`=P.`Part SKU`) left join `Supplier Part Dimension` SP on (SP.`Supplier Part Part SKU`=P.`Part SKU`) where OTF.`Current Dispatching State` in ("Submitted by Customer","In Process") and  `Current Payment State`="Paid" and  `Supplier Part Supplier Key`=%d ',
-
-            $this->id
-        );
-
-
-        if ($result=$this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $paid_ordered_parts=$row['num'];
-            }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-*/
 
 
         $sql = sprintf(
-            'SELECT count(DISTINCT P.`Part SKU`) AS num FROM `Part Dimension` P LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) LEFT JOIN `Part Data` PD ON (PD.`Part SKU`=P.`Part SKU`) WHERE (`Part Current On Hand Stock`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )<0 AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0 AND `Supplier Part Supplier Key`=%d',
+            'SELECT count(DISTINCT P.`Part SKU`) AS num FROM `Part Dimension` P LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) LEFT JOIN `Part Data` PD ON (PD.`Part SKU`=P.`Part SKU`) 
+WHERE (`Part Current On Hand Stock`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` )<0 AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>=0 AND `Supplier Part Supplier Key`=%d',
             $this->id
         );
         //print $sql;
@@ -160,15 +143,10 @@ class Supplier_Production extends Supplier {
             if ($row = $result->fetch()) {
                 $todo_paid_ordered_parts = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $this->update(
             array(
-                // 'Supplier Production Paid Ordered Parts'=>$paid_ordered_parts,
                 'Supplier Production Paid Ordered Parts Todo' => $todo_paid_ordered_parts
 
             ), 'no_history'

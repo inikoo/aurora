@@ -1205,5 +1205,168 @@ function get_upload_navigation($data, $smarty, $user, $db) {
 
 }
 
+function get_operative_navigation($data, $smarty, $user, $db, $account) {
 
+    $object        = $data['_object'];
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $tab      = 'operatives';
+
+
+    if (isset($_SESSION['table_state'][$tab])) {
+        $number_results  = $_SESSION['table_state'][$tab]['nr'];
+        $start_from      = 0;
+        $order           = $_SESSION['table_state'][$tab]['o'];
+        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+        $parameters      = $_SESSION['table_state'][$tab];
+
+    } else {
+
+        $default         = $user->get_tab_defaults($tab);
+        $number_results  = $default['rpp'];
+        $start_from      = 0;
+        $order           = $default['sort_key'];
+        $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value         = '';
+        $parameters      = $default;
+
+    }
+
+    $parameters['parent']     = 'account';
+    $parameters['parent_key'] = 1;
+
+
+    include_once 'prepare_table/'.$tab.'.ptble.php';
+
+    $_order_field       = $order;
+    $order              = preg_replace('/^.*\.`/', '', $order);
+    $order              = preg_replace('/^`/', '', $order);
+    $order              = preg_replace('/`$/', '', $order);
+    $_order_field_value = $object->get($order);
+
+
+    $prev_title = '';
+    $next_title = '';
+    $prev_key   = 0;
+    $next_key   = 0;
+
+
+    $sql = sprintf(
+        "select `Staff Alias` object_name,`Staff Operative Key` as object_key from %s
+	                and ($_order_field < %s OR ($_order_field = %s AND `Staff Operative Key` < %d))  order by $_order_field desc , `Staff Operative Key` desc limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+        $object->id
+    );
+
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $prev_key   = $row['object_key'];
+            $prev_title =  _("Worker").' '.$row['object_name'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = sprintf(
+        "select `Staff Alias` object_name,`Staff Operative Key` as object_key from %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Staff Operative Key` > %d))  order by $_order_field   , `Staff Operative Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+        $object->id
+    );
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $next_key   = $row['object_key'];
+            $next_title = _("Worker").' '.$row['object_name'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    if ($order_direction == 'desc') {
+        $_tmp1      = $prev_key;
+        $_tmp2      = $prev_title;
+        $prev_key   = $next_key;
+        $prev_title = $next_title;
+        $next_key   = $_tmp1;
+        $next_title = $_tmp2;
+    }
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Production Workers"),
+        'reference' => 'production/'.$data['parent_key'].'/operatives'
+    );
+
+    if ($prev_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => 'production/'.$data['parent_key'].'/operatives/'.$prev_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+    $left_buttons[] = $up_button;
+
+
+    if ($next_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' => 'production/'.$data['parent_key'].'/operatives/'.$next_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-right disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+
+    $sections           = get_sections('production', $data['parent_key']);
+    $sections['operatives']['selected'] = true;
+
+    $search_placeholder = _('Search production');
+
+
+    $title = '<i class="fa fa-digging" title=""'._('Production worker').'"/></i> <span class="Staff_Alias id ">'.$object->get('Alias').'</span> <span class="italic ">(<span class="Staff_Name">'.$object->get('Name').'</span>)</span>';
+
+
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $search_placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+}
 

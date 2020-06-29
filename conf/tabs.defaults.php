@@ -2041,6 +2041,19 @@ $tab_defaults = array(
         'elements_type' => array_keys(get_elements_option('production_orders'))[0],
         'elements'      => get_elements_option('production_orders')
     ),
+    'operative.job_orders'        => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys(get_elements_option('production_orders'))[0],
+        'elements'      => get_elements_option('production_orders')
+    ),
     'supplier.deliveries'               => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -4661,7 +4674,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
-    'supplier.todo_parts.wget'                 => array(
+    'production.todo_parts.wget'                 => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -4670,7 +4683,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
-    'supplier.todo_paid_parts.wget'            => array(
+    'production_urgent_to_do.wget'            => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 0,
