@@ -558,7 +558,7 @@ class Part extends Asset {
                                     $formatted_state = _('Manufacturing');
                                     $formatted_link  = sprintf(
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-fill-drip" title="%s" ></i> <span class="strong">%s</span>',
-                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order Manufacturing Units'] / $row['Part Units Per Package'])
+                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['submitted_units'] / $row['Part Units Per Package'])
                                     );
 
                                     if($row['Purchase Order Estimated Receiving Date']!=''){
@@ -567,6 +567,8 @@ class Part extends Asset {
                                             ).'</span>';
                                     }
 
+                                    $qty            = '+'.number($row['submitted_units'] / $row['Part Units Per Package']);
+
                                     break;
                                 case 'Manufactured':
                                     $formatted_state = _('Manufactured');
@@ -574,6 +576,8 @@ class Part extends Asset {
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-flag-checkered" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package'])
                                     );
+                                    $qty            = '+'.number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package']);
+
                                     break;
                                 case 'QC_Pass':
                                     $formatted_state = _('QC pass');
@@ -581,6 +585,8 @@ class Part extends Asset {
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-siren-on" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
                                     );
+                                    $qty            = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
+
                                     break;
                                 case 'Dispatched':
                                 case 'InDelivery':
@@ -593,13 +599,16 @@ class Part extends Asset {
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-user-clock" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
                                     );
-                                    break;
+                                $qty            = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
+
+                                break;
                                 default:
                                     $formatted_state =_('Unknown');
                                     $formatted_link  = sprintf(
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID']
                                     );
+                                    $qty='';
                                     break;
                             }
 
@@ -611,23 +620,7 @@ class Part extends Asset {
                             $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
 
-                            if ($row['Purchase Order Estimated Receiving Date'] != '') {
-                                $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
-                                $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                                if ($_next_delivery_time < gmdate('U')) {
-                                    $formatted_state = '<span class="discreet error italic" title="'.strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')).'" >'._('Delayed').'</span>';
 
-                                } else {
-
-                                    $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-
-                                }
-
-                            } else {
-                                $_next_delivery_time = 0;
-                                $date                = '';
-                                $formatted_state     = '';
-                            }
 
 
                             $formatted_link = sprintf(
@@ -637,6 +630,23 @@ class Part extends Asset {
                             $qty            = '+'.number($raw_skos_qty);
                         }
 
+                        if ($row['Purchase Order Estimated Receiving Date'] != '') {
+                            $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
+                            $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                            if ($_next_delivery_time < gmdate('U')) {
+                                $formatted_state = '<span class="discreet error italic" title="'.strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')).'" >'._('Delayed').'</span>';
+
+                            } else {
+
+                                $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+
+                            }
+
+                        } else {
+                            $_next_delivery_time = 0;
+                            $date                = '';
+                            $formatted_state     = '';
+                        }
 
                     }
 
