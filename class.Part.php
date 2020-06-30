@@ -1136,7 +1136,7 @@ class Part extends Asset {
                 if ($this->data['Part Cost in Warehouse'] == '') {
                     $sko_cost = _('SKO stock value no set up yet');
                 } else {
-                    $sko_cost = sprintf('<span title="%s">%s/SKO</span>', _('SKO stock value'), money($this->data['Part Cost in Warehouse'], $account->get('Account Currency')));
+                    $sko_cost = sprintf('<span title="%s">%s /SKO</span>', _('SKO stock value'), money($this->data['Part Cost in Warehouse'], $account->get('Account Currency')));
 
                 }
 
@@ -1144,13 +1144,13 @@ class Part extends Asset {
                 $total_value = $this->data['Part Cost in Warehouse'] * $this->get('Part Current On Hand Stock');
 
                 if ($total_value > 0) {
-                    $total_value = sprintf('<span class="hide_in_history" >%s %s</span>', money($total_value, $account->get('Account Currency')), _('total stock value'));
+                    $total_value = sprintf('<span title="%s" class="hide_in_history" >%s %s</span>', _('total stock value'), money($total_value, $account->get('Account Currency')), _('total'));
                 } else {
                     $total_value = '';
                 }
 
 
-                return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$total_value.'</span>';
+                return ' <span class="discreet" style="margin-right:10px">'.$total_value.'</span>'.$sko_cost;
                 break;
             case 'SKO Cost in Warehouse - Price':
 

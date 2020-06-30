@@ -426,6 +426,11 @@ function money($amount, $currency = '', $locale = false, $option = '') {
 
 
 
+    if($currency=='IDR'){
+        $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
+    }
+
+
     if ($option == 'NO_FRACTION_DIGITS') {
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
     } elseif ($option == 'SINGLE_FRACTION_DIGITS') {

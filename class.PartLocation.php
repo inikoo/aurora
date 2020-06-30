@@ -322,19 +322,16 @@ class PartLocation extends DB_Table {
         $qty_change = $qty - $old_qty;
 
 
-        // print "$qty $old_qty";
-        // exit;
 
 
-        $value_change = round($qty_change * $this->part->get('Part Cost in Warehouse'), 2);
+
+        $value_change = round($qty_change * $this->get_sko_cost(), 2);
 
         $this->updated = true;
 
         if ($note) {
             $note = '<i class="note_data padding_left_5 fa fa-sticky-note" aria-hidden="true"></i> <span class="note">'.$note.'</span>';
-
         } else {
-            //$details='<b>'._('Audit').'</b>, ';
             $note = '';
         }
 
@@ -547,6 +544,17 @@ class PartLocation extends DB_Table {
     }
     */
 
+
+    function get_sko_cost(){
+        if($this->part->get('Part Cost in Warehouse')==''){
+            $sko_cost=$this->part->get('Part Cost');
+        }else{
+            $sko_cost=$this->part->get('Part Cost in Warehouse');
+        }
+
+        return $sko_cost;
+    }
+
     function update_stock($dont_update_part_stock = false) {
 
 
@@ -556,7 +564,7 @@ class PartLocation extends DB_Table {
         $stock = $this->get_stock();
 
 
-        $value = $stock * $this->part->get('Part Cost in Warehouse');
+        $value = $stock * $this->get_sko_cost();
 
         $this->data['Quantity On Hand']    = $stock;
         $this->data['Stock Value']         = $value;
@@ -1042,7 +1050,7 @@ class PartLocation extends DB_Table {
     function stock_transfer($data) {
 
 
-        global $account;
+         $account=get_object('Account',1);
 
         if (!is_numeric($this->data['Quantity On Hand'])) {
             $this->error;
@@ -1057,7 +1065,7 @@ class PartLocation extends DB_Table {
         if (isset($data['Amount'])) {
             $value_change = $data['Amount'];
         } else {
-            $value_change = $this->part->get('Part Cost in Warehouse') * $qty_change;
+            $value_change = $this->get_sko_cost() * $qty_change;
 
         }
 
@@ -1066,7 +1074,7 @@ class PartLocation extends DB_Table {
 
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Stock Value`=%.3f, `Last Updated`=NOW()  WHERE `Part SKU`=%d AND `Location Key`=%d ", $this->data['Quantity On Hand'] + $qty_change,
-            ($this->data['Quantity On Hand'] + $qty_change) * $this->part->get('Part Cost in Warehouse'), $this->part_sku, $this->location_key
+            ($this->data['Quantity On Hand'] + $qty_change) * $this->get_sko_cost(), $this->part_sku, $this->location_key
         );
 
 
@@ -1215,7 +1223,7 @@ class PartLocation extends DB_Table {
 
         $old_value = $this->data['Stock Value'];
 
-        $value = $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse');
+        $value = $this->get('Quantity On Hand') * $this->get_sko_cost();
 
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ", $value, $this->part_sku, $this->location_key
@@ -1432,7 +1440,7 @@ class PartLocation extends DB_Table {
 
 
             if ($date == gmdate('Y-m-d')) {
-                $cost_per_sko = $this->part->get('Part Cost in Warehouse');
+                $cost_per_sko = $this->get_sko_cost();
             } else {
                 $cost_per_sko = $this->get_value_per_sko($date.' 23:59:59');
             }
@@ -1456,7 +1464,7 @@ class PartLocation extends DB_Table {
                 $commercial_value_unit_cost = $this->part->get('Part Commercial Value');
             }
 
-            $value_day_cost_unit_cost = $this->part->get('Part Cost in Warehouse');
+            $value_day_cost_unit_cost = $this->get_sko_cost();
 
             $value_day_cost   = $stock * $value_day_cost_unit_cost;
             $commercial_value = $stock * $commercial_value_unit_cost;

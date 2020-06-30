@@ -1645,11 +1645,12 @@ class SupplierPart extends DB_Table {
                 );
                 $delivered_cost = ($this->data['Supplier Part Unit Cost'] + $extra_cost) / $exchange;
 
-                $cost = sprintf(
-                    '<span title="%s(%s) +%s(%s) @%s x%s">%s </span>', money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']), _('cost'), money($extra_cost, $this->data['Supplier Part Currency Code']), _('extra costs'), $exchange,
-                    $this->part->data['Part Unit Price'],
 
-                    money($this->part->data['Part Unit Price'] * $delivered_cost, $account->get('Account Currency'))
+                $cost = sprintf(
+                    '<span title="%s(%s) +%s(%s) @%s ">%s </span>', money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']), _('cost'), money($extra_cost, $this->data['Supplier Part Currency Code']), _('extra costs'), $exchange,
+
+
+                    money( $delivered_cost, $account->get('Account Currency'))
                 );
 
                 return $cost;

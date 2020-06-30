@@ -71,7 +71,8 @@ class Product extends Asset {
                 $this->properties = json_decode($this->data['Product Properties'], true);
 
             }
-        } elseif ($key == 'store_code') {
+        }
+        elseif ($key == 'store_code') {
             $sql = sprintf(
                 "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%d  AND `Product Code`=%s   ORDER BY CASE `Product Status`
     WHEN 'Active' THEN 1
@@ -89,7 +90,8 @@ class Product extends Asset {
                 $this->properties  = json_decode($this->data['Product Properties'], true);
 
             }
-        } elseif ($key == 'historic_key') {
+        }
+        elseif ($key == 'historic_key') {
             $sql = sprintf(
                 "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%d", $id
             );
@@ -113,15 +115,18 @@ class Product extends Asset {
 
 
             }
-        } else {
+        }
+        else {
 
             exit ("wrong id in class.product get_data A :$key  ".$this->get('Code')." \n");
 
 
         }
 
+        if($this->id){
+            $this->get_store_data();
+        }
 
-        $this->get_store_data();
 
     }
 
@@ -1789,57 +1794,60 @@ class Product extends Asset {
 
     function update_webpages($change_type = '') {
 
+
+
         $webpage = get_object('Webpage', $this->get('Product Webpage Key'));
-        $webpage->reindex();
+        if($webpage->id) {
+            $webpage->reindex();
 
-        switch ($change_type) {
-            case 'main_image':
-
-
-                require_once 'utils/new_fork.php';
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'          => 'reindex_webpages_items',
-                    'webpages_keys' => $webpage->get_upstream_webpage_keys(),
-                ), DNS_ACCOUNT_CODE
-                );
-                break;
-
-            case 'dimensions':
-            case 'weight':
-            case 'materials':
-            case 'country_origin':
-                return;
-
-            default:
-                $webpages_to_reindex = $webpage->get_upstream_webpage_keys();
-
-                $date = gmdate('Y-m-d H:i:s');
-                foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
-                    if ($webpage_to_reindex_key > 0) {
-                        $sql =
-                            "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (?,?,?, ?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? , `Stack Metadata`=? , `Stack Counter`=`Stack Counter`+1";
+            switch ($change_type) {
+                case 'main_image':
 
 
-                        $this->db->prepare($sql)->execute(
-                            array(
-                                $date,
-                                $date,
-                                'reindex_webpage',
-                                $webpage_to_reindex_key,
-                                'from_product_'.$change_type,
-                                $date,
-                                'from_product_'.$change_type
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'          => 'reindex_webpages_items',
+                        'webpages_keys' => $webpage->get_upstream_webpage_keys(),
+                    ), DNS_ACCOUNT_CODE
+                    );
+                    break;
 
-                            )
-                        );
+                case 'dimensions':
+                case 'weight':
+                case 'materials':
+                case 'country_origin':
+                    return;
 
+                default:
+                    $webpages_to_reindex = $webpage->get_upstream_webpage_keys();
+
+                    $date = gmdate('Y-m-d H:i:s');
+                    foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
+                        if ($webpage_to_reindex_key > 0) {
+                            $sql =
+                                "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (?,?,?, ?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? , `Stack Metadata`=? , `Stack Counter`=`Stack Counter`+1";
+
+
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $date,
+                                    $date,
+                                    'reindex_webpage',
+                                    $webpage_to_reindex_key,
+                                    'from_product_'.$change_type,
+                                    $date,
+                                    'from_product_'.$change_type
+
+                                )
+                            );
+
+
+                        }
 
                     }
-
-                }
+            }
         }
-
 
     }
 

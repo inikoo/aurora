@@ -2324,9 +2324,12 @@ function fork_housekeeping($job) {
         case 'update_product_webpages':
 
             $product         = get_object('product', $data['product_id']);
-            $product->editor = $data['editor'];
-            $product->update_webpages($data['scope']);
 
+
+            if($product->id) {
+                $product->editor = $data['editor'];
+                $product->update_webpages($data['scope']);
+            }
 
             break;
         case 'product_price_updated':

@@ -250,14 +250,23 @@
                 <tr class="Part_Cost_in_Warehouse_info_set_up {if $part->get('Part Cost in Warehouse')==''}hide{/if}">
                     <td>
 
-                       {t}Stock value{/t}: <span  style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
+                       {t}Stock value{/t}:
                     </td>
                     <td style="text-align: right">
-                        <span title="{t}Future delivered cost{/t}"><i class="fal fa-shipping-timed "></i>  <span class="SKO_Delivered_Cost">{$main_supplier_part->get('SKO Delivered Cost')}</span><span>/SKO</span></span>
+                        <span  class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
+                     </td>
+
+                </tr>
+                <tr class="Part_Cost_in_Warehouse_info_set_up {if $part->get('Part Cost in Warehouse')==''}hide{/if}">
+                    <td>
+
+                        {t}Current cost{/t}:
+                    </td>
+                    <td colspan=2 style="text-align: right">
+                        <span title="{t}Future delivered cost{/t}"> <span class="SKO_Delivered_Cost">{$main_supplier_part->get('SKO Delivered Cost')}</span><span>/SKO</span></span>
                     </td>
 
                 </tr>
-
 
                 <tr class="hide ">
                     <td>
