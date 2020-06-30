@@ -1675,7 +1675,7 @@ function order_items_in_process($_data, $db, $user, $account) {
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'supplier_key'      => (integer)$data['Supplier Key'],
                 'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
-                'operations'        => sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
+                'operations'        => sprintf('<i key="%d" class="fal fa-fw fa-clipboard fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
 
 
                 'reference' => $reference,
@@ -2492,7 +2492,7 @@ function delivery_items($_data, $db, $user, $account) {
                 //'checkbox'          => sprintf('<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
                 //'operations' => sprintf(
-                //    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                //    '<i key="%d" class="fal fa-fw fa-clipboard fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 //),
 
                 'reference'   => $reference,
@@ -2607,7 +2607,7 @@ function delivery_items_mismatch($_data, $db, $user, $account) {
                 //'checkbox'          => sprintf('<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
                 //'operations' => sprintf(
-                //    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                //    '<i key="%d" class="fal fa-fw fa-clipboard fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 //),
                 'type'        => ($diff_units > 0 ? '<i class="far fa-box-open"></i>' : '<i class="fa fa-box-full"></i>'),
                 'reference'   => $reference,
@@ -2818,7 +2818,7 @@ function delivery_checking_items($_data, $db, $user, $account) {
                 ),
 
                 'operations' => sprintf(
-                    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                    '<i key="%d" class="fal fa-fw fa-clipboard fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 ),
 
 

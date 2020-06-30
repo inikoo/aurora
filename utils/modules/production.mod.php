@@ -41,7 +41,32 @@ function get_production_module() {
                 'icon'      => 'box-heart',
                 'reference' => 'production/%d/parts',
                 'tabs'      => array(
-                    'production.production_parts' => array('label' => _('Parts'))
+
+
+                    'production.discontinued_parts'  => array(
+                        'label' => _(
+                            'Discontinued'
+                        ),
+                        'class' => 'very_discreet right'
+                    ),
+                    'production.discontinuing_parts' => array(
+                        'label' => _(
+                            'Discontinuing'
+                        ),
+                        'class' => 'discreet right'
+                    ),
+                    'production.in_process_parts'    => array(
+                        'label' => _('In process'),
+                        'class' => 'discreet right'
+                    ),
+                    'production.parts'               => array(
+                        'label' => _('Active'),
+                        'class'=>'right'
+                    ),
+
+
+
+                    'production.production_parts' => array('label' => _('All parts'))
                 )
 
 

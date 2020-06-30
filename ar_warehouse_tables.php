@@ -1596,7 +1596,7 @@ function return_checking_items($_data, $db, $user, $account) {
                 ),
 
                 'operations' => sprintf(
-                    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                    '<i key="%d" class="fal fa-fw fa-clipboard fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 ),
 
 

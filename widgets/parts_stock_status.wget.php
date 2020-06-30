@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_parts_stock_status( $user, $smarty, $parent = '', $display_device_version = 'desktop') {
+function get_dashboard_parts_stock_status($db,$type ,$user, $smarty, $parent = '', $display_device_version = 'desktop') {
 
 
     include_once 'utils/date_functions.php';
@@ -39,11 +39,34 @@ function get_dashboard_parts_stock_status( $user, $smarty, $parent = '', $displa
     $smarty->assign('parent', $parent);
 
 
-    if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/parts_stock_status.mobile.dbard.tpl');
-    } else {
-        return $smarty->fetch('dashboard/parts_stock_status.dbard.tpl');
+    if($type=='inventory_excluding_production'){
+        if ($display_device_version == 'mobile') {
+            return $smarty->fetch('dashboard/parts_stock_status.mobile.dbard.tpl');
+        } else {
+            return $smarty->fetch('dashboard/parts_stock_status.dbard.tpl');
+        }
+    }else if($type=='production'){
+        $sql = 'SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!=?';
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array('Archived')
+        );
+        if ($row = $stmt->fetch()) {
+            $manufacturer_key = $row['Supplier Production Supplier Key'];
+            $smarty->assign('production_supplier_key', $manufacturer_key);
+            if ($display_device_version == 'mobile') {
+                return $smarty->fetch('dashboard/production_parts_stock_status.mobile.dbard.tpl');
+            } else {
+                return $smarty->fetch('dashboard/production_parts_stock_status.dbard.tpl');
+            }
+        }
+
+
+
     }
+
+
 }
 
 

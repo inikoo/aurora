@@ -401,7 +401,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
         case 'User':
 
-            if ($options['type'] == 'profile') {
+
+
+            if (is_array($options) and $options['type'] == 'profile') {
                 include 'fields/profile.fld.php';
             } else {
                 include 'fields/user.system.fld.php';

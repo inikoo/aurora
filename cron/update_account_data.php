@@ -17,6 +17,7 @@ require_once 'utils/natural_language.php';
 
 $account->load_acc_data();
 
+$account->update_production_job_orders_stats();
 
 $account->update_dispatching_time_data('1m');
 $account->update_sitting_time_in_warehouse();

@@ -38,6 +38,18 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'active_parts':
+        parts(get_table_parameters(), $db, $user, 'active', $account);
+        break;
+    case 'in_process_parts':
+        parts(get_table_parameters(), $db, $user, 'in_process', $account);
+        break;
+    case 'discontinuing_parts':
+        parts(get_table_parameters(), $db, $user, 'discontinuing', $account);
+        break;
+    case 'discontinued_parts':
+        parts(get_table_parameters(), $db, $user, 'discontinued', $account);
+        break;
     case 'bill_of_materials':
         bill_of_materials(get_table_parameters(), $db, $user, $account);
         break;
@@ -88,6 +100,399 @@ switch ($tipo) {
         break;
 }
 
+function parts($_data, $db, $user, $type, $account) {
+
+
+    if (!$user->can_view('parts')) {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+
+
+    if ($type == 'active') {
+        $extra_where = ' and `Part Status`="In Use"';
+        $rtext_label = 'part';
+
+    } elseif ($type == 'discontinuing') {
+        $extra_where = ' and `Part Status`="Discontinuing"';
+        $rtext_label = 'part';
+
+    } elseif ($type == 'discontinued') {
+        $extra_where = ' and `Part Status`="Not In Use"';
+        $rtext_label = 'discontinued part';
+
+    } elseif ($type == 'in_process') {
+        $extra_where = ' and `Part Status`="In Process"';
+        $rtext_label = 'part in process';
+
+    } else {
+        $extra_where = ' and `Part Status`!="Not In Use"';
+        $rtext_label = 'part';
+
+    }
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    //print $sql;
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Part Stock Status']) {
+                case 'Surplus':
+                    $stock_status       = '<i class="fa  fa-plus-circle fa-fw warning discreet"  aria-hidden="true" title="'._('To much stock').'" ></i>';
+                    $stock_status_label = _('Surplus');
+                    break;
+                case 'Optimal':
+                    $stock_status       = '<i class="fa fa-check-circle fa-fw success" aria-hidden="true"  title="'._('Good level of stock').'"></i>';
+                    $stock_status_label = _('Ok');
+                    break;
+                case 'Low':
+                    $stock_status       = '<i class="fa fa-minus-circle fa-fw warning discreet" aria-hidden="true" title="'._('Low stock, order now').'"></i>';
+                    $stock_status_label = _('Low');
+                    break;
+                case 'Critical':
+                    $stock_status       = '<i class="fa error fa-minus-circle fa-fw error discreet" aria-hidden="true" title="'._('Critical low stock, will be out of stock anytime').'"></i>';
+                    $stock_status_label = _('Critical');
+                    break;
+                case 'Out_Of_Stock':
+                    $stock_status       = '<i class="fa error fa-ban fa-fw error" aria-hidden="true" title="'._('Out of stock').'"></i>';
+                    $stock_status_label = _('Out of stock');
+                    break;
+                case 'Error':
+                    $stock_status       = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status_label = _('Error');
+                    break;
+                default:
+                    $stock_status       = $data['Part Stock Status'];
+                    $stock_status_label = $data['Part Stock Status'];
+                    break;
+            }
+
+
+            if ($data['Part Current On Hand Stock'] <= 0) {
+                $weeks_available = '-';
+            } else {
+                $weeks_available = number(
+                    $data['Part Days Available Forecast'] / 7, 0
+                );
+            }
+
+
+            if ($data['Part Status'] == 'In Use') {
+                $status = _('Active');
+            } elseif ($data['Part Status'] == 'Discontinuing') {
+                $status             = _('Discontinuing');
+                $stock_status       = '<i class="fa fa-box warning fa-fw" aria-hidden="true"></i>';
+                $stock_status_label = _('Discontinuing');
+            } elseif ($data['Part Status'] == 'Not In Use') {
+                $status = _('Discontinued');
+            } elseif ($data['Part Status'] == 'In Process') {
+                $status = _('In process');
+
+
+            } else {
+                $status = $data['Part Status'];
+            }
+
+            $dispatched_per_week = number(
+                $data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0
+            );
+
+            $associated = sprintf(
+                '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Part SKU']
+            );
+
+
+            $sko_cost = money($data['Part Cost'], $account->get('Account Currency'));
+
+            if ($data['Part Cost in Warehouse'] == '') {
+                $sko_stock_value = '<span class="super_discreet">'._('No set').'</span>';
+            } else {
+                $sko_stock_value = money($data['Part Cost in Warehouse'], $account->get('Account Currency'));
+            }
+
+
+            if ($data['Part Next Deliveries Data'] == '') {
+                $next_deliveries_array = array();
+            } else {
+                $next_deliveries_array = json_decode($data['Part Next Deliveries Data'], true);
+            }
+
+
+            $next_deliveries = '';
+
+            foreach ($next_deliveries_array as $next_delivery) {
+
+
+                $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_10" style="min-width: 150px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" style="text-align: right;min-width: 70px" title="'._(
+                        'SKOs ordered'
+                    ).'">+'.number(
+                        $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                    ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+
+
+            }
+
+
+            $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+
+
+            if ($data['Part On Demand'] == 'Yes') {
+
+                $available_forecast = '<span >'.sprintf(
+                        '%s', '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
+                    ).'</span>';
+
+                if ($data['Part Fresh'] == 'No') {
+                    $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5"  title="'._('On demand').'"></i>';
+                } else {
+                    $available_forecast = ' <i class="far fa-lemon padding_left_5"  title="'._('On demand').'"></i>';
+                }
+            } else {
+
+                if ($data['Part Days Available Forecast'] == 0) {
+                    $available_forecast = '';
+                } else {
+
+                    $available_forecast = '<span >'.sprintf(
+                            '%s', '<span  title="'.sprintf(
+                                    "%s %s", number($data['Part Days Available Forecast'], 1), ngettext(
+                                               "day", "days", intval($data['Part Days Available Forecast'])
+                                           )
+                                ).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
+                        ).'</span>';
+
+                }
+            }
+
+
+            if ($data['Part Cost in Warehouse'] == '') {
+                $stock_value = '<span class=" error italic">'._('Unknown cost').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+
+
+            } elseif ($data['Part Cost in Warehouse'] == 0) {
+                $stock_value = '<span class=" error italic">'._('Cost is zero').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+
+
+            } elseif ($data['Part Current On Hand Stock'] < 0) {
+                $stock_value = '<span class=" error italic">'._('Unknown stock').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+
+
+            } else {
+                $stock_value = money($data['Part Cost in Warehouse'] * $data['Part Current On Hand Stock'], $account->get('Account Currency'));
+
+
+            }
+
+
+            if ($_data['parameters']['parent'] == 'category') {
+                $reference = sprintf(
+                    '<span class="link" onclick="change_view(\'category/%d/part/%d\')">%s</span>', $_data['parameters']['parent_key'], $data['Part SKU'],
+                    ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+                );
+
+            } else {
+                $reference = sprintf(
+                    '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'],
+                    ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+                );
+
+            }
+
+
+            if ($data['Part Symbol'] != '') {
+                if ($data['Part Symbol'] != '') {
+
+                    switch ($data['Part Symbol']) {
+                        case 'star':
+                            $symbol = '&#9733;';
+                            break;
+
+                        case 'skull':
+                            $symbol = '&#9760;';
+                            break;
+                        case 'radioactive':
+                            $symbol = '&#9762;';
+                            break;
+                        case 'peace':
+                            $symbol = '&#9774;';
+                            break;
+                        case 'sad':
+                            $symbol = '&#9785;';
+                            break;
+                        case 'gear':
+                            $symbol = '&#9881;';
+                            break;
+                        case 'love':
+                            $symbol = '&#10084;';
+                            break;
+                        default:
+                            $symbol = '';
+
+                    }
+                    $reference .= ' '.$symbol;
+                }
+
+            }
+
+
+            $record_data[] = array(
+                'id'                 => (integer)$data['Part SKU'],
+                'associated'         => $associated,
+                'reference'          => $reference,
+                'sko_description'    => $data['Part Package Description'],
+                'status'             => $status,
+                'stock_status'       => $stock_status,
+                'stock_status_label' => $stock_status_label,
+                'stock'              => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
+                'stock_value'        => $stock_value,
+
+                'dispatched'     => number($data['dispatched'], 0),
+                'dispatched_1yb' => delta($data['dispatched'], $data['dispatched_1yb']),
+                'sales'          => money($data['sales'], $account->get('Account Currency')),
+                'sales_1yb'      => delta($data['sales'], $data['sales_1yb']),
+
+                'sales_year0' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Year To Day Acc Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part Year To Day Acc Invoiced Amount"], $data["Part Year To Day Acc 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_year1' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 1 Year Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 1 Year Ago Invoiced Amount"], $data["Part 2 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year2' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 2 Year Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 2 Year Ago Invoiced Amount"], $data["Part 3 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year3' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 3 Year Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 3 Year Ago Invoiced Amount"], $data["Part 4 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year4' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 4 Year Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 4 Year Ago Invoiced Amount"], $data["Part 5 Year Ago Invoiced Amount"]
+                    )
+                ),
+
+                'sales_quarter0' => sprintf(
+                    '<span>%s</span> %s', money($data['Part Quarter To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Quarter To Day Acc Invoiced Amount"], $data["Part Quarter To Day Acc 1YB Invoiced Amount"])
+                ),
+                'sales_quarter1' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 1 Quarter Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 1 Quarter Ago Invoiced Amount"], $data["Part 1 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter2' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 2 Quarter Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 2 Quarter Ago Invoiced Amount"], $data["Part 2 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter3' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 3 Quarter Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 3 Quarter Ago Invoiced Amount"], $data["Part 3 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter4' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part 4 Quarter Ago Invoiced Amount'], $account->get('Account Currency')
+                ), delta_icon(
+                        $data["Part 4 Quarter Ago Invoiced Amount"], $data["Part 4 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+
+
+                'dispatched_year0' => sprintf('<span>%s</span> %s', number($data['Part Year To Day Acc Dispatched']), delta_icon($data["Part Year To Day Acc Dispatched"], $data["Part Year To Day Acc 1YB Dispatched"])),
+                'dispatched_year1' => sprintf('<span>%s</span> %s', number($data['Part 1 Year Ago Dispatched']), delta_icon($data["Part 1 Year Ago Dispatched"], $data["Part 2 Year Ago Dispatched"])),
+                'dispatched_year2' => sprintf('<span>%s</span> %s', number($data['Part 2 Year Ago Dispatched']), delta_icon($data["Part 2 Year Ago Dispatched"], $data["Part 3 Year Ago Dispatched"])),
+                'dispatched_year3' => sprintf('<span>%s</span> %s', number($data['Part 3 Year Ago Dispatched']), delta_icon($data["Part 3 Year Ago Dispatched"], $data["Part 4 Year Ago Dispatched"])),
+                'dispatched_year4' => sprintf('<span>%s</span> %s', number($data['Part 4 Year Ago Dispatched']), delta_icon($data["Part 4 Year Ago Dispatched"], $data["Part 5 Year Ago Dispatched"])),
+
+                'dispatched_quarter0' => sprintf('<span>%s</span> %s', number($data['Part Quarter To Day Acc Dispatched']), delta_icon($data["Part Quarter To Day Acc Dispatched"], $data["Part Quarter To Day Acc 1YB Dispatched"])),
+                'dispatched_quarter1' => sprintf('<span>%s</span> %s', number($data['Part 1 Quarter Ago Dispatched']), delta_icon($data["Part 1 Quarter Ago Dispatched"], $data["Part 1 Quarter Ago 1YB Dispatched"])),
+                'dispatched_quarter2' => sprintf('<span>%s</span> %s', number($data['Part 2 Quarter Ago Dispatched']), delta_icon($data["Part 2 Quarter Ago Dispatched"], $data["Part 2 Quarter Ago 1YB Dispatched"])),
+                'dispatched_quarter3' => sprintf('<span>%s</span> %s', number($data['Part 3 Quarter Ago Dispatched']), delta_icon($data["Part 3 Quarter Ago Dispatched"], $data["Part 3 Quarter Ago 1YB Dispatched"])),
+                'dispatched_quarter4' => sprintf('<span>%s</span> %s', number($data['Part 4 Quarter Ago Dispatched']), delta_icon($data["Part 4 Quarter Ago Dispatched"], $data["Part 4 Quarter Ago 1YB Dispatched"])),
+
+
+                'sales_total'                      => money($data['Part Total Acc Invoiced Amount'], $account->get('Account Currency')),
+                'dispatched_total'                 => number($data['Part Total Acc Dispatched'], 0),
+                'customer_total'                   => number($data['Part Total Acc Customers'], 0),
+                'percentage_repeat_customer_total' => percentage($data['Part Total Acc Repeat Customers'], $data['Part Total Acc Customers']),
+
+
+                'weeks_available'     => $weeks_available,
+                'dispatched_per_week' => $dispatched_per_week,
+                'valid_from'          => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
+                'valid_to'            => strftime("%a %e %b %Y", strtotime($data['Part Valid From'].' +0:00')),
+                'active_from'         => strftime("%a %e %b %Y", strtotime($data['Part Active From'].' +0:00')),
+                'has_stock'           => ($data['Part Current On Hand Stock'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
+                'has_picture'         => ($data['Part Main Image Key'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
+                'has_products'        => ($data['Part Number Active Products'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
+
+                'sko_cost'             => $sko_cost,
+                'sko_stock_value'      => $sko_stock_value,
+                'sko_commercial_value' => ($data['Part Commercial Value'] == '' ? '' : money($data['Part Commercial Value'], $account->get('Account Currency'))),
+
+                'margin'             => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
+                'next_deliveries'    => $next_deliveries,
+                'available_forecast' => $available_forecast,
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function replenishments($_data, $db, $user, $account) {
 

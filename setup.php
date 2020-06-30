@@ -186,6 +186,9 @@ if (!$account->id) {
         );
         $db->exec($sql);
 
+        $account->update_production_job_orders_stats();
+
+
 
     } else {
         $smarty->assign('request', 'account/setup/error/1');

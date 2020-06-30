@@ -24,7 +24,7 @@
 
     <div class="one_third ">
         <h5>
-            <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
+            <i class="fal fa-fw fa-clipboard" aria-hidden="true"></i>
             <span id="_delivery_address_label" class="website_localized_label"
                   >{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery address{/t}{/if}</span>
         </h5>

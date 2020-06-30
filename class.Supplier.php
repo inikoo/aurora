@@ -528,13 +528,14 @@ class Supplier extends SubjectSupplier {
             case 'unlink agent':
 
 
-                $agent = get_object('Agent',$value);
+                $agent = get_object('Agent', $value);
 
                 $sql = "DELETE FROM `Agent Supplier Bridge` WHERE `Agent Supplier Agent Key`=? AND `Agent Supplier Supplier Key`=?";
 
                 $this->db->prepare($sql)->execute(
                     array(
-                        $value, $this->id
+                        $value,
+                        $this->id
                     )
                 );
 
@@ -562,42 +563,46 @@ class Supplier extends SubjectSupplier {
 
                 if ($value == 'Container') {
                     $this->other_fields_updated = array(
-                        'Supplier_Default_Incoterm' => array(
+                        'Supplier_Default_Incoterm'       => array(
                             'field'  => 'Supplier_Default_Incoterm',
                             'render' => true,
-                        ),'Supplier_Default_Port_of_Export' => array(
+                        ),
+                        'Supplier_Default_Port_of_Export' => array(
                             'field'  => 'Supplier_Default_Port_of_Export',
                             'render' => true,
-                        ),'Supplier_Default_Port_of_Import' => array(
+                        ),
+                        'Supplier_Default_Port_of_Import' => array(
                             'field'  => 'Supplier_Default_Port_of_Import',
                             'render' => true,
                         ),
                     );
-                    $hide=[];
-                    $show=['import_settings_tr'];
+                    $hide                       = [];
+                    $show                       = ['import_settings_tr'];
 
                 } else {
                     $this->other_fields_updated = array(
-                        'Supplier_Default_Incoterm' => array(
+                        'Supplier_Default_Incoterm'       => array(
                             'field'  => 'Supplier_Default_Incoterm',
                             'render' => false,
-                        ),'Supplier_Default_Port_of_Export' => array(
+                        ),
+                        'Supplier_Default_Port_of_Export' => array(
                             'field'  => 'Supplier_Default_Port_of_Export',
                             'render' => false,
-                        ),'Supplier_Default_Port_of_Import' => array(
+                        ),
+                        'Supplier_Default_Port_of_Import' => array(
                             'field'  => 'Supplier_Default_Port_of_Import',
                             'render' => false,
                         ),
 
                     );
-                    $hide=['import_settings_tr'];
-                    $show=[];
+                    $hide                       = ['import_settings_tr'];
+                    $show                       = [];
                 }
 
 
                 $this->update_metadata = array(
-                    'hide'       => $hide,
-                    'show'       => $show
+                    'hide' => $hide,
+                    'show' => $show
                 );
 
                 break;
@@ -1439,7 +1444,7 @@ class Supplier extends SubjectSupplier {
     function update_supplier_parts() {
 
 
-        $parts_skus = $this->get_part_skus();
+        $parts_skos = $this->get_part_skus();
 
 
         $supplier_number_parts              = 0;
@@ -1451,66 +1456,43 @@ class Supplier extends SubjectSupplier {
         $supplier_number_out_of_stock_parts = 0;
 
 
-        if ($parts_skus != '') {
+        if ($parts_skos != '') {
 
 
-            $supplier_number_parts = count(preg_split('/,/', $parts_skus));
+            $supplier_number_parts = count(preg_split('/,/', $parts_skos));
 
 
-            /*
-            $sql=sprintf('select count(*) as num
-        from `Supplier Part Dimension` SP  where `Supplier Part Supplier Key`=%d  ',
-                $this->id
-            );
+            $parts_skos = $this->get_part_skus('in_use');
 
+            if ($parts_skos != '') {
 
-            if ($result=$this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    //print_r($row);
+                $sql = "SELECT count(*) AS num ,
+		sum(if(`Part Stock Status`='Surplus',1,0)) AS surplus,
+		sum(if(`Part Stock Status`='Optimal',1,0)) AS optimal,
+		sum(if(`Part Stock Status`='Low',1,0)) AS low,
+		sum(if(`Part Stock Status`='Critical',1,0)) AS critical,
+		sum(if(`Part Stock Status`='Out_Of_Stock',1,0)) AS out_of_stock
 
-                    $supplier_number_parts=$row['num'];
+		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=? AND `Supplier Part Part SKU` IN (?) ";
 
-                }
-            }else {
-                print_r($error_info=$this->db->errorInfo());
-                exit;
-            }
-*/
-
-            $parts_skus = $this->get_part_skus('in_use');
-
-            if ($parts_skus != '') {
-
-                $sql = sprintf(
-                    'SELECT count(*) AS num ,
-		sum(if(`Part Stock Status`="Surplus",1,0)) AS surplus,
-		sum(if(`Part Stock Status`="Optimal",1,0)) AS optimal,
-		sum(if(`Part Stock Status`="Low",1,0)) AS low,
-		sum(if(`Part Stock Status`="Critical",1,0)) AS critical,
-		sum(if(`Part Stock Status`="Out_Of_Stock",1,0)) AS out_of_stock
-
-		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=%d AND `Supplier Part Part SKU` IN (%s) ', $this->id, addslashes($parts_skus)
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id,
+                        $parts_skos
+                    )
                 );
-
-
-                //	print $sql;
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        // print_r($row);
-                        $supplier_number_active_parts = $row['num'];
-                        if ($row['num'] > 0) {
-                            $supplier_number_surplus_parts      = $row['surplus'];
-                            $supplier_number_optimal_parts      = $row['optimal'];
-                            $supplier_number_low_parts          = $row['low'];
-                            $supplier_number_critical_parts     = $row['critical'];
-                            $supplier_number_out_of_stock_parts = $row['out_of_stock'];
-                        }
-
+                if ($row = $stmt->fetch()) {
+                    $supplier_number_active_parts = $row['num'];
+                    if ($row['num'] > 0) {
+                        $supplier_number_surplus_parts      = $row['surplus'];
+                        $supplier_number_optimal_parts      = $row['optimal'];
+                        $supplier_number_low_parts          = $row['low'];
+                        $supplier_number_critical_parts     = $row['critical'];
+                        $supplier_number_out_of_stock_parts = $row['out_of_stock'];
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
+
 
             }
 

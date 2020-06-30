@@ -2765,41 +2765,43 @@ function parts_discontinuing($_data, $db, $user, $account) {
 
                 foreach ($products_data as $product_data) {
 
+
                     $product_data = preg_split('/\:/', $product_data);
 
-                    // print_r($product_data);
+                    if(count($product_data)==8) {
 
-                    if ($product_data[8] == 'Active' or $product_data[8] == 'Discontinuing') {
-
-
-                        $number_products++;
-
-                        //'For Sale','Out of Stock','Discontinued','Offline'
-                        switch ($product_data[5]) {
-                            case 'Offline':
-                                $web_state = sprintf('<i class="fa-fw far fa-globe super_discreet" title="%s"></i>', _('Offline'));
-                                break;
-                            case 'Discontinued':
-                                $web_state = sprintf('<i class="fa-fw far fa-globe very_discreet" title="%s"></i>', _('Show as discontinued'));
-                                break;
-                            case 'Out of Stock':
-                                $web_state = sprintf('<i class="fa-fw far fa-globe error discreet" title="%s"></i>', _('Show as out of stock'));
-                                break;
-                            case 'For Sale':
-                                $web_state = sprintf('<i class="fa-fw far fa-globe success" title="%s"></i>', _('Online'));
-                                break;
-                            default:
-                                $web_state = $product_data[5];
-                        }
+                        if ($product_data[8] == 'Active' or $product_data[8] == 'Discontinuing') {
 
 
-                        $products .= ' <div style="clear:both;"    >
+                            $number_products++;
+
+                            //'For Sale','Out of Stock','Discontinued','Offline'
+                            switch ($product_data[5]) {
+                                case 'Offline':
+                                    $web_state = sprintf('<i class="fa-fw far fa-globe super_discreet" title="%s"></i>', _('Offline'));
+                                    break;
+                                case 'Discontinued':
+                                    $web_state = sprintf('<i class="fa-fw far fa-globe very_discreet" title="%s"></i>', _('Show as discontinued'));
+                                    break;
+                                case 'Out of Stock':
+                                    $web_state = sprintf('<i class="fa-fw far fa-globe error discreet" title="%s"></i>', _('Show as out of stock'));
+                                    break;
+                                case 'For Sale':
+                                    $web_state = sprintf('<i class="fa-fw far fa-globe success" title="%s"></i>', _('Online'));
+                                    break;
+                                default:
+                                    $web_state = $product_data[5];
+                            }
+
+
+                            $products .= ' <div style="clear:both;"    >
 				<div  class="store_code data w30"  >'.$product_data[1].'</div>
 				<div  class="code data w150 link"   onclick="change_view(\'part/'.$data['Part SKU'].'/product/'.$product_data[3].'\')"  >'.$product_data[4].'</div>
 				<div  class="web_state data w30"  >'.$web_state.'</div>
 
 				<div class="data w30 aright" >'.money($product_data[6], $product_data[2]).'</div>
 				</div>';
+                        }
                     }
                 }
                 $products .= '<div style="clear:both"></div></div>';

@@ -172,6 +172,31 @@ switch ($tab) {
         get_parts_elements($db, $data['parameters'], $user);
         break;
 
+    case 'production.active_parts':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+
+        get_production_parts_elements($db, $data['parameters'], $user);
+        break;
+    case 'category.parts':
+    case 'category.all_parts':
+    case 'material.parts':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+
+        if ($tab == 'category.all_parts') {
+            $data['parameters']['parent']     = 'account';
+            $data['parameters']['parent_key'] = 1;
+        }
+
+        get_parts_elements($db, $data['parameters'], $user);
+        break;
     case 'part_families':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
 
@@ -663,19 +688,19 @@ function job_order_items_elements($db, $data) {
             $row['element'] = 'QC_Pass';
         } elseif (in_array(
             $row['element'], [
-            'InDelivery',
-            'Inputted',
-            'Dispatched',
-            'Received',
-            'Checked'
-        ]
+                               'InDelivery',
+                               'Inputted',
+                               'Dispatched',
+                               'Received',
+                               'Checked'
+                           ]
         )) {
             $row['element'] = 'Delivered';
         } elseif (in_array(
             $row['element'], [
-            'Placed',
-            'InvoiceChecked'
-        ]
+                               'Placed',
+                               'InvoiceChecked'
+                           ]
         )) {
             $row['element'] = 'Placed';
         } elseif ($row['element'] == 'NoReceived' or $row['element'] == 'Cancelled') {
@@ -724,9 +749,9 @@ function warehouse_production_deliveries($db, $data) {
             $row['element'] = 'Cancelled';
         } elseif (in_array(
             $row['element'], [
-            'Placed',
-            'InvoiceChecked'
-        ]
+                               'Placed',
+                               'InvoiceChecked'
+                           ]
         )) {
             $row['element'] = 'Placed';
         } else {
@@ -1147,7 +1172,6 @@ function get_stock_transactions_elements($db, $data, $user) {
 function get_parts_elements($db, $data, $user) {
 
 
-    $parent_key       = $data['parent_key'];
     $elements_numbers = array(
         'stock_status' => array(
             'Surplus'      => 0,
@@ -1209,6 +1233,44 @@ function get_parts_elements($db, $data, $user) {
 
 }
 
+function get_production_parts_elements($db) {
+
+
+    $elements_numbers = array(
+        'stock_status' => array(
+            'Surplus'      => 0,
+            'Optimal'      => 0,
+            'Low'          => 0,
+            'Critical'     => 0,
+            'Out_Of_Stock' => 0,
+            'Error'        => 0
+        ),
+
+    );
+
+    $where = "where `Part Production`='Yes' and `Part Status`='In Use' ";
+    $table = "`Part Dimension` P  ";
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Part Stock Status` as element from $table $where  group by `Part Stock Status` "
+    );
+
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['stock_status'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
 
 function get_supplier_parts_elements($db, $data, $user) {
 
@@ -2664,7 +2726,7 @@ function get_production_orders_elements($db, $data) {
             'Queued'        => 0,
             'Manufacturing' => 0,
             'Manufactured'  => 0,
-            'Delivered'  => 0,
+            'Delivered'     => 0,
             'QC_Pass'       => 0,
             'Placed'        => 0,
             'Cancelled'     => 0
@@ -2688,9 +2750,9 @@ function get_production_orders_elements($db, $data) {
                 $element = 'Manufacturing';
             } elseif ($row['element'] == 'Manufactured') {
                 $element = 'Manufactured';
-            }elseif ($row['element'] == 'QC_Pass') {
+            } elseif ($row['element'] == 'QC_Pass') {
                 $element = 'QC_Pass';
-            } elseif ( $row['element'] == 'Received' or $row['element'] == 'Checked' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'Delivered';
             } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing' or $row['element'] == 'InvoiceChecked') {
                 $element = 'Placed';

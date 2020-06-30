@@ -381,7 +381,7 @@ class SubjectList extends DB_Table {
             '
 <i title="%s" style="margin-right: 10px;position: relative;top:1px" class="%s fa fa-fw fa-newspaper" aria-hidden="true"></i> 
 <i title="%s" style="margin-right: 10px"  class=" %s fa fa-fw fa-envelope" aria-hidden="true"></i>  
-<i title="%s" class="%s fa fa-fw fa-truck" aria-hidden="true"></i>', _('Newsletters'), ($data['Customer Send Newsletter'] == 'No' ? 'discreet error' : ''), _('Marketing by email'), ($data['Customer Send Email Marketing'] == 'No' ? 'discreet error' : ''),
+<i title="%s" class="%s fal fa-fw fa-clipboard" aria-hidden="true"></i>', _('Newsletters'), ($data['Customer Send Newsletter'] == 'No' ? 'discreet error' : ''), _('Marketing by email'), ($data['Customer Send Email Marketing'] == 'No' ? 'discreet error' : ''),
             _('Marketing by post'), ($data['Customer Send Postal Marketing'] == 'No' ? 'discreet error' : '')
         );
 

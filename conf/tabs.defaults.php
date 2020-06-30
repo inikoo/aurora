@@ -2889,6 +2889,19 @@ $tab_defaults = array(
         'export_fields' => get_export_fields('parts')
 
     ),
+    'production.active_parts' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+        'elements_type' => array_keys(get_elements_option('parts'))[0],
+        'elements'      => get_elements_option('parts'),
+        'export_fields' => get_export_fields('parts')
+
+    ),
 
     'inventory.parts_no_sko_barcode.wget' => array(
         'view'        => 'overview',
@@ -2968,7 +2981,39 @@ $tab_defaults = array(
         'export_fields' => get_export_fields('parts')
 
     ),
+    'production.discontinued_parts'       => array(
+        'view'          => 'overview',
+        'sort_key'      => 'valid_to',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'f_period'      => 'all',
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'export_fields' => get_export_fields('parts')
+
+    ),
+    'production.discontinuing_parts'      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'stock_value',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'f_period'      => 'all',
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'export_fields' => get_export_fields('parts')
+
+    ),
     'inventory.in_process_parts'         => array(
+        'view'          => 'overview',
+        'sort_key'      => 'valid_from',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'export_fields' => get_export_fields('parts')
+
+    ),
+    'production.in_process_parts'         => array(
         'view'          => 'overview',
         'sort_key'      => 'valid_from',
         'sort_order'    => 1,

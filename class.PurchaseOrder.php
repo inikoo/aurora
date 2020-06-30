@@ -3294,7 +3294,7 @@ class PurchaseOrder extends DB_Table {
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'   => 'update_purchase_order_operatives_stats',
+            'type'   => 'update_production_job_orders_stats',
             'po_key' => $this->id,
             'editor' => $this->editor
         ), DNS_ACCOUNT_CODE, $this->db

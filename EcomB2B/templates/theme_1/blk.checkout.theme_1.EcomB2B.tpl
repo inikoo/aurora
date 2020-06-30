@@ -31,7 +31,7 @@
                 <h5 >
 
                         <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
-                        <i id="_delivery_address_icon" class="fa fa-fw fa-truck   " aria-hidden="true"></i>
+                        <i id="_delivery_address_icon" class="fal fa-fw fa-clipboard   " aria-hidden="true"></i>
                         <span id="_delivery_address_label">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
                         </span>
                     <span id="collection_label" class="{if $order->get('Order For Collection')=='No'}hide{/if} "">

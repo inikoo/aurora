@@ -453,6 +453,38 @@ function money($amount, $currency = '', $locale = false, $option = '') {
     return $formatted_money;
 }
 
+/**
+ * @param      $amount
+ * @param      $currency 3 letter currency code
+ * @param bool $locale
+ *
+ * @return string minified amount
+ */
+function money_minify($amount,$currency,$locale = false){
+
+
+    $suffix          = '';
+    $fraction_digits = 'NO_FRACTION_DIGITS';
+    if ($amount >= 1000000) {
+        $suffix          = 'M';
+        $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
+        $_amount         = $amount / 1000000;
+    } elseif ($amount >= 10000) {
+        $suffix  = 'K';
+        $_amount = $amount / 1000;
+    } elseif ($amount > 100) {
+        $fraction_digits = 'SINGLE_FRACTION_DIGITS';
+        $suffix          = 'K';
+        $_amount         = $amount / 1000;
+    } else {
+        $_amount = $amount;
+    }
+
+    return money($_amount, $currency, $locale, $fraction_digits).$suffix;
+    
+}
+
+
 function seconds_to_until($seconds, $short = false) {
 
 

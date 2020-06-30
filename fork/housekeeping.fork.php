@@ -3078,7 +3078,10 @@ function fork_housekeeping($job) {
 
 
             break;
-        case 'update_purchase_order_operatives_stats':
+        case 'update_production_job_orders_stats':
+
+
+            $account->update_production_job_orders_stats();
 
             $sql  = "select `Purchase Order Transaction Operator Key` from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction Operator Key` ";
             $stmt = $db->prepare($sql);

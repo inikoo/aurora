@@ -19,7 +19,7 @@
         <div>
              <span class="Active_Parts_Stock_Surplus_Stock_Value_Minify " title="{t}Stock value{/t}">{$account->get('Active Suppliers Parts Stock Surplus Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Surplus_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Surplus Deliveries Number')}</span>
+            | <i class="fal fa-fw fa-clipboard" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Surplus_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Surplus Deliveries Number')}</span>
 
         </div>
     </li>
@@ -29,7 +29,7 @@
         <div>
             <span class="Active_Parts_Stock_OK_Stock_Value_Minify " title="{t}Stock value{/t}">{$account->get('Active Suppliers Parts Stock OK Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_OK_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock OK Deliveries Number')}</span>
+            | <i class="fal fa-fw fa-clipboard" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_OK_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock OK Deliveries Number')}</span>
 
         </div>
     </li>
@@ -40,7 +40,7 @@
         <div>
             <span class="Active_Parts_Stock_Low_Stock_Value_Minify " title="{t}Stock value{/t}">{$account->get('Active Suppliers Parts Stock Low Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Low_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Low Deliveries Number')}</span>
+            | <i class="fal fa-fw fa-clipboard" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Low_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Low Deliveries Number')}</span>
 
         </div>
     </li>
@@ -51,7 +51,7 @@
         <div>
             <span class="Active_Parts_Stock_Critical_Stock_Value_Minify " title="{t}Stock value{/t}">{$account->get('Active Suppliers Parts Stock Critical Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Critical_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Critical Deliveries Number')}</span>
+            | <i class="fal fa-fw fa-clipboard" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Critical_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Critical Deliveries Number')}</span>
 
         </div>
     </li>
@@ -60,7 +60,7 @@
         <span>{t}Out of stock{/t}</span>
         <div class="title"><span class="Active_Parts_Stock_Zero_Number button"  onclick="change_view('suppliers/supplier_parts' , { 'subtab':'suppliers.supplier_parts.out_of_stock',  } )"  title="{t}Number of out of stock parts{/t}">{$account->get('Active Suppliers Parts Stock Zero Number')}</span></div>
         <div>
-             <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Zero_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Zero Deliveries Number')}</span>
+             <i class="fal fa-fw fa-clipboard" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Zero_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$account->get('Active Suppliers Parts Stock Zero Deliveries Number')}</span>
 
         </div>
     </li>

@@ -63,13 +63,13 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'render'          => (in_array(
+                'render'          => ((is_array($options) and  in_array(
                     $options['parent'], array(
                                           'supplier',
                                           'agent',
                                           'contractor'
                                       )
-                ) ? true : false),
+                ) )? true : false),
                 'id'              => 'User_Alias',
                 'edit'            => 'string',
                 'value'           => $object->get('User Alias'),
@@ -77,13 +77,13 @@ $object_fields = array(
                 'label'           => ucfirst(
                     $object->get_field_label('User Alias')
                 ),
-                'type'            => (in_array(
+                'type'            => ((is_array($options) and in_array(
                     $options['parent'], array(
                                           'supplier',
                                           'agent',
                                           'contractor'
                                       )
-                ) ? 'value' : '')
+                ) )? 'value' : '')
 
             ),
 

@@ -25,11 +25,11 @@
 
     <li class="flex-item ">
         <span>{t}Parts{/t}</span>
-        <div class="title"><span class="Active_Parts button"  onclick="change_view('inventory',{ 'tab':'inventory.parts'})" title="{t}Number active parts{/t}" >{$object->get('Active Parts Number')}</span></div>
+        <div class="title"><span class="Active_Parts_Excluding_Production button"  onclick="change_view('inventory',{ 'tab':'inventory.parts'})" title="{t}Number active parts{/t}" >{$object->get('Active Parts Number Excluding Production')}</span></div>
         <div class="button"  onclick="change_view('inventory',{ 'tab':'inventory.in_process_parts'})">
-            <span> <i class="fa fa-fw fa-seedling" title="{t}Parts in process{/t}"  ></i> <span class="In_Process_Parts " title="{t}Parts in process{/t}">{$object->get('In Process Parts Number')}</span></span>
+            <span> <i class="fa fa-fw fa-seedling" title="{t}Parts in process{/t}"  ></i> <span class="In_Process_Parts_Excluding_Production " title="{t}Parts in process{/t}">{$object->get('In Process Parts Number Excluding Production')}</span></span>
 
-            | <span class="button"  onclick="change_view('inventory',{ 'tab':'inventory.discontinuing_parts'})"><i class="far fa-fw fa-skull" title="{t}Discontinuing parts{/t}" ></i> <span class="Discontinuing_Parts " title="{t}Discontinuing parts{/t}">{$object->get('Discontinuing Parts Number')}</span>
+            | <span class="button"  onclick="change_view('inventory',{ 'tab':'inventory.discontinuing_parts'})"><i class="far fa-fw fa-skull" title="{t}Discontinuing parts{/t}" ></i> <span class="Discontinuing_Parts_Excluding_Production " title="{t}Discontinuing parts{/t}">{$object->get('Discontinuing Parts Number Excluding Production')}</span>
 
         </div>
     </li>
@@ -50,8 +50,8 @@
 
 
 
-            <span class=" button" title="{t}Parts with no products associated{/t}"  onclick=" change_view('inventory/dashboard'  )"><i style="font-size: 50%" class=" far fa-ghost " ></i> <span class="Containers_in_Transit">{$object->get('Parts No Products')}</span></span> |
-            <span class=" button" title="{t}Parts forced offline/out of stock on website{/t}"   onclick=" change_view('inventory/dashboard'  )"><span class="Small_Deliveries_in_Transit">{$object->get('Parts Forced not for Sale')}</span> <i style="font-size: 50%" class="fal fa-globe red" ></i></span>
+            <span class=" button" title="{t}Parts with no products associated{/t}"  onclick=" change_view('inventory/dashboard'  )"><i style="font-size: 50%" class=" far fa-ghost " ></i> <span class="Parts_No_Products_Excluding_Production">{$object->get('Parts No Products Excluding Production')}</span></span> |
+            <span class=" button" title="{t}Parts forced offline/out of stock on website{/t}"   onclick=" change_view('inventory/dashboard'  )"><span class="Parts_Forced_not_for_Sale_Excluding_Production">{$object->get('Parts Forced not for Sale Excluding Production')}</span> <i style="font-size: 50%" class="fal fa-globe red" ></i></span>
         </div>
 
     </li>

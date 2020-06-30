@@ -371,7 +371,7 @@ class Account extends DB_Table {
                 $number = 0;
 
 
-                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  and `Supplier Delivery CBM`>=25 ";
+                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  and `Supplier Delivery Type`='Container' ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute();
                 if ($row = $stmt->fetch()) {
@@ -385,7 +385,7 @@ class Account extends DB_Table {
                 $number = 0;
 
 
-                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  and ( `Supplier Delivery CBM`<25 or `Supplier Delivery CBM` is null )";
+                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  `Supplier Delivery Type`='Parcel'";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute();
                 if ($row = $stmt->fetch()) {
@@ -484,7 +484,45 @@ class Account extends DB_Table {
             case 'Parts No Products':
             case 'Parts Forced not for Sale':
                 return number($this->data['Account '.$key]);
-                break;
+
+            case 'Active Parts Stock Surplus Number Excluding Production':
+            case 'Active Parts Stock OK Number Excluding Production':
+            case 'Active Parts Stock Low Number Excluding Production':
+            case 'Active Parts Stock Critical Number Excluding Production':
+            case 'Active Parts Stock Zero Number Excluding Production':
+
+            case 'Active Parts Stock Surplus Deliveries Number Excluding Production':
+            case 'Active Parts Stock OK Deliveries Number Excluding Production':
+            case 'Active Parts Stock Low Deliveries Number Excluding Production':
+            case 'Active Parts Stock Critical Deliveries Number Excluding Production':
+            case 'Active Parts Stock Zero Deliveries Number Excluding Production':
+
+                $_key            = 'Account '.preg_replace('/ Excluding Production/', '', $key);
+                $_key_production = preg_replace('/Active/', 'Active Production', $_key);
+
+                return number($this->data[$_key] - $this->data[$_key_production]);
+
+            case 'Active Parts Number Excluding Production':
+            case 'In Process Parts Number Excluding Production':
+            case 'Discontinuing Parts Number Excluding Production':
+            case 'Discontinued Parts Number Excluding Production':
+            case 'Parts No Products Excluding Production':
+            case 'Parts Forced not for Sale Excluding Production':
+
+                $_key = preg_replace('/ Excluding Production/', '', $key);
+
+                return number($this->data['Account '.$_key] - $this->data['Account Production '.$_key]);
+
+
+            case 'Active Parts Stock Surplus Stock Value Minify Excluding Production':
+            case 'Active Parts Stock OK Stock Value Minify Excluding Production':
+            case 'Active Parts Stock Low Stock Value Minify Excluding Production':
+            case 'Active Parts Stock Critical Stock Value Minify Excluding Production':
+                $_key            = 'Account '.preg_replace('/ Minify Excluding Production/', '', $key);
+                $_key_production = preg_replace('/Active/', 'Active Production', $_key);
+
+                return money_minify($this->data[$_key] - $this->data[$_key_production], $this->get('Account Currency'));
+
             case 'Percentage Contacts With Orders':
             case 'Percentage Active Contacts':
                 return percentage($this->data['Account '.preg_replace('/^Percentage /', '', $key)], $this->data['Account Contacts']);
@@ -553,6 +591,7 @@ class Account extends DB_Table {
                     $this->get('dispatch_time_histogram', $args), $this->get('dispatch_time_samples', $args[1])
                 );
 
+
             default:
 
 
@@ -580,24 +619,9 @@ class Account extends DB_Table {
                     $field = 'Account '.preg_replace('/ Minify$/', '', $key);
                     $field = preg_replace('/DC Orders/', 'Orders', $field);
 
-                    $suffix          = '';
-                    $fraction_digits = 'NO_FRACTION_DIGITS';
-                    if ($this->data[$field] >= 1000000) {
-                        $suffix          = 'M';
-                        $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
-                        $_amount         = $this->data[$field] / 1000000;
-                    } elseif ($this->data[$field] >= 10000) {
-                        $suffix  = 'K';
-                        $_amount = $this->data[$field] / 1000;
-                    } elseif ($this->data[$field] > 100) {
-                        $fraction_digits = 'SINGLE_FRACTION_DIGITS';
-                        $suffix          = 'K';
-                        $_amount         = $this->data[$field] / 1000;
-                    } else {
-                        $_amount = $this->data[$field];
-                    }
 
-                    return money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+                    return money_minify($this->data[$field], $this->get('Account Currency'));
+
                 }
 
 
@@ -696,10 +720,9 @@ class Account extends DB_Table {
 
     }
 
-    function create_barcode($data,$user) {
+    function create_barcode($data, $user) {
 
         $this->new_object = false;
-
 
 
         $data['editor'] = $this->editor;
@@ -744,7 +767,7 @@ class Account extends DB_Table {
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'   => 'add_barcode_range',
-                'ws_key'       => 'real_time.'.strtolower(DNS_ACCOUNT_CODE).'.'.$user->id,
+                'ws_key' => 'real_time.'.strtolower(DNS_ACCOUNT_CODE).'.'.$user->id,
                 'range'  => $range,
                 'editor' => $this->editor
             ), DNS_ACCOUNT_CODE, $this->db
@@ -920,6 +943,58 @@ class Account extends DB_Table {
 
     }
 
+    function update_production_job_orders_stats() {
+
+
+        $elements_numbers = array(
+
+            'Planning'      => 0,
+            'Queued'        => 0,
+            'Manufacturing' => 0,
+            'Manufactured'  => 0,
+            'Delivered'     => 0,
+            'QC_Pass'       => 0,
+            'Placed'        => 0,
+            'Cancelled'     => 0
+
+        );
+
+
+        $sql = "SELECT count(*) AS number,`Purchase Order State` AS element FROM `Purchase Order Dimension` O where `Purchase Order Type`='Production' GROUP BY `Purchase Order State` ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            if ($row['element'] == 'InProcess') {
+                $element = 'Planning';
+            } elseif ($row['element'] == 'Submitted') {
+                $element = 'Queued';
+            } elseif ($row['element'] == 'Confirmed') {
+                $element = 'Manufacturing';
+            } elseif ($row['element'] == 'Manufactured') {
+                $element = 'Manufactured';
+            } elseif ($row['element'] == 'QC_Pass') {
+                $element = 'QC_Pass';
+            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+                $element = 'Delivered';
+            } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing' or $row['element'] == 'InvoiceChecked') {
+                $element = 'Placed';
+            } elseif ($row['element'] == 'Cancelled' or $row['element'] == 'NoReceived') {
+                $element = 'Cancelled';
+            }
+
+
+            if (isset($elements_numbers[$element])) {
+                $elements_numbers[$element] += $row['number'];
+            }
+        }
+        $this->fast_update_json_field('Account Properties', 'production_job_orders_elements',json_encode($elements_numbers), 'Account Data');
+
+
+    }
+
+
     function update_dispatching_time_data($interval) {
 
         include_once 'utils/date_functions.php';
@@ -960,6 +1035,7 @@ class Account extends DB_Table {
     }
 
     function update_parts_data() {
+
         $number_in_process_parts          = 0;
         $number_active_parts              = 0;
         $number_discontinuing_parts       = 0;
@@ -1021,7 +1097,6 @@ class Account extends DB_Table {
             $number_parts_with_invalid_weight = $row['num'];
         }
 
-        //'In Process','Not In Use','In Use','Discontinuing'
         $sql  = "SELECT `Part Products Web Status`,count(*) AS num FROM `Part Dimension` WHERE `Part Status` in ('In Use','Discontinuing') group by `Part Products Web Status`  ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -1048,6 +1123,100 @@ class Account extends DB_Table {
                 'Account Active Parts with SKO Invalid Weight' => $number_parts_with_invalid_weight,
                 'Account Parts No Products'                    => $number_parts_with_no_products,
                 'Account Parts Forced not for Sale'            => $number_parts_forced_not_for_sale_online
+            ), 'Account Data'
+        );
+
+        include_once 'utils/send_zqm_message.class.php';
+        try {
+            send_zqm_message(
+                json_encode(
+                    array(
+                        'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
+                        'sections' => array(
+                            array(
+                                'section' => 'dashboard',
+
+                                'update_metadata' => array(
+                                    'class_html' => array(
+                                        'Active_Parts'        => $this->get('Active Parts Number'),
+                                        'In_Process_Parts'    => $this->get('In Process Parts Number'),
+                                        'Discontinuing_Parts' => $this->get('Discontinuing Parts Number'),
+
+                                    )
+                                )
+
+                            )
+
+                        ),
+
+
+                    )
+                )
+            );
+        } catch (ZMQSocketException $e) {
+
+        }
+
+        $this->update_production_parts_data();
+    }
+
+    function update_production_parts_data() {
+
+        $number_in_process_parts    = 0;
+        $number_active_parts        = 0;
+        $number_discontinuing_parts = 0;
+        $number_discontinued_parts  = 0;
+
+
+        $number_parts_with_no_products           = 0;
+        $number_parts_forced_not_for_sale_online = 0;
+
+
+        $sql = "SELECT count(*) AS num ,`Part Status`  FROM `Part Dimension` where `Part Production`='Yes'  GROUP BY `Part Status`";
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                switch ($row['Part Status']) {
+                    case 'In Use':
+                        $number_active_parts = $row['num'];
+                        break;
+                    case 'In Process':
+                        $number_in_process_parts = $row['num'];
+                        break;
+                    case 'Not In Use':
+                        $number_discontinued_parts = $row['num'];
+                        break;
+                    case 'Discontinuing':
+                        $number_discontinuing_parts = $row['num'];
+                        break;
+                }
+
+            }
+        }
+
+
+        $sql  = "SELECT `Part Products Web Status`,count(*) AS num FROM `Part Dimension` WHERE `Part Production`='Yes' and `Part Status` in ('In Use','Discontinuing') group by `Part Products Web Status`  ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            if ($row['Part Products Web Status'] == 'Offline' or $row['Part Products Web Status'] == 'Out of Stock') {
+                $number_parts_forced_not_for_sale_online += $row['num'];
+            }
+
+            if ($row['Part Products Web Status'] == 'No Products') {
+                $number_parts_with_no_products = $row['num'];
+            }
+        }
+
+
+        $this->fast_update(
+            array(
+                'Account Production Active Parts Number'        => $number_active_parts,
+                'Account Production In Process Parts Number'    => $number_in_process_parts,
+                'Account Production Discontinued Parts Number'  => $number_discontinued_parts,
+                'Account Production Discontinuing Parts Number' => $number_discontinuing_parts,
+
+                'Account Production Parts No Products'         => $number_parts_with_no_products,
+                'Account Production Parts Forced not for Sale' => $number_parts_forced_not_for_sale_online
             ), 'Account Data'
         );
 
@@ -1111,7 +1280,7 @@ class Account extends DB_Table {
 
 
         $sql  =
-            "SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`='In Use' GROUP BY `Part Stock Status`";
+            "SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`='In Use'  GROUP BY `Part Stock Status`";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
@@ -1185,134 +1354,112 @@ class Account extends DB_Table {
             ), 'Account Data'
         );
 
+        $number_surplus_parts      = 0;
+        $number_ok_parts           = 0;
+        $number_low_parts          = 0;
+        $number_critical_parts     = 0;
+        $number_error_parts        = 0;
+        $number_parts_zero_barcode = 0;
 
-        $sql = sprintf('select count(*) as num from `Supplier Production Dimension` ');
-
-        if ($result2 = $this->db->query($sql)) {
-            if ($row2 = $result2->fetch()) {
-
-                if ($row2['num'] > 0) {
-
-
-                    $number_surplus_parts      = 0;
-                    $number_ok_parts           = 0;
-                    $number_low_parts          = 0;
-                    $number_critical_parts     = 0;
-                    $number_error_parts        = 0;
-                    $number_parts_zero_barcode = 0;
-
-                    $stock_value_surplus_parts      = 0;
-                    $stock_value_ok_parts           = 0;
-                    $stock_value_low_parts          = 0;
-                    $stock_value_critical_parts     = 0;
-                    $stock_value_error_parts        = 0;
-                    $stock_value_parts_zero_barcode = 0;
+        $stock_value_surplus_parts      = 0;
+        $stock_value_ok_parts           = 0;
+        $stock_value_low_parts          = 0;
+        $stock_value_critical_parts     = 0;
+        $stock_value_error_parts        = 0;
+        $stock_value_parts_zero_barcode = 0;
 
 
-                    $active_deliveries_surplus_parts      = 0;
-                    $active_deliveries_ok_parts           = 0;
-                    $active_deliveries_low_parts          = 0;
-                    $active_deliveries_critical_parts     = 0;
-                    $active_deliveries_error_parts        = 0;
-                    $active_deliveries_parts_zero_barcode = 0;
+        $active_deliveries_surplus_parts      = 0;
+        $active_deliveries_ok_parts           = 0;
+        $active_deliveries_low_parts          = 0;
+        $active_deliveries_critical_parts     = 0;
+        $active_deliveries_error_parts        = 0;
+        $active_deliveries_parts_zero_barcode = 0;
 
 
-                    $sql = sprintf(
-                        'SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`="In Use" and  `Part Production`="Yes"  GROUP BY `Part Stock Status`'
-                    );
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
+        $sql   = "select count(*) as num from `Supplier Production Dimension`";
+        $stmt2 = $this->db->prepare($sql);
+        $stmt2->execute();
+        if ($row2 = $stmt2->fetch()) {
+            if ($row2['num'] > 0) {
+                $sql =
+                    "SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`='In Use' and  `Part Production`='Yes'  GROUP BY `Part Stock Status`";
 
-                            // print "$sql\n";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute();
+                while ($row = $stmt->fetch()) {
+                    switch ($row['Part Stock Status']) {
+                        case 'Surplus':
+                            $number_surplus_parts            += $row['num'];
+                            $stock_value_surplus_parts       += $row['stock_value'];
+                            $active_deliveries_surplus_parts += $row['next_deliveries'];
 
-                            //'Surplus','Optimal','Low','Critical','Out_Of_Stock','Error'
-                            switch ($row['Part Stock Status']) {
-                                case 'Surplus':
-                                    $number_surplus_parts            = $row['num'];
-                                    $stock_value_surplus_parts       = $row['stock_value'];
-                                    $active_deliveries_surplus_parts = $row['next_deliveries'];
+                            break;
+                        case 'Optimal':
+                            $number_ok_parts            += $row['num'];
+                            $stock_value_ok_parts       += $row['stock_value'];
+                            $active_deliveries_ok_parts += $row['next_deliveries'];
 
-                                    break;
-                                case 'Optimal':
-                                    $number_ok_parts            = $row['num'];
-                                    $stock_value_ok_parts       = $row['stock_value'];
-                                    $active_deliveries_ok_parts = $row['next_deliveries'];
+                            break;
+                        case 'Low':
+                            $number_low_parts            += $row['num'];
+                            $stock_value_low_parts       += $row['stock_value'];
+                            $active_deliveries_low_parts += $row['next_deliveries'];
 
-                                    break;
-                                case 'Low':
-                                    $number_low_parts            = $row['num'];
-                                    $stock_value_low_parts       = $row['stock_value'];
-                                    $active_deliveries_low_parts = $row['next_deliveries'];
+                            break;
+                        case 'Critical':
+                            $number_critical_parts            += $row['num'];
+                            $stock_value_critical_parts       += $row['stock_value'];
+                            $active_deliveries_critical_parts += $row['next_deliveries'];
 
-                                    break;
-                                case 'Critical':
-                                    $number_critical_parts            = $row['num'];
-                                    $stock_value_critical_parts       = $row['stock_value'];
-                                    $active_deliveries_critical_parts = $row['next_deliveries'];
+                            break;
+                        case 'Out_Of_Stock':
+                            $number_parts_zero_barcode            += $row['num'];
+                            $stock_value_parts_zero_barcode       += $row['stock_value'];
+                            $active_deliveries_parts_zero_barcode += $row['next_deliveries'];
 
-                                    break;
-                                case 'Out_Of_Stock':
-                                    $number_parts_zero_barcode            = $row['num'];
-                                    $stock_value_parts_zero_barcode       = $row['stock_value'];
-                                    $active_deliveries_parts_zero_barcode = $row['next_deliveries'];
+                            break;
+                        case 'Error':
+                            $number_error_parts            += $row['num'];
+                            $stock_value_error_parts       += $row['stock_value'];
+                            $active_deliveries_error_parts += $row['next_deliveries'];
 
-                                    break;
-                                case 'Error':
-                                    $number_error_parts            = $row['num'];
-                                    $stock_value_error_parts       = $row['stock_value'];
-                                    $active_deliveries_error_parts = $row['next_deliveries'];
-
-                                    break;
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
+                            break;
                     }
-
-
-                    $this->fast_update(
-                        array(
-
-
-                            'Account Active Production Parts Stock Surplus Number'  => $number_surplus_parts,
-                            'Account Active Production Parts Stock OK Number'       => $number_ok_parts,
-                            'Account Active Production Parts Stock Low Number'      => $number_low_parts,
-                            'Account Active Production Parts Stock Critical Number' => $number_critical_parts,
-                            'Account Active Production Parts Stock Zero Number'     => $number_parts_zero_barcode,
-                            'Account Active Production Parts Stock Error Number'    => $number_error_parts,
-
-                            'Account Active Production Parts Stock Surplus Stock Value'  => $stock_value_surplus_parts,
-                            'Account Active Production Parts Stock OK Stock Value'       => $stock_value_ok_parts,
-                            'Account Active Production Parts Stock Low Stock Value'      => $stock_value_low_parts,
-                            'Account Active Production Parts Stock Critical Stock Value' => $stock_value_critical_parts,
-                            'Account Active Production Parts Stock Error Stock Value'    => $stock_value_error_parts,
-                            'Account Active Production Parts Stock Zero Stock Value'     => $stock_value_parts_zero_barcode,
-
-
-                            'Account Active Production Parts Stock Surplus Deliveries Number'  => $active_deliveries_surplus_parts,
-                            'Account Active Production Parts Stock OK Deliveries Number'       => $active_deliveries_ok_parts,
-                            'Account Active Production Parts Stock Low Deliveries Number'      => $active_deliveries_low_parts,
-                            'Account Active Production Parts Stock Critical Deliveries Number' => $active_deliveries_critical_parts,
-                            'Account Active Production Parts Stock Error Deliveries Number'    => $active_deliveries_error_parts,
-                            'Account Active Production Parts Stock Zero Deliveries Number'     => $active_deliveries_parts_zero_barcode,
-
-
-                        ), 'Account Data'
-                    );
-
-
                 }
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+        $this->fast_update(
+            array(
+
+
+                'Account Active Production Parts Stock Surplus Number'  => $number_surplus_parts,
+                'Account Active Production Parts Stock OK Number'       => $number_ok_parts,
+                'Account Active Production Parts Stock Low Number'      => $number_low_parts,
+                'Account Active Production Parts Stock Critical Number' => $number_critical_parts,
+                'Account Active Production Parts Stock Zero Number'     => $number_parts_zero_barcode,
+                'Account Active Production Parts Stock Error Number'    => $number_error_parts,
+
+                'Account Active Production Parts Stock Surplus Stock Value'  => $stock_value_surplus_parts,
+                'Account Active Production Parts Stock OK Stock Value'       => $stock_value_ok_parts,
+                'Account Active Production Parts Stock Low Stock Value'      => $stock_value_low_parts,
+                'Account Active Production Parts Stock Critical Stock Value' => $stock_value_critical_parts,
+                'Account Active Production Parts Stock Error Stock Value'    => $stock_value_error_parts,
+                'Account Active Production Parts Stock Zero Stock Value'     => $stock_value_parts_zero_barcode,
+
+
+                'Account Active Production Parts Stock Surplus Deliveries Number'  => $active_deliveries_surplus_parts,
+                'Account Active Production Parts Stock OK Deliveries Number'       => $active_deliveries_ok_parts,
+                'Account Active Production Parts Stock Low Deliveries Number'      => $active_deliveries_low_parts,
+                'Account Active Production Parts Stock Critical Deliveries Number' => $active_deliveries_critical_parts,
+                'Account Active Production Parts Stock Error Deliveries Number'    => $active_deliveries_error_parts,
+                'Account Active Production Parts Stock Zero Deliveries Number'     => $active_deliveries_parts_zero_barcode,
+
+
+            ), 'Account Data'
+        );
 
 
         include_once 'utils/send_zqm_message.class.php';
@@ -1468,7 +1615,7 @@ class Account extends DB_Table {
         $number_agents        = 0;
         $number_manufacturers = 0;
 
-        $sql = sprintf('SELECT count(*) AS num FROM `Supplier Dimension` WHERE `Supplier Type`!="Archived"');
+        $sql = "SELECT count(*) AS num FROM `Supplier Dimension` WHERE `Supplier Type`!='Archived'";
         if ($row = $this->db->query($sql)->fetch()) {
             $number_suppliers = $row['num'];
         }

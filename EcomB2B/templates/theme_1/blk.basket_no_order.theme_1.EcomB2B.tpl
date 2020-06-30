@@ -41,7 +41,7 @@
     <div class="hide order_header  text_blocks  text_template_3">
         <div class="text_block ">
                     <h5>
-                        <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
+                        <i class="fal fa-fw fa-clipboard" aria-hidden="true"></i>
                         <span id="_delivery_address_label" class="website_localized_label" >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
                     </h5>
                     <p>

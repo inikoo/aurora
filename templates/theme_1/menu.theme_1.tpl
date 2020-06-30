@@ -304,7 +304,7 @@
 
 
 
-            <i icon="fa fa-truck" class="button  fa fa-fw fa-truck" aria-hidden="true"></i>
+            <i icon="fa fa-truck" class="button  fal fa-fw fa-clipboard" aria-hidden="true"></i>
             <i icon="fa fa-shipping-fast" class="button  fa fa-fw fa-shipping-fast" aria-hidden="true"></i>
 
 
