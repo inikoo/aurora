@@ -785,10 +785,11 @@ class Invoice extends DB_Table {
         if ($currency != $account_currency) {
 
 
-            if (in_array($account_country, [
-                'SVK',
-                'ESP'
-            ]
+            if (in_array(
+                $account_country, [
+                                    'SVK',
+                                    'ESP'
+                                ]
             )) {
 
                 $sql  =
@@ -1519,7 +1520,7 @@ class Invoice extends DB_Table {
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
 
-            if(!$this->id){
+            if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
             }
             $this->get_data('id', $this->id);
@@ -2821,6 +2822,57 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
+    function upload_pdf_to_google_drive($google_drive) {
+
+        $account = get_object('Account',1);
+        $account->load_acc_data();
+
+        if ($account->properties('google_drive_folder_key')) {
+
+            $store     = get_object('Store', $this->get('Invoice Store Key'));
+            $auth_data = json_encode(
+                array(
+                    'auth_token' => array(
+                        'logged_in'      => true,
+                        'user_key'       => 0,
+                        'logged_in_page' => 0
+                    )
+                )
+            );
+            $sak       = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
+
+
+            $file_key = $google_drive->upload(
+                $store->properties('google_drive_folder_invoices_key'), [
+                gmdate('Y', strtotime($this->get('Invoice Date'))),
+                gmdate('F', strtotime($this->get('Invoice Date'))),
+                gmdate('Y-m-d', strtotime($this->get('Invoice Date'))),
+                $this->get('Public ID')
+            ], [
+                    [
+                        'au_location' => 'invoice_year',
+                        'store_key'   => $store->id
+                    ],
+                    [
+                        'au_location' => 'invoice_year_month',
+                        'store_key'   => $store->id
+                    ],
+                    [
+                        'au_location' => 'invoice_year_month_day',
+                        'store_key'   => $store->id
+                    ],
+                    [
+                        'au_location' => 'invoice',
+                        'store_key'   => $store->id,
+                        'invoice_key' => $this->id
+                    ],
+                ], file_get_contents($account->get('Account System Public URL').'/pdf/invoice.pdf.php?id='.$this->id.'&sak='.$sak)
+
+            );
+
+            $this->fast_update_json_field('Invoice Metadata', 'google_drive_file_key', $file_key);
+        }
+    }
 }
 
 
