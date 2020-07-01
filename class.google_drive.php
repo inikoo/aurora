@@ -14,7 +14,7 @@ class google_drive {
     public function __construct($account,$token_filename='keyring/goggle_drive.token.json') {
 
 
-        $this->client  = $this->get_client();
+        $this->client  = $this->get_client($token_filename);
         $this->service = new Google_Service_Drive($this->client);
 
         if ($account->properties('google_drive_folder_key')) {
