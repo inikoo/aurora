@@ -1682,13 +1682,14 @@ function fork_housekeeping($job) {
                              'assets_interval'
                          ]
             );
+            /*
             include_once 'class.google_drive.php';
 
             $google_drive = new google_drive($account);
 
             $invoice=get_object('Invoice',$data['invoice_key']);
             $invoice->upload_pdf_to_google_drive($google_drive);
-
+*/
 
             break;
 
