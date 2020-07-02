@@ -39,17 +39,17 @@
 
             icon.removeClass('fa-toggle-on').addClass('fa-toggle-off')
             var value = 'account'
-            grid.columns.findWhere({name: 'refunds_amount_oc'}).set("renderable", true)
-            grid.columns.findWhere({name: 'refunds_amount_oc_delta_1yb'}).set("renderable", true)
-            grid.columns.findWhere({name: 'revenue_oc'}).set("renderable", true)
-            grid.columns.findWhere({name: 'revenue_oc_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'refunds_amount_oc'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'refunds_amount_oc_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'revenue_oc'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'revenue_oc_delta_1yb'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit_oc'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit_oc_delta_1yb'}).set("renderable", true)
 
-            grid.columns.findWhere({name: 'refunds_amount'}).set("renderable", false)
-            grid.columns.findWhere({name: 'refunds_amount_delta_1yb'}).set("renderable", false)
-            grid.columns.findWhere({name: 'revenue'}).set("renderable", false)
-            grid.columns.findWhere({name: 'revenue_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'refunds_amount'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'refunds_amount_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'revenue'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'revenue_delta_1yb'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit_delta_1yb'}).set("renderable", false)
 
@@ -59,17 +59,17 @@
 
             var value = 'store'
 
-            grid.columns.findWhere({name: 'refunds_amount_oc'}).set("renderable", false)
-            grid.columns.findWhere({name: 'refunds_amount_oc_delta_1yb'}).set("renderable", false)
-            grid.columns.findWhere({name: 'revenue_oc'}).set("renderable", false)
-            grid.columns.findWhere({name: 'revenue_oc_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'refunds_amount_oc'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'refunds_amount_oc_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'revenue_oc'}).set("renderable", false)
+            grid.columns.findWhere({ name: 'revenue_oc_delta_1yb'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit_oc'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit_oc_delta_1yb'}).set("renderable", false)
 
-            grid.columns.findWhere({name: 'refunds_amount'}).set("renderable", true)
-            grid.columns.findWhere({name: 'refunds_amount_delta_1yb'}).set("renderable", true)
-            grid.columns.findWhere({name: 'revenue'}).set("renderable", true)
-            grid.columns.findWhere({name: 'revenue_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'refunds_amount'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'refunds_amount_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'revenue'}).set("renderable", true)
+            grid.columns.findWhere({ name: 'revenue_delta_1yb'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit_delta_1yb'}).set("renderable", true)
 
