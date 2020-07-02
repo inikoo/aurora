@@ -1648,8 +1648,7 @@ function fork_housekeeping($job) {
 
             break;
         case 'invoice_created':
-
-            $account->
+            $account->load_acc_data();
 
             update_invoice_products_sales_data($db, $account, $data);
             $customer = get_object('Customer', $data['customer_key']);
@@ -1689,7 +1688,6 @@ function fork_housekeeping($job) {
 
             include_once 'class.google_drive.php';
 
-            $account->load_acc_data();
 
             if ($account->properties('google_drive_folder_key')) {
 
