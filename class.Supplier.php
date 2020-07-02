@@ -1333,7 +1333,7 @@ class Supplier extends SubjectSupplier {
                         $this->update_supplier_parts();
                         $part->update_cost();
 
-                        $part->update_made_in_production_data();
+
 
 
                     } else {

@@ -914,17 +914,7 @@ class Part extends Asset {
 
 
                 break;
-            case 'made_in_production_data':
 
-                $made_in_production_data = $this->properties($key);
-                if ($made_in_production_data == '') {
-                    return array();
-                } else {
-                    return json_decode($made_in_production_data, true);
-                }
-
-
-                break;
 
             case 'Unknown Location Stock':
 
@@ -2954,9 +2944,7 @@ class Part extends Asset {
                 if (array_key_exists($field, $base_data)) {
                     if ($value != $this->data[$field]) {
 
-                        if ($field == 'Part General Description' or $field == 'Part Health And Safety') {
-                            $options .= ' nohistory';
-                        }
+
                         $this->update_field($field, $value, $options);
 
 
@@ -5231,70 +5219,7 @@ class Part extends Asset {
 
     }
 
-    function update_made_in_production_data() {
 
-
-        $made_in_production_data = array();
-        foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-
-            $supplier = get_object('Supplier', $supplier_part->get('Supplier Part Supplier Key'));
-            if ($supplier->get('Supplier Production') == 'Yes') {
-                $made_in_production_data[] = array(
-                    'supplier_key'      => $supplier->id,
-                    'supplier_part_key' => $supplier_part->id,
-                );
-            }
-        }
-
-
-        $this->fast_update(
-            array(
-                'Part Made in Production' => (count($made_in_production_data) > 0 ? 'Yes' : 'No'),
-            )
-        );
-
-
-        $this->fast_update_json_field('Part Properties', 'made_in_production_data', json_encode($made_in_production_data));
-
-
-    }
-
-    function update_production_supply_data() {
-
-
-        $number_of_parts_using_part = 0;
-        $sql                        = 'select count(*) as num from `Bill of Materials Bridge` where  `Bill of Materials Supplier Part Component Key`=? ';
-        $stmt                       = $this->db->prepare($sql);
-        if ($stmt->execute(
-            array(
-                $this->id,
-            )
-        )) {
-            if ($row = $stmt->fetch()) {
-                $number_of_parts_using_part = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit();
-        }
-
-        $this->fast_update(
-            array(
-                'Part Number Production Links' => $number_of_parts_using_part,
-            )
-        );
-
-
-        if ($number_of_parts_using_part > 0) {
-            $this->fast_update(
-                array(
-                    'Part Production Supply' => 'Yes',
-                )
-            );
-        }
-
-
-    }
 
 }
 

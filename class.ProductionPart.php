@@ -91,35 +91,27 @@ class ProductionPart extends SupplierPart {
         $this->update_available_to_make_up();
 
 
-
-
-
         return true;
     }
 
     function update_number_components() {
 
         $number_components = 0;
-        $sql               = 'select count(*) as num from `Bill of Materials Bridge` where  `Bill of Materials Supplier Part Key`=? ';
-        $stmt              = $this->db->prepare($sql);
-        if ($stmt->execute(
+
+        $sql = "select count(*) as num from `Bill of Materials Bridge` where  `Bill of Materials Supplier Part Key`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
             array(
                 $this->id,
             )
-        )) {
-            if ($row = $stmt->fetch()) {
-                $number_components = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit();
+        );
+        if ($row = $stmt->fetch()) {
+            $number_components = $row['num'];
         }
 
-        $this->part->fast_update(
-            array(
-                'Part Number Components' => $number_components,
-            )
-        );
+
+        $this->fast_update(array('Production Part Components Number' => $number_components), 'Production Part Dimension');
 
 
     }
@@ -183,6 +175,44 @@ class ProductionPart extends SupplierPart {
 
     }
 
+
+//todo
+    function update_production_supply_data() {
+
+
+        $number_of_parts_using_part = 0;
+        $sql                        = 'select count(*) as num from `Bill of Materials Bridge` where  `Bill of Materials Supplier Part Component Key`=? ';
+        $stmt                       = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id,
+            )
+        )) {
+            if ($row = $stmt->fetch()) {
+                $number_of_parts_using_part = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit();
+        }
+
+        $this->fast_update(
+            array(
+                'Part Number Production Links' => $number_of_parts_using_part,
+            )
+        );
+
+
+        if ($number_of_parts_using_part > 0) {
+            $this->fast_update(
+                array(
+                    'Part Production Supply' => 'Yes',
+                )
+            );
+        }
+
+
+    }
 
 }
 

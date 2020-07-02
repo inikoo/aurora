@@ -811,6 +811,8 @@ function production_parts($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
     $adata = array();
 
 
@@ -818,6 +820,8 @@ function production_parts($_data, $db, $user, $account) {
 
 
         foreach ($result as $data) {
+
+
 
 
             switch ($data['Part Stock Status']) {
@@ -904,8 +908,8 @@ function production_parts($_data, $db, $user, $account) {
 				<div style="float:right;min-width:20px;text-align:right" title="'._('Packed in (Units per packages)').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
                 'stock'      => $stock,
-                'components' => number($data['Part Number Components']),
-                'tasks'      => number($data['Part Number Production Tasks'])
+                'components' => number($data['Production Part Components Number']),
+                'tasks'      => number($data['Production Part Tasks Number'])
 
 
             );
@@ -1087,7 +1091,7 @@ function materials($_data, $db, $user, $account) {
 
                 'stock_units'      => number(floor($data['Part Current On Hand Stock'] * $data['Part Units per Package'])),
                 'stock_status'     => $stock_status,
-                'production_links' => number($data['Part Number Production Links'])
+                'production_links' => number($data['Production Part Links Number'])
 
 
             );

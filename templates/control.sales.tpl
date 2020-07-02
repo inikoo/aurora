@@ -76,7 +76,6 @@
 
         }
 
-        console.log(value)
 
         var request = "/ar_state.php?tipo=update_table_state&table=sales&key=currency&value=" + value
 
