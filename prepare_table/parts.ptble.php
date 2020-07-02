@@ -69,7 +69,7 @@ if (isset($extra_where)) {
     $where .= $extra_where;
 }
 
-if($parameters['show_production']=='No'){
+if( isset($parameters['show_production']) and  $parameters['show_production']=='No'){
     $where .= " and `Part Production`='No'";
 }
 
