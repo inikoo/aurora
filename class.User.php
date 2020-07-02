@@ -2014,16 +2014,16 @@ class User extends DB_Table {
     function get_tab_defaults($tab) {
 
 
-        include 'conf/tabs.defaults.php';
+        include_once 'conf/tabs.defaults.php';
+
+        $tab_defaults=get_tab_defaults_data();
 
 
         if (isset($tab_defaults[$tab])) {
 
             return $tab_defaults[$tab];
         }
-        if (isset($tab_defaults_alias[$tab])) {
-            return $tab_defaults[$tab_defaults_alias[$tab]];
-        }
+
 
         exit("User class: error get_tab_defaults not configured: $tab");
     }

@@ -1211,6 +1211,11 @@ function get_parts_elements($db, $data, $user) {
     }
 
 
+    if($data['show_production']=='No'){
+        $where .= " and `Part Production`='No'";
+    }
+
+
     $sql = sprintf(
         "select count(*) as number,`Part Stock Status` as element from $table $where  group by `Part Stock Status` "
     );

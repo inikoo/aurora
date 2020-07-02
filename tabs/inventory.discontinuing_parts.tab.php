@@ -41,11 +41,20 @@ $parameters = array(
 
 );
 
+if(isset($_SESSION['table_state'][$tab]['show_production'])){
+    $show_production=$_SESSION['table_state'][$tab]['show_production'];
+}else{
 
-$smarty->assign('js_code', 'js/injections/discontinuing_parts.'.(_DEVEL ? '' : 'min.').'js');
+    if(isset($_SESSION['inventory_show_production'])){
+        $show_production=$_SESSION['inventory_show_production'];
+    }else{
+        $show_production=$default['show_production'];
 
+    }
+}
+
+$smarty->assign('show_production',$show_production);
+$smarty->assign('table_top_template', 'control.inventory.tpl');
 
 include 'utils/get_table_html.php';
 
-
-?>

@@ -9,14 +9,8 @@
 -->
 *}
 
-<style>
-
-
-</style>
 
 <div style="padding:0px 20px;border-bottom:1px solid #ccc" class="control_panel">
-
-
     <table style="float: left;width: 100%;padding: 0px">
         <tr>
             <td style="text-align: right"><span class="button unselectable" onclick="change_sales_report_currency(this,'currency')">
@@ -25,8 +19,6 @@
 
             </td>
         </tr>
-
-
     </table>
 
 
@@ -47,17 +39,17 @@
 
             icon.removeClass('fa-toggle-on').addClass('fa-toggle-off')
             var value = 'account'
-            grid.columns.findWhere({ name: 'refunds_amount_oc'}).set("renderable", true)
-            grid.columns.findWhere({ name: 'refunds_amount_oc_delta_1yb'}).set("renderable", true)
-            grid.columns.findWhere({ name: 'revenue_oc'}).set("renderable", true)
-            grid.columns.findWhere({ name: 'revenue_oc_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({name: 'refunds_amount_oc'}).set("renderable", true)
+            grid.columns.findWhere({name: 'refunds_amount_oc_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({name: 'revenue_oc'}).set("renderable", true)
+            grid.columns.findWhere({name: 'revenue_oc_delta_1yb'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit_oc'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit_oc_delta_1yb'}).set("renderable", true)
 
-            grid.columns.findWhere({ name: 'refunds_amount'}).set("renderable", false)
-            grid.columns.findWhere({ name: 'refunds_amount_delta_1yb'}).set("renderable", false)
-            grid.columns.findWhere({ name: 'revenue'}).set("renderable", false)
-            grid.columns.findWhere({ name: 'revenue_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({name: 'refunds_amount'}).set("renderable", false)
+            grid.columns.findWhere({name: 'refunds_amount_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({name: 'revenue'}).set("renderable", false)
+            grid.columns.findWhere({name: 'revenue_delta_1yb'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit_delta_1yb'}).set("renderable", false)
 
@@ -67,21 +59,19 @@
 
             var value = 'store'
 
-            grid.columns.findWhere({ name: 'refunds_amount_oc'}).set("renderable", false)
-            grid.columns.findWhere({ name: 'refunds_amount_oc_delta_1yb'}).set("renderable", false)
-            grid.columns.findWhere({ name: 'revenue_oc'}).set("renderable", false)
-            grid.columns.findWhere({ name: 'revenue_oc_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({name: 'refunds_amount_oc'}).set("renderable", false)
+            grid.columns.findWhere({name: 'refunds_amount_oc_delta_1yb'}).set("renderable", false)
+            grid.columns.findWhere({name: 'revenue_oc'}).set("renderable", false)
+            grid.columns.findWhere({name: 'revenue_oc_delta_1yb'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit_oc'}).set("renderable", false)
             //grid.columns.findWhere({ name: 'profit_oc_delta_1yb'}).set("renderable", false)
 
-            grid.columns.findWhere({ name: 'refunds_amount'}).set("renderable", true)
-            grid.columns.findWhere({ name: 'refunds_amount_delta_1yb'}).set("renderable", true)
-            grid.columns.findWhere({ name: 'revenue'}).set("renderable", true)
-            grid.columns.findWhere({ name: 'revenue_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({name: 'refunds_amount'}).set("renderable", true)
+            grid.columns.findWhere({name: 'refunds_amount_delta_1yb'}).set("renderable", true)
+            grid.columns.findWhere({name: 'revenue'}).set("renderable", true)
+            grid.columns.findWhere({name: 'revenue_delta_1yb'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit'}).set("renderable", true)
             //grid.columns.findWhere({ name: 'profit_delta_1yb'}).set("renderable", true)
-
-
 
 
         }
@@ -90,19 +80,17 @@
 
         var request = "/ar_state.php?tipo=update_table_state&table=sales&key=currency&value=" + value
 
-        $.getJSON(request, function(data) {
+        $.getJSON(request, function (data) {
 
 
             var request = "/ar_state.php?tipo=update_table_state&table=sales_invoice_category&key=currency&value=" + value
 
-            $.getJSON(request, function(data) {
+            $.getJSON(request, function (data) {
 
             });
 
 
-
         });
-
 
 
     }

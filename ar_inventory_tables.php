@@ -165,6 +165,12 @@ function parts($_data, $db, $user, $type, $account) {
 
     }
 
+    $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
+
 
     include_once 'prepare_table/init.php';
 
@@ -2613,16 +2619,18 @@ function parts_discontinuing($_data, $db, $user, $account) {
         exit;
     }
 
-
-    
-
     $rtext_label = 'discontinuing part';
+
+    $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
 
 
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    //print $sql;
 
     $record_data = array();
     if ($result = $db->query($sql)) {
@@ -3063,6 +3071,11 @@ function parts_discontinued($_data, $db, $user, $type, $account) {
 
     $rtext_label = 'discontinued part';
 
+    $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
 
     include_once 'prepare_table/init.php';
 

@@ -23,7 +23,6 @@ $tipo    = 'active_parts';
 
 $default = $user->get_tab_defaults($tab);
 
-
 $table_views = array(
     'overview'     => array('label' => _('Overview')),
     'performance'  => array('label' => _('Performance')),
@@ -35,10 +34,6 @@ $table_views = array(
     'revenue_y'    => array('label' => _('Revenue (Yrs)')),
 
 );
-
-
-
-
 
 $table_filters = array(
     'reference' => array(
@@ -58,6 +53,22 @@ $parameters = array(
 
 $table_buttons = array();
 
+
+
+if(isset($_SESSION['table_state'][$tab]['show_production'])){
+    $show_production=$_SESSION['table_state'][$tab]['show_production'];
+}else{
+
+    if(isset($_SESSION['inventory_show_production'])){
+        $show_production=$_SESSION['inventory_show_production'];
+    }else{
+        $show_production=$default['show_production'];
+
+    }
+}
+
+$smarty->assign('show_production',$show_production);
+$smarty->assign('table_top_template', 'control.inventory.tpl');
 
 include 'utils/get_table_html.php';
 

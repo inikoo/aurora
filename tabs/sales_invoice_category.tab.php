@@ -15,10 +15,6 @@ $tipo    = 'sales_invoice_category';
 
 $default = $user->get_tab_defaults($tab);
 
-
-
-
-
 if (isset($_SESSION['table_state']['sales_invoice_category']['to'])) {
     $default['to'] = $_SESSION['table_state']['sales_invoice_category']['to'];
 }
@@ -43,14 +39,9 @@ if (isset($_SESSION['table_state']['sales_invoice_category']['currency'])) {
 }
 
 
-//print_r($default);
-
-
-
 $table_views = array();
 
 $table_filters = array(
-    //	'customer'=>array('label'=>_('Customer'), 'title'=>_('Customer name')),
     'category' => array('label' => _('Category')),
 
 );
@@ -66,6 +57,3 @@ $smarty->assign('table_top_template', 'control.sales.tpl');
 $smarty->assign('table_class', 'with_totals');
 
 include 'utils/get_table_html.php';
-
-
-?>

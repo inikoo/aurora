@@ -1,8 +1,46 @@
 /*Author: Raul Perusquia <raul@inikoo.com>
- Created: 22 October 2018 at 15:33:32 GMT+8 Kuala Lumpur, Malaysia
- Copyright (c) 2018, Inikoo
+ Created:3 :00 pm Thursday, 2 July 2020 (MYT), Kuala Lumpur, Malaysia
+ Copyright (c) 2020, Inikoo
  Version 3.0*/
 
+
+function toggle_show_production_parts_in_inventory(element) {
+
+    let show_production_parts='';
+
+    const icon = $(element).find('i')
+
+    if (icon.hasClass('fa-toggle-on')) {
+        show_production_parts='No'
+        icon.removeClass('fa-toggle-on').addClass('fa-toggle-off')
+    }else{
+        show_production_parts='Yes'
+        icon.removeClass('fa-toggle-off').addClass('fa-toggle-on')
+
+    }
+
+
+    let parameters = JSON.parse(rows.parameters);
+
+
+
+
+    parameters.show_production = show_production_parts;
+
+    rows.parameters = JSON.stringify(parameters)
+
+    rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+    rows.fetch({
+        reset: true
+    });
+    get_elements_numbers(rows.tab, rows.parameters)
+
+
+
+
+
+
+}
 
 function set_discontinuing_part_as_active(element, part_sku) {
 
@@ -75,3 +113,4 @@ function set_discontinuing_part_as_active(element, part_sku) {
 
 
 }
+
