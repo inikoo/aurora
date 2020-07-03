@@ -1,0 +1,5 @@
+ALTER TABLE `Part Dimension` ADD `Part SKO Type` ENUM('Unit','Pack','Carton') NOT NULL DEFAULT 'Pack' AFTER `Part Type`, ADD INDEX (`Part SKO Type`);
+ALTER TABLE `Part Dimension` ADD `Part Carton` ENUM('Yes','No') NOT NULL DEFAULT 'Yes' AFTER `Part Package Description Note`;
+ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM('Supplier Part','Order Basket Purge','Email Campaign','Deal Campaign','Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Invoice','Webpage','Website','Prospect','Supplier Delivery') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+
+
