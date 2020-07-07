@@ -4019,8 +4019,20 @@ function parse_request($_data, $db, $modules, $account, $user) {
                             } elseif ($view_path[1] == 'batches') {
                                 $section = 'batches';
 
-                            } elseif ($view_path[1] == 'materials') {
-                                $section = 'materials';
+                            } elseif ($view_path[1] == 'raw_materials') {
+                                $section = 'raw_materials';
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $section = 'raw_material';
+                                        $parent='supplier_production';
+                                        $parent_key=$key;
+
+                                        $object = 'raw_material';
+                                        $key    = $view_path[2];
+                                    }
+                                }
+
 
                             } elseif ($view_path[1] == 'parts') {
                                 $section = 'production_parts';
@@ -4148,9 +4160,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     }
                                 }
 
-
-                            } elseif ($view_path[1] == 'material') {
-                                $section = 'materials';
 
                             } elseif ($view_path[1] == 'operative') {
                                 $section = 'operative';

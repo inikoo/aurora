@@ -1926,6 +1926,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             $title        = $data['_object']->get('Label');
             $web_location = '<i class="fal fa-fw fa-bring-front"></i> '._('Shipping schema');
             break;
+        case 'raw_material':
+            include_once 'showcase/raw_material.show.php';
+            $html = get_raw_material_showcase($data, $smarty, $account);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -1944,8 +1948,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
 function get_menu($data, $user, $smarty, $db, $account) {
 
     include_once 'navigation/menu.php';
-
-    return $html;
+    $account->load_acc_data();
+    return get_menu_html($data, $user, $smarty, $db, $account);
 
 
 }
@@ -2780,13 +2784,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
 
-                case ('materials'):
-                    return get_materials_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                case ('raw_materials'):
+                    return get_raw_materials_navigation($data, $smarty);
 
-                case ('material'):
-                    return get_material_navigation(
+                case ('raw_material'):
+                    return get_raw_material_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                 case ('production_part.new'):
@@ -10243,11 +10245,24 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            } elseif ($state['section'] == 'materials') {
+            } elseif ($state['section'] == 'raw_materials') {
 
                 $branch[] = array(
-                    'label'     => _('Materials'),
+                    'label'     => _('Raw materials'),
                     'icon'      => 'puzzle-piece',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'raw_material') {
+
+                $branch[] = array(
+                    'label'     => _('Raw materials'),
+                    'icon'      => 'puzzle-piece',
+                    'reference' => 'production/'.$state['current_production'].'/raw_materials'
+                );
+                $branch[] = array(
+                    'label'     => '<span class="Raw_Material_Code">'.$state['_object']->get('Code').'</span>',
+                    'icon'      => '',
                     'reference' => ''
                 );
 

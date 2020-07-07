@@ -39,11 +39,15 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
-function get_materials_navigation($data, $smarty, $user, $db) {
+function get_raw_materials_navigation($data, $smarty) {
 
 
     $left_buttons  = array();
@@ -62,7 +66,7 @@ function get_materials_navigation($data, $smarty, $user, $db) {
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
         'title'          => sprintf(
-            _('Production %s materials'), '<span class="id Supplier_Code">'.$data['_object']->get('Code').'</span>'
+            _('Production %s raw materials'), '<span class="id Supplier_Code">'.$data['_object']->get('Code').'</span>'
         ),
         'search'         => array(
             'show'        => true,
@@ -72,7 +76,11 @@ function get_materials_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -105,7 +113,11 @@ function get_production_parts_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -137,7 +149,11 @@ function get_settings_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -168,7 +184,11 @@ function get_suppliers_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -199,7 +219,11 @@ function get_manufacture_tasks_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -229,7 +253,11 @@ function get_operatives_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -263,7 +291,11 @@ function get_batches_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -309,7 +341,11 @@ function get_new_manufacture_task_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -500,7 +536,11 @@ function get_manufacture_task_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -702,7 +742,11 @@ function get_production_part_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -731,7 +775,12 @@ function get_production_supplier_purchase_orders_navigation($data, $smarty, $use
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -745,7 +794,6 @@ function get_production_supplier_deliveries_navigation($data, $smarty, $user, $d
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
-
 
 
     $_content = array(
@@ -762,7 +810,12 @@ function get_production_supplier_deliveries_navigation($data, $smarty, $user, $d
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -938,7 +991,11 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -950,7 +1007,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons = array();
 
 
-    $tab      = 'production_supplier.orders';
+    $tab = 'production_supplier.orders';
 
 
     if (isset($_SESSION['table_state'][$tab])) {
@@ -1078,7 +1135,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
-    $sections           = get_sections('production', $data['parent_key']);
+    $sections                                           = get_sections('production', $data['parent_key']);
     $sections['production_supplier_orders']['selected'] = true;
 
     $search_placeholder = _('Search production');
@@ -1089,13 +1146,13 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
     //  class="order_operation {if ( $order->get('State Index') < 30 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='No' }hide{/if}">
 
-    $items_not_in_delivery=$object->get('Purchase Order Ordered Number Items')-$object->get('Purchase Order Number Supplier Delivery Items');
-    $right_buttons[]=array(
-        'icon'  => 'plus',
-        'title' => _('Create production sheet'),
-        'click'=>"show_create_delivery()",
-        'pre_text'=> _('Create production sheet'),
-        'class'=>'text width_auto quick_create_delivery_button '.(  ($items_not_in_delivery==0 or $object->get('State Index')<40 ) ?'hide':''  )
+    $items_not_in_delivery = $object->get('Purchase Order Ordered Number Items') - $object->get('Purchase Order Number Supplier Delivery Items');
+    $right_buttons[]       = array(
+        'icon'     => 'plus',
+        'title'    => _('Create production sheet'),
+        'click'    => "show_create_delivery()",
+        'pre_text' => _('Create production sheet'),
+        'class'    => 'text width_auto quick_create_delivery_button '.(($items_not_in_delivery == 0 or $object->get('State Index') < 40) ? 'hide' : '')
     );
 
 
@@ -1114,7 +1171,11 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1125,7 +1186,7 @@ function get_new_production_part_navigation($data, $smarty, $user, $db, $account
     $right_buttons = array();
 
 
-    $sections           = get_sections('production', $data['parent_key']);
+    $sections                                 = get_sections('production', $data['parent_key']);
     $sections['production_parts']['selected'] = true;
 
 
@@ -1157,10 +1218,13 @@ function get_new_production_part_navigation($data, $smarty, $user, $db, $account
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
-
 
 
 function get_upload_navigation($data, $smarty, $user, $db) {
@@ -1170,7 +1234,7 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     $right_buttons = array();
 
 
-    $sections           = get_sections('production', $data['parent_key']);
+    $sections                                 = get_sections('production', $data['parent_key']);
     $sections['production_parts']['selected'] = true;
 
 
@@ -1201,7 +1265,11 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1212,7 +1280,7 @@ function get_operative_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons = array();
 
 
-    $tab      = 'operatives';
+    $tab = 'operatives';
 
 
     if (isset($_SESSION['table_state'][$tab])) {
@@ -1264,7 +1332,7 @@ function get_operative_navigation($data, $smarty, $user, $db, $account) {
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
             $prev_key   = $row['object_key'];
-            $prev_title =  _("Worker").' '.$row['object_name'];
+            $prev_title = _("Worker").' '.$row['object_name'];
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1340,15 +1408,13 @@ function get_operative_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
-    $sections           = get_sections('production', $data['parent_key']);
+    $sections                           = get_sections('production', $data['parent_key']);
     $sections['operatives']['selected'] = true;
 
     $search_placeholder = _('Search production');
 
 
     $title = '<i class="fa fa-digging" title=""'._('Production worker').'"/></i> <span class="Staff_Alias id ">'.$object->get('Alias').'</span> <span class="italic ">(<span class="Staff_Name">'.$object->get('Name').'</span>)</span>';
-
-
 
 
     $_content = array(
@@ -1366,7 +1432,180 @@ function get_operative_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
+
+
+function get_raw_material_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections                           = get_sections('production', $data['parent_key']);
+
+    $sections['raw_materials']['selected'] = true;
+    $title                             = '<i class="fa fa-puzzle-piece" aria-hidden="true"></i> <span class="id Raw_Material_Code">'.$data['_object']->get('Code').'</span>';
+    $object                            = $data['_object'];
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+
+    $tab = 'production.materials';
+
+
+    if (isset($_SESSION['table_state'][$tab])) {
+        $number_results  = $_SESSION['table_state'][$tab]['nr'];
+        $start_from      = 0;
+        $order           = $_SESSION['table_state'][$tab]['o'];
+        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+        $parameters      = $_SESSION['table_state'][$tab];
+    } else {
+
+        $default                  = $user->get_tab_defaults($tab);
+        $number_results           = $default['rpp'];
+        $start_from               = 0;
+        $order                    = $default['sort_key'];
+        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value                  = '';
+        $parameters               = $default;
+        $parameters['parent']     = $data['parent'];
+        $parameters['parent_key'] = $data['parent_key'];
+    }
+
+    include_once 'prepare_table/'.$tab.'.ptble.php';
+
+    $_order_field       = $order;
+    $order              = preg_replace('/^.*\.`/', '', $order);
+    $order              = preg_replace('/^`/', '', $order);
+    $order              = preg_replace('/`$/', '', $order);
+    $_order_field_value = $object->get($order);
+
+
+    $prev_title = '';
+    $next_title = '';
+    $prev_key   = 0;
+    $next_key   = 0;
+    $sql        = trim($sql_totals." $wheref");
+
+
+    if ($result2 = $db->query($sql)) {
+        if ($row2 = $result2->fetch() and $row2['num'] > 1) {
+
+
+            $sql = sprintf(
+                "select `Raw Material Code` object_name,M.`Raw Material Key` as object_key from %s and ($_order_field < %s OR ($_order_field = %s AND M.`Raw Material Key` < %d))  order by $_order_field desc , M.`Raw Material Key` desc limit 1", "$table $where $wheref",
+                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+            );
+
+
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch() and $row2['num'] > 1) {
+                    $prev_key   = $row['object_key'];
+                    $prev_title = _("User").' '.$row['object_name'].' ('.$row['object_key'].')';
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            $sql = sprintf(
+                "select `Raw Material Code` object_name,M.`Raw Material Key` as object_key from %s and ($_order_field  > %s OR ($_order_field  = %s AND M.`Raw Material Key` > %d))  order by $_order_field   , M.`Raw Material Key`  limit 1", "$table  $where $wheref",
+                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+            );
+
+
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch() and $row2['num'] > 1) {
+                    $next_key   = $row['object_key'];
+                    $next_title = $row['object_name'];
+                }
+            }
+
+
+            if ($order_direction == 'desc') {
+                $_tmp1      = $prev_key;
+                $_tmp2      = $prev_title;
+                $prev_key   = $next_key;
+                $prev_title = $next_title;
+                $next_key   = $_tmp1;
+                $next_title = $_tmp2;
+            }
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Raw materials"),
+                'reference' => 'production/'.$data['parent_key'].'/raw_materials'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'production/'.$data['parent_key'].'/raw_materials'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'production/'.$data['parent_key'].'/raw_materials'.$next_key
+
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => false,
+            'placeholder' => _('Search production')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+}
+
 

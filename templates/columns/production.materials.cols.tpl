@@ -6,6 +6,17 @@ renderable: false,
 cell: "string",
 
 }, {
+name: "object",
+renderable: true,
+sortable: false,
+label: "",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center",
+
+})
+
+},{
 name: "reference",
 label: "{t}Reference{/t}",
 editable: false,

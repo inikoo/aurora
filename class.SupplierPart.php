@@ -172,6 +172,7 @@ class SupplierPart extends DB_Table {
     }
 
     function create($data) {
+
         $this->new = false;
         $base_data = $this->base_data();
 
@@ -2027,7 +2028,7 @@ class SupplierPart extends DB_Table {
                 break;
 
             case 'Supplier Part Packages Per Carton':
-                $label = _("SKOs per carton");
+                $label = _("Packed units per carton");
                 break;
             case 'Supplier Part Carton CBM':
                 $label = _("carton CBM");

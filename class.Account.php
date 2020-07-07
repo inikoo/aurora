@@ -1625,11 +1625,16 @@ class Account extends DB_Table {
         }
 
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Supplier Production Dimension` LEFT JOIN `Supplier Dimension` ON (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!="Archived" '
+            'SELECT count(*) AS num,ANY_VALUE(`Supplier Production Supplier Key`) as production_supplier_key FROM `Supplier Production Dimension` LEFT JOIN `Supplier Dimension` ON (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!="Archived" '
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_manufacturers = $row['num'];
+            if($number_manufacturers==1){
+                $this->fast_update_json_field('Account Properties', 'production_supplier_key', $row['production_supplier_key'], 'Account Data');
+
+            }
         }
+
 
 
         $this->fast_update(

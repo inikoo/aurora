@@ -782,6 +782,15 @@ class Supplier extends SubjectSupplier {
         unset($data['Supplier Part Supplier Code']);
 
 
+        if ($this->get('Supplier Production') == 'Yes') {
+            $data['Part Reference'] = $data['Supplier Part Reference'];
+        }
+
+
+        //print_r($data);
+        //exit;
+
+
         if (isset($data['Supplier Part Package Description']) and !isset($data['Part Package Description'])) {
             $data['Part Package Description'] = $data['Supplier Part Package Description'];
             unset($data['Supplier Part Package Description']);
@@ -1112,11 +1121,7 @@ class Supplier extends SubjectSupplier {
 
 
         if (!isset($data['Supplier Part Minimum Carton Order']) or $data['Supplier Part Minimum Carton Order'] == '') {
-            $this->error      = true;
-            $this->msg        = _('Minimum order missing');
-            $this->error_code = 'supplier_part_minimum_carton_order_missing';
-
-            return;
+            $data['Supplier Part Minimum Carton Order'] = 1;
         }
 
         if (!is_numeric($data['Supplier Part Minimum Carton Order']) or $data['Supplier Part Minimum Carton Order'] < 0) {
@@ -1130,33 +1135,70 @@ class Supplier extends SubjectSupplier {
             return;
         }
 
+        if ($this->get('Supplier Production') == 'No') {
+            if (!isset($data['Supplier Part Unit Cost']) or $data['Supplier Part Unit Cost'] == '') {
+                $this->error      = true;
+                $this->msg        = _('Cost missing');
+                $this->error_code = 'supplier_part_unit_cost_missing';
 
-        if (!isset($data['Supplier Part Unit Cost']) or $data['Supplier Part Unit Cost'] == '') {
-            $this->error      = true;
-            $this->msg        = _('Cost missing');
-            $this->error_code = 'supplier_part_unit_cost_missing';
+                return;
+            }
 
-            return;
+            if (!is_numeric($data['Supplier Part Unit Cost']) or $data['Supplier Part Unit Cost'] < 0) {
+                $this->error      = true;
+                $this->msg        = sprintf(
+                    _('Invalid cost (%s)'), $data['Supplier Part Unit Cost']
+                );
+                $this->error_code = 'invalid_supplier_part_unit_cost';
+                $this->metadata   = $data['Supplier Part Unit Cost'];
+
+                return;
+            }
+
+
+            if (!isset($data['Supplier Part Average Delivery Days']) or $data['Supplier Part Average Delivery Days'] == '') {
+                $data['Supplier Part Average Delivery Days'] = $this->get('Supplier Average Delivery Days');
+            } else {
+                if (!is_numeric($data['Supplier Part Average Delivery Days']) or $data['Supplier Part Average Delivery Days'] < 0) {
+                    $this->error      = true;
+                    $this->msg        = sprintf(
+                        _('Invalid delivery time (%s)'), $data['Supplier Part Average Delivery Days']
+                    );
+                    $this->error_code = 'invalid_supplier_delivery_days';
+                    $this->metadata   = $data['Supplier Part Average Delivery Days'];
+
+                    return;
+                }
+
+            }
+
+            if (isset($data['Supplier Part Unit Extra Cost Percentage']) and $data['Supplier Part Unit Extra Cost Percentage'] == '') {
+                $data['Supplier Part Unit Extra Cost Percentage'] = 0;
+
+            }
+
+
+            if (preg_match('/\%$/', $data['Supplier Part Unit Extra Cost Percentage'])) {
+                $data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $data['Supplier Part Unit Extra Cost Percentage'])) / 100;
+                // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
+            }
+
+            if (isset($data['Supplier Part Unit Extra Cost Percentage']) and (!is_numeric($data['Supplier Part Unit Extra Cost Percentage']) or $data['Supplier Part Unit Extra Cost Percentage'] < 0)) {
+                $this->error      = true;
+                $this->msg        = sprintf(_('Invalid extra %% cost (%s)'), $data['Supplier Part Unit Extra Cost Percentage']);
+                $this->error_code = 'invalid_supplier_part_extra_cost_percentage';
+                $this->metadata   = $data['Supplier Part Unit Extra Cost Percentage'];
+
+                return;
+            }
+
+
         }
-
-        if (!is_numeric($data['Supplier Part Unit Cost']) or $data['Supplier Part Unit Cost'] < 0) {
-            $this->error      = true;
-            $this->msg        = sprintf(
-                _('Invalid cost (%s)'), $data['Supplier Part Unit Cost']
-            );
-            $this->error_code = 'invalid_supplier_part_unit_cost';
-            $this->metadata   = $data['Supplier Part Unit Cost'];
-
-            return;
-        }
-
 
         if (isset($data['Supplier Part Carton CBM']) and $data['Supplier Part Carton CBM'] != '') {
             if (!is_numeric($data['Supplier Part Carton CBM']) or $data['Supplier Part Carton CBM'] < 0) {
                 $this->error      = true;
-                $this->msg        = sprintf(
-                    _('Invalid carton CBM (%s)'), $data['Supplier Part Carton CBM']
-                );
+                $this->msg        = sprintf(_('Invalid carton CBM (%s)'), $data['Supplier Part Carton CBM']);
                 $this->error_code = 'invalid_supplier_part_carton_cbm';
                 $this->metadata   = $data['Supplier Part Carton CBM'];
 
@@ -1164,43 +1206,6 @@ class Supplier extends SubjectSupplier {
             }
         }
 
-        if (!isset($data['Supplier Part Average Delivery Days']) or $data['Supplier Part Average Delivery Days'] == '') {
-            $data['Supplier Part Average Delivery Days'] = $this->get(
-                'Supplier Average Delivery Days'
-            );
-        } else {
-            if (!is_numeric($data['Supplier Part Average Delivery Days']) or $data['Supplier Part Average Delivery Days'] < 0) {
-                $this->error      = true;
-                $this->msg        = sprintf(
-                    _('Invalid delivery time (%s)'), $data['Supplier Part Average Delivery Days']
-                );
-                $this->error_code = 'invalid_supplier_delivery_days';
-                $this->metadata   = $data['Supplier Part Average Delivery Days'];
-
-                return;
-            }
-
-        }
-
-        if (isset($data['Supplier Part Unit Extra Cost Percentage']) and $data['Supplier Part Unit Extra Cost Percentage'] == '') {
-            $data['Supplier Part Unit Extra Cost Percentage'] = 0;
-
-        }
-
-
-        if (preg_match('/\%$/', $data['Supplier Part Unit Extra Cost Percentage'])) {
-            $data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $data['Supplier Part Unit Extra Cost Percentage'])) / 100;
-            // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
-        }
-
-        if (isset($data['Supplier Part Unit Extra Cost Percentage']) and (!is_numeric($data['Supplier Part Unit Extra Cost Percentage']) or $data['Supplier Part Unit Extra Cost Percentage'] < 0)) {
-            $this->error      = true;
-            $this->msg        = sprintf(_('Invalid extra %% cost (%s)'), $data['Supplier Part Unit Extra Cost Percentage']);
-            $this->error_code = 'invalid_supplier_part_extra_cost_percentage';
-            $this->metadata   = $data['Supplier Part Unit Extra Cost Percentage'];
-
-            return;
-        }
 
 
         $data['Supplier Part Supplier Key'] = $this->id;
@@ -1332,8 +1337,6 @@ class Supplier extends SubjectSupplier {
                         $supplier_part->update_historic_object();
                         $this->update_supplier_parts();
                         $part->update_cost();
-
-
 
 
                     } else {

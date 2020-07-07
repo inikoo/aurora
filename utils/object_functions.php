@@ -15,7 +15,7 @@
  * @param      $key
  * @param bool $load_other_data
  *
- * @return \Account|bool|\Customer|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
+ * @return \Account|bool|\Customer|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Raw_Material|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
  */
 function get_object($object_name, $key, $load_other_data = false) {
 
@@ -98,7 +98,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'invoice_deleted':
             include_once 'class.Invoice.php';
-            $object = new Invoice('deleted',$key);
+            $object = new Invoice('deleted', $key);
             break;
         case 'delivery_note':
         case 'delivery note':
@@ -154,8 +154,8 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'warehousearea':
         case 'warehouse area':
             include_once 'class.WarehouseArea.php';
-        /** @var WarehouseArea */
-        $object = new WarehouseArea($key);
+            /** @var WarehouseArea */
+            $object = new WarehouseArea($key);
             break;
         case 'part':
             include_once 'class.Part.php';
@@ -427,7 +427,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'shipping_zone':
         case 'shippingzone':
         case 'shipping zone':
-        require_once "class.Shipping_Zone.php";
+            require_once "class.Shipping_Zone.php";
             $object = new Shipping_Zone($key);
             break;
         case 'shipping_zone_schema':
@@ -529,7 +529,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'customer_client':
         case 'customer client':
         case 'customerclient':
-        include_once 'class.Customer_Client.php';
+            include_once 'class.Customer_Client.php';
             $object = new Customer_Client('id', $key);
             break;
         case 'clocking_machine':
@@ -539,6 +539,13 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'clocking_machine_nfc_tag':
             include_once 'class.Clocking_Machine_NFC_Tag.php';
             $object = new Clocking_Machine_NFC_Tag('id', $key);
+            break;
+        case 'raw material':
+        case 'raw_material':
+        case 'rawmaterial':
+
+        include_once 'class.Raw_Material.php';
+            $object = new Raw_Material('id', $key);
             break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");

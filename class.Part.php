@@ -4582,6 +4582,36 @@ class Part extends Asset {
 
     }
 
+    function create_raw_material(){
+
+        include_once 'class.Raw_Material.php';
+
+        $account=get_object('Account',1);
+        $account->load_acc_data();
+
+        $raw_material_data=[
+            'Raw Material Type'=>'Part',
+            'Raw Material Creation Date'=>gmdate('Y-m-d H:i:s'),
+            'Raw Material Type Key'=>$this->id,
+            'Raw Material Code'=>$this->get('Reference'),
+            'Raw Material Unit Label'=>$this->get('Part Unit Label'),
+            'Raw Material Description'=>$this->get('Part Recommended Product Unit Name'),
+            'Raw Material Unit'=>'Unit',
+            'Raw Material Unit Cost'=>($this->get('Part Cost in Warehouse')==''?$this->get('Part Cost'):$this->get('Part Cost in Warehouse')),
+            'Raw Material Production Supplier Key'=>$account->properties('production_supplier_key'),
+            'editor'=>$this->editor
+        ];
+
+        $raw_material=new Raw_Material('create',$raw_material_data);
+        if($raw_material->id){
+            $this->fast_update(['Part Raw Material Key'=>$raw_material->id]);
+            $raw_material->update_raw_material_stock($this);
+        }
+
+
+
+    }
+
     function create_supplier_part_record($data) {
 
 

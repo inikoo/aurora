@@ -12,7 +12,7 @@
 
 $tab     = 'production.materials';
 $ar_file = 'ar_production_tables.php';
-$tipo    = 'materials';
+$tipo    = 'raw_materials';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -65,5 +65,3 @@ $smarty->assign('upload_file', array(
 
 include 'utils/get_table_html.php';
 
-
-?>

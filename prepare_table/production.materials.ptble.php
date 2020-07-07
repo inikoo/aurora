@@ -8,42 +8,40 @@
  Version 3.1
 
 */
-// todo
-$table
-    = "Production Part Dimension`   ";
 
-$fields
-    = '`Production Part Links Number`,`Part SKU`,`Part Cost in Warehouse`,`Part Status`,`Part Reference`,`Part Recommended Product Unit Name`,`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Part Units per Package`
-';
+$table
+    = "`Raw Material Dimension` M   ";
+
+$fields='`Raw Material Key`,`Raw Material Type`,`Raw Material Type Key`,`Raw Material Code`,`Raw Material Description`,`Raw Material Unit`,`Raw Material Unit Label`,
+`Raw Material Unit Cost`,`Raw Material Stock`,`Raw Material Products`,`Raw Material Production Supplier Key`,`Raw Material Stock Status` ';
 
 $filter_msg = '';
 $filter_msg = '';
 $wheref     = '';
 
 
-$where =" where  `Part Production Supply`='Yes'";
+$where =" where `Raw Material Type`!='Intermediate'";
 
 
 
 if ($parameters['f_field'] == 'reference' and $f_value != '') {
-    $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
+    $wheref .= " and  `Raw Material Code` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'reference') {
-    $order = '`Part Reference`';
+    $order = '`Raw Material Code`';
 }elseif ($order == 'stock') {
-    $order = '`Part Current Stock`';
+    $order = '`Raw Material Stock`';
 } else {
 
-    $order = '`Part SKU`';
+    $order = '`Raw Material Key`';
 }
 
 
 $sql_totals
-    = "select count(Distinct `Part SKU`) as num from $table  $where  ";
-
+    = "select count(Distinct `Raw Material Key`) as num from $table  $where  ";
 
 

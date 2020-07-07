@@ -116,6 +116,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
 
+
+
         case 'Attachment':
 
             $object_fields = array();
@@ -494,7 +496,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     if (isset($options['new'])) {
                         $part = new Part(0);
 
-                        include 'fields/supplier_part.new.fld.php';
+
+                        if($supplier->get('Supplier Production')=='Yes'){
+                            include 'fields/production.new.fld.php';
+
+                        }else{
+                            include 'fields/supplier_part.new.fld.php';
+
+                        }
 
 
                     } else {
@@ -608,7 +617,18 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $part_fields;
             break;
+        case 'Raw Material':
+            include 'fields/raw_material.fld.php';
 
+            if (isset($options['new'])) {
+                return get_raw_material_new_fields($object,$user);
+
+            }else{
+                return get_raw_material_edit_fields($object,$user);
+
+            }
+
+            break;
         case 'Warehouse':
 
 

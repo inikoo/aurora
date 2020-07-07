@@ -148,13 +148,34 @@ function get_production_module() {
             ),
 
 
-            'materials' => array(
+            'raw_materials' => array(
                 'type'      => 'navigation',
-                'label'     => _('Materials'),
+                'label'     => _('Raw Materials'),
                 'icon'      => 'puzzle-piece',
-                'reference' => 'production/%d/materials',
+                'reference' => 'production/%d/raw_materials',
                 'tabs'      => array(
-                    'production.materials' => array('label' => _('materials'))
+                    'production.materials' => array('label' => _('Raw materials'))
+                )
+
+
+            ),
+
+            'raw_material' => array(
+                'type'  => 'object',
+                'label' => _('Raw material'),
+                'icon'  => 'tasks',
+                'tabs'  => array(
+                    'raw_material.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'raw_material.history' => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
                 )
 
 

@@ -45,38 +45,33 @@ class Material extends DB_Table {
 
         $base_data = $this->base_data();
 
+
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
-
-
             }
         }
 
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-
-            if ($key == 'Material XHTML Description') {
-                $values .= prepare_mysql($value, false).",";
-
-            } else {
-                $values .= prepare_mysql($value).",";
-
-            }
-
-
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
         $sql = sprintf(
-            "INSERT INTO `Material Dimension` %s %s", $keys, $values
+            "INSERT INTO `Material Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
 
 
-        if ($this->db->exec($sql)) {
+
+
+        $stmt = $this->db->prepare($sql);
+
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Material added");
             $this->get_data('id', $this->id);

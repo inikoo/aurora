@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 4 April 2016 at 22:02:23 GMT+8, Kaula Lumpur, Malaysia
+ Created: 4 April 2016 at 22:02:23 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -27,30 +27,25 @@ $object_fields_supplier_part = get_object_fields(
 
 
 $available_barcodes = 0;
-$sql                = sprintf("SELECT count(*) AS num FROM `Barcode Dimension` WHERE `Barcode Status`='Available'");
-if ($result = $db->query($sql)) {
-    if ($row = $result->fetch()) {
-        $available_barcodes = $row['num'];
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
+$sql                = "SELECT count(*) AS num FROM `Barcode Dimension` WHERE `Barcode Status`='Available'";
+$stmt               = $db->prepare($sql);
+$stmt->execute();
+if ($row = $stmt->fetch()) {
+    $available_barcodes = $row['num'];
 }
+
 
 $smarty->assign('available_barcodes', $available_barcodes);
 
 
 $part = $state['_object']->part;
 
-
 $smarty->assign(
     'preferred_countries', '"'.join(
-        '", "', preferred_countries(
-            ($part->get('Part Origin Country Code') == '' ? $account->get(
-                'Account Country 2 Alpha Code'
-            ) : $part->get('Part Origin Country Code'))
-        )
-    ).'"'
+                             '", "', preferred_countries(
+                                       ($part->get('Part Origin Country Code') == '' ? $account->get('Account Country 2 Alpha Code') : $part->get('Part Origin Country Code'))
+                                   )
+                         ).'"'
 );
 
 $smarty->assign('object_fields', $object_fields_supplier_part);

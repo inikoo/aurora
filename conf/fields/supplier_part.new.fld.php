@@ -14,7 +14,7 @@
 include_once 'utils/static_data.php';
 include_once 'utils/country_functions.php';
 
-$account = new Account();
+$account = get_object('Account',1);
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
@@ -83,15 +83,9 @@ $supplier_part_fields[] = array(
             'edit' => ($edit ? 'option' : ''),
 
             'options'         => $options_yn,
-            'value'           => ($new
-                ? 'No'
-                : $object->get(
-                    'Supplier Part On Demand'
-                )),
+            'value'           => ($new ? 'No' : $object->get('Supplier Part On Demand')),
             'formatted_value' => ($new ? _('No') : $object->get('On Demand')),
-            'label'           => ucfirst(
-                    $object->get_field_label('Supplier Part On Demand')
-                ).' <i class="fa fa-fighter-jet" aria-hidden="true"></i>',
+            'label'           => ucfirst($object->get_field_label('Supplier Part On Demand')).' <i class="fa fa-fighter-jet" aria-hidden="true"></i>',
             'required'        => false,
             'type'            => ($supplier->get('Supplier On Demand') == 'Yes' ? 'value' : ''),
 
@@ -104,15 +98,9 @@ $supplier_part_fields[] = array(
             'edit' => ($edit ? 'option' : ''),
 
             'options'         => $options_yn,
-            'value'           => ($new
-                ? 'No'
-                : $object->get(
-                    'Supplier Part Fresh'
-                )),
+            'value'           => ($new ? 'No' : $object->get('Supplier Part Fresh')),
             'formatted_value' => ($new ? _('No') : $object->get('Fresh')),
-            'label'           => ucfirst(
-                    $object->get_field_label('Supplier Part Fresh')
-                ).' <i class="fa fa-lemon" aria-hidden="true"></i>',
+            'label'           => ucfirst($object->get_field_label('Supplier Part Fresh')).' <i class="fa fa-lemon" aria-hidden="true"></i>',
             'required'        => false,
             'type'            => ($supplier->get('Supplier Fresh') == 'Yes' ? 'value' : ''),
 
@@ -122,21 +110,10 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Supplier_Part_Minimum_Carton_Order',
             'edit'            => 'smallint_unsigned',
-            'value'           => ($new
-                ? 1
-                : htmlspecialchars(
-                    $object->get('Supplier Part Minimum Carton Order')
-                )),
-            'formatted_value' => ($new
-                ? 1
-                : $object->get(
-                    'Minimum Carton Order'
-                )),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Minimum Carton Order')
-            ),
+            'value'           => ($new ? 1 : htmlspecialchars($object->get('Supplier Part Minimum Carton Order'))),
+            'formatted_value' => ($new ? 1 : $object->get('Minimum Carton Order')),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Minimum Carton Order')),
             'placeholder'     => _('cartons'),
-
             'required' => true,
             'type'     => 'value'
         ),
@@ -144,26 +121,11 @@ $supplier_part_fields[] = array(
             'id'   => 'Supplier_Part_Average_Delivery_Days',
             'edit' => ($edit ? 'numeric' : ''),
 
-            'value' => ($new
-                ? ($part_scope
-                    ? ''
-                    : $options['parent_object']->get(
-                        'Supplier Average Delivery Days'
-                    ))
-                : htmlspecialchars(
-                    $object->get('Supplier Part Average Delivery Days')
-                )),
+            'value' => ($new ? ($part_scope ? '' : $options['parent_object']->get('Supplier Average Delivery Days')) : htmlspecialchars($object->get('Supplier Part Average Delivery Days'))),
 
-            'formatted_value' => ($new ? ($part_scope
-                ? ''
-                : $options['parent_object']->get(
-                    'Supplier Average Delivery Days'
-                )) : $object->get('Average Delivery Days')),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Average Delivery Days')
-            ),
+            'formatted_value' => ($new ? ($part_scope ? '' : $options['parent_object']->get('Supplier Average Delivery Days')) : $object->get('Average Delivery Days')),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Average Delivery Days')),
             'placeholder'     => _('days'),
-
             'required' => false,
             'type'     => 'value'
         ),
@@ -183,11 +145,9 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Supplier_Part_Description',
             'edit' => ($edit ? 'string' : ''),
-
             'value'           => htmlspecialchars($object->get('Supplier Part Description')),
             'formatted_value' => $object->get('Supplier Part Description'),
             'label'             => _('<b>Supplier\'s</b> unit description').' (for ordering)',
-
             'required'        => true,
             'type'            => 'value'
         ),

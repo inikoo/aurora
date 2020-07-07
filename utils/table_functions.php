@@ -388,6 +388,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s material', '%s materials', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'raw material') {
+        return sprintf(
+            ngettext('%s raw material', '%s raw materials', $total_records), number($total_records)
+        );
     } elseif ($record_label == 'picking locations needed to replenish for ordered parts') {
         return sprintf(
             ngettext('%s picking location needed to replenish for ordered parts', '%s picking locations needed to replenish for ordered parts', $total_records), number($total_records)
@@ -895,6 +899,12 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s material of %s', '%s materials of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'raw material') {
+        return sprintf(
+            ngettext(
+                '%s raw material of %s', '%s raw materials of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'picking locations needed to replenish for ordered parts') {

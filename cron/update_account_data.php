@@ -16,6 +16,7 @@ require_once 'utils/natural_language.php';
 
 
 $account->load_acc_data();
+$account->update_suppliers_data();
 
 $account->update_production_job_orders_stats();
 
@@ -26,7 +27,6 @@ $account->update_parts_data();
 
 $account->update_orders();
 
-$account->update_suppliers_data();
 
 $account->update_active_parts_stock_data();
 

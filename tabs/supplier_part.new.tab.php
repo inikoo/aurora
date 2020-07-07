@@ -17,11 +17,11 @@ include_once 'class.Part.php';
 
 $object_fields = get_object_fields(
     $state['_object'], $db, $user, $smarty, array(
-        'parent'              => 'supplier',
-        'parent_object'       => $state['_parent'],
-        'new'                 => true,
-        'supplier_part_scope' => true
-    )
+                         'parent'              => 'supplier',
+                         'parent_object'       => $state['_parent'],
+                         'new'                 => true,
+                         'supplier_part_scope' => true
+                     )
 );
 
 $smarty->assign('state', $state);
@@ -32,21 +32,16 @@ $smarty->assign('object_fields', $object_fields);
 
 
 $available_barcodes = 0;
-$sql                = sprintf(
-    "SELECT count(*) AS num FROM `Barcode Dimension` WHERE `Barcode Status`='Available'"
-);
-if ($result = $db->query($sql)) {
-    if ($row = $result->fetch()) {
-        $available_barcodes = $row['num'];
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
-}
 
+$sql  = "SELECT count(*) AS num FROM `Barcode Dimension` WHERE `Barcode Status`='Available'";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+if ($row = $stmt->fetch()) {
+    $available_barcodes = $row['num'];
+}
 $smarty->assign('available_barcodes', $available_barcodes);
 
 
 $html = $smarty->fetch('new_object.tpl');
 
-?>
+
