@@ -3137,8 +3137,10 @@ class Page extends DB_Table {
                             } else {
 
                                 $sql = sprintf(
-                                    "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
-                                  FROM   `Product Category Dimension` P     LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
+                                    "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
+                                        FROM   `Product Category Dimension` P     
+                                      LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) 
+                                      LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
                                   WHERE  `Product Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ", $item['category_key']
 
 
@@ -3181,7 +3183,7 @@ class Page extends DB_Table {
             if ($item_data['Category Main Image Key'] > 0) {
 
                 if ($item_data['Category Main Image Key'] != '') {
-                    $img = 'wi/'.$item_data['Category Main Image Key'].'.'.$item_data['Category Main Image Key'];
+                    $img = 'wi/'.$item_data['Category Main Image Key'].'.'.$item_data['Image File Format'];
                 } else {
                     $img = 'wi.php?id='.$item_data['Category Main Image Key'];
                 }
