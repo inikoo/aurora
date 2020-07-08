@@ -932,8 +932,7 @@ class Location extends DB_Table {
         }
 
 
-        $sql = "INSERT INTO `Location Deleted Dimension`  (`Location Deleted Key`,`Location Deleted Code`,`Location Deleted Date`,`Location Deleted Metadata`,`Location Deleted Note`
-                `Location Deleted Warehouse Key`,`Location Deleted Warehouse Area Key`,`Location Deleted Warehouse Area Code`,`Location Deleted File As`
+        $sql = "INSERT INTO `Location Deleted Dimension`  (`Location Deleted Key`,`Location Deleted Code`,`Location Deleted Date`,`Location Deleted Metadata`,`Location Deleted Note`,`Location Deleted Warehouse Key`,`Location Deleted Warehouse Area Key`,`Location Deleted Warehouse Area Code`,`Location Deleted File As`
             ) 
             VALUES (?,?,?,?,?,?,?,?,?) ";
 
@@ -954,7 +953,6 @@ class Location extends DB_Table {
             )
         );
 
-        //print_r($stmt->errorInfo());
 
 
         $sql = "DELETE FROM `Location Dimension` WHERE `Location Key`=?";
