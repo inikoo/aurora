@@ -660,23 +660,23 @@ class Page extends DB_Table {
 
         //        print $this->get('URL');
 
-             foreach(VARNISH_URLS as $varnish_url ) {
+        foreach (VARNISH_URLS as $varnish_url) {
 
 
-                 $curl = curl_init();
-                 curl_setopt($curl, CURLOPT_URL, $varnish_url);
-                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "BAN");
-                 curl_setopt($curl, CURLOPT_PORT, VARNISH_PORT);
-                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $varnish_url);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "BAN");
+            curl_setopt($curl, CURLOPT_PORT, VARNISH_PORT);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 
-                 curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wpk: '.DNS_ACCOUNT_CODE.'-'.$this->id]);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, ['x-ban-wpk: '.DNS_ACCOUNT_CODE.'-'.$this->id]);
 
-                 curl_exec($curl);
+            curl_exec($curl);
 
-                 //print $server_output;
-                 curl_close($curl);
-             }
+            //print $server_output;
+            curl_close($curl);
+        }
 
         /*
         $cache_id = '_'.$this->id.'|'.$this->get('Webpage Website Key').'|'.DNS_ACCOUNT_CODE;
@@ -708,7 +708,7 @@ class Page extends DB_Table {
 
         $this->update_state('Offline');
 
-        $webpage_type=get_object('Webpage_Type',$this->get('Webpage Type Key'));
+        $webpage_type = get_object('Webpage_Type', $this->get('Webpage Type Key'));
         $webpage_type->update_number_webpages();
 
         require_once 'utils/new_fork.php';
@@ -3119,6 +3119,7 @@ class Page extends DB_Table {
 
                             $item_data = $items[$item['category_key']];
 
+                            //print_r($item_data);
 
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
@@ -3126,6 +3127,13 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
+
+                            //$content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']            = 'wi/'.$item_data['Category Main Image Key'].'.'.$item_data['Image File Format'];
+                            //$content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']        = 'wi/'.$item_data['Category Main Image Key'].'.'.$item_data['Image File Format'];
+                            //$content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = 'wi/'.$item_data['Category Main Image Key'].'.'.$item_data['Image File Format'];
+
+
+                            // $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']            = $item_data['Webpage URL'];
 
 
                             unset($items_category_key_index[$item['category_key']]);
@@ -3214,6 +3222,8 @@ class Page extends DB_Table {
 
 
         // print_r($content_data['blocks'][$block_key]['sections']);
+
+        // print_r($content_data);
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
@@ -3584,8 +3594,7 @@ class Page extends DB_Table {
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
 
-
-            $webpage_type=get_object('Webpage_Type',$this->get('Webpage Type Key'));
+            $webpage_type = get_object('Webpage_Type', $this->get('Webpage Type Key'));
             $webpage_type->update_number_webpages();
 
 

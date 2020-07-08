@@ -21,7 +21,6 @@ $sql = sprintf('SELECT `Warehouse Key`  FROM `Warehouse Dimension`  ');
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $warehouse = get_object('Warehouse',$row['Warehouse Key']);
-
         $warehouse->update_delivery_notes();
      
     }
@@ -39,6 +38,22 @@ if ($result = $db->query($sql)) {
 
         $warehouse_area->update_warehouse_area_locations();
         $warehouse_area->update_warehouse_area_number_parts();
+
+    }
+}
+
+
+
+
+$sql = sprintf('SELECT `Location Key`  FROM `Location Dimension`  ');
+
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $location = get_object('Location',$row['Location Key']);
+
+        $location->update_parts();
+        $location->update_stock_value();
 
     }
 }
