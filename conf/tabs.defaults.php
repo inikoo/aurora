@@ -2768,6 +2768,15 @@ function get_tab_defaults_data() {
             'elements'      => get_elements_option('locations'),
             'export_fields' => get_export_fields('locations')
         ),
+        'warehouse.deleted_locations'         => array(
+            'view'          => 'overview',
+            'sort_key'      => 'code',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'code',
+            'export_fields' => get_export_fields('deleted_locations')
+        ),
 
         'warehouse.replenishments'                  => array(
             'view'        => 'overview',

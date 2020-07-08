@@ -27,7 +27,9 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
 
         $location = $state['_object'];
 
-        $object_fields = get_object_fields($location, $db, $user, $smarty);
+        $object_fields = get_object_fields($location, $db, $user, $smarty,[
+            'parent'=>$state['parent']
+        ]);
 
         $smarty->assign('object', $state['_object']);
         $smarty->assign('key', $state['key']);
@@ -43,4 +45,3 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
 
 }
 
-?>

@@ -3374,6 +3374,18 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 }
 
 
+                            }elseif ($view_path[1] == 'deleted_locations') {
+                                $section = 'locations';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
+                                    $_data['tab'] = 'warehouse.deleted_locations';
+
+
+
                             } elseif ($view_path[1] == 'areas') {
                                 $section = 'locations';
 

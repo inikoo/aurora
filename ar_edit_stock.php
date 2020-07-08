@@ -649,16 +649,11 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
     $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
     if (!$has_picking_location) {
-
-
         foreach ($part_locations as $part_location) {
-
             if ($part_location->location->id != $warehouse->get('Warehouse Unknown Location Key')) {
                 $part_location->update(array('Part Location Can Pick' => 'Yes'));
                 break;
             }
-
-
         }
     }
 

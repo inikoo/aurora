@@ -144,6 +144,13 @@ function get_warehouses_module() {
                         'dynamic_reference' => 'warehouse/%d/areas',
 
                     ),
+                    'warehouse.deleted_locations' => array(
+                        'label'             => _('Deleted locations'),
+                        'icon'              => 'ban',
+                        'dynamic_reference' => 'warehouse/%d/deleted_locations',
+                        'class'=>'right'
+
+                    ),
 
                 )
 

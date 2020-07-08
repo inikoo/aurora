@@ -651,7 +651,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Location':
             include 'fields/location.fld.php';
 
-            return $object_fields;
+            return get_location_object_fields($object,$db,$options);
             break;
         case 'Store':
             if (!empty($options['new'])) {

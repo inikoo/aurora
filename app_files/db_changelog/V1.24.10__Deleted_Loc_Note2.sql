@@ -1,0 +1,5 @@
+ALTER TABLE `Location Deleted Dimension` CHANGE `Location Deleted Code` `Location Deleted Code` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL;
+ALTER TABLE `Location Deleted Dimension` ADD `Location Deleted Warehouse Area Code` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL AFTER `Location Deleted Code`, ADD INDEX (`Location Deleted Warehouse Area Code`);
+ALTER TABLE `Location Deleted Dimension` ADD `Location Deleted Warehouse Area Key` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Location Deleted Code`, ADD INDEX (`Location Deleted Warehouse Area Key`);
+ALTER TABLE `Location Deleted Dimension` ADD `Location Deleted File As` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL AFTER `Location Deleted Code`, ADD INDEX (`Location Deleted File As`);
+ALTER TABLE `Location Deleted Dimension` CHANGE `Location Deleted Note` `Location Deleted Note` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL;

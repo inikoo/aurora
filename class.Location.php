@@ -254,7 +254,7 @@ class Location extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id     = $this->data['Location Deleted Key'];
-            $deleted_data = json_decode(gzuncompress($this->data['Location Deleted Metadata']), true);
+            $deleted_data = json_decode($this->data['Location Deleted Metadata'], true);
 
 
             foreach ($deleted_data as $key => $value) {
@@ -791,7 +791,6 @@ class Location extends DB_Table {
     function update_stock_value() {
 
 
-
         $sql = "SELECT sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Location Key`=?";
 
         $stmt = $this->db->prepare($sql);
@@ -802,7 +801,7 @@ class Location extends DB_Table {
         );
         if ($row = $stmt->fetch()) {
             $stock_value = $row['value'];
-        }else{
+        } else {
             $stock_value = 0;
         }
 
@@ -910,10 +909,10 @@ class Location extends DB_Table {
         return $part_locations;
     }
 
-    function delete() {
+    function delete($note = '') {
 
-        include_once 'class.Warehouse.php';
-        $warehouse = new Warehouse($this->data['Location Warehouse Key']);
+        $warehouse      = get_object('Warehouse', $this->data['Location Warehouse Key']);
+        $warehouse_area = get_object('WarehouseArea', $this->data['Location Warehouse Area Key']);
 
         $this->deleted     = false;
         $this->deleted_msg = '';
@@ -933,17 +932,39 @@ class Location extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            'INSERT INTO `Location Deleted Dimension`  (`Location Deleted Key`,`Location Deleted Code`,`Location Deleted Date`,`Location Deleted Metadata`) VALUES (%d,%s,%s,%s) ', $this->id, prepare_mysql($this->get('Location Code')),
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
+        $sql = "INSERT INTO `Location Deleted Dimension`  (`Location Deleted Key`,`Location Deleted Code`,`Location Deleted Date`,`Location Deleted Metadata`,`Location Deleted Note`
+                `Location Deleted Warehouse Key`,`Location Deleted Warehouse Area Key`,`Location Deleted Warehouse Area Code`,`Location Deleted File As`
+            ) 
+            VALUES (?,?,?,?,?,?,?,?,?) ";
 
-        );
-        $this->db->exec($sql);
 
-        $sql = sprintf(
-            "DELETE FROM `Location Dimension` WHERE `Location Key`=%d", $this->id
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id,
+                $this->get('Location Code'),
+                gmdate('Y-m-d H:i:s'),
+
+                json_encode($this->data),
+                $note,
+                $this->data['Location Warehouse Key'],
+                $this->data['Location Warehouse Area Key'],
+                $warehouse_area->get('Code'),
+                $this->data['Location File As'],
+            )
         );
-        $this->db->exec($sql);
+
+        //print_r($stmt->errorInfo());
+
+
+        $sql = "DELETE FROM `Location Dimension` WHERE `Location Key`=?";
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id
+            )
+        );
+
+
         $this->deleted = true;
 
         $history_data = array(

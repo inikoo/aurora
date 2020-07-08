@@ -838,13 +838,7 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => _('Code'),
                 'checked' => 1
             ),
-            /*
-            array(
-                'name'    => '`Location Mainly Used For`',
-                'label'   => _('User for'),
-                'checked' => 1
-            ),
-            */
+
             array(
                 'name'    => '`Location Max Weight`',
                 'label'   => ucfirst(_('max weight')).' (Kg)',
@@ -864,6 +858,15 @@ function get_export_fields($element, $account_currency_code = '') {
                 'name'    => 'CONCAT ("!W",`Location Warehouse Key`,"L",LPAD(`Location Key`,8,0))',
                 'label'   => _('Barcode'),
                 'checked' => 0
+            ),
+
+
+        ),
+        'deleted_locations'       => array(
+            array(
+                'name'    => '`Location Code`',
+                'label'   => _('Code'),
+                'checked' => 1
             ),
 
 
