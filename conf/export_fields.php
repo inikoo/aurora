@@ -864,8 +864,23 @@ function get_export_fields($element, $account_currency_code = '') {
         ),
         'deleted_locations'       => array(
             array(
-                'name'    => '`Location Code`',
+                'name'    => '`Location Deleted Code`',
                 'label'   => _('Code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Location Deleted Warehouse Area Code`',
+                'label'   => _('Area'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Location Deleted Date`',
+                'label'   => _('Date'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Location Deleted Note`',
+                'label'   => _('Note'),
                 'checked' => 1
             ),
 

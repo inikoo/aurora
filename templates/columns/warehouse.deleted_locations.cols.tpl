@@ -30,7 +30,7 @@ cell: Backgrid.HtmlCell.extend({
 },
 {
 name: "date",
-label: "{t}Delated date{/t}",
+label: "{t}Deleted date{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
@@ -41,10 +41,9 @@ headerCell: integerHeaderCell
 name: "note",
 label: "{t}Note{/t}",
 editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({ } ),
-headerCell: integerHeaderCell
-},
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className:"width_400" } ),
+}
 ]
 
 function change_table_view(view,save_state){}

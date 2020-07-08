@@ -95,6 +95,9 @@ switch ($tipo) {
     case 'production_deliveries':
         production_deliveries(get_table_parameters(), $db, $user, $account);
         break;
+    case 'deleted_locations':
+        deleted_locations(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -268,7 +271,6 @@ function replenishments($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
@@ -325,7 +327,7 @@ function replenishments($_data, $db, $user) {
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
-        if($data['Part Symbol']!='') {
+        if ($data['Part Symbol'] != '') {
             if ($data['Part Symbol'] != '') {
 
                 switch ($data['Part Symbol']) {
@@ -1177,8 +1179,6 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     $rtext_label = 'part';
 
 
-
-
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -1252,8 +1252,8 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
             'quantity'    => sprintf(
-                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" >%s</span>', '', $data['Part SKU'], 1,
-                $data['Quantity On Hand'], '<strong class="'.($data['Quantity On Hand'] < 0 ? 'success' : 'error').'" >'.($data['Quantity On Hand'] < 0 ? '+' : '').number(-$data['Quantity On Hand']).'</strong>'
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" >%s</span>', '', $data['Part SKU'], 1, $data['Quantity On Hand'],
+                '<strong class="'.($data['Quantity On Hand'] < 0 ? 'success' : 'error').'" >'.($data['Quantity On Hand'] < 0 ? '+' : '').number(-$data['Quantity On Hand']).'</strong>'
             )
 
 
@@ -1718,11 +1718,11 @@ function return_items_done($_data, $db, $user) {
 
             $table_data[] = array(
 
-                'id' => (integer)$data['Part SKU'],
-                'part_reference' => $reference,
-                'description'    => $data['Part Package Description'],
-                'received_quantity' => number($data['skos_in']),
-                'checked_quantity'  => number($data['checked_quantity']),
+                'id'                            => (integer)$data['Part SKU'],
+                'part_reference'                => $reference,
+                'description'                   => $data['Part Package Description'],
+                'received_quantity'             => number($data['skos_in']),
+                'checked_quantity'              => number($data['checked_quantity']),
                 'items_amount'                  => $items_amount,
                 'extra_amount'                  => $extra_amount,
                 'extra_amount_account_currency' => $extra_amount_account_currency,
@@ -1769,7 +1769,6 @@ function consignments($_data, $db, $user) {
             $notes = '';
 
             switch ($data['Delivery Note State']) {
-
 
 
                 case 'Ready to be Picked':
@@ -1908,7 +1907,7 @@ function consignments($_data, $db, $user) {
 }
 
 
-function feedback($_data, $db, $user,$account) {
+function feedback($_data, $db, $user, $account) {
 
 
     $rtext_label = 'issue';
@@ -2004,9 +2003,7 @@ function production_deliveries($_data, $db, $user) {
 
 
                 'public_id' => sprintf(
-                    '<span class="link" onclick="change_view(\'/warehouse/%d/production_deliveries/%s/%d\')" >%s</span>  ', $data['Supplier Delivery Warehouse Key'],
-                    $_data['parameters']['section'],
-                    $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                    '<span class="link" onclick="change_view(\'/warehouse/%d/production_deliveries/%s/%d\')" >%s</span>  ', $data['Supplier Delivery Warehouse Key'], $_data['parameters']['section'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
                 ),
 
 
@@ -2037,3 +2034,57 @@ function production_deliveries($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function deleted_locations($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'location';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    $link = 'locations/'.$_data['parameters']['parent_key'].'/';
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $code = sprintf('<span class="link" onclick="change_view(\'%s/%d\')">%s</span>', $link, $data['Location Deleted Key'], $data['Location Deleted Code']);
+
+        if ($data['Warehouse Area Key']) {
+            $area = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Location Deleted Warehouse Key'], $data['Location Deleted Warehouse Area Key'], $data['Warehouse Area Code']);
+
+        } elseif ($data['Location Deleted Warehouse Area Code'] != '') {
+            $area = sprintf('<span class="discreet italic">%s</span>', $data['Location Deleted Warehouse Area Code']);
+
+        } else {
+            $area = '<span class="super_discreet italic">'._('Unknown').'</span>';
+        }
+
+        $adata[] = array(
+            'id'   => (integer)$data['Location Deleted Key'],
+            'code' => $code,
+            'area' => $area,
+            'note' => '<span class="small">'.$data['Location Deleted Note'].'</span>',
+            'date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Location Deleted Date'].' +0:00')),
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+

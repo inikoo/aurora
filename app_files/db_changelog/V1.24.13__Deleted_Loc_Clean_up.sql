@@ -1,0 +1,1 @@
+ALTER TABLE `Location Deleted Dimension` DROP `Location Deleted Data`;
