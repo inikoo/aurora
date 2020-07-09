@@ -36,9 +36,9 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
     new_housekeeping_fork(
         'au_isf', array(
-        'date'        => $row['Date']
+        'date' => $row['Date']
     ), DNS_ACCOUNT_CODE, $db
     );
-    exit;
+  
 }
 
