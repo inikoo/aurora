@@ -357,6 +357,7 @@ class SupplierPart extends DB_Table {
 
 
                 if ($updated) {
+                    $this->part->editor=$this->editor;
                     $this->part->update_on_demand();
                 }
                 break;
