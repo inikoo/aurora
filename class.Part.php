@@ -5037,7 +5037,6 @@ class Part extends Asset {
                     "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`", $this->id, prepare_mysql($row['Date'].' 23:59:59')
                 );
 
-              //  print $sql."\n";
 
                 $locations = 0;
 
@@ -5113,7 +5112,7 @@ class Part extends Asset {
                             $sql = sprintf(
                                 "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`", $this->id, prepare_mysql($date_1yr_back.' 23:59:59')
                             );
-                            print "$sql\n";
+                            //print "$sql\n";
                             $stock_one_year_ago = 0;
 
                             if ($result3 = $this->db->query($sql)) {
