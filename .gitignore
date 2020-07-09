@@ -61,3 +61,4 @@ EcomB2B/keyring
 cron/test_shipping.php
 img
 .DS_Store
+aurora.min.js.map

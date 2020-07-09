@@ -116,7 +116,7 @@ class PartLocation extends DB_Table {
         $this->location = new Location($data['Location Key']);
         if (!$this->location->id) {
 
-            
+
             $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
 
@@ -322,9 +322,6 @@ class PartLocation extends DB_Table {
         $qty_change = $qty - $old_qty;
 
 
-
-
-
         $value_change = round($qty_change * $this->get_sko_cost(), 2);
 
         $this->updated = true;
@@ -351,7 +348,6 @@ class PartLocation extends DB_Table {
         }
 
 
-        
         $warehouse        = get_object('Warehouse', $_SESSION['current_warehouse']);
         $unknown_location = $warehouse->get('Warehouse Unknown Location Key');
 
@@ -413,7 +409,7 @@ class PartLocation extends DB_Table {
                 $details .= $note;
 
             }
-            
+
             $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
 
@@ -545,11 +541,11 @@ class PartLocation extends DB_Table {
     */
 
 
-    function get_sko_cost(){
-        if($this->part->get('Part Cost in Warehouse')==''){
-            $sko_cost=$this->part->get('Part Cost');
-        }else{
-            $sko_cost=$this->part->get('Part Cost in Warehouse');
+    function get_sko_cost() {
+        if ($this->part->get('Part Cost in Warehouse') == '') {
+            $sko_cost = $this->part->get('Part Cost');
+        } else {
+            $sko_cost = $this->part->get('Part Cost in Warehouse');
         }
 
         return $sko_cost;
@@ -584,7 +580,6 @@ class PartLocation extends DB_Table {
         $this->location->update_stock_value();
 
 
-        
         $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
         if ($this->location->id == $warehouse->get('Warehouse Unknown Location Key')) {
@@ -1050,7 +1045,7 @@ class PartLocation extends DB_Table {
     function stock_transfer($data) {
 
 
-         $account=get_object('Account',1);
+        $account = get_object('Account', 1);
 
         if (!is_numeric($this->data['Quantity On Hand'])) {
             $this->error;
@@ -1436,8 +1431,10 @@ class PartLocation extends DB_Table {
 
         $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
+
         if ($this->exist_on_date($date)) {
 
+         //   print "Yeah\n";
 
             if ($date == gmdate('Y-m-d')) {
                 $cost_per_sko = $this->get_sko_cost();
@@ -1527,19 +1524,22 @@ class PartLocation extends DB_Table {
             );
 
         } else {
-
-
+           // print "Naa\n";
             $params = [
                 'index' => 'au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE),
                 'id'    => DNS_ACCOUNT_CODE.'.'.$this->part_sku.'_'.$this->location_key.'.'.$date,
             ];
 
+           // print_r($params);
 
             try {
                 $client->delete($params);
 
             } catch (Exception $e) {
+
             }
+
+
 
             return array(
                 'action' => 'deleted',
@@ -1554,12 +1554,10 @@ class PartLocation extends DB_Table {
     }
 
     function exist_on_date($date) {
-        //  print $date;
+
         $date = gmdate('U', strtotime($date));
 
         $intervals = $this->get_history_intervals();
-
-        //  print_r($intervals);
 
 
         foreach ($intervals as $interval) {
