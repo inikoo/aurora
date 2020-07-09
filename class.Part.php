@@ -5131,7 +5131,7 @@ class Part extends Asset {
                                 "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Record Type`='Movement'  and  `Inventory Transaction Quantity`<0  ",
                                 prepare_mysql($date_1yr_back.' 23:59:59'), prepare_mysql($row['Date'].' 23:59:59'), $this->id
                             );
-                            print "$sql\n";
+                            //print "$sql\n";
                             if ($result2 = $this->db->query($sql)) {
                                 if ($row2 = $result2->fetch()) {
                                     $total_out_1_year = $row2['qty_out'];
