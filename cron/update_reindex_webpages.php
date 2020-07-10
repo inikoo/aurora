@@ -24,7 +24,8 @@ $editor = array(
 
 
 //$sql = "SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Status`!='Offline'  and `Webpage Scope` !='Product'";
-$sql = "SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Status`!='Offline'";
+$sql = "SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Status`!='Offline'  and `Webpage Scope` ='Category Products' ";
+$sql = "SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where `Website Status`!='Offline'  ";
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

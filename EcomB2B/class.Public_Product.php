@@ -242,7 +242,9 @@ class Public_Product {
             case 'Product Code':
             case 'Product Family Category Key':
             case 'Product Department Category Key':
-                return $this->data[$key];
+            case 'Product Web State':
+
+            return $this->data[$key];
 
 
                 break;
