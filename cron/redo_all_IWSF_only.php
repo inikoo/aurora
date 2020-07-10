@@ -26,13 +26,15 @@ require_once 'utils/object_functions.php';
 
 $warehouse=get_object('Warehouse',1);
 
+//$warehouse->update_inventory_snapshot('2020-07-01');
+//exit("--\n");
 
 $from = date("Y-m-d", strtotime($warehouse->get('Warehouse Valid From')));
 $to   = date("Y-m-d", strtotime('now'));
 
 
-//$from=date("Y-m-d");
-//$to='2013-09-05';
+//$from='2020-07-01';
+//$to='2020-07-01';
 
 
 

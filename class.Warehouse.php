@@ -1024,13 +1024,12 @@ class Warehouse extends DB_Table {
 
 
                                     ],
-                                    [
-                                        "term" => [
-                                            'warehouses' => $this->id,
-                                        ],
-
-
+                                    //todo set warehouses when creating au_part_isf_
+                                    /*
+                                    "term" => [
+                                        'warehouses' => $this->id,
                                     ],
+                                    */
                                     [
                                         "term" => [
                                             'no_sales_1_year' => true,
@@ -1060,6 +1059,8 @@ class Warehouse extends DB_Table {
 
                 $response = $client->search($params);
 
+//                print_r($params);
+  //              print_r($response);
 
                 $parts_no_sales_1_year = $response['aggregations']['parts']['value'];
 
@@ -1081,13 +1082,12 @@ class Warehouse extends DB_Table {
 
 
                                     ],
-                                    [
-                                        "term" => [
-                                            'warehouses' => $this->id,
-                                        ],
-
-
+                                    //todo set warehouses when creating au_part_isf_
+                                    /*
+                                    "term" => [
+                                        'warehouses' => $this->id,
                                     ],
+                                    */
                                     [
                                         'range' => [
                                             'stock_left_1_year_ago' => [
@@ -1138,13 +1138,12 @@ class Warehouse extends DB_Table {
 
 
                                     ],
-                                    [
-                                        "term" => [
-                                            'warehouses' => $this->id,
-                                        ],
-
-
+                                    //todo set warehouses when creating au_part_isf_
+                                    /*
+                                    "term" => [
+                                        'warehouses' => $this->id,
                                     ],
+                                    */
                                     [
                                         'range' => [
                                             'stock_value_at_day_cost' => [
@@ -1229,12 +1228,15 @@ class Warehouse extends DB_Table {
                                         "term" => [
                                             'date' => $row['Date'],
                                         ],
-                                    ],
-                                    [
+                                    ]
+
+                                        //todo set warehouses when creating au_part_isf_
+                                        /*
                                         "term" => [
                                             'warehouses' => $this->id,
                                         ],
-                                    ],
+                                        */
+
 
 
                                 ]
@@ -1296,6 +1298,9 @@ class Warehouse extends DB_Table {
                 ];
 
                 $response = $client->search($params);
+
+                //print_r($params);
+                print_r($response);
 
                 $data['parts'] = $response['aggregations']['parts']['value'];
 
