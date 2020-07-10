@@ -786,9 +786,7 @@ class Product extends Asset {
         }
 
 
-        $this->data['Product Code File As'] = get_file_as(
-            $this->data['Product Code']
-        );
+        $this->data['Product Code File As'] = get_file_as($this->data['Product Code']);
 
 
         if ($this->data['Product Packing Group'] == '') {

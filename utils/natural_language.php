@@ -258,6 +258,7 @@ function file_size($bytes) {
 function get_file_as($StartCode) {
 
     $PaddingAmount = 4;
+
     $s             = preg_replace("/[^0-9]/", "-", $StartCode);
 
     for ($qq = 0; $qq < 10; $qq++) {
@@ -290,7 +291,7 @@ function get_file_as($StartCode) {
     }
 
 
-    return $StartCode;
+    return strtolower($StartCode);
 
 
 }

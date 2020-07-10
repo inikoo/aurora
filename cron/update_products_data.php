@@ -29,6 +29,18 @@ $editor = array(
 
 print date('l jS \of F Y h:i:s A')."\n";
 
+$sql =  "SELECT `Product ID`,`Product Code`,`Product Code File As` FROM `Product Dimension`   ";
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $product = new Product($row['Product ID']);
+        $file_as=get_file_as($product->get('Code'));
+
+
+        $product->fast_update(['Product Code File As'=>$file_as]);
+
+    }
+}
+
 //update_products_status_availability_state($db);
 //update_products_data($db);
 
@@ -37,7 +49,7 @@ print date('l jS \of F Y h:i:s A')."\n";
 //print "updated fiels from parts\n";
 //update_web_state($db);
 
-update_categories_data($db);
+//update_categories_data($db);
 
 //update_products_data($db);
 

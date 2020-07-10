@@ -39,6 +39,6 @@ while ($row = $stmt->fetch()) {
         'date' => $row['Date']
     ), DNS_ACCOUNT_CODE, $db
     );
-  
+
 }
 
