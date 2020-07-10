@@ -1300,7 +1300,7 @@ class Warehouse extends DB_Table {
                 $response = $client->search($params);
 
                 //print_r($params);
-                print_r($response);
+               // print_r($response);
 
                 $data['parts'] = $response['aggregations']['parts']['value'];
 
