@@ -188,6 +188,39 @@ function data_entry_delivery_note(dn_key) {
 
 }
 
+function update_delivery_note_picking_locations(element,delivery_note_key){
+
+    $(element).addClass('fa-spin')
+
+
+    $.post("/ar_edit_orders.php", {
+        tipo:     "update_delivery_note_picking_locations",
+        delivery_note_key: delivery_note_key
+    }, null, 'json').done(function (data) {
+       // console.log(data)
+
+        if (data.state == 200) {
+
+            $(element).removeClass('fa-spin')
+
+
+            if(state.tab=='order.input_picking_sheet'){
+                rows.fetch({
+                    reset: true
+                });
+            }
+
+
+
+        } else if (data.state == 400) {
+
+
+            swal($('#_labels').data('labels').error, data.msg, "error")
+        }
+    });
+
+
+}
 
 function close_data_entry_delivery_note() {
 
@@ -206,11 +239,6 @@ function show_other_part_locations_for_input_delivery_note_packing(element) {
         metadata: JSON.stringify($(element).data('metadata'))
     }, null, 'json').done(function (data) {
         console.log(data)
-
-        //$('#' + dialog_name + '_save_buttons').addClass('button');
-        //$('#' + dialog_name + '_save_buttons i').removeClass('fa-spinner fa-spin')
-        //$('#' + dialog_name + '_save_buttons .label').removeClass('hide')
-
 
         if (data.state == 200) {
 

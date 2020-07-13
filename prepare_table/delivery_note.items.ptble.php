@@ -37,7 +37,7 @@ if ($order == 'reference') {
 } elseif ($order == 'quantity') {
     $order = 'quantity';
 } else {
-    $order = 'ITF.`Inventory Transaction Key`';
+    $order = 'ITF.`Part SKU`';
 }
 
 $table
@@ -47,25 +47,20 @@ $table
 $sql_totals = "select count(*) as num from $table $where";
 
 
-$fields = "`Part Package Description`,`Inventory Transaction Quantity`,`Out of Stock`,
-`Required`,`Part Reference`,PD.`Part SKU`,
-`Not Found`,`No Picked Other`,`Part UN Number`,`Picked`,`Packed`,`Location Code`,ITF.`Location Key`,`Inventory Transaction Key`,(`Required`+`Given`) as quantity,
-`Required`+`Given`+`Inventory Transaction Quantity`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as pending,
-`Required`+`Given`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as to_pick,`Part SKO Barcode`,`Picking Note`,`Part Main Image Key`,
 
-,PD.`Part Current On Hand Stock`,`Date Picked`,`Date Packed`,`Given`,`Part Distinct Locations`
-";
-
-
-
-
-$fields = "`Part Package Description`,sum(`Out of Stock`) as `Out of Stock`,
-sum(`Required`) as `Required`,`Part Reference`,PD.`Part SKU`,
+$fields = "
+`Part Package Description`,
+sum(`Out of Stock`) as `Out of Stock`,
+sum(`Required`) as `Required`,
+ANY_VALUE(`Part Reference`) as `Part Reference`,
+PD.`Part SKU`,
 `Part UN Number`,
 sum(`Picked`) as `Picked`,
 sum(`Packed`) as `Packed`,
-`Part SKO Barcode`,`Picking Note`,`Part Main Image Key`,
-
-sum(`Given`) as `Given`,`Part Distinct Locations`
+`Part SKO Barcode`,
+ANY_VALUE(`Picking Note`) as `Picking Note`,
+`Part Main Image Key`,
+sum(`Given`) as `Given`,
+`Part Distinct Locations`
 ";
 

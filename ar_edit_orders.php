@@ -32,6 +32,15 @@ $tipo = $_REQUEST['tipo'];
 
 
 switch ($tipo) {
+    case 'update_delivery_note_picking_locations':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'delivery_note_key' => array('type' => 'key'),
+                     )
+        );
+        update_delivery_note_picking_locations($data, $editor);
+        break;
 
     case 'get_input_delivery_note_packing_all_locations':
         $data = prepare_values(
@@ -2390,5 +2399,30 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
         exit;
     }
 
+
+}
+
+
+function update_delivery_note_picking_locations($data, $editor) {
+
+
+    $delivery_note         = get_object('delivery_note', $data['delivery_note_key']);
+    $delivery_note->editor = $editor;
+    $delivery_note->update_delivery_note_picking_locations();
+
+    if ($delivery_note->error) {
+        $response = array(
+            'state' => 400,
+            'msg'   => $delivery_note->msg,
+        );
+    } else {
+        $response = array(
+            'state' => 200,
+
+        );
+    }
+
+
+    echo json_encode($response);
 
 }

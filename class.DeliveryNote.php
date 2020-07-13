@@ -90,7 +90,6 @@ class DeliveryNote extends DB_Table {
         unset($dn_data['editor']);
 
 
-
         foreach ($dn_data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
@@ -115,7 +114,6 @@ class DeliveryNote extends DB_Table {
         if ($stmt->execute()) {
 
 
-
             $this->id = $this->db->query("SELECT LAST_INSERT_ID()")->fetchColumn();
             if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
@@ -124,7 +122,7 @@ class DeliveryNote extends DB_Table {
 
             $this->get_data('id', $this->id);
 
-            if(!is_array($this->data)){
+            if (!is_array($this->data)) {
                 throw new Exception('Error data not '.$this->id.' loaded '.$this->table_name);
                 Sentry\captureMessage('Error  '.$this->id.'  '.$base_data['Delivery Note ID'].'   '.$this->table_name);
 
@@ -441,7 +439,7 @@ class DeliveryNote extends DB_Table {
 
                 break;
             case 'Number Ordered Items':
-                return     number($this->data['Delivery Note Number Ordered Items']);
+                return number($this->data['Delivery Note Number Ordered Items']);
 
 
             case 'Packed Percentage or Datetime':
@@ -898,7 +896,7 @@ class DeliveryNote extends DB_Table {
         if ($stmt->execute()) {
 
             $this->id = $this->db->lastInsertId();
-            if(!$this->id){
+            if (!$this->id) {
                 throw new Exception('Error inserting (replacement) '.$this->table_name);
             }
             $this->get_data('id', $this->id);
@@ -969,7 +967,7 @@ class DeliveryNote extends DB_Table {
 
                             $replacement_itf = $this->db->lastInsertId();
 
-                            if(!$replacement_itf){
+                            if (!$replacement_itf) {
                                 throw new Exception('Error inserting ITF');
                             }
 
@@ -1053,10 +1051,6 @@ class DeliveryNote extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1723,7 +1717,6 @@ class DeliveryNote extends DB_Table {
                     }
 
 
-
                 } else {
                     $value = 'Approved';
 
@@ -1816,8 +1809,6 @@ class DeliveryNote extends DB_Table {
 
 
                 }
-
-
 
 
                 new_housekeeping_fork(
@@ -2681,6 +2672,55 @@ class DeliveryNote extends DB_Table {
 
     }
 
+    function update_delivery_note_picking_locations() {
+
+        $state_index = $this->get('State Index');
+
+        if ($state_index < 0) {
+            $this->msg   = "Can't update picking locations of a cancelled delivery note";
+            $this->error = true;
+
+            return;
+        } elseif ($state_index >= 30) {
+            $this->msg   = "Delivery note already picked";
+            $this->error = true;
+
+            return;
+        }
+
+        $sql  = "select `Inventory Transaction Key`,`Part SKU`  from `Inventory Transaction Fact` where `Delivery Note Key`=? and `Inventory Transaction Section`='OIP' ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+
+            $part = get_object('Part', $row['Part SKU']);
+
+            $picking_location = $part->get_picking_location_key();
+            if ($picking_location == '') {
+                $picking_location = 1;
+            }
+            $sql = "update `Inventory Transaction Fact` set `Location Key`=? where `Inventory Transaction Key`=? ";
+
+
+            $stmt2 = $this->db->prepare($sql);
+
+            $stmt2->execute(
+                array(
+                    $picking_location,
+                    $row['Inventory Transaction Key']
+                )
+            );
+
+
+
+        }
+
+
+    }
 
 }
 
