@@ -10,7 +10,7 @@
 */
 
 
-$where ='WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Part Current On Hand Stock External`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   and `Part Current On Hand Stock External`>0 ';
+$where ='WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>( `Part Current On Hand Stock`-`Part Current On Hand Stock External`)  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   and `Part Current On Hand Stock External`>0 ';
 
 
 $wheref = '';
