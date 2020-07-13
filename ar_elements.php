@@ -2644,6 +2644,7 @@ function get_supplier_orders_elements($db, $data) {
 
             'InProcess'       => 0,
             'Submitted'       => 0,
+            'Confirmed'       => 0,
             'InTransit'       => 0,
             'ReceivedChecked' => 0,
             'Placed'          => 0,
@@ -2666,8 +2667,10 @@ function get_supplier_orders_elements($db, $data) {
             //'InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked' ,'Cancelled'
             if ($row['element'] == 'InProcess') {
                 $element = 'InProcess';
-            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'Inputted') {
+            } elseif ($row['element'] == 'Submitted' ) {
                 $element = 'Submitted';
+            } elseif ($row['element'] == 'Confirmed' or $row['element'] == 'Inputted') {
+                $element = 'Confirmed';
             } elseif ($row['element'] == 'Dispatched') {
                 $element = 'InTransit';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {

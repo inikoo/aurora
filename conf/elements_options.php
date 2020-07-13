@@ -1210,6 +1210,10 @@ function get_elements_option($option) {
                         'label'    => _('Submitted'),
                         'selected' => true
                     ),
+                    'Confirmed'       => array(
+                        'label'    => _('Confirmed'),
+                        'selected' => true
+                    ),
                     'InTransit'       => array(
                         'label'    => _('In transit'),
                         'selected' => true
@@ -1224,7 +1228,7 @@ function get_elements_option($option) {
                     ),
 
                     'InvoiceChecked' => array(
-                        'label'    => _('Booked in').' ('._('Costing done').')',
+                        'label'    => _('Costing done'),
                         'selected' => true
                     ),
                     'Cancelled'      => array(

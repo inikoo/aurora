@@ -94,7 +94,9 @@ if (isset($parameters['elements_type'])) {
                     if ($_key == 'InProcess') {
                         $_elements .= ",'InProcess'";
                     } elseif ($_key == 'Submitted') {
-                        $_elements .= ",'Submitted','Inputted'";
+                        $_elements .= ",'Submitted'";
+                    }elseif ($_key == 'Confirmed') {
+                        $_elements .= ",'Confirmed','Inputted'";
                     }elseif ($_key == 'InTransit') {
                         $_elements .= ",'Dispatched'";
                     } elseif ($_key == 'ReceivedChecked') {
@@ -110,7 +112,7 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked < 7) {
+            } elseif ($num_elements_checked < 8) {
 
 
                 $_elements = preg_replace('/^,/', '', $_elements);
