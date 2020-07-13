@@ -637,7 +637,7 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
 
     $has_picking_location = false;
     foreach ($part_locations as $part_location) {
-        if ($part_location->get('Part Location Can Pick') == 'Yes') {
+        if ($part_location->get('Can Pick') == 'Yes') {
             $has_picking_location = true;
             break;
         }
@@ -651,7 +651,7 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
     if (!$has_picking_location) {
         foreach ($part_locations as $part_location) {
             if ($part_location->location->id != $warehouse->get('Warehouse Unknown Location Key')) {
-                $part_location->update(array('Part Location Can Pick' => 'Yes'));
+                $part_location->update(array('Can Pick' => 'Yes'));
                 break;
             }
         }
@@ -1363,9 +1363,9 @@ function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) 
 
 
             if ($part_location->location_key == $data['location_key']) {
-                $part_location->update(array('Part Location Can Pick' => 'Yes'));
+                $part_location->update(array('Can Pick' => 'Yes'));
             } else {
-                $part_location->update(array('Part Location Can Pick' => 'No'));
+                $part_location->update(array('Can Pick' => 'No'));
             }
 
 

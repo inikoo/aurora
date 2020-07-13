@@ -215,9 +215,9 @@ switch ($_REQUEST['action']) {
 
 
             if ($part_location->location_key == $_REQUEST['location_key']) {
-                $part_location->update(array('Part Location Can Pick' => 'Yes'));
+                $part_location->update(array('Can Pick' => 'Yes'));
             } else {
-                $part_location->update(array('Part Location Can Pick' => 'No'));
+                $part_location->update(array('Can Pick' => 'No'));
             }
 
 

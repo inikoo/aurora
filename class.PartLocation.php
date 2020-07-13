@@ -235,7 +235,7 @@ class PartLocation extends DB_Table {
             $this->associate($associate_data);
 
             if (!$this->part->get_picking_location_key()) {
-                $this->update_field_switcher('Part Location Can Pick', 'Yes', 'no_history');
+                $this->update_field_switcher('Can Pick', 'Yes', 'no_history');
             }
 
 
@@ -709,7 +709,7 @@ class PartLocation extends DB_Table {
             case('Quantity On Hand'):
                 $this->audit($value);
                 break;
-            case('Part Location Can Pick'):
+            case('Can Pick'):
                 $this->update_can_pick($value);
                 break;
             case('Part Location Minimum Quantity'):
@@ -1003,7 +1003,7 @@ class PartLocation extends DB_Table {
 
             foreach ($this->part->get_locations('part_location_object') as $_part_location) {
 
-                $_part_location->update_field_switcher('Part Location Can Pick', 'Yes');
+                $_part_location->update_field_switcher('Can Pick', 'Yes');
 
                 break;
             }
