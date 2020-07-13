@@ -594,6 +594,8 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = _('Location').' <span  class="id Location_Code" >'.$data['_object']->get('Code').'</span>';
+    $title.=' <i id="_External_Warehouse_icon" title="'._('External warehouse').'" style="color:tomato" class="small padding_left_10  fal  fa-garage-car '.($data['_object']->get('Location Place')!='External'?'hide':'').'  "></i>';
+
 
     if (!$user->can_view('locations')) {
 
@@ -1899,6 +1901,9 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = _('Warehouse area').': <span  class="id Warehouse_Area_Code" >'.$data['_object']->get('Code').'</span>';
+
+    $title.=' <i id="_External_Warehouse_icon" title="'._('External warehouse').'" style="color:tomato" class="small padding_left_10  fal  fa-garage-car '.($data['_object']->get('Warehouse Area Place')!='External'?'hide':'').'  "></i>';
+
 
     if (!$user->can_view('locations')) {
 

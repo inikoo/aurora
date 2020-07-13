@@ -189,6 +189,13 @@ class WarehouseArea extends DB_Table {
 
                 return join(', ', $location_codes);
                 break;
+            case 'Place':
+                if($this->data['Warehouse Area Place']=='Local'){
+                    return _('Local warehouse');
+                }else{
+                    return _('External warehouse');
+
+                }
 
             default:
 
@@ -380,8 +387,9 @@ class WarehouseArea extends DB_Table {
             case 'Warehouse Area Name':
                 $label = _('name');
                 break;
-
-
+            case 'Warehouse Area Place':
+                $label=_('Area type');
+                break;
             default:
 
 
@@ -590,7 +598,31 @@ class WarehouseArea extends DB_Table {
         if (!$this->deleted and $this->id) {
 
             switch ($field) {
+                case 'Warehouse Area Place':
+                    $this->update_field($field, $value, $options);
 
+                    $sql="update `Location Dimension` set `Location Place`=? where `Location Warehouse Area Key`=? ";
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $value,
+                            $this->id
+                        )
+                    );
+
+                    if($value=='Local'){
+                        $this->update_metadata['hide'] = array(
+                            '_External_Warehouse_icon',
+
+                        );
+                    }else{
+                        $this->update_metadata['show'] = array(
+                            '_External_Warehouse_icon',
+
+                        );
+                    }
+
+
+                    break;
                 case 'Warehouse Area Location Codes':
 
 

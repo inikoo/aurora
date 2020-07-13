@@ -10,13 +10,17 @@
  Version 3.0
 */
 
-
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {
     $new = false;
 }
 
+
+$options_warehouse_place = array(
+    'Local'    => _('Local warehouse'),
+    'External' => _('External warehouse'),
+);
 
 $object_fields = array(
     array(
@@ -56,6 +60,29 @@ $object_fields = array(
                 ),
                 'type'              => 'value'
             ),
+
+        )
+    ),
+    array(
+        'label'      => _('Location'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'edit' => ($edit ? 'option' : ''),
+
+                'id'      => 'Warehouse_Area_Place',
+                'value'   => $object->get('Warehouse Area Place'),
+                'options' => $options_warehouse_place,
+
+                'formatted_value' => $object->get('Place'),
+                'label'           => ucfirst($object->get_field_label('Warehouse Area Place')),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => true,
+
+                'type' => 'value'
+            ),
+
 
         )
     )

@@ -157,11 +157,16 @@ function areas($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+        if ($data['Warehouse Area Place'] == 'External') {
+            $type = ' <i  title="'._('External warehouse').'" style="color:tomato" class="small padding_left_10  fal  fa-garage-car   "></i>';
+        } else {
+            $type = '';
+        }
+
         $adata[] = array(
-            'access'    => (in_array(
-                $data['Warehouse Area Warehouse Key'], $user->warehouses
-            ) ? '' : '<i class="fa fa-lock error"></i>'),
+            'access'    => (in_array($data['Warehouse Area Warehouse Key'], $user->warehouses) ? '' : '<i class="fa fa-lock error"></i>'),
             'id'        => (integer)$data['Warehouse Area Key'],
+            'type'      => $type,
             'code'      => sprintf(
                 '<span class="link" onClick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Warehouse Area Warehouse Key'], $data['Warehouse Area Key'], $data['Warehouse Area Code']
             ),
@@ -230,6 +235,13 @@ function locations($_data, $db, $user, $account) {
         $code = sprintf('<span class="link" onclick="change_view(\'%s/%d\')">%s</span>', $link, $data['Location Key'], $data['Location Code']);
         $area = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Location Warehouse Key'], $data['Location Warehouse Area Key'], $data['Warehouse Area Code']);
 
+        if ($data['Location Place'] == 'External') {
+            $type = ' <i  title="'._('External warehouse').'" style="color:tomato" class="small padding_left_10  fal  fa-garage-car   "></i>';
+        } else {
+            $type = '';
+        }
+
+
         $adata[] = array(
             'id'          => (integer)$data['Location Key'],
             'code'        => $code,
@@ -241,6 +253,7 @@ function locations($_data, $db, $user, $account) {
             'area'        => $area,
             'max_weight'  => $max_weight,
             'max_volume'  => $max_vol,
+            'type'        => $type,
             'parts'       => number($data['Location Distinct Parts']),
             'stock_value' => money($data['Location Stock Value'], $account->get('Account Currency')),
 

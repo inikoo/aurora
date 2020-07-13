@@ -604,7 +604,6 @@ function change_order_data_entry_picking_aid_state_after_save(element) {
 
     var icon = $(element).find('i')
 
-    console.log($(element).data('level'))
 
     var level=0;
 

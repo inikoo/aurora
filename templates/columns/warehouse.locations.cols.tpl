@@ -6,14 +6,18 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
-name: "link",
+},
+{
+name: "type",
 label: "",
 editable: false,
-renderable: false,
-cell: "string",
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
 
-}, {
+},
+{
 name: "flag",
 label: "{t}Flag{/t}",
 sortType: "toggle",

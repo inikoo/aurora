@@ -1075,7 +1075,7 @@ function save_field(object, key, field) {
         complete: function () {
 
         }, success: function (data) {
-            console.log(data)
+
             $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
             if (data.state == 100) {
                 pre_save_actions(field, data)

@@ -52,9 +52,9 @@ if ($order == 'code') {
 $table
     = '`Warehouse Area Dimension` WA  left join `Warehouse Dimension` WD on (`Warehouse Area Warehouse Key`=WD.`Warehouse Key`)';
 $fields
-    = "`Warehouse Area Key`,`Warehouse Area Warehouse Key`,`Warehouse Area Code`,`Warehouse Area Distinct Parts`,`Warehouse Area Code`,`Warehouse Area Name`,`Warehouse Code`,`Warehouse Area Number Locations`";
+    = "`Warehouse Area Place`,`Warehouse Area Key`,`Warehouse Area Warehouse Key`,`Warehouse Area Code`,`Warehouse Area Distinct Parts`,`Warehouse Area Code`,`Warehouse Area Name`,`Warehouse Code`,`Warehouse Area Number Locations`";
 
 $sql_totals = "select count(*) as num from $table $where ";
 
 
-?>
+
