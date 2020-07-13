@@ -2131,7 +2131,7 @@ function external_warehouse_replenishes($_data, $db, $user) {
                 $number_locations++;
                 $location_data = preg_split('/\:/', $location_data);
                 $locations     .= ' <div class="part_location button" style="clear:both;"  location_key="'.$location_data[0].'" >
-				<div  class="code data w150"  >'.$location_data[1].' '.($location_data[4]=='External'?'<i style="color: tomato" class="fal padding_left_5 small fa-garage-car"></i>':'').' </div>
+				<div onclick="change_view(\'locations/'.$location_data[5].'/'.$location_data[0].'\')"  class="code data w150"  >'.$location_data[1].' '.($location_data[4]=='External'?'<i style="color: tomato" class="fal padding_left_5 small fa-garage-car"></i>':'').' </div>
 
 				<div class="data w30 aright" >'.number($location_data[3]).'</div>
 				</div>';

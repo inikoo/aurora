@@ -52,7 +52,7 @@ $table = "
 
 $fields     = " `Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as to_pick,`Part Current On Hand Stock External`, `Part Reference`,   `Part SKU`,`Part Symbol`,`Part Distinct Locations`, P.`Part Current On Hand Stock`,  `Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as ordered_quantity,`Part Current On Hand Stock External`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` as effective_stock,
 
-            IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand`,':',`Location Place` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data,
+            IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand`,':',`Location Place`,':',`Location Warehouse Key` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data,
              `Part Next Deliveries Data`,`Part Units Per Package`,`Part Package Description`
             ";
 $sql_totals = "select count(*) as num from $table $where ";
