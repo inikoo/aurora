@@ -36,19 +36,6 @@ editable: false,
 
 cell: "html"
 },
-
-{
-name: "stock_local",
-label: "{t}Local stock{/t}",
-editable: false,
-
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='stock_local'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-
-headerCell: integerHeaderCell
-},
 {
 name: "stock_external",
 label: "{t}External stock{/t}",
@@ -61,6 +48,19 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+{
+name: "stock_local",
+label: "{t}Local stock{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_local'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
 {
 name: "to_pick",
 label: "{t}Ordered{/t}",
