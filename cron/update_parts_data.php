@@ -26,7 +26,7 @@ function update_parts_data($db) {
     $sql = sprintf(
         'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="AFP01" ORDER BY `Part SKU` DESC  '
     );
-    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`    ORDER BY `Part Reference`   ');
+    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  where `Part Status`="In Use"  ORDER BY `Part Reference`   ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {

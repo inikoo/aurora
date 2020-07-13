@@ -161,7 +161,7 @@ function get_widget_data_inverse($value, $total, $min, $max) {
 
 
 function get_widget_data($value, $total, $min, $max) {
-
+    
     $data = array(
         'ok'        => false,
         'color_min' => '',

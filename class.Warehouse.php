@@ -488,8 +488,9 @@ class Warehouse extends DB_Table {
                     $num = 0;
                 }
 
-                return number($num);
-
+                return $num;
+            case 'Paid Ordered Parts To Replenish External Warehouse':
+                return number($this->get('Warehouse Paid Ordered Parts To Replenish External Warehouse'));
             case('Leakage Timeseries From'):
                 if ($this->data['Warehouse Leakage Timeseries From'] == '') {
                     return '';
@@ -1710,18 +1711,19 @@ class Warehouse extends DB_Table {
             )
         );
 
-        $sql = "SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
-              `Part Dimension` P 
-                  LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
-                    LEFT JOIN `Location Dimension` L ON (PL.`Location Key`=P.`Part SKU`) 
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    
-                AND `Part Location Warehouse Key`=? AND `Can Pick`='Yes' and `Location Place`='External'  ";
+        $to_replenish_from_external = 0;
 
-        $this->db->prepare($sql)->execute(
-            array(
-                $this->id
-            )
-        );
+        $sql  = "SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
+              `Part Dimension` P
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Part Current On Hand Stock External`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0 ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        if ($row = $stmt->fetch()) {
+            $to_replenish_from_external = $row['num'];
+        }
+
+
+        $this->fast_update_json_field('Warehouse Properties', 'to_replenish_from_external', $to_replenish_from_external);
 
 
     }
