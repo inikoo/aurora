@@ -2805,6 +2805,15 @@ function get_tab_defaults_data() {
             'f_field'     => 'reference',
 
         ),
+        'warehouse.parts_to_replenish_external_warehouse.wget' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'reference',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'reference',
+
+        ),
         'warehouse_area.locations'                  => array(
             'view'          => 'overview',
             'sort_key'      => 'code',

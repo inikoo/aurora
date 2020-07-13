@@ -1715,7 +1715,7 @@ class Warehouse extends DB_Table {
 
         $sql  = "SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P
-              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Part Current On Hand Stock External`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0 ";
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Part Current On Hand Stock External`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0  and `Part Current On Hand Stock External`>0 ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         if ($row = $stmt->fetch()) {

@@ -94,8 +94,8 @@ function get_warehouse_alerts( $db, $warehouse,$account, $user, $smarty) {
     $data = get_widget_data(
         $warehouse->get('Warehouse Paid Ordered Parts To Replenish External Warehouse'),
         $warehouse->get('Warehouse Paid Ordered Parts'),
-        $warehouse->get('Warehouse Tolerable Percentage Paid Ordered Parts To Replenish'),
-        $warehouse->get('Warehouse Max Percentage Paid Ordered Parts To Replenish')
+       0,
+        0
 
     );
     if ($data['ok']) {
@@ -161,7 +161,7 @@ function get_widget_data_inverse($value, $total, $min, $max) {
 
 
 function get_widget_data($value, $total, $min, $max) {
-    
+
     $data = array(
         'ok'        => false,
         'color_min' => '',

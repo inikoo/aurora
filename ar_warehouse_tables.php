@@ -40,6 +40,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'external_warehouse_replenishes':
+        external_warehouse_replenishes(get_table_parameters(), $db, $user);
+        break;
     case 'parts_to_replenish_picking_location':
         part_locations_to_replenish_picking_location(get_table_parameters(), $db, $user);
         break;
@@ -287,7 +290,6 @@ function replenishments($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //print $sql;
 
     foreach ($db->query($sql) as $data) {
 
@@ -2101,3 +2103,101 @@ function deleted_locations($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
+
+function external_warehouse_replenishes($_data, $db, $user) {
+
+
+    $rtext_label = 'part needed to replenish from external warehouses';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+
+
+    foreach ($db->query($sql) as $data) {
+
+        $locations        = '';
+        if ($data['location_data'] != '') {
+            $locations_data = preg_split('/,/', $data['location_data']);
+
+            $number_locations=0;
+
+            $locations = '<div  class="part_locations mini_table left "  >';
+
+            foreach ($locations_data as $location_data) {
+                $number_locations++;
+                $location_data = preg_split('/\:/', $location_data);
+                $locations     .= ' <div class="part_location button" style="clear:both;"  location_key="'.$location_data[0].'" >
+				<div  class="code data w150"  >'.$location_data[1].' '.($location_data[4]=='External'?'<i style="color: tomato" class="fal padding_left_5 small fa-garage-car"></i>':'').' </div>
+
+				<div class="data w30 aright" >'.number($location_data[3]).'</div>
+				</div>';
+
+            }
+            $locations .= '<div style="clear:both"></div></div>';
+        }
+
+
+
+
+        /*
+         *
+         *   if ($data['Part Next Deliveries Data'] == '') {
+            $next_deliveries_array = array();
+        } else {
+            $next_deliveries_array = json_decode($data['Part Next Deliveries Data'], true);
+        }
+        $next_deliveries = '';
+
+        foreach ($next_deliveries_array as $next_delivery) {
+
+
+            $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_5" style="min-width: 120px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_10 as_cell strong" style="text-align: right;min-width: 60px" title="'._('SKOs ordered')
+                .'">+'.number(
+                    $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+
+
+        }
+
+
+        $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+*/
+
+        $reference = sprintf(
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+        );
+
+
+        $table_data[] = array(
+            'id'=>(integer) $data['Part SKU'],
+            'reference' => $reference,
+
+            'stock_external' => number(floor($data['Part Current On Hand Stock External'] )),
+            'stock_local' => number(floor($data['Part Current On Hand Stock']-$data['Part Current On Hand Stock External'] )),
+            'to_pick'             => number(ceil($data['to_pick'])),
+            'total_stock'        => number(floor($data['Part Current On Hand Stock'])),
+            'locations' => $locations,
+           // 'next_deliveries'    => $next_deliveries
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

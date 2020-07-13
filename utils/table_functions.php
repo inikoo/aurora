@@ -452,6 +452,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s part to produce as soon as possible', '%s parts to produce as soon as possible', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'part needed to replenish from external warehouses') {
+        return sprintf(
+            ngettext('%s part needed to replenish from external warehouses', '%s parts needed to replenish from external warehouses', $total_records), number($total_records)
+        );
     } elseif ($record_label == 'customer with credit') {
         return sprintf(
             ngettext('%s customer with credit', '%s customers with credit', $total_records), number($total_records)
@@ -953,6 +957,12 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s part to produce as soon as possible of %s', '%s parts to produce as soon as possible of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'part needed to replenish from external warehouses') {
+        return sprintf(
+            ngettext(
+                '%s part needed to replenish from external warehouses of %s', '%s parts needed to replenish from external warehouses of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'charge') {
