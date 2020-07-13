@@ -1682,7 +1682,7 @@ class Warehouse extends DB_Table {
                 'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
               WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key` NOT IN (%s) ',
-
+                $this->id, $production_suppliers
             );
 
 
@@ -1700,10 +1700,6 @@ class Warehouse extends DB_Table {
                 $to_replenish_picking_location_paid_ordered_parts = $row['num'];
             }
         }
-
-
-
-
 
 
         $this->fast_update(
@@ -1726,7 +1722,6 @@ class Warehouse extends DB_Table {
                 $this->id
             )
         );
-
 
 
     }
