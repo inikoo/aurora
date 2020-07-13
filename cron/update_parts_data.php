@@ -26,7 +26,7 @@ function update_parts_data($db) {
     $sql = sprintf(
         'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="AFP01" ORDER BY `Part SKU` DESC  '
     );
-    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`    ORDER BY `Part SKU`  DESC ');
+    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`    ORDER BY `Part Reference`   ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -34,13 +34,13 @@ function update_parts_data($db) {
 
             print $part->get('Reference')."\n";
 
-            foreach($part->get_locations('part_location_object') as $pl) {
-                $pl->update_stock();
-            }
+           // foreach($part->get_locations('part_location_object') as $pl) {
+           //     $pl->update_stock();
+           // }
 
             $part->update_stock();
-            $part->update_available_forecast();
-            $part->update_stock_status();
+            //$part->update_available_forecast();
+            //$part->update_stock_status();
 
 
 

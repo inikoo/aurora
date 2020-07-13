@@ -91,6 +91,22 @@ function get_warehouse_alerts( $db, $warehouse,$account, $user, $smarty) {
     }
 
 
+    $data = get_widget_data(
+        $warehouse->get('Warehouse Paid Ordered Parts To Replenish External Warehouse'),
+        $warehouse->get('Warehouse Paid Ordered Parts'),
+        $warehouse->get('Warehouse Tolerable Percentage Paid Ordered Parts To Replenish'),
+        $warehouse->get('Warehouse Max Percentage Paid Ordered Parts To Replenish')
+
+    );
+    if ($data['ok']) {
+
+
+        $smarty->assign('data', $data);
+        $html .= $smarty->fetch(
+            'dashboard/warehouse.parts_to_replenish_external_warehouse.dbard.tpl'
+        );
+    }
+
 
     return $html;
 
@@ -190,4 +206,4 @@ function get_widget_data($value, $total, $min, $max) {
 
 
 
-?>
+

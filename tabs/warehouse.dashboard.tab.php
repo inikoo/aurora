@@ -12,6 +12,9 @@
 
 $account->load_acc_data();
 
+/**
+ * @var $warehouse \Warehouse
+ */
 $warehouse=$state['_object'];
 
 // todo update real time when qty change

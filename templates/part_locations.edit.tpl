@@ -16,7 +16,7 @@
             <span class="picking_location_icon">
                 <i onclick="set_as_picking_location({$part_sku},{$location_data.location_key})" class="fa fa-fw fa-shopping-basket  {if $location_data.can_pick=='No'}super_discreet_on_hover button{else}{/if}   " aria-hidden="true" title="{if $location_data.can_pick=='No'}{t}Set as picking location{/t}{else}{t}Picking location{/t}{/if}" ></i>
             </span>
-            <span onclick="change_view_if_has_link_class(this,'/locations/{$location_data.warehouse_key}/{$location_data.location_key}')" class="link location_code">{$location_data.location_code}</span>
+            <span onclick="change_view_if_has_link_class(this,'/locations/{$location_data.warehouse_key}/{$location_data.location_key}')" class="link location_code">{$location_data.location_code}{$location_data.location_external_icon}</span>
         </span>
             <span class="hide  discreet disassociate_info italic small">
                 {if $location_data.can_pick=='Yes'}<span class="margin_left_5" title="{t}Preferred picking location cc{/t}"><i class="fa fa-fw fa-shopping-basket "></i></span>{/if}

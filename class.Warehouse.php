@@ -482,6 +482,13 @@ class Warehouse extends DB_Table {
 
         switch ($key) {
 
+            case 'Warehouse Paid Ordered Parts To Replenish External Warehouse':
+                $num = $this->properties('to_replenish_from_external');
+                if ($num == '') {
+                    $num = 0;
+                }
+
+                return number($num);
 
             case('Leakage Timeseries From'):
                 if ($this->data['Warehouse Leakage Timeseries From'] == '') {
@@ -491,20 +498,17 @@ class Warehouse extends DB_Table {
                 }
 
 
-                break;
-
             case 'Stock Amount':
                 $account = get_object('Account', 1);
 
                 return money($this->data['Warehouse '.$key], $account->get('Account Currency Code'));
-                break;
 
 
             case 'Address':
 
 
                 return '<div style="line-height: 150%">'.nl2br($this->data['Warehouse Address']).'</div>';
-                break;
+
 
             case 'formatted_ready_to_pick_number':
             case 'formatted_assigned_number':
@@ -518,7 +522,6 @@ class Warehouse extends DB_Table {
 
                 return number($this->properties(preg_replace('/^formatted_/', '', $key)));
 
-                break;
 
             case 'formatted_ready_to_pick_weight':
             case 'formatted_assigned_weight':
@@ -1059,8 +1062,8 @@ class Warehouse extends DB_Table {
 
                 $response = $client->search($params);
 
-//                print_r($params);
-  //              print_r($response);
+                //                print_r($params);
+                //              print_r($response);
 
                 $parts_no_sales_1_year = $response['aggregations']['parts']['value'];
 
@@ -1230,13 +1233,12 @@ class Warehouse extends DB_Table {
                                         ],
                                     ]
 
-                                        //todo set warehouses when creating au_part_isf_
-                                        /*
-                                        "term" => [
-                                            'warehouses' => $this->id,
-                                        ],
-                                        */
-
+                                    //todo set warehouses when creating au_part_isf_
+                                    /*
+                                    "term" => [
+                                        'warehouses' => $this->id,
+                                    ],
+                                    */
 
 
                                 ]
@@ -1300,7 +1302,7 @@ class Warehouse extends DB_Table {
                 $response = $client->search($params);
 
                 //print_r($params);
-               // print_r($response);
+                // print_r($response);
 
                 $data['parts'] = $response['aggregations']['parts']['value'];
 
@@ -1651,31 +1653,26 @@ class Warehouse extends DB_Table {
 
 
         $production_suppliers = '';
-        $sql                  = sprintf('SELECT group_concat(`Supplier Production Supplier Key`) AS  production_suppliers FROM `Supplier Production Dimension`');
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $production_suppliers = $row['production_suppliers'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+
+        $sql  = "SELECT group_concat(`Supplier Production Supplier Key`) AS  production_suppliers FROM `Supplier Production Dimension`";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        if ($row = $stmt->fetch()) {
+            $production_suppliers = $row['production_suppliers'];
         }
 
-        $sql = sprintf(
-            'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
+
+        $sql  = "SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
-              WHERE  `Part Location Warehouse Key`=%d', $this->id
+              WHERE  `Part Location Warehouse Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-        //print $sql;
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $paid_ordered_parts = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        if ($row = $stmt->fetch()) {
+            $paid_ordered_parts = $row['num'];
         }
 
 
@@ -1685,8 +1682,9 @@ class Warehouse extends DB_Table {
                 'SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
               `Part Dimension` P LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`)  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) 
               WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`   AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0   AND `Part Location Warehouse Key`=%d AND `Can Pick`="Yes"   AND `Supplier Part Supplier Key` NOT IN (%s) ',
-                $this->id, $production_suppliers
+
             );
+
 
         } else {
             $sql = sprintf(
@@ -1697,25 +1695,38 @@ class Warehouse extends DB_Table {
 
 
         }
-
-        //print $sql;
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $to_replenish_picking_location_paid_ordered_parts = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
-        $this->update(
+
+
+
+
+
+        $this->fast_update(
             array(
                 'Warehouse Paid Ordered Parts'              => $paid_ordered_parts,
                 'Warehouse Paid Ordered Parts To Replenish' => $to_replenish_picking_location_paid_ordered_parts
 
-            ), 'no_history'
+            )
         );
+
+        $sql = "SELECT count(DISTINCT P.`Part SKU`) AS num FROM 
+              `Part Dimension` P 
+                  LEFT JOIN `Part Location Dimension` PL ON (PL.`Part SKU`=P.`Part SKU`) 
+                    LEFT JOIN `Location Dimension` L ON (PL.`Location Key`=P.`Part SKU`) 
+              WHERE (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  AND (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0    
+                AND `Part Location Warehouse Key`=? AND `Can Pick`='Yes' and `Location Place`='External'  ";
+
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id
+            )
+        );
+
 
 
     }

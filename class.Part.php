@@ -554,7 +554,6 @@ class Part extends Asset {
                             $date                = '';
 
 
-
                             //'','','','','','Confirmed','Manufactured','QC_Pass','','InDelivery','Inputted','Dispatched','Received','Checked','',''
 
                             switch ($row['Purchase Order Transaction State']) {
@@ -565,13 +564,13 @@ class Part extends Asset {
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['submitted_units'] / $row['Part Units Per Package'])
                                     );
 
-                                    if($row['Purchase Order Estimated Receiving Date']!=''){
-                                        $formatted_link.=' <span title="'._('Estimated production date').'"><i class="fal fa-play  purple small"></i> <span class="discreet italic">'.strftime(
+                                    if ($row['Purchase Order Estimated Receiving Date'] != '') {
+                                        $formatted_link .= ' <span title="'._('Estimated production date').'"><i class="fal fa-play  purple small"></i> <span class="discreet italic">'.strftime(
                                                 "%a %e %b", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')
                                             ).'</span>';
                                     }
 
-                                    $qty            = '+'.number($row['submitted_units'] / $row['Part Units Per Package']);
+                                    $qty = '+'.number($row['submitted_units'] / $row['Part Units Per Package']);
 
                                     $raw_units_qty = $row['submitted_units'];
                                     $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
@@ -583,9 +582,9 @@ class Part extends Asset {
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-flag-checkered" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package'])
                                     );
-                                    $qty            = '+'.number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package']);
-                                    $raw_units_qty = $row['Purchase Order Manufactured Units'];
-                                    $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+                                    $qty             = '+'.number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package']);
+                                    $raw_units_qty   = $row['Purchase Order Manufactured Units'];
+                                    $raw_skos_qty    = $raw_units_qty / $row['Part Units Per Package'];
                                     break;
                                 case 'QC_Pass':
                                     $formatted_state = _('QC pass');
@@ -593,9 +592,9 @@ class Part extends Asset {
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-siren-on" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
                                     );
-                                    $qty            = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
-                                    $raw_units_qty = $row['Purchase Order QC Pass Units'];
-                                    $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+                                    $qty             = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
+                                    $raw_units_qty   = $row['Purchase Order QC Pass Units'];
+                                    $raw_skos_qty    = $raw_units_qty / $row['Part Units Per Package'];
                                     break;
                                 case 'Dispatched':
                                 case 'InDelivery':
@@ -603,24 +602,23 @@ class Part extends Asset {
                                 case 'Received':
                                 case 'Checked':
 
-                                    $formatted_state =_('Delivered');
+                                    $formatted_state = _('Delivered');
                                     $formatted_link  = sprintf(
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-user-clock" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
                                     );
-                                $qty            = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
-                                $raw_units_qty = $row['Purchase Order QC Pass Units'];
-                                $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
-                                break;
+                                    $qty             = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
+                                    $raw_units_qty   = $row['Purchase Order QC Pass Units'];
+                                    $raw_skos_qty    = $raw_units_qty / $row['Part Units Per Package'];
+                                    break;
                                 default:
-                                    $formatted_state =_('Unknown');
+                                    $formatted_state = _('Unknown');
                                     $formatted_link  = sprintf(
-                                        '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span>',
-                                        $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID']
+                                        '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span>', $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID']
                                     );
-                                    $qty='';
-                                    $raw_units_qty = '';
-                                    $raw_skos_qty  ='';
+                                    $qty             = '';
+                                    $raw_units_qty   = '';
+                                    $raw_skos_qty    = '';
                                     break;
                             }
 
@@ -630,9 +628,6 @@ class Part extends Asset {
                             $number_non_draft_POs++;
                             $raw_units_qty = $row['submitted_units'];
                             $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
-
-
-
 
 
                             $formatted_link = sprintf(
@@ -659,7 +654,6 @@ class Part extends Asset {
                                 $formatted_state     = '';
                             }
                         }
-
 
 
                     }
@@ -697,7 +691,7 @@ class Part extends Asset {
             $next_delivery_time = 0;
         }
 
-       // print_r($next_deliveries_data);
+        // print_r($next_deliveries_data);
 
         return array(
             'deliveries'           => $next_deliveries_data,
@@ -3105,7 +3099,7 @@ class Part extends Asset {
 
 
         $sql = sprintf(
-            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
+            "SELECT `Location Place`,PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
         ORDER BY %s", $this->sku, $where, $_order
         );
 
@@ -3140,9 +3134,9 @@ class Part extends Asset {
                         'location_key' => $row['Location Key'],
                         'part_sku'     => $row['Part SKU'],
 
-                        'location_code' => $row['Location Code'],
-                        'note'          => $row['Part Location Note'],
-
+                        'location_code'          => $row['Location Code'],
+                        'note'                   => $row['Part Location Note'],
+                        'location_external_icon' => ($row['Location Place'] == 'External' ? ' <i style="color:tomato" class="small fal fa-garage-car"></i>' : ''),
 
                         'picking_location_icon' => $picking_location_icon,
                         //'location_used_for'      => $row['Location Mainly Used For'],
@@ -3330,37 +3324,40 @@ class Part extends Asset {
         $old_stock_picked      = $this->data['Part Current Stock Picked'];
         $old_stock_on_hand     = $this->data['Part Current On Hand Stock'];
 
-        $picked   = 0;
-        $required = 0;
+        $picked         = 0;
+        $required       = 0;
 
-
-        $sql = sprintf(
-            "SELECT sum(`Picked`) AS picked, sum(`Required`) AS required FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type`='Order In Process'", $this->id
+        $sql  = "SELECT sum(`Picked`) AS picked, sum(`Required`) AS required FROM `Inventory Transaction Fact` WHERE `Part SKU`=? AND `Inventory Transaction Type`='Order In Process'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $picked   = round($row['picked'], 3);
-                $required = round($row['required'], 3);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+        if ($row = $stmt->fetch()) {
+            $picked   = round($row['picked'], 3);
+            $required = round($row['required'], 3);
         }
 
 
         //$required+=$this->data['Part Current Stock Ordered Paid'];
 
-        list($stock, $value, $in_process) = $this->get_current_stock();
-        //print $stock;
+        $stock_data = $this->get_current_stock();
+
+
+        $stock          = $stock_data[0];
+        $value          = $stock_data[1];
+        $stock_external = $stock_data[3];
+
+
 
         $this->fast_update(
             array(
-                'Part Current Value'            => $value,
-                'Part Current Stock In Process' => $required - $picked,
-                'Part Current Stock Picked'     => $picked,
-                'Part Current On Hand Stock'    => $stock,
+                'Part Current Value'                  => $value,
+                'Part Current Stock In Process'       => $required - $picked,
+                'Part Current Stock Picked'           => $picked,
+                'Part Current On Hand Stock'          => $stock,
+                'Part Current On Hand Stock External' => $stock_external
 
             )
         );
@@ -3408,36 +3405,36 @@ class Part extends Asset {
     }
 
     function get_current_stock() {
+
         $stock      = 0;
         $value      = 0;
         $in_process = 0;
+        $external   = 0;
 
 
-        $sql = sprintf(
-            "SELECT sum(`Quantity On Hand`) AS stock , sum(`Quantity In Process`) AS in_process , sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Part SKU`=%d ", $this->id
+        $sql = "SELECT sum(`Quantity On Hand`) AS stock , sum(`Quantity In Process`) AS in_process , sum(`Stock Value`) AS value , sum(if(`Location Place`='External',`Quantity On Hand`,0)) as external
+            
+            FROM `Part Location Dimension` PL  left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`)   WHERE `Part SKU`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-        //print $sql;
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                // print_r($row);
-
-                $stock      = round($row['stock'], 3);
-                $in_process = round($row['in_process'], 3);
-                $value      = $row['value'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        while ($row = $stmt->fetch()) {
+            $stock      = round($row['stock'], 3);
+            $in_process = round($row['in_process'], 3);
+            $value      = $row['value'];
+            $external   = round($row['external'], 3);
         }
 
 
         return array(
             $stock,
             $value,
-            $in_process
+            $in_process,
+            $external
         );
 
     }
@@ -4582,32 +4579,31 @@ class Part extends Asset {
 
     }
 
-    function create_raw_material(){
+    function create_raw_material() {
 
         include_once 'class.Raw_Material.php';
 
-        $account=get_object('Account',1);
+        $account = get_object('Account', 1);
         $account->load_acc_data();
 
-        $raw_material_data=[
-            'Raw Material Type'=>'Part',
-            'Raw Material Creation Date'=>gmdate('Y-m-d H:i:s'),
-            'Raw Material Type Key'=>$this->id,
-            'Raw Material Code'=>$this->get('Reference'),
-            'Raw Material Unit Label'=>$this->get('Part Unit Label'),
-            'Raw Material Description'=>$this->get('Part Recommended Product Unit Name'),
-            'Raw Material Unit'=>'Unit',
-            'Raw Material Unit Cost'=>($this->get('Part Cost in Warehouse')==''?$this->get('Part Cost'):$this->get('Part Cost in Warehouse')),
-            'Raw Material Production Supplier Key'=>$account->properties('production_supplier_key'),
-            'editor'=>$this->editor
+        $raw_material_data = [
+            'Raw Material Type'                    => 'Part',
+            'Raw Material Creation Date'           => gmdate('Y-m-d H:i:s'),
+            'Raw Material Type Key'                => $this->id,
+            'Raw Material Code'                    => $this->get('Reference'),
+            'Raw Material Unit Label'              => $this->get('Part Unit Label'),
+            'Raw Material Description'             => $this->get('Part Recommended Product Unit Name'),
+            'Raw Material Unit'                    => 'Unit',
+            'Raw Material Unit Cost'               => ($this->get('Part Cost in Warehouse') == '' ? $this->get('Part Cost') : $this->get('Part Cost in Warehouse')),
+            'Raw Material Production Supplier Key' => $account->properties('production_supplier_key'),
+            'editor'                               => $this->editor
         ];
 
-        $raw_material=new Raw_Material('create',$raw_material_data);
-        if($raw_material->id){
-            $this->fast_update(['Part Raw Material Key'=>$raw_material->id]);
+        $raw_material = new Raw_Material('create', $raw_material_data);
+        if ($raw_material->id) {
+            $this->fast_update(['Part Raw Material Key' => $raw_material->id]);
             $raw_material->update_raw_material_stock($this);
         }
-
 
 
     }
@@ -5061,17 +5057,17 @@ class Part extends Asset {
                 $location_keys  = [];
                 $warehouse_keys = [];
 
-                $found_pl_in_date=false;
+                $found_pl_in_date = false;
                 if ($result3 = $this->db->query($sql)) {
                     foreach ($result3 as $row3) {
-                       // print_r($row3);
+                        // print_r($row3);
 
                         $part_location               = new PartLocation($this->id.'_'.$row3['Location Key']);
                         $result_update_stock_history = $part_location->update_stock_history_date($row['Date']);
                         //print 'bye';
 
                         if ($result_update_stock_history['action'] == 'updated') {
-                            $found_pl_in_date=true;
+                            $found_pl_in_date = true;
                             $locations++;
 
 
@@ -5100,7 +5096,7 @@ class Part extends Asset {
                 }
 
 
-                if($found_pl_in_date) {
+                if ($found_pl_in_date) {
 
                     $stock_left_1_year_ago = 0;
                     if ($stock_on_hand > 0) {
@@ -5261,7 +5257,6 @@ class Part extends Asset {
 
 
     }
-
 
 
 }
