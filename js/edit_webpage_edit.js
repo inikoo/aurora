@@ -289,14 +289,17 @@ $(document).on('click', '.iframe_src', function (e) {
     $('#iframe_src_edit_block_' + $(this).attr('key')).data('element', $(this)).removeClass('hide').find('input').focus().val($(this).attr('value')).attr('device', $(this).attr('device')).data('element', $(this))
 })
 
+$(document).on('input propertychange', 'textarea.web_block_code_source_input', function (evt) {
+
+    $(this).closest('.device_controls').find('i').removeClass('super_discreet')
+})
+
 $(document).on('click', '.apply_changes', function (e) {
 
 
     $('.edit_block').addClass('hide')
 
-
-    console.log($(this).closest('div').attr('name'))
-    switch ($(this).closest('div').attr('name')) {
+    switch ($(this).data('type')) {
         case 'iframe_height_edit_block':
 
             var input = $(this).prev('input')
@@ -355,6 +358,14 @@ $(document).on('click', '.apply_changes', function (e) {
 
 
             }
+
+            break;
+        case 'code_src':
+
+            var src=$(this).closest('.device_controls').find('textarea').val()
+
+
+                $("#preview").contents().find("#block_" + $(this).closest('.edit_mode').attr('key')).find('div.'+$(this).data('device')).html(src)
 
             break;
 

@@ -15,7 +15,6 @@ function get_webpage_blocks($theme = '') {
     $blocks = array(
 
 
-
         'text' => array(
             'type'        => 'text',
             'label'       => _('Text'),
@@ -55,7 +54,6 @@ function get_webpage_blocks($theme = '') {
         ),
 
 
-
         'button' => array(
             'type'              => 'button',
             'label'             => _('Button'),
@@ -75,8 +73,7 @@ function get_webpage_blocks($theme = '') {
         ),
 
 
-
-        'iframe'    => array(
+        'iframe' => array(
             'type'   => 'iframe',
             'label'  => 'iFrame',
             'icon'   => 'fa-window-restore',
@@ -84,17 +81,34 @@ function get_webpage_blocks($theme = '') {
             'height' => 250,
             'src'    => 'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
         ),
-
-
-
-/*        'banner'    => array(
-            'type'   => 'banner',
-            'label'  => _('Banner'),
-            'icon'   => 'fa-presentation',
+        'code'   => array(
+            'type'   => 'code',
+            'label'  => _('Code'),
+            'icon'   => 'fa-code',
             'show'   => 1,
             'height' => 250,
-            'src'    => ''
-        ),*/
+            'mobile_src'=>"",
+            'src'    =>
+"<style>
+    .hello{
+        font-family: system-ui; background: linear-gradient(to bottom, darkorchid, #6b238f);
+        color: white;height: 10vh;display: grid;place-items: center;
+    }
+</style>
+<h1 class='hello'>👋 Hello World!</h1>
+
+"
+        ),
+
+
+        /*        'banner'    => array(
+                    'type'   => 'banner',
+                    'label'  => _('Banner'),
+                    'icon'   => 'fa-presentation',
+                    'show'   => 1,
+                    'height' => 250,
+                    'src'    => ''
+                ),*/
 
         'telephone' => array(
             'type'       => 'telephone',
@@ -149,8 +163,6 @@ function get_webpage_blocks($theme = '') {
         ),
 
 
-
-
         'reviews' => array(
             'type'          => 'reviews',
             'label'         => _('Reviews'),
@@ -161,12 +173,6 @@ function get_webpage_blocks($theme = '') {
             'labels'        => array()
 
         ),
-
-
-
-
-
-
 
 
     );

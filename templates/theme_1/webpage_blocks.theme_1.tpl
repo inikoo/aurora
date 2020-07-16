@@ -725,7 +725,6 @@
 
 
 
-
     function save() {
 
         if (!$('#save_button', window.parent.document).hasClass('save')) {
@@ -1972,7 +1971,21 @@ console.log($(obj).attr('block'))
                     //console.log($(obj))
 
                     break;
+                case 'code':
 
+
+                    blocks.push({
+                        type: 'code',
+                        label: '{t}Code{/t}',
+                        icon: 'fa-code',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        src: $(obj).find('.desktop').html(),
+                        src_mobile: $(obj).find('.mobile').html()
+                    })
+
+                    //console.log($(obj))
+
+                    break;
 
                 case 'button':
 
@@ -2235,6 +2248,7 @@ console.log($(obj).attr('block'))
 
 
         content_data.blocks = blocks
+
 
 
         var ajaxData = new FormData();

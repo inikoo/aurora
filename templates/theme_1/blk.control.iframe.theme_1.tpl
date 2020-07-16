@@ -32,10 +32,10 @@
 
 
         <div id="iframe_height_edit_block_{$key}" name="iframe_height_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
-            {t}Height{/t} <input value="" style="width: 30px">px <i class="apply_changes fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+            {t}Height{/t} <input value="" style="width: 30px">px <i  data-type="iframe_height_edit_block" class="apply_changes fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
         </div>
         <div id="iframe_src_edit_block_{$key}" name="iframe_src_edit_block" class="hide edit_block" style="position:absolute;padding:10px;background-color: #FFF;border:1px solid #ccc">
-            {t}Src{/t} https://<input value="" style="width: 900px"> <i class="apply_changes  fa button fa-check-square" style="margin-left: 10px" aria-hidden="true"></i>
+            {t}Src{/t} https://<input value="" style="width: 900px"> <i data-type="iframe_src_edit_block" class="apply_changes fa button fa-check-square margin_left_10" ></i>
         </div>
 
 
