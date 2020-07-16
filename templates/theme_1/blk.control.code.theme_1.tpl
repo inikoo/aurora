@@ -36,8 +36,10 @@
         </span>
 
         <span class="device_controls mobile hide">
-            <textarea class="web_block_code_source_input">{$block.mobile_src}</textarea> <i data-type="code_src" data-device="mobile"  class="apply_changes fa button super_discreet fa-flip-horizontal fa-triangle margin_left_10" ></i>
+            <textarea class="web_block_code_source_input">{$block.mobile_src}</textarea> <i data-type="code_src" data-device="mobile"  class="apply_changes fa button super_discreet fa-flip-vertical fa-triangle margin_left_10" ></i>
         </span>
+
+
 
 
     </div>

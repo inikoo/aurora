@@ -328,7 +328,6 @@
                             {if !$logged_in}
 
 
-
                                 {assign "with_login" 1}
                                 {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
 

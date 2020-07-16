@@ -365,7 +365,12 @@ $(document).on('click', '.apply_changes', function (e) {
             var src=$(this).closest('.device_controls').find('textarea').val()
 
 
+
                 $("#preview").contents().find("#block_" + $(this).closest('.edit_mode').attr('key')).find('div.'+$(this).data('device')).html(src)
+                $("#preview").contents().find("#block_" + $(this).closest('.edit_mode').attr('key')).find('textarea.'+$(this).data('device')).val(src)
+
+
+
 
             break;
 

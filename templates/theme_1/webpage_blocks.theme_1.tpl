@@ -1979,8 +1979,8 @@ console.log($(obj).attr('block'))
                         label: '{t}Code{/t}',
                         icon: 'fa-code',
                         show: ($(obj).hasClass('hide') ? 0 : 1),
-                        src: $(obj).find('.desktop').html(),
-                        src_mobile: $(obj).find('.mobile').html()
+                        src: $(obj).find('textarea.desktop').val(),
+                        mobile_src: $(obj).find('textarea.mobile').val()
                     })
 
                     //console.log($(obj))
