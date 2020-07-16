@@ -39,11 +39,7 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
-
 
 $sql = sprintf("SELECT `Payment Account Key` FROM `Payment Account Dimension`");
 if ($result = $db->query($sql)) {
@@ -56,13 +52,4 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
-
-
-
-
-
-?>

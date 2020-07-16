@@ -1,0 +1,1 @@
+ALTER TABLE `Payment Service Provider Dimension` DROP `Payment Service Provider Refunded Amount`;

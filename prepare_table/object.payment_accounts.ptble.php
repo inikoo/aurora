@@ -85,4 +85,4 @@ $sql_totals
     = "select count(PA.`Payment Account Key`) as num from $table  $where  ";
 
 
-?>
+

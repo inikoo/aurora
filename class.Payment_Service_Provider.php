@@ -316,7 +316,7 @@ WHERE `Payment Account Service Provider Key`=%d AND `Payment Transaction Status`
             array(
                 'Payment Service Provider Transactions'    => $transactions,
                 'Payment Service Provider Payments Amount' => $payments,
-                'Payment Service Provider Refunded Amount' => $refunded,
+                'Payment Service Provider Refunds Amount' => $refunded,
                 'Payment Service Provider Credited Amount' => $credited,
 
                 'Payment Service Provider Balance Amount' => $balance,

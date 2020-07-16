@@ -276,7 +276,7 @@ class Payment_Account extends DB_Table {
             array(
                 'Payment Account Transactions'    => $transactions,
                 'Payment Account Payments Amount' => $payments,
-                'Payment Account Refunded Amount' => $refunded,
+                'Payment Account Refunds Amount' => $refunded,
                 'Payment Account Credited Amount' => $credited,
 
                 'Payment Account Balance Amount' => $balance,
