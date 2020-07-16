@@ -120,9 +120,7 @@ if ($new) {
                     'edit'            => ($edit ? 'string' : ''),
                     'value'           => $object->get('Customer Tax Number'),
                     'formatted_value' => $object->get('Tax Number'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Tax Number')
-                    ),
+                    'label'           => ucfirst($object->get_field_label('Customer Tax Number')),
                     'required'        => false,
                     'type'            => 'value'
 

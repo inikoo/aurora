@@ -40,11 +40,6 @@ function get_warehouses_module() {
                         'title' => _('Warehouse settings'),
                         'icon'  => 'sliders-h'
                     ),
-                    'warehouse.shippers' => array(
-                        'label' => _('Shipping companies'),
-                        'title' => _('Shipping companies'),
-                        'icon'  => 'truck-loading'
-                    ),
 
                     'warehouse.history' => array(
                         'label' => '',
@@ -157,16 +152,6 @@ function get_warehouses_module() {
             ),
 
 
-            'shipper.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'shipper.new' => array(
-                        'label' => _('New shipping company')
-                    ),
-
-                )
-
-            ),
 
 
             'warehouse.new'      => array(
@@ -347,33 +332,7 @@ function get_warehouses_module() {
 
             ),
 
-            'shipper'  => array(
 
-                'type'      => 'object',
-                'label'     => _('Shipping company'),
-                'icon'      => '',
-                'reference' => '',
-                'tabs'      => array(
-                    'shipper.details'      => array(
-                        'label' => _('Settings'),
-                        'title' => _('Settings'),
-                        'icon'  => 'slider-h'
-                    ),
-                    'shipper.consignments' => array(
-                        'label' => _('Consignments'),
-                        'icon'  => 'truck'
-                    ),
-
-                    'shipper.history' => array(
-                        'label' => _('History/Notes'),
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
             'production_deliveries' => array(
                 'type'      => 'navigation',
                 'label'     => _('Production deliveries'),

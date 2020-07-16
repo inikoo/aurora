@@ -945,6 +945,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
 
+
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
 
@@ -1481,6 +1482,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
     }
 
 
+
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -1924,11 +1926,15 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         case 'shipping_zone_schema':
             $html         = '';
             $title        = $data['_object']->get('Label');
-            $web_location = '<i class="fal fa-fw fa-bring-front"></i> '._('Shipping schema');
+            $web_location = '<if/> class="fal fa-fw fa-bring-front"></if> '._('Shipping schema');
             break;
         case 'raw_material':
             include_once 'showcase/raw_material.show.php';
             $html = get_raw_material_showcase($data, $smarty, $account);
+            break;
+        case 'new_shipper':
+            include_once 'conf/shipper_chooser.php';
+            $html = get_new_shipper_showcase($data, $smarty, $account);
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -2369,6 +2375,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
         case ('delivery_notes_server'):
             require_once 'navigation/orders.nav.php';
+            require_once 'navigation/delivery_notes.nav.php';
 
             switch ($data['section']) {
                 case ('pending_delivery_notes'):
@@ -2386,6 +2393,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('group_by_store'):
                     return get_delivery_notes_server_group_by_store_navigation($data, $smarty, $user, $db, $account);
 
+                case ('shipper'):
+                    return get_shipper_navigation($data, $smarty, $user, $db, $account);
+
+                case ('shipper.new'):
+                    return get_shipper_new_navigation($data, $smarty, $user, $db, $account);
 
             }
 
@@ -3170,11 +3182,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('return'):
                     return get_return_navigation($data, $smarty, $user, $db, $account);
 
-                case ('shipper'):
-                    return get_shipper_navigation($data, $smarty, $user, $db, $account);
 
-                case ('shipper.new'):
-                    return get_shipper_new_navigation($data, $smarty, $user, $db, $account);
 
                 case ('upload'):
                     return get_upload_navigation($data, $smarty, $user, $db, $account);

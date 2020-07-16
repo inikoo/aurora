@@ -77,9 +77,7 @@ switch ($tipo) {
     case 'warehouse.parts_with_unknown_location':
         parts_with_unknown_location(get_table_parameters(), $db, $user, $account);
         break;
-    case 'shippers':
-        shippers(get_table_parameters(), $db, $user, $account);
-        break;
+
     case 'returns':
         returns(get_table_parameters(), $db, $user, $account);
         break;
@@ -1290,76 +1288,6 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-
-function shippers($_data, $db, $user, $account) {
-
-
-    $rtext_label = 'shipping company';
-
-    include_once 'prepare_table/init.php';
-
-    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-    //print $sql;
-
-
-    $record_data = array();
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-
-            switch ($data['Shipper Status']) {
-                case 'Active':
-                    $status = sprintf('<i class="fa fa-play success" title="%s"></i>', _('Active'));
-
-                    break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-pause discreet error" title="%s"></i>', _('Suspended'));
-                    break;
-                default:
-                    $status = '';
-            }
-
-
-            $code = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\')">%s</span>', $data['Shipper Warehouse Key'], $data['Shipper Key'], $data['Shipper Code']);
-
-
-            $record_data[] = array(
-                'id'               => (integer)$data['Shipper Key'],
-                'code'             => $code,
-                'status'           => $status,
-                'name'             => $data['Shipper Name'],
-                'consignments'     => number($data['Shipper Consignments']),
-                'parcels'          => number($data['Shipper Number Parcels']),
-                'weight'           => weight($data['Shipper Dispatched Weight']),
-                'last_consignment' => ($data['Shipper Last Consignment'] == '' ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipper Last Consignment'].' +0:00'))),
-
-
-            );
-
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $record_data,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 
 function returns($_data, $db, $user) {

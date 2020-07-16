@@ -23,7 +23,7 @@ function get_delivery_notes_server_module() {
 
                 'type'      => 'navigation',
                 'label'     => _('Pending delivery notes'),
-                'icon'      => 'stean',
+                'icon'      => 'stream',
                 'reference' => 'pending_delivery_notes',
                 'tabs'      => array(
                     'pending_delivery_notes' => array(
@@ -34,19 +34,7 @@ function get_delivery_notes_server_module() {
                 )
 
             ),
-            /*
-                        'group_by_store' => array(
-                            'type'      => 'navigation',
-                            'label'     => _('Group by store'),
-                            'icon'      => 'compress',
-                            'reference' => 'delivery_notes/all/by_store',
-                            'tabs'      => array(
-                                'delivery_notes_group_by_store' => array()
-                            )
 
-                        ),
-
-            */
             'delivery_notes'         => array(
                 'type'      => 'navigation',
                 'label'     => _('Delivery notes').' ('._('All').')',
@@ -67,6 +55,59 @@ function get_delivery_notes_server_module() {
 
             ),
 
+            'shippers'         => array(
+                'type'      => 'navigation',
+                'label'     => _('Shipping companies'),
+                'icon'      => 'truck-loading',
+                'reference' => 'shippers',
+                'tabs'      => array(
+                    'shipping_companies' => array(
+                        'label' => _('Shipping companies'),
+                        'title' => _('Shipping companies'),
+                        'icon'  => 'truck-loading'
+                    ),
+                )
+
+            ),
+
+            'shipper.new' => array(
+                'type' => 'new_object',
+                'showcase'=>'new_shipper',
+                'tabs' => array(
+                    'shipper.new' => array(
+                        'label' => _('New shipping company')
+                    ),
+
+                )
+
+            ),
+            'shipper'  => array(
+
+                'type'      => 'object',
+                'label'     => _('Shipping company'),
+                'icon'      => '',
+                'reference' => '',
+                'tabs'      => array(
+                    'shipper.details'      => array(
+                        'label' => _('Settings'),
+                        'title' => _('Settings'),
+                        'icon'  => 'slider-h'
+                    ),
+                    'shipper.consignments' => array(
+                        'label' => _('Consignments'),
+                        'icon'  => 'truck'
+                    ),
+
+                    'shipper.history' => array(
+                        'label' => _('History/Notes'),
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
 
         )
 

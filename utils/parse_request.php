@@ -3268,26 +3268,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
-                            } elseif ($view_path[1] == 'shippers') {
-
-
-                                $parent     = 'warehouse';
-                                $parent_key = $key;
-
-                                $section = 'shippers';
-                                if (isset($view_path[2])) {
-                                    if (is_numeric($view_path[2])) {
-                                        $section = 'shipper';
-                                        $object  = 'shipper';
-                                        $key     = $view_path[2];
-                                    } elseif ($view_path[2] == 'new') {
-                                        $section = 'shipper.new';
-                                        $object  = 'shipper';
-                                        $key     = 0;
-                                    }
-                                }
-
-
                             } elseif ($view_path[1] == 'returns') {
 
                                 $section = 'returns';
@@ -3374,7 +3354,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 }
 
 
-                            }elseif ($view_path[1] == 'deleted_locations') {
+                            } elseif ($view_path[1] == 'deleted_locations') {
                                 $section = 'locations';
                                 $object  = '';
 
@@ -3382,8 +3362,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $parent_key = $key;
 
 
-                                    $_data['tab'] = 'warehouse.deleted_locations';
-
+                                $_data['tab'] = 'warehouse.deleted_locations';
 
 
                             } elseif ($view_path[1] == 'areas') {
@@ -3634,11 +3613,11 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                                 if (isset($view_path[2]) and in_array(
                                         $view_path[2], [
-                                        'todo',
-                                        'all',
-                                        'done',
-                                        'cancelled'
-                                    ]
+                                                         'todo',
+                                                         'all',
+                                                         'done',
+                                                         'cancelled'
+                                                     ]
                                     )) {
 
                                     if (isset($view_path[3])) {
@@ -4036,9 +4015,9 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                                 if (isset($view_path[2])) {
                                     if (is_numeric($view_path[2])) {
-                                        $section = 'raw_material';
-                                        $parent='supplier_production';
-                                        $parent_key=$key;
+                                        $section    = 'raw_material';
+                                        $parent     = 'supplier_production';
+                                        $parent_key = $key;
 
                                         $object = 'raw_material';
                                         $key    = $view_path[2];
@@ -4457,6 +4436,28 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 $module  = 'suppliers';
                 $section = 'deliveries';
                 break;
+
+            case 'shippers':
+
+                $module     = 'delivery_notes_server';
+                $parent     = 'account';
+                $parent_key = 1;
+
+                $section = 'shippers';
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[0])) {
+                        $section = 'shipper';
+                        $object  = 'shipper';
+                        $key     = $view_path[0];
+                    } elseif ($view_path[0] == 'new') {
+                        $section = 'shipper.new';
+                        $object  = 'shipper';
+                        $key     = 0;
+                    }
+                }
+
+                break;
+
 
             case 'delivery':
                 if (!$user->can_view('suppliers')) {
@@ -5949,7 +5950,7 @@ function parse_tabs($module, $section, $_data, $modules) {
         $tmp = $_SESSION['state'];
 
 
-        if (!empty($tmp[$module][$section]['tab']) ) {
+        if (!empty($tmp[$module][$section]['tab'])) {
 
 
             $tab = $tmp[$module][$section]['tab'];

@@ -3218,4 +3218,4 @@ function get_return_new_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-?>
+
