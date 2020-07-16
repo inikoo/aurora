@@ -12,8 +12,10 @@
 
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " style="Width:100%;"   >
+
+
     <div class=" desktop">{$data.src}</div>
-    <div class="hide mobile">{$data.src}</div>
+
 
     <textarea class="hide desktop">{$data.src}</textarea>
     <textarea class="hide mobile">{$data.mobile_src}</textarea>
