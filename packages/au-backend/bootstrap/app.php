@@ -9,13 +9,10 @@ Version 4
 
 use DI\Container;
 use DI\Bridge\Slim\Bridge as SlimAppFactory;
+use App\Providers\ServiceProvider;
 
 $app = SlimAppFactory::create(new Container);
 
-$middleware = require __DIR__ . '/../app/middleware.php';
-$middleware($app);
-
-$routers = require __DIR__ . '/../app/routers.php';
-$routers($app);
+ServiceProvider::setup($app, config('app.providers'));
 
 return $app;
