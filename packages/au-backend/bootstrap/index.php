@@ -8,8 +8,7 @@ Version 4
 */
 
 use DI\Container;
-use Slim\Factory\AppFactory;
-
+use DI\Bridge\Slim\Bridge as SlimAppFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -17,9 +16,8 @@ $container = new Container;
 $setttings = require __DIR__ . '/../app/settings.php';
 $setttings($container);
 
-AppFactory::setContainer($container);
+$app=SlimAppFactory::create($container);
 
-$app = AppFactory::create();
 $middleware = require __DIR__ . '/../app/middleware.php';
 $middleware($app);
 

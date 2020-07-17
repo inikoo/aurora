@@ -7,14 +7,8 @@ Copyright (c) 2020, Inikoo Ltd
 Version 4
 */
 
+use App\Http\Controllers\HomeController;
 
-use Slim\App;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-
-return function ($app){
-    $app->get('/', function (Request $request, Response $response, $parameters) {
-        $response->getBody()->write('Hello World');
-        return $response;
-    });
+return function ($app) {
+    $app->get('/', [HomeController::class, 'index']);
 };
