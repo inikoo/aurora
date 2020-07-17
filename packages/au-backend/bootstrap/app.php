@@ -10,13 +10,7 @@ Version 4
 use DI\Container;
 use DI\Bridge\Slim\Bridge as SlimAppFactory;
 
-require __DIR__ . '/../vendor/autoload.php';
-
-$container = new Container;
-$setttings = require __DIR__ . '/../app/settings.php';
-$setttings($container);
-
-$app=SlimAppFactory::create($container);
+$app = SlimAppFactory::create(new Container);
 
 $middleware = require __DIR__ . '/../app/middleware.php';
 $middleware($app);
@@ -24,4 +18,4 @@ $middleware($app);
 $routers = require __DIR__ . '/../app/routers.php';
 $routers($app);
 
-$app->run();
+return $app;

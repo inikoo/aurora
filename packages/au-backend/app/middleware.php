@@ -10,10 +10,13 @@ Version 4
 use Slim\App;
 
 return function ($app) {
-    $settings = $app->getContainer()->get('settings');
+
+print 'caca';
+
     $app->addErrorMiddleware(
-        $settings['displayErrorDetails'],
-        $settings['logErrors'],
-        $settings['logErrorDetails'],
+        config('middleware.error_details.displayErrorDetails'),
+        config('middleware.error_details.logErrors'),
+        config('middleware.error_details.logErrorDetails'),
+
     );
 };
