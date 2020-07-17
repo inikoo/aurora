@@ -9,7 +9,8 @@ Version 4
 
 namespace App\Http\Controllers;
 
-class HomeController{
+class HomeController
+{
     public function index($response) {
         $response->getBody()->write('Welcome');
         return $response;

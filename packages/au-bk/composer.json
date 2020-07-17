@@ -1,4 +1,6 @@
 {
+    "name":"inikoo/au-bk",
+    "description": "Aurora back end (slim 4)",
     "require": {
         "slim/slim": "4.*",
         "slim/psr7": "^1.1",
@@ -18,7 +20,8 @@
             "./app/helpers.php"
         ],
         "psr-4": {
-            "App\\": "app"
+            "App\\": "app",
+            "Boot\\": "bootstrap"
         }
     },
     "scripts": {

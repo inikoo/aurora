@@ -8,10 +8,6 @@ Version 4
 */
 return [
     'controllers' => [
-        'namespaces' => [
-            '\\App\\Http\\Controllers\\'
-        ]
+        'namespace' => '\\App\\Http\\Controllers\\'
     ]
 ];
-
-

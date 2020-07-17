@@ -9,9 +9,6 @@ Version 4
 
 namespace App\Support;
 
-use Slim\App;
-
-
 use Illuminate\Support\Str;
 
 class Route
@@ -43,18 +40,7 @@ class Route
         $class = Str::before($action, '@');
         $method = Str::after($action, '@');
 
-        $namespaces = config('routing.controllers.namespaces');
-
-        foreach ($namespaces as $namespace)
-        {
-            if (class_exists($namespace . $class))
-            {
-                $controller = $namespace . $class;
-            }
-        }
-
-        throw_when(!isset($controller), "Unresolvable action, wasn't able to find controller for {$action}");
-
+        $controller = config('routing.controllers.namespace') . $class;   
         return [$controller, $method];
     }
 
