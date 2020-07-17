@@ -9,9 +9,9 @@ Version 4
 
 return [
     'providers' => [
-       // \App\Providers\BladeServiceProvider::class,
+        // \App\Providers\BladeServiceProvider::class,
+        \App\Providers\EnvironmentVariablesServiceProvider::class,
         \App\Providers\RouteServiceProvider::class,
         \App\Providers\ErrorMiddlewareServiceProvider::class,
     ]
 ];
-
