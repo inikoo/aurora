@@ -9,18 +9,13 @@ Version 4
 
 namespace App\Http\Controllers;
 
-use App\User;
-
 class ApiController
 {
-    public function index($response, User $user)
+    public function index($response)
     {
-        //$user = $user::find(1);
-        
         $response->getBody()->write(json_encode([
             'hello' => 'world'
         ], JSON_PRETTY_PRINT));
-
 
         return $response;
     }
