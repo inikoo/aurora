@@ -9,7 +9,10 @@ Version 4
 
 return [
     'providers' => [
+        \App\Providers\DatabaseServiceProvider::class,
         //\App\Providers\BladeServiceProvider::class,
-        \App\Providers\RouteServiceProvider::class
+    ],
+    'aliases' => [
+        'DB' => \Illuminate\Database\Capsule\Manager::class,
     ]
 ];

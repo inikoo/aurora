@@ -14,7 +14,7 @@ class ApiController
     public function index($response)
     {
         $response->getBody()->write(json_encode([
-            'hello' => 'world'
+            'hello' => 'world 2'
         ], JSON_PRETTY_PRINT));
 
         return $response;

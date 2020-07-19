@@ -28,9 +28,11 @@ class HttpKernel extends Kernel
         'web' => []
     ];
 
-    public array $bootstrap = [
+    public array $bootstrappers = [
+        Bootstrappers\LoadEnvironmentDetector::class,
         Bootstrappers\LoadEnvironmentVariables::class,
         Bootstrappers\LoadDebuggingPage::class,
+        Bootstrappers\LoadAliases::class,
         Bootstrappers\LoadHttpMiddleware::class,
         Bootstrappers\LoadServiceProviders::class,
     ];
