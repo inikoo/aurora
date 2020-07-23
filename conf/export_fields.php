@@ -836,7 +836,8 @@ function get_export_fields($element, $account_currency_code = '') {
             array(
                 'name'    => '`Location Code`',
                 'label'   => _('Code'),
-                'checked' => 1
+                'checked' => 1,
+                'type'    => 'text'
             ),
 
             array(
@@ -857,7 +858,8 @@ function get_export_fields($element, $account_currency_code = '') {
             array(
                 'name'    => 'CONCAT ("!W",`Location Warehouse Key`,"L",LPAD(`Location Key`,8,0))',
                 'label'   => _('Barcode'),
-                'checked' => 0
+                'checked' => 0,
+                'type'    => 'text'
             ),
 
 
@@ -1024,17 +1026,20 @@ function get_export_fields($element, $account_currency_code = '') {
             array(
                 'name'    => '`Part Reference`',
                 'label'   => _('Part reference'),
-                'checked' => 1
+                'checked' => 1,
+                'type'    => 'text'
             ),
             array(
                 'name'    => '`Location File As`',
                 'label'   => _('Location expanded code'),
-                'checked' => 0
+                'checked' => 0,
+                'type'    => 'text'
             ),
             array(
                 'name'    => '`Location Code`',
                 'label'   => _('Location code'),
-                'checked' => 1
+                'checked' => 1,
+                'type'    => 'text'
             ),
             array(
                 'name'    => '`Can Pick`',
