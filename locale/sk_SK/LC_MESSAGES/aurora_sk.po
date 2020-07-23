@@ -3,7 +3,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3.1\n"
 "Project-Id-Version: au\n"
 "Language: sk\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
@@ -2299,7 +2299,7 @@ msgstr "IČO"
 #: class.Invoice.php:2802 class.Order.php:3647 class.Prospect.php:1240
 #: class.Public_Customer.php:1333
 msgid "tax number"
-msgstr "IČ DPH"
+msgstr "DIČ/IČ DPH"
 
 #: EcomB2B/class.Public_Customer.php:1336 class.Customer.php:1860
 #: class.Invoice.php:2805 class.Prospect.php:1243
@@ -3661,7 +3661,7 @@ msgstr "Mimo rozsahu DPH"
 #: invoice.pdf.common.php:658 trait.OrderTax.php:313 trait.OrderTax.php:555
 #: trait.OrderTax.php:558 trait.OrderTax.php:561 trait.OrderTax.php:766
 msgid "VAT"
-msgstr "IČ DPH"
+msgstr "DIČ/IČ DPH"
 
 #: EcomB2B/invoice.pdf.common.php:661 EcomB2B/trait.OrderTax.php:564
 #: EcomB2B/trait.OrderTax.php:769 invoice.pdf.common.php:661
@@ -3819,7 +3819,7 @@ msgstr "Prázdny predmet e-mailu"
 #: app_files/po_sources_from_smarty/au.php:21035
 #: trait.Published_Email_Template.send_email.php:567
 msgid "For collection"
-msgstr "Na zber"
+msgstr "Osobný odber"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:578
 #: app_files/po_sources_from_smarty/au.php:1655
@@ -8669,7 +8669,7 @@ msgstr "Ex-zamestnanec"
 #: app_files/po_sources_from_smarty/web.php:2651
 #: app_files/po_sources_from_smarty/web.php:2654 tabs/ec_sales_list.tab.php:35
 msgid "Tax number"
-msgstr "IČ DPH číslo"
+msgstr "DIČ/IČ DPH číslo"
 
 #: app_files/po_sources_from_smarty/au.php:1454
 #: app_files/po_sources_from_smarty/au.php:1619
@@ -14108,7 +14108,7 @@ msgstr "Očakávané odoslanie"
 #: app_files/po_sources_from_smarty/web.php:3572
 #: conf/fields/payment_account.fld.php:181 conf/fields/webpage.fld.php:339
 msgid "VAT Number"
-msgstr "IČ DPH"
+msgstr "DIČ/IČ DPH"
 
 #: app_files/po_sources_from_smarty/au.php:7637
 #: app_files/po_sources_from_smarty/au.php:7787
@@ -14457,7 +14457,7 @@ msgstr "telefón"
 #: conf/export_fields.php:165 conf/fields/customers_new_list.fld.php:156
 #: conf/fields/mailshot.mailing_list.fld.php:143
 msgid "Tax Number"
-msgstr "IČ DPH"
+msgstr "DIČ/IČ DPH"
 
 #: app_files/po_sources_from_smarty/au.php:7841
 #: app_files/po_sources_from_smarty/au.php:21143
@@ -25700,7 +25700,7 @@ msgstr "Obchod% d bol odstránený"
 #: class.Store.php:3248 conf/website_system_webpages.php:496
 #: conf/website_system_webpages.php:497
 msgid "VAT number"
-msgstr "IČ DPH"
+msgstr "DIČ/IČ DPH"
 
 #: class.Store.php:3254
 msgid "company number"
@@ -27689,7 +27689,7 @@ msgstr "Mal by sa uviesť dôvod"
 
 #: conf/fields/delivery_note.fld.php:100
 msgid "Un dispatch"
-msgstr "Un expedícia"
+msgstr "Odoslanie"
 
 #: conf/fields/delivery_note.fld.php:100
 msgid "Un dispatching delivery"
