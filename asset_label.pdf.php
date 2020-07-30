@@ -248,7 +248,7 @@ if ($object_name == 'product') {
     $smarty->assign('part', $object);
 
 
-    $filename = $object->get('Reference');
+    $filename = $object->get('Reference').'_'.$type;
     $title    = sprintf(_('%s unit'), $object->get('Code'));
 
 
