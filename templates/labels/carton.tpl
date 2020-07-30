@@ -56,7 +56,7 @@
         </tr>
         <tr class="data">
             <td style=" ">
-                    <b> {$supplier_part->get('Reference')}</b>
+                    <b> {$supplier_part->part->get('Reference')}</b>
 
             </td>
             <td >

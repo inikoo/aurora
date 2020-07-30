@@ -108,6 +108,7 @@
 
             </td>
             <td style="text-align: right;">
+                {{$purchase_order->get('Operator Alias')}}
 
                 {if $purchase_order->get('Purchase Order State')=='Cancelled' }
                     <div>

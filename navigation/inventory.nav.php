@@ -46,16 +46,6 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
 function get_inventory_navigation($data, $smarty, $user, $db, $account) {
 
 
-    $block_view = $data['section'];
-
-    switch ($data['parent']) {
-        case 'account':
-
-            break;
-        default:
-            break;
-    }
-
 
     $left_buttons = array();
 
@@ -149,13 +139,13 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     if ($data['parent']) {
 
         switch ($data['parent']) {
-            case 'account':
-                $tab      = 'inventory.parts';
-                break;
+
             case 'category':
                 $tab      = 'category.parts';
                 break;
-
+            default:
+                $tab      = 'inventory.parts';
+                break;
 
         }
 
@@ -181,11 +171,6 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-
-
-
-
-    //    $extra_where = ' and `Part Status`="In Use"';
 
         include_once 'prepare_table/'.$tab.'.ptble.php';
 
