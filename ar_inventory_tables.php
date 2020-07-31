@@ -165,11 +165,16 @@ function parts($_data, $db, $user, $type, $account) {
 
     }
 
-    $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
+
+    if(isset($_data['parameters']['show_production'])){
+        $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
+    }
+
+
 
 
     include_once 'prepare_table/init.php';
