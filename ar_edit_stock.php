@@ -541,6 +541,8 @@ function edit_part_stock_check($data, $editor, $smarty) {
         }
     }
 
+
+    $part=get_object('Part', $data['part_sku']);
     $smarty->assign('part_sku', $part->id);
     $smarty->assign('part', $part);
     $smarty->assign('locations_data', $part->get_locations('data'));

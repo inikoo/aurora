@@ -287,8 +287,7 @@ function save_part_locations_stock_check(element){
 
             for (var key in data.updated_fields) {
 
-                console.log(key)
-                console.log(data.updated_fields[key])
+  
 
 
                 $('.' + key).html(data.updated_fields[key])
