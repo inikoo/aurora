@@ -764,6 +764,11 @@ function stock_history_day($_data, $db, $user, $account) {
             'lost'                  => number($data['lost']),
             // 'given'                 => number($data['given']),
             'stock_left_1_year_ago' => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' : number($data['stock_left_1_year_ago'])),
+            'percentage_stock_left_1_year_ago' => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' :
+                percentage($data['stock_left_1_year_ago'],$data['stock_on_hand']  )),
+            'amount_stock_left_1_year_ago' => ( ($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' :
+                money($data['sko_cost']*$data['stock_left_1_year_ago'] , $account->get('Currency Code'))),
+
             'no_sales_1_year'       => sprintf('<i class="%s"></i>', $data['no_sales_1_year_icon'])
         );
 

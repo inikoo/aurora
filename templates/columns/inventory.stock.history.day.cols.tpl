@@ -87,24 +87,38 @@ headerCell: integerHeaderCell
 
 {
 name: "no_sales_1_year",
-label: "{t}Sales 1 year{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='no_sales_1_year'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ })
-
+ label: "{t}Sales 1 year{/t}",
+ editable: false,
+ defaultOrder:1,
+ sortType: "toggle",
+ {if $sort_key=='no_sales_1_year'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ cell: Backgrid.HtmlCell.extend({ })
 },
 {
-name: "stock_left_1_year_ago",
-label: "{t}Stock older than 1 year{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='stock_left_1_year_ago'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"}),
-headerCell: integerHeaderCell
-
+ name: "stock_left_1_year_ago",
+ label: "{t}Stock older than 1 year{/t}",
+ editable: false,
+ defaultOrder:1,
+ sortType: "toggle",
+ {if $sort_key=='stock_left_1_year_ago'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+ cell: Backgrid.HtmlCell.extend({ className: "aright"}),
+ headerCell: integerHeaderCell
+},
+{
+ name: "percentage_stock_left_1_year_ago",
+ label: "{t}Stock older than 1 year{/t}",
+ editable: false,
+ sortable: false,
+ cell: Backgrid.HtmlCell.extend({ className: "aright"}),
+ headerCell: integerHeaderCell
+},
+{
+ name: "amount_stock_left_1_year_ago",
+ label: "{t}Stock older than 1 year{/t}",
+ editable: false,
+ sortable: false,
+ cell: Backgrid.HtmlCell.extend({ className: "aright"}),
+ headerCell: integerHeaderCell
 },
 
 ]
@@ -119,6 +133,8 @@ $('#view_'+view).addClass('selected');
 grid.columns.findWhere({ name: 'no_sales_1_year'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'stock_left_1_year_ago'} ).set("renderable", false)
 
+grid.columns.findWhere({ name: 'percentage_stock_left_1_year_ago'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'amount_stock_left_1_year_ago'} ).set("renderable", false)
 
 
 grid.columns.findWhere({ name: 'sko_cost'} ).set("renderable", false)
@@ -139,6 +155,8 @@ grid.columns.findWhere({ name: 'stock_value_at_day_cost'} ).set("renderable", tr
 }else if(view=='1_year'){
 grid.columns.findWhere({ name: 'no_sales_1_year'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock_left_1_year_ago'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'percentage_stock_left_1_year_ago'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'amount_stock_left_1_year_ago'} ).set("renderable", true)
 
 }
 
