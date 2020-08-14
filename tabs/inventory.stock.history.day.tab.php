@@ -22,8 +22,8 @@ $table_views   = array(
         'title' => _('Stock')
     ),
     '1_year'   => array(
-        'label' => _('1 year'),
-        'title' => _('1 year')
+        'label' => _('Ageing stock'),
+        'title' => _('Ageing stock')
     ),
 
 );
