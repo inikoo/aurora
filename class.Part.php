@@ -473,8 +473,9 @@ class Part extends Asset {
                 }
             }
 
+
             $sql = sprintf(
-                "SELECT `Purchase Order Submitted Units`-`Purchase Order Submitted Cancelled Units` submitted_units,`Purchase Order Manufactured Units`,`Purchase Order QC Pass Units`,`Purchase Order Estimated Receiving Date`,`Purchase Order Estimated Start Production Date`,`Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
+                "SELECT (ifnull(`Purchase Order Submitted Units`,0)-ifnull(`Purchase Order Submitted Cancelled Units`,0)) submitted_units,`Purchase Order Manufactured Units`,`Purchase Order QC Pass Units`,`Purchase Order Estimated Receiving Date`,`Purchase Order Estimated Start Production Date`,`Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
                 `Part Units Per Package`,`Purchase Order Ordering Units`,`Purchase Order Transaction Type`,`Supplier Key`,`Purchase Order Type`
         FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  
           left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
@@ -482,6 +483,9 @@ class Part extends Asset {
         
         WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ('Placed','Cancelled','InvoiceChecked','NoReceived') ", implode(',', $supplier_parts)
             );
+
+
+           // print $sql;
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -512,7 +516,7 @@ class Part extends Asset {
 
                         $qty = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
-                    } elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
+                    } elseif ($row['Purchase Order Transaction State'] == 'Submitted'  ) {
                         $number_draft_POs++;
 
                         $raw_units_qty = $row['submitted_units'];
@@ -625,6 +629,7 @@ class Part extends Asset {
                         } else {
 
                             //print_r($row);
+
                             $number_non_draft_POs++;
                             $raw_units_qty = $row['submitted_units'];
                             $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
@@ -635,6 +640,9 @@ class Part extends Asset {
                                 $row['Purchase Order Public ID']
                             );
                             $qty            = '+'.number($raw_skos_qty);
+
+
+
 
                             if ($row['Purchase Order Estimated Receiving Date'] != '') {
                                 $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
