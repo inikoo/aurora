@@ -613,6 +613,13 @@ function get_export_fields($element, $account_currency_code = '') {
 
         'supplier_parts'  => array(
             array(
+                'name'    => '`Supplier Code`',
+                'label'   => _('Supplier'),
+                'checked' => 0
+            ),
+
+
+            array(
                 'name'    => '`Supplier Part Status`',
                 'label'   => _('Availability'),
                 'checked' => 1
@@ -628,14 +635,24 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
             array(
+                'name'    => '`Part Family Category Code`',
+                'label'   => _('Family'),
+                'checked' => 1
+            ),
+            array(
                 'name'    => '`Part Reference`',
                 'label'   => _('Part reference'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Unit Label`',
+                'label'   => _('Unit label'),
                 'checked' => 1
             ),
 
             array(
                 'name'    => '`Part Package Description`',
-                'label'   => _('Part SKO description'),
+                'label'   => _('Part SKO description').' ('._('for picking aid').')',
                 'checked' => 1
             ),
             array(
@@ -646,6 +663,66 @@ function get_export_fields($element, $account_currency_code = '') {
             array(
                 'name'    => '`Supplier Part Packages Per Carton`',
                 'label'   => _('SKOs per carton'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Part SKO Barcode`',
+                'label'   => _('SKO barcode'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Carton Barcode`',
+                'label'   => _('Carton barcode'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Recommended Packages Per Selling Outer`',
+                'label'   => _('Recommended SKOs per selling outer'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Supplier Part Status`',
+                'label'   => _('Availability'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Supplier Part On Demand`',
+                'label'   => _('On demand'),
+                'checked' => 1
+            ),
+
+
+            array(
+                'name'    => '`Part Unit Weight`',
+                'label'   => _('Weight shown in website'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Unit Dimensions`',
+                'label'   => _('Unit dimensions'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Package Weight`',
+                'label'   => _('SKO Weight'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Package Dimensions`',
+                'label'   => _('SKO dimensions'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Materials`',
+                'label'   => _('Materials'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Origin Country Code`',
+                'label'   => _('Country of origin'),
                 'checked' => 1
             ),
 
@@ -696,6 +773,9 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1,
                 'type'    => 'text'
             ),
+
+
+
 
         ),
         'agent_parts'     => array(
