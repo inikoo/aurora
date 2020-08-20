@@ -611,7 +611,7 @@ function get_export_fields($element, $account_currency_code = '') {
         ),
 
 
-        'supplier_parts'  => array(
+        'supplier_parts'    => array(
             array(
                 'name'    => '`Supplier Code`',
                 'label'   => _('Supplier'),
@@ -632,11 +632,6 @@ function get_export_fields($element, $account_currency_code = '') {
             array(
                 'name'    => '`Supplier Part Description`',
                 'label'   => _("Supplier's unit description"),
-                'checked' => 1
-            ),
-            array(
-                'name'    => '`Part Family Category Code`',
-                'label'   => _('Family'),
                 'checked' => 1
             ),
             array(
@@ -726,7 +721,46 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
 
-
+            array(
+                'name'    => '`Part Tariff Code`',
+                'label'   => _('Tariff code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Duty Rate`',
+                'label'   => _('Duty Rate'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part HTSUS Code`',
+                'label'   => _('HTSUS Code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part UN Number`',
+                'label'   => _('UN Number'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part UN Class`',
+                'label'   => _('UN class'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Packing Group`',
+                'label'   => _('Packing group'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Proper Shipping Name`',
+                'label'   => _('Proper shipping name'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Hazard Identification Number`',
+                'label'   => _('Hazard identification number'),
+                'checked' => 1
+            ),
             array(
                 'name'    => '`Supplier Part Minimum Carton Order`',
                 'label'   => _('Minimum order (cartons)'),
@@ -775,10 +809,8 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
 
 
-
-
         ),
-        'agent_parts'     => array(
+        'agent_parts'       => array(
             array(
                 'name'    => '`Supplier Part Status`',
                 'label'   => _('Availability'),
@@ -865,7 +897,7 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
 
         ),
-        'ec_sales_list'   => array(
+        'ec_sales_list'     => array(
             array(
                 'name'    => '`Invoice Address Country 2 Alpha Code`',
                 'label'   => _('Country Code'),
@@ -912,7 +944,7 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 0
             ),
         ),
-        'locations'       => array(
+        'locations'         => array(
             array(
                 'name'    => '`Location Code`',
                 'label'   => _('Code'),
@@ -944,7 +976,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
 
         ),
-        'deleted_locations'       => array(
+        'deleted_locations' => array(
             array(
                 'name'    => '`Location Deleted Code`',
                 'label'   => _('Code'),
@@ -968,7 +1000,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
 
         ),
-        'parts'           => array(
+        'parts'             => array(
             array(
                 'name'    => '`Part Reference`',
                 'label'   => _('Reference'),
@@ -1036,7 +1068,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
 
         ),
-        'part_categories' => array(
+        'part_categories'   => array(
             array(
                 'name'    => '`Category Code`',
                 'label'   => _('Code'),
@@ -1291,7 +1323,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
         ),
 
-        'part_barcode_errors' => array(
+        'part_barcode_errors'     => array(
             array(
                 'name'    => '`Part Reference`',
                 'label'   => _('Reference'),
@@ -1323,7 +1355,7 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
 
         ),
-        'parts_weight_errors' => array(
+        'parts_weight_errors'     => array(
             array(
                 'name'    => '`Part Reference`',
                 'label'   => _('Reference'),
@@ -1352,7 +1384,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
 
         ),
-        'products'            => array(
+        'products'                => array(
 
             array(
                 'name'    => '`Product Status`',
@@ -1518,7 +1550,7 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
 
         ),
-        'portfolio_items'     => array(
+        'portfolio_items'         => array(
 
             array(
                 'name'    => '`Product Status`',
@@ -1684,28 +1716,28 @@ function get_export_fields($element, $account_currency_code = '') {
                 'type'    => 'array',
             ),
             array(
-                'name'    => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 0) as img1',
-                'label'   => _('1st image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 0) as img1',
+                'label'       => _('1st image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
-                'name'    => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 1) as img2',
-                'label'   => _('2nd image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 1) as img2',
+                'label'       => _('2nd image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
-                'name'  => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
-                'label' => _('3rd image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
+                'label'       => _('3rd image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
-                'name'  => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 3) as img4',
-                'label' => _('4th image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 3) as img4',
+                'label'       => _('4th image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
                 'name'    => '`Product Data Updated`,`Product Stock Updated`,`Product Price Updated`,`Product Images Updated`',
@@ -1731,7 +1763,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
 
         ),
-        'website_catalogue_items'     => array(
+        'website_catalogue_items' => array(
 
             array(
                 'name'    => '`Product Status`',
@@ -1891,28 +1923,28 @@ function get_export_fields($element, $account_currency_code = '') {
                 'type'    => 'array',
             ),
             array(
-                'name'    => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 0) as img1',
-                'label'   => _('1st image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 0) as img1',
+                'label'       => _('1st image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
-                'name'    => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 1) as img2',
-                'label'   => _('2nd image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 1) as img2',
+                'label'       => _('2nd image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
-                'name'  => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
-                'label' => _('3rd image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 2) as img3',
+                'label'       => _('3rd image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
-                'name'  => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 3) as img4',
-                'label' => _('4th image'),
-                'checked' => 0,
-                'ignore_json'=>true
+                'name'        => '(select concat("[image_address]",`Image Subject Image Key`,".",`Image Subject Image File Format`)  from `Image Subject Bridge` where `Image Subject Object`="Product" and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`="Yes"  order by `Image Subject Order` limit 1 offset 3) as img4',
+                'label'       => _('4th image'),
+                'checked'     => 0,
+                'ignore_json' => true
             ),
             array(
                 'name'    => '`Product Data Updated`,`Product Stock Updated`,`Product Price Updated`,`Product Images Updated`',
@@ -1938,7 +1970,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
 
         ),
-        'intrastat' => array(
+        'intrastat'               => array(
             array(
                 'name'    => 'date_format( min(`Delivery Note Date`),\'%y%m\')',
                 'label'   => _('Period'),
