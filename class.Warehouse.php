@@ -231,8 +231,10 @@ class Warehouse extends DB_Table {
             );
 
 
-            return;
+
         } else {
+            print_r($error_info = $stmt->errorInfo());
+
             $this->msg = _(" Error can not create warehouse");
             print $sql;
             exit;

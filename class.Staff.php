@@ -1760,7 +1760,7 @@ class Staff extends DB_Table {
                 $label = _('id');
                 break;
             case 'Staff ID':
-                if ($this->data['Staff Type'] == 'Contractor') {
+                if ($this->id and $this->data['Staff Type'] == 'Contractor') {
                     $label = _('reference');
                 } else {
                     $label = _('payroll Id');
@@ -1808,7 +1808,7 @@ class Staff extends DB_Table {
                 break;
             case 'Staff Valid To':
 
-                if ($this->data['Staff Type'] == 'Contractor') {
+                if ($this->id and $this->data['Staff Type'] == 'Contractor') {
                     $label = _('end of contract');
                 } else {
                     $label = _('end of employment');
@@ -1820,28 +1820,28 @@ class Staff extends DB_Table {
                 break;
             case 'Staff Job Title':
 
-                if ($this->data['Staff Type'] == 'Contractor') {
+                if ($this->id and  $this->data['Staff Type'] == 'Contractor') {
                     $label = _('assignment title');
                 } else {
                     $label = _('job title');
                 }
                 break;
             case 'Staff Supervisor':
-                if ($this->data['Staff Type'] == 'Contractor') {
+                if ($this->id and $this->data['Staff Type'] == 'Contractor') {
                     $label = _('point of contact');
                 } else {
                     $label = _('supervisor');
                 }
                 break;
             case 'Staff Working Hours':
-                if ($this->data['Staff Type'] == 'Contractor') {
+                if ($this->id and $this->data['Staff Type'] == 'Contractor') {
                     $label = _('In premises working hours');
                 } else {
                     $label = _('working hours');
                 }
                 break;
             case 'Staff Salary':
-                if ($this->data['Staff Type'] == 'Contractor') {
+                if ($this->id and $this->data['Staff Type'] == 'Contractor') {
                     $label = _('cost');
                 } else {
                     $label = _('salary');

@@ -146,6 +146,23 @@ class Location extends DB_Table {
         }
 
 
+        if($this->data['Location Warehouse Area Key']==''){
+            $this->data['Location Warehouse Area Key']=null;
+        }
+
+        if($this->data['Location Shelf Key']==''){
+            $this->data['Location Shelf Key']=null;
+        }
+        if($this->data['Location Mainly Used For']==''){
+            $this->data['Location Mainly Used For']=null;
+        }
+        if($this->data['Location Shape Type']==''){
+            $this->data['Location Shape Type']='Unknown';
+        }
+
+
+      //  print_r($this->data);
+
         $sql = sprintf(
             "INSERT INTO `Location Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
         );
@@ -198,7 +215,10 @@ class Location extends DB_Table {
 
 
         } else {
-            exit($sql);
+
+            print_r($error_info = $stmt->errorInfo());
+
+            exit('XXXxxXXX');
         }
 
 

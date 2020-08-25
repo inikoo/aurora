@@ -801,9 +801,14 @@ class Account extends DB_Table {
 
         $data['editor'] = $this->editor;
 
-        $data['Warehouse State']      = 'Active';
-        $data['Warehouse Valid From'] = gmdate('Y-m-d H:i:s');
-
+        $data['Warehouse State']        = 'Active';
+        $data['Warehouse Valid From']   = gmdate('Y-m-d H:i:s');
+        $data['Warehouse Address']      = '';
+        $data['Warehouse Company Name'] = '';
+        $data['Warehouse Company Number']='';
+        $data['Warehouse VAT Number']='';
+        $data['Warehouse Telephone']='';
+        $data['Warehouse Email']='';
 
         $warehouse = new Warehouse('find', $data, 'create');
 
@@ -989,7 +994,7 @@ class Account extends DB_Table {
                 $elements_numbers[$element] += $row['number'];
             }
         }
-        $this->fast_update_json_field('Account Properties', 'production_job_orders_elements',json_encode($elements_numbers), 'Account Data');
+        $this->fast_update_json_field('Account Properties', 'production_job_orders_elements', json_encode($elements_numbers), 'Account Data');
 
 
     }
@@ -1629,12 +1634,11 @@ class Account extends DB_Table {
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_manufacturers = $row['num'];
-            if($number_manufacturers==1){
+            if ($number_manufacturers == 1) {
                 $this->fast_update_json_field('Account Properties', 'production_supplier_key', $row['production_supplier_key'], 'Account Data');
 
             }
         }
-
 
 
         $this->fast_update(
