@@ -34,7 +34,6 @@ class Account extends DB_Table {
         $this->get_data();
     }
 
-
     function get_data() {
 
 

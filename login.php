@@ -98,7 +98,15 @@ if ($account->id and $account->get('Account State') == 'Active') {
 
     }
 
-    $bg_image="/art/bg/".strtolower($account->get('Account Country Code')).".jpg";
+    if(file_exists("art/bg/".strtolower($account->get('Code')).".jpg")){
+        $bg_image="/art/bg/".strtolower($account->get('Code')).".jpg";
+
+    }else{
+        $bg_image="/art/bg/".strtolower($account->get('Account Country Code')).".jpg";
+
+    }
+
+
     
     $smarty->assign('bg_image', $bg_image);
 
