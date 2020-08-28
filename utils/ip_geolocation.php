@@ -51,7 +51,9 @@ function get_ip_geolocation($ip, $db) {
             //print_r($api_result);
             $location = parse_geolocation_data($api_result);
             $sql      = sprintf(
-                "insert into kbase.`IP Geolocation` (IP,Latitude,Longitude,Location,`Country Code`,`Region Code`,`Region Name`,Town,`Postal Code`,`IP Geolocation Creation Date`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", prepare_mysql($ip), prepare_mysql($api_result['latitude']),
+                "insert into kbase.`IP Geolocation` (`Data`,IP,Latitude,Longitude,Location,`Country Code`,`Region Code`,`Region Name`,Town,`Postal Code`,`IP Geolocation Creation Date`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                prepare_mysql($json),
+                prepare_mysql($ip), prepare_mysql($api_result['latitude']),
                 prepare_mysql($api_result['longitude']), prepare_mysql($location, false), prepare_mysql($api_result['country_code']), prepare_mysql($api_result['region_code']), prepare_mysql($api_result['region_name']), prepare_mysql($api_result['city']),
                 prepare_mysql($api_result['zip']),prepare_mysql(gmdate('Y-m-d H:i:s'))
 
