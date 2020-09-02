@@ -1271,7 +1271,7 @@ function delivery_notes($_data, $db, $user) {
             'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
 
             'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
-            'weight'  => weight($data['Delivery Note Weight'],' Kg',3,false,true),
+            'weight'  => weight($data['Delivery Note Estimated Weight'],' Kg',3,false,true),
             'parcels' => $parcels,
             'type'    => $type,
             'state'   => $state,
