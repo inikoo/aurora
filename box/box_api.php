@@ -60,7 +60,7 @@ if ($authenticated == 'OK') {
 
             $_data = json_decode($row['Box Aurora Account Data'], true);
             $tenant_db=$_data['db'];
-            if(! in_array($tenant_db,['dw','es','sk'])){
+            if(! in_array($tenant_db,['dw','es','sk','demo'])){
                 exit('error');
             }
 
@@ -476,11 +476,14 @@ function authenticate($db) {
     $token = false;
 
 
+
     if (empty($_SERVER['HTTP_X_AUTH_KEY'])) {
         if (!empty($_headers['HTTP_X_AUTH_KEY'])) {
             $token = $_headers['HTTP_X_AUTH_KEY'];
         } elseif (!empty($_headers['http_x_auth_key'])) {
             $token = $_headers['http_x_auth_key'];
+        }elseif (!empty($_SERVER['HTTP_X_API_KEY'])) {
+            $token = $_SERVER['HTTP_X_API_KEY'];
         } elseif (!empty($_REQUEST['AUTH_KEY'])) {
             $token = $_REQUEST['AUTH_KEY'];
         } else {
@@ -498,7 +501,12 @@ function authenticate($db) {
     }
 
 
-    //
+    if (!$token) {
+        if (!empty($_SERVER['HTTP_X_API_KEY'])) {
+            $token = $_SERVER['HTTP_X_API_KEY'];
+        }
+    }
+
 
 
     if (!$token) {
