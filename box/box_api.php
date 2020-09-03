@@ -29,20 +29,22 @@ include_once 'utils/object_functions.php';
 include_once 'utils/network_functions.php';
 
 
-$db = new PDO(
+global $db;
+
+$db_box = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+$db_box->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-list($authenticated, $box_id) = authenticate($db);
+list($authenticated, $box_id) = authenticate($db_box);
 
 if ($authenticated == 'OK') {
 
     $sql  = 'select `Box Key`,`Box Aurora Account Code`,`Box Aurora Account Data` from `Box Dimension` where `Box ID`=?';
 
 
-    $stmt = $db->prepare($sql);
+    $stmt = $db_box->prepare($sql);
     $stmt->execute(
         array($box_id)
     );
@@ -52,7 +54,7 @@ if ($authenticated == 'OK') {
         $box_key = $row['Box Key'];
 
 
-        log_api_key_access_success($db, $box_key);
+        log_api_key_access_success($db_box, $box_key);
 
         if ($row['Box Aurora Account Code'] != '' and $row['Box Aurora Account Data'] != '') {
 
@@ -64,10 +66,10 @@ if ($authenticated == 'OK') {
 
 
 
-            $db_tenant = new PDO(
+            $db = new PDO(
                 "mysql:host=$dns_host;dbname=$tenant_db;charset=utf8mb4", $dns_user, $dns_pwd
             );
-            $db_tenant->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 
@@ -102,8 +104,138 @@ if ($authenticated == 'OK') {
                 exit;
 
 
+            }elseif (isset($_REQUEST['clocking'])) {
+
+                $editor = array(
+                    'Author Name'  => 'Clocking Machine',
+                    'Author Alias' => 'Clocking Machine',
+                    'Author Type'  =>'',
+                    'Author Key'   =>'',
+                    'User Key'     => '',
+                    'Date'         => gmdate('Y-m-d H:i:s')
+                );
+
+                include_once 'class.Staff.php';
+                $staff=new Staff('id',$_REQUEST['staff_id']);
+                if($staff->id){
+
+
+                    $data = array(
+                        'Timesheet Record Date'   =>$_REQUEST['clocking'],
+                        'Timesheet Record Source' => $_REQUEST['source'],
+                        'Timesheet Record Type'   => 'ClockingRecord',
+                        'editor'                  => $editor
+                    );
+
+
+
+                    $staff->create_timesheet_record($data);
+
+
+
+
+                    if ($staff->create_timesheet_record_error) {
+
+                        if ($staff->create_timesheet_record_duplicated) {
+
+                            $response = array(
+                                'result'     => 'error',
+                            'msg'=>"Record already exists"
+                            );
+
+                        } else {
+
+
+                            $response = array(
+                                'result'     => 'error',
+                                'msg'=> "Error creating record"
+                            );
+
+                        }
+
+                        echo json_encode($response);
+                        exit;
+                    } else {
+                        $response = array(
+                            'result'     => 'ok',
+                        );
+                        echo json_encode($response);
+                        exit;
+
+                    }
+
+
+                }
+
+
+
+
+            }elseif (isset($_REQUEST['set'])) {
+
+                switch ($_REQUEST['set']) {
+                    case 'nfc':
+                    case 'pin':
+
+
+
+                        $sql='update `Staff Dimension` set `Staff Properties` = JSON_SET(`Staff Properties`,?,?) where `Staff Key`=?';
+
+
+
+                        $stmt=$db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                '$.nfc',
+                                $_REQUEST['nfc'],
+                                $_REQUEST['staff_id']
+                            )
+                        );
+
+
+
+                        $_response = array(
+                            'result'     => 'nfc updated'
+                        );
+
+
+                        break;
+                    case 'pin':
+
+
+                        $sql='update `Staff Dimension` set `Staff Properties` = JSON_SET(`Staff Properties`,?,?) where `Staff Key`=?';
+
+                        $db->prepare($sql)->execute(
+                            array(
+                                '$.pin',
+                                $_REQUEST['pin'],
+                                $_REQUEST['staff_id']
+                            )
+                        );
+
+                        $_response = array(
+                            'result'     => 'pin updated'
+                        );
+
+                        break;
+                    default:
+                        $_response = array(
+                            'result'     => 'error'
+                        );
+
+
+                }
+
+                echo json_encode($_response);
+                exit;
+
             } elseif (!empty($_REQUEST['get'])) {
                 switch ($_REQUEST['get']) {
+
+
+
+
+
+
 
                     case 'staff':
 
@@ -117,7 +249,7 @@ if ($authenticated == 'OK') {
 
                         $sql='select `Staff Key`,`Staff Name`,`Staff Properties` from `Staff Dimension` where `Staff Currently Working`="Yes"';
 
-                        $stmt = $db_tenant->prepare($sql);
+                        $stmt = $db->prepare($sql);
                         $stmt->execute(
                             array(
 
@@ -132,11 +264,19 @@ if ($authenticated == 'OK') {
                             }else{
                                 $nfc='';
                             }
+                            if(isset($_data['pin'])){
+                                $pin=$_data['pin'];
+                            }else{
+                                $pin='';
+                            }
+
+
 
                             $staff[]=[
                                 'key'=>$row['Staff Key'],
                                 'name'=>$row['Staff Name'],
-                                 'nfc'=>$nfc
+                                 'nfc'=>$nfc,
+                                'pin'=>$pin
                             ];
                             }
 
@@ -302,14 +442,14 @@ if ($authenticated == 'OK') {
     } else {
 
         $sql = 'insert into `Box Dimension` (`Box ID`,`Box Model`,`Box Registered Date`) values (?,?,?) ';
-        $db->prepare($sql)->execute(
+        $db_box->prepare($sql)->execute(
             array(
                 $box_id,
                 (isset($_REQUEST['register']) ? $_REQUEST['register'] : 'Unknown'),
                 gmdate('Y-m-d H:i:s')
             )
         );
-        $box_key = $db->lastInsertId();
+        $box_key = $db_box->lastInsertId();
 
 
         $response = array(
@@ -317,7 +457,7 @@ if ($authenticated == 'OK') {
             'msg'   => 'Waiting for confirmation on aurora'
         );
 
-        log_api_key_access_success($db, $box_key);
+        log_api_key_access_success($db_box, $box_key);
 
         echo json_encode($response);
         exit;
@@ -373,7 +513,7 @@ function authenticate($db) {
         $api_key = $token;
 
 
-        if (preg_match('/^([a-z0-9]{8})(.+)$/', $api_key, $matches)) {
+        if (preg_match('/^([a-z0-9]{6})(.+)$/', $api_key, $matches)) {
 
 
             $box_id         = $matches[1];

@@ -66,3 +66,5 @@ cron/ds_shipping_data.php
 cron/read_clockings.php
 cron/set_up_aroma.php
 box/keyring/box_dns.php
+box/class*
+box/trai*
