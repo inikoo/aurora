@@ -30,7 +30,7 @@ include_once 'utils/network_functions.php';
 
 
 $db = new PDO(
-    "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -40,6 +40,8 @@ list($authenticated, $box_id) = authenticate($db);
 if ($authenticated == 'OK') {
 
     $sql  = 'select `Box Key`,`Box Aurora Account Code`,`Box Aurora Account Data` from `Box Dimension` where `Box ID`=?';
+
+
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($box_id)
@@ -53,6 +55,21 @@ if ($authenticated == 'OK') {
         log_api_key_access_success($db, $box_key);
 
         if ($row['Box Aurora Account Code'] != '' and $row['Box Aurora Account Data'] != '') {
+
+            $_data = json_decode($row['Box Aurora Account Data'], true);
+            $tenant_db=$_data['db'];
+            if(! in_array($tenant_db,['dw','es','sk'])){
+                exit('error');
+            }
+
+
+
+            $db_tenant = new PDO(
+                "mysql:host=$dns_host;dbname=$tenant_db;charset=utf8mb4", $dns_user, $dns_pwd
+            );
+            $db_tenant->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
 
 
             if (isset($_REQUEST['register'])) {
@@ -88,7 +105,47 @@ if ($authenticated == 'OK') {
             } elseif (!empty($_REQUEST['get'])) {
                 switch ($_REQUEST['get']) {
 
+                    case 'staff':
 
+                        $_data = json_decode($row['Box Aurora Account Data'], true);
+
+
+
+
+                        $staff=[];
+
+
+                        $sql='select `Staff Key`,`Staff Name`,`Staff Properties` from `Staff Dimension` where `Staff Currently Working`="Yes"';
+
+                        $stmt = $db_tenant->prepare($sql);
+                        $stmt->execute(
+                            array(
+
+                            )
+                        );
+                        while ($row = $stmt->fetch()) {
+
+                            $_data = json_decode($row['Staff Properties'], true);
+
+                            if(isset($_data['nfc'])){
+                                $nfc=$_data['nfc'];
+                            }else{
+                                $nfc='';
+                            }
+
+                            $staff[]=[
+                                'key'=>$row['Staff Key'],
+                                'name'=>$row['Staff Name'],
+                                 'nfc'=>$nfc
+                            ];
+                            }
+
+
+                        $response = array(
+                            'staff'     => $staff
+                        );
+
+                        break;
                     case 'time_offset':
                         $_data = json_decode($row['Box Aurora Account Data'], true);
 
