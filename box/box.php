@@ -10,4 +10,4 @@
  Version 2.0
 */
 
-print "The box :)";
+print "The box :) V2";
