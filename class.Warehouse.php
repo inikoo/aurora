@@ -2230,7 +2230,7 @@ and `Part Distinct Locations`>1
         }
 
         $sql = sprintf(
-            "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` %s ORDER BY `Shipper Code` ", $where
+            "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name`,`Shipper API Key` from `Shipper Dimension` %s ORDER BY `Shipper Code` ", $where
         );
 
 
@@ -2250,7 +2250,8 @@ and `Part Distinct Locations`>1
                     $shippers[$row['Shipper Key']] = array(
                         'key'  => $row['Shipper Key'],
                         'code' => $row['Shipper Code'],
-                        'name' => $row['Shipper Name']
+                        'name' => $row['Shipper Name'],
+                        'api_key'=>$row['Shipper API Key']
 
                     );
 

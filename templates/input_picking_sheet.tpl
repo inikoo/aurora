@@ -139,7 +139,7 @@
                  <select class="shippers_options small" style="width: 200px">
                     <option data-display="{t}Select courier{/t}"   {if !$with_shipping}selected="selected"{/if}  value="">{t}No courier{/t}</option>
                     {foreach from=$shippers item=shipper}
-                        <option value="{$shipper.key}" {if $parent->settings('data_entry_picking_aid_default_shipper')==$shipper.key  and $with_shipping }selected="selected"{/if} >{$shipper.code}</option>
+                        <option data-api_key="{$shipper.api_key}"  value="{$shipper.key}" {if $parent->settings('data_entry_picking_aid_default_shipper')==$shipper.key  and $with_shipping }selected="selected"{/if} >{$shipper.code} {if $shipper.api_key!=''}(API){/if} </option>
                     {/foreach}
 
 

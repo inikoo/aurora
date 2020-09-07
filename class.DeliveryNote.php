@@ -95,7 +95,7 @@ class DeliveryNote extends DB_Table {
                 $base_data[$key] = _trim($value);
             }
         }
-
+        $base_data['Delivery Note Properties']='{}';
 
         $sql = sprintf(
             "INSERT INTO `Delivery Note Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
