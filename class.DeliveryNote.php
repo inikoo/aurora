@@ -73,7 +73,7 @@ class DeliveryNote extends DB_Table {
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['Delivery Note Key'];
+            $this->id         = $this->data['Delivery Note Key'];
             $this->properties = json_decode($this->data['Delivery Note Properties'], true);
 
 
@@ -322,7 +322,7 @@ class DeliveryNote extends DB_Table {
             case 'dispatched_since':
 
 
-                return gmdate('U')-gmdate('U',strtotime($this->get('Delivery Note Date Dispatched').' +0:00'));
+                return gmdate('U') - gmdate('U', strtotime($this->get('Delivery Note Date Dispatched').' +0:00'));
 
 
             case 'Icon':
@@ -2731,8 +2731,6 @@ class DeliveryNote extends DB_Table {
     function get_label() {
 
 
-
-
         $shipper = get_object('Shipper', $this->data['Delivery Note Shipper Key']);
 
 
@@ -2746,7 +2744,7 @@ class DeliveryNote extends DB_Table {
 
             curl_setopt_array(
                 $curl, array(
-                         CURLOPT_URL =>SHIPPER_API_URL."/labels",
+                         CURLOPT_URL => SHIPPER_API_URL."/labels",
 
 
                          CURLOPT_RETURNTRANSFER => true,
@@ -2771,8 +2769,8 @@ class DeliveryNote extends DB_Table {
 
             $number_parcels = $this->get('Delivery Note Number Parcels');
 
-            if(!$number_parcels){
-                $number_parcels=1;
+            if (!$number_parcels) {
+                $number_parcels = 1;
             }
 
 
@@ -2782,7 +2780,7 @@ class DeliveryNote extends DB_Table {
             $parcels = [];
             foreach (range(1, $number_parcels) as $number) {
                 $parcels[] = [
-                    'weight' => round($weight / $number_parcels,1),
+                    'weight' => round($weight / $number_parcels, 1),
                     'height' => $box_size[0],
                     'width'  => $box_size[1],
                     'depth'  => $box_size[2],
@@ -2819,23 +2817,39 @@ class DeliveryNote extends DB_Table {
                 'dependent_locality'  => $this->get('Delivery Note Address Dependent Locality'),
                 'administrative_area' => $this->get('Delivery Note Address Administrative Area'),
                 'country_code'        => $this->get('Delivery Note Address Country 2 Alpha Code'),
-                'phone'               => preg_replace('/\s/','',$this->get('Delivery Note Telephone')),
+                'phone'               => preg_replace('/\s/', '', $this->get('Delivery Note Telephone')),
                 'email'               => $this->get('Delivery Note Email')
 
             ];
             $post    = [
                 'shipper_account_id' => $shipper->get('Shipper API Key'),
-                'reference'          => $this->get('Delivery Note ID'),
+                'reference'          => 'Test'.$this->get('Delivery Note ID'),
                 'parcels'            => json_encode($parcels),
                 'ship_to'            => json_encode($ship_to),
                 'pick_up'            => json_encode($pick_up)
             ];
 
+            $order = get_object('Order', $this->get('Delivery Note Order Key'));
+
+
+            $cod_amount = $order->get('Cash on Delivery Expected Payment Amount');
+
+            if ($cod_amount > 0) {
+                $post['cod'] = json_encode(
+                    [
+                        'amount'      => $cod_amount,
+                        'currency'    => $order->get('Order Currency'),
+                        'accept_card' => 'No'
+                    ]
+                );
+            }
 
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 
             $response  = json_decode(curl_exec($curl), true);
+
+
             $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
             if ($http_code == 200) {
@@ -2853,8 +2867,7 @@ class DeliveryNote extends DB_Table {
 
 
             } else {
-               // print_r($response);
-
+                // print_r($response);
 
 
             }

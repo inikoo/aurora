@@ -341,6 +341,23 @@ class Order extends DB_Table {
                     return '';
                 }
 
+
+            case 'Cash on Delivery Expected Payment Amount':
+
+                $cash_on_delivery_to_pay_account = 0;
+
+                if ($this->data['Order Checkout Block Payment Account Key'] != '' and $this->data['Order To Pay Amount'] != 0) {
+                    $payment_account = get_object('Payment_Account', $this->data['Order Checkout Block Payment Account Key']);
+
+                    if ($payment_account->get('Payment Account Block') == 'ConD') {
+                        $cash_on_delivery_to_pay_account = $this->data['Order To Pay Amount'];
+                    }
+
+
+                }
+
+                return $cash_on_delivery_to_pay_account;
+
             case 'Expected Payment Amount':
 
 
@@ -2757,7 +2774,7 @@ class Order extends DB_Table {
             }
 
             return $this->get_replacement_public_id($dn_id, $suffix_counter);
-        }else{
+        } else {
             return $dn_id.$suffix_counter;
         }
     }
@@ -3004,7 +3021,7 @@ class Order extends DB_Table {
 			          %.6f,%.2f,%.2f,%s,%s,
 					 %d,%s,
 					 %d,'No',%s
-					 )",prepare_mysql('Return'), $row['Inventory Transaction Key'], $part->id, prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
+					 )", prepare_mysql('Return'), $row['Inventory Transaction Key'], $part->id, prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
 
                                     $unit_qty, $amount, $extra_amount, $cbm, $weight, $this->editor['User Key'], prepare_mysql($date), $delivery->id, prepare_mysql($date)
 
