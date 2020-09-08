@@ -101,6 +101,10 @@ function get_users_read_time_data($redis, $account) {
 
                 }
 
+                if(!isset($_user['request'])){
+                    $_user['request']='';
+                }
+
                 $real_time_users[] = array(
                     'user_key'     => $user_key,
                     'type'         => 'logged_in',

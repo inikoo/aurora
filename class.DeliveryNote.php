@@ -74,6 +74,7 @@ class DeliveryNote extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Delivery Note Key'];
+            $this->properties = json_decode($this->data['Delivery Note Properties'], true);
 
 
         }
@@ -95,7 +96,7 @@ class DeliveryNote extends DB_Table {
                 $base_data[$key] = _trim($value);
             }
         }
-        $base_data['Delivery Note Properties']='{}';
+        $base_data['Delivery Note Properties'] = '{}';
 
         $sql = sprintf(
             "INSERT INTO `Delivery Note Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
@@ -2716,10 +2717,145 @@ class DeliveryNote extends DB_Table {
             );
 
 
+        }
+
+
+    }
+
+    function get_label() {
+
+        $shipper = get_object('Shipper', $this->data['Delivery Note Shipper Key']);
+
+
+        if ($shipper->id and $shipper->get('Shipper API Key')) {
+
+            $account = get_object('Account', 1);
+            $account->load_acc_data();
+
+            $curl = curl_init();
+
+
+            curl_setopt_array(
+                $curl, array(
+                         CURLOPT_URL =>SHIPPER_API_URL."/labels",
+
+
+                         CURLOPT_RETURNTRANSFER => true,
+                         CURLOPT_ENCODING       => "",
+                         CURLOPT_MAXREDIRS      => 10,
+                         CURLOPT_TIMEOUT        => 0,
+                         CURLOPT_FOLLOWLOCATION => true,
+                         CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+
+                         CURLOPT_HTTPHEADER => array(
+                             "Authorization: Bearer ".SHIPPER_API_KEY
+                         ),
+                     )
+            );
+
+            curl_setopt($curl, CURLOPT_POST, 1);
+
+            $weight = $this->get('Delivery Note Weight');
+            if ($weight == '') {
+                $weight = $this->get('Delivery Note Estimated Weight');
+            }
+
+            $number_parcels = $this->get('Delivery Note Number Parcels');
+
+            if(!$number_parcels){
+                $number_parcels=1;
+            }
+
+
+            $box_size = $account->properties('box_size');
+
+
+            $parcels = [];
+            foreach (range(1, $number_parcels) as $number) {
+                $parcels[] = [
+                    'weight' => $weight / $number_parcels,
+                    'height' => $box_size[0],
+                    'width'  => $box_size[1],
+                    'depth'  => $box_size[2],
+                ];
+            }
+
+            //$customer=get_object('Customer',$this->get('Delivery Note Customer Key'));
+
+            date_default_timezone_set($account->get('Account Timezone'));
+
+            $cut_off_time = $account->properties('pickup_cut_off');
+            if (time() >= strtotime($cut_off_time)) {
+                $pick_up = [
+                    'date' => date('Y-m-d', strtotime('tomorrow')),
+                    'end'  => $account->properties('pickup_end')
+                ];
+            } else {
+                $pick_up = [
+                    'date' => date('Y-m-d', strtotime('today')),
+                    'end'  => $account->properties('pickup_end')
+                ];
+
+            }
+
+
+            $ship_to = [
+                'contact'             => $this->get('Delivery Note Address Recipient'),
+                'organization'        => $this->get('Delivery Note Address Organization'),
+                'address_line_1'      => $this->get('Delivery Note Address Line 1'),
+                'address_line_2'      => $this->get('Delivery Note Address Line 2'),
+                'postal_code'         => $this->get('Delivery Note Address Postal Code'),
+                'sorting_code'        => $this->get('Delivery Note Address Sorting Code'),
+                'locality'            => $this->get('Delivery Note Address Locality'),
+                'dependent_locality'  => $this->get('Delivery Note Address Dependent Locality'),
+                'administrative_area' => $this->get('Delivery Note Address Administrative Area'),
+                'country_code'        => $this->get('Delivery Note Address Country 2 Alpha Code'),
+                'phone'               => preg_replace('/\s/','',$this->get('Delivery Note Telephone')),
+                'email'               => $this->get('Delivery Note Email')
+
+            ];
+            $post    = [
+                'shipper_account_id' => $shipper->get('Shipper API Key'),
+                'reference'          => 'Test'.$this->get('Delivery Note ID'),
+                'parcels'            => json_encode($parcels),
+                'ship_to'            => json_encode($ship_to),
+                'pick_up'            => json_encode($pick_up)
+            ];
+
+            //print_r($post);
+
+
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+
+            $response  = json_decode(curl_exec($curl), true);
+            $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            curl_close($curl);
+            if ($http_code == 200) {
+
+                $this->fast_update(
+                    [
+                        'Delivery Note Shipper Tracking'  => $response['tracking_number'],
+                        'Delivery Note Using Shipper API' => 'Yes'
+                    ]
+
+                );
+                $this->fast_update_json_field('Delivery Note Properties', 'label_link', $response['label_link']);
+
+                //print_r($response);
+
+
+            } else {
+
+            }
+
 
         }
 
 
+    }
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
 }

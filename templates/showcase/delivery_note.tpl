@@ -375,7 +375,7 @@
     <div class="block" style="padding:20px 10px 0px 10px">
 
 
-        <table style="min-width:500px " class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90   }hide{/if} ">
+        <table style="min-width:500px " class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90 or $delivery_note->get('Delivery Note Using Shipper API')=='Yes'  }hide{/if} ">
 
 
             <tr>
@@ -438,7 +438,7 @@
             <tr id="edit_shipper_tracking_tr" class="{if !$delivery_note->get('Delivery Note Shipper Key')}hide{/if}">
                 <td class="aleft">{t}Tracking{/t}:</td>
                 <td class="aleft" colspan="3">
-                    <div class="{if $delivery_note->get('State Index')!=100}hide{/if}">
+                    <div class="{if $delivery_note->get('State Index')!=100   }hide{/if}">
 
                         {$delivery_note->get('Delivery Note Shipper Tracking')}
 
@@ -455,7 +455,7 @@
         </table>
 
 
-        <table class="final_info_block  {if  $delivery_note->get('State Index')!=100 }hide{/if} ">
+        <table border="0" class="final_info_block  {if  !($delivery_note->get('State Index')==100  or $delivery_note->get('Delivery Note Using Shipper API')=='Yes') }hide{/if} ">
 
 
             <tr>
@@ -480,10 +480,19 @@
                         {$delivery_note->get('Number Parcels')}
                     </span>
                 </td>
-                <td>
-                    <span style="padding-left:20px"><i class="far fa-truck-loading fa-fw padding_right_5 " aria-hidden="true"></i> <span class="Consignment">{$delivery_note->get('Consignment')}</span></span>
-                </td
 
+
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <span style="padding-left:20px"><i class="far fa-truck-loading fa-fw padding_right_5 " aria-hidden="true"></i> <span class="Consignment">{$delivery_note->get('Consignment')}</span></span>
+                </td>
+                <td>
+                    {if ( $delivery_note->get('Delivery Note Using Shipper API')=='Yes' and  $delivery_note->get('State Index')!=100) }
+                        <i class="fa fa-barcode-read"></i> {t}Label{/t} </a>
+                    {/if}
+                </td>
             </tr>
 
 

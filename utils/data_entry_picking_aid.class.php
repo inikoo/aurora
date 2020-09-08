@@ -894,6 +894,9 @@ class data_entry_picking_aid {
             $this->dn->update_state('Packed Done', json_encode(array('date' => $date)));
         }
 
+        if($this->shipper->id and $this->shipper->get('Shipper API Key')!=''){
+            $this->dn->get_label();
+        }
 
         if ($this->level >= 20 and $this->dn->get('Delivery Note Type') == 'Order') {
             $order         = get_object('order', $this->data['order_key']);

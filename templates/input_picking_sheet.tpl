@@ -146,7 +146,7 @@
                 </select>
                 <div class="clear:both"></div>
             </div>
-            <div style="clear: both;padding-top: 10px">
+            <div class="tracking_number_container" style="clear: both;padding-top: 10px">
             <input id="set_tracking_number" data-field="Delivery Note Shipper Tracking" class="tracking_number input_field field_to_check" placeholder="{t}Tracking number{/t}">
             </div>
 
@@ -282,6 +282,18 @@
         function() {
 
         var value=$( ".shippers_options option:selected" ).val();
+
+          var api_key=  $( ".shippers_options option:selected" ).data('api_key')
+
+
+            if(api_key>0){
+                $('.tracking_number_container').addClass('invisible')
+            }else{
+                $('.tracking_number_container').removeClass('invisible')
+
+            }
+
+
         $('.selected_shipper').val(value)
 
         if(value==''){

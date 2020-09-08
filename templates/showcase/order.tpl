@@ -640,6 +640,15 @@
                     </span>
 
 
+                    <div class="delivery_note_operation data_entry_delivery_note   {if $dn->get('State Index')==100 or $dn->get('State Index')<0  or $dn->get('Delivery Note Using Shipper API')!='Yes' }hide{/if}">
+
+                        <div class="square_button right" title="{t}Shipping labels{/t}">
+                            <a target="_blank" href="{$dn->properties('label_link')}"><i class="fa fa-barcode-read" ></i></a>
+                        </div>
+
+                    </div>
+
+
                     <div class="delivery_note_operation data_entry_delivery_note   {if $dn->get('State Index')>=80 or $dn->get('State Index')<0  or $store->settings('data_entry_picking_aid')!='Yes' }hide{/if}">
 
                         <div class="square_button right" title="{t}Input picking sheet data{/t}">
