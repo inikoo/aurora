@@ -24,7 +24,8 @@ function get_delivery_note_showcase($data, $smarty) {
 
 
     $delivery_note->update_totals();
-    //$delivery_note->get_label();
+
+
 
 
     $order = get_object('Order', $delivery_note->get('Delivery Note Order Key'));

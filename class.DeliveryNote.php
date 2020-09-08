@@ -2724,6 +2724,9 @@ class DeliveryNote extends DB_Table {
 
     function get_label() {
 
+
+
+
         $shipper = get_object('Shipper', $this->data['Delivery Note Shipper Key']);
 
 
@@ -2773,7 +2776,7 @@ class DeliveryNote extends DB_Table {
             $parcels = [];
             foreach (range(1, $number_parcels) as $number) {
                 $parcels[] = [
-                    'weight' => $weight / $number_parcels,
+                    'weight' => round($weight / $number_parcels,1),
                     'height' => $box_size[0],
                     'width'  => $box_size[1],
                     'depth'  => $box_size[2],
@@ -2822,7 +2825,6 @@ class DeliveryNote extends DB_Table {
                 'pick_up'            => json_encode($pick_up)
             ];
 
-            //print_r($post);
 
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
@@ -2845,6 +2847,9 @@ class DeliveryNote extends DB_Table {
 
 
             } else {
+               // print_r($response);
+
+
 
             }
 
