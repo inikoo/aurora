@@ -319,6 +319,12 @@ class DeliveryNote extends DB_Table {
         switch ($key) {
 
 
+            case 'dispatched_since':
+
+
+                return gmdate('U')-gmdate('U',strtotime($this->get('Delivery Note Date Dispatched').' +0:00'));
+
+
             case 'Icon':
 
                 if ($this->data['Delivery Note State'] == 'Dispatched') {

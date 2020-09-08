@@ -489,7 +489,7 @@
                     <span style="padding-left:20px"><i class="far fa-truck-loading fa-fw padding_right_5 " aria-hidden="true"></i> <span class="Consignment">{$delivery_note->get('Consignment')}</span></span>
                 </td>
                 <td>
-                    {if ( $delivery_note->get('Delivery Note Using Shipper API')=='Yes' and  $delivery_note->get('State Index')!=100) }
+                    {if ( $delivery_note->get('Delivery Note Using Shipper API')=='Yes' and  ( $delivery_note->get('State Index')!=100 or ( $delivery_note->get('State Index')==100 and $delivery_note->get('dispatched_since')<86400   )  )  ) }
                         <i class="fa fa-barcode-read"></i> {t}Label{/t} </a>
                     {/if}
                 </td>
