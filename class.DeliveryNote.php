@@ -2823,7 +2823,7 @@ class DeliveryNote extends DB_Table {
             ];
             $post    = [
                 'shipper_account_id' => $shipper->get('Shipper API Key'),
-                'reference'          => 'Test'.$this->get('Delivery Note ID'),
+                'reference'          => $this->get('Delivery Note ID'),
                 'parcels'            => json_encode($parcels),
                 'ship_to'            => json_encode($ship_to),
                 'pick_up'            => json_encode($pick_up)
