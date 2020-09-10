@@ -4733,6 +4733,8 @@ class Part extends Asset {
                         'Product Materials'                    => $this->data['Part Materials'],
                         'Product Barcode Number'               => $this->data['Part Barcode Number'],
                         'Product Barcode Key'                  => $this->data['Part Barcode Key'],
+                        'Product CPNP Number'                  => $this->data['Part CPNP Number'],
+
 
                     )
                 );
