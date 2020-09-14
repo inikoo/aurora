@@ -58,6 +58,7 @@ if (isset($parameters['period'])) {
     $where .= $where_interval['mysql'];
 }
 
+//print_r($parameters);
 
 if (isset($parameters['elements_type'])) {
 
@@ -74,7 +75,7 @@ if (isset($parameters['elements_type'])) {
                     $num_elements_checked++;
 
                     if ($_key == 'Submitted') {
-                        $_elements .= ",'Submitted'";
+                        $_elements .= ",'Submitted','Confirmed'";
                     } elseif ($_key == 'InTransit') {
                         $_elements .= ",'Dispatched'";
                     }elseif ($_key == 'ReceivedChecked') {
@@ -108,8 +109,8 @@ if (isset($parameters['elements_type'])) {
 
                     if ($_key == 'InProcessbyClient') {
                         $_elements .= ",'InProcess'";
-                    } elseif ($_key == 'InProcess') {
-                        $_elements .= ",'Submitted'";
+                    } elseif ($_key == 'Submitted') {
+                        $_elements .= ",'Submitted','Confirmed'";
                     } elseif ($_key == 'Send') {
                         $_elements .= ",'Dispatched','Received','Checked','Placed'";
                     } else {
@@ -133,7 +134,8 @@ if (isset($parameters['elements_type'])) {
     }
 }
 
-
+//print $where;
+//exit;
 if (($parameters['f_field'] == 'supplier') and $f_value != '') {
 
     $wheref = sprintf(
