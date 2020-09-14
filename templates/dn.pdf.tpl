@@ -186,7 +186,7 @@ div.inline { float:left; }
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
 				<td style="width:15%;text-align:left">{$transaction['Part Reference']}
 					{if $transaction['Part SKO Barcode']!='' and false}
-						<barcode code="{$transaction['Part SKO Barcode']}" type="C128A" class="barcode" />
+						<barcode code="{$transaction['Part SKO Barcode']}" type="C128B" class="barcode" />
 					{/if}
 				</td>
 				<td style="text-align:left">{$transaction['Part Package Description']}<br/><small>{t}From product{/t}: <b>{$transaction['Product Code']}</b> {$transaction['Product Description']}  ({t}Ordered{/t}:{$transaction['Ordered']})</small>

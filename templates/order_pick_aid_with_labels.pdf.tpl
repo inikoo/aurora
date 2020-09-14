@@ -214,7 +214,7 @@
                 </div>
                 </div>
                 <br><br>
-                <barcode  code="AU_{$account->get('Code')}_{$delivery_note->id}" type="C128A" size=".75" />
+                <barcode  code="AU_{$account->get('Code')}_{$delivery_note->id}" type="C128B" size=".75" />
 
 
             </td>

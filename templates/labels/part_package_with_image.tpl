@@ -27,7 +27,7 @@
 </tr>
     <tr>
 
-        <td colspan="2" style="text-align: center"><barcode code="{$part->get('Part SKO Barcode')}" type="C128A" size="1" height="1.1" />
+        <td colspan="2" style="text-align: center"><barcode code="{$part->get('Part SKO Barcode')}" type="C128B" size="1" height="1.1" />
         </td>
 
 

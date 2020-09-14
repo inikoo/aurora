@@ -143,7 +143,7 @@
 
         {if $supplier_part->part->get('Part Carton Barcode')!=''}
         <tr>
-            <td colspan="5" style="text-align: center"><barcode code="{$supplier_part->part->get('Part Carton Barcode')}" type="C128A" />
+            <td colspan="5" style="text-align: center"><barcode code="{$supplier_part->part->get('Part Carton Barcode')}" type="C128B" />
 
             </td>
 

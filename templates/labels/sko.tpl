@@ -72,7 +72,7 @@
     <tr class="barcode">
 
         <td  style="text-align: center;padding: 0px 5px">
-            <barcode code="{$part->get('Part SKO Barcode')}" type="C128A" {$barcode_height}
+            <barcode code="{$part->get('Part SKO Barcode')}" type="C128B" {$barcode_height}
 
             />
         </td>
