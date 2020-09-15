@@ -2795,15 +2795,19 @@ class DeliveryNote extends DB_Table {
             if (time() >= strtotime($cut_off_time)) {
                 $pick_up = [
                     'date' => date('Y-m-d', strtotime('tomorrow')),
-                    'end'  => $account->properties('pickup_end')
+                    'end'  => $account->properties('pickup_end'),
+                    'ready'=>date('H:i'),
                 ];
             } else {
                 $pick_up = [
                     'date' => date('Y-m-d', strtotime('today')),
-                    'end'  => $account->properties('pickup_end')
+                    'end'  => $account->properties('pickup_end'),
+                    'ready'=>date('H:i'),
                 ];
 
             }
+
+
 
 
             $ship_to = [

@@ -871,7 +871,18 @@ class Product extends Asset {
         include_once 'utils/asset_marketing_customers.php';
 
         $store              = get_object('Store', $this->get('Store Key'));
-        $targeted_threshold = min($store->properties('email_marketing_customers') * .05, 500);
+
+
+
+        if(is_numeric($store->properties('email_marketing_customers'))){
+            $email_marketing_customers=$store->properties('email_marketing_customers');
+        }else{
+            $email_marketing_customers=0;
+
+        }
+
+
+        $targeted_threshold = min($email_marketing_customers * .05, 500);
 
 
         $estimated_recipients = count(get_targeted_product_customers(array(), $this->db, $this->id, $targeted_threshold));
@@ -887,7 +898,15 @@ class Product extends Asset {
         include_once 'utils/asset_marketing_customers.php';
 
         $store                = get_object('Store', $this->get('Store Key'));
-        $targeted_threshold   = 5 * min($store->properties('email_marketing_customers') * .05, 500);
+
+        if(is_numeric($store->properties('email_marketing_customers'))){
+            $email_marketing_customers=$store->properties('email_marketing_customers');
+        }else{
+            $email_marketing_customers=0;
+
+        }
+
+        $targeted_threshold   = 5 * min($email_marketing_customers* .05, 500);
         $estimated_recipients = count(get_spread_product_customers(array(), $this->db, $this->id, $targeted_threshold));
 
         $this->fast_update_json_field('Product Properties', 'spread_marketing_customers', $estimated_recipients);

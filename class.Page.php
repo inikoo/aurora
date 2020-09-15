@@ -3048,7 +3048,10 @@ class Page extends DB_Table {
             if ($product->get('Product Family Category Key')) {
                 $family         = get_object('Category', $product->get('Product Family Category Key'));
                 $family_webpage = get_object('Webpage', $family->get('Product Category Webpage Key'));
-                $family_webpage->reindex_items();
+                if($family_webpage->id){
+                    $family_webpage->reindex_items();
+                }
+
             }
 
         }
