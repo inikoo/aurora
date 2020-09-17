@@ -18,22 +18,55 @@ function on_field_to_check_changed(element){
     var level=parseFloat($('.order_data_entry_picking_aid_state_after_save').val());
 
 
-    if($(element).attr('id')=='set_dn_weight'   ){
-
+    if($(element).hasClass('parcel_weight')   ){
 
         if($(element).val()==''){
-            $(element).removeClass('invalid').addClass('valid')
+
+            let rowCount = $('.parcels tr').length;
+            if(rowCount>2){
+                $(element).addClass('invalid').removeClass('valid')
+
+            }else{
+                $(element).removeClass('invalid').addClass('valid')
+
+            }
+
         }else{
+
             var validation=validate_number($(element).val(),0);
             $(element).removeClass('invalid valid').addClass(validation.class)
         }
 
 
 
-    }
+    }else if($(element).hasClass('parcel_dimension')   ){
+
+        if($(element).val()==''){
+            $(element).addClass('invalid').removeClass('valid')
+        }else{
+
+            var validation=validate_number($(element).val(),0);
+            $(element).removeClass('invalid valid').addClass(validation.class)
+        }
 
 
-    if(level>0){
+
+    }else if( $(element).attr('id')=='set_tracking_number'   ){
+
+        var tracking_number_value=$(element).val();
+
+
+
+
+        if( tracking_number_value != '' && tracking_number_value.replace(/\s/g, '').length==0 ) {
+            $(element).removeClass('valid').addClass('invalid')
+
+        }else{
+            $(element).removeClass('invalid').addClass('valid')
+
+        }
+
+    }else if(level>0){
         if( $(element).attr('id')=='set_dn_parcels'   ){
 
             var validation=validate_integer($(element).val(),0);
@@ -54,22 +87,7 @@ function on_field_to_check_changed(element){
 
 
 
-    if( $(element).attr('id')=='set_tracking_number'   ){
 
-        var tracking_number_value=$(element).val();
-
-
-
-
-        if( tracking_number_value != '' && tracking_number_value.replace(/\s/g, '').length==0 ) {
-            $(element).removeClass('valid').addClass('invalid')
-
-        }else{
-            $(element).removeClass('invalid').addClass('valid')
-
-        }
-
-    }
 
 
 
@@ -989,6 +1007,24 @@ function save_data_entry_picking_aid() {
 
     });
 
+    var parcels=[]
+
+
+    $('.parcels tr.parcel_tr').each(function (i, obj) {
+
+        parcels.push({
+            'weight':$(obj).find('.parcel_weight').val(),
+            'dim_0':$(obj).find('.dim_0').val(),
+            'dim_1':$(obj).find('.dim_1').val(),
+            'dim_2':$(obj).find('.dim_2').val()
+
+        })
+
+
+    });
+
+
+
     $('.picked_quantity_components input.fast_track_packing').each(function (i, obj) {
 
         var _data = $(obj).closest('.picked_quantity').data('settings')
@@ -1032,6 +1068,8 @@ function save_data_entry_picking_aid() {
         delivery_note_key: $('.input_picking_sheet_table').data('delivery_note_key'),
         level: $('.order_data_entry_picking_aid_state_after_save').val(),
         fields: JSON.stringify(fields),
+        parcels: JSON.stringify(parcels),
+
         items:  JSON.stringify(items)
     },null, "json")
         .done(function (data) {
@@ -1051,4 +1089,52 @@ function save_data_entry_picking_aid() {
         });
 
 
+}
+
+function show_parcel_types(element){
+
+    $('#select_parcel_type_dialog').removeClass('hide').offset({
+        top: $(element).offset().top - 5, left: $(element).offset().left
+    }).data('element',element)
+}
+
+function close_select_parcel_type(){
+    $('#select_parcel_type_dialog').closest('div').addClass('hide')
+
+}
+
+function select_parcel_type(element){
+
+    let target=$($(element).closest('div').data('element'))
+    let td=target.closest('td')
+    td.find('.dim_0').val($(element).data('dim_0'))
+    td.find('.dim_1').val($(element).data('dim_1'))
+    td.find('.dim_2').val($(element).data('dim_2'))
+    close_select_parcel_type()
+
+}
+
+function add_parcel(){
+
+    let last_row=$('.parcels tr:last')
+    last_row.clone().insertAfter(last_row)
+    prepare_parcels_table()
+}
+
+function prepare_parcels_table(){
+
+    let rowCount = $('.parcels tr').length;
+    if(rowCount>2){
+        $('.parcels .delete_parcel').removeClass('hide')
+    }else{
+        $('.parcels .delete_parcel').addClass('hide')
+
+    }
+
+
+}
+
+function delete_parcel(element){
+    $(element).closest('tr').remove()
+    prepare_parcels_table()
 }

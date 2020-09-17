@@ -27,12 +27,14 @@ class data_entry_picking_aid {
     /** @var Staff */
     private $packer;
     private $shipper;
+    private $parcels;
 
     function __construct($data, $editor, $db, $account) {
         $this->db      = $db;
         $this->editor  = $editor;
         $this->data    = $data;
         $this->account = $account;
+        $this->parcels = [];
 
         $this->level = $this->data['level'];
 
@@ -99,50 +101,6 @@ class data_entry_picking_aid {
                 'response' => $response
             );
 
-        }
-
-        if (!isset($this->data['fields']['Delivery Note Number Parcels'])) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'delivery note number parcels missing'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
-
-
-        if ($this->level >= 10) {
-            if (!is_numeric($this->data['fields']['Delivery Note Number Parcels']) or $this->data['fields']['Delivery Note Number Parcels'] < 0) {
-
-                $response = array(
-                    'state' => 400,
-                    'msg'   => 'invalid number of parcels'
-                );
-
-                return array(
-                    'valid'    => false,
-                    'response' => $response
-                );
-
-            }
-        } else {
-            if (!((is_numeric($this->data['fields']['Delivery Note Number Parcels']) and $this->data['fields']['Delivery Note Number Parcels'] >= 0) or $this->data['fields']['Delivery Note Number Parcels'] == '')) {
-
-                $response = array(
-                    'state' => 400,
-                    'msg'   => 'invalid number of parcels'
-                );
-
-                return array(
-                    'valid'    => false,
-                    'response' => $response
-                );
-
-            }
         }
 
 
@@ -348,6 +306,62 @@ class data_entry_picking_aid {
         );
 
 
+        if (empty($this->data['parcels']) or count($this->data['parcels']) == 0) {
+            $this->dn->fast_update(
+                array(
+                    'Delivery Note Weight'         => '',
+                    'Delivery Note Weight Source'  => 'Estimated',
+                    'Delivery Note Parcel Type'    => 'Other',
+                    'Delivery Note Number Parcels' => 1
+                )
+            );
+        } else {
+
+            $weight = 0;
+            foreach ($this->data['parcels'] as $parcel_data) {
+                if (is_numeric($parcel_data['weight']) and $parcel_data['weight'] > 0) {
+                    $weight += $parcel_data['weight'];
+                }
+
+                $this->parcels[] = [
+                    'weight' => $parcel_data['weight'],
+                    'height' => $parcel_data['dim_0'],
+                    'width'  => $parcel_data['dim_1'],
+                    'depth'  => $parcel_data['dim_2'],
+
+                ];
+
+            }
+
+            $number_parcels = count($this->parcels);
+
+            if ($weight == 0) {
+
+                foreach ($this->parcels as $key => $value) {
+                    $this->parcels[$key]['weight'] = $this->dn->get('Delivery Note Estimated Weight') / $number_parcels;
+                }
+                $weight_source = 'Estimated';
+                $weight        = '';
+            } else {
+                $weight_source = 'Given';
+
+            }
+
+            $this->dn->fast_update(
+                array(
+                    'Delivery Note Weight'         => $weight,
+                    'Delivery Note Weight Source'  => $weight_source,
+                    'Delivery Note Parcel Type'    => 'Box',
+                    'Delivery Note Number Parcels' => $number_parcels
+                )
+            );
+
+            $this->dn->fast_update_json_field('Delivery Note Properties','parcels',json_encode($this->parcels));
+
+        }
+
+        /*
+
         if (!empty($this->data['fields']['Delivery Note Weight']) and is_numeric($this->data['fields']['Delivery Note Weight']) and $this->data['fields']['Delivery Note Weight'] > 0) {
             $this->dn->fast_update(
                 array(
@@ -401,6 +415,8 @@ class data_entry_picking_aid {
                 )
             );
         }
+
+        */
 
 
     }
@@ -894,7 +910,7 @@ class data_entry_picking_aid {
             $this->dn->update_state('Packed Done', json_encode(array('date' => $date)));
         }
 
-        if($this->shipper->id and $this->shipper->get('Shipper API Key')!=''){
+        if ($this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
             $this->dn->get_label();
         }
 

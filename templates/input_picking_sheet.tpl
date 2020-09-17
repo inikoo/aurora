@@ -39,12 +39,29 @@
     }
 
 
+    .input_picking_sheet_table .parcels td{
+        padding-top:0px;padding-left:0px;padding-right:0px;
+    }
 
 </style>
 
 {if  isset($order) and  isset($dn)}{assign 'scope' 'data_entery_delivery_note' }{else}{assign 'scope' 'bulk_order_data_entry' }{/if}
 
 {if  isset($order) and  $order->get('Order For Collection')=='No'}{assign 'with_shipping' false }{else}{assign 'with_shipping' true }{/if}
+
+{if $parent->settings('data_entry_picking_aid_parcel_types')!=''}
+    {assign number_parcel_types count($parent->settings('data_entry_picking_aid_parcel_types'))}
+{else}
+    {assign number_parcel_types 0}
+{/if}
+
+{if $parent->settings('data_entry_picking_aid_default_parcel')!=''}
+    {assign parcel_default_dimensions $parent->settings('data_entry_picking_aid_default_parcel') }
+
+{else}
+    {assign parcel_default_dimensions ['','',''] }
+
+{/if}
 
 
 
@@ -115,18 +132,42 @@
 
         </td>
 
-        <td class="label {if !isset($order)}hide{/if}" style="width: 1%"  >
 
-            <label>{t}Weight{/t}</label>
+        <td class="label"  rowspan="2" style="padding-top:0px">
+
+
+            <table class="parcels" >
+                <tr>
+                    <td style="padding-right:20px">
+                        <i  onclick="add_parcel(this)" class="fa fa-plus add_parcel button "></i>
+                    </td>
+                    <td><i class="fal fa-weight" title="{t}Weight{/t}"></i> Kg</td>
+                    <td style="padding-left:20px"><i class="fal fa-ruler-triangle" title="{t}Dimensions{/t}"></i> cm</td>
+
+                </tr>
+                <tr class="parcel_tr">
+                    <td style="padding-right:20px">
+                        <i  onclick="delete_parcel(this)" class="fal fa-trash-alt delete_parcel hide button"></i>
+                    </td>
+                    <td>
+                    <input  class=" parcel_weight width_40   field_to_check"  min="0" value="" has_been_valid="0"/>
+                    </td>
+                    <td style="padding-left:20px">
+                        <input  value="{$parcel_default_dimensions[0]}" class="dim_0 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>
+                        <input  value="{$parcel_default_dimensions[1]}" class="dim_1 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>
+                        <input  value="{$parcel_default_dimensions[2]}" class="dim_2 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>
+                        <i onclick="show_parcel_types(this)" class="button fa fa-bars {if $number_parcel_types==0}hide{/if}"></i>
+                    </td>
+
+
+
+                </tr>
+            </table>
+
+
+
 
         </td>
-
-        <td  class="{if !isset($order)}hide{/if}">
-
-            <input id="set_dn_weight" data-field="Delivery Note Weight" class=" width_50 input_field  field_to_check" type="number"  min="0" value="" has_been_valid="0"/> Kg
-
-        </td>
-
 
 
 
@@ -232,31 +273,7 @@
 
 
         </td>
-        <td class="label {if !isset($order)}hide{/if}" style="width: 1%" >
 
-
-            <div >
-                <input id="set_parcel_type" data-field="Delivery Note Parcel Type"  type="hidden" class="selected_parcel_type input_field" value="{if $parent->settings('data_entry_picking_aid_default_parcel_type')!=''}{$parent->settings('data_entry_picking_aid_default_parcel_type')}{else}Box{/if}">
-                <select class="parcel_types_options small" style="width: 200px">
-                    <option value="Box" {if $parent->settings('data_entry_picking_aid_default_parcel_type')=='Box' or $parent->settings('data_entry_picking_aid_default_parcel_type')==''}selected="selected"{/if} >{t}Boxes{/t}</option>
-                    <option value="Pallet" {if $parent->settings('data_entry_picking_aid_default_parcel_type')=='Pallet'}selected="selected"{/if} >{t}Pallets{/t}</option>
-                    <option value="Envelope" {if $parent->settings('data_entry_picking_aid_default_parcel_type')=='Envelope'}selected="selected"{/if} >{t}Envelope{/t}</option>
-                    <option value="Small Parcel" {if $parent->settings('data_entry_picking_aid_default_parcel_type')=='Small Parcel'}selected="selected"{/if} >{t}Small parcel{/t}</option>
-
-
-
-                </select>
-                <div class="clear:both"></div>
-            </div>
-
-
-
-        </td>
-        <td class="{if !isset($order)}hide{/if}">
-
-            <input id="set_dn_parcels" data-field="Delivery Note Number Parcels" class=" width_50 field_to_check input_field " type="number"  min="0"  value="{$parent->settings('data_entry_picking_aid_default_number_boxes')}" has_been_valid="0"/>
-
-        </td>
 
 
 
@@ -269,6 +286,25 @@
     <div style="clear: both">
 
     </div>
+</div>
+
+
+
+<div id="select_parcel_type_dialog" class="hide" style="border:1px solid #ccc;position: absolute;background-color: white;padding: 10px 20px">
+
+    <i onClick="close_select_parcel_type(this)" class="button fa fa-window-close" ></i>
+
+    <table sytle="border-bottom: 1px solid #ddd">
+        {if $number_parcel_types>0}
+
+        {foreach  from=$parent->settings('data_entry_picking_aid_parcel_types') item=parcel_type}
+        <tr class="button" onclick="select_parcel_type(this)" data-dim_0="{$parcel_type['dimensions'][0]}" data-dim_1="{$parcel_type['dimensions'][1]}"  data-dim_2="{$parcel_type['dimensions'][2]}"    >
+            <td style="padding-right: 20px;border-bottom: 1px solid #ddd">{$parcel_type['label']}</td>
+            <td style="border-bottom: 1px solid #ddd">{$parcel_type['dimensions'][0]} x {$parcel_type['dimensions'][1]} x {$parcel_type['dimensions'][2]} (cm)</td>
+        </tr>
+        {/foreach}
+        {/if}
+    </table>
 </div>
 
 
@@ -329,7 +365,6 @@
         'tracking_number': { filled:false,valid:true},
         'items':           { filled:true,valid:true},
     };
-
 
 
 

@@ -2762,6 +2762,7 @@ class DeliveryNote extends DB_Table {
 
             curl_setopt($curl, CURLOPT_POST, 1);
 
+            /*
             $weight = $this->get('Delivery Note Weight');
             if ($weight == '') {
                 $weight = $this->get('Delivery Note Estimated Weight');
@@ -2775,8 +2776,11 @@ class DeliveryNote extends DB_Table {
 
 
             $box_size = $account->properties('box_size');
+*/
 
+            $parcels = json_decode($this->properties('parcels'));
 
+            /*
             $parcels = [];
             foreach (range(1, $number_parcels) as $number) {
                 $parcels[] = [
@@ -2786,28 +2790,37 @@ class DeliveryNote extends DB_Table {
                     'depth'  => $box_size[2],
                 ];
             }
+            */
 
             //$customer=get_object('Customer',$this->get('Delivery Note Customer Key'));
 
             date_default_timezone_set($account->get('Account Timezone'));
 
-            $cut_off_time = $account->properties('pickup_cut_off');
-            if (time() >= strtotime($cut_off_time)) {
-                $pick_up = [
-                    'date' => date('Y-m-d', strtotime('tomorrow')),
-                    'end'  => $account->properties('pickup_end'),
-                    'ready'=>date('H:i'),
-                ];
-            } else {
-                $pick_up = [
-                    'date' => date('Y-m-d', strtotime('today')),
-                    'end'  => $account->properties('pickup_end'),
-                    'ready'=>date('H:i'),
-                ];
+            $pick_up_end = $account->properties('pickup_end');
+            if ($pick_up_end == '') {
+                $pick_up_end = '17:00';
+            }
 
+            $cut_off_time = $account->properties('pickup_cut_off');
+            if ($cut_off_time == '') {
+                $cut_off_time = '16:00';
             }
 
 
+            if (time() >= strtotime($cut_off_time)) {
+                $pick_up = [
+                    'date'  => date('Y-m-d', strtotime('tomorrow')),
+                    'end'   => $pick_up_end,
+                    'ready' => date('H:i'),
+                ];
+            } else {
+                $pick_up = [
+                    'date'  => date('Y-m-d', strtotime('today')),
+                    'end'   => $pick_up_end,
+                    'ready' => date('H:i'),
+                ];
+
+            }
 
 
             $ship_to = [
@@ -2848,10 +2861,9 @@ class DeliveryNote extends DB_Table {
                 );
             }
 
-
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
-
-            $response  = json_decode(curl_exec($curl), true);
+            $tmp = curl_exec($curl);
+            $response = json_decode($tmp, true);
 
 
             $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
