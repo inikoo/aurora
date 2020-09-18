@@ -2762,37 +2762,8 @@ class DeliveryNote extends DB_Table {
 
             curl_setopt($curl, CURLOPT_POST, 1);
 
-            /*
-            $weight = $this->get('Delivery Note Weight');
-            if ($weight == '') {
-                $weight = $this->get('Delivery Note Estimated Weight');
-            }
-
-            $number_parcels = $this->get('Delivery Note Number Parcels');
-
-            if (!$number_parcels) {
-                $number_parcels = 1;
-            }
-
-
-            $box_size = $account->properties('box_size');
-*/
 
             $parcels = json_decode($this->properties('parcels'));
-
-            /*
-            $parcels = [];
-            foreach (range(1, $number_parcels) as $number) {
-                $parcels[] = [
-                    'weight' => round($weight / $number_parcels, 1),
-                    'height' => $box_size[0],
-                    'width'  => $box_size[1],
-                    'depth'  => $box_size[2],
-                ];
-            }
-            */
-
-            //$customer=get_object('Customer',$this->get('Delivery Note Customer Key'));
 
             date_default_timezone_set($account->get('Account Timezone'));
 
@@ -2822,6 +2793,23 @@ class DeliveryNote extends DB_Table {
 
             }
 
+            $customer=get_object('Customer',$this->data['Delivery Note Customer Key']);
+
+            $phone= preg_replace('/\s/', '', $this->get('Delivery Note Telephone'));
+            if($phone==''){
+                $phone=$customer->get('Customer Preferred Contact Number Formatted Number');
+                print_r($customer);
+            }
+
+            if($phone==''){
+
+                $phone=$customer->get('Customer Main Plain Mobile');
+            }
+
+            if($phone==''){
+                $phone=$customer->get('Customer Main Plain Telephone');
+            }
+
 
             $ship_to = [
                 'contact'             => $this->get('Delivery Note Address Recipient'),
@@ -2834,13 +2822,13 @@ class DeliveryNote extends DB_Table {
                 'dependent_locality'  => $this->get('Delivery Note Address Dependent Locality'),
                 'administrative_area' => $this->get('Delivery Note Address Administrative Area'),
                 'country_code'        => $this->get('Delivery Note Address Country 2 Alpha Code'),
-                'phone'               => preg_replace('/\s/', '', $this->get('Delivery Note Telephone')),
+                'phone'               => $phone,
                 'email'               => $this->get('Delivery Note Email')
 
             ];
             $post    = [
                 'shipper_account_id' => $shipper->get('Shipper API Key'),
-                'reference'          => $this->get('Delivery Note ID'),
+                'reference'          => 'TEST'.$this->get('Delivery Note ID'),
                 'parcels'            => json_encode($parcels),
                 'ship_to'            => json_encode($ship_to),
                 'pick_up'            => json_encode($pick_up)
@@ -2861,8 +2849,13 @@ class DeliveryNote extends DB_Table {
                 );
             }
 
+            //print_r($post);
+           // exit;
+
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
+           // print_r($tmp);
+           // exit;
             $response = json_decode($tmp, true);
 
 
