@@ -347,7 +347,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 
     $sql = sprintf(
-        'select `Supplier Part Part SKU`,`Purchase Order Transaction Fact Key`,`Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ',
+        'select ANY_VALUE(`Supplier Part Part SKU`) as `Supplier Part Part SKU`,
+        ANY_VALUE(`Purchase Order Transaction Fact Key`) as `Purchase Order Transaction Fact Key`,
+        ANY_VALUE(`Metadata`) as `Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ',
         $delivery->id
     );
     if ($result = $db->query($sql)) {

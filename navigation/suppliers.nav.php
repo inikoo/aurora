@@ -1739,12 +1739,16 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 
     $items_not_in_delivery=$object->get('Purchase Order Ordered Number Items')-$object->get('Purchase Order Number Supplier Delivery Items');
 
+
+
+
+
     $right_buttons[]=array(
         'icon'  => 'plus',
         'title' => _('Set delivery'),
         'click'=>"show_create_delivery()",
         'pre_text'=> _('New Delivery'),
-        'class'=>'text width_auto setting_delivery_button '.(  ($items_not_in_delivery==0 or $object->get('State Index')<40 ) ?'hide':''  )
+        'class'=>'text width_auto setting_delivery_button '.(  ($items_not_in_delivery<=0 or $object->get('State Index')<40 ) ?'hide':''  )
     );
 
     /*

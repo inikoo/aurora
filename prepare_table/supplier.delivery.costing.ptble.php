@@ -32,7 +32,7 @@ if ($order == 'reference') {
 } elseif ($order == 'last_updated') {
     $order = '`Order Last Updated Date`';
 } else {
-    $order = '`Purchase Order Transaction Fact Key`';
+    $order = 'ANY_VALUE(`Purchase Order Transaction Fact Key`)';
 }
 
 $table
@@ -50,25 +50,31 @@ $sql_totals
 
 
 $fields
-    = "`Part SKO Image Key`,`Part SKO Barcode`,`Supplier Delivery Units`,POTF.`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Checked Units`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Units`,`Metadata`,
-`Purchase Order Transaction Fact Key`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
-`Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
-`Supplier Part Unit Cost`,`Part Package Weight`,POTF.`Supplier Delivery CBM`,POTF.`Supplier Delivery Weight`,`Purchase Order Submitted Units`,`Supplier Key`,
-`Supplier Delivery Net Amount`,`Currency Code`,
+    = "
+    ANY_VALUE(`Part SKO Image Key`),ANY_VALUE(`Supplier Part Supplier Key`) as `Supplier Key`,
+    ANY_VALUE(`Part SKO Barcode`),
+    ANY_VALUE(`Supplier Delivery Units`),
+    POTF.`Supplier Delivery Key`,
+    `Part Reference`,P.`Part SKU`, 
+    ANY_VALUE(`Supplier Delivery Checked Units`) as `Supplier Delivery Checked Units`,
+    ANY_VALUE(`Part Package Description`) as `Part Package Description`,
+    ANY_VALUE(`Supplier Delivery Transaction Placed`),ANY_VALUE(`Supplier Delivery Placed Units`),ANY_VALUE(`Metadata`),
+ANY_VALUE(`Purchase Order Transaction Fact Key`), ANY_VALUE(POTF.`Supplier Part Key`) as `Supplier Part Key`,ANY_VALUE(`Supplier Part Reference`) as `Supplier Part Reference` ,ANY_VALUE(POTF.`Supplier Part Historic Key`),
+ANY_VALUE(`Supplier Part Description`),ANY_VALUE(`Part Units Per Package`),ANY_VALUE(`Supplier Part Packages Per Carton`),ANY_VALUE(`Supplier Part Carton CBM`),
+ANY_VALUE(`Supplier Part Unit Cost`),ANY_VALUE(`Part Package Weight`),ANY_VALUE(POTF.`Supplier Delivery CBM`),ANY_VALUE(POTF.`Supplier Delivery Weight`),ANY_VALUE(`Purchase Order Submitted Units`) as `Purchase Order Submitted Units` ,ANY_VALUE(`Supplier Key`),
+ANY_VALUE(`Supplier Delivery Net Amount`) as `Supplier Delivery Net Amount`,ANY_VALUE(`Currency Code`),
 
 sum(`Supplier Delivery Placed SKOs`) as skos_in,
 sum(`Supplier Delivery Net Amount`) as items_amount,
 sum(`Supplier Delivery Extra Cost Amount`) as extra_amount,
 sum(`Supplier Delivery Extra Cost Account Currency Amount`) as extra_amount_account_currency,
 
-sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as paid_amount,
+sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as paid_amount
 
             
 
-`Supplier Delivery Net Amount`
 
 
 ";
 
 
-?>

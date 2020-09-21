@@ -1256,13 +1256,20 @@ class PurchaseOrder extends DB_Table {
         );
 
 
+       // print $sql;
+
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+                //print_r($row);
 
                 $total_net  = $row['items_net'];
                 $extra_cost = $row['extra_cost'];
                 $total      = $total_net + $extra_cost;
+
+
+
 
                 $this->fast_update(
                     array(
