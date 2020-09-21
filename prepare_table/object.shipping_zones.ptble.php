@@ -12,16 +12,16 @@
 switch ($parameters['parent']) {
     case('shipping_zone_schema'):
         $where = sprintf(
-            ' where  `Shipping Zone Shipping Zone Schema Key`=%d', $parameters['parent_key']
+            ' where  `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Active`="Yes" ', $parameters['parent_key']
         );
         break;
     case('store'):
         $where = sprintf(
-            ' where  `Shipping Zone Store Key`=%d', $parameters['parent_key']
+            ' where  `Shipping Zone Store Key`=%d and `Shipping Zone Active`="Yes"', $parameters['parent_key']
         );
         break;
     case('account'):
-        $where = sprintf(' where true ');
+        $where = sprintf(' where  `Shipping Zone Active`="Yes" ');
         break;
     default:
         $where = 'where false';

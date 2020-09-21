@@ -40,7 +40,7 @@ class shipping_for_order {
         }
 
 
-        $sql = "select `Shipping Zone Key`,`Shipping Zone Code`,`Shipping Zone Price`,`Shipping Zone Territories` from `Shipping Zone Dimension` where `Shipping Zone Shipping Zone Schema Key`=? and `Shipping Zone Type`='Normal' order by `Shipping Zone Position` desc ";
+        $sql = "select `Shipping Zone Key`,`Shipping Zone Code`,`Shipping Zone Price`,`Shipping Zone Territories` from `Shipping Zone Dimension` where `Shipping Zone Shipping Zone Schema Key`=? and `Shipping Zone Type`='Normal'  and `Shipping Zone Active`='Yes'  order by `Shipping Zone Position` desc ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
