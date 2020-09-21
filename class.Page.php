@@ -853,7 +853,7 @@ class Page extends DB_Table {
                         $this->reindex_category_categories($block_index);
                         break;
                     case 'products':
-                        $this->reindex_products($block_index);
+                        $this->reindex_products($block_key, $block_index);
                         break;
                     case 'product':
                         $this->reindex_product($block_index);
@@ -944,10 +944,9 @@ class Page extends DB_Table {
         }
 
 
-
         $items                  = array();
         $items_product_id_index = array();
-        $items_out_of_stock=array();
+        $items_out_of_stock     = array();
 
 
         $sql = "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  WHERE  `Category Key`=?  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,`Product Code File As`";
@@ -975,7 +974,7 @@ class Page extends DB_Table {
                         if ($product->id) {
 
 
-                            if($product->get('Product Web State')=='For Sale') {
+                            if ($product->get('Product Web State') == 'For Sale') {
 
 
                                 $product->load_webpage();
@@ -1013,10 +1012,10 @@ class Page extends DB_Table {
                                 $content_data['blocks'][$block_key]['items'][$item_key]['category']  = $product->get('Family Code');
                                 $content_data['blocks'][$block_key]['items'][$item_key]['raw_price'] = $product->get('Product Price');
 
-                               // print_r($content_data['blocks'][$block_key]['items'][$item_key]);
+                                // print_r($content_data['blocks'][$block_key]['items'][$item_key]);
 
-                            }else{
-                                $items_out_of_stock[$product->id]= $content_data['blocks'][$block_key]['items'][$item_key];
+                            } else {
+                                $items_out_of_stock[$product->id] = $content_data['blocks'][$block_key]['items'][$item_key];
                                 unset($content_data['blocks'][$block_key]['items'][$item_key]);
 
                             }
@@ -1082,15 +1081,13 @@ class Page extends DB_Table {
         //$items_out_of_stock = array_reverse($items_out_of_stock);
 
 
-        foreach ($items_out_of_stock as $product_id=>$item_data) {
+        foreach ($items_out_of_stock as $product_id => $item_data) {
 
             $product = get_object('Public_Product', $product_id);
 
             if ($product->id) {
 
                 $product->load_webpage();
-
-
 
 
                 $item = array(
@@ -1119,8 +1116,8 @@ class Page extends DB_Table {
 
                 );
 
-                if(!empty($item_data['header_text'])){
-                    $item['header_text']=$item_data['header_text'];
+                if (!empty($item_data['header_text'])) {
+                    $item['header_text'] = $item_data['header_text'];
                 }
 
                 array_push($content_data['blocks'][$block_key]['items'], $item);
@@ -1129,9 +1126,9 @@ class Page extends DB_Table {
         }
 
 
-       // print_r($content_data['blocks'][$block_key]['items']);
+        // print_r($content_data['blocks'][$block_key]['items']);
 
-//        exit;
+        //        exit;
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
         $sql = sprintf("DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d AND `Website Webpage Scope Type`='Category_Products_Item'", $this->id);
@@ -3048,7 +3045,7 @@ class Page extends DB_Table {
             if ($product->get('Product Family Category Key')) {
                 $family         = get_object('Category', $product->get('Product Family Category Key'));
                 $family_webpage = get_object('Webpage', $family->get('Product Category Webpage Key'));
-                if($family_webpage->id){
+                if ($family_webpage->id) {
                     $family_webpage->reindex_items();
                 }
 
@@ -3315,21 +3312,11 @@ class Page extends DB_Table {
 
     }
 
-    function reindex_products($block_index) {
+    function reindex_products($block_key, $block_index) {
         $content_data = $this->get('Content Data');
-        $block_found  = false;
-        foreach ($content_data['blocks'] as $_block_key => $_block) {
-            if ($_block['type'] == 'products') {
-                $block       = $_block;
-                $block_key   = $_block_key;
-                $block_found = true;
-                break;
-            }
-        }
 
-        if (!$block_found) {
-            return;
-        }
+
+        $block = $content_data['blocks'][$block_key];
 
         foreach ($block['items'] as $item_key => $item) {
 
@@ -3341,7 +3328,7 @@ class Page extends DB_Table {
                         $product = get_object('Public_Product', $item['product_id']);
                         $product->load_webpage();
 
-
+                        
                         $content_data['blocks'][$block_key]['items'][$item_key]['web_state']               = $product->get('Web State');
                         $content_data['blocks'][$block_key]['items'][$item_key]['price']                   = $product->get('Price');
                         $content_data['blocks'][$block_key]['items'][$item_key]['price_unit']              = $product->get('Price Per Unit');
