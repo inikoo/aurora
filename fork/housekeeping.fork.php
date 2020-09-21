@@ -1396,42 +1396,6 @@ function fork_housekeeping($job) {
             break;
 
 
-        case 'order_payment_changed':
-            // this can be removed after all inikoo gone
-
-
-            $order = get_object('Order', $data['order_key']);
-
-            $store = get_object('Store', $order->get('Order Store Key'));
-            $store->update_orders();
-
-
-            $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ', $data['order_key']
-            );
-            // print "$sql\n";
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $date = gmdate('Y-m-d H:i:s');
-                    $sql  = sprintf(
-                        'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('part_stock_in_paid_orders'), $row['Product Part Part SKU'], prepare_mysql($date)
-
-                    );
-                    $db->exec($sql);
-
-                    // $part = get_object('Part', $row['Product Part Part SKU']);
-                    // $part->update_stock_in_paid_orders();
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-            break;
 
         case 'payment_added_order':
 
@@ -1519,6 +1483,19 @@ function fork_housekeeping($job) {
             $store    = get_object('Store', $customer->get('Customer Store Key'));
 
             $customer->editor = $editor;
+
+
+            $sql = sprintf(
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ', $order->id
+            );
+            // print "$sql\n";
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $part = get_object('Part', $row['Product Part Part SKU']);
+                    $part->update_stock_in_paid_orders();
+                }
+            }
+
 
 
             $email_template_type      = get_object('Email_Template_Type', 'Order Confirmation|'.$website->get('Website Store Key'), 'code_store');
