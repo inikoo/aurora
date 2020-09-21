@@ -3324,13 +3324,17 @@ class Part extends Asset {
 
     }
 
-    function update_stock() {
+    function update_stock($force_update_part_products_availability=false) {
 
 
         $old_value             = $this->data['Part Current Value'];
         $old_stock_in_progress = $this->data['Part Current Stock In Process'];
         $old_stock_picked      = $this->data['Part Current Stock Picked'];
         $old_stock_on_hand     = $this->data['Part Current On Hand Stock'];
+        $old_stock_paid     = $this->data['Part Current Stock Ordered Paid'];
+
+
+
 
         $picked         = 0;
         $required       = 0;
@@ -3377,7 +3381,7 @@ class Part extends Asset {
                 print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
         */
 
-        if ($old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked'] or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
+        if ( $force_update_part_products_availability or (  $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked'] or $old_stock_on_hand != $this->data['Part Current On Hand Stock'])
 
         ) {
 
@@ -4188,7 +4192,7 @@ class Part extends Asset {
         );
 
         if ($old_value != $stock_in_paid_orders) {
-            $this->update_stock();
+            $this->update_stock(true);
         }
     }
 
