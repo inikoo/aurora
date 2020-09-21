@@ -1748,6 +1748,8 @@ class SupplierDelivery extends DB_Table {
     function update_totals() {
 
 
+        $account=get_object('Account',1);
+
         $sql = sprintf(
             "SELECT  sum(if(`Supplier Delivery Transaction Placed`='Yes',1,0)) AS placed_items, 
         sum(if(`Supplier Delivery Transaction Placed`='No',1,0)) AS no_placed_items,  
@@ -1773,13 +1775,20 @@ class SupplierDelivery extends DB_Table {
         );
 
 
+
+
+
         // print $sql;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
 
-                //   print_r($row);
+                if($account->get('Account Currency')==$this->get('Supplier Delivery Currency Code')){
+                    $row['extra_cost_amount']=$row['extra_cost_amount']+$row['ac_extra_cost_amount'];
+                    $row['ac_extra_cost_amount']=0;
+                }
+
 
                 if ($this->get('State Index') >= 30) {
                     $dispatched_items = $row['num_items'];
@@ -1790,6 +1799,7 @@ class SupplierDelivery extends DB_Table {
                 $items_amount         = ($row['items_amount'] == '' ? 0 : $row['items_amount']);
                 $extra_amount         = ($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
                 $ac_extra_cost_amount = ($row['ac_extra_cost_amount'] == '' ? 0 : $row['ac_extra_cost_amount']);
+
 
 
                 $this->fast_update(
