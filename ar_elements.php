@@ -1211,7 +1211,7 @@ function get_parts_elements($db, $data, $user) {
     }
 
 
-    if($data['show_production']=='No'){
+    if( isset($data['show_production']) and  $data['show_production']=='No'){
         $where .= " and `Part Production`='No'";
     }
 
