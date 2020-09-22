@@ -27,6 +27,10 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 include_once 'utils/general_functions.php';
 
+
+set_time_limit(300);
+
+
 if (empty($_REQUEST['uid']) or !is_numeric($_REQUEST['uid']) or empty($_REQUEST['token']) or strlen($_REQUEST['token']) != 32 or empty($_REQUEST['output']) or empty($_REQUEST['scope'])) {
     header("HTTP/1.0 400 Bad Request");
     exit;
@@ -399,7 +403,9 @@ if ($row = $stmt->fetch()) {
 
             foreach ($files as $file) {
                 $image = get_object('image', $file['image_key']);
-                $zip->addFile('../'.$image->get('Image Path'), $file['folder'].basename($file['name'].'.'.$image->get('Image File Format')));
+                if(file_exists('../'.$image->get('Image Path'))){
+                    $zip->addFile('../'.$image->get('Image Path'), $file['folder'].basename($file['name'].'.'.$image->get('Image File Format')));
+                }
 
             }
 
