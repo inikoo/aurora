@@ -227,6 +227,8 @@ class Supplier extends SubjectSupplier {
         $this->data['Supplier Valid From'] = gmdate('Y-m-d H:i:s');
 
 
+        /*
+
         $keys   = '';
         $values = '';
         foreach ($this->data as $key => $value) {
@@ -254,7 +256,42 @@ class Supplier extends SubjectSupplier {
 
         $sql = "insert into `Supplier Dimension` ($keys) values ($values)";
 
-        if ($this->db->exec($sql)) {
+*/
+        foreach ($this->data as $key => $value) {
+            $base_data[$key] = _trim($value);
+
+        }
+
+
+        unset($base_data['Supplier Average Delivery Days']);
+        unset($base_data['Supplier Average Production Days']);
+        unset($base_data['Supplier Valid To']);
+        unset($base_data['Supplier Stock Value']);
+        unset($base_data['Supplier Acc To Day Updated']);
+
+        unset($base_data['Supplier Acc Ongoing Intervals Updated']);
+        unset($base_data['Supplier Acc Previous Intervals Updated']);
+        unset($base_data['Supplier Main Image Key']);
+
+
+
+
+
+        $sql = sprintf(
+            "INSERT INTO `Supplier Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
 
 
@@ -284,6 +321,8 @@ class Supplier extends SubjectSupplier {
             $this->new = true;
 
         } else {
+            print_r($stmt->errorInfo());
+            print "$sql\n";
             // print "Error can not create supplier $sql\n";
         }
 
@@ -375,8 +414,6 @@ class Supplier extends SubjectSupplier {
             case('Supplier ID'):
             case('Supplier Valid From'):
             case('Supplier Stock Value'):
-            case('Supplier Company Key'):
-            case('Supplier Accounts Payable Contact Key'):
                 break;
             case 'Supplier On Demand':
 
@@ -1205,7 +1242,6 @@ class Supplier extends SubjectSupplier {
                 return;
             }
         }
-
 
 
         $data['Supplier Part Supplier Key'] = $this->id;
