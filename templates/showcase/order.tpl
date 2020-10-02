@@ -243,7 +243,7 @@
                                  {if $customer_client->get('Phone')!=''}
 
 
-                                     <br><small><i class="fal fa-phone"></i> {$customer_client->get('Phone')}</small>
+                                     <br><small><i style="margin-right: 0px" class="fal fa-phone"></i> {$customer_client->get('Phone')}</small>
 
                                  {/if}
 
