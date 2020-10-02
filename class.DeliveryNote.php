@@ -2796,10 +2796,7 @@ class DeliveryNote extends DB_Table {
             $customer=get_object('Customer',$this->data['Delivery Note Customer Key']);
 
             $phone= preg_replace('/\s/', '', $this->get('Delivery Note Telephone'));
-            if($phone==''){
-                $phone=$customer->get('Customer Preferred Contact Number Formatted Number');
-                print_r($customer);
-            }
+
 
             if($phone==''){
 
