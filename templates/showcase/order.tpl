@@ -241,9 +241,10 @@
                                  <span class="link" style="margin-left:30px" onclick="change_view('/customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}/client/{$order->get('Order Customer Client Key')}')">{$customer_client->get('Formatted Client Code')}</span>
 
                                  {if $customer_client->get('Phone')!=''}
-                                 <div>
-                                 <i class="fal fa-phone"></i> {$customer_client->get('Phone')}
-                                 </div>
+
+
+                                     <br><small><i class="fal fa-phone"></i> {$customer_client->get('Phone')}</small>
+
                                  {/if}
 
                                 {else}
