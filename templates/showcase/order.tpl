@@ -239,6 +239,13 @@
                                     <br/>
                                  {if $customer_client->id>0}
                                  <span class="link" style="margin-left:30px" onclick="change_view('/customers/{$order->get('Order Store Key')}/{$order->get('Order Customer Key')}/client/{$order->get('Order Customer Client Key')}')">{$customer_client->get('Formatted Client Code')}</span>
+
+                                 {if $customer_client->get('Phone')!=''}
+                                 <div>
+                                 <i class="fal fa-phone"></i> {$customer_client->get('Phone')}
+                                 </div>
+                                 {/if}
+
                                 {else}
                                     <span style="margin-left:30px" class="very_discreet">{if $order->get('State Index')<0}{t}Deleted client{/t}{else}{t}Anonymous{/t}{/if}</span>
                                 {/if}
