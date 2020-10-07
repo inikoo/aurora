@@ -174,7 +174,6 @@ if ($authenticated == 'OK') {
 
                 switch ($_REQUEST['set']) {
                     case 'nfc':
-                    case 'pin':
 
 
 
