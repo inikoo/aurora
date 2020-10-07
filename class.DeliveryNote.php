@@ -2831,7 +2831,15 @@ class DeliveryNote extends DB_Table {
                 'pick_up'            => json_encode($pick_up)
             ];
 
+
+
+
             $order = get_object('Order', $this->get('Delivery Note Order Key'));
+
+
+            if($order->get('Order Delivery Sticky Note')!=''){
+                $post['note']=$order->get('Order Delivery Sticky Note');
+            }
 
 
             $cod_amount = $order->get('Cash on Delivery Expected Payment Amount');
