@@ -104,6 +104,11 @@ abstract class DB_Table extends stdClass {
 
     }
 
+
+    function get_table_name(){
+        return $table_name = $this->table_name.' Dimension';
+    }
+
     function base_data($table_name = '') {
 
 
@@ -243,7 +248,6 @@ abstract class DB_Table extends stdClass {
                 }
 
 
-
                 $new_formatted_value = $this->get($formatted_field);
 
 
@@ -251,9 +255,83 @@ abstract class DB_Table extends stdClass {
 
             }
 
+            $this->update_aiku($table_full_name, $field, $value);
+
+
         }
 
     }
+
+    function get_aiku_params($field, $value) {
+        return [
+            false,
+            false
+        ];
+    }
+
+    function sync_aiku(){
+        $this->update_aiku($this->get_table_name(), 'Object');
+    }
+
+    function update_aiku($table_full_name, $field, $value='') {
+
+        //print "** $table_full_name, $field, $table_key, $value **\n";
+
+        if (!defined('AIKU_TOKEN')) {
+            return 0;
+        }
+
+
+        switch ($table_full_name) {
+            case 'Staff Dimension':
+            case 'User Dimension':
+            case 'Store Dimension':
+            case 'Customer Dimension':
+                list($url, $params) = $this->get_aiku_params($field, $value);
+                if(!$url){
+                    return 0;
+                }
+                break;
+
+            default:
+                return 0;
+
+
+        }
+
+        $headers = [
+            "Authorization: Bearer ".AIKU_TOKEN,
+            "Content-Type:multipart/form-data",
+            "Accept: application/json",
+        ];
+
+        $curl = curl_init();
+
+
+        curl_setopt_array(
+            $curl, array(
+                     CURLOPT_URL            => $url,
+                     CURLOPT_RETURNTRANSFER => true,
+                     CURLOPT_ENCODING       => "",
+                     CURLOPT_MAXREDIRS      => 10,
+                     CURLOPT_TIMEOUT        => 0,
+                     CURLOPT_FOLLOWLOCATION => true,
+                     CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                     CURLOPT_CUSTOMREQUEST  => "POST",
+                     CURLOPT_POSTFIELDS     => $params,
+                     CURLOPT_HTTPHEADER     => $headers
+                 )
+        );
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        //echo $response;
+
+
+        return 1;
+    }
+
 
     function add_changelog_record($field, $old_value, $value, $options, $table_name, $table_key, $action = 'updated') {
 
@@ -293,10 +371,10 @@ abstract class DB_Table extends stdClass {
     function add_history($raw_data, $force = false, $post_arg1 = false, $options = '') {
 
 
-        return $this->add_table_history($raw_data, $force,  $this->table_name, $this->id);
+        return $this->add_table_history($raw_data, $force, $this->table_name, $this->id);
     }
 
-    function add_table_history($raw_data, $force,$table_name, $table_key) {
+    function add_table_history($raw_data, $force, $table_name, $table_key) {
 
 
         $editor_data = $this->get_editor_data();
@@ -356,14 +434,13 @@ abstract class DB_Table extends stdClass {
 
         }
         if (empty($data['Date'])) {
-            if($editor_data['Date']!=''){
+            if ($editor_data['Date'] != '') {
                 $data['Date'] = $editor_data['Date'];
-            }else{
-                $data['Date'] =gmdate('Y-m-d H:i:s');
+            } else {
+                $data['Date'] = gmdate('Y-m-d H:i:s');
             }
 
         }
-
 
 
         if ($data['History Abstract'] == '') {
@@ -516,8 +593,7 @@ abstract class DB_Table extends stdClass {
                 );
         }
 
-        $sql =
-            "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) 
+        $sql = "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) 
                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $stmt = $this->db->prepare($sql);
@@ -542,9 +618,10 @@ abstract class DB_Table extends stdClass {
 
         if ($stmt->execute()) {
             $history_key = $this->db->lastInsertId();
-            if(!$history_key){
+            if (!$history_key) {
                 throw new Exception('Error inserting history');
             }
+
             return $history_key;
         } else {
             print_r($data);
@@ -720,8 +797,6 @@ abstract class DB_Table extends stdClass {
             );
 
 
-
-
             $stmt = $this->db->prepare($sql);
 
 
@@ -738,6 +813,12 @@ abstract class DB_Table extends stdClass {
 
 
             $this->data[$field] = $value;
+
+            $affected = $stmt->rowCount();
+            if ($affected >0) {
+                $this->update_aiku($table_full_name, $field, $value);
+
+            }
 
         }
 
@@ -792,7 +873,7 @@ abstract class DB_Table extends stdClass {
         }
 
 
-        $sql = sprintf(
+        $sql  = sprintf(
             "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
         $stmt = $this->db->prepare($sql);
@@ -891,14 +972,12 @@ abstract class DB_Table extends stdClass {
         }
 
 
-
-        $history_key = $this->add_table_history($history_data, $force_save,$table_name, $table_key);
+        $history_key = $this->add_table_history($history_data, $force_save, $table_name, $table_key);
 
 
         if ($table_name == 'Page') {
             $table_name = 'Webpage';
         }
-
 
 
         $sql = sprintf(

@@ -226,7 +226,7 @@ class User extends DB_Table {
             )
         );
         if ($row = $stmt->fetch()) {
-            if($row['num']>0) {
+            if ($row['num'] > 0) {
                 $this->error = true;
                 $this->msg   = _('Duplicate user login');
 
@@ -359,7 +359,7 @@ class User extends DB_Table {
     function get($key) {
 
         global $account;
-        
+
 
         if (!$this->id) {
             return;
@@ -578,7 +578,7 @@ class User extends DB_Table {
 
 
                 include_once 'utils/available_locales.php';
-                $available_locales=get_available_locales();
+                $available_locales = get_available_locales();
 
                 if (array_key_exists(
                     $this->data['User Preferred Locale'], $available_locales
@@ -824,9 +824,6 @@ class User extends DB_Table {
         $to_add    = array_diff($groups, $old_groups);
 
 
-
-
-
         $changed = 0;
         if (count($to_delete) > 0) {
             $changed += $this->delete_group($to_delete);
@@ -957,7 +954,7 @@ class User extends DB_Table {
                 $group_name = $user_groups[$group_key]['Name'];
 
 
-                $sql      = sprintf(
+                $sql = sprintf(
                     "INSERT INTO `User Group User Bridge`   (`User Key`,`User Group Key`)  VALUES (%d,%d) ", $this->id, $group_key
                 );
 
@@ -1358,7 +1355,7 @@ class User extends DB_Table {
 
                 }
 
-                $_SESSION['timezone']= date_default_timezone_get();
+                $_SESSION['timezone'] = date_default_timezone_get();
 
                 $this->update_metadata = array(
                     'class_html' => array(
@@ -1836,7 +1833,8 @@ class User extends DB_Table {
 
 
     }
-//
+
+    //
     function read_stores() {
 
         $this->stores = array();
@@ -2016,7 +2014,7 @@ class User extends DB_Table {
 
         include_once 'conf/tabs.defaults.php';
 
-        $tab_defaults=get_tab_defaults_data();
+        $tab_defaults = get_tab_defaults_data();
 
 
         if (isset($tab_defaults[$tab])) {
@@ -2118,6 +2116,38 @@ class User extends DB_Table {
 
     }
 
+    function get_aiku_params($field, $value) {
+        $params = [
+            'legacy_id' => $this->id
+        ];
+        $url    = AIKU_URL.'user/';
+
+        switch ($field) {
+            case 'User Password Recovery Email':
+                $params['data'] = json_encode(['email' => $value]);
+                break;
+            case 'User Password Recovery Mobile':
+                $params['data'] = json_encode(['mobile' => $value]);
+                break;
+            case 'User Handle':
+                $params['handle'] = $value;
+                break;
+            case 'User Password':
+                $params['password'] = $value;
+                break;
+            case 'User Pin':
+                $params['pin'] = $value;
+                break;
+            case 'User Active':
+                $params['status'] = ($value == 'Yes' ? 'active' : 'suspended');
+                break;
+            default:
+                return [false,false];
+        }
+
+        return [$url,$params];
+
+    }
 
 
 }

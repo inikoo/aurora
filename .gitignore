@@ -68,3 +68,6 @@ cron/set_up_aroma.php
 box/keyring/box_dns.php
 box/class*
 box/trai*
+cron/move_stock_new_warehouse.php
+cron/move_stock_new_warehouse_part_2.php
+cron/stock_ok.php

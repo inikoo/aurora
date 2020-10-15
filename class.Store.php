@@ -4267,18 +4267,14 @@ class Store extends DB_Table {
                 );
 
 
-
-
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'             => 'website_created',
-                    'website_key'     => $website->id,
+                    'type'        => 'website_created',
+                    'website_key' => $website->id,
 
-                    'editor'           => $this->editor
+                    'editor' => $this->editor
                 ), DNS_ACCOUNT_CODE
                 );
-
-
 
 
             } else {
@@ -4819,6 +4815,69 @@ class Store extends DB_Table {
         $this->fast_update_json_field('Store Properties', 'dispatch_time_histogram_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), json_encode($waiting_time_histogram));
 
 
+    }
+
+    function get_aiku_params($field, $value) {
+
+        $params = [
+            'legacy_id' => $this->id
+        ];
+
+        $url = AIKU_URL.'store/';
+
+
+
+
+        switch ($field) {
+            case 'Store Status':
+
+                $legacy_status_to_state = [
+                    'InProcess'   => 'creating',
+                    'Normal'      => 'live',
+                    'ClosingDown' => 'closed',
+                    'Closed'      => 'closed'
+                ];
+
+                $params['state'] = $legacy_status_to_state[$value];
+
+
+                break;
+            case 'Store Name':
+                $params['name'] = $value;
+                break;
+            case 'Store Code':
+                $params['code'] = $value;
+                break;
+            case 'Store URL':
+                $params['data'] = json_encode(['url' => $value]);
+                break;
+            case 'Store Email':
+                $params['data'] = json_encode(['email' => $value]);
+                break;
+            case 'Store Currency Code':
+                $params['data'] = json_encode(['currency' => $value]);
+                break;
+            case 'Store Locale':
+                $params['data'] = json_encode(['locale' => $value]);
+                break;
+            case 'Store Timezone':
+                $params['data'] = json_encode(['timezone' => $value]);
+                break;
+            case 'Store Can Collect':
+                $params['settings'] = json_encode(['can_collect' => $value]);
+                break;
+            default:
+                return [
+                    false,
+                    false
+                ];
+        }
+
+
+        return [
+            $url,
+            $params
+        ];
     }
 
 

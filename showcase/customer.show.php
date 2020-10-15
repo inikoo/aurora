@@ -28,6 +28,9 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
         return "";
     }
 
+
+    //$customer->sync_aiku();
+
     $smarty->assign('customer', $customer);
     $smarty->assign('store', $data['store']);
 

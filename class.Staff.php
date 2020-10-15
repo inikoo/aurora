@@ -2282,6 +2282,91 @@ class Staff extends DB_Table {
     function properties($key) {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
+    
+    function get_aiku_params($field,$value){
+
+        $params = [
+            'legacy_id' => $this->id
+        ];
+
+        if ($this->data['Staff Type'] == 'Employee') {
+            $url    = AIKU_URL.'employee/';
+            switch ($field) {
+                case 'Staff Currently Working':
+                    $params['status'] = ($value == 'Yes' ? 'working' : 'notWorking');
+                    break;
+                case 'Staff Name':
+                    $params['name'] = $value;
+                    break;
+                case 'Staff ID':
+                    $params['data'] = json_encode(['hr_identification' => $value]);
+                    break;
+                case 'Staff Email':
+                    $params['data'] = json_encode(['email' => $value]);
+                    break;
+                case 'Staff Telephone':
+                    $params['data'] = json_encode(['phone' => $value]);
+                    break;
+                case 'Staff Official ID':
+                    $params['data'] = json_encode(['personal_identification' => $value]);
+                    break;
+                case 'Staff Next of Kind':
+                    $params['data'] = json_encode(
+                        [
+                            'next_of_kind' => [
+                                'name' => $value
+                            ]
+                        ]
+                    );
+                    break;
+                case 'Staff Birthday':
+                    $params['data'] = json_encode(['date_of_birth' => $value]);
+                    break;
+                default:
+                    return [false,false];
+            }
+        } elseif ($this->data['Staff Type'] == 'Contractor') {
+            $url    = AIKU_URL.'guest/';
+            switch ($field) {
+                case 'Staff Currently Working':
+                    $params['status'] = ($value == 'Yes' ? 'active' : 'inactive');
+                    break;
+                case 'Staff Name':
+                    $params['name'] = $value;
+                    break;
+                case 'Staff ID':
+                    $params['data'] = json_encode(['hr_identification' => $value]);
+                    break;
+                case 'Staff Email':
+                    $params['data'] = json_encode(['email' => $value]);
+                    break;
+                case 'Staff Telephone':
+                    $params['data'] = json_encode(['phone' => $value]);
+                    break;
+                case 'Staff Official ID':
+                    $params['data'] = json_encode(['personal_identification' => $value]);
+                    break;
+                case 'Staff Next of Kind':
+                    $params['data'] = json_encode(
+                        [
+                            'next_of_kind' => [
+                                'name' => $value
+                            ]
+                        ]
+                    );
+                    break;
+                case 'Staff Birthday':
+                    $params['data'] = json_encode(['date_of_birth' => $value]);
+                    break;
+                default:
+                    return [false,false];
+            }
+        }else{
+            return [false,false];
+        }
+        
+        return [$url,$params];
+    }
 }
 
 
