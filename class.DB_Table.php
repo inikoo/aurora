@@ -275,7 +275,7 @@ abstract class DB_Table extends stdClass {
 
     function update_aiku($table_full_name, $field, $value='') {
 
-        //print "** $table_full_name, $field, $table_key, $value **\n";
+
 
         if (!defined('AIKU_TOKEN')) {
             return 0;
@@ -307,6 +307,7 @@ abstract class DB_Table extends stdClass {
 
         $curl = curl_init();
 
+        //print_r($params);
 
         curl_setopt_array(
             $curl, array(
@@ -326,7 +327,7 @@ abstract class DB_Table extends stdClass {
         $response = curl_exec($curl);
 
         curl_close($curl);
-        //echo $response;
+       // echo "Response:".$response.' <<';
 
 
         return 1;

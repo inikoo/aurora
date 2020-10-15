@@ -29,7 +29,6 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
     }
 
 
-    //$customer->sync_aiku();
 
     $smarty->assign('customer', $customer);
     $smarty->assign('store', $data['store']);
@@ -118,6 +117,7 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
 
         //$customer->update_clients_data();
 
+        //$customer->sync_aiku();
 
         $website_key = $data['store']->get('Store Website Key');
 

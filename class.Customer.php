@@ -4137,7 +4137,8 @@ class Customer extends Subject {
     function get_aiku_params($field, $value = '') {
 
         $params = [
-            'legacy_id' => $this->id
+            'legacy_id' => $this->id,
+            'legacy'=>json_encode(['store_key'=>$this->get('Customer Store Key')])
         ];
 
         $url = AIKU_URL.'customer/';
@@ -4147,11 +4148,13 @@ class Customer extends Subject {
 
             case 'Object':
 
-                $params           = $this->get_aiku_params('tax_number_validation')[1];
+                $params           += $this->get_aiku_params('tax_number_validation')[1];
                 $params           += $this->get_aiku_params('Customer Type by Activity')[1];
                 $params['name']   = $this->data['Customer Name'];
                 $params['email']  = $this->data['Customer Main Plain Email'];
                 $params['mobile'] = $this->data['Customer Main Plain Mobile'];
+
+
                 $params['data']   = json_encode(array_filter([
                     'contact'             => $this->data['Customer Main Contact Name'],
                     'company'             => $this->data['Customer Company Name'],
