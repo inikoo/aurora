@@ -14,9 +14,10 @@ use libphonenumber\PhoneNumberFormat;
 
 include_once 'class.DBW_Table.php';
 include_once 'trait.Address.php';
+include_once 'trait.CustomerClientAiku.php';
 
 class Public_Customer_Client extends DBW_Table {
-    use Address;
+    use Address,CustomerClientAiku;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
@@ -864,7 +865,7 @@ class Public_Customer_Client extends DBW_Table {
 
 
         $this->fast_update_json_field('Customer Client Metadata', 'deactivated_date', gmdate('Y-m-d H:i:s'));
-        $this->fast_update_json_field('Order Metadata','client_reference', $this->get('Customer Client Code'));
+        //$this->fast_update_json_field('Order Metadata','client_reference', $this->get('Customer Client Code'));
 
         $this->fast_update(
             [
@@ -888,6 +889,10 @@ class Public_Customer_Client extends DBW_Table {
         $this->fork_index_elastic_search('delete_elastic_index_object');
 
         $this->deleted = true;
+
+        $this->update_aiku('Customer Client Dimension', 'deactivate');
+
+
     }
 
 }

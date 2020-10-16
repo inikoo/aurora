@@ -10,9 +10,10 @@
 */
 
 include_once 'class.Subject.php';
+include_once 'trait.CustomerClientAiku.php';
 
 class Customer_Client extends Subject {
-
+use CustomerClientAiku;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
