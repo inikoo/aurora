@@ -106,9 +106,7 @@ abstract class DB_Table extends stdClass {
     }
 
 
-    function get_table_name(){
-        return $table_name = $this->table_name.' Dimension';
-    }
+
 
     function base_data($table_name = '') {
 

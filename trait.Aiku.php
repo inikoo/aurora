@@ -7,6 +7,9 @@
 
 trait Aiku {
 
+    function get_table_name(){
+        return $table_name = $this->table_name.' Dimension';
+    }
 
     function get_aiku_params($field, $value) {
         return [
