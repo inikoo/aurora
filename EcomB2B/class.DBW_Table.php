@@ -73,7 +73,7 @@ abstract class DBW_Table extends stdClass {
 
         foreach ($data as $field => $value) {
 
-            if( !is_string($field) or $field=='1'  or $field=='0' ){
+            if (!is_string($field) or $field == '1' or $field == '0') {
                 throw new Exception(json_encode($data));
             }
 
@@ -81,9 +81,18 @@ abstract class DBW_Table extends stdClass {
                 "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id
             );
 
-            //   print "$sql;\n";
 
-            $this->db->exec($sql);
+            $update_op = $this->db->prepare($sql);
+            $update_op->execute();
+
+
+            $affected = $update_op->rowCount();
+            if ($affected > 0) {
+                $this->update_aiku($table_full_name, $field, $value);
+
+            }
+
+
             $this->data[$field] = $value;
 
         }
@@ -367,6 +376,8 @@ abstract class DBW_Table extends stdClass {
 
             }
 
+            $this->update_aiku($table_full_name, $field, $value);
+
         }
 
     }
@@ -443,13 +454,11 @@ abstract class DBW_Table extends stdClass {
         }
 
 
-
-
         if (empty($data['Date'])) {
-            if($editor_data['Date']!=''){
+            if ($editor_data['Date'] != '') {
                 $data['Date'] = $editor_data['Date'];
-            }else{
-                $data['Date'] =gmdate('Y-m-d H:i:s');
+            } else {
+                $data['Date'] = gmdate('Y-m-d H:i:s');
             }
         }
 
@@ -562,7 +571,6 @@ abstract class DBW_Table extends stdClass {
         );
 
 
-
         $this->db->exec($sql);
 
         $history_key = $this->db->lastInsertId();
@@ -652,7 +660,6 @@ abstract class DBW_Table extends stdClass {
     }
 
 
-
     function fork_index_elastic_search($type = 'create_elastic_index_object', $indices = ['quick']) {
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
@@ -668,11 +675,12 @@ abstract class DBW_Table extends stdClass {
     function index_elastic_search($hosts, $bulk = false, $indices = ['quick']) {
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
-        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db,$indices);
+        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db, $indices);
         $indexer->prepare_object();
         if (!$bulk) {
             $indexer->add_index();
         }
+
         return $indexer;
     }
 
@@ -682,6 +690,78 @@ abstract class DBW_Table extends stdClass {
         $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db);
         $indexer->delete_index();
 
+    }
+
+
+    function get_aiku_params($field, $value) {
+        return [
+            false,
+            false
+        ];
+    }
+
+    function sync_aiku() {
+        $this->update_aiku($this->get_table_name(), 'Object');
+    }
+
+    function update_aiku($table_full_name, $field, $value = '') {
+
+
+        if (!defined('AIKU_TOKEN')) {
+            return 0;
+        }
+
+
+        switch ($table_full_name) {
+            case 'Staff Dimension':
+            case 'User Dimension':
+            case 'Store Dimension':
+            case 'Customer Dimension':
+                list($url, $params) = $this->get_aiku_params($field, $value);
+                if (!$url) {
+                    return 0;
+                }
+                break;
+
+            default:
+                return 0;
+
+
+        }
+
+        $headers = [
+            "Authorization: Bearer ".AIKU_TOKEN,
+            "Content-Type:multipart/form-data",
+            "Accept: application/json",
+        ];
+
+        $curl = curl_init();
+
+        //print_r($params);
+
+        curl_setopt_array(
+            $curl, array(
+                     CURLOPT_URL            => $url,
+                     CURLOPT_RETURNTRANSFER => true,
+                     CURLOPT_ENCODING       => "",
+                     CURLOPT_MAXREDIRS      => 10,
+                     CURLOPT_TIMEOUT        => 0,
+                     CURLOPT_FOLLOWLOCATION => true,
+                     CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                     CURLOPT_CUSTOMREQUEST  => "POST",
+                     CURLOPT_POSTFIELDS     => $params,
+                     CURLOPT_HTTPHEADER     => $headers
+                 )
+        );
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        // echo "Response:".$response.' <<';
+
+
+        return 1;
     }
 
 
