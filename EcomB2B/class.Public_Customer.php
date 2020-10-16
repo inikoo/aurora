@@ -13,10 +13,11 @@
 
 include_once 'class.DBW_Table.php';
 include_once 'trait.Address.php';
+include_once 'trait.CustomerAiku.php';
 
 
 class Public_Customer extends DBW_Table {
-    use Address;
+    use Address,CustomerAiku;
 
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
@@ -211,6 +212,7 @@ class Public_Customer extends DBW_Table {
 
             $this->new = true;
             $this->fork_index_elastic_search();
+            $this->sync_aiku();
 
         } else {
             $this->error = true;
@@ -981,6 +983,8 @@ class Public_Customer extends DBW_Table {
                 )
             );
         }
+
+        $this->update_aiku('Customer Dimension', 'tax_number_validation');
 
     }
 
