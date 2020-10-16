@@ -40,9 +40,21 @@ trait Address {
 
         if ($updated_fields_number > 0) {
             $this->updated = true;
+
+
         }
 
         if ($this->updated) {
+
+
+            if($this->table_name=='Customer'){
+                if($type=='Delivery'){
+                    $this->update_aiku($this->get_table_name(),'delivery_address');
+                }elseif($type=='Invoice'){
+                    $this->update_aiku($this->get_table_name(),'billing_address');
+                }
+            }
+
 
             $this->update_address_formatted_fields($type);
 

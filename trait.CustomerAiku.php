@@ -1,41 +1,102 @@
 <?php
+
 /*
  * Author: Raul A Perusquía-Flores (raul@aiku.io)
  * Created: Fri, 16 Oct 2020 13:38:29 Malaysia Time, Kuala Lumpur, Malaysia
  * Copyright (c) 2020. Aiku.io
  */
+
 trait CustomerAiku {
 
     function get_aiku_params($field, $value = '') {
 
-        $params = [
-            'legacy_id' => $this->id,
-            'legacy'=>json_encode(['store_key'=>$this->get('Customer Store Key')])
-        ];
 
-        $url = AIKU_URL.'customer/';
+        $url = AIKU_URL.'customer/'.$this->id;
 
 
         switch ($field) {
 
             case 'Object':
-
-                $params           += $this->get_aiku_params('tax_number_validation')[1];
-                $params           += $this->get_aiku_params('Customer Type by Activity')[1];
-                $params['name']   = $this->data['Customer Name'];
-                $params['email']  = $this->data['Customer Main Plain Email'];
-                $params['mobile'] = $this->data['Customer Main Plain Mobile'];
+                $url = AIKU_URL.'customer/';
 
 
-                $params['data']   = json_encode(array_filter([
-                                                                 'contact'             => $this->data['Customer Main Contact Name'],
-                                                                 'company'             => $this->data['Customer Company Name'],
-                                                                 'registration_number' => $this->data['Customer Registration Number'],
-                                                                 'tax_number'          => $this->data['Customer Tax Number'],
-                                                                 'website'             => $this->data['Customer Website']
+                $legacy_data=[];
+                $legacy_data['store_key']=$this->get('Customer Store Key');
+                $legacy_data+=json_decode($this->get_aiku_params('billing_address')[1]['legacy'],true);
+                $legacy_data+=json_decode($this->get_aiku_params('delivery_address')[1]['legacy'],true);
 
 
-                                                             ]));
+                $params['legacy']=json_encode($legacy_data);
+
+
+
+
+                $params += $this->get_aiku_params('Customer Type by Activity')[1];
+
+
+                $params['legacy_id'] = $this->id;
+                $params['name']      = $this->data['Customer Name'];
+                $params['email']     = $this->data['Customer Main Plain Email'];
+                $params['mobile']    = $this->data['Customer Main Plain Mobile'];
+
+
+                $data = [
+                    'contact'             => $this->data['Customer Main Contact Name'],
+                    'company'             => $this->data['Customer Company Name'],
+                    'registration_number' => $this->data['Customer Registration Number'],
+                    'tax_number'          => $this->data['Customer Tax Number'],
+                    'website'             => $this->data['Customer Website']
+                ];
+                $data += $this->get_aiku_params('tax_number_validation')[1];
+
+
+                $params['data'] = json_encode(
+                    array_filter(
+                        $data
+                    )
+                );
+
+
+                $params['settings'] = json_encode(
+                    [
+                        'can_send' =>
+
+                            [
+                                'newsletter'       => strtolower($this->data['Customer Send Newsletter']),
+                                'email_marketing'  => strtolower($this->data['Customer Send Email Marketing']),
+                                'postal_marketing' => strtolower($this->data['Customer Send Postal Marketing']),
+
+
+                            ]
+
+
+                    ]
+
+                );
+
+                //print_r($params);
+
+                break;
+            case 'billing_address':
+            case 'delivery_address':
+
+                $legacy_object = 'Customer';
+
+                $type = ' Delivery';
+                if ($field == 'billing_address') {
+                    $type = ' Invoice';
+                }
+
+
+                $address['address_line_1']      = $this->data[$legacy_object.$type.' Address Line 1'];
+                $address['address_line_2']      = $this->data[$legacy_object.$type.' Address Line 2'];
+                $address['sorting_code']        = $this->data[$legacy_object.$type.' Address Sorting Code'];
+                $address['postal_code']         = $this->data[$legacy_object.$type.' Address Postal Code'];
+                $address['locality']            = $this->data[$legacy_object.$type.' Address Locality'];
+                $address['dependent_locality']  = $this->data[$legacy_object.$type.' Address Dependent Locality'];
+                $address['administrative_area'] = $this->data[$legacy_object.$type.' Address Administrative Area'];
+                $address['country_code']        = $this->data[$legacy_object.$type.' Address Country 2 Alpha Code'];
+                $params['legacy']       = json_encode([$field=>$address]);
 
                 break;
             case 'tax_number_validation':
@@ -44,14 +105,16 @@ trait CustomerAiku {
                     $params['tax_number_validation'] = '';
                 } else {
                     $params['tax_number_validation'] = json_encode(
-                        array_filter([
-                                         'valid'              => strtolower($this->data['Customer Tax Number Valid']),
-                                         'source'             => strtolower($this->data['Customer Tax Number Validation Source']),
-                                         'date'               => $this->data['Customer Tax Number Validation Date'],
-                                         'message'            => $this->data['Customer Tax Number Validation Message'],
-                                         'registered_name'    => $this->data['Customer Tax Number Registered Name'],
-                                         'registered_address' => $this->data['Customer Tax Number Registered Address'],
-                                     ])
+                        array_filter(
+                            [
+                                'valid'              => strtolower($this->data['Customer Tax Number Valid']),
+                                'source'             => strtolower($this->data['Customer Tax Number Validation Source']),
+                                'date'               => $this->data['Customer Tax Number Validation Date'],
+                                'message'            => $this->data['Customer Tax Number Validation Message'],
+                                'registered_name'    => $this->data['Customer Tax Number Registered Name'],
+                                'registered_address' => $this->data['Customer Tax Number Registered Address'],
+                            ]
+                        )
                     );
                 }
 

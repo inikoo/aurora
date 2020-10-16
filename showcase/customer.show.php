@@ -118,6 +118,7 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
         //$customer->update_clients_data();
 
         //$customer->sync_aiku();
+        //$customer->update_aiku($customer->get_table_name(),'billing_address');
 
         $website_key = $data['store']->get('Store Website Key');
 

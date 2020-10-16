@@ -71,3 +71,4 @@ box/trai*
 cron/move_stock_new_warehouse.php
 cron/move_stock_new_warehouse_part_2.php
 cron/stock_ok.php
+cron/fix_customers_no_web_user.php
