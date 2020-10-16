@@ -212,7 +212,7 @@ class Public_Customer extends DBW_Table {
 
             $this->new = true;
             $this->fork_index_elastic_search();
-            $this->sync_aiku();
+            //$this->sync_aiku();
 
         } else {
             $this->error = true;
