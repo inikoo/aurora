@@ -5272,6 +5272,141 @@ class Part extends Asset {
 
     }
 
+    function get_aiku_params($field, $value = '') {
+
+        $params = [
+            'legacy_id' => $this->id,
+        ];
+
+        $url = AIKU_URL.'stock/';
+
+        switch ($field) {
+
+            case 'Object':
+
+                $params += $this->get_aiku_params('Part Status')[1];
+                $params += $this->get_aiku_params('Part Stock Status')[1];
+
+                $params += $this->get_aiku_params('Part Reference', $this->data['Part Reference'])[1];
+                $params += $this->get_aiku_params('Part Unit Label', $this->data['Part Unit Label'])[1];
+
+                $params += $this->get_aiku_params('barcode')[1];
+                $params += $this->get_aiku_params('unit_quantity')[1];
+
+                $params['description']        = $this->data['Part Recommended Product Unit Name'];
+                $params['packed_in']          = $this->data['Part Units Per Package'];
+                $params['available_forecast'] = $this->data['Part Days Available Forecast'];
+
+                $params['data'] = json_encode(
+                    [
+                        'package' => [
+                            'description' => $this->data['Part Package Description'],
+                            'weight'      => $this->data['Part Package Weight'],
+                            'dimensions'  => json_decode($this->data['Part Package Dimensions'],true),
+
+                        ],
+                        'unit' => [
+                            'weight'      => $this->data['Part Package Weight'],
+                            'dimensions'  => json_decode($this->data['Part Package Dimensions'],true),
+
+                        ]
+                    ]
+                );
+                break;
+
+            case 'Part Status':
+                $legacy_status_to_state = [
+                    'In Use'        => 'active',
+                    'Discontinuing' => 'discontinuing',
+                    'In Process'    => 'creating',
+                    'Not In Use'    => 'discontinued'
+                ];
+                $params['state']        = $legacy_status_to_state[$this->data['Part Status']];
+                break;
+            case 'Part Stock Status':
+                $quantity_status = strtolower($this->data['Part Stock Status']);
+                if ($quantity_status == 'out_of_stock') {
+                    $quantity_status = 'outOfStock';
+                }
+
+                $params['quantity_status'] = $quantity_status;
+
+                break;
+            case 'Part Reference':
+                if ($value == '') {
+                    $value = 'empty_'.$this->data['Part SKU'];
+                }
+                $params['code'] = $value;
+                break;
+            case 'Part Unit Label':
+                if ($value == '') {
+                    $value = 'piece';
+                }
+                $params['unit_type'] = $value;
+                break;
+            case 'barcode':
+                $barcode = $this->data['Part SKO Barcode'];
+                if ($barcode == '') {
+                    $barcode = $this->data['Part Barcode Number'];
+                }
+                $params['barcode'] = $barcode;
+
+                break;
+            case 'unit_quantity':
+                $params['unit_quantity'] = $this->data['Part Current On Hand Stock'] * $this->data['Part Units Per Package'];
+                break;
+            case 'Part Recommended Product Unit Name':
+                $params['description'] = $value;
+                break;
+            case 'Part Units Per Package':
+                $params['packed_in'] = $value;
+                break;
+            case 'Part Days Available Forecast':
+                $params['available_forecast'] = $value;
+                break;
+
+
+            case 'Part Package Description':
+            case 'Part Package Weight':
+            case 'Part Package Dimensions':
+                $params['data'] = json_encode(
+                    [
+                        'package' => [
+                            'description' => $this->data['Part Package Description'],
+                            'weight'      => $this->data['Part Package Weight'],
+                            'dimensions'  => json_decode($this->data['Part Package Dimensions'],true),
+
+                        ]
+                    ]
+                );
+                break;
+            case 'Part Unit Weight':
+            case 'Part Unit Dimensions':
+                $params['data'] = json_encode(
+                    [
+                        'unit' => [
+                            'weight'      => $this->data['Part Unit Weight'],
+                            'dimensions'  => json_decode($this->data['Part Unit Dimensions'],true),
+
+                        ]
+                    ]
+                );
+                break;
+
+            default:
+                return [
+                    false,
+                    false
+                ];
+        }
+
+
+
+        return [
+            $url,
+            $params
+        ];
+    }
 
 }
 

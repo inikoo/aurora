@@ -34,6 +34,7 @@ trait Aiku {
             case 'Store Dimension':
             case 'Customer Dimension':
             case 'Customer Client Dimension':
+            case 'Part Dimension':
                 list($url, $params) = $this->get_aiku_params($field, $value);
                 if(!$url){
                     return 0;
@@ -73,7 +74,7 @@ trait Aiku {
         $response = curl_exec($curl);
 
         curl_close($curl);
-        // echo "Response:".$response.' <<';
+        //echo "Response:".$response.' <<';
 
 
         return 1;
