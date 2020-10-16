@@ -87,6 +87,16 @@ if (!empty($_REQUEST['store_type'])) {
         require_once 'utils/public_object_functions.php';
         $customer = get_object('Customer', $_SESSION['customer_key']);
         $order         = get_object('Order', $customer->get_order_in_process_key());
+
+        if (empty($_SESSION['website_key'])) {
+            $redis = new Redis();
+            $redis->connect(REDIS_HOST, REDIS_PORT);
+            include_once(__DIR__.'/utils/find_website_key.include.php');
+            $_SESSION['website_key']=get_website_key_from_domain($redis);
+        }
+
+
+
         $website = get_object('Website', $_SESSION['website_key']);
         $labels  = $website->get('Localised Labels');
         if (!$order->id) {
