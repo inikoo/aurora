@@ -18,8 +18,9 @@ function get_customer_client_showcase($data, $smarty, $user, $db, $redis, $accou
         return "";
     }
 
-
-    $customer=get_object('Customer',$customer_client->get('Customer Client Customer Key'));
+    //$customer_client->sync_aiku();
+    //exit;
+    $customer = get_object('Customer', $customer_client->get('Customer Client Customer Key'));
 
     $smarty->assign('customer_client', $customer_client);
 
@@ -66,16 +67,16 @@ function get_customer_client_showcase($data, $smarty, $user, $db, $redis, $accou
 
             switch ($order->get('Order State')) {
                 case 'InProcess':
-                    $order_in_process['icon'] = sprintf('<i class="fal fa-paper-plane" title="%s"></i>', $order->get('State'));
-                    $order_in_process['operations'] ='';
+                    $order_in_process['icon']       = sprintf('<i class="fal fa-paper-plane" title="%s"></i>', $order->get('State'));
+                    $order_in_process['operations'] = '';
                     break;
                 case 'InWarehouse':
-                    $order_in_process['operations'] ='';
-                    $order_in_process['icon'] = sprintf('<i class="fal fa-warehouse-alt" title="%s"></i>', $order->get('Order State'));
+                    $order_in_process['operations'] = '';
+                    $order_in_process['icon']       = sprintf('<i class="fal fa-warehouse-alt" title="%s"></i>', $order->get('Order State'));
                     break;
                 default:
-                    $order_in_process['operations'] ='';
-                    $order_in_process['icon'] = sprintf('<i class="fal fa-warehouse-alt" title="%s"></i>', $order->get('Order State'));
+                    $order_in_process['operations'] = '';
+                    $order_in_process['icon']       = sprintf('<i class="fal fa-warehouse-alt" title="%s"></i>', $order->get('Order State'));
                     break;
             }
 
@@ -89,12 +90,12 @@ function get_customer_client_showcase($data, $smarty, $user, $db, $redis, $accou
             $order_in_process['tax']             = $order->get('Total Tax Amount');
             $order_in_process['total']           = $order->get('Total Amount');
             $order_in_process['tax_description'] = $order->get('Tax Description');
-            $order_in_process['submitted']     = $order->get('Submitted by Customer Date');
-            $order_in_process['waiting_days']     = $order->get('Waiting days decimal');
+            $order_in_process['submitted']       = $order->get('Submitted by Customer Date');
+            $order_in_process['waiting_days']    = $order->get('Waiting days decimal');
 
-            $order_in_process['state']     = $order->get('State');
+            $order_in_process['state'] = $order->get('State');
 
-            $orders_in_process[]                 = $order_in_process;
+            $orders_in_process[] = $order_in_process;
         }
     }
 

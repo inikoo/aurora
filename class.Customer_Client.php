@@ -151,6 +151,7 @@ use CustomerClientAiku;
             );
 
             $this->new = true;
+            $this->sync_aiku();
 
 
         } else {
