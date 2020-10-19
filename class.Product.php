@@ -1660,7 +1660,7 @@ class Product extends Asset {
     function update_web_state_slow_forks($web_availability_updated) {
 
 
-        if ($web_availability_updated and false) {
+        if ($web_availability_updated) {
 
 
             $sql = sprintf(
