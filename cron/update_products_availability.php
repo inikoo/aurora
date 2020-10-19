@@ -42,12 +42,55 @@ if ($result = $db->query($sql)) {
         $product->update_availability();
         $web_state_new = $product->get_web_state();
 
+        
+
         print "$product->id\r";
 
         if ($web_state_old != $web_state_new) {
             print $product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
         }
 
+
+
+
+        $sql = sprintf(
+            "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State` IN ('In Process','In Process by Customer') AND `Product ID`=%d ", $product->id
+        );
+
+
+        if ($result = $product->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $web_availability = ($product->get_web_state() == 'For Sale' ? 'Yes' : 'No');
+                if ($web_availability == 'No') {
+                    /**
+                     * @var $order \Order
+                     */
+                    $order = get_object('Order', $row['Order Key']);
+
+
+                    $order->remove_out_of_stocks_from_basket($product->id);
+                }
+            }
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State`='Out of Stock in Basket' AND `Product ID`=%d ", $product->id
+
+        );
+
+        if ($result = $product->db->query($sql)) {
+            foreach ($result as $row) {
+                $web_availability = ($product->get_web_state() == 'For Sale' ? 'Yes' : 'No');
+                if ($web_availability == 'Yes') {
+                    $order = get_object('Order', $row['Order Key']);
+                    $order->restore_back_to_stock_to_basket($product->id);
+                }
+            }
+        }
+        
+        
 
     }
 
