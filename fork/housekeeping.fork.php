@@ -2780,6 +2780,16 @@ function fork_housekeeping($job) {
 
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_portfolio();
+            if(!empty($data['product_id'])){
+                $customer->update_aiku('Customer Dimension','sync_portfolio', $data['product_id']);
+            }
+
+            break;
+        case 'update_portfolio_aiku':
+
+            $customer = get_object('Customer', $data['customer_key']);
+            $customer->update_aiku('Customer Dimension','sync_portfolio', $data['product_id']);
+
             break;
         case 'unsubscribe_prospect':
             /**

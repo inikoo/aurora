@@ -492,6 +492,7 @@ function add_product_to_portfolio($data, $db, $customer) {
                 'au_housekeeping', array(
                 'type'         => 'customer_portfolio_changed',
                 'customer_key' => $customer->id,
+                'product_id'=>$product->id
             ), DNS_ACCOUNT_CODE
             );
 
@@ -542,6 +543,7 @@ function add_product_to_portfolio($data, $db, $customer) {
                 'au_housekeeping', array(
                 'type'         => 'customer_portfolio_changed',
                 'customer_key' => $customer->id,
+                'product_id'=>$product->id
             ), DNS_ACCOUNT_CODE
             );
         }
@@ -621,6 +623,8 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
             'au_housekeeping', array(
             'type'         => 'customer_portfolio_changed',
             'customer_key' => $customer->id,
+            'product_id'=>$product->id
+
         ), $account->get('Account Code')
         );
 
@@ -720,7 +724,8 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
                 )
             );
 
-        } else {
+        }
+        else {
 
 
             $sql  =
@@ -751,6 +756,14 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
 
 
         }
+
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'         => 'update_portfolio_aiku',
+            'customer_key' => $customer->id,
+            'product_id' => $product_id,
+        ), $account->get('Account Code')
+        );
 
 
     }

@@ -20,15 +20,13 @@ trait CustomerAiku {
                 $url = AIKU_URL.'customer/';
 
 
-                $legacy_data=[];
-                $legacy_data['store_key']=$this->get('Customer Store Key');
-                $legacy_data+=json_decode($this->get_aiku_params('billing_address')[1]['legacy'],true);
-                $legacy_data+=json_decode($this->get_aiku_params('delivery_address')[1]['legacy'],true);
+                $legacy_data              = [];
+                $legacy_data['store_key'] = $this->get('Customer Store Key');
+                $legacy_data              += json_decode($this->get_aiku_params('billing_address')[1]['legacy'], true);
+                $legacy_data              += json_decode($this->get_aiku_params('delivery_address')[1]['legacy'], true);
 
 
-                $params['legacy']=json_encode($legacy_data);
-
-
+                $params['legacy'] = json_encode($legacy_data);
 
 
                 $params += $this->get_aiku_params('Customer Type by Activity')[1];
@@ -77,6 +75,27 @@ trait CustomerAiku {
                 //print_r($params);
 
                 break;
+            case 'sync_portfolio':
+                $params = false;
+                $url    = false;
+
+                $sql =
+                    "select `Customer Portfolio Reference`,`Customer Portfolio Creation Date`,`Customer Portfolio Customers State`,`Customer Portfolio Removed Date` from `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? ";
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id,
+                        $value
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $url = AIKU_URL.'customer/'.$this->id.'/portfolio/'.$value;
+                    $params=$row;
+                }
+
+
+                break;
             case 'billing_address':
             case 'delivery_address':
 
@@ -96,7 +115,7 @@ trait CustomerAiku {
                 $address['dependent_locality']  = $this->data[$legacy_object.$type.' Address Dependent Locality'];
                 $address['administrative_area'] = $this->data[$legacy_object.$type.' Address Administrative Area'];
                 $address['country_code']        = $this->data[$legacy_object.$type.' Address Country 2 Alpha Code'];
-                $params['legacy']       = json_encode([$field=>$address]);
+                $params['legacy']               = json_encode([$field => $address]);
 
                 break;
             case 'tax_number_validation':
