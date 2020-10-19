@@ -606,7 +606,11 @@ function get_purchase_order_transaction_ordered_data($data) {
 
     if ($units_per_sko == 0) {
         $items_qty .= '<span class="error">Units per SKO=0</span> ';
-    } else {
+        $ordered_skos='';
+        $ordered_cartons='';
+
+    }
+    else {
 
         $ordered_skos='';
         if ($data['Purchase Order Submitted Cancelled Units'] > 0) {
