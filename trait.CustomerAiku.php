@@ -80,7 +80,7 @@ trait CustomerAiku {
                 $url    = false;
 
                 $sql =
-                    "select `Customer Portfolio Reference`,`Customer Portfolio Creation Date`,`Customer Portfolio Customers State`,`Customer Portfolio Removed Date` from `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? ";
+                    "select `Customer Portfolio Key`,`Customer Portfolio Reference`,`Customer Portfolio Creation Date`,`Customer Portfolio Customers State`,`Customer Portfolio Removed Date` from `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? ";
 
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
