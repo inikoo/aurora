@@ -92,6 +92,7 @@ trait CustomerAiku {
                 if ($row = $stmt->fetch()) {
                     $url = AIKU_URL.'customer/'.$this->id.'/portfolio/'.$value;
                     $params=$row;
+                    $params['version']='debug';
                 }
 
 
