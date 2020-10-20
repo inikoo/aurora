@@ -5278,11 +5278,12 @@ class Part extends Asset {
             'legacy_id' => $this->id,
         ];
 
-        $url = AIKU_URL.'stocks/';
+        $url = AIKU_URL.'stocks/'.$this->id;
 
         switch ($field) {
 
             case 'Object':
+                $url = AIKU_URL.'stocks/';
 
                 $params += $this->get_aiku_params('Part Status')[1];
                 $params += $this->get_aiku_params('Part Stock Status')[1];
