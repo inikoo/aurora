@@ -7,7 +7,7 @@
 
 trait Aiku {
 
-    function get_table_name(){
+    function get_table_name() {
         return $table_name = $this->table_name.' Dimension';
     }
 
@@ -18,12 +18,11 @@ trait Aiku {
         ];
     }
 
-    function sync_aiku(){
+    function sync_aiku() {
         $this->update_aiku($this->get_table_name(), 'Object');
     }
 
-    function update_aiku($table_full_name, $field, $value='') {
-
+    function update_aiku($table_full_name, $field, $value = '') {
 
 
         if (!defined('AIKU_TOKEN')) {
@@ -38,8 +37,10 @@ trait Aiku {
             case 'Customer Dimension':
             case 'Customer Client Dimension':
             case 'Part Dimension':
+            case 'Product Dimension':
+
                 list($url, $params) = $this->get_aiku_params($field, $value);
-                if(!$url){
+                if (!$url) {
                     return 0;
                 }
                 break;

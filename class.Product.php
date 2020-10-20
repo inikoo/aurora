@@ -71,8 +71,7 @@ class Product extends Asset {
                 $this->properties = json_decode($this->data['Product Properties'], true);
 
             }
-        }
-        elseif ($key == 'store_code') {
+        } elseif ($key == 'store_code') {
             $sql = sprintf(
                 "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%d  AND `Product Code`=%s   ORDER BY CASE `Product Status`
     WHEN 'Active' THEN 1
@@ -90,8 +89,7 @@ class Product extends Asset {
                 $this->properties  = json_decode($this->data['Product Properties'], true);
 
             }
-        }
-        elseif ($key == 'historic_key') {
+        } elseif ($key == 'historic_key') {
             $sql = sprintf(
                 "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%d", $id
             );
@@ -115,15 +113,14 @@ class Product extends Asset {
 
 
             }
-        }
-        else {
+        } else {
 
             exit ("wrong id in class.product get_data A :$key  ".$this->get('Code')." \n");
 
 
         }
 
-        if($this->id){
+        if ($this->id) {
             $this->get_store_data();
         }
 
@@ -280,8 +277,8 @@ class Product extends Asset {
 
                 return $price;
             case 'Cost':
-                $account=get_object('Account',1);
-                $cost= money($this->data['Product Cost'] , $account->get('Account Currency'));
+                $account = get_object('Account', 1);
+                $cost    = money($this->data['Product Cost'], $account->get('Account Currency'));
 
                 if ($this->data['Product Units Per Case'] != 1 and $this->data['Product Units Per Case'] > 0) {
 
@@ -870,14 +867,13 @@ class Product extends Asset {
     function update_product_targeted_marketing_customers() {
         include_once 'utils/asset_marketing_customers.php';
 
-        $store              = get_object('Store', $this->get('Store Key'));
+        $store = get_object('Store', $this->get('Store Key'));
 
 
-
-        if(is_numeric($store->properties('email_marketing_customers'))){
-            $email_marketing_customers=$store->properties('email_marketing_customers');
-        }else{
-            $email_marketing_customers=0;
+        if (is_numeric($store->properties('email_marketing_customers'))) {
+            $email_marketing_customers = $store->properties('email_marketing_customers');
+        } else {
+            $email_marketing_customers = 0;
 
         }
 
@@ -897,16 +893,16 @@ class Product extends Asset {
     function update_product_spread_marketing_customers() {
         include_once 'utils/asset_marketing_customers.php';
 
-        $store                = get_object('Store', $this->get('Store Key'));
+        $store = get_object('Store', $this->get('Store Key'));
 
-        if(is_numeric($store->properties('email_marketing_customers'))){
-            $email_marketing_customers=$store->properties('email_marketing_customers');
-        }else{
-            $email_marketing_customers=0;
+        if (is_numeric($store->properties('email_marketing_customers'))) {
+            $email_marketing_customers = $store->properties('email_marketing_customers');
+        } else {
+            $email_marketing_customers = 0;
 
         }
 
-        $targeted_threshold   = 5 * min($email_marketing_customers* .05, 500);
+        $targeted_threshold   = 5 * min($email_marketing_customers * .05, 500);
         $estimated_recipients = count(get_spread_product_customers(array(), $this->db, $this->id, $targeted_threshold));
 
         $this->fast_update_json_field('Product Properties', 'spread_marketing_customers', $estimated_recipients);
@@ -993,6 +989,7 @@ class Product extends Asset {
                 );
             }
         }
+        $this->update_aiku($this->get_table_name(), 'historic_props');
 
 
     }
@@ -1812,9 +1809,8 @@ class Product extends Asset {
     function update_webpages($change_type = '') {
 
 
-
         $webpage = get_object('Webpage', $this->get('Product Webpage Key'));
-        if($webpage->id) {
+        if ($webpage->id) {
             $webpage->reindex();
 
             switch ($change_type) {
@@ -3665,8 +3661,8 @@ class Product extends Asset {
         $this->update_metadata = array(
             'class_html' => array(
                 'Package_Weight' => $this->get('Package Weight'),
-                'Product_Cost' => $this->get('Cost'),
-                'Product_Price' => $this->get('Price'),
+                'Product_Cost'   => $this->get('Cost'),
+                'Product_Price'  => $this->get('Price'),
 
             )
 
@@ -3724,6 +3720,7 @@ class Product extends Asset {
             ), DNS_ACCOUNT_CODE
             );
 
+
         }
 
 
@@ -3747,8 +3744,6 @@ class Product extends Asset {
         }
 
 
-
-
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
@@ -3757,6 +3752,8 @@ class Product extends Asset {
             'editor'     => $this->editor
         ), DNS_ACCOUNT_CODE
         );
+
+        $this->update_aiku($this->get_table_name(), 'parts');
 
 
     }
@@ -4204,12 +4201,12 @@ class Product extends Asset {
                             $date                = '';
                             $formatted_state     = '<span class="very_discreet italic">'._('Draft').'</span>';
                             $link                = sprintf(
-                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
-                                $row['Purchase Order Public ID']
+                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'),
+                                $row['Purchase Order Key'], $row['Purchase Order Public ID']
                             );
                             $qty                 = '<span class="very_discreet italic">+'.number($raw_outer_qty).'</span>';
 
-                        }elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
+                        } elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
 
                             $raw_units_qty = $row['Purchase Order Submitted Units'];
                             $raw_outer_qty = $raw_units_qty / $row['Part Units Per Package'] / $part_data['Ratio'];
@@ -4218,8 +4215,8 @@ class Product extends Asset {
                             $date                = '';
                             $formatted_state     = '<span class="very_discreet italic">'._('Submitted').'</span>';
                             $link                = sprintf(
-                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('Submitted'), $row['Purchase Order Key'],
-                                $row['Purchase Order Public ID']
+                                '<i class="fal fa-fw  very_discreet fa-clipboard" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('Submitted'),
+                                $row['Purchase Order Key'], $row['Purchase Order Public ID']
                             );
                             $qty                 = '<span class="very_discreet italic">+'.number($raw_outer_qty).'</span>';
 
@@ -4302,6 +4299,137 @@ class Product extends Asset {
         $this->fast_update_json_field('Product Properties', 'donut_marketing_customers_last_updated', gmdate('U'));
 
 
+    }
+
+    function get_aiku_params($field, $value = '') {
+
+        $url = AIKU_URL.'products/'.$this->id;
+
+
+        switch ($field) {
+            case 'Object':
+                $url    = AIKU_URL.'products/';
+
+
+                $params = $this->get_aiku_params('historic_props')[1];
+                $params+=$this->get_aiku_params('Product Status')[1];
+
+                $params['legacy_id'] = $this->id;
+
+                $legacy_data                         = [];
+                $legacy_data['store_key']            = $this->get('Product Store Key');
+                $legacy_data['product_historic_key'] = $this->get('Product Current Key');
+
+
+                $legacy_data += json_decode($this->get_aiku_params('historic_data')[1]['legacy'], true);
+                $legacy_data += json_decode($this->get_aiku_params('parts')[1]['legacy'], true);
+
+
+                $params['legacy'] = json_encode($legacy_data);
+
+                print_r($params);
+
+                break;
+
+            case 'historic_props':
+                $params         = [];
+                $params['name'] = $this->data['Product Name'];
+                $params['code'] = $this->data['Product Code'];
+                $units          = $this->data['Product Units Per Case'];
+                if ($units == 0) {
+                    $units = 1;
+                }
+                $params['units']      = $units;
+                $params['unit_price'] = $this->data['Product Price'] / $units;
+
+                $legacy_data                         = [];
+                $legacy_data['product_historic_key'] = $this->get('Product Current Key');
+                $legacy_data                         += json_decode($this->get_aiku_params('historic_data')[1]['legacy'], true);
+                $params['legacy']                    = json_encode($legacy_data);
+
+
+            case 'historic_data':
+
+                $product_historic_data = [];
+                $sql                   = "select `Product History Code`,`Product History Name` 
+                `Product History Units Per Case`,`Product History Valid From`,
+                `Product History Price`,                `Product Key`
+                from `Product History Dimension` where `Product ID`=?";
+                $stmt                  = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    $product_historic_data[] = $row;
+                }
+                $legacy_data['historic_products'] = $product_historic_data;
+
+
+                $params['legacy'] = json_encode($legacy_data);
+                break;
+            case 'parts':
+                $parts = [];
+
+                $sql  = "select * from `Product Part Bridge` where `Product Part Product ID`=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    $parts[] = $row;
+                }
+                $legacy_data          = [];
+                $legacy_data['parts'] = $parts;
+
+                $params['legacy'] = json_encode($legacy_data);
+                break;
+            case 'Product Status':
+
+
+                $status = true;
+                if ($this->data['Product Status'] == 'Discontinued') {
+                    $status = false;
+                }
+
+                switch ($this->data['Product Status']) {
+                    case 'InProcess':
+                        $state = 'creating';
+                        break;
+                    case 'Discontinuing':
+                        $state = 'discontinuing';
+                        break;
+                    case 'Discontinued':
+                        $state = 'discontinued';
+                        break;
+
+                    default:
+                        $state = 'active';
+                }
+
+
+                $params['state']  = $state;
+                $params['status'] = $status;
+
+
+                break;
+
+
+            default:
+                return [
+                    false,
+                    false
+                ];
+        }
+
+
+        return [
+            $url,
+            $params
+        ];
     }
 
 }

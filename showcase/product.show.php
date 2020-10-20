@@ -33,6 +33,10 @@ function get_product_showcase($data, $smarty, $user, $db) {
 
     //$product->get_next_deliveries_data();
 
+    //$product->sync_aiku();
+    //$product->sync_aiku();
+   // exit();
+
     $images = $product->get_images_slideshow();
 
     if (count($images) > 0) {

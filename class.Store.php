@@ -4829,7 +4829,6 @@ class Store extends DB_Table {
                 $params['legacy_id'] = $this->id;
                 $params['name']      = $this->data['Store Name'];
                 $params['code']      = $this->data['Store Code'];
-                $params['legacy_id'] = $this->id;
 
                 $data = [
                     'url'      => $this->data['Store URL'],
