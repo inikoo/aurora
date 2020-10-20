@@ -4817,18 +4817,47 @@ class Store extends DB_Table {
 
     }
 
-    function get_aiku_params($field, $value) {
+    function get_aiku_params($field, $value = '') {
 
-        $params = [
-            'legacy_id' => $this->id
-        ];
-
-        $url = AIKU_URL.'store/';
-
-
+        $url = AIKU_URL.'stores/'.$this->id;
 
 
         switch ($field) {
+            case 'Object':
+                $url                 = AIKU_URL.'stores/';
+                $params              = $this->get_aiku_params('Store Status')[1];
+                $params['legacy_id'] = $this->id;
+                $params['name']      = $this->data['Store Name'];
+                $params['code']      = $this->data['Store Code'];
+                $params['legacy_id'] = $this->id;
+
+                $data = [
+                    'url'      => $this->data['Store URL'],
+                    'email'    => $this->data['Store Email'],
+                    'currency' => $this->data['Store Currency Code'],
+                    'locale'   => $this->data['Store Locale'],
+                    'timezone' => $this->data['Store Timezone']
+                ];
+
+                $settings = [
+                    'can_collect'      => $this->data['Store Can Collect']=='Yes',
+
+                ];
+
+
+                $params['data'] = json_encode(
+                    array_filter(
+                        $data
+                    )
+                );
+
+                $params['settings'] = json_encode(
+                    array_filter(
+                        $settings
+                    )
+                );
+
+                break;
             case 'Store Status':
 
                 $legacy_status_to_state = [
@@ -4838,7 +4867,7 @@ class Store extends DB_Table {
                     'Closed'      => 'closed'
                 ];
 
-                $params['state'] = $legacy_status_to_state[$value];
+                $params['state'] = $legacy_status_to_state[$this->data['Store Status']];
 
 
                 break;
@@ -4864,7 +4893,7 @@ class Store extends DB_Table {
                 $params['data'] = json_encode(['timezone' => $value]);
                 break;
             case 'Store Can Collect':
-                $params['settings'] = json_encode(['can_collect' => $value]);
+                $params['settings'] = json_encode(['can_collect' => $value=='Yes']);
                 break;
             default:
                 return [

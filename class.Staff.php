@@ -2289,8 +2289,10 @@ class Staff extends DB_Table {
             'legacy_id' => $this->id
         ];
 
+
+
         if ($this->data['Staff Type'] == 'Employee') {
-            $url    = AIKU_URL.'employee/';
+            $url    = AIKU_URL.'hr/employee/';
             switch ($field) {
                 case 'Staff Currently Working':
                     $params['status'] = ($value == 'Yes' ? 'working' : 'notWorking');
@@ -2326,7 +2328,7 @@ class Staff extends DB_Table {
                     return [false,false];
             }
         } elseif ($this->data['Staff Type'] == 'Contractor') {
-            $url    = AIKU_URL.'guest/';
+            $url    = AIKU_URL.'hr/guest/';
             switch ($field) {
                 case 'Staff Currently Working':
                     $params['status'] = ($value == 'Yes' ? 'active' : 'inactive');

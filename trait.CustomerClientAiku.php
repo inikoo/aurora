@@ -15,13 +15,13 @@ trait CustomerClientAiku {
             'legacy'    => json_encode(['customer_key' => $this->get('Customer Client Customer Key')])
         ];
 
-        $url = AIKU_URL.'customer_client/'.$this->id;
+        $url = AIKU_URL.'customers/customer_client/'.$this->id;
 
 
         switch ($field) {
 
             case 'Object':
-                $url = AIKU_URL.'customer_client/';
+                $url = AIKU_URL.'customers/customer_client/';
 
 
                 $legacy_data=[];

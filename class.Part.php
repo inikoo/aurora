@@ -5278,7 +5278,7 @@ class Part extends Asset {
             'legacy_id' => $this->id,
         ];
 
-        $url = AIKU_URL.'stock/';
+        $url = AIKU_URL.'stocks/';
 
         switch ($field) {
 

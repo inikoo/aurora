@@ -11,13 +11,13 @@ trait CustomerAiku {
     function get_aiku_params($field, $value = '') {
 
 
-        $url = AIKU_URL.'customer/'.$this->id;
+        $url = AIKU_URL.'customers/'.$this->id;
 
 
         switch ($field) {
 
             case 'Object':
-                $url = AIKU_URL.'customer/';
+                $url = AIKU_URL.'customers/';
 
 
                 $legacy_data              = [];
@@ -90,7 +90,7 @@ trait CustomerAiku {
                     )
                 );
                 if ($row = $stmt->fetch()) {
-                    $url = AIKU_URL.'customer/'.$this->id.'/portfolio/'.$value;
+                    $url = AIKU_URL.'customers/'.$this->id.'/portfolio/'.$value;
                     $params=$row;
                     $params['version']='debug';
                 }
