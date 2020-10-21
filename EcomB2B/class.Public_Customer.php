@@ -499,6 +499,13 @@ class Public_Customer extends DBW_Table {
 
                 $this->update_address('Invoice', json_decode($value, true), $options);
 
+                $store   = get_object('Store', $this->data['Customer Store Key']);
+
+                $change_delivery_in_basket=true;
+                if($store->get('Store Type')=='Dropshipping'){
+                    $change_delivery_in_basket=false;
+
+                }
 
                 //print_r(json_decode($value, true));
 
@@ -510,7 +517,7 @@ class Public_Customer extends DBW_Table {
 
                         $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses' => true));
 
-                        if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+                        if ($this->data['Customer Delivery Address Link'] == 'Contact' and $change_delivery_in_basket) {
 
                             $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
 
@@ -520,7 +527,7 @@ class Public_Customer extends DBW_Table {
                     }
 
 
-                    if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+                    if ($this->data['Customer Delivery Address Link'] == 'Billing' and $change_delivery_in_basket) {
 
 
                         $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
