@@ -246,7 +246,7 @@ trait Address {
             // print $type;
 
 
-            if ($store->get('Store Type') != 'External') {
+            if (  !in_array($store->get('Store Type') ,['External','Dropshipping'])) {
                 if ($type == 'Invoice') {
                     $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
                     // print "$sql\n";
