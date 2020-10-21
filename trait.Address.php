@@ -230,15 +230,20 @@ trait Address {
                     $metadata['no_propagate_addresses'] = true;
                     $this->update_field_switcher('Customer Contact Address', $_value, 'no_history', $metadata);
 
-                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
-                        $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+
+                    if (  !in_array($store->get('Store Type') ,['External','Dropshipping'])) {
+                        if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+                            $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+                        }
                     }
 
 
                 }
-                if ($this->data['Customer Delivery Address Link'] == 'Billing') {
-                    $metadata['no_propagate_addresses'] = true;
-                    $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+                if (  !in_array($store->get('Store Type') ,['External','Dropshipping'])) {
+                    if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+                        $metadata['no_propagate_addresses'] = true;
+                        $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+                    }
                 }
 
             }
@@ -265,7 +270,8 @@ trait Address {
                             $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), 'no_history', array('no_propagate_customer' => true));
                         }
                     }
-                } elseif ($type == 'Delivery') {
+                }
+                elseif ($type == 'Delivery') {
                     $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
 
                     if ($result = $this->db->query($sql)) {
