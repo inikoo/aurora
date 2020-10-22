@@ -40,7 +40,8 @@ class PartLocation extends DB_Table {
         global $db;
         $this->db = $db;
 
-        $this->table_name = 'Part Location';
+        $this->table_name      = 'Part Location';
+        $this->can_update_aiku = true;
 
         if (is_array($arg1)) {
             $data = $arg1;
@@ -283,11 +284,17 @@ class PartLocation extends DB_Table {
         $this->db->exec($sql);
         $this->location->update_parts();
         $this->part->update_number_locations();
+        if ($this->can_update_aiku) {
+            $this->part->update_aiku('Part Dimension', 'locations');
+        }
+
 
     }
 
     function audit($qty, $note = '', $date = false, $include_current = false, $parent = '') {
 
+
+        $this->can_update_aiku = false;
 
         if (!$date) {
             $date = gmdate('Y-m-d H:i:s');
@@ -482,6 +489,8 @@ class PartLocation extends DB_Table {
             'warehouse_key' => $this->location->get('Location Warehouse Key'),
         ), $account->get('Account Code')
         );
+
+        $this->part->update_aiku('Part Dimension', 'locations');
 
 
         return $audit_key;
@@ -703,7 +712,7 @@ class PartLocation extends DB_Table {
                 $value = json_decode($value, true);
                 $this->update_min($value['min'], $options);
                 $this->update_max($value['max'], $options);
-
+                $this->update_aiku('Part Location Dimension', 'restocking');
                 break;
             case('Part Location Quantity On Hand'):
             case('Quantity On Hand'):
@@ -714,12 +723,15 @@ class PartLocation extends DB_Table {
                 break;
             case('Part Location Minimum Quantity'):
                 $this->update_min($value, $options);
+                $this->update_aiku('Part Location Dimension', 'restocking');
                 break;
             case('Part Location Maximum Quantity'):
                 $this->update_max($value, $options);
+                $this->update_aiku('Part Location Dimension', 'restocking');
                 break;
             case('Part Location Moving Quantity'):
                 $this->update_move_qty($value);
+                $this->update_aiku('Part Location Dimension', 'restocking');
                 break;
         }
     }
@@ -897,6 +909,11 @@ class PartLocation extends DB_Table {
 
         }
 
+        if ($this->can_update_aiku) {
+            $this->update_aiku('Part Location Dimension', 'note');
+        }
+
+
     }
 
     function qty_analysis($a, $b) {
@@ -1009,7 +1026,9 @@ class PartLocation extends DB_Table {
             }
 
         }
-
+        if ($this->can_update_aiku) {
+            $this->part->update_aiku('Part Dimension', 'locations');
+        }
 
     }
 
@@ -1208,6 +1227,9 @@ class PartLocation extends DB_Table {
 
         }
 
+        if ($this->can_update_aiku) {
+            $this->update_aiku('Part Location Dimension', 'quantity');
+        }
 
         return $transaction_id;
 
@@ -1434,7 +1456,7 @@ class PartLocation extends DB_Table {
 
         if ($this->exist_on_date($date)) {
 
-         //   print "Yeah\n";
+            //   print "Yeah\n";
 
             if ($date == gmdate('Y-m-d')) {
                 $cost_per_sko = $this->get_sko_cost();
@@ -1524,13 +1546,13 @@ class PartLocation extends DB_Table {
             );
 
         } else {
-           // print "Naa\n";
+            // print "Naa\n";
             $params = [
                 'index' => 'au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE),
                 'id'    => DNS_ACCOUNT_CODE.'.'.$this->part_sku.'_'.$this->location_key.'.'.$date,
             ];
 
-           // print_r($params);
+            // print_r($params);
 
             try {
                 $client->delete($params);
@@ -1538,7 +1560,6 @@ class PartLocation extends DB_Table {
             } catch (Exception $e) {
 
             }
-
 
 
             return array(
@@ -1870,6 +1891,65 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $amount_out_other
         );
 
+    }
+
+
+    function get_aiku_params($field, $value = '') {
+
+        $params = [];
+
+        $url = AIKU_URL.'location_stock/'.$this->location_key.'/'.$this->part_sku;
+
+        switch ($field) {
+
+            case 'quantity':
+
+                $params['quantity'] = $this->data['Quantity On Hand'];
+
+                break;
+            case 'note':
+                $params['data'] = json_encode(
+                    array_filter(
+                        [
+                            'note' => $this->data['Part Location Note']
+                        ]
+                    )
+                );
+                break;
+            case 'restocking':
+
+                $restocking = array_filter(
+                    [
+                        'min'  => $this->data['Minimum Quantity'],
+                        'max'  => $this->data['Maximum Quantity'],
+                        'move' => $this->data['Moving Quantity']
+                    ]
+                );
+
+                $params['settings'] = json_encode(
+                    array_filter(
+                        [
+                            'restocking' => $restocking
+
+                        ]
+                    )
+
+                );
+                break;
+
+
+            default:
+                return [
+                    false,
+                    false
+                ];
+        }
+
+
+        return [
+            $url,
+            $params
+        ];
     }
 
 

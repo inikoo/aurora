@@ -5298,6 +5298,11 @@ class Part extends Asset {
                 $params['packed_in']          = $this->data['Part Units Per Package'];
                 $params['available_forecast'] = $this->data['Part Days Available Forecast'];
 
+
+                $legacy_data                         = [];
+                $legacy_data += json_decode($this->get_aiku_params('locations')[1]['legacy'], true);
+                $params['legacy'] = json_encode($legacy_data);
+
                 $params['data'] = json_encode(
                     [
                         'package' => [
@@ -5314,7 +5319,30 @@ class Part extends Asset {
                     ]
                 );
                 break;
+            case 'locations':
 
+                $locations = [];
+
+                $sql = "SELECT `Location Place`,PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=? 
+    order by `Can Pick` desc,`Quantity On Hand`
+";
+
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    $locations[] = $row;
+                }
+                $legacy_data          = [];
+                $legacy_data['locations'] = $locations;
+
+                $params['legacy'] = json_encode($legacy_data);
+
+                break;
             case 'Part Status':
                 $legacy_status_to_state = [
                     'In Use'        => 'active',
