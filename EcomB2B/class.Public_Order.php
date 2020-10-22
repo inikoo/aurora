@@ -19,13 +19,14 @@ include_once __DIR__.'/trait.OrderCalculateTotals.php';
 include_once __DIR__.'/trait.OrderOperations.php';
 include_once __DIR__.'/trait.OrderTax.php';
 include_once __DIR__.'/trait.OrderGet.php';
+include_once __DIR__.'/trait.OrderAiku.php';
 
 
 include_once 'class.DBW_Table.php';
 
 
 class Public_Order extends DBW_Table {
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderOperations, OrderTax,OrderGet;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderOperations, OrderTax,OrderGet,OrderAiku;
 
 
     var $amount_off_allowance_data = false;

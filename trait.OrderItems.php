@@ -198,8 +198,13 @@ trait OrderItems {
 
                 }
 
+
+
+
+
             }
-        }else{
+        }
+        else{
             $old_quantity   = 0;
             $old_net_amount = 0;
             $total_quantity = $quantity + $bonus_quantity;
@@ -396,6 +401,8 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                         'proforma_operations'
                     );
                 }
+
+                $this->update_aiku('Order Dimension', 'refresh_basket');
 
 
             } elseif ($this->get('Order State') == 'InProcess') {

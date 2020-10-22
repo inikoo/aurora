@@ -23,11 +23,12 @@ include_once 'trait.OrderCalculateTotals.php';
 include_once 'trait.OrderOperations.php';
 include_once 'trait.OrderTax.php';
 include_once 'trait.OrderGet.php';
+include_once 'trait.OrderAiku.php';
 
 
 class Order extends DB_Table {
 
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderOperations, OrderTax, OrderGet;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderOperations, OrderTax, OrderGet, OrderAiku;
 
 
     var $amount_off_allowance_data = false;
