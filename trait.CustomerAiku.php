@@ -89,12 +89,14 @@ trait CustomerAiku {
                         $value
                     )
                 );
+
+
+
                 if ($row = $stmt->fetch()) {
                     $url = AIKU_URL.'customers/'.$this->id.'/portfolio/'.$value;
-                    $params=$row;
-                    $params['version']='debug';
-                }
+                    $params['legacy']               = json_encode($row);
 
+                }
 
                 break;
             case 'billing_address':
