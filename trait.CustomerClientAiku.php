@@ -21,7 +21,7 @@ trait CustomerClientAiku {
         switch ($field) {
 
             case 'Object':
-                $url = AIKU_URL.'customers/customer_client/';
+                $url = AIKU_URL.'customers/customer_client';
 
 
                 $legacy_data=[];
