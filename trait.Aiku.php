@@ -39,6 +39,7 @@ trait Aiku {
             case 'Part Dimension':
             case 'Product Dimension':
             case 'Part Location Dimension':
+            case 'Order Dimension':
 
                 list($url, $params) = $this->get_aiku_params($field, $value);
                 if (!$url) {
