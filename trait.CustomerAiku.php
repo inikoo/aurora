@@ -45,8 +45,8 @@ trait CustomerAiku {
                     'tax_number'          => $this->data['Customer Tax Number'],
                     'website'             => $this->data['Customer Website']
                 ];
-                $data += $this->get_aiku_params('tax_number_validation')[1];
 
+                $data += json_decode($this->get_aiku_params('tax_number_validation')[1]['data'], true);
 
                 $params['data'] = json_encode(
                     array_filter(
@@ -91,10 +91,9 @@ trait CustomerAiku {
                 );
 
 
-
                 if ($row = $stmt->fetch()) {
-                    $url = AIKU_URL.'customers/'.$this->id.'/portfolio/'.$value;
-                    $params['legacy']               = json_encode($row);
+                    $url              = AIKU_URL.'customers/'.$this->id.'/portfolio/'.$value;
+                    $params['legacy'] = json_encode($row);
 
                 }
 
@@ -123,10 +122,13 @@ trait CustomerAiku {
                 break;
             case 'tax_number_validation':
 
+
+                $data = [];
+
                 if ($this->data['Customer Tax Number'] == '') {
-                    $params['tax_number_validation'] = '';
+                    $data['tax_number_validation'] = '';
                 } else {
-                    $params['tax_number_validation'] = json_encode(
+                    $data['tax_number_validation'] = json_encode(
                         array_filter(
                             [
                                 'valid'              => strtolower($this->data['Customer Tax Number Valid']),
@@ -139,7 +141,7 @@ trait CustomerAiku {
                         )
                     );
                 }
-
+                $params['data'] = json_encode($data);
 
                 break;
             case 'Customer Type by Activity':
