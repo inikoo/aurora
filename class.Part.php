@@ -4032,12 +4032,13 @@ class Part extends Asset {
             $amount = 0;
 
             $sql = sprintf(
-                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d  AND `Inventory Transaction Type`='Other Out'  AND  `Inventory Transaction Quantity`>0 ", $this->id
+                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d  AND `Inventory Transaction Type` in ('Other Out','Found')  AND  `Inventory Transaction Quantity`>0 ", $this->id
             );
-
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
+
+
                     $skos   = round($row['qty'], 1);
                     $amount = round($row['amount'], 2);
                 }
