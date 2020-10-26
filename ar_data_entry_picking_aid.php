@@ -19,11 +19,14 @@ $data = prepare_values(
                  'delivery_note_key' => array('type' => 'key'),
                  'order_key'         => array('type' => 'key'),
                  'level'             => array('type' => 'numeric'),
-                 'items'             => array('type' => 'json array'),
-                 'parcels'           => array('type' => 'json array'),
-                 'fields'            => array('type' => 'json array'),
+                 'service'           => array('type' => 'string'),
+
+                 'items'   => array('type' => 'json array'),
+                 'parcels' => array('type' => 'json array'),
+                 'fields'  => array('type' => 'json array'),
              )
 );
+
 
 $data_entry_picking_aid = new data_entry_picking_aid($data, $editor, $db, $account);
 $validation             = $data_entry_picking_aid->parse_input_data();

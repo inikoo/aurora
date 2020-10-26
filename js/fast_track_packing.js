@@ -739,21 +739,29 @@ function validate_data_entry_picking_aid() {
 
 
 
-
-    if ($('#set_tracking_number').val() !='') {
+    if($('.tracking_number_container').hasClass('hide')){
         check_list.tracking_number.filled = true
-
-
-    }else{
-        check_list.tracking_number.filled = false
-    }
-
-    if($('#set_tracking_number').hasClass('invalid')){
-        check_list.tracking_number.valid = false
-
-    }else{
         check_list.tracking_number.valid = true
+
+    }else{
+        if ($('#set_tracking_number').val() !='') {
+            check_list.tracking_number.filled = true
+
+
+        }else{
+            check_list.tracking_number.filled = false
+        }
+
+        if($('#set_tracking_number').hasClass('invalid')){
+            check_list.tracking_number.valid = false
+
+        }else{
+            check_list.tracking_number.valid = true
+        }
     }
+
+
+
 
     $('.picked_quantity_components i.plus').each(function (i, obj) {
 
@@ -1060,7 +1068,16 @@ function save_data_entry_picking_aid() {
 
     });
 
+    var service_type='';
+    if(!$('.apc_service_type').hasClass('hide')){
+        $('.apc_service_type .service_type').each(function(i, obj) {
 
+            if($(obj).find('i').hasClass('fa-dot-circle')){
+                service_type=$(obj).data('service')
+            }
+
+        });
+    }
 
 
     $.post("/ar_data_entry_picking_aid.php", {
@@ -1069,6 +1086,7 @@ function save_data_entry_picking_aid() {
         level: $('.order_data_entry_picking_aid_state_after_save').val(),
         fields: JSON.stringify(fields),
         parcels: JSON.stringify(parcels),
+        service:service_type,
 
         items:  JSON.stringify(items)
     },null, "json")

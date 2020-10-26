@@ -2728,7 +2728,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function get_label() {
+    function get_label($service = '') {
 
 
         $shipper = get_object('Shipper', $this->data['Delivery Note Shipper Key']);
@@ -2793,18 +2793,18 @@ class DeliveryNote extends DB_Table {
 
             }
 
-            $customer=get_object('Customer',$this->data['Delivery Note Customer Key']);
+            $customer = get_object('Customer', $this->data['Delivery Note Customer Key']);
 
-            $phone= preg_replace('/\s/', '', $this->get('Delivery Note Telephone'));
+            $phone = preg_replace('/\s/', '', $this->get('Delivery Note Telephone'));
 
 
-            if($phone==''){
+            if ($phone == '') {
 
-                $phone=$customer->get('Customer Main Plain Mobile');
+                $phone = $customer->get('Customer Main Plain Mobile');
             }
 
-            if($phone==''){
-                $phone=$customer->get('Customer Main Plain Telephone');
+            if ($phone == '') {
+                $phone = $customer->get('Customer Main Plain Telephone');
             }
 
 
@@ -2832,13 +2832,16 @@ class DeliveryNote extends DB_Table {
             ];
 
 
+            if (!empty($service)) {
+                $post['service_type'] = $service;
+            }
 
 
             $order = get_object('Order', $this->get('Delivery Note Order Key'));
 
 
-            if($order->get('Order Delivery Sticky Note')!=''){
-                $post['note']=$order->get('Order Delivery Sticky Note');
+            if ($order->get('Order Delivery Sticky Note') != '') {
+                $post['note'] = $order->get('Order Delivery Sticky Note');
             }
 
 
@@ -2854,13 +2857,28 @@ class DeliveryNote extends DB_Table {
                 );
             }
 
-            //print_r($post);
-           // exit;
+
+            if($shipper->get('Shipper Code')=='APC') {
+
+                $sql  = "select count(*) as num from `Inventory Transaction Fact` ITF left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`) where `Delivery Note Key`=? and `Part UN Number`!='' and `Inventory Transaction Quantity`<0 ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    if ($row['num'] > 0) {
+                        $post['service_type'] = 'LQ16';
+                    }
+                }
+            }
+
+
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
-           // print_r($tmp);
-           // exit;
+
             $response = json_decode($tmp, true);
 
 
@@ -2877,11 +2895,9 @@ class DeliveryNote extends DB_Table {
                 );
                 $this->fast_update_json_field('Delivery Note Properties', 'label_link', $response['label_link']);
 
-                //print_r($response);
 
 
             } else {
-                // print_r($response);
 
 
             }

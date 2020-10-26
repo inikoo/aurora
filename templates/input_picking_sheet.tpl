@@ -139,10 +139,10 @@
             <table class="parcels" >
                 <tr>
                     <td style="padding-right:20px">
-                        <i  onclick="add_parcel(this)" class="fa fa-plus add_parcel button "></i>
+                        <i  onclick="add_parcel(this)" class="fa fa-plus add_parcel button parcel_dimension_inputs "></i>
                     </td>
                     <td><i class="fal fa-weight" title="{t}Weight{/t}"></i> Kg</td>
-                    <td style="padding-left:20px"><i class="fal fa-ruler-triangle" title="{t}Dimensions{/t}"></i> cm</td>
+                    <td style="padding-left:20px" class="parcel_dimension_inputs"><i class="fal fa-ruler-triangle" title="{t}Dimensions{/t}"></i> cm</td>
 
                 </tr>
                 <tr class="parcel_tr">
@@ -152,7 +152,8 @@
                     <td>
                     <input  class=" parcel_weight width_40   field_to_check"  min="0" value="" has_been_valid="0"/>
                     </td>
-                    <td style="padding-left:20px">
+                    <td  class="parcel_dimension_inputs" style="padding-left:20px">
+
                         <input  value="{$parcel_default_dimensions[0]}" class="dim_0 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>
                         <input  value="{$parcel_default_dimensions[1]}" class="dim_1 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>
                         <input  value="{$parcel_default_dimensions[2]}" class="dim_2 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>
@@ -180,7 +181,7 @@
                  <select class="shippers_options small" style="width: 200px">
                     <option data-display="{t}Select courier{/t}"   {if !$with_shipping}selected="selected"{/if}  value="">{t}No courier{/t}</option>
                     {foreach from=$shippers item=shipper}
-                        <option data-api_key="{$shipper.api_key}"  value="{$shipper.key}" {if $parent->settings('data_entry_picking_aid_default_shipper')==$shipper.key  and $with_shipping }selected="selected"{/if} >{$shipper.code} {if $shipper.api_key!=''}(API){/if} </option>
+                        <option data-api_key="{$shipper.api_key}"  data-code="{$shipper.code}"  value="{$shipper.key}" {if $parent->settings('data_entry_picking_aid_default_shipper')==$shipper.key  and $with_shipping }selected="selected"{/if} >{$shipper.code} {if $shipper.api_key!=''}(API){/if} </option>
                     {/foreach}
 
 
@@ -190,6 +191,16 @@
             <div class="tracking_number_container" style="clear: both;padding-top: 10px">
             <input id="set_tracking_number" data-field="Delivery Note Shipper Tracking" class="tracking_number input_field field_to_check" placeholder="{t}Tracking number{/t}">
             </div>
+
+            <div class="apc_service_type hide" style="clear: both;padding-top: 10px"  >
+                <div class="button">
+                <span data-service="CP16" class="service_type CP16" onclick="change_shipper_service_type(this)"><i data-field="service_type" class="far fa-circle"></i>  {t}Courier pack{/t} </span>
+                </div>
+                <div class="button">
+                    <span data-service="MP16" class="service_type MP16" onclick="change_shipper_service_type(this)"><i data-field="service_type" class="far fa-circle"></i>  {t}Mailpack{/t} </span>
+                </div>
+            </div>
+
 
         </td>
 
@@ -319,13 +330,24 @@
 
         var value=$( ".shippers_options option:selected" ).val();
 
-          var api_key=  $( ".shippers_options option:selected" ).data('api_key')
+            var api_key=  $( ".shippers_options option:selected" ).data('api_key')
+            var api_code=  $( ".shippers_options option:selected" ).data('code')
 
 
             if(api_key>0){
-                $('.tracking_number_container').addClass('invisible')
+                $('.tracking_number_container').addClass('hide invisible')
+
+                if(api_code=='APC'){
+                    $('.apc_service_type').removeClass('hide')
+                }else{
+                    $('.apc_service_type').addClass('hide')
+
+                }
+
+
             }else{
-                $('.tracking_number_container').removeClass('invisible')
+                $('.tracking_number_container').removeClass('invisible hide')
+                $('.apc_service_type').addClass('hide')
 
             }
 
@@ -367,6 +389,35 @@
     };
 
 
+    function change_shipper_service_type(element){
+
+        var element_has_service=false;
+
+        if($(element).find('i').hasClass('fa-dot-circle')){
+            element_has_service=true;
+        }
+
+        $('.apc_service_type .service_type').each(function(i, obj) {
+
+            $(obj).find('i').removeClass('fa-dot-circle').addClass('fa-circle')
+
+        });
+
+
+        if( !element_has_service){
+            $(element).find('i').addClass('fa-dot-circle').removeClass('fa-circle')
+            $('.parcel_dimension_inputs').addClass('hide')
+        }else{
+            $('.parcel_dimension_inputs').removeClass('hide')
+
+        }
+
+
+
+
+
+
+    }
 
 
 </script>

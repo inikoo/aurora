@@ -911,7 +911,7 @@ class data_entry_picking_aid {
         }
 
         if ($this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
-            $this->dn->get_label();
+            $this->dn->get_label($this->data['service']);
         }
 
         if ($this->level >= 20 and $this->dn->get('Delivery Note Type') == 'Order') {
