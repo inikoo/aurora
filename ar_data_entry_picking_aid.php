@@ -19,7 +19,7 @@ $data = prepare_values(
                  'delivery_note_key' => array('type' => 'key'),
                  'order_key'         => array('type' => 'key'),
                  'level'             => array('type' => 'numeric'),
-                 'service'           => array('type' => 'string'),
+                 'service'           => array('type' => 'string','optional'=>true),
 
                  'items'   => array('type' => 'json array'),
                  'parcels' => array('type' => 'json array'),

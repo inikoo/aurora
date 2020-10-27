@@ -911,6 +911,10 @@ class data_entry_picking_aid {
         }
 
         if ($this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
+            $service='';
+            if(isset($this->data['service'])){
+                $service=$this->data['service'];
+            }
             $this->dn->get_label($this->data['service']);
         }
 
