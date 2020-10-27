@@ -475,7 +475,8 @@ class Order extends DB_Table {
 
                     case 'InWarehouse':
                         return 40;
-
+                    case 'Packed':
+                        return 50;
 
                     case 'PackedDone':
                         return 80;
@@ -508,9 +509,11 @@ class Order extends DB_Table {
                     case 'InWarehouse':
                         return 'fal fa-warehouse';
 
+                    case 'Packed':
+                        return 'fal fa-box';
 
                     case 'PackedDone':
-                        return 'fal fa-box';
+                        return 'fal fa-box-check';
 
                     case 'Approved':
                         return 'fal fa-box-usd';

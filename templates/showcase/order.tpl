@@ -46,6 +46,19 @@
             </div>
             <div class="dot"></div>
         </li>
+        <li id="in_warehouse_node" class="li {if $order->get('State Index')>=40}complete{/if} ">
+            <div class="label">
+                <span class="state">&nbsp;{t}Packed{/t}&nbsp;<span></i></span></span>
+            </div>
+            <div class="timestamp">
+                <span class="Order_In_Warehouse" ">&nbsp;
+
+                <span class="Order_Send_to_Warehouse_Date">&nbsp;{$order->get('Send to Warehouse Date')}</span>
+
+                &nbsp;</span>
+            </div>
+            <div class="dot"></div>
+        </li>
 
         <li id="packed_done_node" class="li {if $order->get('State Index')>=80}complete{/if} ">
             <div class="label">
