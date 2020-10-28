@@ -206,7 +206,7 @@
         <td class="label" rowspan="2" style="padding: 0px 20px">
 
 
-            <input type="hidden"  id="is_order_packed" value="{if   $order->get('State Index')>=50}Yes{else}0=No{/if}" />
+            <input type="hidden"  id="is_order_packed" value="{if   $order->get('State Index')>=50}Yes{else}No{/if}" />
 
             <input type="hidden" class="order_data_entry_picking_aid_state_after_save"
                    value="{if $parent->settings('data_entry_picking_aid_state_after_save')=='' or   $parent->settings('data_entry_picking_aid_state_after_save')==0 }{if   $order->get('State Index')>=50}10{else}0{/if}{elseif $parent->settings('data_entry_picking_aid_state_after_save')=='5'}{if $order->get('State Index')>=50}10{else}5{/if}{else}{$parent->settings('data_entry_picking_aid_state_after_save')}{/if}" >
