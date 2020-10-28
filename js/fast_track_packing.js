@@ -1107,11 +1107,13 @@ function save_data_entry_picking_aid() {
         });
     }
 
+    var level = parseFloat($('.order_data_entry_picking_aid_state_after_save').val());
+
 
     $.post("/ar_data_entry_picking_aid.php", {
         order_key: $('.input_picking_sheet_table').data('order_key'),
         delivery_note_key: $('.input_picking_sheet_table').data('delivery_note_key'),
-        level: $('.order_data_entry_picking_aid_state_after_save').val(),
+        level: level,
         fields: JSON.stringify(fields),
         parcels: JSON.stringify(parcels),
         service:service_type,
