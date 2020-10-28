@@ -2811,6 +2811,61 @@ class DeliveryNote extends DB_Table {
             }
 
 
+            $number_parcels=count($parcels);
+
+            $items = [];
+
+            $sql = " SELECT `Order Transaction Fact Key`, `Order Quantity` as ordered, `Country 2 Alpha Code` as origin_country_code,OTF.`Delivery Note Quantity` as packed, `Order Transaction Amount` as amount, `Product Package Weight` as weight ,`Order Currency Code` currency,
+`Product History Name` as name,`Product History Price` as price,`Product Units Per Case` as units,`Product Tariff Code` tariff_code,`Product History Code` as code
+ FROM `Inventory Transaction Fact` ITF left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
+ left join kbase.`Country Dimension` C on (C.`Country Code`=`Product Origin Country Code`)
+ WHERE ITF.`Delivery Note Key`=?    ORDER BY `Product History Code`";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            $parcel_index=0;
+            while ($row = $stmt->fetch()) {
+
+                if($this->get('State Index')>70){
+                    if($row['packed']==0){
+                        continue;
+                    }
+                    $row['qty']=$row['packed'];
+                }else{
+                    $row['qty']=$row['ordered'];
+                }
+
+
+
+                $items[$row['Order Transaction Fact Key']] = $row;
+
+
+
+
+                if(!isset($parcels[$parcel_index]->items)){
+
+
+                    $parcels[$parcel_index]->items=[$row['Order Transaction Fact Key']];
+
+
+                }else{
+                    array_push( $parcels[$parcel_index]->items,$row['Order Transaction Fact Key']);
+                }
+
+
+                if($parcel_index>=($number_parcels-1)){
+                    $parcel_index=0;
+                }else{
+                    $parcel_index++;
+                }
+
+            }
+
+
             $ship_to = [
                 'contact'             => $this->get('Delivery Note Address Recipient'),
                 'organization'        => $this->get('Delivery Note Address Organization'),
@@ -2860,33 +2915,6 @@ class DeliveryNote extends DB_Table {
                 );
             }
 
-            $items = [];
-
-            $sql = " SELECT  `Order Quantity` as ordered, `Product Origin Country Code` as origin_country_code,OTF.`Delivery Note Quantity` as packed, `Order Transaction Amount` as amount, `Product Package Weight` as weight ,`Order Currency Code` currency,
-`Product History Name` as name,`Product History Price` as price,`Product Units Per Case` as units,`Product Tariff Code` tariff_code,`Product History Code` as code
- FROM `Inventory Transaction Fact` ITF left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
- 
- WHERE ITF.`Delivery Note Key`=?    ORDER BY `Product History Code`";
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $this->id
-                )
-            );
-            while ($row = $stmt->fetch()) {
-
-                if($this->get('State Index')>70){
-                    if($row['packed']==0){
-                        continue;
-                    }
-                    $row['qty']=$row['packed'];
-                }else{
-                    $row['qty']=$row['ordered'];
-                }
-
-                $items[] = $row;
-            }
 
 
             $post['order'] = json_encode([
@@ -2897,7 +2925,7 @@ class DeliveryNote extends DB_Table {
 
             if ($shipper->get('Shipper Code') == 'APC') {
 
-                $sql  = "select count(*) as num from `Inventory Transaction Fact` ITF left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`) where `Delivery Note Key`=? and `Part UN Number`!='' and `Inventory Transaction Quantity`<0 ";
+                $sql  = "select count(*) as num from `Inventory Transaction Fact` ITF left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`) where `Delivery Note Key`=? and `Part UN Number`!='' and `Required`>0 ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
                     array(
@@ -2911,8 +2939,8 @@ class DeliveryNote extends DB_Table {
                 }
             }
 
-            //print_r($post);
-            //exit;
+           // print_r($post);
+           // exit;
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
