@@ -595,6 +595,17 @@ function get_tab_defaults_data() {
             'elements'      => get_elements_option('orders_in_control_panel'),
         ),
 
+        'orders.packed' => array(
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 500,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'number',
+            'elements_type' => 'location',
+            'elements'      => get_elements_option('orders_in_control_panel'),
+        ),
+
         'orders.packed_done' => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
@@ -605,6 +616,7 @@ function get_tab_defaults_data() {
             'elements_type' => 'location',
             'elements'      => get_elements_option('orders_in_control_panel'),
         ),
+
 
 
         'orders.approved' => array(

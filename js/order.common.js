@@ -1294,11 +1294,18 @@ function get_orders_table( order_flow, metadata, force) {
             $('.Orders_In_Warehouse_With_Alerts_Amount').addClass('blue')
 
             break;
+        case 'packed':
+            $('#order_flow_packed').addClass('selected')
+            widget='orders.packed.wget'
+            $('.Orders_Packed_Number').addClass('blue')
+            $('.Orders_Packed_Amount').addClass('blue')
+
+            break;
         case 'packed_done':
             $('#order_flow_packed').addClass('selected')
             widget='orders.packed_done.wget'
-            $('.Orders_Packed_Number').addClass('blue')
-            $('.Orders_Packed_Amount').addClass('blue')
+            $('.Orders_Packed_Done_Number').addClass('blue')
+            $('.Orders_Packed_Done_Amount').addClass('blue')
 
             break;
         case 'approved':

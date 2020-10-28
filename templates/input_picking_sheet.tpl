@@ -88,7 +88,7 @@
 }'>
 
     <tr class="top">
-        <td class="label" >
+        <td class="label {if $order->get('State Index')>=50}invisible{/if} " >
 
 
 
@@ -133,7 +133,7 @@
         </td>
 
 
-        <td class="label"  rowspan="2" style="padding-top:0px">
+        <td class="label {if $order->get('State Index')>=50}invisible{/if} "  rowspan="2" style="padding-top:0px">
 
 
             <table class="parcels" >
@@ -173,7 +173,7 @@
 
 
 
-        <td class="label {if !$with_shipping}hide{/if}" rowspan="2" style="padding: 0px 20px">
+        <td class="label  {if $order->get('State Index')>=50}invisible{/if}   {if !$with_shipping}hide{/if}" rowspan="2" style="padding: 0px 20px">
 
 
             <div >
@@ -203,10 +203,25 @@
 
 
         </td>
-
         <td class="label" rowspan="2" style="padding: 0px 20px">
-            <input type="hidden" class="order_data_entry_picking_aid_state_after_save"  value="{if $parent->settings('data_entry_picking_aid_state_after_save')==''  }0{else}{$parent->settings('data_entry_picking_aid_state_after_save')}{/if}" >
-            <div><span data-level="L10" class="button L10" onclick="change_order_data_entry_picking_aid_state_after_save(this)"><i class="far {if $parent->settings('data_entry_picking_aid_state_after_save')>=10}fa-check-square{else}fa-square{/if}"></i>  {t}Set as closed{/t} </span></div>
+
+
+            <input type="hidden"  id="is_order_packed" value="{if   $order->get('State Index')>=50}Yes{else}0=No{/if}" />
+
+            <input type="hidden" class="order_data_entry_picking_aid_state_after_save"
+                   value="
+{if $parent->settings('data_entry_picking_aid_state_after_save')=='' or   $parent->settings('data_entry_picking_aid_state_after_save')==0 }
+{if   $order->get('State Index')>=50}10{else}0{/if}
+{elseif $parent->settings('data_entry_picking_aid_state_after_save')=='5'}
+{if $order->get('State Index')>=50}10{else}5{/if}
+{else}{$parent->settings('data_entry_picking_aid_state_after_save')}
+{/if}" >
+
+
+
+            <div class="{if $order->get('State Index')>=50}hide{/if}"><span data-level="L5" class=" L5" ><i class="far fa-check-square"></i> {t}Set as packed{/t} </span></div>
+
+            <div style="margin-top:5px;margin-bottom: 5px"><span data-level="L10" class="{if $order->get('State Index')<50}button{/if} L10" {if $order->get('State Index')<50}onclick="change_order_data_entry_picking_aid_state_after_save(this)"{/if}><i class="far {if $parent->settings('data_entry_picking_aid_state_after_save')>=10 or $order->get('State Index')>=50}fa-check-square{else}fa-square{/if}"></i>  {t}Mark out of stocks{/t} </span></div>
 
 
             {if  isset($dn)  and  !( $dn->get('Delivery Note Type')=='Order'  or  $dn->get('Delivery Note Type')=='Sample' or  $dn->get('Delivery Note Type')=='Donation' )    }
@@ -243,7 +258,7 @@
     </tr>
 
     <tr class="_bottom">
-        <td >
+        <td class=" {if $order->get('State Index')>=50}invisible{/if}">
 
 
 
@@ -418,6 +433,9 @@
 
 
     }
+
+
+
 
 
 </script>

@@ -2,12 +2,14 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  12 August 2017 at 17:53:24 CEST, Lake Balaton , Hungary
- Copyright (c) 2015, Inikoo
+ Created: 19 August 2017 at 13:33:27 GMT+5:30,  Delhi Airport, India
+ Copyright (c) 2017, Inikoo
 
  Version 3
 
 */
+
+
 
 
 $group_by = '';
@@ -16,30 +18,38 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where true" ';
-$table = '`Order Dimension` O left join `Store Dimension` S on (S.`Store Key`=O.`Order Store Key`) left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
+$where = 'where  (`Order State`="Packed"  ) ';
+$table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 
-if($user->can_view('stores') or $user->can_view('accounting')){
-    $where = "where true";
+if ($parameters['parent'] == 'store') {
+    if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
+        $where .= sprintf(' and  `Order Store Key`=%d ', $parameters['parent_key']);
+        if (!isset($store)) {
+            $store = get_object('Store', $parameters['parent_key']);
+        }
+        $currency     = $store->data['Store Currency Code'];
+        $home_country = $store->get('Store Home Country Code 2 Alpha');
+    } else {
+        $where .= sprintf(' and  false');
+    }
 
-}else{
-    $where = "where false";
+
+} elseif ($parameters['parent'] == 'account') {
+    $home_country = $account->get('Account Country 2 Alpha Code');
+    if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
+        if (count($user->stores) == 0) {
+            $where .= ' and false';
+        } else {
+
+            $where .= sprintf('and  `Order Store Key` in (%s)  ', join(',', $user->stores));
+        }
+    }
 }
 
 
 
 
-if (isset($parameters['period'])) {
-    include_once 'utils/date_functions.php';
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
-        $db, $parameters['period'], $parameters['from'], $parameters['to']
-    );
-
-    $where_interval = prepare_mysql_dates($from, $to, 'O.`Order Date`');
-    $where .= $where_interval['mysql'];
-}
 
 if (isset($parameters['elements_type'])) {
 
@@ -47,7 +57,31 @@ if (isset($parameters['elements_type'])) {
 
     switch ($parameters['elements_type']) {
 
+        case('location'):
+            $_elements            = '';
+            $num_elements_checked = 0;
+            foreach (
+                $parameters['elements']['location']['items'] as $_key => $_value
+            ) {
+                $_value = $_value['selected'];
+                if ($_value) {
+                    $num_elements_checked++;
+                    $_elements .= $_key;
+                }
+            }
 
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($num_elements_checked == 2) {
+
+            } else {
+                if ($_elements == "Export") {
+                    $where .= sprintf('and `Order Invoice Address Country 2 Alpha Code`!=%s', prepare_mysql($home_country));
+                } else {
+                    $where .= sprintf('and `Order Invoice Address Country 2 Alpha Code`=%s', prepare_mysql($home_country));
+                }
+            }
+            break;
         case('state'):
             $_elements            = '';
             $num_elements_checked = 0;
@@ -58,13 +92,7 @@ if (isset($parameters['elements_type'])) {
                 if ($_value) {
                     $num_elements_checked++;
 
-                    if($_key=='PackedDone'){
-                        $_elements .= ", 'PackedDone','Packed'";
-
-                    }else{
-                        $_elements .= ", '$_key'";
-
-                    }
+                    $_elements .= ", '$_key'";
                 }
             }
 
@@ -155,18 +183,14 @@ if (isset($parameters['elements_type'])) {
 }
 
 
+
+
 if (($parameters['f_field'] == 'customer') and $f_value != '') {
     $wheref = sprintf(
         '  and  `Order Customer Name`  REGEXP "\\\\b%s" ', addslashes($f_value)
     );
-} elseif (($parameters['f_field'] == 'postcode') and $f_value != '') {
-    $wheref = "  and  `Customer Main Plain Postal Code` like '%".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'number' and $f_value != '') {
+}  elseif ($parameters['f_field'] == 'number' and $f_value != '') {
     $wheref = " and  `Order Public ID`  like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'maxvalue' and is_numeric($f_value)) {
-    $wheref = " and  `Order Invoiced Balance Total Amount`<=".$f_value."    ";
-} elseif ($parameters['f_field'] == 'minvalue' and is_numeric($f_value)) {
-    $wheref = " and  `Order Invoiced Balance Total Amount`>=".$f_value."    ";
 }
 
 
@@ -178,8 +202,6 @@ if ($order == 'public_id') {
     $order = '`Order File As`';
 } elseif ($order == 'last_date' or $order == 'date') {
     $order = 'O.`Order Date`';
-}elseif ($order == 'state') {
-    $order = 'O.`Order State`';
 } elseif ($order == 'customer') {
     $order = 'O.`Order Customer Name`';
 } elseif ($order == 'dispatch_state') {
@@ -188,20 +210,15 @@ if ($order == 'public_id') {
     $order = 'O.`Order Payment State`';
 } elseif ($order == 'total_amount') {
     $order = 'O.`Order Total Amount`';
-}elseif ($order == 'margin') {
-    $order = 'O.`Order Margin`';
 } else {
     $order = 'O.`Order Key`';
 }
 
-
-
 $fields
-    = '`Order Profit Amount`,`Order Margin`,`Order State`,`Store Code`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Current XHTML Dispatch State`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`';
+    = '`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
+     (select group_concat(`Delivery Note Key`) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key` and `Delivery Note State`="PackedDone"  ) as delivery_notes,`Order Priority Level`,`Order Care Level`
+    
+    
+    ';
 
 $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
-//$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
-
-
-?>

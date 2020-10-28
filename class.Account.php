@@ -2472,6 +2472,8 @@ class Account extends DB_Table {
         $this->update_orders_in_process_data();
         $this->update_orders_in_warehouse_data();
         $this->update_orders_packed_data();
+        $this->update_orders_packed_done_data();
+
         $this->update_orders_approved_data();
         $this->update_orders_dispatched();
         $this->update_orders_dispatched_today();
@@ -2675,6 +2677,50 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='Packed' "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['packed']['number']    = $row['num'];
+                $data['packed']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+
+
+        $data_to_update = array(
+            'Account Orders Packed Number' => $data['packed']['number'],
+            'Account Orders Packed Amount' => round($data['packed']['dc_amount'], 2)
+
+
+        );
+        $this->fast_update($data_to_update, 'Account Data');
+    }
+
+
+    function update_orders_packed_done_data() {
+
+        $data = array(
+            'packed' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+        $sql = sprintf(
             "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order State` ='PackedDone' "
         );
 
@@ -2714,8 +2760,8 @@ class Account extends DB_Table {
 
 
         $data_to_update = array(
-            'Account Orders Packed Number' => $data['packed']['number'],
-            'Account Orders Packed Amount' => round($data['packed']['dc_amount'], 2)
+            'Account Orders Packed Done Number' => $data['packed']['number'],
+            'Account Orders Packed Done Amount' => round($data['packed']['dc_amount'], 2)
 
 
         );

@@ -1412,12 +1412,44 @@ class Order extends DB_Table {
 
 
                     break;
-                case 'PackedDone':
+
+
+                case 'Packed':
 
 
                     if ($this->data['Order State'] != 'InWarehouse') {
                         $this->error = true;
                         $this->msg   = 'Order is not in warehouse: :(';
+
+                        return;
+
+                    }
+
+                    $this->fast_update(
+                        [
+                            'Order State'=>'Packed',
+                            'Order Packed Date'=>$date,
+                            'Order Date'=>$date,
+                        ]
+                    );
+
+                    $history_data = array(
+                        'History Abstract' => _('Order packed and closed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $this->update_totals();
+
+                    break;
+
+
+                    case 'PackedDone':
+
+
+                    if (!($this->data['Order State'] == 'InWarehouse' or $this->data['Order State'] == 'Packed' )   ) {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in warehouse: or packed :(';
 
                         return;
 
@@ -1430,7 +1462,7 @@ class Order extends DB_Table {
 
 
                     $history_data = array(
-                        'History Abstract' => _('Order packed and closed'),
+                        'History Abstract' => _('Order packing checked'),
                         'History Details'  => '',
                     );
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
@@ -2970,9 +3002,9 @@ class Order extends DB_Table {
             }
 
             if ($old_packed_done != $packed_done) {
-                $update_packed = true;
+                $update_packed_done = true;
             } else {
-                $update_packed = false;
+                $update_packed_done = false;
             }
 
             if ($old_approved != $approved) {
@@ -2992,7 +3024,7 @@ class Order extends DB_Table {
                 'type'                    => 'order_replacements_updated',
                 'order_key'               => $this->id,
                 'update_in_warehouse'     => $update_in_warehouse,
-                'update_packed'           => $update_packed,
+                'update_packed_done'           => $update_packed_done,
                 'update_approved'         => $update_approved,
                 'update_dispatched_today' => $update_dispatched_today,
             ), $account->get('Account Code'), $this->db

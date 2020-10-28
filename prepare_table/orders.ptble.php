@@ -231,7 +231,14 @@ if (isset($parameters['elements_type'])) {
                 if ($_value) {
                     $num_elements_checked++;
 
-                    $_elements .= ", '$_key'";
+                    if($_key=='PackedDone'){
+                        $_elements .= ", 'PackedDone','Packed'";
+
+                    }else{
+                        $_elements .= ", '$_key'";
+
+                    }
+
                 }
             }
 
@@ -320,6 +327,7 @@ if (isset($parameters['elements_type'])) {
             break;
     }
 }
+
 
 
 if (($parameters['f_field'] == 'customer') and $f_value != '') {

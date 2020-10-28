@@ -84,7 +84,7 @@ function get_picked_offline_input($total_required,$total_picked,$picked_in_locat
 
 
     $picked_offline_input=sprintf('
-            <span class="picked_quantity_cant_pick %s"> 
+            <span class=" picked_quantity_cant_pick %s"> 
                 <i  class="fa  %s fa-fw button warning add_picked invisible " aria-hidden="true"></i>
                 <input class="cant_pick width_50" style="text-align: center;background-color:%s"  value="%s" readonly >
                 <i  class="fa  %s fa-fw  warning  invisible  " aria-hidden="true"></i>
@@ -394,7 +394,7 @@ function get_delivery_note_fast_track_packing_item_location(
 
 
     if ($part_distinct_locations > 1 or ($part_location_exist=='No' and $part_distinct_locations > 0  )) {
-        $location .= ' <i class="fa fa-bars button padding_left_5 discreet_on_hover " data-metadata=\'{ "part_sku":"'.$part_sku.'","otf_key":"'.$itf_key.'","delivery_note_key":"'.$delivery_note_key.'"}\' onclick="show_other_part_locations_for_input_delivery_note_packing(this)"  title="'._('Other locations').'" ></i>';
+        $location .= ' <i class="editable_set_picking   fa fa-bars button padding_left_5 discreet_on_hover " data-metadata=\'{ "part_sku":"'.$part_sku.'","otf_key":"'.$itf_key.'","delivery_note_key":"'.$delivery_note_key.'"}\' onclick="show_other_part_locations_for_input_delivery_note_packing(this)"  title="'._('Other locations').'" ></i>';
     }
 
 

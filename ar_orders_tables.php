@@ -62,6 +62,9 @@ switch ($tipo) {
     case 'orders_packed_done':
         orders_packed_done(get_table_parameters(), $db, $user, $account);
         break;
+    case 'orders_packed':
+        orders_packed(get_table_parameters(), $db, $user, $account);
+        break;
     case 'orders_approved':
         orders_approved(get_table_parameters(), $db, $user, $account);
         break;
@@ -646,6 +649,92 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations,
             'waiting_time'   => number($data['waiting_time'])
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function orders_packed($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'order packed';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+        $payment_state = get_order_formatted_payment_state($data);
+        include_once 'class.Order.php';
+
+        $operations = '<div id="operations'.$data['Order Key'].'">';
+        $class      = 'right';
+
+
+        $operations .= '<div class="buttons small '.$class.'">';
+
+
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+        );
+
+        foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+            $operations .= sprintf(
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+
+            );
+        }
+
+
+        $operations .= '</div>';
+        $operations .= '</div>';
+
+        $public_id = sprintf(
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+        );
+
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+        }
+
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
+
+        }
+
+
+        $adata[] = array(
+            'id'             => (integer)$data['Order Key'],
+            'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>',$data['Order Key']),
+            'store_key'      => (integer)$data['Order Store Key'],
+            'public_id'      => $public_id,
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
+            'payment_state'  => $payment_state,
+            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'        => $operations
 
 
         );
@@ -2241,7 +2330,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         );
 
 
-        $picked_offline_input = '<div class="picked_quantity_components" data-pending="'.$pending.'">'.get_delivery_note_fast_track_packing_input(
+        $picked_offline_input = '<div class="editable_set_picking_qty picked_quantity_components" data-pending="'.$pending.'">'.get_delivery_note_fast_track_packing_input(
                 ($data['pl_ok'] == '' ? 'No' : 'Yes'), $pending, 0, 0, $pending, $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Part Current On Hand Stock'], $data['Location Key']
 
             ).'</div>';

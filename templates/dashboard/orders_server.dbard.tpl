@@ -59,13 +59,16 @@
 
         <span>{t}Invoicing{/t}</span>
         <div class="title">
-            <span  id="order_flow_packed_done" class="{if  $order_flow=='packed_done'}blue{/if} Orders_Packed_Number button" title="{t}Closed orders waiting to be invoiced{/t}" onClick="get_orders_table('packed_done',{ 'parent': 'account','parent_key':1})"> <i style="font-size: 50%" class="fa fa-archive" aria-hidden="true"></i> {$account->get('Orders Packed Number')}</span>
+            <span  id="order_flow_packed" class="{if  $order_flow=='packed'}blue{/if} Orders_Packed_Number button" title="{t}Packed orders{/t}" onClick="get_orders_table('packed',{ 'parent': 'account','parent_key':1})"> <i style="font-size: 50%" class="fa fa-archive" aria-hidden="true"></i> {$account->get('Orders Packed Number')}</span>
+|
+            <span  id="order_flow_packed_done" class="{if  $order_flow=='packed_done'}blue{/if} Orders_Packed_Done_Number button" title="{t}Closed orders waiting to be invoiced{/t}" onClick="get_orders_table('packed_done',{ 'parent': 'account','parent_key':1})"> <i style="font-size: 50%" class="fa fa-archive" aria-hidden="true"></i> {$account->get('Orders Packed Done Number')}</span>
             |
             <span  id="order_flow_approved"  class="{if  $order_flow=='approved'}blue{/if}  Orders_Dispatch_Approved_Number button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="get_orders_table('approved',{ 'parent': 'account','parent_key':1})" >{$account->get('Orders Dispatch Approved Number')} <i style="font-size: 50%" class="fal fa-file-invoice-dollar" aria-hidden="true"></i> </span>
 
         </div >
+        <span onClick="get_orders_table('packed',{ 'parent': 'account','parent_key':1})" class="button Orders_Packed_Amount" title="{if $currency=='account'}{$account->get('DC Orders Packed Amount')}{else}{$account->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Packed Amount Minify')}{else}{$account->get('Orders Packed Amount Minify')}{/if}</span> |
 
-        <span onClick="get_orders_table('packed_done',{ 'parent': 'account','parent_key':1})" class="button Orders_Packed_Amount" title="{if $currency=='account'}{$account->get('DC Orders Packed Amount')}{else}{$account->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Packed Amount Minify')}{else}{$account->get('Orders Packed Amount Minify')}{/if}</span> |
+        <span onClick="get_orders_table('packed_done',{ 'parent': 'account','parent_key':1})" class="button Orders_Packed_Done_Amount" title="{if $currency=='account'}{$account->get('DC Orders Packed Done Amount')}{else}{$account->get('Orders Packed Done Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Packed Done Amount Minify')}{else}{$account->get('Orders Packed Done Amount Minify')}{/if}</span> |
         <span onclick="get_orders_table('approved',{ 'parent': 'account','parent_key':1})" class="button Orders_Dispatch_Approved_Amount" title="{if $currency=='account'}{$account->get('DC Orders Dispatch Approved Amount')}{else}{$account->get('Orders Dispatch Approved Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders Dispatch Approved Amount Minify')}{else}{$account->get('Orders Dispatch Approved Amount Minify')}{/if}</span>
 
             </div>

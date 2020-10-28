@@ -2102,7 +2102,11 @@ function get_orders_element_numbers($db, $data, $user) {
     );
     foreach ($db->query($sql) as $row) {
 
-        $elements_numbers['state'][$row['element']] = number($row['number']);
+        if($row['element']=='Packed'){
+            $row['element']='PackedDone';
+        }
+
+        $elements_numbers['state'][$row['element']] += $row['number'];
     }
 
     //    }

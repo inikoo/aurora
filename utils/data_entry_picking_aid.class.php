@@ -49,106 +49,28 @@ class data_entry_picking_aid {
     function parse_input_data() {
 
 
-        if (empty($this->data['fields']['Delivery Note Assigned Picker Key'])) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'delivery note assigned picker key missing'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
+        if ($this->dn->get('State Index') < 70) {
 
 
-        }
-
-
-        if (empty($this->data['fields']['Delivery Note Assigned Packer Key'])) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'delivery note assigned packer key missing'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
-
-        if (!isset($this->data['fields']['Delivery Note Shipper Key'])) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'delivery note shipper key missing'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
-
-        if (!isset($this->data['fields']['Delivery Note Shipper Tracking'])) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'delivery note tracking missing'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
-
-
-        if ($this->level < 30 and $this->data['fields']['Delivery Note Shipper Key'] == '__none__') {
-            $this->data['fields']['Delivery Note Shipper Key'] = '';
-        }
-
-
-        $this->picker = get_object('staff', $this->data['fields']['Delivery Note Assigned Picker Key']);
-
-        if (!$this->picker->id) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'picker not found'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
-
-
-        $this->packer = get_object('staff', $this->data['fields']['Delivery Note Assigned Packer Key']);
-
-        if (!$this->packer->id) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'packer not found'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
-
-
-        if ($this->data['fields']['Delivery Note Shipper Key'] != '') {
-
-            $this->shipper = get_object('shipper', $this->data['fields']['Delivery Note Shipper Key']);
-
-            if (!$this->shipper->id) {
+            if (empty($this->data['fields']['Delivery Note Assigned Picker Key'])) {
                 $response = array(
                     'state' => 400,
-                    'msg'   => 'shipper not found'
+                    'msg'   => 'delivery note assigned picker key missing'
+                );
+
+                return array(
+                    'valid'    => false,
+                    'response' => $response
+                );
+
+
+            }
+
+
+            if (empty($this->data['fields']['Delivery Note Assigned Packer Key'])) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'delivery note assigned packer key missing'
                 );
 
                 return array(
@@ -157,104 +79,187 @@ class data_entry_picking_aid {
                 );
 
             }
-        } else {
-            $this->data['fields']['Delivery Note Shipper Tracking'] = '';
 
-        }
+            if (!isset($this->data['fields']['Delivery Note Shipper Key'])) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'delivery note shipper key missing'
+                );
 
+                return array(
+                    'valid'    => false,
+                    'response' => $response
+                );
 
-        $itf_keys = array();
-        $sql      = 'SELECT `Inventory Transaction Key` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=? ';
-        $stmt     = $this->db->prepare($sql);
-        if ($stmt->execute(
-            array(
-                $this->dn->id
-            )
-        )) {
-            while ($row = $stmt->fetch()) {
-                $itf_keys[$row['Inventory Transaction Key']] = $row['Inventory Transaction Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit();
+
+            if (!isset($this->data['fields']['Delivery Note Shipper Tracking'])) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'delivery note tracking missing'
+                );
+
+                return array(
+                    'valid'    => false,
+                    'response' => $response
+                );
+
+            }
+
+
+            if ($this->level < 30 and $this->data['fields']['Delivery Note Shipper Key'] == '__none__') {
+                $this->data['fields']['Delivery Note Shipper Key'] = '';
+            }
+
+
+            $this->picker = get_object('staff', $this->data['fields']['Delivery Note Assigned Picker Key']);
+
+            if (!$this->picker->id) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'picker not found'
+                );
+
+                return array(
+                    'valid'    => false,
+                    'response' => $response
+                );
+
+            }
+
+
+            $this->packer = get_object('staff', $this->data['fields']['Delivery Note Assigned Packer Key']);
+
+            if (!$this->packer->id) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'packer not found'
+                );
+
+                return array(
+                    'valid'    => false,
+                    'response' => $response
+                );
+
+            }
+
+
+            if ($this->data['fields']['Delivery Note Shipper Key'] != '') {
+
+                $this->shipper = get_object('shipper', $this->data['fields']['Delivery Note Shipper Key']);
+
+                if (!$this->shipper->id) {
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'shipper not found'
+                    );
+
+                    return array(
+                        'valid'    => false,
+                        'response' => $response
+                    );
+
+                }
+            } else {
+                $this->data['fields']['Delivery Note Shipper Tracking'] = '';
+
+            }
         }
 
+        if($this->level>5) {
 
-        $missing_itf_keys = $itf_keys;
-        $extra_itf_keys   = array();
-        foreach ($this->data['items'] as $_transaction) {
+            $itf_keys = array();
+            $sql      = 'SELECT `Inventory Transaction Key` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=? ';
+            $stmt     = $this->db->prepare($sql);
+            if ($stmt->execute(
+                array(
+                    $this->dn->id
+                )
+            )) {
+                while ($row = $stmt->fetch()) {
+                    $itf_keys[$row['Inventory Transaction Key']] = $row['Inventory Transaction Key'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit();
+            }
 
 
-            foreach ($_transaction as $transaction) {
+            $missing_itf_keys = $itf_keys;
+            $extra_itf_keys   = array();
+            foreach ($this->data['items'] as $_transaction) {
 
 
-                if ($transaction['itf_key'] > 0) {
-                    if (isset($missing_itf_keys[$transaction['itf_key']])) {
-                        unset($missing_itf_keys[$transaction['itf_key']]);
-                    } else {
-                        $extra_itf_keys[$transaction['itf_key']] = $transaction['itf_key'];
+                foreach ($_transaction as $transaction) {
+
+
+                    if ($transaction['itf_key'] > 0) {
+                        if (isset($missing_itf_keys[$transaction['itf_key']])) {
+                            unset($missing_itf_keys[$transaction['itf_key']]);
+                        } else {
+                            $extra_itf_keys[$transaction['itf_key']] = $transaction['itf_key'];
+                        }
                     }
+
+
+                    if ($transaction['location_key'] <= 0 and $transaction['qty'] > 0) {
+
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'ohh no, transaction with wrong location again !!! :('
+                        );
+
+                        return array(
+                            'valid'    => false,
+                            'response' => $response
+                        );
+                    }
+
+                    if ($transaction['part_sku'] <= 0) {
+
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'part key invalid'
+                        );
+
+                        return array(
+                            'valid'    => false,
+                            'response' => $response
+                        );
+                    }
+
+                    if ($transaction['qty'] < 0) {
+
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'part quantity negative'
+                        );
+
+                        return array(
+                            'valid'    => false,
+                            'response' => $response
+                        );
+                    }
+
                 }
 
-
-                if ($transaction['location_key'] <= 0 and $transaction['qty'] > 0) {
-
-                    $response = array(
-                        'state' => 400,
-                        'msg'   => 'ohh no, transaction with wrong location again !!! :('
-                    );
-
-                    return array(
-                        'valid'    => false,
-                        'response' => $response
-                    );
-                }
-
-                if ($transaction['part_sku'] <= 0) {
-
-                    $response = array(
-                        'state' => 400,
-                        'msg'   => 'part key invalid'
-                    );
-
-                    return array(
-                        'valid'    => false,
-                        'response' => $response
-                    );
-                }
-
-                if ($transaction['qty'] < 0) {
-
-                    $response = array(
-                        'state' => 400,
-                        'msg'   => 'part quantity negative'
-                    );
-
-                    return array(
-                        'valid'    => false,
-                        'response' => $response
-                    );
-                }
 
             }
 
 
+            if (count($extra_itf_keys) > 0) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'extra itf keys'
+                );
+
+                return array(
+                    'valid'    => false,
+                    'response' => $response
+                );
+
+            }
         }
-
-
-        if (count($extra_itf_keys) > 0) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'extra itf keys'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
-
 
         return array(
             'valid'    => true,
@@ -266,98 +271,100 @@ class data_entry_picking_aid {
 
     function update_delivery_note() {
 
-        $this->dn->fast_update(
-            array(
-                'Delivery Note Assigned Picker Key'   => $this->picker->id,
-                'Delivery Note Assigned Picker Alias' => $this->picker->get('Alias')
-            )
-        );
-
-
-        $this->dn->fast_update(
-            array(
-                'Delivery Note Assigned Packer Key'   => $this->packer->id,
-                'Delivery Note Assigned Packer Alias' => $this->packer->get('Alias')
-            )
-        );
-
-
-        if (!isset($this->shipper)) {
+        if ($this->dn->get('State Index') < 70) {
             $this->dn->fast_update(
                 array(
-                    'Delivery Note Shipper Key' => '',
+                    'Delivery Note Assigned Picker Key'   => $this->picker->id,
+                    'Delivery Note Assigned Picker Alias' => $this->picker->get('Alias')
                 )
             );
-        } else {
 
 
-            $this->dn->update(
-                array(
-                    'Delivery Note Shipper Key' => $this->shipper->id,
-                ), 'no_history'
-            );
-        }
-
-
-        $this->dn->fast_update(
-            array(
-                'Delivery Note Shipper Tracking' => $this->data['fields']['Delivery Note Shipper Tracking']
-            )
-        );
-
-
-        if (empty($this->data['parcels']) or count($this->data['parcels']) == 0) {
             $this->dn->fast_update(
                 array(
-                    'Delivery Note Weight'         => '',
-                    'Delivery Note Weight Source'  => 'Estimated',
-                    'Delivery Note Parcel Type'    => 'Other',
-                    'Delivery Note Number Parcels' => 1
+                    'Delivery Note Assigned Packer Key'   => $this->packer->id,
+                    'Delivery Note Assigned Packer Alias' => $this->packer->get('Alias')
                 )
             );
-        } else {
 
-            $weight = 0;
-            foreach ($this->data['parcels'] as $parcel_data) {
-                if (is_numeric($parcel_data['weight']) and $parcel_data['weight'] > 0) {
-                    $weight += $parcel_data['weight'];
-                }
 
-                $this->parcels[] = [
-                    'weight' => $parcel_data['weight'],
-                    'height' => $parcel_data['dim_0'],
-                    'width'  => $parcel_data['dim_1'],
-                    'depth'  => $parcel_data['dim_2'],
-
-                ];
-
-            }
-
-            $number_parcels = count($this->parcels);
-
-            if ($weight == 0) {
-
-                foreach ($this->parcels as $key => $value) {
-                    $this->parcels[$key]['weight'] = $this->dn->get('Delivery Note Estimated Weight') / $number_parcels;
-                }
-                $weight_source = 'Estimated';
-                $weight        = '';
+            if (!isset($this->shipper)) {
+                $this->dn->fast_update(
+                    array(
+                        'Delivery Note Shipper Key' => '',
+                    )
+                );
             } else {
-                $weight_source = 'Given';
 
+
+                $this->dn->update(
+                    array(
+                        'Delivery Note Shipper Key' => $this->shipper->id,
+                    ), 'no_history'
+                );
             }
+
 
             $this->dn->fast_update(
                 array(
-                    'Delivery Note Weight'         => $weight,
-                    'Delivery Note Weight Source'  => $weight_source,
-                    'Delivery Note Parcel Type'    => 'Box',
-                    'Delivery Note Number Parcels' => $number_parcels
+                    'Delivery Note Shipper Tracking' => $this->data['fields']['Delivery Note Shipper Tracking']
                 )
             );
 
-            $this->dn->fast_update_json_field('Delivery Note Properties','parcels',json_encode($this->parcels));
 
+            if (empty($this->data['parcels']) or count($this->data['parcels']) == 0) {
+                $this->dn->fast_update(
+                    array(
+                        'Delivery Note Weight'         => '',
+                        'Delivery Note Weight Source'  => 'Estimated',
+                        'Delivery Note Parcel Type'    => 'Other',
+                        'Delivery Note Number Parcels' => 1
+                    )
+                );
+            } else {
+
+                $weight = 0;
+                foreach ($this->data['parcels'] as $parcel_data) {
+                    if (is_numeric($parcel_data['weight']) and $parcel_data['weight'] > 0) {
+                        $weight += $parcel_data['weight'];
+                    }
+
+                    $this->parcels[] = [
+                        'weight' => $parcel_data['weight'],
+                        'height' => $parcel_data['dim_0'],
+                        'width'  => $parcel_data['dim_1'],
+                        'depth'  => $parcel_data['dim_2'],
+
+                    ];
+
+                }
+
+                $number_parcels = count($this->parcels);
+
+                if ($weight == 0) {
+
+                    foreach ($this->parcels as $key => $value) {
+                        $this->parcels[$key]['weight'] = $this->dn->get('Delivery Note Estimated Weight') / $number_parcels;
+                    }
+                    $weight_source = 'Estimated';
+                    $weight        = '';
+                } else {
+                    $weight_source = 'Given';
+
+                }
+
+                $this->dn->fast_update(
+                    array(
+                        'Delivery Note Weight'         => $weight,
+                        'Delivery Note Weight Source'  => $weight_source,
+                        'Delivery Note Parcel Type'    => 'Box',
+                        'Delivery Note Number Parcels' => $number_parcels
+                    )
+                );
+
+                $this->dn->fast_update_json_field('Delivery Note Properties', 'parcels', json_encode($this->parcels));
+
+            }
         }
 
         /*
@@ -424,18 +431,20 @@ class data_entry_picking_aid {
 
     function process_transactions($options = '{}') {
 
+        if ($this->level > 5) {
+            $options = json_decode($options, true);
+            if (!empty($options['date'])) {
+                $date = $options['date'];
+            } else {
+                $date = gmdate('Y-m-d H:i:s');
+            }
 
-        $options = json_decode($options, true);
-        if (!empty($options['date'])) {
-            $date = $options['date'];
-        } else {
-            $date = gmdate('Y-m-d H:i:s');
+
+            $this->clean_transactions();
+            $this->recreate_itfs();
+
+            $this->pack_transactions($date);
         }
-
-        $this->clean_transactions();
-        $this->recreate_itfs();
-        //exit;
-        $this->pack_transactions($date);
     }
 
     function clean_transactions() {
@@ -891,31 +900,39 @@ class data_entry_picking_aid {
 
     function finish_packing($options = '{}') {
 
+        $state_index=$this->dn->get('State Index');
+
         $options = json_decode($options, true);
         if (!empty($options['date'])) {
             $date = $options['date'];
         } else {
             $date = gmdate('Y-m-d H:i:s');
         }
-        $this->dn->fast_update(
-            array(
-                'Delivery Note Date Finish Picking' => $date,
-                'Delivery Note Date Finish Packing' => $date
-            )
-        );
 
-        $this->dn->update_state('Packed', json_encode(array('date' => $date)));
+        if ($state_index < 70) {
 
+            $this->dn->fast_update(
+                array(
+                    'Delivery Note Date Finish Picking' => $date,
+                    'Delivery Note Date Finish Packing' => $date
+                )
+            );
+
+            $this->dn->update_state('Packed', json_encode(array('date' => $date)));
+        }
         if ($this->level >= 10) {
             $this->dn->update_state('Packed Done', json_encode(array('date' => $date)));
         }
 
-        if ($this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
-            $service='';
-            if(isset($this->data['service'])){
-                $service=$this->data['service'];
+        if ($state_index < 70) {
+
+            if ($this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
+                $service = '';
+                if (isset($this->data['service'])) {
+                    $service = $this->data['service'];
+                }
+                $this->dn->get_label($service);
             }
-            $this->dn->get_label($this->data['service']);
         }
 
         if ($this->level >= 20 and $this->dn->get('Delivery Note Type') == 'Order') {

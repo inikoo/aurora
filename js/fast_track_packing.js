@@ -625,7 +625,22 @@ function change_order_data_entry_picking_aid_state_after_save(element) {
 
     var level=0;
 
+
     switch ($(element).data('level')) {
+        case 'L5':
+            if (icon.hasClass('fa-check-square')) {
+
+                icon.removeClass('fa-check-square').addClass('fa-square')
+                $('.L10 i').removeClass('fa-check-square').addClass('fa-square')
+                $('.L20 i').removeClass('fa-check-square').addClass('fa-square')
+                $('.L30 i').removeClass('fa-check-square').addClass('fa-square')
+                level=0;
+            } else {
+
+                icon.addClass('fa-check-square').removeClass('fa-square')
+                level=5;
+            }
+            break;
         case 'L10':
             if (icon.hasClass('fa-check-square')) {
 
@@ -671,7 +686,7 @@ function change_order_data_entry_picking_aid_state_after_save(element) {
     $('.order_data_entry_picking_aid_state_after_save').val(level)
 
     on_field_to_check_changed($('#set_dn_parcels'))
-    
+    render_editable_set_picking();
     validate_data_entry_picking_aid()
 }
 
@@ -691,97 +706,111 @@ function validate_data_entry_picking_aid() {
     };
 
 
-    if ($('#set_picker').val()) {
-        check_list.picker.filled = true
-    }
-
-    if ($('#set_packer').val()) {
-        check_list.packer.filled = true
-    }
-
-    if ($('#set_dn_weight').val() !='') {
-        check_list.weight.filled = true
+    var level=parseFloat($('.order_data_entry_picking_aid_state_after_save').val());
+    var is_packed=$('#is_order_packed').val();
 
 
-    }else{
-        check_list.weight.filled = false;
-    }
+    if(is_packed=='No') {
 
-    if($('#set_dn_weight').hasClass('invalid')){
+        if ($('#set_picker').val()) {
+            check_list.picker.filled = true
+        }
 
+        if ($('#set_packer').val()) {
+            check_list.packer.filled = true
+        }
 
-        check_list.weight.valid = false
-
-    }else{
-
-        check_list.weight.valid = true
-    }
-
-    if ($('#set_dn_parcels').val() !='') {
-        check_list.parcels.filled = true
-
-    }else{
-        check_list.parcels.filled = false;
-    }
+        if ($('#set_dn_weight').val() != '') {
+            check_list.weight.filled = true
 
 
-    if($('#set_dn_parcels').hasClass('invalid')){
-        check_list.parcels.valid = false
+        } else {
+            check_list.weight.filled = false;
+        }
 
-    }else{
-        check_list.parcels.valid = true
-    }
-
-
-    if ($('#set_shipper').val() != '__none__') {
-        check_list.shipper.filled = true
-    }
+        if ($('#set_dn_weight').hasClass('invalid')) {
 
 
+            check_list.weight.valid = false
 
-    if($('.tracking_number_container').hasClass('hide')){
-        check_list.tracking_number.filled = true
-        check_list.tracking_number.valid = true
+        } else {
 
-    }else{
-        if ($('#set_tracking_number').val() !='') {
+            check_list.weight.valid = true
+        }
+
+        if ($('#set_dn_parcels').val() != '') {
+            check_list.parcels.filled = true
+
+        } else {
+            check_list.parcels.filled = false;
+        }
+
+
+        if ($('#set_dn_parcels').hasClass('invalid')) {
+            check_list.parcels.valid = false
+
+        } else {
+            check_list.parcels.valid = true
+        }
+
+
+        if ($('#set_shipper').val() != '__none__') {
+            check_list.shipper.filled = true
+        }
+
+
+        if ($('.tracking_number_container').hasClass('hide')) {
             check_list.tracking_number.filled = true
-
-
-        }else{
-            check_list.tracking_number.filled = false
-        }
-
-        if($('#set_tracking_number').hasClass('invalid')){
-            check_list.tracking_number.valid = false
-
-        }else{
             check_list.tracking_number.valid = true
+
+        } else {
+            if ($('#set_tracking_number').val() != '') {
+                check_list.tracking_number.filled = true
+
+
+            } else {
+                check_list.tracking_number.filled = false
+            }
+
+            if ($('#set_tracking_number').hasClass('invalid')) {
+                check_list.tracking_number.valid = false
+
+            } else {
+                check_list.tracking_number.valid = true
+            }
         }
+    }else{
+        check_list.picker.filled = true
+        check_list.packer.filled = true
+        check_list.weight.filled = true
+        check_list.parcels.filled = true
+        check_list.tracking_number.filled = true
+        check_list.shipper.filled = true
+
     }
 
+    if(level>5) {
+
+        $('.picked_quantity_components i.plus').each(function (i, obj) {
 
 
-
-    $('.picked_quantity_components i.plus').each(function (i, obj) {
-
-
-        if ($(obj).hasClass('error')) {
-            check_list.items_errors.valid = false;
-            return false;
-        }
-    });
+            if ($(obj).hasClass('error')) {
+                check_list.items_errors.valid = false;
+                return false;
+            }
+        });
 
 
-    $('i.picked_offline_status').each(function (i, obj) {
+        $('i.picked_offline_status').each(function (i, obj) {
 
 
+            if (!$(obj).hasClass('fa-check-circle')) {
+                check_list.items.filled = false;
+                return false;
+            }
+        });
+    }
 
-        if (!$(obj).hasClass('fa-check-circle')) {
-            check_list.items.filled = false;
-            return false;
-        }
-    });
 
     var valid=true;
     var changed=false
@@ -795,7 +824,6 @@ function validate_data_entry_picking_aid() {
 
 
 
-    var level=parseFloat($('.order_data_entry_picking_aid_state_after_save').val());
 
 
     // required fields
@@ -810,35 +838,35 @@ function validate_data_entry_picking_aid() {
         save_type='confirm_save';
     }
 
+    if(is_packed=='No') {
+        if (level >= 10) {
 
-    if(level>=10){
+            if (!check_list.parcels.filled) {
+                changed = false
+            }
 
-        if(!check_list.parcels.filled ) {
-            changed=false
+
+            if (!check_list.items.filled) {
+                save_type = 'confirm_save';
+            }
+
         }
 
 
-        if(!check_list.items.filled  ) {
-            save_type='confirm_save';
+        if (level >= 30) {
+
+            if (!check_list.shipper.filled) {
+                changed = false
+            }
+
+
+            if (!check_list.tracking_number.filled) {
+                save_type = 'confirm_save';
+            }
+
         }
 
     }
-
-
-    if(level>=30){
-
-        if(!check_list.shipper.filled ) {
-            changed=false
-        }
-
-
-        if(!check_list.tracking_number.filled   ) {
-            save_type='confirm_save';
-        }
-
-    }
-
-
 
 
     if(changed){
@@ -1155,4 +1183,25 @@ function prepare_parcels_table(){
 function delete_parcel(element){
     $(element).closest('tr').remove()
     prepare_parcels_table()
+}
+
+function render_editable_set_picking(){
+    var level = parseFloat($('.order_data_entry_picking_aid_state_after_save').val());
+
+
+
+    if(level>5){
+        $('.editable_set_picking').removeClass('invisible')
+        $('.editable_set_picking_qty i').removeClass('invisible')
+        $('.editable_set_picking_qty input').prop('readonly', false);
+
+    }else{
+        $('.editable_set_picking').addClass('invisible')
+        $('.editable_set_picking_qty i').addClass('invisible')
+        $('.editable_set_picking_qty input').prop('readonly', true);
+
+
+
+    }
+
 }

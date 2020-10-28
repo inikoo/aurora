@@ -890,9 +890,12 @@ function edit_category_subject(element) {
 function post_table_rendered(el) {
 
 
+    console.log(state.tab)
+
     switch (state.tab) {
 
         case 'order.input_picking_sheet':
+            render_editable_set_picking();
             validate_data_entry_picking_aid()
             break;
         case 'location.parts':

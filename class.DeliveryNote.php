@@ -1333,7 +1333,9 @@ class DeliveryNote extends DB_Table {
                 if ($this->data['Delivery Note Type'] == 'Order') {
                     $order         = get_object('order', $this->data['Delivery Note Order Key']);
                     $order->editor = $this->editor;
-                    $order->update_totals();
+                    $order->update_state('Packed', json_encode(array('date' => $date)));
+
+
                 }
 
                 break;
@@ -1358,6 +1360,7 @@ class DeliveryNote extends DB_Table {
                 $this->update_field('Delivery Note State', $value, 'no_history');
                 $this->update_field('Delivery Note Approved Done', 'Yes', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
+
 
                 $this->update_totals();
                 if ($this->data['Delivery Note Type'] == 'Order') {
@@ -2828,7 +2831,7 @@ class DeliveryNote extends DB_Table {
                 'reference'          => $this->get('Delivery Note ID'),
                 'parcels'            => json_encode($parcels),
                 'ship_to'            => json_encode($ship_to),
-                'pick_up'            => json_encode($pick_up)
+                'pick_up'            => json_encode($pick_up),
             ];
 
 
@@ -2857,8 +2860,42 @@ class DeliveryNote extends DB_Table {
                 );
             }
 
+            $items = [];
 
-            if($shipper->get('Shipper Code')=='APC') {
+            $sql = " SELECT  `Order Quantity` as ordered, `Product Origin Country Code` as origin_country_code,OTF.`Delivery Note Quantity` as packed, `Order Transaction Amount` as amount, `Product Package Weight` as weight ,`Order Currency Code` currency,
+`Product History Name` as name,`Product History Price` as price,`Product Units Per Case` as units,`Product Tariff Code` tariff_code,`Product History Code` as code
+ FROM `Inventory Transaction Fact` ITF left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
+ 
+ WHERE ITF.`Delivery Note Key`=?    ORDER BY `Product History Code`";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            while ($row = $stmt->fetch()) {
+
+                if($this->get('State Index')>70){
+                    if($row['packed']==0){
+                        continue;
+                    }
+                    $row['qty']=$row['packed'];
+                }else{
+                    $row['qty']=$row['ordered'];
+                }
+
+                $items[] = $row;
+            }
+
+
+            $post['order'] = json_encode([
+                'order_number' => $order->get('Order Public ID'),
+                'items'        => $items
+            ]);
+
+
+            if ($shipper->get('Shipper Code') == 'APC') {
 
                 $sql  = "select count(*) as num from `Inventory Transaction Fact` ITF left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`) where `Delivery Note Key`=? and `Part UN Number`!='' and `Inventory Transaction Quantity`<0 ";
                 $stmt = $this->db->prepare($sql);
@@ -2874,7 +2911,8 @@ class DeliveryNote extends DB_Table {
                 }
             }
 
-
+            //print_r($post);
+            //exit;
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
@@ -2894,7 +2932,6 @@ class DeliveryNote extends DB_Table {
 
                 );
                 $this->fast_update_json_field('Delivery Note Properties', 'label_link', $response['label_link']);
-
 
 
             } else {

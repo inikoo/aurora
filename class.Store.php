@@ -1086,6 +1086,8 @@ class Store extends DB_Table {
 
             $amount = 'Store '.$key;
 
+
+
             return number($this->data[$amount]);
         }
         if (preg_match(
@@ -2272,6 +2274,8 @@ class Store extends DB_Table {
         $this->update_orders_in_process_data();
         $this->update_orders_in_warehouse_data();
         $this->update_orders_packed_data();
+        $this->update_orders_packed_done_data();
+
         $this->update_orders_approved_data();
         $this->update_orders_dispatched();
         $this->update_orders_dispatched_today();
@@ -2553,8 +2557,66 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State` ='Packed'  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $data['packed']['number']    = $row['num'];
+                $data['packed']['amount']    = $row['amount'];
+                $data['packed']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+
+        $data_to_update = array(
+            'Store Orders Packed Number' => $data['packed']['number'],
+            'Store Orders Packed Amount' => round($data['packed']['amount'], 2)
+
+
+        );
+
+
+        $this->fast_update($data_to_update, 'Store Data');
+
+        $data_to_update = array(
+            'Store DC Orders Packed Amount' => round($data['packed']['dc_amount'], 2)
+
+        );
+        $this->fast_update($data_to_update, 'Store DC Data');
+
+
+
+
+
+
+    }
+
+    function update_orders_packed_done_data() {
+
+        $data = array(
+            'packed' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+        );
+
+
+        $sql = sprintf(
             "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State` ='PackedDone'  ", $this->id
         );
+
 
 
         if ($result = $this->db->query($sql)) {
@@ -2585,21 +2647,27 @@ class Store extends DB_Table {
         }
 
 
+
         $data_to_update = array(
-            'Store Orders Packed Number' => $data['packed']['number'],
-            'Store Orders Packed Amount' => round($data['packed']['amount'], 2)
+            'Store Orders Packed Done Number' => $data['packed']['number'],
+            'Store Orders Packed Done Amount' => round($data['packed']['amount'], 2)
 
 
         );
+
 
 
         $this->fast_update($data_to_update, 'Store Data');
 
         $data_to_update = array(
-            'Store DC Orders Packed Amount' => round($data['packed']['dc_amount'], 2)
+            'Store DC Orders Packed Done Amount' => round($data['packed']['dc_amount'], 2)
 
         );
         $this->fast_update($data_to_update, 'Store DC Data');
+
+
+
+
 
 
     }

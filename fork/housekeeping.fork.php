@@ -1009,9 +1009,14 @@ function fork_housekeeping($job) {
                     $account->update_orders_in_warehouse_data();
 
                     break;
-                case 'PackedDone':
+                case 'Packed':
                     $store->update_orders_packed_data();
                     $account->update_orders_packed_data();
+
+                    break;
+                case 'PackedDone':
+                    $store->update_orders_packed_done_data();
+                    $account->update_orders_packed_done_data();
 
                     break;
                 case 'Approved':
@@ -2885,9 +2890,9 @@ function fork_housekeeping($job) {
                 $account->update_orders_in_warehouse_data();
 
             }
-            if ($data['update_packed']) {
-                $store->update_orders_packed_data();
-                $account->update_orders_packed_data();
+            if ($data['update_packed_done']) {
+                $store->update_orders_packed_done_data();
+                $account->update_orders_packed_done_data();
 
             }
             if ($data['update_approved']) {
