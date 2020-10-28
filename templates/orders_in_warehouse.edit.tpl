@@ -43,7 +43,9 @@
 
 <div class="hide">
 
-    {include file='input_picking_sheet.tpl'  }
+    {*}
+     {include file='input_picking_sheet.tpl'  }
+    {/*}
 
 
 </div>
