@@ -67,6 +67,18 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+{
+name: "locations",
+label: "{t}Locations{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='locations'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
 
 
 {

@@ -3033,7 +3033,9 @@ function parts_discontinuing($_data, $db, $user, $account) {
                 'cost'            => $cost,
                 'sko_stock_value' => $sko_stock_value,
                 'margin'          => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
-                'next_deliveries' => $next_deliveries
+                'next_deliveries' => $next_deliveries,
+                'locations'          => number($data['Part Distinct Locations'])
+
             );
 
 
