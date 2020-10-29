@@ -144,22 +144,37 @@
 
 
             <table class="parcels" >
+                <tr style="margin-top:5px" class="hide parcel_cheat_row">
+                    <td style="padding-right:20px">
+                        <i  onclick="close_parcels_cheat(this)" class="fal fa-window-close  button  "></i>
+                    </td>
+                    <td>
+                        <input  onchange="set_number_parcels()" class=" total_parcel_weight width_50   "    type=number min="0.1" value="{$dn->get('Delivery Note Estimated Weight')|round:1}" has_been_valid="0"/>
+
+                    </td>
+                    <td style="padding-left:20px" >
+                        <input  onchange="set_number_parcels()" class=" total_parcels width_40   "   type=number min="1" max="20" value="1" has_been_valid="0"/> {t}parcels{/t}
+
+                    </td>
+
+                </tr>
+
                 <tr>
                     <td style="padding-right:20px">
                         <i  onclick="add_parcel(this)" class="fa fa-plus add_parcel button parcel_dimension_inputs "></i>
                     </td>
                     <td><i class="fal fa-weight" title="{t}Weight{/t}"></i> Kg</td>
-                    <td style="padding-left:20px" class="parcel_dimension_inputs"><i class="fal fa-ruler-triangle" title="{t}Dimensions{/t}"></i> cm</td>
-
+                    <td style="padding-left:20px" class="parcel_dimension_inputs"><i class="fal fa-ruler-triangle" title="{t}Dimensions{/t}"></i> cm  </td>
+                    <td style="text-align: right"><i  onclick="open_parcels_cheat()" class="open_parcels_cheat button fal fa-fast-forward"></i> </td>
                 </tr>
                 <tr class="parcel_tr">
                     <td style="padding-right:20px">
                         <i  onclick="delete_parcel(this)" class="fal fa-trash-alt delete_parcel hide button"></i>
                     </td>
                     <td>
-                    <input  class=" parcel_weight width_40   field_to_check"  min="0" value="" has_been_valid="0"/>
+                    <input onchange="update_parcel_totals()" class=" parcel_weight width_50   field_to_check"  min="0" value="" has_been_valid="0"/>
                     </td>
-                    <td  class="parcel_dimension_inputs" style="padding-left:20px">
+                    <td  class="parcel_dimension_inputs" style="padding-left:20px" colspan="2">
 
                         <input  value="{$parcel_default_dimensions[0]}" class="dim_0 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>
                         <input  value="{$parcel_default_dimensions[1]}" class="dim_1 parcel_dimension width_30 input_field  field_to_check"   min="0" value="" has_been_valid="0"/>

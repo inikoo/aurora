@@ -1162,12 +1162,80 @@ function select_parcel_type(element){
 
 }
 
+function update_parcel_totals(){
+    $('.total_parcels').val($('.parcel_tr').length)
+
+    var sum = 0;
+    $(".parcel_weight").each(function(){
+        sum += +$(this).val();
+    });
+    $('.total_parcel_weight').val(sum)
+}
+
 function add_parcel(){
 
     let last_row=$('.parcels tr:last')
     last_row.clone().insertAfter(last_row)
     prepare_parcels_table()
+
+    update_parcel_totals();
+
+
+
+
 }
+
+function set_number_parcels(){
+    var boxes=$('.total_parcels').val()
+
+    if(boxes<1){
+        boxes=1
+    }
+
+
+
+    var boxes_delta=boxes-$('.parcel_tr').length
+
+    if(boxes_delta>0){
+
+        for(var i=0; i < boxes_delta; i++){
+            let last_row=$('.parcels tr:last')
+            last_row.clone().insertAfter(last_row)
+        }
+        prepare_parcels_table()
+    }else if(boxes_delta<0){
+        for(var i=0; i < -boxes_delta; i++){
+            $('.parcels tr:last').remove()
+        }
+        prepare_parcels_table()
+    }
+
+
+    var box_weight=$('.total_parcel_weight').val()/boxes;
+
+    box_weight=Math.round((box_weight + Number.EPSILON) * 10) / 10;
+
+    if(box_weight<0.1){
+        box_weight=0.1;
+    }
+
+    $('.parcel_weight').val(box_weight)
+
+}
+
+function open_parcels_cheat(){
+    $('.open_parcels_cheat').addClass('hide')
+    $('.parcel_cheat_row').removeClass('hide')
+
+    set_number_parcels()
+
+}
+
+function close_parcels_cheat(){
+    $('.open_parcels_cheat').removeClass('hide')
+    $('.parcel_cheat_row').addClass('hide')
+}
+
 
 function prepare_parcels_table(){
 
@@ -1185,6 +1253,7 @@ function prepare_parcels_table(){
 function delete_parcel(element){
     $(element).closest('tr').remove()
     prepare_parcels_table()
+    update_parcel_totals();
 }
 
 function render_editable_set_picking(){

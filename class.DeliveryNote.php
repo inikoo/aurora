@@ -632,7 +632,7 @@ class DeliveryNote extends DB_Table {
                 include_once 'utils/natural_language.php';
 
                 return weight($this->data['Delivery Note Estimated Weight']);
-                break;
+
 
             case('Weight Details'):
                 include_once 'utils/natural_language.php';
