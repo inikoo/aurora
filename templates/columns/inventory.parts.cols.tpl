@@ -215,6 +215,19 @@ headerCell: integerHeaderCell
 
 
 
+{
+name: "locations",
+label: "{t}Locations{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='locations'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
 
 
 {
@@ -600,6 +613,7 @@ grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'locations'} ).set("renderable", false)
 
 
 if(view=='overview'){
@@ -655,6 +669,7 @@ grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", true)
 }else if(view=='stock'){
+grid.columns.findWhere({ name: 'locations'} ).set("renderable", true)
 
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)

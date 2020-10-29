@@ -236,6 +236,12 @@ if ($order == 'id') {
     $order = "`Part Cost in Warehouse`";
 } elseif ($order == 'sko_commercial_value') {
     $order = "`Part Commercial Value`";
+
+} elseif ($order == 'locations') {
+          $order = "`Part Distinct Locations`";
+
+
+
 } else {
 
     $order = '`Part SKU`';
@@ -251,7 +257,7 @@ $sql_totals
 $fields
     .= "P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,`Part Next Deliveries Data`,`Part Symbol`,
 `Part $db_period Acc Dispatched` as dispatched,`Part Number Active Products`,`Part Margin`,
-`Part $db_period Acc Invoiced Amount` as sales,
+`Part $db_period Acc Invoiced Amount` as sales,`Part Distinct Locations`,
 `Part Days Available Forecast`,$yb_fields
 
 `Part 1 Year Ago Dispatched`,`Part 2 Year Ago Dispatched`,`Part 3 Year Ago Dispatched`,`Part 4 Year Ago Dispatched`,`Part 5 Year Ago Dispatched`,

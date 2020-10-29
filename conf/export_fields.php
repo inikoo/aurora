@@ -1065,6 +1065,11 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => _('Weight shown in website').' (Kg)',
                 'checked' => 0
             ),
+            array(
+                'name'    => '`Part Distinct Locations`',
+                'label'   => _('Locations'),
+                'checked' => 1
+            ),
 
 
         ),

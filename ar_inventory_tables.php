@@ -166,15 +166,13 @@ function parts($_data, $db, $user, $type, $account) {
     }
 
 
-    if(isset($_data['parameters']['show_production'])){
-        $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
-        $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
-        $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
-        $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
-        $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
+    if (isset($_data['parameters']['show_production'])) {
+        $_SESSION['inventory_show_production']                                       = $_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.parts']['show_production']               = $_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.in_process_parts']['show_production']    = $_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.discontinuing_parts']['show_production'] = $_data['parameters']['show_production'];
+        $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  = $_data['parameters']['show_production'];
     }
-
-
 
 
     include_once 'prepare_table/init.php';
@@ -506,7 +504,7 @@ function parts($_data, $db, $user, $type, $account) {
                 'margin'             => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
                 'next_deliveries'    => $next_deliveries,
                 'available_forecast' => $available_forecast,
-
+                'locations'          => number($data['Part Distinct Locations'])
 
             );
 
@@ -560,10 +558,9 @@ function stock_history($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
+    //    print_r($_data);
 
-//    print_r($_data);
-
-    $results = get_part_inventory_transaction_fact('stock_history', $_data['parameters']['parent_key'], $calendar_interval,$_data['od']);
+    $results = get_part_inventory_transaction_fact('stock_history', $_data['parameters']['parent_key'], $calendar_interval, $_data['od']);
 
 
     list($rtext, $total, $filtered) = get_table_totals(
@@ -736,8 +733,8 @@ function stock_history_day($_data, $db, $user, $account) {
            ]
     );
 
-    $rtext=$table_totals_data[0];
-    $total=$table_totals_data[1];
+    $rtext = $table_totals_data[0];
+    $total = $table_totals_data[1];
 
     $record_data = array();
 
@@ -758,18 +755,16 @@ function stock_history_day($_data, $db, $user, $account) {
             'stock_value_at_day_cost' => money($data['stock_value_at_day_cost'], $account->get('Currency Code')),
 
 
-            'sko_cost'              => money($data['sko_cost'], $account->get('Currency Code')),
-            'book_in'               => number($data['book_in']),
-            'sold'                  => number($data['sold']),
-            'lost'                  => number($data['lost']),
+            'sko_cost'                         => money($data['sko_cost'], $account->get('Currency Code')),
+            'book_in'                          => number($data['book_in']),
+            'sold'                             => number($data['sold']),
+            'lost'                             => number($data['lost']),
             // 'given'                 => number($data['given']),
-            'stock_left_1_year_ago' => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' : number($data['stock_left_1_year_ago'])),
-            'percentage_stock_left_1_year_ago' => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' :
-                percentage($data['stock_left_1_year_ago'],$data['stock_on_hand']  )),
-            'amount_stock_left_1_year_ago' => ( ($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' :
-                money($data['sko_cost']*$data['stock_left_1_year_ago'] , $account->get('Currency Code'))),
+            'stock_left_1_year_ago'            => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' : number($data['stock_left_1_year_ago'])),
+            'percentage_stock_left_1_year_ago' => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' : percentage($data['stock_left_1_year_ago'], $data['stock_on_hand'])),
+            'amount_stock_left_1_year_ago'     => (($data['stock_left_1_year_ago'] == '' or $data['no_sales_1_year_icon'] == 'fal fa-seedling') ? '' : money($data['sko_cost'] * $data['stock_left_1_year_ago'], $account->get('Currency Code'))),
 
-            'no_sales_1_year'       => sprintf('<i class="%s"></i>', $data['no_sales_1_year_icon'])
+            'no_sales_1_year' => sprintf('<i class="%s"></i>', $data['no_sales_1_year_icon'])
         );
 
 
@@ -2631,11 +2626,11 @@ function parts_discontinuing($_data, $db, $user, $account) {
 
     $rtext_label = 'discontinuing part';
 
-    $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['inventory_show_production']                                       = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.parts']['show_production']               = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.in_process_parts']['show_production']    = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production'] = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  = $_data['parameters']['show_production'];
 
 
     include_once 'prepare_table/init.php';
@@ -2786,7 +2781,7 @@ function parts_discontinuing($_data, $db, $user, $account) {
 
                     $product_data = preg_split('/\:/', $product_data);
 
-                    if(count($product_data)==8) {
+                    if (count($product_data) == 8) {
 
                         if ($product_data[8] == 'Active' or $product_data[8] == 'Discontinuing') {
 
@@ -3081,11 +3076,11 @@ function parts_discontinued($_data, $db, $user, $type, $account) {
 
     $rtext_label = 'discontinued part';
 
-    $_SESSION['inventory_show_production']=$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.in_process_parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production']  =$_data['parameters']['show_production'];
-    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  =$_data['parameters']['show_production'];
+    $_SESSION['inventory_show_production']                                       = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.parts']['show_production']               = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.in_process_parts']['show_production']    = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinuing_parts']['show_production'] = $_data['parameters']['show_production'];
+    $_SESSION['table_state']['inventory.discontinued_parts']['show_production']  = $_data['parameters']['show_production'];
 
     include_once 'prepare_table/init.php';
 
@@ -3531,8 +3526,6 @@ function parts_no_products($_data, $db, $user, $account) {
     }
 
 
-    
-
     $rtext_label = 'part';
 
 
@@ -3722,8 +3715,6 @@ function parts_forced_not_for_sale_on_website($_data, $db, $user, $account) {
         );
         exit;
     }
-
-    
 
 
     $rtext_label = 'part';
