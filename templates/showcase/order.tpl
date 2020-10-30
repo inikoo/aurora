@@ -10,15 +10,11 @@
 <div class="sticky_notes">
 
 
-    <div class="sticky_note_container order_customer_sticky_note {if $order->get('Order Customer Message')==''}hide{/if}">
-        <i style="top:30px" class="fas fa-clone button fa-fw copy_to_delivery_note_sticky_note" aria-hidden="true"></i>
 
-        <div class="sticky_note">{$order->get('Order Customer Message')|strip_tags|escape}</div>
-    </div>
+    {include title="{t}Order internal notes{/t}" file="sticky_note.tpl" _scope="order_sticky_note" value=$order->get('Sticky Note') object="Order" key="{$order->id}" field="Order_Sticky_Note"  }
+    {include title="{t}Picking/Packing notes{/t}" file="sticky_note.tpl" _scope="delivery_note_sticky_note" value=$order->get('Delivery Sticky Note') object="Order" key="{$order->id}" field="Order_Delivery_Sticky_Note"  }
+    {include title="{t}Delivery special instructions{/t}" file="sticky_note.tpl" _scope="order_customer_sticky_note" value=$order->get('Order Customer Message') object="Order" key="{$order->id}" field="Order_Customer_Message"  }
 
-
-    {include file="sticky_note.tpl" _scope="order_sticky_note" value=$order->get('Sticky Note') object="Order" key="{$order->id}" field="Order_Sticky_Note"  }
-    {include file="sticky_note.tpl" _scope="delivery_note_sticky_note" value=$order->get('Delivery Sticky Note') object="Order" key="{$order->id}" field="Order_Delivery_Sticky_Note"  }
 </div>
 <div style="clear:both;" class="timeline_horizontal with_time   {if $order->get('State Index')<0}hide{/if}  ">
 

@@ -4,6 +4,16 @@
     &.order_sticky_note{color:#ff7dbd}
     &.delivery_note_sticky_note{color:#94db84}
   &.customer_sticky_note{color:#7da7f4}
+  &.order_customer_sticky_note{color:#ffd300}
+
+
+}
+
+.open_sticky_note {
+  &.order_sticky_note:hover{color:#ff7dbd}
+  &.delivery_note_sticky_note:hover{color:#94db84}
+  &.customer_sticky_note:hover{color:#7da7f4}
+  &.order_customer_sticky_note:hover{color:#fcf4a3}
 
 
 }

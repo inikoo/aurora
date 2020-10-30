@@ -1229,7 +1229,11 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
-
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Delivery special instructions'),
+        'class' => 'open_sticky_note square_button right order_customer_sticky_note '.($object->get('Order Customer Message') == '' ? '' : 'hide')
+    );
 
 
     $right_buttons[] = array(
