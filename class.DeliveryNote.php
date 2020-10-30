@@ -2898,7 +2898,7 @@ class DeliveryNote extends DB_Table {
             $order = get_object('Order', $this->get('Delivery Note Order Key'));
 
 
-            if ($order->get('Order Delivery Sticky Note') != '') {
+            if ($order->get('Order Customer Message') != '') {
                 $post['note'] = $order->get('Order Customer Message');
             }
 
@@ -2940,12 +2940,13 @@ class DeliveryNote extends DB_Table {
             }
 
 
-
+            //print_r($post);
+            //exit;
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
 
-            //print_r($tmp);
-
+  //          print_r($tmp);
+//exit;
 
             $response = json_decode($tmp, true);
 

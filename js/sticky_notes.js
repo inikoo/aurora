@@ -15,8 +15,8 @@ $(document).on('click', '.open_sticky_note', function (evt) {
         var scope='delivery_note_sticky_note'
     }else if( $(this).hasClass('customer_sticky_note')){
         var scope='customer_sticky_note'
-    }else if( $(this).hasClass('parcel_sticky_note')){
-        var scope='parcel_sticky_note'
+    }else if( $(this).hasClass('order_customer_sticky_note')){
+        var scope='order_customer_sticky_note'
     }else{
         var scope='object_sticky_note'
 
