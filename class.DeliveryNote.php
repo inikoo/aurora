@@ -2747,7 +2747,7 @@ class DeliveryNote extends DB_Table {
 
             curl_setopt_array(
                 $curl, array(
-                         CURLOPT_URL => SHIPPER_API_URL."/labels",
+                         CURLOPT_URL => SHIPPER_API_URL."/shipment",
 
 
                          CURLOPT_RETURNTRANSFER => true,
@@ -2945,8 +2945,8 @@ class DeliveryNote extends DB_Table {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
 
-  //          print_r($tmp);
-//exit;
+            //print_r($tmp);
+            //exit;
 
             $response = json_decode($tmp, true);
 
