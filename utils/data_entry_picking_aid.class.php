@@ -230,7 +230,7 @@ class data_entry_picking_aid {
                         'ServiceCustomerUID' => '6460',
                         //'21753',
                     ];
-
+                    $reference2='packet';
                     if ($this->data['parcels'][0]['weight'] < .75 and $dim[0] <= 35 and $dim[1] <= 25 and $dim[1] <= 2.5) {
                         $service = [
                             'ServiceId'          => '78108',
@@ -238,10 +238,12 @@ class data_entry_picking_aid {
                             'ServiceCustomerUID' => '6459',
                             //'21751',
                         ];
+                        $reference2='envelop';
                     }
 
 
                     $this->data['service'] = json_encode($service);
+                    $this->data['reference2'] = $reference2;
 
 
                 }
@@ -1038,7 +1040,13 @@ class data_entry_picking_aid {
                 if (isset($this->data['service'])) {
                     $service = $this->data['service'];
                 }
-                $this->dn->get_label($service);
+                $reference2 = '';
+                if (isset($this->data['reference2'])) {
+                    $reference2 = $this->data['reference2'];
+                }
+
+
+                $this->dn->get_label($service,$reference2);
             }
         }
 

@@ -2731,7 +2731,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function get_label($service = '') {
+    function get_label($service = '',$reference2='') {
 
 
         $shipper = get_object('Shipper', $this->data['Delivery Note Shipper Key']);
@@ -2893,6 +2893,7 @@ class DeliveryNote extends DB_Table {
             if (!empty($service)) {
                 $post['service_type'] = $service;
             }
+            $post['reference2'] = $reference2;
 
 
             $order = get_object('Order', $this->get('Delivery Note Order Key'));
