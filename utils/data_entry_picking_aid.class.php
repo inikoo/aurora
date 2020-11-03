@@ -160,13 +160,120 @@ class data_entry_picking_aid {
                     );
 
                 }
+
+                if ($this->shipper->get('Shipper API Key') != '' and $this->shipper->get('Code') == 'Whistl') {
+
+
+                    if (count($this->data['parcels']) > 1) {
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'ony 1 parcel allowed'
+                        );
+
+                        return array(
+                            'valid'    => false,
+                            'response' => $response
+                        );
+                    }
+
+                    if ($this->data['parcels'][0]['weight'] > 2) {
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'Max weight is 2Kg'
+                        );
+
+                        return array(
+                            'valid'    => false,
+                            'response' => $response
+                        );
+
+                    }
+
+                    $dim = [
+                        $this->data['parcels'][0]['dim_0'],
+                        $this->data['parcels'][0]['dim_1'],
+                        $this->data['parcels'][0]['dim_2']
+                    ];
+
+
+                    if ($dim[0] > 61 or $dim[1] > 26 or $dim[2] > 26) {
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'Max allowed dimension is 61x26x26 cm'
+                        );
+
+                        return array(
+                            'valid'    => false,
+                            'response' => $response
+                        );
+
+                    }
+
+                    if ($dim[0] == 0 or $dim[1] == 0 or $dim[2] == 0 or $dim[0] == '' or $dim[1] == '' or $dim[2] == '') {
+                        if (count($this->data['parcels']) > 1) {
+                            $response = array(
+                                'state' => 400,
+                                'msg'   => 'Dimensions can not be zero'
+                            );
+
+                            return array(
+                                'valid'    => false,
+                                'response' => $response
+                            );
+                        }
+                    }
+
+
+                    $service = [
+                        'ServiceId'          => '78109',
+                        'ServiceProviderId'  => '77',
+                        'ServiceCustomerUID' => '6460',
+                        //'21753',
+                    ];
+
+                    if ($this->data['parcels'][0]['weight'] < .75 and $dim[0] <= 35 and $dim[1] <= 25 and $dim[1] <= 2.5) {
+                        $service = [
+                            'ServiceId'          => '78108',
+                            'ServiceProviderId'  => '77',
+                            'ServiceCustomerUID' => '6459',
+                            //'21751',
+                        ];
+                    }
+
+
+                    $this->data['service'] = json_encode($service);
+
+
+                }
+
+
+
+                /*
+                 *  foreach ($this->data['parcels'] as $parcel_data) {
+                          if (is_numeric($parcel_data['weight']) and $parcel_data['weight'] > 0) {
+                              $weight += $parcel_data['weight'];
+                          }
+
+                          $this->parcels[] = [
+                              'weight' => $parcel_data['weight'],
+                              'height' => $parcel_data['dim_0'],
+                              'width'  => $parcel_data['dim_1'],
+                              'depth'  => $parcel_data['dim_2'],
+
+                          ];
+
+                      }
+                 */
+
+
             } else {
                 $this->data['fields']['Delivery Note Shipper Tracking'] = '';
 
             }
         }
 
-        if($this->level>5) {
+
+        if ($this->level > 5) {
 
             $itf_keys = array();
             $sql      = 'SELECT `Inventory Transaction Key` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=? ';
@@ -900,7 +1007,7 @@ class data_entry_picking_aid {
 
     function finish_packing($options = '{}') {
 
-        $state_index=$this->dn->get('State Index');
+        $state_index = $this->dn->get('State Index');
 
         $options = json_decode($options, true);
         if (!empty($options['date'])) {
