@@ -171,7 +171,7 @@ if ($order == 'public_id') {
 $fields
     = '`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,D.`Supplier Delivery Key`,`Supplier Delivery State`,`Supplier Delivery Public ID`,D.`Supplier Delivery Last Updated Date`,`Supplier Delivery Creation Date`,
 `Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Supplier Delivery Total Amount`,`Supplier Delivery Currency Code`,`Supplier Delivery Invoice Public ID`,`Supplier Delivery Invoice Date`,
-`Supplier Delivery CBM`,`Supplier Delivery Weight`
+`Supplier Delivery CBM`,`Supplier Delivery Weight`,`Supplier Delivery Received Date`,`Supplier Delivery Estimated Receiving Date`
 ';
 
 $sql_totals

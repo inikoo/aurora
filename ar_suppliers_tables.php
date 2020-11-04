@@ -1234,19 +1234,43 @@ function deliveries($_data, $db, $user) {
                 $cbm = number($data['Supplier Delivery CBM']).' m³';
             }
 
+            $expected = '';
+            if ($data['Supplier Delivery State'] == 'Cancelled') {
+                $expected = '';
+            } elseif (in_array(
+                $data['Supplier Delivery State'], [
+                'Received',
+                'Checked',
+                'Placed',
+                'Costing',
+                'InvoiceChecked'
+            ]
+            )) {
+                if ($data['Supplier Delivery Received Date'] != '') {
+                    $expected = strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Received Date'].' +0:00'));
+                }
+            } else {
+
+                if ($data['Supplier Delivery Estimated Receiving Date'] != '') {
+                    $expected = strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Estimated Receiving Date'].' +0:00'));
+                }
+            }
+
             $table_data[] = array(
                 'id' => (integer)$data['Supplier Delivery Key'],
 
                 'size_icon' => $size_icon,
                 'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
                 'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+                'expected'  => $expected,
+
                 // 'parent_name' => $data['Supplier Delivery Parent Name'],
 
 
                 'parent'    => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Parent Name']),
                 'public_id' => sprintf(
-                    '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
-                ),
+                '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+            ),
 
                 'cbm'          => $cbm,
                 'state'        => $state,
@@ -1294,7 +1318,6 @@ function order_items_in_process($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
-
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
     //$exchange   = -1;
@@ -1302,8 +1325,7 @@ function order_items_in_process($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
-
+            $stock_available = $data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
 
 
             switch ($data['Part Stock Status']) {
@@ -1507,8 +1529,7 @@ function order_items_in_process($_data, $db, $user, $account) {
 
             $description_units = $description_units.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($stock_available * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
-                .$stock_status.'
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($stock_available * $data['Part Units Per Package']).'<span class="small">u.</span></span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
                     </div>
@@ -1788,14 +1809,11 @@ function job_order_items($_data, $db, $user, $account) {
             }
 
 
-            $_items_qty=$data['Purchase Order Submitted Units'] - $data['Purchase Order Submitted Cancelled Units'];
-            $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">'.get_job_order_transaction_data($data).'</span>';
+            $_items_qty = $data['Purchase Order Submitted Units'] - $data['Purchase Order Submitted Cancelled Units'];
+            $state      = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">'.get_job_order_transaction_data($data).'</span>';
 
 
-
-            list($items_qty,$ordered_units,$ordered_skos,$ordered_cartons)=get_purchase_order_transaction_ordered_data($data);
-
-
+            list($items_qty, $ordered_units, $ordered_skos, $ordered_cartons) = get_purchase_order_transaction_ordered_data($data);
 
 
             $amount = money($data['Purchase Order Net Amount'], $purchase_order->get('Purchase Order Currency Code'));
@@ -3104,8 +3122,6 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-
-
     //print $sql;
 
     $table_data = array();
@@ -3113,7 +3129,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
+            $stock_available = $data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
 
 
             switch ($data['Supplier Part Status']) {
@@ -3286,8 +3302,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             $description_units = $description_units.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($stock_available * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
-                .$stock_status.'
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($stock_available * $data['Part Units Per Package']).'<span class="small">u.</span></span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
                     </div>
@@ -4067,7 +4082,6 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             );
 
 
-
             $next_deliveries = '';
 
             if ($data['Part Next Deliveries Data'] != '') {
@@ -4084,13 +4098,14 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             }
             $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
 
-            $stock_available=$data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
+            $stock_available = $data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
 
 
-            $stock='<span class="very_discreet small padding_right_10"><i class="fal fa-inventory"></i> '.number($data['Part Current On Hand Stock']).' <i class="fal fa-shopping-cart"></i> '.number($data['Part Current Stock In Process'] + $data['Part Current Stock Ordered Paid']).'</span>';
+            $stock = '<span class="very_discreet small padding_right_10"><i class="fal fa-inventory"></i> '.number($data['Part Current On Hand Stock']).' <i class="fal fa-shopping-cart"></i> '.number(
+                    $data['Part Current Stock In Process'] + $data['Part Current Stock Ordered Paid']
+                ).'</span>';
 
-            $stock.='<b>'.number($stock_available).'</b>';
-
+            $stock .= '<b>'.number($stock_available).'</b>';
 
 
             $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
@@ -4140,7 +4155,6 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function supplier_categories($_data, $db, $user) {
@@ -4769,12 +4783,12 @@ function delivery_items_done($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql        = "select $fields from $table $where $wheref $group_by ";
-    if($order!=''){
-        $sql        = " order by $order $order_direction ";
+    $sql = "select $fields from $table $where $wheref $group_by ";
+    if ($order != '') {
+        $sql = " order by $order $order_direction ";
 
     }
-    $sql        .= " limit $start_from,$number_results";
+    $sql .= " limit $start_from,$number_results";
 
     $table_data = array();
 
