@@ -225,17 +225,17 @@ class data_entry_picking_aid {
 
 
                     $service = [
-                        'ServiceId'          => '21753',
+                        'ServiceId'          => '78109',
                         'ServiceProviderId'  => '77',
-                        'ServiceCustomerUID' => '6460',
+                        'ServiceCustomerUID' => '21753',
                         //'21753',
                     ];
                     $reference2='packet';
                     if ($this->data['parcels'][0]['weight'] < .75 and $dim[0] <= 35 and $dim[1] <= 25 and $dim[1] <= 2.5) {
                         $service = [
-                            'ServiceId'          => '21751',
+                            'ServiceId'          => '78108',
                             'ServiceProviderId'  => '77',
-                            'ServiceCustomerUID' => '6459',
+                            'ServiceCustomerUID' => '21751',
                             //'21751',
                         ];
                         $reference2='envelop';
