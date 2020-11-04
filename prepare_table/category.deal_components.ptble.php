@@ -14,7 +14,16 @@ $table = ' `Deal Component Dimension` DCD left join   `Deal Dimension` D on (`De
 
 
 $where = sprintf(
-    ' where  `Deal Component Allowance Target`="Category" AND `Deal Component Allowance Target Key`=%d ', $parameters['parent_key']
+    ' where  
+    
+    
+    ((`Deal Component Allowance Target`="Category" AND `Deal Component Allowance Target Key`=%d ) or
+        (`Deal Component Trigger`="Category" AND `Deal Component Trigger Key`=%d ) )
+
+    
+     
+     
+     ', $parameters['parent_key'],$parameters['parent_key']
 );
 
 
