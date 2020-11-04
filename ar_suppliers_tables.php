@@ -1247,12 +1247,12 @@ function deliveries($_data, $db, $user) {
             ]
             )) {
                 if ($data['Supplier Delivery Received Date'] != '') {
-                    $expected = strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Received Date'].' +0:00'));
+                    $expected = strftime("%a %e %b %Y", strtotime($data['Supplier Delivery Received Date'].' +0:00'));
                 }
             } else {
 
                 if ($data['Supplier Delivery Estimated Receiving Date'] != '') {
-                    $expected = strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Estimated Receiving Date'].' +0:00'));
+                    $expected = strftime("%a %e %b %Y", strtotime($data['Supplier Delivery Estimated Receiving Date'].' +0:00'));
                 }
             }
 

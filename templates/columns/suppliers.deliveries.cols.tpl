@@ -35,7 +35,17 @@ sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
+},
+{
+name: "expected",
+label: "{t}Expected/Received{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
 name: "parent",
 label: "{t}Supplier{/t}",
 renderable:{if $data['parent']=='supplier'}false{else}true{/if},
