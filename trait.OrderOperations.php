@@ -428,6 +428,7 @@ trait OrderOperations {
 
         if ($this->updated) {
 
+
             $this->update_address_formatted_fields($type);
 
 
@@ -453,6 +454,21 @@ trait OrderOperations {
 
                 $this->update_shipping();
                 $this->update_tax();
+
+                $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State` not in ('Dispatched','Cancelled')  ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+                    $delivery_note = get_object('Delivery Note', $row['Delivery Note Key']);
+                    $delivery_note->editor=$this->editor;
+                    $delivery_note->update(
+                        ['Delivery Note Address' => $this->get('Order Delivery Address')]
+                    );
+                }
 
 
             }
@@ -666,9 +682,9 @@ trait OrderOperations {
             $customer->update_orders();
 
 
-            if($process_stats) {
+            if ($process_stats) {
 
-                $store    = get_object('Store', $this->get('Order Store Key'));
+                $store = get_object('Store', $this->get('Order Store Key'));
 
                 $sql = sprintf("SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`='Charges' AND   `Order Key`=%d  ", $this->id);
 

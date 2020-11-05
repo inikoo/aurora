@@ -194,7 +194,7 @@ abstract class DB_Table extends stdClass {
             "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
         );
 
-
+        //print "$sql $value $table_key\n";
         //prepare_mysql($value, $null_if_empty)
         // $table_key
         $stmt = $this->db->prepare($sql);

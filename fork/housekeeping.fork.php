@@ -1950,7 +1950,7 @@ function fork_housekeeping($job) {
         case 'delivery_note_cancelled':
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
-            print $delivery_note->get('Deliver Note ID')."\n";
+            //print $delivery_note->get('Delivery Note ID')."\n";
 
             $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
             $store->load_acc_data();

@@ -764,7 +764,7 @@ class DeliveryNote extends DB_Table {
             case('Shipping Net Amount'):
 
                 return money($this->data['Delivery Note '.$key]);
-                break;
+
             case('Fraction Packed'):
             case('Fraction Picked'):
                 return percentage($this->data['Delivery Note'.' '.$key], 1);
@@ -776,8 +776,6 @@ class DeliveryNote extends DB_Table {
             case('Shipper'):
 
                 return (!empty($this->data['Delivery Note Shipper Key']) ? get_object('Shipper', $this->data['Delivery Note Shipper Key']) : false);
-
-                break;
 
 
             case 'Delivery Note Assigned Picker Name':
@@ -794,7 +792,30 @@ class DeliveryNote extends DB_Table {
                     return '';
                 }
 
-                break;
+            case 'Delivery Note Delivery Address':
+
+
+                $address_fields = array(
+
+                    'Address Recipient'            => $this->get('Address Recipient'),
+                    'Address Organization'         => $this->get('Address Organization'),
+                    'Address Line 1'               => $this->get('Address Line 1'),
+                    'Address Line 2'               => $this->get('Address Line 2'),
+                    'Address Sorting Code'         => $this->get('Address Sorting Code'),
+                    'Address Postal Code'          => $this->get('Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get('Address Dependent Locality'),
+                    'Address Locality'             => $this->get('Address Locality'),
+                    'Address Administrative Area'  => $this->get('Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get('Address Country 2 Alpha Code'),
+
+
+                );
+
+                return json_encode($address_fields);
+
+            case 'Delivery Address':
+
+                return $this->get('Delivery Note Address Formatted');
 
 
         }
@@ -1088,9 +1109,17 @@ class DeliveryNote extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
         switch ($field) {
 
+            case 'Delivery Note Address':
+                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
+                    return;
+                }
 
+
+                $this->update_address(json_decode($value, true));
+                break;
             case 'Delivery Note State':
 
                 $this->update_state($value, $options, $metadata);
@@ -2731,7 +2760,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function get_label($service = '',$reference2='') {
+    function get_label($service = '', $reference2 = '') {
 
 
         $shipper = get_object('Shipper', $this->data['Delivery Note Shipper Key']);
@@ -2811,7 +2840,7 @@ class DeliveryNote extends DB_Table {
             }
 
 
-            $number_parcels=count($parcels);
+            $number_parcels = count($parcels);
 
             $items = [];
 
@@ -2827,39 +2856,36 @@ class DeliveryNote extends DB_Table {
                     $this->id
                 )
             );
-            $parcel_index=0;
+            $parcel_index = 0;
             while ($row = $stmt->fetch()) {
 
-                if($this->get('State Index')>70){
-                    if($row['packed']==0){
+                if ($this->get('State Index') > 70) {
+                    if ($row['packed'] == 0) {
                         continue;
                     }
-                    $row['qty']=$row['packed'];
-                }else{
-                    $row['qty']=$row['ordered'];
+                    $row['qty'] = $row['packed'];
+                } else {
+                    $row['qty'] = $row['ordered'];
                 }
-
 
 
                 $items[$row['Order Transaction Fact Key']] = $row;
 
 
+                if (!isset($parcels[$parcel_index]->items)) {
 
 
-                if(!isset($parcels[$parcel_index]->items)){
+                    $parcels[$parcel_index]->items = [$row['Order Transaction Fact Key']];
 
 
-                    $parcels[$parcel_index]->items=[$row['Order Transaction Fact Key']];
-
-
-                }else{
-                    array_push( $parcels[$parcel_index]->items,$row['Order Transaction Fact Key']);
+                } else {
+                    array_push($parcels[$parcel_index]->items, $row['Order Transaction Fact Key']);
                 }
 
 
-                if($parcel_index>=($number_parcels-1)){
-                    $parcel_index=0;
-                }else{
+                if ($parcel_index >= ($number_parcels - 1)) {
+                    $parcel_index = 0;
+                } else {
                     $parcel_index++;
                 }
 
@@ -2917,11 +2943,12 @@ class DeliveryNote extends DB_Table {
             }
 
 
-
-            $post['order'] = json_encode([
-                'order_number' => $order->get('Order Public ID'),
-                'items'        => $items
-            ]);
+            $post['order'] = json_encode(
+                [
+                    'order_number' => $order->get('Order Public ID'),
+                    'items'        => $items
+                ]
+            );
 
 
             if ($shipper->get('Shipper Code') == 'APC') {
@@ -2980,6 +3007,138 @@ class DeliveryNote extends DB_Table {
     function properties($key) {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
+
+
+    function update_address($fields, $options = '') {
+
+
+        $old_value = $this->get("Delivery Address");
+
+
+        $updated_fields_number = 0;
+
+        if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
+            include_once 'utils/geography_functions.php';
+            $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
+        }
+
+
+        foreach ($fields as $field => $value) {
+
+
+            $this->update_field(
+                'Delivery Note '.$field, $value, 'no_history'
+            );
+            if ($this->updated) {
+                $updated_fields_number++;
+
+            }
+        }
+
+
+
+        if ($updated_fields_number > 0) {
+            $this->updated = true;
+        }
+
+
+        if ($this->updated) {
+
+            $this->update_address_formatted_fields();
+
+
+            if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
+
+                $this->add_changelog_record(
+                    "Delivery Note Address", $old_value, $this->get("Delivery Address"), '', $this->table_name, $this->id
+                );
+
+            }
+
+
+        }
+
+    }
+
+    function update_address_formatted_fields($type = 'Delivery') {
+
+        include_once 'utils/get_addressing.php';
+
+        $address_fields = array(
+            'Address Recipient'            => $this->get('Address Recipient'),
+            'Address Organization'         => $this->get('Address Organization'),
+            'Address Line 1'               => $this->get('Address Line 1'),
+            'Address Line 2'               => $this->get('Address Line 2'),
+            'Address Sorting Code'         => $this->get('Address Sorting Code'),
+            'Address Postal Code'          => $this->get('Address Postal Code'),
+            'Address Dependent Locality'   => $this->get('Address Dependent Locality'),
+            'Address Locality'             => $this->get('Address Locality'),
+            'Address Administrative Area'  => $this->get('Address Administrative Area'),
+            'Address Country 2 Alpha Code' => $this->get('Address Country 2 Alpha Code'),
+        );
+
+
+        // replace null to empty string do not remove
+        array_walk_recursive(
+            $address_fields, function (&$item) {
+            $item = strval($item);
+        }
+        );
+
+
+        $new_checksum = md5(
+            json_encode($address_fields)
+        );
+
+
+        $this->update_field(
+            'Delivery Note Address Checksum', $new_checksum, 'no_history'
+        );
+
+
+        $account = get_object('Account', '');
+        $locale  = $account->get('Account Locale');
+
+
+        $country = $account->get('Account Country 2 Alpha Code');
+
+
+        list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
+
+
+        $address = $address->withFamilyName($this->get('Address Recipient'))->withOrganization($this->get('Address Organization'))->withAddressLine1($this->get('Address Line 1'))->withAddressLine2($this->get('Address Line 2'))->withSortingCode(
+            $this->get('Address Sorting Code')
+        )->withPostalCode($this->get('Address Postal Code'))->withDependentLocality(
+            $this->get('Address Dependent Locality')
+        )->withLocality($this->get('Address Locality'))->withAdministrativeArea(
+            $this->get('Address Administrative Area')
+        )->withCountryCode(
+            $this->get('Address Country 2 Alpha Code')
+        );
+
+
+        $xhtml_address = $formatter->format($address);
+
+
+        $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
+
+
+        //$xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+
+
+        $xhtml_address = preg_replace('/<br>/', '<br/>', $xhtml_address);
+
+
+        $this->update_field('Delivery Note Address Formatted', $xhtml_address, 'no_history');
+        $this->update_field(
+            'Delivery Note Address Postal Label', $postal_label_formatter->format($address), 'no_history'
+        );
+
+    }
+
 
 }
 
