@@ -2292,7 +2292,7 @@ class Staff extends DB_Table {
 
 
         if ($this->data['Staff Type'] == 'Employee') {
-            $url    = AIKU_URL.'hr/employee/';
+            $url    = AIKU_URL.'hr/employee/'.$this->id;
             switch ($field) {
                 case 'Staff Currently Working':
                     $params['status'] = ($value == 'Yes' ? 'working' : 'notWorking');
@@ -2328,7 +2328,7 @@ class Staff extends DB_Table {
                     return [false,false];
             }
         } elseif ($this->data['Staff Type'] == 'Contractor') {
-            $url    = AIKU_URL.'hr/guest/';
+            $url    = AIKU_URL.'hr/guest/'.$this->id;
             switch ($field) {
                 case 'Staff Currently Working':
                     $params['status'] = ($value == 'Yes' ? 'active' : 'inactive');
