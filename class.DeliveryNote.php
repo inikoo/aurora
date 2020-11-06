@@ -120,7 +120,7 @@ class DeliveryNote extends DB_Table {
                 throw new Exception('Error inserting '.$this->table_name);
             }
 
-
+            $this->update_uuid();
             $this->get_data('id', $this->id);
 
             if (!is_array($this->data)) {
@@ -937,6 +937,8 @@ class DeliveryNote extends DB_Table {
             if (!$this->id) {
                 throw new Exception('Error inserting (replacement) '.$this->table_name);
             }
+
+            $this->update_uuid();
             $this->get_data('id', $this->id);
 
 
@@ -3193,6 +3195,11 @@ class DeliveryNote extends DB_Table {
             'Delivery Note Address Postal Label', $postal_label_formatter->format($address), 'no_history'
         );
 
+    }
+
+    function update_uuid(){
+
+        $this->fast_update(['Delivery Note UUID'=>md5(uniqid('', true))]);
     }
 
 

@@ -22,7 +22,8 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $dn = get_object('Delivery Note', $row['Delivery Note Key']);
 
-        $dn->update_totals();
+        //$dn->update_totals();
+        $dn->update_uuid();
 
     }
 
