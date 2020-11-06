@@ -319,6 +319,16 @@ class DeliveryNote extends DB_Table {
         switch ($key) {
 
 
+            case 'label_fail':
+
+
+                if ($this->properties('label_link') == '' and $this->properties('label_error') == 'Yes') {
+                    return 'Yes';
+                } else {
+                    return 'No';
+
+                }
+
             case 'dispatched_since':
 
 
@@ -2913,12 +2923,36 @@ class DeliveryNote extends DB_Table {
                 'parcels'            => json_encode($parcels),
                 'ship_to'            => json_encode($ship_to),
                 'pick_up'            => json_encode($pick_up),
+                'error_shipments'    => $this->properties('label_error_shipments')
             ];
+
+
+            if (empty($service)) {
+                if ($shipper->get('Shipper Code') == 'APC') {
+
+                    $sql  = "select count(*) as num from `Inventory Transaction Fact` ITF left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`) where `Delivery Note Key`=? and `Part UN Number`!='' and `Required`>0 ";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->id
+                        )
+                    );
+                    if ($row = $stmt->fetch()) {
+                        if ($row['num'] > 0) {
+                            $service = 'LQ16';
+                        }
+                    }
+                }
+            }
 
 
             if (!empty($service)) {
                 $post['service_type'] = $service;
+
             }
+
+            $this->fast_update_json_field('Delivery Note Properties', 'last_shipment_service_type', $service);
+
             $post['reference2'] = $reference2;
 
 
@@ -2951,25 +2985,10 @@ class DeliveryNote extends DB_Table {
             );
 
 
-            if ($shipper->get('Shipper Code') == 'APC') {
-
-                $sql  = "select count(*) as num from `Inventory Transaction Fact` ITF left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`) where `Delivery Note Key`=? and `Part UN Number`!='' and `Required`>0 ";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $this->id
-                    )
-                );
-                if ($row = $stmt->fetch()) {
-                    if ($row['num'] > 0) {
-                        $post['service_type'] = 'LQ16';
-                    }
-                }
-            }
-
-
-            //print_r($post);
+           // print_r($post);
             //exit;
+
+
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
 
@@ -2981,6 +3000,10 @@ class DeliveryNote extends DB_Table {
 
             $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
+
+
+
+
             if ($http_code == 200) {
 
                 $this->fast_update(
@@ -2991,16 +3014,50 @@ class DeliveryNote extends DB_Table {
 
                 );
                 $this->fast_update_json_field('Delivery Note Properties', 'label_link', $response['label_link']);
+                $this->fast_update_json_field('Delivery Note Properties', 'label_shipment_id', $response['shipment_id']);
 
+                return [
+                    'status' => 'success'
+                ];
+
+            } elseif ($http_code == 599) {
+
+                $error_shipments = $this->properties('label_error_shipments');
+                if ($error_shipments == '') {
+                    $error_shipments = [];
+                } else {
+                    $error_shipments = json_decode($error_shipments, true);
+                }
+
+                $msg=$response['msg'];
+                if(is_array($response['msg'])){
+                    $msg=json_encode($response['msg']);
+                }
+
+                $this->fast_update_json_field('Delivery Note Properties', 'label_error', 'Yes');
+                $this->fast_update_json_field('Delivery Note Properties', 'label_error_msg', $msg);
+                $this->fast_update_json_field('Delivery Note Properties', 'label_error_full_msg', json_encode($response['errors']));
+                array_push($error_shipments, $response['shipment_id']);
+                $this->fast_update_json_field('Delivery Note Properties', 'label_error_shipments', json_encode($error_shipments));
+
+
+                return [
+                    'status' => 'fail'
+                ];
 
             } else {
-
-
+                return [
+                    'status' => 'unknown_fail'
+                ];
             }
 
 
         }
 
+
+        return [
+            'status' => 'unknown_fail'
+        ];
 
     }
 
@@ -3034,7 +3091,6 @@ class DeliveryNote extends DB_Table {
 
             }
         }
-
 
 
         if ($updated_fields_number > 0) {

@@ -113,7 +113,7 @@ switch ($tipo) {
                      )
         );
 
-        edit_field($account, $db, $redis,$editor, $data, $smarty, $user);
+        edit_field($account, $db, $redis, $editor, $data, $smarty, $user);
         break;
     case 'object_operation':
 
@@ -319,7 +319,7 @@ switch ($tipo) {
  *
  * @throws \SmartyException
  */
-function edit_field($account, $db, $redis,$editor, $data, $smarty, $user) {
+function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
 
 
     $object = get_object($data['object'], $data['key']);
@@ -448,13 +448,12 @@ function edit_field($account, $db, $redis,$editor, $data, $smarty, $user) {
     }
 
 
-    if ($data['object']=='Store' or  $data['object']=='Account'){
+    if ($data['object'] == 'Store' or $data['object'] == 'Account') {
         $object->cache_object($redis, 'DNS_ACCOUNT_CODE');
     }
 
 
-
-        //print_r($data['metadata']);
+    //print_r($data['metadata']);
 
     if (isset($data['metadata'])) {
         if (isset($data['metadata']['extra_fields'])) {
@@ -1115,6 +1114,187 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
     switch ($data['object']) {
 
+        case 'shipment_label':
+
+
+
+            $delivery_note = get_object('Delivery_Note', $data['parent_key']);
+
+            $order         = get_object('Order', $delivery_note->get('Delivery Note Order Key'));
+            $order->editor = $editor;
+
+
+
+
+            //exit;
+
+            $address_data = [
+                "Address Recipient"            => $data['fields_data']['Order Delivery Address recipient'],
+                "Address Organization"         => $data['fields_data']['Order Delivery Address organization'],
+                "Address Line 1"               => $data['fields_data']['Order Delivery Address addressLine1'],
+                "Address Line 2"               => $data['fields_data']['Order Delivery Address addressLine2'],
+                "Address Sorting Code"         => $data['fields_data']['Order Delivery Address sortingCode'],
+                "Address Postal Code"          => $data['fields_data']['Order Delivery Address postalCode'],
+                "Address Dependent Locality"   => $data['fields_data']['Order Delivery Address dependentLocality'],
+                "Address Locality"             => $data['fields_data']['Order Delivery Address locality'],
+                "Address Administrative Area"  => $data['fields_data']['Order Delivery Address administrativeArea'],
+                "Address Country 2 Alpha Code" => $data['fields_data']['Order Delivery Address country'],
+            ];
+
+
+            $order->update(
+                ['Order Delivery Address' => json_encode($address_data)]
+            );
+
+            $delivery_note->get_data('id',$delivery_note->id);
+
+            $delivery_note->fast_update(['Delivery Note Shipper Key'=>$data['fields_data']['Shipment Shipper']]);
+
+
+            $shipper=get_object('Shipper',$data['fields_data']['Shipment Shipper']);
+
+
+            $reference2='';
+            $service='';
+
+
+
+            if($shipper->get('Code') == 'Whistl'){
+
+                $parcels=json_decode($delivery_note->properties('parcels'),true);
+
+
+                if(count($parcels)>1){
+
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'only 1 parcel allowed'
+
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+
+                if ($parcels[0]['weight'] > 2) {
+
+
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'Max weight is 2Kg'
+
+                    );
+                    echo json_encode($response);
+                    exit;
+
+
+
+                }
+
+                $dim = [
+                    $parcels[0]['height'],
+                    $parcels[0]['width'],
+                    $parcels[0]['depth']
+                ];
+
+
+                if ($dim[0] > 61 or $dim[1] > 26 or $dim[2] > 26) {
+
+
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'Max allowed dimension is 61x26x26 cm'
+
+                    );
+                    echo json_encode($response);
+                    exit;
+
+
+
+                }
+
+                if ($dim[0] == 0 or $dim[1] == 0 or $dim[2] == 0 or $dim[0] == '' or $dim[1] == '' or $dim[2] == '') {
+
+
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'Dimensions can not be zero'
+
+                        );
+                        echo json_encode($response);
+                        exit;
+
+
+                }
+
+
+                $service = [
+                    'ServiceId'          => '78109',
+                    'ServiceProviderId'  => '77',
+                    'ServiceCustomerUID' => '21753',
+                    //'21753',
+                ];
+                $reference2='packet';
+                if ($parcels[0]['weight'] < .75 and $dim[0] <= 35 and $dim[1] <= 25 and $dim[1] <= 2.5) {
+                    $service = [
+                        'ServiceId'          => '78108',
+                        'ServiceProviderId'  => '77',
+                        'ServiceCustomerUID' => '21751',
+                        //'21751',
+                    ];
+                    $reference2='envelop';
+                }
+
+
+                $service = json_encode($service);
+                $reference2 = $reference2;
+
+
+
+
+
+
+            }
+
+
+
+
+            if(!empty($data['fields_data']['Service '.$shipper->id]) and  $data['fields_data']['Service '.$shipper->id]!='_AUTO_' ){
+                $service=$data['fields_data']['Service '.$shipper->id];
+            }
+
+            $result=$delivery_note->get_label($service,$reference2);
+
+            switch($result['status']){
+                case 'success':
+                    $redirect     = 'orders/'.$order->get('Order Store Key').'/'.$order->id;
+                    $redirect_metadata = array('tab' => 'order.items','reload_showcase'=> 1);
+
+                    break;
+                case 'fail':
+                    $redirect     = 'orders/'.$order->get('Order Store Key').'/'.$order->id;
+                    $redirect_metadata = array('tab' => 'retry_shipment_label','dn_key' => $delivery_note->id,'reload_showcase'=> 1);
+
+                    break;
+                default:
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'Unknown error'
+
+                    );
+                    echo json_encode($response);
+                    exit;
+
+            }
+
+
+            $object=$delivery_note;
+            $parent=$delivery_note;
+
+            $new_object_html = '';
+            $updated_data = array();
+
+            break;
+
         case 'Deal':
 
             include_once 'utils/parse_deal_data.php';
@@ -1158,6 +1338,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     );
 
+                    //print_r($deal_new_data);
 
                     if ($data['fields_data']['Deal Type Percentage Off']) {
 
@@ -1362,8 +1543,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            }
-                            elseif ($data['fields_data']['Deal Type Percentage Off']) {
+                            } elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
                                 if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
@@ -1418,8 +1598,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            }
-                            elseif ($data['fields_data']['Deal Type Get Item Free']) {
+                            } elseif ($data['fields_data']['Deal Type Get Item Free']) {
 
                                 if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
                                     $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
@@ -1437,8 +1616,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     exit;
                                 }
 
-                            }
-                            elseif ($data['fields_data']['Deal Type Amount Off']) {
+                            } elseif ($data['fields_data']['Deal Type Amount Off']) {
 
                                 if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
                                     $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
@@ -1454,8 +1632,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($result);
                                     exit;
                                 }
-                            }
-                            else {
+                            } else {
                                 $response = array(
                                     'state' => 400,
                                     'resp'  => 'Error no allowance type'
@@ -1527,8 +1704,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            }
-                            elseif ($data['fields_data']['Deal Type Percentage Off']) {
+                            } elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
                                 if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
@@ -1576,8 +1752,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            }
-                            elseif ($data['fields_data']['Deal Type Get Item Free']) {
+                            } elseif ($data['fields_data']['Deal Type Get Item Free']) {
 
 
                                 list($success, $result) = parse_deal_not_ordered_free_item($data, $deal_new_data, $store);
@@ -2164,6 +2339,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     );
 
+                    //print_r($deal_new_data);
 
                     if ($data['fields_data']['Deal Type Percentage Off']) {
 
@@ -2185,63 +2361,114 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance'              => $data['fields_data']['Percentage Off'] / 100
                         );
 
-                    } else {
-                        if ($data['fields_data']['Deal Type Buy n get n free']) {
+                    } elseif ($data['fields_data']['Deal Type Buy n get n free']) {
 
-                            $deal_new_data['Deal Allowance Label'] = sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']);
-
-
-                            $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n get n free A'];
-                            $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Ordered AND Voucher' : 'Category For Every Quantity Ordered');
-                            $deal_new_data['Deal Term Label'] = sprintf(_('%s products, buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n get n free A']);
+                        $deal_new_data['Deal Allowance Label'] = sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']);
 
 
-                            $allowance_data = json_encode(
-                                array(
-                                    'object'       => 'Category',
-                                    'key'          => $category->id,
-                                    'qty'          => $data['fields_data']['Deal Buy n get n free B'],
-                                    'same_product' => true
-                                )
+                        $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n get n free A'];
+                        $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Ordered AND Voucher' : 'Category For Every Quantity Ordered');
+                        $deal_new_data['Deal Term Label'] = sprintf(_('%s products, buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n get n free A']);
+
+
+                        $allowance_data = json_encode(
+                            array(
+                                'object'       => 'Category',
+                                'key'          => $category->id,
+                                'qty'          => $data['fields_data']['Deal Buy n get n free B'],
+                                'same_product' => true
+                            )
+                        );
+
+
+                        $new_component_data = array(
+
+
+                            'Deal Component Allowance Label'        => sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']),
+                            'Deal Component Allowance Type'         => 'Get Free',
+                            'Deal Component Allowance Target'       => 'Category',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $allowance_data
+                        );
+
+                    } elseif ($data['fields_data']['Deal Type Buy n pay n']) {
+
+                        $deal_new_data['Deal Allowance Label'] = sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']);
+
+
+                        $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n n free A'];
+                        $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Any Product Ordered AND Voucher' : 'Category For Every Quantity Any Product Ordered');
+                        $deal_new_data['Deal Term Label'] = sprintf(_('%s (Mix & match), buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n n free A']);
+
+                        $new_component_data = array(
+
+
+                            'Deal Component Allowance Label'        => sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']),
+                            'Deal Component Allowance Type'         => 'Get Cheapest Free',
+                            'Deal Component Allowance Target'       => 'Category',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $data['fields_data']['Deal Buy n n free B']
+                        );
+
+                    } elseif ($data['fields_data']['Deal Type Shipping']) {
+
+                        //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
+
+                        $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'objects');
+                        $number_shipping_deal_zones_schemas = count($shipping_deal_zones_schemas);
+
+                        //print_r($shipping_deal_zones_schemas);
+
+
+                        if ($number_shipping_deal_zones_schemas == 0) {
+                            $response = array(
+                                'state' => 400,
+                                'resp'  => 'there is no discounted shipping zone schema for this store'
                             );
+                            echo json_encode($response);
+                            exit;
+                        } elseif ($number_shipping_deal_zones_schemas > 1) {
 
 
-                            $new_component_data = array(
-
-
-                                'Deal Component Allowance Label'        => sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']),
-                                'Deal Component Allowance Type'         => 'Get Free',
-                                'Deal Component Allowance Target'       => 'Category',
-                                'Deal Component Allowance Target Type'  => 'Items',
-                                'Deal Component Allowance Target Key'   => $category->id,
-                                'Deal Component Allowance Target Label' => $category->get('Code'),
-                                'Deal Component Allowance'              => $allowance_data
+                            $response = array(
+                                'state' => 400,
+                                'resp'  => 'there is more than one discounted shipping zone schema for this store'
                             );
-
+                            echo json_encode($response);
+                            exit;
                         } else {
-                            if ($data['fields_data']['Deal Type Buy n pay n']) {
 
-                                $deal_new_data['Deal Allowance Label'] = sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']);
+                            $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
 
-
-                                $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n n free A'];
-                                $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Any Product Ordered AND Voucher' : 'Category For Every Quantity Any Product Ordered');
-                                $deal_new_data['Deal Term Label'] = sprintf(_('%s (Mix & match), buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n n free A']);
-
-                                $new_component_data = array(
-
-
-                                    'Deal Component Allowance Label'        => sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']),
-                                    'Deal Component Allowance Type'         => 'Get Cheapest Free',
-                                    'Deal Component Allowance Target'       => 'Category',
-                                    'Deal Component Allowance Target Type'  => 'Items',
-                                    'Deal Component Allowance Target Key'   => $category->id,
-                                    'Deal Component Allowance Target Label' => $category->get('Code'),
-                                    'Deal Component Allowance'              => $data['fields_data']['Deal Buy n n free B']
-                                );
-
-                            }
                         }
+
+
+                        //print_r($shipping_deal_zones_schema);
+                        //exit;
+                        $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
+                        $deal_new_data['Deal Terms']           = 1;
+
+
+                        $deal_new_data['Deal Terms']      = 1;
+                        $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category Quantity Ordered AND Voucher' : 'Category Quantity Ordered');
+                        $deal_new_data['Deal Term Label'] = sprintf(_('%s products'), $category->get('Code'));
+
+                        $new_component_data = array(
+
+
+                            'Deal Component Allowance Label'        => _('Discounted shipping'),
+                            'Deal Component Allowance Type'         => 'Shipping Off',
+                            'Deal Component Allowance Target'       => 'Shipping',
+                            'Deal Component Allowance Target Type'  => 'No Items',
+                            'Deal Component Allowance Target Key'   => $shipping_deal_zones_schema->id,
+                            'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
+                            'Deal Component Allowance'              => 'Shipping Off'
+                        );
+
                     }
 
 
@@ -2264,7 +2491,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                     break;
-                case 'campaign':
+                case
+                'campaign':
 
                     $campaign         = get_object('Campaign', $data['parent_key']);
                     $store            = get_object('Store', $campaign->get('Store Key'));
@@ -2323,17 +2551,17 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                         //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
 
-                        $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'Objects');
+                        $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'objects');
                         $number_shipping_deal_zones_schemas = count($shipping_deal_zones_schemas);
 
-                        if (count($number_shipping_deal_zones_schemas) == 0) {
+                        if ($number_shipping_deal_zones_schemas == 0) {
                             $response = array(
                                 'state' => 400,
                                 'resp'  => 'there is no discounted shipping zone schema for this store'
                             );
                             echo json_encode($response);
                             exit;
-                        } elseif (count($number_shipping_deal_zones_schemas) > 1) {
+                        } elseif ($number_shipping_deal_zones_schemas > 1) {
 
 
                             $response = array(
@@ -2431,7 +2659,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             break;
 
-        case 'Page':
+        case'Page':
         case 'Webpage':
             include_once 'class.Page.php';
 
@@ -2766,13 +2994,13 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Barcode':
             include_once 'class.Barcode.php';
-            $object = $parent->create_barcode($data['fields_data'],$user);
+            $object = $parent->create_barcode($data['fields_data'], $user);
 
-            if($object=='fork'){
+            if ($object == 'fork') {
 
                 $response = array(
-                    'state'             => 200,
-                    'msg'               => '<i class="fa fa-check"></i> '._('Adding barcodes in the background'),
+                    'state' => 200,
+                    'msg'   => '<i class="fa fa-check"></i> '._('Adding barcodes in the background'),
 
                 );
 
@@ -2879,7 +3107,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-
 
 
             $smarty->assign('account', $account);
@@ -3157,9 +3384,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Supplier_Part':
 
             include_once 'class.SupplierPart.php';
-        /**
-         * @var $parent \Supplier|\Part
-         */
+            /**
+             * @var $parent \Supplier|\Part
+             */
             $object = $parent->create_supplier_part_record(
                 $data['fields_data']
             );
@@ -3638,7 +3865,6 @@ function delete_attachment($db, $editor, $data) {
             echo json_encode($response);
             exit;
         }
-
 
 
         $object->delete_attachment($data['attachment_bridge_key']);

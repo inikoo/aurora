@@ -69,7 +69,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Delivery Note':
-            include 'fields/delivery_note.fld.php';
+
+
+            if(!empty($options['retry_shipment_label'])){
+                include 'fields/retry_shipment_label.fld.php';
+            }else{
+                include 'fields/delivery_note.fld.php';
+            }
+
 
             return $object_fields;
             break;

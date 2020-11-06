@@ -551,6 +551,17 @@ function on_changed_confirm_value(field, confirm_value) {
 function on_changed_value(field, new_value) {
 
 
+
+    if(field=='Shipment_Shipper'){
+
+
+        $('tr.shipper_service').addClass('hide')
+        $('tr.shipper_service_'+new_value).removeClass('hide')
+
+
+    }
+
+
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {
@@ -587,6 +598,10 @@ function on_changed_value(field, new_value) {
     var validation = validate(field, new_value)
 
     process_validation(validation, field, false)
+
+
+
+
 
 
 }

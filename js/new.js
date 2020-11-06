@@ -93,8 +93,8 @@ function get_form_validation_state() {
         $(".value").each(function (index) {
 
             var field = $(this).attr('field')
-            // console.log(index)
-            //   console.log($(this).attr('id'))
+            //console.log(index)
+            //console.log($(this).attr('id'))
 
             if($(this).attr('field_type')=='date_interval'   ){
                 component_validation = 'valid'
@@ -117,7 +117,11 @@ function get_form_validation_state() {
 
 
 
-            // if (component_validation != 'valid') console.log(field + ' ' + component_validation)
+             if (component_validation != 'valid') {
+                 console.log('#' + field + '_field')
+                 console.log($('#' + field + '_field'))
+                 console.log(field + ' ' + component_validation)
+             }
             //if (component_validation == 'invalid' || component_validation == 'potentially_valid')
             if (component_validation == 'invalid') {
                 form_validation = 'invalid';
@@ -226,7 +230,7 @@ function save_new_object(object, form_type) {
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
-                       if (field_type == 'time') {
+            if (field_type == 'time') {
                 value = clean_time($('#' + field).val())
             }else if (field_type == 'date' || field_type == 'date_interval') {
 
@@ -243,13 +247,13 @@ function save_new_object(object, form_type) {
             } else if (field_type == 'attachment') {
                 form_data.append("file", $('#' + field).prop("files")[0])
                 value = ''
-            } else if (field_type == 'country_select') {
+            }else if (field_type == 'country_select') {
                 value = $('#' + field).countrySelect("getSelectedCountryData").code
 
             } else if (field_type == 'telephone') {
                 value = $('#' + field).intlTelInput("getNumber");
 
-            } else if (field_type == 'parts_list') {
+            }else if (field_type == 'parts_list') {
                 var part_list_data = [];
 
                 $('#parts_list_items  tr.part_tr').each(function (i, obj) {
@@ -374,6 +378,8 @@ function save_new_object(object, form_type) {
         form_data.append("parent", $('#fields').attr('parent'))
         form_data.append("parent_key", $('#fields').attr('parent_key'))
         form_data.append("fields_data", JSON.stringify(fields_data))
+
+
 
         var request = $.ajax({
 

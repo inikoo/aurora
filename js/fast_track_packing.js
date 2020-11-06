@@ -196,14 +196,17 @@ function fast_track_packing_qty_changed(input_element){
 
 
 function data_entry_delivery_note(dn_key) {
-
     $('#tabs').html('');
-
     change_view(state.request + '&tab=order.input_picking_sheet', {
+        'dn_key': dn_key,'type':'data_entry_delivery_note'
+    })
+}
+
+function retry_get_label(dn_key) {
+    $('#tabs').html('');
+    change_view(state.request + '&tab=retry_shipment_label', {
         'dn_key': dn_key
     })
-
-
 }
 
 function update_delivery_note_picking_locations(element,delivery_note_key){

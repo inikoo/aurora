@@ -640,7 +640,7 @@
 
 
             {foreach from=$deliveries item=dn}
-                <div class="node" id="delivery_node_{$dn->id}">
+                <div class="node" id="delivery_node_{$dn->id}" >
                     <span class="node_label" {if  $dn->get('Delivery Note Type')!='Order'}error{/if}>
                          <i class="fa fa-truck fa-flip-horizontal fa-fw  {if  $dn->get('Delivery Note Type')!='Order'}error{/if}" aria-hidden="true"></i> <span
                                 class="link  {if  $dn->get('Delivery Note Type')!='Order'}error{/if}" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')">{$dn->get('ID')}</span>
@@ -665,7 +665,17 @@
 
                     </div>
 
+                    <div class="delivery_note_operation data_entry_delivery_note   {if $dn->get('label_fail')=='No'  or      (   $dn->get('State Index')==100  and $dn->get('dispatched_since')>86400 )  or $dn->get('State Index')<0  }hide{/if}">
 
+                    <div class="square_button right " title="{t}Shipping label failed{/t}"  style="border-bottom: 3px solid white ;height: 29px">
+                        <span  onclick="retry_get_label({$dn->id})"  ><i  style="color:tomato" class="fa fa-barcode-read " ></i></span>
+
+                    </div>
+
+
+
+
+                    </div>
                     <div class="delivery_note_operation data_entry_delivery_note   {if $dn->get('State Index')>=80 or $dn->get('State Index')<0  or $store->settings('data_entry_picking_aid')!='Yes' }hide{/if}">
 
                         <div class="square_button right" title="{t}Input picking sheet data{/t}">
@@ -695,6 +705,10 @@
                     </div>
 
                 </div>
+                <div style="text-align: right;height:initial;padding-bottom: 5px;padding-right: 5px" class="node  {if $dn->get('label_fail')=='No'  or      (   $dn->get('State Index')==100  and $dn->get('dispatched_since')>86400 )  or $dn->get('State Index')<0  }hide{/if}" id="delivery_node_label_error_{$dn->id}">
+                    <span class="error small">{$dn->properties('label_error_msg')}</span><br>
+                </div>
+
             {/foreach}
 
         </div>
@@ -1053,3 +1067,9 @@
     </table>
 
 </div>
+
+<script>
+    function show_label_error_box(){
+        alert('caca')
+    }
+</script>

@@ -46,21 +46,22 @@
                     <span id="invalid_msg" class="hide">{t}Invalid value{/t}</span>
 
 
-                    {if $edit=='address'}
+                    {if $edit=='address' or $edit=='filled_address' }
                         <tbody id="{$field.id}_address_fields" class="address_fields"  field="{$field.id}" has_been_changed="0"  _required="{$required}" >
-                            <tr id="{$field.id}_recipient_field" class="hide" >
+
+                            <tr id="{$field.id}_recipient_field" class="{if $edit=='address'}hide{/if}" >
 
                             <td class="label">{t}Recipient{/t}</td>
                             <td class="show_buttons "><i id="{$field.id}_recipient_validation" class="fa fa-asterisk field_state"></i></td>
-                            <td  id="{$field.id}_recipient_container" _required="" field_type='string'  class="recipient "  >
+                            <td  id="{$field.id}_recipient_container" _required="" field_type='string'  class="recipient {if  $edit=='filled_address'}{$field.type} address_value {/if} "  field="{$field.id}_recipient" >
                             <input id="{$field.id}_recipient" value="tmp" class="input_field" field_name="Address Recipient" >
                             </td>
                             </tr>
 
-                             <tr id="{$field.id}_field" class="hide">
+                             <tr id="{$field.id}_organization_field" class="{if $edit=='address'}hide{/if}">
                             <td class="label">{t}Organization{/t}</td>
                              <td class="show_buttons error super_discreet"><i id="{$field.id}_organization_validation" class="fa fa-asterisk field_state"></i></td>
-                            <td  id="{$field.id}_organization_container" _required="" field_type='string'  class="organization ">
+                            <td  id="{$field.id}_organization_container" _required="" field_type='string'  class="organization  {if  $edit=='filled_address'}{$field.type} address_value {/if}"   field="{$field.id}_organization" >
                             <input  id="{$field.id}_organization"  value="tmp" class="input_field" field_name="Address Organization" ></td>
                             </tr>
 
@@ -124,12 +125,47 @@
 
 
                            </tbody>
+
+            <input type="hidden"  id="{$field.id}_filled_address_value"  value='{$field.value}'   >
+
                          <script>
-
-
                 //xx
 
-                    var initial_country='{$default_country|lower}';
+
+                {if  $field.value!='' }
+
+
+
+
+
+                var address_fields = JSON.parse($('#{$field.id}_filled_address_value').val())
+
+
+
+                $('#{$field.id}_recipient   ').val(decodeEntities(address_fields['Address Recipient']))
+
+                $('#{$field.id}_organization   ').val(decodeEntities(address_fields['Address Organization']))
+                $('#{$field.id}_addressLine1   ').val(decodeEntities(address_fields['Address Line 1']))
+                $('#{$field.id}_addressLine2   ').val(decodeEntities(address_fields['Address Line 2']))
+                $('#{$field.id}_sortingCode   ').val(decodeEntities(address_fields['Address Sorting Code']))
+                $('#{$field.id}_postalCode   ').val(decodeEntities(address_fields['Address Postal Code']))
+                $('#{$field.id}_dependentLocality   ').val(decodeEntities(address_fields['Address Dependent Locality']))
+                $('#{$field.id}_locality   ').val(decodeEntities(address_fields['Address Locality']))
+                $('#{$field.id}_administrativeArea   ').val(decodeEntities(address_fields['Address Administrative Area']))
+
+                if(address_fields['Address Country 2 Alpha Code']){
+                    var initial_country = address_fields['Address Country 2 Alpha Code'].toLowerCase();
+
+                }else{
+                    var initial_country = '{$default_country|lower}';
+
+                }
+                {else}
+                var initial_country='{$default_country|lower}';
+
+                {/if}
+
+
 
 
 
@@ -141,14 +177,15 @@
                     country_select.countrySelect();
                     country_select.countrySelect("selectCountry",initial_country) ;
 
-                    update_new_address_fields('{$field.id}',initial_country, hide_recipient_fields=true)
+                    update_new_address_fields('{$field.id}',initial_country, hide_recipient_fields={if $edit=='address'}true{else}false{/if})
                     $('#{$field.id}_country').val(initial_country.toUpperCase())
 
                     country_select.on("change", function(event,arg) {
 
 
+
                         var country_code=country_select.countrySelect("getSelectedCountryData").iso2
-                        update_new_address_fields('{$field.id}',country_code, hide_recipient_fields=true)
+                        update_new_address_fields('{$field.id}',country_code, hide_recipient_fields={if $edit=='address'}true{else}false{/if})
                         on_changed_address_value("{$field.id}", '{$field.id}_country', country_code)
                         console.log(country_code)
 
@@ -160,6 +197,10 @@
 
 
                 </script>
+
+
+
+
                     {else}
                         <tr id="{$field.id}_field"  class="{if $smarty.foreach.fields.last}last{/if} {if !$render}hide{/if} {$edit} {$class}"   >
                     <td id="{$field.id}_label" class="label" ><span>{$field.label}</span></td>
@@ -340,7 +381,7 @@
 
 
 
-                    <input  id="{$field.id}" class="hide" readonly value="{$field.value}" has_been_valid="0"  />
+                    <input  id="{$field.id}" class="hide" readonly value="{$field.value}" has_been_valid="0"  {if isset($field.set_as_valid)} has_been_valid="1"  has_been_changed="1"  {else}has_been_valid="0"{/if}     />
 
 
                     <input onClick="show_field_options(this)" field="{$field.id}" id="{$field.id}_formatted" class="button" readonly value="{$field.formatted_value}"  placeholder="{if isset($field.placeholder)}{$field.placeholder}{/if}" />
@@ -615,7 +656,7 @@
         <td></td>
         <td>
 
-        <span class="save_form save  " id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$form_type}')"  ><span id="save_label">{t}Save{/t}</span><span class="hide" id="saving_label">{t}Saving{/t}</span> <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span>
+        <span class="save_form save  " id="{$object_name}_save"  onclick="save_new_object('{$object_name}','{$form_type}')"  ><span id="save_label">{if !empty($alt_save_label)}{$alt_save_label}{else}{t}Save{/t}{/if}</span><span class="hide" id="saving_label">{t}Saving{/t}</span> <i id="{$object_name}_save_icon" class="fa fa-cloud  " ></i></span>
         <span id="save_msg" class="msg padding_left_10"></span></span>
         <span class="hide new_object_results" id="{$object_name}_create_other" onClick="change_view(state.request)">{t}Add another{/t} <i class="fa fa-plus"></i>  </span>
         <span class="hide new_object_results" id="{$object_name}_go_new" request=""  onClick="change_to_new_object_view()"  >{if isset($new_object_label)}{$new_object_label}{else}{t}View new object{/t}{/if} <i class="fa fa-arrow-right"></i> </span>

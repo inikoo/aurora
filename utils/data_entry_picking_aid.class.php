@@ -167,7 +167,7 @@ class data_entry_picking_aid {
                     if (count($this->data['parcels']) > 1) {
                         $response = array(
                             'state' => 400,
-                            'msg'   => 'ony 1 parcel allowed'
+                            'msg'   => 'only 1 parcel allowed'
                         );
 
                         return array(
@@ -210,7 +210,7 @@ class data_entry_picking_aid {
                     }
 
                     if ($dim[0] == 0 or $dim[1] == 0 or $dim[2] == 0 or $dim[0] == '' or $dim[1] == '' or $dim[2] == '') {
-                        if (count($this->data['parcels']) > 1) {
+
                             $response = array(
                                 'state' => 400,
                                 'msg'   => 'Dimensions can not be zero'
@@ -220,7 +220,7 @@ class data_entry_picking_aid {
                                 'valid'    => false,
                                 'response' => $response
                             );
-                        }
+
                     }
 
 

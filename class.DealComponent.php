@@ -587,10 +587,32 @@ class DealComponent extends DB_Table {
 
 
                 if ($this->data['Deal Component Terms'] == 1) {
-                    $terms = $this->get('Deal Component Allowance Target Label');
+
+                    if($this->data['Deal Component Allowance Target']=='Shipping'){
+
+                        $category=get_object('Category',$this->data['Deal Component Trigger Key']);
+
+                        $terms=sprintf('order %s',$category->get('Code'));
+                    }else{
+                        $terms = $this->get('Deal Component Allowance Target Label');
+
+                    }
+
+
 
                 } else {
-                    $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
+
+
+                    if($this->data['Deal Component Allowance Target']=='Shipping'){
+
+                        $category=get_object('Category',$this->data['Deal Component Trigger Key']);
+
+                        $terms=sprintf('order %d or more %s',$this->data['Deal Component Terms'],$category->get('Code'));
+                    }else{
+                        $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
+
+                    }
+
 
                 }
 

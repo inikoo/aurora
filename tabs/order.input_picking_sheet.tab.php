@@ -94,6 +94,11 @@ if(empty($state['metadata']['dn_key'])){
         $smarty->assign('table_top_template', 'input_picking_sheet.tpl');
 
 
+        $delivery_note = get_object('Delivery_Note', $state['metadata']['dn_key']);
+
+        $smarty->assign('operations_view', (!empty($state['metadata']['type'])?$state['metadata']['type']:'data_entry_delivery_note'  )  );
+
+
         include('utils/get_table_html.php');
     }
 }

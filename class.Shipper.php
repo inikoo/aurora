@@ -397,7 +397,40 @@ class Shipper extends DB_Table {
 
     }
 
+
+
+    function get_services(){
+
+
+
+        switch ($this->get('Shipper Code')){
+            case 'APC':
+                return [
+                    '_AUTO_'=>'Automatic',
+                    'ND16'=>'Next Day Service by 16:00 (ND16)',
+                    'ND12'=>'Next Day Service by 12:00 (ND12)',
+                    'ND10'=>'Next Day Service by 10:00 (ND10)',
+                    'NC16'=>'Non Conveyable (NC16)',
+                    'XS16'=>'Excess Parcel (XS16)',
+
+                    'TDAY'=>'2-5 DAY Economy (TDAY)',
+                    'ROAD'=>'BT Economy Service (ROAD)',
+                    'LQ16'=>'Dangerous Goods (LQ16)',
+                    'LW16'=>'Lightweight Parcel',
+                    'CP16'=>'Courier pack (CP16)',
+                    'MP16'=>'Mail pack (MP16)',
+
+
+                ];
+            default:
+                return [];
+
+
+        }
+
+
+    }
+
 }
 
 
-?>
