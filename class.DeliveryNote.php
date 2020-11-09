@@ -2904,6 +2904,7 @@ class DeliveryNote extends DB_Table {
             }
 
 
+            $account=get_object('Account',1);
             $ship_to = [
                 'contact'             => $this->get('Delivery Note Address Recipient'),
                 'organization'        => $this->get('Delivery Note Address Organization'),
@@ -2925,7 +2926,8 @@ class DeliveryNote extends DB_Table {
                 'parcels'            => json_encode($parcels),
                 'ship_to'            => json_encode($ship_to),
                 'pick_up'            => json_encode($pick_up),
-                'error_shipments'    => $this->properties('label_error_shipments')
+                'error_shipments'    => $this->properties('label_error_shipments'),
+                'callback_url'       => $account->get('Account System Public URL').'/shipment_tracking.php?dn_key='.$this->id.'&uuid='.$this->get('Delivery Note UUID')
             ];
 
 
@@ -2987,7 +2989,7 @@ class DeliveryNote extends DB_Table {
             );
 
 
-           // print_r($post);
+            // print_r($post);
             //exit;
 
 
@@ -3002,8 +3004,6 @@ class DeliveryNote extends DB_Table {
 
             $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
-
-
 
 
             if ($http_code == 200) {
@@ -3031,9 +3031,9 @@ class DeliveryNote extends DB_Table {
                     $error_shipments = json_decode($error_shipments, true);
                 }
 
-                $msg=$response['msg'];
-                if(is_array($response['msg'])){
-                    $msg=json_encode($response['msg']);
+                $msg = $response['msg'];
+                if (is_array($response['msg'])) {
+                    $msg = json_encode($response['msg']);
                 }
 
                 $this->fast_update_json_field('Delivery Note Properties', 'label_error', 'Yes');
@@ -3197,9 +3197,9 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function update_uuid(){
+    function update_uuid() {
 
-        $this->fast_update(['Delivery Note UUID'=>md5(uniqid('', true))]);
+        $this->fast_update(['Delivery Note UUID' => md5(uniqid('', true))]);
     }
 
 
