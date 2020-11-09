@@ -1981,8 +1981,7 @@ class Order extends DB_Table {
 
             'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
 
-            //   'Invoice Telephone'                    => $this->data['Order Telephone'],
-            //     'Invoice Email'                        => $this->data['Order Email'],
+
             'Invoice Address Recipient'            => $this->data['Order Invoice Address Recipient'],
             'Invoice Address Organization'         => $this->data['Order Invoice Address Organization'],
             'Invoice Address Line 1'               => $this->data['Order Invoice Address Line 1'],
@@ -2691,8 +2690,7 @@ class Order extends DB_Table {
             'Invoice Customer Level Type'          => $this->data['Order Customer Level Type'],
             'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
 
-            //   'Invoice Telephone'                    => $this->data['Order Telephone'],
-            //     'Invoice Email'                        => $this->data['Order Email'],
+
             'Invoice Address Recipient'            => $this->data['Order Invoice Address Recipient'],
             'Invoice Address Organization'         => $this->data['Order Invoice Address Organization'],
             'Invoice Address Line 1'               => $this->data['Order Invoice Address Line 1'],

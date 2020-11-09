@@ -17,7 +17,7 @@ include_once 'trait.Address.php';
 include_once 'trait.CustomerClientAiku.php';
 
 class Public_Customer_Client extends DBW_Table {
-    use Address,CustomerClientAiku;
+    use Address, CustomerClientAiku;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
@@ -114,7 +114,7 @@ class Public_Customer_Client extends DBW_Table {
 
 
             $this->id = $this->db->lastInsertId();
-            if(!$this->id){
+            if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
             }
             $this->get_data('id', $this->id);
@@ -502,6 +502,20 @@ class Public_Customer_Client extends DBW_Table {
     }
 
 
+    function get_telephone() {
+        $telephone = $this->data['Customer Client Main Plain Mobile'];
+        if ($telephone == '') {
+            $telephone = $this->data['Customer Client Main Plain Telephone'];
+        }
+
+        if ($telephone == '') {
+            $customer  = get_object('Customer', $this->data['Customer Client Customer Key']);
+            $telephone = $customer->get_telephone();
+        }
+
+        return $telephone;
+    }
+
     function create_order() {
 
         $account = get_object('Account', 1);
@@ -540,8 +554,16 @@ class Public_Customer_Client extends DBW_Table {
         $order_data['Order Sales Representative Key'] = $customer->data['Customer Sales Representative Key'];
 
         $order_data['Order Customer Fiscal Name'] = $customer->get('Fiscal Name');
-        $order_data['Order Email']                = $customer->data['Customer Main Plain Email'];
-        $order_data['Order Telephone']            = $customer->data['Customer Preferred Contact Number Formatted Number'];
+
+        $email = $this->data['Customer Client Main Plain Email'];
+        if ($email == '') {
+            $email = $customer->data['Customer Main Plain Email'];
+        }
+
+        $order_data['Order Email'] = $email;
+
+
+        $order_data['Order Telephone'] = $this->get_telephone();
 
 
         $order_data['Order Invoice Address Recipient']            = $customer->data['Customer Invoice Address Recipient'];
@@ -763,14 +785,14 @@ class Public_Customer_Client extends DBW_Table {
                 $this->id
             )
         );
-        $orders_in_basket=[];
+        $orders_in_basket = [];
         while ($row = $stmt->fetch()) {
             $order = get_object('Order', $row['Order Key']);
             $order->editor;
             $order->cancel(_('Cancelled because client was deleted'));
 
-            $order->fast_update_json_field('Order Metadata','cancel_reason', 'client_deleted');
-            $orders_in_basket[]=$order;
+            $order->fast_update_json_field('Order Metadata', 'cancel_reason', 'client_deleted');
+            $orders_in_basket[] = $order;
 
 
         }
@@ -791,11 +813,12 @@ class Public_Customer_Client extends DBW_Table {
 
         if ($number_orders > 0) {
             $this->deactivate();
+
             return;
         }
 
-        foreach($orders_in_basket as $order){
-            $order->fast_update(['Order Customer Client Key'=>null]);
+        foreach ($orders_in_basket as $order) {
+            $order->fast_update(['Order Customer Client Key' => null]);
         }
 
         $history_data = array(
@@ -862,15 +885,13 @@ class Public_Customer_Client extends DBW_Table {
         );
 
 
-
-
         $this->fast_update_json_field('Customer Client Metadata', 'deactivated_date', gmdate('Y-m-d H:i:s'));
         //$this->fast_update_json_field('Order Metadata','client_reference', $this->get('Customer Client Code'));
 
         $this->fast_update(
             [
                 'Customer Client Status' => 'Inactive',
-                'Customer Client Code' => ''
+                'Customer Client Code'   => ''
             ]
         );
 

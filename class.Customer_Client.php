@@ -297,6 +297,19 @@ use CustomerClientAiku;
         }
     }
 
+    function get_telephone() {
+        $telephone = $this->data['Customer Client Main Plain Mobile'];
+        if ($telephone == '') {
+            $telephone = $this->data['Customer Client Main Plain Telephone'];
+        }
+
+        if ($telephone == '') {
+            $customer  = get_object('Customer', $this->data['Customer Client Customer Key']);
+            $telephone = $customer->get_telephone();
+        }
+
+        return $telephone;
+    }
 
     function create_order() {
 
@@ -336,8 +349,18 @@ use CustomerClientAiku;
         $order_data['Order Sales Representative Key'] = $customer->data['Customer Sales Representative Key'];
 
         $order_data['Order Customer Fiscal Name'] = $customer->get('Fiscal Name');
-        $order_data['Order Email']                = $customer->data['Customer Main Plain Email'];
-        $order_data['Order Telephone']            = $customer->data['Customer Preferred Contact Number Formatted Number'];
+
+
+        $email = $this->data['Customer Client Main Plain Email'];
+        if ($email == '') {
+            $email = $customer->data['Customer Main Plain Email'];
+        }
+
+        $order_data['Order Email'] = $email;
+
+
+        $order_data['Order Telephone'] = $this->get_telephone();
+
 
 
         $order_data['Order Invoice Address Recipient']            = $customer->data['Customer Invoice Address Recipient'];

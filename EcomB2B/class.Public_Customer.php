@@ -1047,6 +1047,17 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function get_telephone() {
+        $phone = $this->get('Customer Main Plain Mobile');
+
+        if ($phone == '') {
+            $phone = $this->get('Customer Main Plain Telephone');
+        }
+
+        return $phone;
+
+    }
+
     function create_order() {
 
         $account = get_object('Account', 1);
@@ -1084,7 +1095,7 @@ class Public_Customer extends DBW_Table {
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
         $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
-        $order_data['Order Telephone']            = $this->data['Customer Preferred Contact Number Formatted Number'];
+        $order_data['Order Telephone']            = $this->get_telephone();
 
 
         $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
