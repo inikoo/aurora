@@ -55,7 +55,7 @@ $object_fields = array(
         'show_title' => true,
         'fields'     => array(
             array(
-                'edit'       => ($edit ? 'textarea' : ''),
+                'edit'       => ($can_supervisor_accounting ? 'textarea' : ''),
                 'right_code' => 'IS',
                 'id'         => 'Invoice_Message',
                 'value'      => $object->get('Invoice Message'),

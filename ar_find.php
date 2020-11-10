@@ -294,6 +294,9 @@ function users_with_right($db, $data) {
 
         $users_data = array();
         $sql        = 'select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`) where `Right Code`=?  ';
+
+
+
         $stmt       = $db->prepare($sql);
         $stmt->execute(
             array($data['right'])
@@ -303,6 +306,8 @@ function users_with_right($db, $data) {
         }
 
     }
+
+
 
 
     $response = array(
