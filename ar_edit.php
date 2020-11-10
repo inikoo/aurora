@@ -1117,13 +1117,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'shipment_label':
 
 
-
             $delivery_note = get_object('Delivery_Note', $data['parent_key']);
 
             $order         = get_object('Order', $delivery_note->get('Delivery Note Order Key'));
             $order->editor = $editor;
-
-
 
 
             //exit;
@@ -1143,28 +1140,42 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             $order->update(
-                ['Order Delivery Address' => json_encode($address_data)]
+                ['Order Delivery Address' => json_encode($address_data)], 'force'
             );
 
-            $delivery_note->get_data('id',$delivery_note->id);
+            $delivery_note->get_data('id', $delivery_note->id);
 
-            $delivery_note->fast_update(['Delivery Note Shipper Key'=>$data['fields_data']['Shipment Shipper']]);
+            //print_r($data['fields_data']);
+
+            $delivery_note->fast_update(
+                [
+                    'Delivery Note Shipper Key' => $data['fields_data']['Shipment Shipper'],
+                    'Delivery Note Telephone'   => $data['fields_data']['Delivery Note Telephone'],
+                    'Delivery Note Email'   => $data['fields_data']['Delivery Note Email'],
+                ]
+            );
+
+            $order->fast_update(
+                [
+                    'Order Customer Message' => $data['fields_data']['Note'],
+
+                ]
+            );
+
+            $shipper = get_object('Shipper', $data['fields_data']['Shipment Shipper']);
 
 
-            $shipper=get_object('Shipper',$data['fields_data']['Shipment Shipper']);
+            $reference2 = '';
+            $service    = '';
 
 
-            $reference2='';
-            $service='';
+           
+            if ($shipper->get('Code') == 'Whistl') {
+
+                $parcels = json_decode($delivery_note->properties('parcels'), true);
 
 
-
-            if($shipper->get('Code') == 'Whistl'){
-
-                $parcels=json_decode($delivery_note->properties('parcels'),true);
-
-
-                if(count($parcels)>1){
+                if (count($parcels) > 1) {
 
                     $response = array(
                         'state' => 400,
@@ -1185,7 +1196,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     echo json_encode($response);
                     exit;
-
 
 
                 }
@@ -1209,70 +1219,70 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     exit;
 
 
-
                 }
 
                 if ($dim[0] == 0 or $dim[1] == 0 or $dim[2] == 0 or $dim[0] == '' or $dim[1] == '' or $dim[2] == '') {
 
 
-                        $response = array(
-                            'state' => 400,
-                            'msg'   => 'Dimensions can not be zero'
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'Dimensions can not be zero'
 
-                        );
-                        echo json_encode($response);
-                        exit;
+                    );
+                    echo json_encode($response);
+                    exit;
 
 
                 }
 
 
-                $service = [
+                $service    = [
                     'ServiceId'          => '78109',
                     'ServiceProviderId'  => '77',
                     'ServiceCustomerUID' => '21753',
                     //'21753',
                 ];
-                $reference2='packet';
+                $reference2 = 'packet';
                 if ($parcels[0]['weight'] < .75 and $dim[0] <= 35 and $dim[1] <= 25 and $dim[1] <= 2.5) {
-                    $service = [
+                    $service    = [
                         'ServiceId'          => '78108',
                         'ServiceProviderId'  => '77',
                         'ServiceCustomerUID' => '21751',
                         //'21751',
                     ];
-                    $reference2='envelop';
+                    $reference2 = 'envelop';
                 }
 
 
-                $service = json_encode($service);
+                $service    = json_encode($service);
                 $reference2 = $reference2;
 
 
-
-
-
-
             }
 
 
-
-
-            if(!empty($data['fields_data']['Service '.$shipper->id]) and  $data['fields_data']['Service '.$shipper->id]!='_AUTO_' ){
-                $service=$data['fields_data']['Service '.$shipper->id];
+            if (!empty($data['fields_data']['Service '.$shipper->id]) and $data['fields_data']['Service '.$shipper->id] != '_AUTO_') {
+                $service = $data['fields_data']['Service '.$shipper->id];
             }
 
-            $result=$delivery_note->get_label($service,$reference2);
+            $result = $delivery_note->get_label($service, $reference2);
 
-            switch($result['status']){
+            switch ($result['status']) {
                 case 'success':
-                    $redirect     = 'orders/'.$order->get('Order Store Key').'/'.$order->id;
-                    $redirect_metadata = array('tab' => 'order.items','reload_showcase'=> 1);
+                    $redirect          = 'orders/'.$order->get('Order Store Key').'/'.$order->id;
+                    $redirect_metadata = array(
+                        'tab'             => 'order.items',
+                        'reload_showcase' => 1
+                    );
 
                     break;
                 case 'fail':
-                    $redirect     = 'orders/'.$order->get('Order Store Key').'/'.$order->id;
-                    $redirect_metadata = array('tab' => 'retry_shipment_label','dn_key' => $delivery_note->id,'reload_showcase'=> 1);
+                    $redirect          = 'orders/'.$order->get('Order Store Key').'/'.$order->id;
+                    $redirect_metadata = array(
+                        'tab'             => 'retry_shipment_label',
+                        'dn_key'          => $delivery_note->id,
+                        'reload_showcase' => 1
+                    );
 
                     break;
                 default:
@@ -1287,11 +1297,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
 
 
-            $object=$delivery_note;
-            $parent=$delivery_note;
+            $object = $delivery_note;
+            $parent = $delivery_note;
 
             $new_object_html = '';
-            $updated_data = array();
+            $updated_data    = array();
 
             break;
 

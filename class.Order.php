@@ -174,7 +174,9 @@ class Order extends DB_Table {
                 $this->post_operation_order_totals_changed();
                 break;
             case 'Order Delivery Address':
-                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
+
+
+                if (  !preg_match('/force/',$options)  and (    $this->get('State Index') >= 90 or $this->get('State Index') <= 0)) {
                     return;
                 }
                 $this->update_address('Delivery', json_decode($value, true));

@@ -96,11 +96,32 @@ $object_fields = array(
     ),
 
     array(
-        'label'      => _('Delivery address'),
+        'label'      => _('Delivery details'),
         'show_title' => false,
         'class'      => '',
         'fields'     => array(
+            array(
+                'id'              => 'Delivery_Note_Telephone',
+                'render'          => true,
+                'edit'            => 'string',
+                'value'           => htmlspecialchars($object->get('Delivery Note Telephone')),
+                'formatted_value' => $order->get('Telephone'),
+                'label'           => ucfirst(_('Telephone')),
+                'required'        => false,
+                'type'            => 'value'
 
+            ),
+            array(
+                'id'              => 'Delivery_Note_Email',
+                'render'          => true,
+                'edit'            => 'string',
+                'value'           => htmlspecialchars($object->get('Delivery Note Email')),
+                'formatted_value' => $order->get('Email'),
+                'label'           => ucfirst(_('Email')),
+                'required'        => false,
+                'type'            => 'value'
+
+            ),
 
             array(
                 'id'              => 'Order_Delivery_Address',
@@ -120,6 +141,23 @@ $object_fields = array(
         )
     ),
 
+    array(
+        'label'      => _('Note'),
+        'show_title' => false,
+        'class'      => '',
+        'fields'     => [
+            [
+                'id'              => 'Note',
+                'render'          => true,
+                'edit'            => 'textarea',
+                'value'           => htmlspecialchars(strip_tags($order->get('Order Customer Message'))),
+                'formatted_value' => strip_tags($order->get('Order Customer Message')),
+                'label'           => ucfirst(_('Note')),
+                'required'        => false,
+                'type'            => 'value'
+            ]
+        ]
+    ),
 
 );
 
