@@ -96,7 +96,10 @@ class DeliveryNote extends DB_Table {
                 $base_data[$key] = _trim($value);
             }
         }
+
+
         $base_data['Delivery Note Properties'] = '{}';
+        $base_data['Delivery Delivery Data'] = '{}';
 
         $sql = sprintf(
             "INSERT INTO `Delivery Note Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
@@ -915,6 +918,9 @@ class DeliveryNote extends DB_Table {
                 $base_data[$key] = _trim($value);
             }
         }
+
+
+        $base_data['Delivery Delivery Data'] = '{}';
 
 
         $sql = sprintf(
@@ -2837,19 +2843,12 @@ class DeliveryNote extends DB_Table {
 
             }
 
-            $customer = get_object('Customer', $this->data['Delivery Note Customer Key']);
+            //$customer = get_object('Customer', $this->data['Delivery Note Customer Key']);
 
             $phone = preg_replace('/\s/', '', $this->get('Delivery Note Telephone'));
 
 
-            if ($phone == '') {
 
-                $phone = $customer->get('Customer Main Plain Mobile');
-            }
-
-            if ($phone == '') {
-                $phone = $customer->get('Customer Main Plain Telephone');
-            }
 
 
             $number_parcels = count($parcels);
