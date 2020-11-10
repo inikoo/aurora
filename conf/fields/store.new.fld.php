@@ -43,6 +43,7 @@
         'pl_PL' => 'pl_PL '._('Polish'),
         'it_IT' => 'it_IT '._('Italian'),
         'sk_SK' => 'sk_SK '._('Slovak'),
+        'nl_NL' => 'nl_NL '._('Dutch'),
         'pt_PT' => 'pt_PT '._('Portuguese'),
     );
     asort($options_locale);

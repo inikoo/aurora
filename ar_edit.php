@@ -1169,7 +1169,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $service    = '';
 
 
-           
+
             if ($shipper->get('Code') == 'Whistl') {
 
                 $parcels = json_decode($delivery_note->properties('parcels'), true);
