@@ -13,7 +13,7 @@ include_once 'class.Subject.php';
 include_once 'trait.CustomerClientAiku.php';
 
 class Customer_Client extends Subject {
-use CustomerClientAiku;
+    use CustomerClientAiku;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
@@ -64,7 +64,6 @@ use CustomerClientAiku;
     }
 
     function create($raw_data, $address_raw_data) {
-
 
 
         $sql  = "select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Code`=? and `Customer Client Customer Key`=?";
@@ -351,16 +350,16 @@ use CustomerClientAiku;
         $order_data['Order Customer Fiscal Name'] = $customer->get('Fiscal Name');
 
 
-        $email = $this->data['Customer Client Main Plain Email'];
-        if ($email == '') {
-            $email = $customer->data['Customer Main Plain Email'];
-        }
+        //$email = $this->data['Customer Client Main Plain Email'];
+        //if ($email == '') {
+        //    $email = $customer->data['Customer Main Plain Email'];
+        // }
 
-        $order_data['Order Email'] = $email;
+        //$order_data['Order Email'] = $email;
+        //$order_data['Order Telephone'] = $this->get_telephone();
 
-
-        $order_data['Order Telephone'] = $this->get_telephone();
-
+        $order_data['Order Email']     = $customer->data['Customer Main Plain Email'];
+        $order_data['Order Telephone'] = $customer->get_telephone();
 
 
         $order_data['Order Invoice Address Recipient']            = $customer->data['Customer Invoice Address Recipient'];
@@ -517,10 +516,10 @@ use CustomerClientAiku;
 
     public function update_customer_client_orders() {
 
-        $customer_orders = 0;
+        $customer_orders  = 0;
         $orders_cancelled = 0;
-        $first_order          = '';
-        $last_order           = '';
+        $first_order      = '';
+        $last_order       = '';
 
 
         $sql = sprintf(
@@ -540,8 +539,8 @@ use CustomerClientAiku;
 
 
                 if ($customer_orders > 0) {
-                    $first_order          = $row['first_order_date'];
-                    $last_order           = $row['last_order_date'];
+                    $first_order = $row['first_order_date'];
+                    $last_order  = $row['last_order_date'];
 
                 }
             }
@@ -560,14 +559,12 @@ use CustomerClientAiku;
         }
 
 
-
         $update_data = array(
             'Customer Client Orders'           => $customer_orders,
             'Customer Client Orders Cancelled' => $orders_cancelled,
 
             'Customer Client First Order Date' => $first_order,
             'Customer Client Last Order Date'  => $last_order
-
 
 
         );
