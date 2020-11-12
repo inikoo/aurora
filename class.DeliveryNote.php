@@ -1131,7 +1131,7 @@ class DeliveryNote extends DB_Table {
         switch ($field) {
 
             case 'Delivery Note Address':
-                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
+                if (    $this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
 

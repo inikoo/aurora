@@ -1143,9 +1143,15 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 ['Order Delivery Address' => json_encode($address_data)], 'force'
             );
 
-            $delivery_note->get_data('id', $delivery_note->id);
 
             //print_r($data['fields_data']);
+
+            $delivery_note->update(
+                ['Delivery Note Address' => $order->get('Order Delivery Address')], 'force'
+            );
+
+            $delivery_note->get_data('id', $delivery_note->id);
+
 
             $delivery_note->fast_update(
                 [
