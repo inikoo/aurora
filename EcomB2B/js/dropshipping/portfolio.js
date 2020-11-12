@@ -224,7 +224,7 @@ function get_items_add_to_portfolio_select() {
     $('#add_item_to_portfolio_form').removeClass('invalid');
 
 
-    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_item_to_portfolio').val()) + '&scope=item' + '&metadata=' + atob($('#add_item_to_portfolio_form').data("metadata")) + '&state=' + JSON.stringify(state);
+    var request = '/ar_web_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_item_to_portfolio').val()) + '&scope=item' + '&metadata=' + atob($('#add_item_to_portfolio_form').data("metadata")) + '&state=' + JSON.stringify(state);
     console.log(request);
     $.getJSON(request, function (data) {
 
