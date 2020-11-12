@@ -1430,6 +1430,9 @@ function fork_housekeeping($job) {
             break;
         case 'delivery_note_created':
 
+
+
+
             $store = get_object('Store', $data['store_key']);
             $store->load_acc_data();
             $account->load_acc_data();
@@ -1457,6 +1460,11 @@ function fork_housekeeping($job) {
                 }
             }
 
+            $delivery_note=get_object('Delivery Note',$data['delivery_note_key']);
+
+            $delivery_note->update_shippers_services();
+
+
 
             break;
 
@@ -1478,6 +1486,11 @@ function fork_housekeeping($job) {
             $store->load_acc_data();
             $store->update_dispatching_time_data('1m');
             $store->update_sitting_time_in_warehouse();
+
+            $delivery_note=get_object('Delivery Note',$data['delivery_note_key']);
+
+            $delivery_note->update_shippers_services();
+
 
             break;
 

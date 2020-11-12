@@ -2841,7 +2841,8 @@ class Order extends DB_Table {
             'au_housekeeping', array(
             'type'      => 'replacement_created',
             'order_key' => $this->id,
-            'editor'    => $this->editor
+            'editor'    => $this->editor,
+            'delivery_note_key'=>$replacement->id
         ), $account->get('Account Code'), $this->db
         );
 
