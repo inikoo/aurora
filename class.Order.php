@@ -173,6 +173,8 @@ class Order extends DB_Table {
                 $this->update_address('Invoice', json_decode($value, true));
                 $this->post_operation_order_totals_changed();
                 break;
+
+
             case 'Order Delivery Address':
 
 
