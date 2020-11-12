@@ -28,7 +28,7 @@ while ($row = $stmt->fetch()) {
     $shippers_options[$row['Shipper Key']] = $row['Shipper Code'];
 
     $shipper                       = get_object('Shipper', $row['Shipper Key']);
-    $services[$row['Shipper Key']] = $shipper->get_services();
+    $services[$row['Shipper Key']] = $shipper->get_services($object);
 
 
 }

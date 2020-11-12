@@ -75,6 +75,22 @@ if(empty($state['metadata']['dn_key'])){
         $warehouse = get_object('warehouse', $delivery_note->get('Delivery Note Warehouse Key'));
         $shippers = $warehouse->get_shippers('data', 'Active');
 
+
+        $default_shipper=$state['store']->settings('data_entry_picking_aid_default_shipper');
+
+        $default_api='No';
+        if(isset($shippers[$default_shipper])){
+
+            if($shippers[$default_shipper]['api_key']>0){
+                $default_api='Yes';
+            }
+
+        }
+        $smarty->assign('default_api', $default_api);
+
+
+
+
         $smarty->assign('shippers', $shippers);
         $smarty->assign('number_shippers', count($shippers));
 

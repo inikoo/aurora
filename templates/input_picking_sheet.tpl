@@ -43,6 +43,10 @@
         padding-top:0px;padding-left:0px;padding-right:0px;
     }
 
+    .service_options{
+        margin-top: 10px;
+    }
+
 </style>
 
 {if  isset($order) and  isset($dn)}{assign 'scope' 'data_entery_delivery_note' }{else}{assign 'scope' 'bulk_order_data_entry' }{/if}
@@ -210,18 +214,43 @@
                 </select>
                 <div class="clear:both"></div>
             </div>
-            <div class="tracking_number_container" style="clear: both;padding-top: 10px">
+            <div class="tracking_number_container {if $default_api=='Yes'}hide{/if} hide " style="clear: both;padding-top: 10px">
             <input id="set_tracking_number" data-field="Delivery Note Shipper Tracking" class="tracking_number input_field field_to_check" placeholder="{t}Tracking number{/t}">
             </div>
 
-            <div class="apc_service_type hide" style="clear: both;padding-top: 10px"  >
-                <div class="button">
-                <span data-service="CP16" class="service_type CP16" onclick="change_shipper_service_type(this)"><i data-field="service_type" class="far fa-circle"></i>  {t}Courier pack{/t} </span>
-                </div>
-                <div class="button">
-                    <span data-service="MP16" class="service_type MP16" onclick="change_shipper_service_type(this)"><i data-field="service_type" class="far fa-circle"></i>  {t}Mailpack{/t} </span>
-                </div>
-            </div>
+
+            {foreach from=$dn->get_shippers_services() item=services key=shipper_key }
+                {if !empty($services)}
+
+                    <div style="margin-top:10px;padding-top: 10px;clear: both" class="service_options small  service_option_{$shipper_key}  {if $parent->settings('data_entry_picking_aid_default_shipper')!=$shipper_key}hide{/if} "  >
+
+
+
+
+                        <select class="services_options_select services_options_select_{$shipper_key} small" style="width: 200px">
+
+
+
+                            {foreach from=$services item=service key=service_code}
+                                <option   value="{$service_code}" >{$service} </option>
+                            {/foreach}
+
+
+                        </select>
+                        <div class="clear:both"></div>
+                    </div>
+
+                {/if}
+
+
+
+            {/foreach}
+
+
+
+
+
+
 
 
         </td>
@@ -366,20 +395,22 @@
             var api_code=  $( ".shippers_options option:selected" ).data('code')
 
 
+            $('.service_options').addClass('hide')
+            $('.service_option_'+value).removeClass('hide')
+
+
+
             if(api_key>0){
                 $('.tracking_number_container').addClass('hide invisible')
 
-                if(api_code=='APC'){
-                    $('.apc_service_type').removeClass('hide')
-                }else{
-                    $('.apc_service_type').addClass('hide')
 
-                }
+
+
 
 
             }else{
                 $('.tracking_number_container').removeClass('invisible hide')
-                $('.apc_service_type').addClass('hide')
+                //$('.apc_service_type').addClass('hide')
 
             }
 
@@ -397,6 +428,31 @@
     });
 
     $('.parcel_types_options').niceSelect();
+
+    $('.services_options_select').niceSelect();
+
+
+    $( ".services_options_select" ).on('change',
+        function() {
+
+
+      //  alert(this)
+
+
+        });
+
+
+    $( ".parcel_types_options" ).on('change',
+        function() {
+
+            var value=$( ".parcel_types_options option:selected" ).val();
+            $('.selected_parcel_type').val(value)
+
+
+            validate_data_entry_picking_aid()
+
+        });
+
 
     $( ".parcel_types_options" ).on('change',
         function() {

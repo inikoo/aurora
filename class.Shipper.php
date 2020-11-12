@@ -140,11 +140,14 @@ class Shipper extends DB_Table {
         $this->new = false;
         $base_data = $this->base_data();
 
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
             }
         }
+
+        $base_data['Shipper Metadata'] = '{}';
 
         $keys   = '(';
         $values = 'values(';
@@ -398,30 +401,45 @@ class Shipper extends DB_Table {
     }
 
 
-
-    function get_services(){
-
+    function get_services($delivery_note = false) {
 
 
-        switch ($this->get('Shipper Code')){
+        switch ($this->get('Shipper Code')) {
             case 'APC':
                 return [
-                    '_AUTO_'=>'Automatic',
-                    'ND16'=>'Next Day Service by 16:00 (ND16)',
-                    'ND12'=>'Next Day Service by 12:00 (ND12)',
-                    'ND10'=>'Next Day Service by 10:00 (ND10)',
-                    'NC16'=>'Non Conveyable (NC16)',
-                    'XS16'=>'Excess Parcel (XS16)',
+                    '_AUTO_' => 'Automatic',
+                    'ND16'   => 'Next Day Service by 16:00 (ND16)',
+                    'ND12'   => 'Next Day Service by 12:00 (ND12)',
+                    'ND10'   => 'Next Day Service by 10:00 (ND10)',
+                    'NC16'   => 'Non Conveyable (NC16)',
+                    'XS16'   => 'Excess Parcel (XS16)',
 
-                    'TDAY'=>'2-5 DAY Economy (TDAY)',
-                    'ROAD'=>'BT Economy Service (ROAD)',
-                    'LQ16'=>'Dangerous Goods (LQ16)',
-                    'LW16'=>'Lightweight Parcel',
-                    'CP16'=>'Courier pack (CP16)',
-                    'MP16'=>'Mail pack (MP16)',
+                    'TDAY' => '2-5 DAY Economy (TDAY)',
+                    'ROAD' => 'BT Economy Service (ROAD)',
+                    'LQ16' => 'Dangerous Goods (LQ16)',
+                    'LW16' => 'Lightweight Parcel',
+                    'CP16' => 'Courier pack (CP16)',
+                    'MP16' => 'Mail pack (MP16)',
 
 
                 ];
+            case 'DPD':
+
+                $services = $delivery_note->properties('shipper_services_'.$this->id);
+                if ($services == '') {
+                    return [];
+                }
+                $services = json_decode($services, true);
+
+                $_services=[];
+                //$_services['_AUTO_']='Automatic';
+                foreach($services as $service){
+                    $_services[$service['id'][0]]=$service['name'];
+                }
+
+
+                return $_services;
+
             default:
                 return [];
 

@@ -1100,15 +1100,21 @@ function save_data_entry_picking_aid() {
     });
 
     var service_type='';
-    if(!$('.apc_service_type').hasClass('hide')){
-        $('.apc_service_type .service_type').each(function(i, obj) {
 
-            if($(obj).find('i').hasClass('fa-dot-circle')){
-                service_type=$(obj).data('service')
-            }
 
-        });
-    }
+    var services_select=$('.services_options_select_'+$('#set_shipper').val()+' option:selected ')
+
+
+
+
+   if(services_select.val()!=undefined && services_select.val()!='_AUTO_'){
+       service_type=services_select.val();
+   }
+
+
+
+
+
 
     var level = parseFloat($('.order_data_entry_picking_aid_state_after_save').val());
 

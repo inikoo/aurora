@@ -98,7 +98,7 @@ class DeliveryNote extends DB_Table {
         }
 
 
-        $base_data['Delivery Note Properties'] = '{}';
+        $base_data['Delivery Note Properties']    = '{}';
         $base_data['Delivery Note Delivery Data'] = '{}';
 
         $sql = sprintf(
@@ -2778,6 +2778,166 @@ class DeliveryNote extends DB_Table {
 
     }
 
+
+    function get_shipping_parameters($shipper) {
+
+        $account = get_object('Account', 1);
+        $account->load_acc_data();
+
+
+        $_parcels = $this->properties('parcels');
+        if ($_parcels == '') {
+            $_parcels = '[{"weight":"'.$this->data['Delivery Note Estimated Weight'].'","height":"40","width":"40","depth":"40"}]';
+        }
+
+        $parcels = json_decode($_parcels);
+
+
+        date_default_timezone_set($account->get('Account Timezone'));
+
+        $pick_up_end = $account->properties('pickup_end');
+        if ($pick_up_end == '') {
+            $pick_up_end = '17:00';
+        }
+
+        $cut_off_time = $account->properties('pickup_cut_off');
+        if ($cut_off_time == '') {
+            $cut_off_time = '16:59';
+        }
+
+
+        if (time() >= strtotime($cut_off_time)) {
+            $pick_up = [
+                'date'  => date('Y-m-d', strtotime('tomorrow')),
+                'end'   => $pick_up_end,
+                'ready' => date('H:i'),
+            ];
+        } else {
+            $pick_up = [
+                'date'  => date('Y-m-d', strtotime('today')),
+                'end'   => $pick_up_end,
+                'ready' => date('H:i'),
+            ];
+
+        }
+
+
+        $phone = preg_replace('/\s/', '', $this->get('Delivery Note Telephone'));
+
+
+        $number_parcels = count($parcels);
+
+        $items = [];
+
+        $sql = " SELECT `Order Transaction Fact Key`, `Order Quantity` as ordered, `Country 2 Alpha Code` as origin_country_code,OTF.`Delivery Note Quantity` as packed, `Order Transaction Amount` as amount, `Product Package Weight` as weight ,`Order Currency Code` currency,
+`Product History Name` as name,`Product History Price` as price,`Product Units Per Case` as units,`Product Tariff Code` tariff_code,`Product History Code` as code
+ FROM `Inventory Transaction Fact` ITF left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
+ left join kbase.`Country Dimension` C on (C.`Country Code`=`Product Origin Country Code`)
+ WHERE ITF.`Delivery Note Key`=?    ORDER BY `Product History Code`";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        $parcel_index = 0;
+        while ($row = $stmt->fetch()) {
+
+            if ($this->get('State Index') > 70) {
+                if ($row['packed'] == 0) {
+                    continue;
+                }
+                $row['qty'] = $row['packed'];
+            } else {
+                $row['qty'] = $row['ordered'];
+            }
+
+
+            $items[$row['Order Transaction Fact Key']] = $row;
+
+
+            if (!isset($parcels[$parcel_index]->items)) {
+
+
+                $parcels[$parcel_index]->items = [$row['Order Transaction Fact Key']];
+
+
+            } else {
+                array_push($parcels[$parcel_index]->items, $row['Order Transaction Fact Key']);
+            }
+
+
+            if ($parcel_index >= ($number_parcels - 1)) {
+                $parcel_index = 0;
+            } else {
+                $parcel_index++;
+            }
+
+        }
+
+
+        $account = get_object('Account', 1);
+        $ship_to = [
+            'contact'             => $this->get('Delivery Note Address Recipient'),
+            'organization'        => $this->get('Delivery Note Address Organization'),
+            'address_line_1'      => $this->get('Delivery Note Address Line 1'),
+            'address_line_2'      => $this->get('Delivery Note Address Line 2'),
+            'postal_code'         => $this->get('Delivery Note Address Postal Code'),
+            'sorting_code'        => $this->get('Delivery Note Address Sorting Code'),
+            'locality'            => $this->get('Delivery Note Address Locality'),
+            'dependent_locality'  => $this->get('Delivery Note Address Dependent Locality'),
+            'administrative_area' => $this->get('Delivery Note Address Administrative Area'),
+            'country_code'        => $this->get('Delivery Note Address Country 2 Alpha Code'),
+            'phone'               => $phone,
+            'email'               => $this->get('Delivery Note Email')
+
+        ];
+        $post    = [
+            'shipper_account_id' => $shipper->get('Shipper API Key'),
+            'reference'          => $this->get('Delivery Note ID'),
+            'parcels'            => json_encode($parcels),
+            'ship_to'            => json_encode($ship_to),
+            'pick_up'            => json_encode($pick_up),
+            'error_shipments'    => $this->properties('label_error_shipments'),
+            'callback_url'       => $account->get('Account System Public URL').'/shipment_tracking.php?dn_key='.$this->id.'&uuid='.$this->get('Delivery Note UUID')
+        ];
+
+
+        $order = get_object('Order', $this->get('Delivery Note Order Key'));
+
+
+        if ($order->get('Order Customer Message') != '') {
+            $post['note'] = $order->get('Order Customer Message');
+        }
+
+
+        $cod_amount = $order->get('Cash on Delivery Expected Payment Amount');
+
+        if ($cod_amount > 0) {
+            $post['cod'] = json_encode(
+                [
+                    'amount'      => $cod_amount,
+                    'currency'    => $order->get('Order Currency'),
+                    'accept_card' => 'No'
+                ]
+            );
+        }
+
+
+        $post['order'] = json_encode(
+            [
+                'order_number' => $order->get('Order Public ID'),
+                'items'        => $items
+            ]
+        );
+
+        return $post;
+
+
+    }
+
+
     function get_label($service = '', $reference2 = '') {
 
 
@@ -2786,10 +2946,11 @@ class DeliveryNote extends DB_Table {
 
         if ($shipper->id and $shipper->get('Shipper API Key')) {
 
-            $account = get_object('Account', 1);
-            $account->load_acc_data();
 
             $curl = curl_init();
+
+            $account = get_object('Account', 1);
+            $account->load_acc_data();
 
 
             curl_setopt_array(
@@ -2812,122 +2973,7 @@ class DeliveryNote extends DB_Table {
 
             curl_setopt($curl, CURLOPT_POST, 1);
 
-
-            $parcels = json_decode($this->properties('parcels'));
-
-            date_default_timezone_set($account->get('Account Timezone'));
-
-            $pick_up_end = $account->properties('pickup_end');
-            if ($pick_up_end == '') {
-                $pick_up_end = '17:00';
-            }
-
-            $cut_off_time = $account->properties('pickup_cut_off');
-            if ($cut_off_time == '') {
-                $cut_off_time = '16:59';
-            }
-
-
-            if (time() >= strtotime($cut_off_time)) {
-                $pick_up = [
-                    'date'  => date('Y-m-d', strtotime('tomorrow')),
-                    'end'   => $pick_up_end,
-                    'ready' => date('H:i'),
-                ];
-            } else {
-                $pick_up = [
-                    'date'  => date('Y-m-d', strtotime('today')),
-                    'end'   => $pick_up_end,
-                    'ready' => date('H:i'),
-                ];
-
-            }
-
-            //$customer = get_object('Customer', $this->data['Delivery Note Customer Key']);
-
-            $phone = preg_replace('/\s/', '', $this->get('Delivery Note Telephone'));
-
-
-
-
-
-            $number_parcels = count($parcels);
-
-            $items = [];
-
-            $sql = " SELECT `Order Transaction Fact Key`, `Order Quantity` as ordered, `Country 2 Alpha Code` as origin_country_code,OTF.`Delivery Note Quantity` as packed, `Order Transaction Amount` as amount, `Product Package Weight` as weight ,`Order Currency Code` currency,
-`Product History Name` as name,`Product History Price` as price,`Product Units Per Case` as units,`Product Tariff Code` tariff_code,`Product History Code` as code
- FROM `Inventory Transaction Fact` ITF left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
- left join kbase.`Country Dimension` C on (C.`Country Code`=`Product Origin Country Code`)
- WHERE ITF.`Delivery Note Key`=?    ORDER BY `Product History Code`";
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $this->id
-                )
-            );
-            $parcel_index = 0;
-            while ($row = $stmt->fetch()) {
-
-                if ($this->get('State Index') > 70) {
-                    if ($row['packed'] == 0) {
-                        continue;
-                    }
-                    $row['qty'] = $row['packed'];
-                } else {
-                    $row['qty'] = $row['ordered'];
-                }
-
-
-                $items[$row['Order Transaction Fact Key']] = $row;
-
-
-                if (!isset($parcels[$parcel_index]->items)) {
-
-
-                    $parcels[$parcel_index]->items = [$row['Order Transaction Fact Key']];
-
-
-                } else {
-                    array_push($parcels[$parcel_index]->items, $row['Order Transaction Fact Key']);
-                }
-
-
-                if ($parcel_index >= ($number_parcels - 1)) {
-                    $parcel_index = 0;
-                } else {
-                    $parcel_index++;
-                }
-
-            }
-
-
-            $account=get_object('Account',1);
-            $ship_to = [
-                'contact'             => $this->get('Delivery Note Address Recipient'),
-                'organization'        => $this->get('Delivery Note Address Organization'),
-                'address_line_1'      => $this->get('Delivery Note Address Line 1'),
-                'address_line_2'      => $this->get('Delivery Note Address Line 2'),
-                'postal_code'         => $this->get('Delivery Note Address Postal Code'),
-                'sorting_code'        => $this->get('Delivery Note Address Sorting Code'),
-                'locality'            => $this->get('Delivery Note Address Locality'),
-                'dependent_locality'  => $this->get('Delivery Note Address Dependent Locality'),
-                'administrative_area' => $this->get('Delivery Note Address Administrative Area'),
-                'country_code'        => $this->get('Delivery Note Address Country 2 Alpha Code'),
-                'phone'               => $phone,
-                'email'               => $this->get('Delivery Note Email')
-
-            ];
-            $post    = [
-                'shipper_account_id' => $shipper->get('Shipper API Key'),
-                'reference'          => $this->get('Delivery Note ID'),
-                'parcels'            => json_encode($parcels),
-                'ship_to'            => json_encode($ship_to),
-                'pick_up'            => json_encode($pick_up),
-                'error_shipments'    => $this->properties('label_error_shipments'),
-                'callback_url'       => $account->get('Account System Public URL').'/shipment_tracking.php?dn_key='.$this->id.'&uuid='.$this->get('Delivery Note UUID')
-            ];
+            $post = $this->get_shipping_parameters($shipper);
 
 
             if (empty($service)) {
@@ -2959,44 +3005,15 @@ class DeliveryNote extends DB_Table {
             $post['reference2'] = $reference2;
 
 
-            $order = get_object('Order', $this->get('Delivery Note Order Key'));
-
-
-            if ($order->get('Order Customer Message') != '') {
-                $post['note'] = $order->get('Order Customer Message');
-            }
-
-
-            $cod_amount = $order->get('Cash on Delivery Expected Payment Amount');
-
-            if ($cod_amount > 0) {
-                $post['cod'] = json_encode(
-                    [
-                        'amount'      => $cod_amount,
-                        'currency'    => $order->get('Order Currency'),
-                        'accept_card' => 'No'
-                    ]
-                );
-            }
-
-
-            $post['order'] = json_encode(
-                [
-                    'order_number' => $order->get('Order Public ID'),
-                    'items'        => $items
-                ]
-            );
-
-
-            // print_r($post);
+            //print_r($post);
             //exit;
 
 
             curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             $tmp = curl_exec($curl);
 
-            //print_r($tmp);
-            //exit;
+            // print_r($tmp);
+            // exit;
 
             $response = json_decode($tmp, true);
 
@@ -3061,6 +3078,106 @@ class DeliveryNote extends DB_Table {
         ];
 
     }
+
+    function update_shipper_services($shipper) {
+
+        $post = $this->get_shipping_parameters($shipper);
+        $curl = curl_init();
+
+
+        // print_r($post);
+
+        curl_setopt_array(
+            $curl, array(
+                     CURLOPT_URL => SHIPPER_API_URL."/services",
+
+
+                     CURLOPT_RETURNTRANSFER => true,
+                     CURLOPT_ENCODING       => "",
+                     CURLOPT_MAXREDIRS      => 10,
+                     CURLOPT_TIMEOUT        => 0,
+                     CURLOPT_FOLLOWLOCATION => true,
+                     CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                     CURLOPT_HTTPHEADER     => array(
+                         "Authorization: Bearer ".SHIPPER_API_KEY
+                     ),
+                 )
+        );
+
+        curl_setopt($curl, CURLOPT_POST, 1);
+
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+        $tmp = curl_exec($curl);
+
+        $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        if ($http_code == 200) {
+            $res = json_decode($tmp, true);
+            $this->fast_update_json_field('Delivery Note Properties', 'shipper_services_'.$shipper->id, json_encode($res['services']));
+
+        }
+
+
+    }
+
+
+    function update_shippers_services() {
+
+        $sql  = "select `Shipper Key`,`Shipper Metadata` from `Shipper Dimension` where `Shipper API Key`>0   ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array()
+        );
+        while ($row = $stmt->fetch()) {
+
+            if ($row['Shipper Metadata'] != '') {
+                $metadata = json_decode($row['Shipper Metadata'], true);
+                if (!empty($metadata['services'])) {
+
+
+                    if ($metadata['services'] == 'api') {
+                        $this->update_shipper_services(get_object('Shipper', $row['Shipper Key']));
+                    } else {
+                        $this->fast_update_json_field('Delivery Note Properties', 'shipper_services_'.$row['Shipper Key'], json_encode($metadata['services']));
+
+                    }
+
+                }
+
+
+            }
+
+        }
+
+
+    }
+
+
+    function get_shippers_services() {
+
+        $sql  = "select `Shipper Key`  from `Shipper Dimension` where `Shipper API Key`>0   ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array()
+        );
+
+        $services = [];
+        while ($row = $stmt->fetch()) {
+
+            $shipper                       = get_object('Shipper', $row['Shipper Key']);
+
+           // $_services=$shipper->get_services($this);
+
+            $services[$row['Shipper Key']] = $shipper->get_services($this);
+
+
+        }
+
+        return $services;
+
+    }
+
 
     function properties($key) {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
