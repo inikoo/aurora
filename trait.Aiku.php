@@ -59,7 +59,11 @@ trait Aiku {
             "Accept: application/json",
         ];
 
+
+        return 1;
+
         $curl = curl_init();
+
 
 
         curl_setopt_array(
