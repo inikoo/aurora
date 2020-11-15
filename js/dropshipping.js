@@ -4,9 +4,7 @@
  Version 3.0*/
 
 
-
 $(function () {
-
 
     $(document).on('click', '#table .edit_object_reference', function (evt) {
 
