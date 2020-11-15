@@ -568,6 +568,7 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             );
 
 
+
             if (in_array(
                 $this->get('Order State'), array(
                                              'Cancelled',
@@ -581,7 +582,8 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                 $discounts_class = 'button';
                 $discounts_input = sprintf(
                     '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                    $row['Order Transaction Fact Key'], percentage($gross_discounts, $gross)
+                    $otf_key,
+                    percentage($gross_discounts, $gross)
                 );
             }
             $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
