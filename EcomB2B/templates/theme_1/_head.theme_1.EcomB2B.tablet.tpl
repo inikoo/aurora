@@ -142,7 +142,7 @@
             crossorigin="anonymous"></script>
 
     {if $logged_in and $store->get('Store Type')=='Dropshipping' }
-        <script src="/assets/dropshipping.logged_in.3.57.943.min.js"></script>
+        <script src="/assets/dropshipping.logged_in.min.js"></script>
     {/if}
 
     {if $logged_in}
