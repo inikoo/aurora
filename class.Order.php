@@ -178,7 +178,7 @@ class Order extends DB_Table {
             case 'Order Delivery Address':
 
 
-                if (  !preg_match('/force/',$options)  and (    $this->get('State Index') >= 90 or $this->get('State Index') <= 0)) {
+                if (!preg_match('/force/', $options) and ($this->get('State Index') >= 90 or $this->get('State Index') <= 0)) {
                     return;
                 }
                 $this->update_address('Delivery', json_decode($value, true));
@@ -1250,6 +1250,10 @@ class Order extends DB_Table {
                         'payment_overview'
                     );
 
+                    $this->update_aiku($this->get_table_name(), 'refresh_basket');
+                    $this->update_aiku($this->get_table_name(), 'refresh_order');
+
+
                     break;
 
 
@@ -1309,7 +1313,6 @@ class Order extends DB_Table {
 
 
                     break;
-
 
                 case 'InWarehouse':
 
@@ -1417,7 +1420,6 @@ class Order extends DB_Table {
 
                     break;
 
-
                 case 'Packed':
 
 
@@ -1431,9 +1433,9 @@ class Order extends DB_Table {
 
                     $this->fast_update(
                         [
-                            'Order State'=>'Packed',
-                            'Order Packed Date'=>$date,
-                            'Order Date'=>$date,
+                            'Order State'       => 'Packed',
+                            'Order Packed Date' => $date,
+                            'Order Date'        => $date,
                         ]
                     );
 
@@ -1447,11 +1449,10 @@ class Order extends DB_Table {
 
                     break;
 
+                case 'PackedDone':
 
-                    case 'PackedDone':
 
-
-                    if (!($this->data['Order State'] == 'InWarehouse' or $this->data['Order State'] == 'Packed' )   ) {
+                    if (!($this->data['Order State'] == 'InWarehouse' or $this->data['Order State'] == 'Packed')) {
                         $this->error = true;
                         $this->msg   = 'Order is not in warehouse: or packed :(';
 
@@ -1487,7 +1488,6 @@ class Order extends DB_Table {
                     $this->update_totals();
 
                     break;
-
 
                 case 'Undo PackedDone':
 
@@ -1675,8 +1675,6 @@ class Order extends DB_Table {
 
 
                     break;
-
-
                 case 'un_dispatch':
 
 
@@ -1983,7 +1981,7 @@ class Order extends DB_Table {
             'Invoice Customer Level Type'   => $this->data['Order Customer Level Type'],
 
 
-            'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
+            'Invoice Sales Representative Key' => $this->data['Order Sales Representative Key'],
 
 
             'Invoice Address Recipient'            => $this->data['Order Invoice Address Recipient'],
@@ -2688,11 +2686,11 @@ class Order extends DB_Table {
             'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
 
 
-            'Invoice Net Amount Off'               => 0,
-            'Invoice Customer Contact Name'        => $this->data['Order Customer Contact Name'],
-            'Invoice Customer Name'                => $this->data['Order Customer Name'],
-            'Invoice Customer Level Type'          => $this->data['Order Customer Level Type'],
-            'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
+            'Invoice Net Amount Off'           => 0,
+            'Invoice Customer Contact Name'    => $this->data['Order Customer Contact Name'],
+            'Invoice Customer Name'            => $this->data['Order Customer Name'],
+            'Invoice Customer Level Type'      => $this->data['Order Customer Level Type'],
+            'Invoice Sales Representative Key' => $this->data['Order Sales Representative Key'],
 
 
             'Invoice Address Recipient'            => $this->data['Order Invoice Address Recipient'],
@@ -2841,10 +2839,10 @@ class Order extends DB_Table {
 
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'      => 'replacement_created',
-            'order_key' => $this->id,
-            'editor'    => $this->editor,
-            'delivery_note_key'=>$replacement->id
+            'type'              => 'replacement_created',
+            'order_key'         => $this->id,
+            'editor'            => $this->editor,
+            'delivery_note_key' => $replacement->id
         ), $account->get('Account Code'), $this->db
         );
 
@@ -3027,7 +3025,7 @@ class Order extends DB_Table {
                 'type'                    => 'order_replacements_updated',
                 'order_key'               => $this->id,
                 'update_in_warehouse'     => $update_in_warehouse,
-                'update_packed_done'           => $update_packed_done,
+                'update_packed_done'      => $update_packed_done,
                 'update_approved'         => $update_approved,
                 'update_dispatched_today' => $update_dispatched_today,
             ), $account->get('Account Code'), $this->db

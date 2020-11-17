@@ -44,6 +44,8 @@ class Deal extends DB_Table {
 
     function get_data($tipo, $tag, $tag2 = '') {
 
+
+
         if ($tipo == 'id') {
             $sql = sprintf(
                 "SELECT * FROM `Deal Dimension` WHERE `Deal Key`=%d", $tag
@@ -66,12 +68,14 @@ class Deal extends DB_Table {
             $this->id = $this->data['Deal Key'];
         }
 
+        if($this->id) {
 
-        if ($this->data['Deal Remainder Email Campaign Key'] > 0) {
-            $this->remainder_email_campaign = get_object('EmailCampaign', $this->data['Deal Remainder Email Campaign Key']);
 
+            if ($this->data['Deal Remainder Email Campaign Key'] > 0) {
+                $this->remainder_email_campaign = get_object('EmailCampaign', $this->data['Deal Remainder Email Campaign Key']);
+
+            }
         }
-
 
     }
 
