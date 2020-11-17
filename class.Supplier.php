@@ -404,6 +404,9 @@ class Supplier extends SubjectSupplier {
                 break;
             case 'payment terms':
 
+                $this->fast_update_json_field('Supplier Metadata', preg_replace('/\s/', '_', $field), $value);
+
+                break;
             case 'Supplier Contact Address':
 
 
