@@ -60,7 +60,7 @@ trait Aiku {
         ];
 
 
-
+        return 1;
 
         $curl = curl_init();
 
