@@ -1684,14 +1684,20 @@ class DeliveryNote extends DB_Table {
                                 $sum_itfs            = 0;
 
                                 $sql = sprintf(
-                                    'SELECT `Inventory Transaction Key`,`Inventory Transaction Quantity`,`Part Cost in Warehouse` FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`)  WHERE `Map To Order Transaction Fact Key`=%d ',
+                                    'SELECT `Inventory Transaction Key`,`Inventory Transaction Quantity`,`Part Cost in Warehouse`,`Part Cost` FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`)  WHERE `Map To Order Transaction Fact Key`=%d ',
                                     $row['Order Transaction Fact Key']
                                 );
 
                                 if ($result2 = $this->db->query($sql)) {
                                     foreach ($result2 as $row2) {
-                                        $itf_transfer_factor[$row2['Inventory Transaction Key']] = $row2['Part Cost in Warehouse'] * $row2['Inventory Transaction Quantity'];
-                                        $sum_itfs                                                += $row2['Part Cost in Warehouse'] * $row2['Inventory Transaction Quantity'];
+
+                                        $cost=$row2['Part Cost in Warehouse'];
+                                        if(!$cost){
+                                            $cost=$row2['Part Cost'];
+                                        }
+
+                                        $itf_transfer_factor[$row2['Inventory Transaction Key']] = $cost * $row2['Inventory Transaction Quantity'];
+                                        $sum_itfs                                                += $cost * $row2['Inventory Transaction Quantity'];
                                     }
                                 }
 
