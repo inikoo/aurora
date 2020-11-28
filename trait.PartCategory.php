@@ -88,7 +88,7 @@ trait PartCategory {
             if ($from and $to) {
 
 
-                $this->update_part_timeseries_record($timeseries, $to, $from, $fork_key);
+                $this->update_part_timeseries_record($timeseries,$from, $to, $fork_key);
 
 
             }
