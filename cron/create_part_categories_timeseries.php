@@ -64,10 +64,6 @@ if ($result = $db->query($sql)) {
         );
         $db->exec($sql);
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
 $sql = sprintf('delete FROM `Timeseries Dimension`  where `Timeseries Type`="PartCategorySales"');
 $db->exec($sql);
@@ -75,8 +71,8 @@ $db->exec($sql);
 
 global $db, $editor, $timeseries;
 
-//$sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" AND `Category Key`=27832  ');
-$sql = sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
+//$sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" AND `Category Key`=33369  ');
+$sql = sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part"    order by  `Category Key` desc');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -108,7 +104,7 @@ if ($result = $db->query($sql)) {
         $lap_time1 = date('U');
 
         if ($print_est) {
-            print $category->get('Code').'   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+            print $category->get('Code')."\t\t".percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
                     "%.4f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 60
                 )."m  ($contador/$total) \r";
         }
@@ -122,4 +118,4 @@ if ($result = $db->query($sql)) {
 }
 
 
-?>
+
