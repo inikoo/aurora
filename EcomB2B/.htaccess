@@ -1,5 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine On
+RewriteRule ^zentrada/ zentrada.php [L]
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteRule ^.*$ ./process.php

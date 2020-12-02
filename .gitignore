@@ -75,3 +75,7 @@ cron/fix_customers_no_web_user.php
 cron/set_up_spain_copy_agents_to.php
 cron/copy_products_from_other_account.oneoff.php
 cron/set_up_spain.php
+.htaccess.save
+composer.lock
+cron/fix_amount_in.php
+cron/set_up_sk_copy_agents_to.php
