@@ -26,10 +26,11 @@ $editor = array(
     'Author Name'  => 'Script (Fix IOP dispatched orders)'
 );
 
-$counter=1;
+$counter = 1;
+
 
 $sql  = "select  `Delivery Note State`,`Delivery Note ID`,DN.`Delivery Note Key`,`Inventory Transaction Key`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Weight` ,`Part SKU`   from  `Inventory Transaction Fact` ITF  left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) 
-    where `Delivery Note State` in ('Dispatched','Cancelled') and `Inventory Transaction Section`='OIP' 
+    where `Delivery Note State` in ('Dispatched','Cancelled') and `Inventory Transaction Section`='OIP'
 ";
 $stmt = $db->prepare($sql);
 $stmt->execute();
@@ -46,8 +47,7 @@ while ($row = $stmt->fetch()) {
     print $counter.' '.$row['Delivery Note State'].'  '.$row['Delivery Note ID'].' '.$row['Required'].' '.$part->get('Reference')."\n";
 
 
-
-    if($row['Delivery Note State']=='Dispatched') {
+    if ($row['Delivery Note State'] == 'Dispatched') {
 
         $out_of_stock = $row['Required'];
 
@@ -71,9 +71,12 @@ while ($row = $stmt->fetch()) {
 
             ]
         );
-    }elseif($row['Delivery Note State']=='Cancelled') {
+    } elseif ($row['Delivery Note State'] == 'Cancelled') {
 
-        $sql = sprintf("UPDATE `Inventory Transaction Fact`  SET `Date Picked`=null ,`Date Packed`=null ,  `Picked`=0,`Packed`=0, `Inventory Transaction Type`='FailSale' , `Inventory Transaction Section`='NoDispatched'  WHERE `Inventory Transaction Key`=%d  ", $row['Inventory Transaction Key']);
+        $sql = sprintf(
+            "UPDATE `Inventory Transaction Fact`  SET `Date Picked`=null ,`Date Packed`=null ,  `Picked`=0,`Packed`=0, `Inventory Transaction Type`='FailSale' , `Inventory Transaction Section`='NoDispatched'  WHERE `Inventory Transaction Key`=%d  ",
+            $row['Inventory Transaction Key']
+        );
         $db->exec($sql);
 
     }
@@ -88,11 +91,51 @@ while ($row = $stmt->fetch()) {
     $counter++;
 
 
+    //print_r($part);
+
+
+    //exit;
+
+
+}
+
+
+$sql  = "select `Part SKU`,`Inventory Transaction Key`,  DN.`Delivery Note Key`,ITF.`Delivery Note Key` 
+from  `Inventory Transaction Fact` ITF  left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) 
+    where DN.`Delivery Note Key` is null and `Inventory Transaction Section`='OIP'";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+while ($row = $stmt->fetch()) {
+
+
+    //print_r($row);
+
+
+    $part         = get_object('Part', $row['Part SKU']);
+    $part->editor = $editor;
+    $part->update_stock();
+
+    print $counter.'  ghost  '.$part->get('Reference')."\n";
+
+
+    $sql = sprintf("delete from  `Inventory Transaction Fact`   WHERE `Inventory Transaction Key`=%d  ", $row['Inventory Transaction Key']);
+    //print "$sql\n";
+    $db->exec($sql);
+
+
+    /**
+     * @var $part \Part
+     */
+
+
+    $part->update_stock();
+    $counter++;
+
 
     //print_r($part);
 
 
-     //exit;
+    //exit;
 
 
 }
