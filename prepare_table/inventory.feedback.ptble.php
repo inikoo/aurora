@@ -152,5 +152,5 @@ if ($order == 'reference') {
 
 $sql_totals = "select count(*) as num from $table  $where  ";
 
-print $sql_totals;
-exit;
+//print $sql_totals;
+//exit;
