@@ -18,7 +18,6 @@ function get_part_showcase($data, $smarty, $account) {
     $part->load_acc_data();
 
 
-
     //$part->update_weight_status();
     // $part->update_cost();
 
@@ -46,8 +45,8 @@ function get_part_showcase($data, $smarty, $account) {
 
     //	$part->update_stock_in_paid_orders();
 
-      $part->update_next_deliveries_data();
-
+    //  $part->update_next_deliveries_data();
+    //$part->update_stock_run();
 
     //$part->update_stock_status();
 

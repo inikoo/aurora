@@ -485,7 +485,7 @@ class Part extends Asset {
             );
 
 
-           // print $sql;
+            // print $sql;
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -516,7 +516,7 @@ class Part extends Asset {
 
                         $qty = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
-                    } elseif ($row['Purchase Order Transaction State'] == 'Submitted'  ) {
+                    } elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
                         $number_draft_POs++;
 
                         $raw_units_qty = $row['submitted_units'];
@@ -640,8 +640,6 @@ class Part extends Asset {
                                 $row['Purchase Order Public ID']
                             );
                             $qty            = '+'.number($raw_skos_qty);
-
-
 
 
                             if ($row['Purchase Order Estimated Receiving Date'] != '') {
@@ -3325,20 +3323,18 @@ class Part extends Asset {
 
     }
 
-    function update_stock($force_update_part_products_availability=false) {
+    function update_stock($force_update_part_products_availability = false) {
 
 
         $old_value             = $this->data['Part Current Value'];
         $old_stock_in_progress = $this->data['Part Current Stock In Process'];
         $old_stock_picked      = $this->data['Part Current Stock Picked'];
         $old_stock_on_hand     = $this->data['Part Current On Hand Stock'];
-        $old_stock_paid     = $this->data['Part Current Stock Ordered Paid'];
+        $old_stock_paid        = $this->data['Part Current Stock Ordered Paid'];
 
 
-
-
-        $picked         = 0;
-        $required       = 0;
+        $picked   = 0;
+        $required = 0;
 
         $sql  = "SELECT sum(`Picked`) AS picked, sum(`Required`) AS required FROM `Inventory Transaction Fact` WHERE `Part SKU`=? AND `Inventory Transaction Type`='Order In Process'";
         $stmt = $this->db->prepare($sql);
@@ -3363,7 +3359,6 @@ class Part extends Asset {
         $stock_external = $stock_data[3];
 
 
-
         $this->fast_update(
             array(
                 'Part Current Value'                  => $value,
@@ -3382,7 +3377,8 @@ class Part extends Asset {
                 print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
         */
 
-        if ( $force_update_part_products_availability or (  $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked'] or $old_stock_on_hand != $this->data['Part Current On Hand Stock'])
+        if ($force_update_part_products_availability or ($old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked'] or $old_stock_on_hand
+                != $this->data['Part Current On Hand Stock'])
 
         ) {
 
@@ -3570,6 +3566,8 @@ class Part extends Asset {
             $data_to_update = array();
             while ($row = $stmt->fetch()) {
 
+                //print_r($row);
+
                 if (!($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Quantity'] > 0) and $running_cost_per_sko != '') {
 
 
@@ -3578,6 +3576,8 @@ class Part extends Asset {
 
                         $row['Inventory Transaction Key']
                     );
+
+
                     $this->db->exec($sql);
 
                     $amount = $row['Inventory Transaction Quantity'] * $running_cost_per_sko;
@@ -3587,12 +3587,20 @@ class Part extends Asset {
                     $amount = $row['Inventory Transaction Amount'];
                 }
 
+                $amount=round($amount,6);
 
-                $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
-                $running_stock_value = $running_stock_value + $amount;
+                //print "$running_stock_value  $amount --->";
+
+
+                $running_stock       = round($running_stock + $row['Inventory Transaction Quantity'],5);
+                $running_stock_value = round($running_stock_value + $amount,6);
                 if ($running_stock != 0) {
                     $running_cost_per_sko = $running_stock_value / $running_stock;
                 }
+
+
+                //print "$running_stock_value  \n";
+
 
                 $data_to_update[] = array(
                     $running_stock,
@@ -3676,7 +3684,7 @@ class Part extends Asset {
 
 
         }
-
+        exit();
 
     }
 
@@ -4033,7 +4041,8 @@ class Part extends Asset {
             $amount = 0;
 
             $sql = sprintf(
-                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d  AND `Inventory Transaction Type` in ('Other Out','Found')  AND  `Inventory Transaction Quantity`>0 ", $this->id
+                "SELECT sum(`Inventory Transaction Quantity`) AS qty, sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d  AND `Inventory Transaction Type` in ('Other Out','Found')  AND  `Inventory Transaction Quantity`>0 ",
+                $this->id
             );
 
             if ($result = $this->db->query($sql)) {
@@ -4742,7 +4751,7 @@ class Part extends Asset {
                         'Product Barcode Number'               => $this->data['Part Barcode Number'],
                         'Product Barcode Key'                  => $this->data['Part Barcode Key'],
                         'Product CPNP Number'                  => $this->data['Part CPNP Number'],
-                        'Product UFI'                  => $this->data['Part UFI'],
+                        'Product UFI'                          => $this->data['Part UFI'],
 
                     )
                 );
@@ -5303,8 +5312,8 @@ class Part extends Asset {
                 $params['available_forecast'] = $this->data['Part Days Available Forecast'];
 
 
-                $legacy_data                         = [];
-                $legacy_data += json_decode($this->get_aiku_params('locations')[1]['legacy'], true);
+                $legacy_data      = [];
+                $legacy_data      += json_decode($this->get_aiku_params('locations')[1]['legacy'], true);
                 $params['legacy'] = json_encode($legacy_data);
 
                 $params['data'] = json_encode(
@@ -5312,12 +5321,12 @@ class Part extends Asset {
                         'package' => [
                             'description' => $this->data['Part Package Description'],
                             'weight'      => $this->data['Part Package Weight'],
-                            'dimensions'  => json_decode($this->data['Part Package Dimensions'],true),
+                            'dimensions'  => json_decode($this->data['Part Package Dimensions'], true),
 
                         ],
-                        'unit' => [
-                            'weight'      => $this->data['Part Package Weight'],
-                            'dimensions'  => json_decode($this->data['Part Package Dimensions'],true),
+                        'unit'    => [
+                            'weight'     => $this->data['Part Package Weight'],
+                            'dimensions' => json_decode($this->data['Part Package Dimensions'], true),
 
                         ]
                     ]
@@ -5341,7 +5350,7 @@ class Part extends Asset {
                 while ($row = $stmt->fetch()) {
                     $locations[] = $row;
                 }
-                $legacy_data          = [];
+                $legacy_data              = [];
                 $legacy_data['locations'] = $locations;
 
                 $params['legacy'] = json_encode($legacy_data);
@@ -5407,7 +5416,7 @@ class Part extends Asset {
                         'package' => [
                             'description' => $this->data['Part Package Description'],
                             'weight'      => $this->data['Part Package Weight'],
-                            'dimensions'  => json_decode($this->data['Part Package Dimensions'],true),
+                            'dimensions'  => json_decode($this->data['Part Package Dimensions'], true),
 
                         ]
                     ]
@@ -5418,8 +5427,8 @@ class Part extends Asset {
                 $params['data'] = json_encode(
                     [
                         'unit' => [
-                            'weight'      => $this->data['Part Unit Weight'],
-                            'dimensions'  => json_decode($this->data['Part Unit Dimensions'],true),
+                            'weight'     => $this->data['Part Unit Weight'],
+                            'dimensions' => json_decode($this->data['Part Unit Dimensions'], true),
 
                         ]
                     ]
@@ -5432,7 +5441,6 @@ class Part extends Asset {
                     false
                 ];
         }
-
 
 
         return [
