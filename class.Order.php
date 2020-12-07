@@ -1111,6 +1111,7 @@ class Order extends DB_Table {
                         );
 
                     }
+                    $this->update_aiku($this->get_table_name(), 'refresh_basket');
 
 
                     break;
@@ -1251,7 +1252,6 @@ class Order extends DB_Table {
                     );
 
                     $this->update_aiku($this->get_table_name(), 'refresh_basket');
-                    $this->update_aiku($this->get_table_name(), 'refresh_order');
 
 
                     break;
@@ -1889,6 +1889,8 @@ class Order extends DB_Table {
             'hide'              => $hide,
             'show'              => $show
         );
+
+        $this->update_aiku($this->get_table_name(), 'refresh_order');
 
 
         if ($this->data['Order State'] != 'Cancelled') {

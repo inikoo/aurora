@@ -11,17 +11,11 @@ trait OrderAiku {
     function get_aiku_params($field, $value = '') {
 
 
-
-
         switch ($field) {
 
             case 'refresh_basket':
 
-
-
-
                 $params = [];
-
 
                 $params['legacy'] = json_encode(
                     [
@@ -36,6 +30,22 @@ trait OrderAiku {
                     $url = AIKU_URL.'customers/'.$this->data['Order Customer Key'].'/basket/';
 
                 }
+
+
+                break;
+            case 'refresh':
+
+            case 'refresh_order':
+
+                $params = [];
+
+                $params['legacy'] = json_encode(
+                    [
+                        'order_key' => $this->id
+                    ]
+                );
+
+                $url = AIKU_URL.'orders/';
 
 
                 break;

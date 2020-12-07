@@ -23,7 +23,8 @@ function get_order_showcase($data, $smarty, $user, $db) {
     $order = $data['_object'];
     $store = get_object('store', $order->get('Order Store Key'));
 
-
+    //$order->update_aiku($order->get_table_name(), 'refresh_order');
+    //exit;
 
     //$order->update_totals();
     /*

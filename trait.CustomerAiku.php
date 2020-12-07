@@ -8,6 +8,10 @@
 
 trait CustomerAiku {
 
+    function sync_aiku_basket() {
+        $this->update_aiku($this->get_table_name(), 'sync_basket');
+    }
+
     function get_aiku_params($field, $value = '') {
 
 
@@ -73,6 +77,12 @@ trait CustomerAiku {
                 );
 
                 //print_r($params);
+
+                break;
+
+            case 'sync_basket':
+                $url    = AIKU_URL.'customers/'.$this->id.'/basket';
+                $params = ['v' => 1];
 
                 break;
             case 'sync_portfolio':

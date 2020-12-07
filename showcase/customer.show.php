@@ -28,7 +28,7 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
         return "";
     }
 
-
+   // $customer->sync_aiku_basket();
 
     $smarty->assign('customer', $customer);
     $smarty->assign('store', $data['store']);
@@ -80,7 +80,7 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
                         $options[$row2['Customer Poll Query Option Key']] = $row2['Customer Poll Query Option Label'];
 
                     }
-                } 
+                }
 
                 $answer = $poll_query->get_answer($customer->id);
 
@@ -88,11 +88,10 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
                     'label'  => $poll_query->get('Customer Poll Query Label'),
                     'answer' => $answer[1],
                     'link'   => sprintf(
-                    '<span class="link" onclick="change_view(\'customers/%d/poll_query/%d\')" >%s</span>', $poll_query->get('Store Key'), $poll_query->id, $poll_query->get('Customer Poll Query Name')
-                )
+                        '<span class="link" onclick="change_view(\'customers/%d/poll_query/%d\')" >%s</span>', $poll_query->get('Store Key'), $poll_query->id, $poll_query->get('Customer Poll Query Name')
+                    )
                 );
 
-                
 
             }
         }
