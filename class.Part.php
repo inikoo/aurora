@@ -3684,7 +3684,7 @@ class Part extends Asset {
 
 
         }
-        exit();
+
 
     }
 
