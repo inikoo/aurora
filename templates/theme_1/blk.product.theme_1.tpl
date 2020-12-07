@@ -15,6 +15,8 @@
 {assign 'weight' $product->get('Unit Weight')}
 {assign 'materials' $product->get('Materials')}
 {assign 'cpnp' $product->get('CPNP Number')}
+{assign 'ufi' $product->get('UFI')}
+
 {assign 'dimensions' $product->get('Unit Dimensions')}
 {assign 'barcode' $product->get('Barcode Number')}
 
@@ -129,6 +131,10 @@
         <tr class="{if $cpnp==''}hide{/if}">
             <td title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
             <td>{$cpnp}</td>
+        </tr>
+        <tr class="{if $ufi==''}hide{/if}">
+            <td title="{if empty($labels._product_ufi)}{t}Unique Formula Identifier - Poison Centres{/t}{else}{$labels._product_ufi}{/if}">UFO</td>
+            <td>{$ufi}</td>
         </tr>
         <tr class="{if $barcode==''}hide{/if}">
             <td>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>

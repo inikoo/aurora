@@ -379,6 +379,26 @@ $export_edit_template_fields = array(
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'CPNP Number',
+            'name'          => 'Part Part CPNP Number',
+            'label'         => _('CPNP number'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'UFI',
+            'name'          => 'Part Part UFI',
+            'label'         => _('UFI (Poison Centres)'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
 
 
     ),
@@ -632,6 +652,26 @@ $export_edit_template_fields = array(
             'header'        => 'Hazard identification number',
             'name'          => 'Part Hazard Identification Number',
             'label'         => _('Hazard identification number'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'CPNP Number',
+            'name'          => 'Part CPNP Number',
+            'label'         => _('CPNP number'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'UFI',
+            'name'          => 'Part UFI',
+            'label'         => _('UFI (Poison Centres)'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),

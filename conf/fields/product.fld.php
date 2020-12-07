@@ -163,6 +163,21 @@ $product_fields = array(
                 'required'        => false,
                 'type'            => 'value'
             ),
+            array(
+                'id'              => 'Product_UFI',
+                'edit'            => ($part_edit ? 'string' : ''),
+                'render'          => ($new ? false : true),
+                'value'           => $object->get('Product UFI'),
+                'formatted_value' => $object->get('UFI'),
+                'label'           => ucfirst(
+                        $object->get_field_label('Product UFI')
+                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
+                            'Linked to part value'
+                        ).'"></i>' : ''),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
 
 
         )

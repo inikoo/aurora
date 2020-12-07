@@ -660,6 +660,16 @@ $supplier_part_fields[] = array(
             'type'            => 'value'
         ),
         array(
+            'id'              => 'Part_UFI',
+            'edit'            => ($edit ? 'string' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars($object->part->get('Part UFI')),
+            'formatted_value' => $object->part->get('UFI'),
+            'label'           => ucfirst($object->part->get_field_label('Part UFI')),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
             'id'              => 'Part_Materials',
             'edit'            => ($edit ? 'textarea' : ''),
             'right_code'      => 'PE',

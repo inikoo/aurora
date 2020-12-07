@@ -1102,6 +1102,9 @@ class Product extends Asset {
             case 'Product CPNP Number':
                 $label = _('CPNP number');
                 break;
+            case 'Product UFI':
+                $label = _('UFI (Poison Centres)');
+                break;
             case 'Product Webpage Browser Title':
                 $label = _('webpage browser title');
                 break;
@@ -3425,6 +3428,7 @@ class Product extends Asset {
             case 'Product Hazard Identification Number':
             case('Product Duty Rate'):
             case('Product CPNP Number'):
+            case('Product UFI'):
 
                 $old_value = $this->get($field);
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {

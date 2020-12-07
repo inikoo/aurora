@@ -49,6 +49,8 @@ function get_product_text($product) {
 
     $origin     = $product->get('Origin Country');
     $cpnp       = $product->get('CPNP Number');
+    $ufi       = $product->get('UFI');
+
     $materials  = $product->get('Materials');
     $weight     = $product->get('Unit Weight');
     $dimensions = $product->get('Unit Dimensions');
@@ -59,6 +61,9 @@ function get_product_text($product) {
     }
     if ($cpnp) {
         $text .= _('CPNP').': '.$cpnp."\n";
+    }
+    if ($ufi) {
+        $text .= 'UFI'.': '.$ufi."\n";
     }
     if ($materials) {
         $text .= _('Material').': '.strip_tags($materials)."\n";

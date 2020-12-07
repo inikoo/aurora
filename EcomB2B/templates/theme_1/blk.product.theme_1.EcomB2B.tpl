@@ -127,6 +127,7 @@
         {assign 'materials' $product->get('Materials')}
         {assign 'barcode' $product->get('Barcode Number')}
         {assign 'cpnp' $product->get('CPNP Number')}
+        {assign 'ufi' $product->get('UFI')}
 
         <div class="product_properties" >
 
@@ -158,6 +159,10 @@
             <td class="small" title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
             <td>{$cpnp}</td>
         </tr>
+            <tr class="{if $ufi==''}hide{/if}">
+                <td class="small" title="{if empty($labels._product_ufi)}{t}Unique Formula Identifier - Poison Centres{/t}{else}{$labels._product_ufi}{/if}">UFI</td>
+                <td>{$ufi}</td>
+            </tr>
         <tr class="{if $barcode==''}hide{/if}">
             <td class="small">{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
             <td>{$barcode}</td>

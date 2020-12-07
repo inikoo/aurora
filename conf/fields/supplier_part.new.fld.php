@@ -570,6 +570,15 @@ $supplier_part_fields[] = array(
             'type'            => 'value'
         ),
         array(
+            'id'              => 'Part_UFI',
+            'edit'            => ($edit ? 'string' : ''),
+            'value'           => htmlspecialchars($part->get('Part UFI')),
+            'formatted_value' => $part->get('UFI'),
+            'label'           => ucfirst($part->get_field_label('Part UFI')),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
             'id'   => 'Part_Materials',
             'edit' => ($edit ? 'textarea' : ''),
 

@@ -200,6 +200,15 @@ $object_fields = array(
                 'required'   => true,
                 'type'       => 'value'
             ),
+            array(
+                'id'         => 'Localised_Labels_product_ufi',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_ufi']) ? _('Unique Formula Identifier - Poison Centres') : $labels['_product_ufi']),
+                'label'      => 'UFI',
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
 
         )

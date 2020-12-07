@@ -1,0 +1,2 @@
+ALTER TABLE `Part Dimension` ADD `Part UFI` VARCHAR(255) NULL DEFAULT NULL AFTER `Part CPNP Number`;
+ALTER TABLE `Product Dimension` ADD `Product UFI` VARCHAR(255) NULL DEFAULT NULL AFTER `Product CPNP Number`;

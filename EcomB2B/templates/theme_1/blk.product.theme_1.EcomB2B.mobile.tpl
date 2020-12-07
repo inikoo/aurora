@@ -144,7 +144,7 @@
         {assign 'materials' $product->get('Materials')}
         {assign 'barcode' $product->get('Barcode Number')}
         {assign 'cpnp' $product->get('CPNP Number')}
-
+    {assign 'ufi' $product->get('UFI')}
 
         <table>
             <tr class="{if $origin==''}hide{/if}">
@@ -172,6 +172,10 @@
             <tr class="{if $cpnp==''}hide{/if}">
                 <td>CPNP</td>
                 <td class="origin">{$cpnp}</td>
+            </tr>
+            <tr class="{if $ufi==''}hide{/if}">
+                <td>UFI</td>
+                <td class="origin">{$ufi}</td>
             </tr>
             <tr class="{if $materials==''}hide{/if}">
                 <td>{if empty($labels._product_materials)}{t}Materials{/t}{else}{$labels._product_materials}{/if}</td>

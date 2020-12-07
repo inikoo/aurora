@@ -190,6 +190,7 @@ class Public_Product {
             case 'Status':
             case 'Barcode Number':
             case 'CPNP Number':
+            case 'UFI':
             case 'Code':
             case 'Web State':
             case 'Description':
@@ -198,12 +199,12 @@ class Public_Product {
             case 'Store Key':
 
                 return $this->data['Product '.$key];
-                break;
+
 
 
             case 'Product Current Key':
                 return $this->data[$key];
-                break;
+
 
 
             case 'Ordered Quantity':

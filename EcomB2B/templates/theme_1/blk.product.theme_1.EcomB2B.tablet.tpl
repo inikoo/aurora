@@ -167,6 +167,7 @@
                             {assign 'materials' $product->get('Materials')}
                             {assign 'barcode' $product->get('Barcode Number')}
                             {assign 'cpnp' $product->get('CPNP Number')}
+                            {assign 'ufi' $product->get('UFI')}
 
 
                             <div >
@@ -236,6 +237,17 @@
                                     <span style="float:right" class="origin">{$cpnp}</span>
                                 </div>
                             </div>
+
+                                <div class="activity-item {if $ufi==''}hide{/if}">
+                                    <div class=" one-half-responsive ">
+                                        <i class="ion-record color-green-dark"></i>
+                                        <strong>UFI</strong>
+                                    </div>
+                                    <div class="one-half-responsive last-column"  >
+
+                                        <span style="float:right" class="origin">{$ufi}</span>
+                                    </div>
+                                </div>
 
 
                             <div class="activity-item {if $materials==''}hide{/if}" style="border-bottom: none">

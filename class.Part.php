@@ -2767,6 +2767,7 @@ class Part extends Asset {
             case 'Part Proper Shipping Name':
             case 'Part Hazard Identification Number':
             case('Part CPNP Number'):
+            case('Part UFI'):
             case('Part Duty Rate'):
 
 
@@ -4582,7 +4583,9 @@ class Part extends Asset {
             case 'Part HTSUS Code':
                 $label = 'HTSUS';
                 break;
-
+            case 'Part UFI':
+                $label = 'UFI (Poison Centres)';
+                break;
             default:
                 $label = $field;
 
@@ -4739,7 +4742,7 @@ class Part extends Asset {
                         'Product Barcode Number'               => $this->data['Part Barcode Number'],
                         'Product Barcode Key'                  => $this->data['Part Barcode Key'],
                         'Product CPNP Number'                  => $this->data['Part CPNP Number'],
-
+                        'Product UFI'                  => $this->data['Part UFI'],
 
                     )
                 );

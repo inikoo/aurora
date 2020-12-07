@@ -762,6 +762,11 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
             array(
+                'name'    => '`Part UFI`',
+                'label'   => _('UFI (Poison Centres)'),
+                'checked' => 1
+            ),
+            array(
                 'name'    => '`Supplier Part Minimum Carton Order`',
                 'label'   => _('Minimum order (cartons)'),
                 'checked' => 1
@@ -1042,7 +1047,11 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => 'HTS US',
                 'checked' => 1
             ),
-
+            array(
+                'name'    => '`Part UFI`',
+                'label'   => _('UFI (Poison Centres)'),
+                'checked' => 1
+            ),
 
             array(
                 'name'    => '`Part Package Weight`',
@@ -1412,6 +1421,11 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => _('CPNP number'),
                 'checked' => 0
             ),
+            array(
+                'name'    => '`Product UFI`',
+                'label'   => _('UFI (Poison Centres)'),
+                'checked' => 0
+            ),
 
             array(
                 'name'    => '`Product XHTML Parts`',
@@ -1594,6 +1608,7 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => _('CPNP number'),
                 'checked' => 0
             ),
+
 
             array(
                 'name'    => '`Product Price`',
