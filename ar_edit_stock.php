@@ -1232,8 +1232,12 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             $exchange = $object->get('Supplier Delivery Currency Exchange');
 
             $amount_per_sko = round(
-                $row['Part Units Per Package'] * ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Checked Units'], 4
+                $row['Part Units Per Package'] * ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Units'], 4
             );
+
+            //print ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount'])."\n";
+
+            //exit($amount_per_sko);
 
 
             if ($account->get('Account Add Stock Value Type') == 'Last Price') {
