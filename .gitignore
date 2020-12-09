@@ -79,3 +79,4 @@ cron/set_up_spain.php
 composer.lock
 cron/fix_amount_in.php
 cron/set_up_sk_copy_agents_to.php
+composer.lock
