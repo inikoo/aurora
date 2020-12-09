@@ -90,9 +90,9 @@
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
                     <div class="top_menu" >
                         <span><i class="fal fa-database"></i> {t}Families’ products data feed{/t}  (
-                            <a href="catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.cvs</a>,
-                            <a href="catalog_data_feed.php?output=XLSX&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.xlsx</a>,
-                            <a href="catalog_data_feed.php?output=Json&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">json</a>
+                            <a href="ar_web_catalog_data_feed.php?output=CSV&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.cvs</a>,
+                            <a href="ar_web_catalog_data_feed.php?output=XLSX&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.xlsx</a>,
+                            <a href="ar_web_catalog_data_feed.php?output=Json&scope=category&scope_key={$webpage->get('Webpage Scope Key')}">json</a>
                             )</span> <span style="font-size: xx-small" class=" discreet">UTF-8 encoding</span>
                         <span style="margin-left: 30px" title="{t}Families' images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a href="catalog_images.zip.php?scope=category&scope_key={$webpage->get('Webpage Scope Key')}">.zip</a> )
 
@@ -108,9 +108,9 @@
 
                     <div class="top_menu" >
                         <span><i class="fal fa-database"></i> <span class="catalogue_data_feed_title">{t}All products data feed{/t}</span>  (
-                            <a class="catalogue_data_feed_csv" href="catalog_data_feed.php?output=CSV&scope=website&scope_key={$website->id}">.cvs</a>,
-                            <a class="catalogue_data_feed_xlsx" href="catalog_data_feed.php?output=XLSX&scope=website&scope_key={$website->id}">.xlsx</a>,
-                            <a class="catalogue_data_feed_json" href="catalog_data_feed.php?output=Json&scope=website&scope_key={$website->id}">json</a>
+                            <a class="catalogue_data_feed_csv" href="ar_web_catalog_data_feed.php?output=CSV&scope=website&scope_key={$website->id}">.cvs</a>,
+                            <a class="catalogue_data_feed_xlsx" href="ar_web_catalog_data_feed.php?output=XLSX&scope=website&scope_key={$website->id}">.xlsx</a>,
+                            <a class="catalogue_data_feed_json" href="ar_web_catalog_data_feed.php?output=Json&scope=website&scope_key={$website->id}">json</a>
                             )</span>
 
 

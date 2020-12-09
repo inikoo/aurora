@@ -401,11 +401,11 @@ function get_portfolio_table_html($data, $customer) {
         'state'          => 200,
         'app_state'      => $state,
         'html'           => $html,
-        'images_zip_url' => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=images&scope=portfolio_images',
-        'csv_url'        => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=CSV&scope=portfolio_items',
-        'xls_url'        => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=XLS&scope=portfolio_items',
-        'xlsx_url'        => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=XLSX&scope=portfolio_items',
-        'json_url'       => 'data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=Json&scope=portfolio_items',
+        'images_zip_url' => 'ar_web_data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=images&scope=portfolio_images',
+        'csv_url'        => 'ar_web_data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=CSV&scope=portfolio_items',
+        'xls_url'        => 'ar_web_data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=XLS&scope=portfolio_items',
+        'xlsx_url'        => 'ar_web_data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=XLSX&scope=portfolio_items',
+        'json_url'       => 'ar_web_data_feed.php?uid='.$web_user->id.'&token='.$web_user->get('Website User Static API Hash').'&output=Json&scope=portfolio_items',
 
 
     );
@@ -787,9 +787,9 @@ function get_catalogue_table_html($data, $customer,$website) {
     $data_feeds=array(
         'title'=>_('All products data feed'),
         'urls'=>[
-            'csv'=>'/catalog_data_feed.php?output=CSV&scope=website&scope_key='.$website->id,
-            'xlsx'=>'/catalog_data_feed.php?output=XLSX&scope=website&scope_key='.$website->id,
-            'json'=>'/catalog_data_feed.php?output=Json&scope=website&scope_key='.$website->id
+            'csv'=>'/ar_web_catalog_data_feed.php?output=CSV&scope=website&scope_key='.$website->id,
+            'xlsx'=>'/ar_web_catalog_data_feed.php?output=XLSX&scope=website&scope_key='.$website->id,
+            'json'=>'/ar_web_catalog_data_feed.php?output=Json&scope=website&scope_key='.$website->id
         ]
     );
 
@@ -851,9 +851,9 @@ function get_catalogue_table_html($data, $customer,$website) {
                 $data_feeds=array(
                     'title'=>_('Products in department data feed'),
                     'urls'=>[
-                        'csv'=>'/catalog_data_feed.php?output=CSV&scope=department&scope_key='.$department->id,
-                        'xlsx'=>'/catalog_data_feed.php?output=XLSX&scope=department&scope_key='.$department->id,
-                        'json'=>'/catalog_data_feed.php?output=Json&scope=department&scope_key='.$department->id
+                        'csv'=>'/ar_web_catalog_data_feed.php?output=CSV&scope=department&scope_key='.$department->id,
+                        'xlsx'=>'/ar_web_catalog_data_feed.php?output=XLSX&scope=department&scope_key='.$department->id,
+                        'json'=>'/ar_web_catalog_data_feed.php?output=Json&scope=department&scope_key='.$department->id
                     ]
                 );
 
@@ -921,9 +921,9 @@ function get_catalogue_table_html($data, $customer,$website) {
                 $data_feeds=array(
                     'title'=>_('Products in department data feed'),
                     'urls'=>[
-                        'csv'=>'/catalog_data_feed.php?output=CSV&scope=department&scope_key='.$department->id,
-                        'xlsx'=>'/catalog_data_feed.php?output=XLSX&scope=department&scope_key='.$department->id,
-                        'json'=>'/catalog_data_feed.php?output=Json&scope=department&scope_key='.$department->id
+                        'csv'=>'/ar_web_catalog_data_feed.php?output=CSV&scope=department&scope_key='.$department->id,
+                        'xlsx'=>'/ar_web_catalog_data_feed.php?output=XLSX&scope=department&scope_key='.$department->id,
+                        'json'=>'/ar_web_catalog_data_feed.php?output=Json&scope=department&scope_key='.$department->id
                     ]
                 );
 
@@ -941,9 +941,9 @@ function get_catalogue_table_html($data, $customer,$website) {
                 $data_feeds=array(
                     'title'=>_('Products in family data feed'),
                     'urls'=>[
-                        'csv'=>'/catalog_data_feed.php?output=CSV&scope=family&scope_key='.$family->id,
-                        'xlsx'=>'/catalog_data_feed.php?output=XLSX&scope=family&scope_key='.$family->id,
-                        'json'=>'/catalog_data_feed.php?output=Json&scope=family&scope_key='.$family->id
+                        'csv'=>'/ar_web_catalog_data_feed.php?output=CSV&scope=family&scope_key='.$family->id,
+                        'xlsx'=>'/ar_web_catalog_data_feed.php?output=XLSX&scope=family&scope_key='.$family->id,
+                        'json'=>'/ar_web_catalog_data_feed.php?output=Json&scope=family&scope_key='.$family->id
                     ]
                 );
                 if($device_prefix=='mobile'){
