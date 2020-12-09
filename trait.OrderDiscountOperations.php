@@ -1511,6 +1511,36 @@ trait OrderDiscountOperations {
         $current_free_no_ordered_items_to_delete = array();
 
 
+
+        $current_ONPTDBs_to_delete = array();
+        $sql = sprintf(
+            'select `Transaction Gross Amount`,`Tax Category Code`,`Order No Product Transaction Deal Key`,`Deal Component Key`,ONPTDB.`Order No Product Transaction Fact Key`,`Amount Discount`,ONPTF.`Order No Product Transaction Fact Key` as ONPTF_Key  from `Order No Product Transaction Deal Bridge`  ONPTDB left join `Order No Product Transaction Fact` ONPTF on (ONPTDB.`Order No Product Transaction Fact Key`=ONPTF.`Order No Product Transaction Fact Key`)  
+            where ONPTDB.`Order Key`=%d and `Deal Component Key`>0 and  `Order No Product Transaction Deal Source`="items" ',
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if ($row['Order No Product Transaction Fact Key']) {
+                    $current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$row['Deal Component Key']] = array(
+                        'onpt_key'          => $row['Order No Product Transaction Fact Key'],
+                        'otdk_key'          => $row['Order No Product Transaction Deal Key'],
+                        'tax_category_code' => $row['Tax Category Code'],
+                        'gross_amount'      => $row['Transaction Gross Amount'],
+                        'ghost'             => ($row['ONPTF_Key'] == '' ? 'Yes' : 'No')
+                    );
+                }
+
+
+            }
+        }
+
+
+
+
         $sql = sprintf('select `Order Transaction Fact Key`,`Deal Component Key`,`Order Transaction Deal Key`,`Amount Discount`,`Bonus Quantity` from `Order Transaction Deal Bridge` where `Order Key`=%d and `Deal Component Key`>0 ', $this->id);
 
 
@@ -1568,6 +1598,91 @@ trait OrderDiscountOperations {
 
 
                         break;
+
+                    case 'Shipping Off':
+
+                        //print_r($allowance_data);
+
+
+                        $_type = 'Shipping';
+
+
+                        $sql = sprintf(
+                            'SELECT `Order No Product Transaction Fact Key`,`Transaction Gross Amount` FROM  `Order No Product Transaction Fact` OTF  WHERE `Order Key`=%d AND `Transaction Type`=%s ', $this->id, prepare_mysql($_type)
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+
+                                $_data = array(
+                                    'shipping_zone_schema_key' => $allowance_data['Shipping Zone Schema Key'],
+                                    'Order Data'               => array(
+                                        'Order Items Net Amount'                      => $this->data['Order Items Net Amount'],
+                                        'Order Estimated Weight'                      => $this->data['Order Estimated Weight'],
+                                        'Order Delivery Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
+                                        'Order Delivery Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
+                                    )
+
+
+                                );
+
+
+                                include_once 'nano_services/shipping_for_order.ns.php';
+
+                                $shipping_data = (new shipping_for_order($this->db))->get($_data);
+
+
+                                if ($shipping_data['shipping_zone_schema_key'] == $allowance_data['Shipping Zone Schema Key']) {
+
+                                    //print_r($shipping_data);
+
+                                    //  exit;
+
+                                    if (isset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']])) {
+                                        unset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
+                                    }
+
+                                    if (empty($allowance_data['Pinned'])) {
+                                        $pinned = 'No';
+                                    } else {
+                                        $pinned = 'Yes';
+                                    }
+
+
+                                    $amount_discount = $row['Transaction Gross Amount'] - $shipping_data['price'];
+                                    if ($row['Transaction Gross Amount'] == 0) {
+                                        $percentage_off = 0;
+
+                                    } else {
+                                        $percentage_off = $amount_discount / $row['Transaction Gross Amount'];
+
+                                    }
+
+
+                                    $sql = sprintf(
+                                        "INSERT INTO `Order No Product Transaction Deal Bridge` (`Order No Product Transaction Deal Source`,`Order No Product Transaction Fact Key`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Order No Product Transaction Deal Pinned`)
+					VALUES ('items',%d,%d,%d,%d,%d,%s,%f,%f,%s)  ON DUPLICATE KEY UPDATE `Deal Info`=%s ,`Amount Discount`=%f ,`Fraction Discount`=%f ,`Order No Product Transaction Deal Pinned`=%s",
+                                        $row['Order No Product Transaction Fact Key'], $this->id,
+                                        $allowance_data['Deal Campaign Key'], $allowance_data['Deal Key'], $allowance_data['Deal Component Key'], prepare_mysql($allowance_data['Deal Info']), $amount_discount, $percentage_off, prepare_mysql($pinned),
+                                        prepare_mysql($allowance_data['Deal Info']), $amount_discount, $percentage_off, prepare_mysql($pinned)
+                                    );
+
+                                   //  print $sql;
+                                    // exit;
+                                    $this->db->exec($sql);
+
+
+                                }
+
+
+                            }
+                        }
+
+
+                        break;
+
 
                 }
 
@@ -1871,6 +1986,7 @@ trait OrderDiscountOperations {
         }
 
 
+
         foreach ($current_OTF_discounts_to_clear as $otf_key) {
 
 
@@ -1968,6 +2084,57 @@ trait OrderDiscountOperations {
         }
 
 
+        foreach ($current_ONPTDBs_to_delete as $current_OTDB_to_delete_data) {
+
+            $sql = sprintf(
+                'delete from `Order No Product Transaction Deal Bridge` where  `Order No Product Transaction Deal Key`=%d', $current_OTDB_to_delete_data['otdk_key']
+
+            );
+            // print $sql;
+            $this->db->exec($sql);
+
+
+        }
+
+        foreach ($current_ONPTDBs_to_delete as $data) {
+
+
+            $ok = true;
+
+            if (isset($data['ghost']) and $data['ghost'] == 'Yes') {
+                $ok = false;
+            }
+
+            if ($ok) {
+                $tax_category = get_object('Tax Category', $data['tax_category_code']);
+                /*
+                                        if(!$tax_category->id){
+
+                                            print_r($this);
+                                            print_r($data);
+                                            exit('error tax category');
+                                        }
+                                        if(!is_numeric($tax_category->get('Tax Category Rate'))){
+                                            print_r($tax_category);
+                                       exit('error tax category error error');
+                                    }
+
+                */
+
+
+                $sql = sprintf(
+                    'UPDATE `Order No Product Transaction Fact` SET `Transaction Total Discount Amount`=0 , `Transaction Net Amount`=`Transaction Gross Amount` ,`Transaction Tax Amount`=%.2f WHERE `Order No Product Transaction Fact Key`=%d  ', $data['onpt_key'],
+                    $data['gross_amount'] * $tax_category->get('Tax Category Rate')
+                );
+                $this->db->exec($sql);
+            }
+
+
+        }
+
+
+
+
     }
 
     function update_discounts_no_items($dn_key = false) {
@@ -2015,11 +2182,12 @@ trait OrderDiscountOperations {
         $this->amount_off_value = $this->get('Order Deal Amount Off');
 
 
-        $current_OTDBs_to_delete = array();
+        $current_ONPTDBs_to_delete = array();
 
 
         $sql = sprintf(
-            'select `Transaction Gross Amount`,`Tax Category Code`,`Order No Product Transaction Deal Key`,`Deal Component Key`,ONPTDB.`Order No Product Transaction Fact Key`,`Amount Discount`,ONPTF.`Order No Product Transaction Fact Key` as ONPTF_Key  from `Order No Product Transaction Deal Bridge`  ONPTDB left join `Order No Product Transaction Fact` ONPTF on (ONPTDB.`Order No Product Transaction Fact Key`=ONPTF.`Order No Product Transaction Fact Key`)  where ONPTDB.`Order Key`=%d and `Deal Component Key`>0 ',
+            'select `Transaction Gross Amount`,`Tax Category Code`,`Order No Product Transaction Deal Key`,`Deal Component Key`,ONPTDB.`Order No Product Transaction Fact Key`,`Amount Discount`,ONPTF.`Order No Product Transaction Fact Key` as ONPTF_Key  from `Order No Product Transaction Deal Bridge`  ONPTDB left join `Order No Product Transaction Fact` ONPTF on (ONPTDB.`Order No Product Transaction Fact Key`=ONPTF.`Order No Product Transaction Fact Key`)  
+            where ONPTDB.`Order Key`=%d and `Deal Component Key`>0 and  `Order No Product Transaction Deal Source`="no_items" ',
             $this->id
         );
 
@@ -2029,7 +2197,7 @@ trait OrderDiscountOperations {
 
 
                 if ($row['Order No Product Transaction Fact Key']) {
-                    $current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$row['Deal Component Key']] = array(
+                    $current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$row['Deal Component Key']] = array(
                         'onpt_key'          => $row['Order No Product Transaction Fact Key'],
                         'otdk_key'          => $row['Order No Product Transaction Deal Key'],
                         'tax_category_code' => $row['Tax Category Code'],
@@ -2040,14 +2208,10 @@ trait OrderDiscountOperations {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
-        // print_r($current_OTDBs_to_delete);
+        // print_r($current_ONPTDBs_to_delete);
         // exit;
 
 
@@ -2055,8 +2219,8 @@ trait OrderDiscountOperations {
 
             foreach ($this->allowance['Percentage Off'] as $otf_key => $allowance_data) {
 
-                if (isset($current_OTDBs_to_delete[$otf_key.'_'.$allowance_data['Deal Component Key']])) {
-                    unset($current_OTDBs_to_delete[$otf_key.'_'.$allowance_data['Deal Component Key']]);
+                if (isset($current_ONPTDBs_to_delete[$otf_key.'_'.$allowance_data['Deal Component Key']])) {
+                    unset($current_ONPTDBs_to_delete[$otf_key.'_'.$allowance_data['Deal Component Key']]);
                 }
 
 
@@ -2099,8 +2263,8 @@ trait OrderDiscountOperations {
                             foreach ($result as $row) {
 
 
-                                if (isset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']])) {
-                                    unset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
+                                if (isset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']])) {
+                                    unset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
                                 }
 
                                 if (empty($allowance_data['Pinned'])) {
@@ -2149,8 +2313,8 @@ trait OrderDiscountOperations {
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
 
-                                if (isset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']])) {
-                                    unset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
+                                if (isset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']])) {
+                                    unset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
                                 }
 
                                 if (empty($allowance_data['Pinned'])) {
@@ -2220,8 +2384,8 @@ trait OrderDiscountOperations {
 
                                     //  exit;
 
-                                    if (isset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']])) {
-                                        unset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
+                                    if (isset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']])) {
+                                        unset($current_ONPTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
                                     }
 
                                     if (empty($allowance_data['Pinned'])) {
@@ -2287,10 +2451,10 @@ trait OrderDiscountOperations {
         }
 
 
-        // print_r($current_OTDBs_to_delete);
+        // print_r($current_ONPTDBs_to_delete);
 
 
-        foreach ($current_OTDBs_to_delete as $current_OTDB_to_delete_data) {
+        foreach ($current_ONPTDBs_to_delete as $current_OTDB_to_delete_data) {
 
             $sql = sprintf(
                 'delete from `Order No Product Transaction Deal Bridge` where  `Order No Product Transaction Deal Key`=%d', $current_OTDB_to_delete_data['otdk_key']
@@ -2303,7 +2467,7 @@ trait OrderDiscountOperations {
         }
 
 
-        foreach ($current_OTDBs_to_delete as $data) {
+        foreach ($current_ONPTDBs_to_delete as $data) {
 
 
             $ok = true;
@@ -2339,34 +2503,61 @@ trait OrderDiscountOperations {
 
         }
 
-
+        $onptf_discounts_data=[];
         $sql = sprintf(
-            "SELECT * FROM `Order No Product Transaction Deal Bridge` B LEFT JOIN `Order No Product Transaction Fact`OTF ON (OTF.`Order No Product Transaction Fact Key`=B.`Order No Product Transaction Fact Key`)  WHERE B.`Order Key`=%d  ", $this->id
+            "SELECT * FROM `Order No Product Transaction Deal Bridge` B LEFT JOIN `Order No Product Transaction Fact`OTF ON (OTF.`Order No Product Transaction Fact Key`=B.`Order No Product Transaction Fact Key`)  WHERE B.`Order Key`=%d  order by `Order No Product Transaction Deal Source` ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
+               // print_r($row);
 
                 if ($row['Fraction Discount'] > 0) {
-                    $sql = sprintf(
-                        'UPDATE `Order No Product Transaction Fact` OTF  SET `Transaction Total Discount Amount`=%.2f ,`Transaction Net Amount`=%.2f,`Transaction Tax Amount`=%.2f  WHERE `Order No Product Transaction Fact Key`=%d ', $row['Amount Discount'],
-                        $row['Transaction Net Amount'] * (1 - $row['Fraction Discount']), $row['Transaction Tax Amount'] * (1 - $row['Fraction Discount'])
 
-                        , $row['Order No Product Transaction Fact Key']
-                    );
-                    //  print "$sql\n";
-                    $this->db->exec($sql);
+
+
+                    if(empty($onptf_discounts_data[$row['Order No Product Transaction Fact Key']])){
+                        $onptf_discounts_data[$row['Order No Product Transaction Fact Key']]=$row;
+                    }else{
+
+                        if($onptf_discounts_data[$row['Order No Product Transaction Fact Key']]['Amount Discount']<$row['Amount Discount']){
+                            $onptf_discounts_data[$row['Order No Product Transaction Fact Key']]=$row;
+
+                        }
+
+                    }
+
+
+
+
+
+
+
 
 
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+
+
+
+
+        foreach($onptf_discounts_data as $row){
+            $sql = sprintf(
+                'UPDATE `Order No Product Transaction Fact` OTF  SET `Transaction Total Discount Amount`=%.2f ,`Transaction Net Amount`=%.2f,`Transaction Tax Amount`=%.2f  WHERE `Order No Product Transaction Fact Key`=%d ',
+                $row['Amount Discount'],
+                $row['Transaction Net Amount'] * (1 - $row['Fraction Discount']),
+                $row['Transaction Tax Amount'] * (1 - $row['Fraction Discount'])
+
+                , $row['Order No Product Transaction Fact Key']
+            );
+
+            $this->db->exec($sql);
+        }
+
+
 
 
     }

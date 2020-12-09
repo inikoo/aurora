@@ -150,6 +150,7 @@ $object_fields[] = array(
                 ).'</span>
 <span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_("Buy %s cheapest %s free"), 3, 1).' ('
                 ._('Mix & match').')  </span>
+<span id="Deal_Type_Shipping_field" field_type="button_radio_options" field="Deal_Type_Shipping" onclick="toggle_category_deal_type(this)" class="button value valid" style="border:1px solid #ccc;padding:5px;margin:4px">'._("Discounted shipping").'</span>
 </div>
 ',
             'label'    => _('Choose offer'),

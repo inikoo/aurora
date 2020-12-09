@@ -1,0 +1,1 @@
+ALTER TABLE `Order No Product Transaction Deal Bridge` ADD `Order No Product Transaction Deal Source` ENUM('items','no_items') NOT NULL DEFAULT 'no_items' AFTER `Order No Product Transaction Deal Pinned`, ADD INDEX (`Order No Product Transaction Deal Source`);
