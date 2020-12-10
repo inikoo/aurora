@@ -118,6 +118,7 @@ class EmailCampaign extends DB_Table {
             return;
         }
 
+        $data['Email Campaign Metadata'] = '{}';
 
         $data['Email Campaign Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Email Campaign Last Updated Date'] = gmdate('Y-m-d H:i:s');
@@ -826,11 +827,6 @@ class EmailCampaign extends DB_Table {
                 $this->update_state($value);
                 break;
 
-            case 'second wave':
-
-                $this->fast_update_json_field('Store Metadata', preg_replace('/\s/', '_', $field), $value);
-
-                break;
 
             case 'Metadata':
 
@@ -1709,7 +1705,7 @@ class EmailCampaign extends DB_Table {
         $delivered = $sent - $hard_bounces - $errors - $soft_bounces;
 
 
-        $sql  = "select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=? and `Email Tracking Spam`='Yes'";
+        $sql = "select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=? and `Email Tracking Spam`='Yes'";
 
 
         $stmt = $this->db->prepare($sql);
@@ -1729,7 +1725,6 @@ class EmailCampaign extends DB_Table {
                 $unsubscribed = $row['num'];
             }
         }
-
 
 
         $this->fast_update(
