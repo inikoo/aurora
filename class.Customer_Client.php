@@ -350,13 +350,6 @@ class Customer_Client extends Subject {
         $order_data['Order Customer Fiscal Name'] = $customer->get('Fiscal Name');
 
 
-        //$email = $this->data['Customer Client Main Plain Email'];
-        //if ($email == '') {
-        //    $email = $customer->data['Customer Main Plain Email'];
-        // }
-
-        //$order_data['Order Email'] = $email;
-        //$order_data['Order Telephone'] = $this->get_telephone();
 
         $order_data['Order Email']     = $customer->data['Customer Main Plain Email'];
         $order_data['Order Telephone'] = $customer->get_telephone();

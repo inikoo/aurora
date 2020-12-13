@@ -12,6 +12,7 @@
 
 require_once 'common.php';
 
+/*
 
 $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` where  `Order State` not in ('Dispatched','Cancelled')  ");
 if ($result = $db->query($sql)) {
@@ -39,14 +40,34 @@ if ($result = $db->query($sql)) {
     }
 
 }
+
+*/
 //
 $sql = sprintf("SELECT `Delivery Note Key` FROM `Delivery Note Dimension` where `Delivery Note State` not in ('Dispatched','Cancelled')  ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $dn = get_object('Delivery Note', $row['Delivery Note Key']);
-        $order=get_object('Order',$dn->get('Delivery Note Order Key'));
-        if($order->id){
-            $dn->fast_update(['Delivery Note Telephone'=>$order->get('Order Telephone')]);
+        $dn    = get_object('Delivery Note', $row['Delivery Note Key']);
+        $order = get_object('Order', $dn->get('Delivery Note Order Key'));
+        if ($order->id) {
+
+
+            $telephone = $order->data['Order Telephone'];
+            $email     = $order->data['Order Email'];
+            if ($order->data['Order Customer Client Key']) {
+                $client = get_object('Customer Client', $order->data['Order Customer Client Key']);
+                if ($client->id) {
+                    $telephone = $client->get_telephone();
+                    $email     = $client->get('Customer Client Main Plain Email');
+                }
+            }
+
+
+            $dn->fast_update(
+                [
+                    'Delivery Note Telephone' => $telephone,
+                    'Delivery Note Email'     => $email,
+                ]
+            );
 
         }
 

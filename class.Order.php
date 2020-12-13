@@ -1338,6 +1338,16 @@ class Order extends DB_Table {
                     }
 
 
+                    $telephone=$this->data['Order Telephone'];
+                    $email=$this->data['Order Email'];
+                    if($this->data['Order Customer Client Key']){
+                        $client=get_object('Customer Client',$this->data['Order Customer Client Key']);
+                        if($client->id){
+                            $telephone=$client->get_telephone();
+                            $email=$client->get('Customer Client Main Plain Email');
+                        }
+                    }
+
                     $data_dn = array(
                         'editor'                      => $this->editor,
                         'Delivery Note Warehouse Key' => $warehouse_key,
@@ -1355,8 +1365,8 @@ class Order extends DB_Table {
                         'Delivery Note Metadata'                     => $this->data['Order Original Metadata'],
                         'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
                         'Delivery Note Customer Contact Name'        => $this->data['Order Customer Contact Name'],
-                        'Delivery Note Telephone'                    => $this->data['Order Telephone'],
-                        'Delivery Note Email'                        => $this->data['Order Email'],
+                        'Delivery Note Telephone'                    => $telephone,
+                        'Delivery Note Email'                        => $email,
                         'Delivery Note Address Recipient'            => $this->data['Order Delivery Address Recipient'],
                         'Delivery Note Address Organization'         => $this->data['Order Delivery Address Organization'],
                         'Delivery Note Address Line 1'               => $this->data['Order Delivery Address Line 1'],
@@ -2787,6 +2797,16 @@ class Order extends DB_Table {
         $replacement_public_id = $this->get_replacement_public_id($this->data['Order Public ID'].$store->data['Store Replacement Suffix']);
 
 
+        $telephone=$this->data['Order Telephone'];
+        $email=$this->data['Order Email'];
+        if($this->data['Order Customer Client Key']){
+            $client=get_object('Customer Client',$this->data['Order Customer Client Key']);
+            if($client->id){
+                $telephone=$client->get_telephone();
+                $email=$client->get('Customer Client Main Plain Email');
+            }
+        }
+
         $data_dn = array(
             'editor'                      => $this->editor,
             'Delivery Note Warehouse Key' => $warehouse_key,
@@ -2804,8 +2824,8 @@ class Order extends DB_Table {
             'Delivery Note Metadata'                     => '',
             'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
             'Delivery Note Customer Contact Name'        => $this->data['Order Customer Contact Name'],
-            'Delivery Note Telephone'                    => $this->data['Order Telephone'],
-            'Delivery Note Email'                        => $this->data['Order Email'],
+            'Delivery Note Telephone'                    => $telephone,
+            'Delivery Note Email'                        => $email,
             'Delivery Note Address Recipient'            => $this->data['Order Delivery Address Recipient'],
             'Delivery Note Address Organization'         => $this->data['Order Delivery Address Organization'],
             'Delivery Note Address Line 1'               => $this->data['Order Delivery Address Line 1'],
