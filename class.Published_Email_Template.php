@@ -168,6 +168,3 @@ class Published_Email_Template extends DB_Table {
 
 
 }
-
-
-?>

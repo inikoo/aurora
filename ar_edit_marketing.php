@@ -117,6 +117,17 @@ switch ($tipo) {
         );
         create_new_wave_newsletter($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'set_second_wave':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'             => array('type' => 'key'),
+                         'second_wave' => array('type' => 'string'),
+
+
+                     )
+        );
+        set_second_wave($account, $db, $user, $editor, $data);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -127,6 +138,43 @@ switch ($tipo) {
         break;
 }
 
+function set_second_wave($account, $db, $user, $editor, $data) {
+
+
+    $mailshot = get_object('Mailshot', $data['key']);
+
+
+    $second_wave = 'No';
+    if ($data['second_wave']=='Yes') {
+        $second_wave = 'Yes';
+    }
+
+
+    if ($mailshot->get('State Index') <= 30) {
+
+
+        $mailshot->fast_update(
+            ['Email Campaign Wave Type'=> $second_wave]);
+
+
+
+        $response = array(
+            'state'       => 200,
+            'second_wave' => $second_wave
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+
+    $response = array(
+        'state' => 400,
+        'msg'   => 'Error'
+    );
+    echo json_encode($response);
+    exit;
+
+}
 
 function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smarty) {
 
@@ -272,8 +320,6 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
     if ($campaign->get('Deal Campaign Code') == 'OR') {
 
 
-
-
         $deal = $campaign->get_deals()[0];
 
 
@@ -327,7 +373,7 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
             'Deal Component Allowance'              => $off_ratio,
             'Deal Component Allowance Label'        => $off,
             'Deal Component Allowance Target Label' => $category->get('Code'),
-            'Deal Component Allowance Target Type' => 'Items',
+            'Deal Component Allowance Target Type'  => 'Items',
 
         );
 

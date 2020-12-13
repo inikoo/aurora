@@ -70,10 +70,11 @@ function send_mailshot($data, $account, $editor, $db) {
 
     $mailshot = get_object('Email_Campaign', $data['key']);
 
+
     if ($mailshot->get('Email Campaign State') == 'Ready') {
 
 
-        $mailshot->update_state('Sending');
+        //$mailshot->update_state('Sending');
 
 
         include_once 'utils/new_fork.php';
@@ -89,7 +90,6 @@ function send_mailshot($data, $account, $editor, $db) {
         );
 
 
-        //print_r($mailshot);
 
         $response = array(
             'state'           => 200,
@@ -105,7 +105,7 @@ function send_mailshot($data, $account, $editor, $db) {
 
         $response = array(
             'state' => 400,
-            'msg'   => 'Email Campaign State '.$mailshot->get('Email Campaign State')
+            'msg'   => 'Email Campaign State: '.$mailshot->get('Email Campaign State')
         );
         echo json_encode($response);
         exit;

@@ -1303,6 +1303,25 @@ class EmailCampaign extends DB_Table {
         $email_template_type = get_object('email_template_type', $this->data['Email Campaign Email Template Type Key']);
         $email_template      = get_object('email_template', $this->data['Email Campaign Email Template Key']);
 
+
+        if($this->get('Email Campaign Wave Type')=='Yes'){
+
+             if(in_array(date('D'),['Fri','Thu','Sat','Sun'])){
+                 $second_wave_date=strtotime('next monday');
+                }else{
+                 $second_wave_date=strtotime('+2 days');
+             }
+
+
+             //print $second_wave_date."  <---\n";
+             //print_r(['Email Campaign Second Wave Date'=>gmdate('Y-m-d H:i:s',$second_wave_date)]);
+
+            $this->fast_update(['Email Campaign Second Wave Date'=>gmdate('Y-m-d H:i:s',$second_wave_date)]);
+
+
+        }
+;
+
         if ($this->data['Email Campaign Type'] == 'Invite Full Mailshot') {
             $recipient_type = 'Prospect';
 
@@ -1314,6 +1333,8 @@ class EmailCampaign extends DB_Table {
         $thread      = $first_thread;
         $thread_size = 50;
         $contador    = 0;
+
+
 
 
         if ($this->data['Email Campaign Type'] == 'Marketing') {

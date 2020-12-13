@@ -347,8 +347,9 @@ trait Send_Email {
             );
 
 
-/*
 
+
+/*
                         $email_tracking->fast_update(
                             array(
                                 'Email Tracking State'  => "Sent to SES",

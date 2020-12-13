@@ -32,13 +32,11 @@
 </style>
 
 
-
 <div id="email_campaign" data-object='{$object_data}' data-email_campaign_key="{$email_campaign->id}">
 
     <div class="timeline_horizontal with_time     ">
 
         <ul class="timeline">
-
 
 
             {if $email_campaign->get('Email Campaign Type')=='Newsletter'}
@@ -132,10 +130,16 @@
                 <span>{t}Estimated recipients{/t}</span> <span class="strong Number_Estimated_Emails">{$email_campaign->get('Number Estimated Emails')}</span>
             </div>
 
+
             <div class="estimated_recipients_post_sent   {if $email_campaign->get('State Index')<50}hide{/if}">
                 <span class="_Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
             </div>
 
+
+            <div class="second_wave_option small" style="margin-top: 10px">
+                <span onClick="toggle_set_second_wave(this)" class="button"><span class="_Second_Wave_Option">{t}2nd wave{/t} <i
+                                class="button far {if  $email_campaign->get('Email Campaign Wave Type')=='Yes'} fa-toggle-on {else}  fa-toggle-off{/if}"></i></span></span>
+            </div>
 
 
             <div style="clear:both"></div>
@@ -170,8 +174,8 @@
                     </div>
 
 
-
-                    <div id="undo_set_selecting_blueprint" class="email_campaign_operation {if !($email_campaign->get('Email Campaign State')=='ComposingEmail' and   $email_campaign->get('Email Campaign Selecting Blueprints')=='Yes') }hide{/if}">
+                    <div id="undo_set_selecting_blueprint"
+                         class="email_campaign_operation {if !($email_campaign->get('Email Campaign State')=='ComposingEmail' and   $email_campaign->get('Email Campaign Selecting Blueprints')=='Yes') }hide{/if}">
                         <div class="square_button left  " title="{t}Undo{/t}">
                             <i class="fa  fa-undo button " id="stop_save_buttons" aria-hidden="true"
                                onclick="undo_email_template_as_selecting_blueprints({$email_campaign->get('Email Campaign Email Template Key')})"></i>
@@ -197,9 +201,10 @@
                         </div>
                     </div>
 
-                    <div id="set_mail_list_operations" class="email_campaign_operation  {if $email_campaign->get('State Index')!=20 or $email_campaign->get('Email Campaign Type')=='Newsletter' or $email_campaign->get('Email Campaign Type')=='AbandonedCart'
-                    or ($email_campaign->get('Email Campaign Type')=='Marketing')
-                    }hide{/if}">
+                    <div id="set_mail_list_operations"
+                         class="email_campaign_operation  {if $email_campaign->get('State Index')!=20 or $email_campaign->get('Email Campaign Type')=='Newsletter' or $email_campaign->get('Email Campaign Type')=='AbandonedCart'
+                         or ($email_campaign->get('Email Campaign Type')=='Marketing')
+                         }hide{/if}">
                         <div class="square_button left  " title="{t}Set mailing list{/t}">
                             <i class="fa fa-users button discreet" id="set_mail_list_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "InProcess","dialog_name":"set_mail_list"}'
                                onclick="save_email_campaign_operation(this)"></i>
@@ -208,15 +213,9 @@
                     </div>
 
 
-
-
                 </div>
                 <span style="float:left;padding-left:10px;padding-top:5px" class="Email_Campaign_State"> {$email_campaign->get('State')} </span>
                 <div id="forward_operations">
-
-
-
-
 
 
                     <div id="compose_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Email Campaign Number Estimated Emails')==0 }hide{/if}">
@@ -340,7 +339,7 @@
                 <tr>
 
                     <td>
-                        <span ><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$email_campaign->get('Number Items')}</span></span>
+                        <span><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$email_campaign->get('Number Items')}</span></span>
                         <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " aria-hidden="true"></i> <span class="Order_Number_Items_with_Deals">{$email_campaign->get('Number Items with Deals')}</span></span>
                         <span class="error {if $email_campaign->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
                                     class="Order_Number_Items_with_Out_of_Stock">{$email_campaign->get('Number Items Out of Stock')}</span></span>
@@ -361,13 +360,13 @@
                 </div>
                 <div class="hide">
                     <label>{t}Bounces{/t}</label>
-                    <div  class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
+                    <div class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
                 </div>
-                <div >
+                <div>
                     <label>{t}Hard bounces{/t}</label>
                     <div title="{$email_campaign->get('Hard Bounces')}" class="Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</div>
                 </div>
-                <div >
+                <div>
                     <label>{t}Soft bounces{/t}</label>
                     <div title="{$email_campaign->get('Soft Bounces')}" class="Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</div>
                 </div>
@@ -401,47 +400,49 @@
             </div>
 
 
-
-
-
             <div style="clear:both"></div>
         </div>
 
         <div>
-            <label>{t}Sent{/t} <span onclick="create_second_wave_newsletter()" class="button margin_left_10 hide" style="border:1px solid #ccc;padding:3px 5px"><i class="fas fa-paper-plane discreet_on_hover"></i> {t}2nd wave{/t}</label>
+            <label>{t}Sent{/t} <span onclick="create_second_wave_newsletter()" class="button margin_left_10 hide" style="border:1px solid #ccc;padding:3px 5px"><i class="fas fa-paper-plane discreet_on_hover"></i> {t}2nd wave{/t}
+            </label>
             <div><span class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</span></div>
         </div>
         <div>
             <label>{t}Hard bounce{/t}</label>
-            <div ><span class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</span> <span class="padding_left_10 Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</span></div>
+            <div><span class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</span> <span
+                        class="padding_left_10 Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</span></div>
         </div>
         <div>
             <label>{t}Soft bounce{/t}</label>
-            <div ><span class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</span> <span class="padding_left_10 Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</span></div>
+            <div><span class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</span> <span
+                        class="padding_left_10 Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</span></div>
         </div>
         <div class="hide">
             <label>{t}Delivered{/t}</label>
-            <div ><span class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</span> <span class="padding_left_10 Email_Campaign_Delivered_Percentage">{$email_campaign->get('Delivered Percentage')}</span></div>
+            <div><span class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</span> <span class="padding_left_10 Email_Campaign_Delivered_Percentage">{$email_campaign->get('Delivered Percentage')}</span>
+            </div>
 
         </div>
 
         <div>
             <label> {t}Opened{/t}</label>
-            <div ><span class="Email_Campaign_Open">{$email_campaign->get('Open')}</span> <span class="padding_left_10 Email_Campaign_Open_Percentage">{$email_campaign->get('Open Percentage')}</span></div>
+            <div><span class="Email_Campaign_Open">{$email_campaign->get('Open')}</span> <span class="padding_left_10 Email_Campaign_Open_Percentage">{$email_campaign->get('Open Percentage')}</span></div>
 
         </div>
-        <div >
+        <div>
             <label>{t}Clicked{/t}</label>
-            <div ><span class="Email_Campaign_Clicked">{$email_campaign->get('Clicked')}</span> <span class="padding_left_10 Email_Campaign_Clicked_Percentage">{$email_campaign->get('Clicked Percentage')}</span></div>
+            <div><span class="Email_Campaign_Clicked">{$email_campaign->get('Clicked')}</span> <span class="padding_left_10 Email_Campaign_Clicked_Percentage">{$email_campaign->get('Clicked Percentage')}</span></div>
         </div>
         <div></div>
-        <div >
+        <div>
             <label>{t}Spam{/t}</label>
-            <div ><span class="Email_Campaign_Spams">{$email_campaign->get('Spams')}</span> <span class="padding_left_10 Email_Campaign_Spams_Percentage">{$email_campaign->get('Spams Percentage')}</span></div>
+            <div><span class="Email_Campaign_Spams">{$email_campaign->get('Spams')}</span> <span class="padding_left_10 Email_Campaign_Spams_Percentage">{$email_campaign->get('Spams Percentage')}</span></div>
         </div>
         <div>
             <label>{t}Unsubscribed{/t}</label>
-            <div ><span class="Email_Campaign_Unsubscribed">{$email_campaign->get('Unsubscribed')}</span> <span class="padding_left_10 Email_Campaign_Unsubscribed_Percentage">{$email_campaign->get('Unsubscribed Percentage')}</span></div>
+            <div><span class="Email_Campaign_Unsubscribed">{$email_campaign->get('Unsubscribed')}</span> <span
+                        class="padding_left_10 Email_Campaign_Unsubscribed_Percentage">{$email_campaign->get('Unsubscribed Percentage')}</span></div>
         </div>
     </div>
 
@@ -471,18 +472,68 @@
 
     }
 
-/*
-    function set_up_mailing_list(){
+    /*
+        function set_up_mailing_list(){
 
-        $('#mailshot\\.set_mail_list').removeClass('hide')
-        change_tab('email_campaign.set_mail_list')
+            $('#mailshot\\.set_mail_list').removeClass('hide')
+            change_tab('email_campaign.set_mail_list')
+
+        }
+
+    */
+
+    function toggle_set_second_wave(element) {
+
+        var icon = $(element).find('i');
+        if (icon.hasClass('wait')) {
+            return
+
+        }
+
+
+        var second_wave = 'No';
+        if (icon.hasClass('fa-toggle-off')) {
+            second_wave = 'Yes';
+
+        }
+
+
+        icon.addClass('fa-spin fa-spinner wait')
+
+
+        var form_data = new FormData();
+
+        form_data.append("tipo", 'set_second_wave')
+        form_data.append("key", $('#email_campaign').data('email_campaign_key'))
+        form_data.append("second_wave", second_wave)
+
+
+        var request = $.ajax({
+
+            url: "/ar_edit_marketing.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+        })
+
+        request.done(function (data) {
+
+            icon.removeClass('fa-spin fa-spinner wait')
+
+            if (data.state == 200) {
+
+                if (data.second_wave) {
+                    icon.removeClass('fa-toggle-off ').addClass('fa-toggle-on')
+                } else {
+                    icon.addClass('fa-toggle-off').removeClass('fa-toggle-on')
+                }
+            } else {
+
+            }
+        })
+
 
     }
 
-*/
-
-
-    function set_mailing_list(){
+    function set_mailing_list() {
 
         var form_data = new FormData();
 
@@ -494,17 +545,17 @@
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
-            if(field=='List_Name') return 1;
-            if(field=='List_Type') return 1;
+            if (field == 'List_Name') return 1;
+            if (field == 'List_Type') return 1;
 
 
             if (field_type == 'time') {
                 value = clean_time($('#' + field).val())
             } else if (field_type == 'date' || field_type == 'date_interval') {
-                if($('#' + field+'_value').val()!='') {
-                    value = $('#' + field+'_value').val() + ' ' + $('#' + field + '_time').val()
-                }else{
-                    value=''
+                if ($('#' + field + '_value').val() != '') {
+                    value = $('#' + field + '_value').val() + ' ' + $('#' + field + '_time').val()
+                } else {
+                    value = ''
                 }
             } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
                 value = sha256_digest($('#' + field).val())
@@ -526,7 +577,7 @@
                     value = 'No'
                 }
 
-            }  else if (field_type == 'elements') {
+            } else if (field_type == 'elements') {
                 var icon = $(this).find('i')
                 if (icon.hasClass('fa-check-square')) {
                     value = 'Yes'
@@ -540,7 +591,7 @@
                 if (icon.hasClass('fa-toggle-on')) {
                     value = 'Yes'
 
-                }else if (icon.hasClass('fa-toggle-off')) {
+                } else if (icon.hasClass('fa-toggle-off')) {
                     value = 'No'
 
                 } else {
@@ -554,9 +605,6 @@
             fields_data[field.replace(re, ' ')] = value
 
 
-
-
-
         });
 
 
@@ -567,14 +615,14 @@
 
         //return;
         //=====
-        form_data.append("tipo",'set_mailing_list')
+        form_data.append("tipo", 'set_mailing_list')
         form_data.append("object", $('#fields').attr('object'))
         form_data.append("key", $('#fields').attr('key'))
         form_data.append("fields_data", JSON.stringify(fields_data))
 
         var request = $.ajax({
 
-            url: "/ar_edit_marketing.php" , data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+            url: "/ar_edit_marketing.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
         })
 
@@ -629,8 +677,6 @@
             if (data.update_metadata.state_index >= 100) {
                 $('#dispatched_node').addClass('complete')
             }
-
-
 
 
         })
@@ -647,9 +693,7 @@
     }
 
 
-    function create_second_wave_newsletter(){
-
-
+    function create_second_wave_newsletter() {
 
 
         // used only for debug
@@ -659,13 +703,13 @@
 
         var form_data = new FormData();
 
-        form_data.append("tipo",'create_new_wave_newsletter')
+        form_data.append("tipo", 'create_new_wave_newsletter')
         form_data.append("object", $('#fields').attr('object'))
         form_data.append("key", $('#fields').attr('key'))
 
         var request = $.ajax({
 
-            url: "/ar_edit_marketing.php" , data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+            url: "/ar_edit_marketing.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
         })
 
@@ -720,8 +764,6 @@
             if (data.update_metadata.state_index >= 100) {
                 $('#dispatched_node').addClass('complete')
             }
-
-
 
 
         })

@@ -384,7 +384,7 @@ class Account extends DB_Table {
                 $number = 0;
 
 
-                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  `Supplier Delivery Type`='Parcel'";
+                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order' and  `Supplier Delivery Type`='Parcel'";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute();
                 if ($row = $stmt->fetch()) {
