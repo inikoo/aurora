@@ -74,7 +74,7 @@ function send_mailshot($data, $account, $editor, $db) {
     if ($mailshot->get('Email Campaign State') == 'Ready') {
 
 
-        //$mailshot->update_state('Sending');
+        $mailshot->update_state('Sending');
 
 
         include_once 'utils/new_fork.php';
