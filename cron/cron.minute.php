@@ -17,6 +17,7 @@ $time = gmdate('H:i');
 
 real_time_users_operations($db, $redis, $account);
 send_periodic_email_mailshots($time, $db, $account);
+send_second_wave_mailshots($time, $db, $account);
 
 switch ($time) {
     case '00:00':
@@ -608,6 +609,32 @@ function update_staff_attendance($db) {
     while ($row = $stmt->fetch()) {
         $staff = get_object('Staff', $row['Staff Key']);
         $staff->update_attendance();
+    }
+
+
+}
+
+function send_second_wave_mailshots($time, $db, $account) {
+
+    $sql  = "select `Email Campaign Key` from `Email Campaign Dimension` where `Email Campaign Wave Type`='Yes' and `Email Campaign Second Wave Date`<=NOW() and `Email Campaign State`='Sent' ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array()
+    );
+    while ($row = $stmt->fetch()) {
+
+       
+
+        new_housekeeping_fork(
+            'au_send_mailshots', array(
+            'type'                    => 'create_and_send_second_wave_mailshot',
+            'mailshot_key' => $row['Email Campaign Key'],
+
+        ), $account->get('Account Code')
+        );
+
+
+
     }
 
 

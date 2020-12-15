@@ -194,6 +194,15 @@ class EmailCampaign extends DB_Table {
 
         switch ($key) {
 
+            case 'Second Wave Formatted Date':
+
+                if ($this->data['Email Campaign Second Wave Date'] == '') {
+                    return '';
+                }
+
+                return strftime("%a %e %b %H:%M %Z", strtotime($this->data['Email Campaign Second Wave Date'].' +0:00'));
+
+
             case 'Metadata':
 
                 if ($this->data['Email Campaign '.$key] == '') {
@@ -556,26 +565,39 @@ class EmailCampaign extends DB_Table {
                         if ($row = $result->fetch()) {
                             $estimated_recipients = $row['num'];
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
                     break;
 
                 case 'Newsletter':
-                    $sql = sprintf(
-                        'select count(*)  as num from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove")', $this->get('Store Key')
-                    );
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
+
+
+                    if ($this->data['Email Campaign Wave Type'] == 'Wave') {
+                        $sql = "select count(*)  as num from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=? and `Email Tracking State`='Sent'  ";
+
+                        //print $sql;
+
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $this->get('Email Campaign First Wave Key')
+                            )
+                        );
+                        if ($row = $stmt->fetch()) {
                             $estimated_recipients = $row['num'];
                         }
+
                     } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
+
+                        $sql = sprintf(
+                            'select count(*)  as num from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove")',
+                            $this->get('Store Key')
+                        );
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $estimated_recipients = $row['num'];
+                            }
+                        }
                     }
 
                     break;
@@ -970,6 +992,7 @@ class EmailCampaign extends DB_Table {
 
         $operations = array();
 
+        $old_state = $this->data['Email Campaign State'];
 
         switch ($value) {
 
@@ -1209,6 +1232,14 @@ class EmailCampaign extends DB_Table {
                     )
                 );
 
+                if ($old_state == 'Sending' and $this->data['Email Campaign Second Wave Date'] != '') {
+                    $this->fast_update(
+                        [
+                            'Email Campaign Second Wave Date' => $this->get_second_wave_date()
+                        ]
+                    );
+                }
+
                 $operations = array();
 
                 break;
@@ -1266,6 +1297,26 @@ class EmailCampaign extends DB_Table {
 
     }
 
+
+    function get_second_wave_date() {
+
+        if (in_array(
+            date('D'), [
+                         'Fri',
+                         'Thu',
+                         'Sat',
+                         'Sun'
+                     ]
+        )) {
+            $second_wave_date = strtotime('next monday');
+        } else {
+            $second_wave_date = strtotime('+2 days');
+        }
+
+        return gmdate('Y-m-d H:i:s', $second_wave_date);
+
+    }
+
     function get_field_label($field) {
 
         switch ($field) {
@@ -1304,23 +1355,13 @@ class EmailCampaign extends DB_Table {
         $email_template      = get_object('email_template', $this->data['Email Campaign Email Template Key']);
 
 
-        if($this->get('Email Campaign Wave Type')=='Yes'){
-
-             if(in_array(date('D'),['Fri','Thu','Sat','Sun'])){
-                 $second_wave_date=strtotime('next monday');
-                }else{
-                 $second_wave_date=strtotime('+2 days');
-             }
+        if ($this->get('Email Campaign Wave Type') == 'Yes') {
 
 
-             //print $second_wave_date."  <---\n";
-             //print_r(['Email Campaign Second Wave Date'=>gmdate('Y-m-d H:i:s',$second_wave_date)]);
-
-            $this->fast_update(['Email Campaign Second Wave Date'=>gmdate('Y-m-d H:i:s',$second_wave_date)]);
+            $this->fast_update(['Email Campaign Second Wave Date' => $this->get_second_wave_date()]);
 
 
-        }
-;
+        };
 
         if ($this->data['Email Campaign Type'] == 'Invite Full Mailshot') {
             $recipient_type = 'Prospect';
@@ -1333,8 +1374,6 @@ class EmailCampaign extends DB_Table {
         $thread      = $first_thread;
         $thread_size = 50;
         $contador    = 0;
-
-
 
 
         if ($this->data['Email Campaign Type'] == 'Marketing') {
@@ -1546,11 +1585,21 @@ class EmailCampaign extends DB_Table {
 
             case 'Newsletter':
 
-                $sql = sprintf(
-                    'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove") ',
-                    $this->data['Email Campaign Store Key']
-                );
+                if ($this->data['Email Campaign Wave Type'] == 'Wave') {
+                    $sql = sprintf(
+                        "select `Customer Key` ,`Customer Main Plain Email`  from `Email Tracking Dimension` left join   `Customer Dimension` on (`Customer Key`=`Email Tracking Recipient Key`)  where `Customer Main Plain Email`!='' and `Customer Send Newsletter`='Yes' and   `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`='Sent' and  `Customer Type by Activity` not in ('Rejected', 'ToApprove') ",
 
+                        $this->get('Email Campaign First Wave Key')
+                    );
+
+
+                } else {
+
+                    $sql = sprintf(
+                        'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove") ',
+                        $this->data['Email Campaign Store Key']
+                    );
+                }
 
                 return $sql;
 
@@ -1765,6 +1814,65 @@ class EmailCampaign extends DB_Table {
             )
 
         );
+
+
+    }
+
+    function create_second_wave() {
+
+
+        if($this->data['Email Campaign Wave Type']=='Wave'  or $this->data['Email Campaign Wave Type']=='Sent' ){
+            return;
+        }
+
+        $email_template_type = get_object('EmailCampaignType', $this->get('Email Campaign Email Template Type Key'));
+
+        $second_wave_mailshot = $email_template_type->create_mailshot(
+            array(
+                'Email Campaign Name' => $this->get('Email Campaign Name').' ('._('2nd wave').')',
+
+
+            )
+        );
+
+        $second_wave_mailshot->fast_update(
+            array(
+                'Email Campaign First Wave Key'     => $this->id,
+                'Email Campaign Wave Type'          => 'Wave',
+                'Email Campaign Email Template Key' => $this->data['Email Campaign Email Template Key'],
+                'Email Campaign State'              => 'Ready',
+                'Email Campaign Setup Date'         => gmdate('Y-m-d H:i:s'),
+                'Email Campaign Composed Date'      => gmdate('Y-m-d H:i:s'),
+            )
+        );
+
+
+
+        $this->fast_update(
+            [
+                'Email Campaign Second Wave Key' => $second_wave_mailshot->id,
+                'Email Campaign Wave Type'       => 'Sent'
+            ]
+        );
+
+        $second_wave_mailshot->update_estimated_recipients();
+
+        $second_wave_mailshot->update_state('Sending');
+
+
+        include_once 'utils/new_fork.php';
+
+
+        new_housekeeping_fork(
+            'au_send_mailshots', array(
+            'type'         => 'send_mailshot',
+            'mailshot_key' => $second_wave_mailshot->id,
+            'editor'      => $this->editor
+
+        ), DNS_ACCOUNT_CODE
+        );
+
+
 
 
     }

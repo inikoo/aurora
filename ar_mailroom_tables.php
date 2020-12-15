@@ -1326,6 +1326,10 @@ function mailshots($_data, $db, $user) {
             );
 
 
+            if($data['Email Campaign Wave Type']=='Wave'){
+                $name.=' <span style="font-size: x-small">2nd <i class="fal fa-water"></i></span>';
+            }
+
             $adata[] = array(
                 'id' => (integer)$data['Email Campaign Key'],
 

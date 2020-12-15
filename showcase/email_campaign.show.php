@@ -25,6 +25,10 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
     //$email_campaign->update_sent_emails_totals();
 
+    //$email_campaign->create_second_wave();
+
+
+    //$email_campaign->send_mailshot();
 
 
     $smarty->assign('email_campaign', $email_campaign);
@@ -43,6 +47,13 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
                          )
 
     );
+
+
+    if($email_campaign->get('Email Campaign Wave Type')=='Sent'){
+
+        $smarty->assign('second_wave', get_object('mailshot', $email_campaign->get('Email Campaign Second Wave Key')));
+
+    }
 
 
     switch ($email_campaign->get('Email Campaign Type')) {

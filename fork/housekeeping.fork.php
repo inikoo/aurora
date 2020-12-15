@@ -1846,24 +1846,6 @@ function fork_housekeeping($job) {
             break;
 
 
-        case 'create_and_send_mailshot':
-
-
-            $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
-            $email_campaign      = $email_template_type->create_mailshot();
-
-            if (is_object($email_campaign) and $email_campaign->id) {
-                $email_campaign->update_state('ComposingEmail');
-                $email_campaign->update_state('Ready');
-                $email_campaign->update_estimated_recipients();
-
-                $email_campaign->update_state('Sending');
-
-                $email_campaign->send_mailshot();
-            }
-
-
-            break;
 
         case 'delivery_note_packed_done':
 
