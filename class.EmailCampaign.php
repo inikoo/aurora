@@ -118,7 +118,12 @@ class EmailCampaign extends DB_Table {
             return;
         }
 
-        $data['Email Campaign Metadata'] = '{}';
+
+
+        if(empty($data['Email Campaign Metadata'])){
+            $data['Email Campaign Metadata'] = '{}';
+        }
+
 
         $data['Email Campaign Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Email Campaign Last Updated Date'] = gmdate('Y-m-d H:i:s');
