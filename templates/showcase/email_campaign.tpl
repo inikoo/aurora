@@ -419,51 +419,60 @@
             <label>{t}Sent{/t}
             </label>
             <div><span class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span style="font-weight: normal;font-size: xx-small">{t}2nd{/t} <i class="fal fa-water"></i></span> <span class="Second_Wave_Sent">{$second_wave->get('Sent')}</span></div>
+            {if isset($second_wave)}
+            <div><span style="font-weight: normal;font-size: xx-small">{t}2nd{/t} <i class="fal fa-water"></i></span> <span class="Second_Wave_Sent">{$second_wave->get('Sent')}</span></div>
+            {/if}
         </div>
         <div>
             <label>{t}Hard bounce{/t}</label>
             <div><span class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</span> <span class="padding_left_10 Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span class="Second_Wave_Hard_Bounce">{$second_wave->get('Hard Bounces')}</span> <span class="padding_left_10 Second_Wave_Hard_Bounces_Percentage">{$second_wave->get('Hard Bounces Percentage')}</span></div>
-
+            {if isset($second_wave)}
+            <div><span class="Second_Wave_Hard_Bounce">{$second_wave->get('Hard Bounces')}</span> <span class="padding_left_10 Second_Wave_Hard_Bounces_Percentage">{$second_wave->get('Hard Bounces Percentage')}</span></div>
+            {/if}
         </div>
         <div>
             <label>{t}Soft bounce{/t}</label>
             <div><span class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</span> <span class="padding_left_10 Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span class="Second_Wave_Soft_Bounce">{$second_wave->get('Soft Bounces')}</span> <span class="padding_left_10 Second_Wave_Soft_Bounces_Percentage">{$second_wave->get('Soft Bounces Percentage')}</span></div>
-
+            {if isset($second_wave)}
+            <div><span class="Second_Wave_Soft_Bounce">{$second_wave->get('Soft Bounces')}</span> <span class="padding_left_10 Second_Wave_Soft_Bounces_Percentage">{$second_wave->get('Soft Bounces Percentage')}</span></div>
+            {/if}
         </div>
         <div class="hide">
             <label>{t}Delivered{/t}</label>
             <div><span class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</span> <span class="padding_left_10 Email_Campaign_Delivered_Percentage">{$email_campaign->get('Delivered Percentage')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span class="Second_Wave_Delivered">{$second_wave->get('Delivered')}</span> <span class="padding_left_10 Second_Wave_Delivered_Percentage">{$second_wave->get('Delivered Percentage')}</span></div>
-
+            {if isset($second_wave)}
+            <div><span class="Second_Wave_Delivered">{$second_wave->get('Delivered')}</span> <span class="padding_left_10 Second_Wave_Delivered_Percentage">{$second_wave->get('Delivered Percentage')}</span></div>
+            {/if}
         </div>
 
         <div>
             <label> {t}Opened{/t}</label>
             <div><span class="Email_Campaign_Open">{$email_campaign->get('Open')}</span> <span class="padding_left_10 Email_Campaign_Open_Percentage">{$email_campaign->get('Open Percentage')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span class="Second_Wave_Open">{$second_wave->get('Open')}</span> <span class="padding_left_10 Second_Wave_Open_Percentage">{$second_wave->get('Open Percentage')}</span></div>
-
+            {if isset($second_wave)}
+            <div><span class="Second_Wave_Open">{$second_wave->get('Open')}</span> <span class="padding_left_10 Second_Wave_Open_Percentage">{$second_wave->get('Open Percentage')}</span></div>
+            {/if}
         </div>
         <div>
             <label>{t}Clicked{/t}</label>
             <div><span class="Email_Campaign_Clicked">{$email_campaign->get('Clicked')}</span> <span class="padding_left_10 Email_Campaign_Clicked_Percentage">{$email_campaign->get('Clicked Percentage')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span class="Second_Wave_Clicked">{$second_wave->get('Clicked')}</span> <span class="padding_left_10 Second_Wave_Clicked_Percentage">{$second_wave->get('Clicked Percentage')}</span></div>
-
+            {if isset($second_wave)}
+            <div><span class="Second_Wave_Clicked">{$second_wave->get('Clicked')}</span> <span class="padding_left_10 Second_Wave_Clicked_Percentage">{$second_wave->get('Clicked Percentage')}</span></div>
+            {/if}
         </div>
 
         <div>
             <label>{t}Spam{/t}</label>
             <div><span class="Email_Campaign_Spams">{$email_campaign->get('Spams')}</span> <span class="padding_left_10 Email_Campaign_Spams_Percentage">{$email_campaign->get('Spams Percentage')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span class="Second_Wave_Spams">{$second_wave->get('Spams')}</span> <span class="padding_left_10 Second_Wave_Spams_Percentage">{$second_wave->get('Spams Percentage')}</span></div>
-
+            {if isset($second_wave)}
+            <div><span class="Second_Wave_Spams">{$second_wave->get('Spams')}</span> <span class="padding_left_10 Second_Wave_Spams_Percentage">{$second_wave->get('Spams Percentage')}</span></div>
+            {/if}
         </div>
         <div>
             <label>{t}Unsubscribed{/t}</label>
             <div><span class="Email_Campaign_Unsubscribed">{$email_campaign->get('Unsubscribed')}</span> <span class="padding_left_10 Email_Campaign_Unsubscribed_Percentage">{$email_campaign->get('Unsubscribed Percentage')}</span></div>
-            <div class="{if !isset($second_wave)}hide{/if}"><span class="Second_Wave_Unsubscribed">{$second_wave->get('Unsubscribed')}</span> <span class="padding_left_10 Second_Wave_Unsubscribed_Percentage">{$second_wave->get('Unsubscribed Percentage')}</span></div>
-
+            {if isset($second_wave)}
+            <div><span class="Second_Wave_Unsubscribed">{$second_wave->get('Unsubscribed')}</span> <span class="padding_left_10 Second_Wave_Unsubscribed_Percentage">{$second_wave->get('Unsubscribed Percentage')}</span></div>
+            {/if}
         </div>
     </div>
 
