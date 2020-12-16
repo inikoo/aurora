@@ -2105,7 +2105,10 @@ class DeliveryNote extends DB_Table {
 
         if ($old_state != $this->get('Delivery Note State')) {
             $this->fork_index_elastic_search();
+            return true;
         }
+
+        return false;
 
     }
 

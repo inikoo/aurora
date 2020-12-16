@@ -363,7 +363,7 @@ switch ($tipo) {
 
                      )
         );
-        set_orders_as_dispatched($data, $editor);
+        set_orders_as_dispatched($db,$data, $editor);
         break;
     default:
         $response = array(
@@ -375,17 +375,30 @@ switch ($tipo) {
         break;
 }
 
-function set_orders_as_dispatched($data, $editor) {
+function set_orders_as_dispatched($db,$data, $editor) {
 
-    $number_updated=0;
+    $number_updated = 0;
     foreach ($data['order_keys'] as $order_key) {
-        $order         = get_object('Order', $order_key);
-        $order->editor = $editor;
+
+        $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`='Approved'  ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $order_key
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $dn         = get_object('Deliver_Note', $row['Delivery Note Key']);
+            $dn->editor = $editor;
 
 
-        if ($order->update_state('Dispatched')) {
-            $number_updated++;
+            if ($dn->update_state('Dispatched')) {
+                $number_updated++;
+            }
         }
+
+
+
 
     }
 
@@ -397,9 +410,7 @@ function set_orders_as_dispatched($data, $editor) {
         $html = '';
     }
 
-    $html .= ' '.number($number_updated).' '.ngettext('order set as dispatched', 'orders sent as dispached', $number_updated);
-
-
+    $html .= ' '.number($number_updated).' '.ngettext('order set as dispatched', 'orders set as dispatched', $number_updated);
 
 
     $response = array(
