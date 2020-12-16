@@ -23,7 +23,7 @@ renderable: false
 name: "checked",
 label:'',
 html_label: '',
-renderable: false,
+renderable: true,
 headerCell: HeaderHtmlCell,
 editable: false,
 sortable: false,

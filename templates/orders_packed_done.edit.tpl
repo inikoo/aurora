@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 13 February 2017 at 14:41:49 GMT+8, Cyberjaya, Malaysia
+ Created: 6:15 pm Wednesday, 16 December 2020 (MYT) Kuela Lumpur
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -20,7 +20,7 @@
 
     <div style="text-align: left;margin-left:20px" class="orders_operations ">
 
-        <span class="send_orders_to_warehouse orders_operation orders_op super_discreet" data-type="send_orders_to_warehouse"><i class="fas fa-fw fa-dolly-flatbed-alt "  ></i> {t}Send orders to warehouse{/t}</span>
+        <span class="approve_orders orders_operation orders_op super_discreet" data-type="approve_orders"><i class="fal fa-file-invoice-dollar   "  ></i> {t}Invoice orders{/t}</span>
         <span class="msg orders_operations_msg"></span>
     </div>
 

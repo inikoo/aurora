@@ -21,7 +21,7 @@
     <div style="text-align: left;margin-left:20px" class="orders_operations ">
 
         <span class="set_orders_as_dispatched orders_operation orders_op super_discreet" data-type="set_orders_as_dispatched"><i class="fas fa-fw fa-paper-plane "  ></i> {t}Set as dispatched{/t}</span>
-        <span class="msg set_orders_as_dispatched_msg"></span>
+        <span class="msg orders_operations_msg"></span>
     </div>
 
 </div>

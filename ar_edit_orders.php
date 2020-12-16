@@ -365,6 +365,20 @@ switch ($tipo) {
         );
         set_orders_as_dispatched($db,$data, $editor);
         break;
+
+    case 'approve_orders':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'order_keys' => array('type' => 'json array'),
+
+                     )
+        );
+        approve_orders($data, $editor);
+        break;
+
+
+
     default:
         $response = array(
             'state' => 405,
@@ -373,6 +387,41 @@ switch ($tipo) {
         echo json_encode($response);
 
         break;
+}
+
+
+function approve_orders($data, $editor) {
+
+    $number_updated=0;
+    foreach ($data['order_keys'] as $order_key) {
+        $order         = get_object('Order', $order_key);
+        $order->editor = $editor;
+
+
+        if ($order->update_state('Approved')) {
+            $number_updated++;
+        }
+
+    }
+
+
+    if ($number_updated > 0) {
+        $html = '<i class="fa fa-check success padding_left_5"></i>';
+
+    } else {
+        $html = '';
+    }
+
+    $html .= ' '.number($number_updated).' '.ngettext('order invoiced', 'orders invoiced', $number_updated);
+
+
+    $response = array(
+        'state' => 200,
+        'msg'   => $html
+    );
+    echo json_encode($response);
+
+
 }
 
 function set_orders_as_dispatched($db,$data, $editor) {

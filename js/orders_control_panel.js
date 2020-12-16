@@ -80,6 +80,7 @@ $(function () {
         switch ($(this).data('type')) {
             case 'send_orders_to_warehouse':
             case 'set_orders_as_dispatched':
+            case 'approve_orders':
                 var form_data = new FormData();
 
                 form_data.append("tipo", $(this).data('type'))
@@ -102,7 +103,7 @@ $(function () {
 
                         $('.orders_operations .orders_operation').addClass('super_discreet').removeClass('button').find('i').removeClass('invisible wait fa-spin fa-spinner');
 
-                        $('.send_orders_to_warehouse_msg').html(data.msg)
+                        $('.orders_operations_msg').html(data.msg)
 
                         rows.fetch({reset: true});
 
