@@ -374,7 +374,7 @@ switch ($tipo) {
 
                      )
         );
-        approve_orders($data, $editor);
+        approve_orders($db,$data, $editor);
         break;
 
 
@@ -390,17 +390,44 @@ switch ($tipo) {
 }
 
 
-function approve_orders($data, $editor) {
+function approve_orders($db,$data, $editor) {
 
     $number_updated=0;
     foreach ($data['order_keys'] as $order_key) {
         $order         = get_object('Order', $order_key);
         $order->editor = $editor;
 
+        if($order->get('Order State')=='PackedDone'){
+            if ($order->update_state('Approved')) {
+                $number_updated++;
+            }
+        }else{
+            $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`='Packed Done' and `Delivery Note Type`  
+                                                                                                                                            
+                                                                        in ('Replacement & Shortages','Replacement','Shortages')  ";
 
-        if ($order->update_state('Approved')) {
-            $number_updated++;
+
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $order_key
+                )
+            );
+            while ($row = $stmt->fetch()) {
+
+                 $order->update(array('Replacement State' => 'Replacement Approved'), '', '{"Delivery Note Key":"'.$row['Delivery Note Key'].'"}');
+
+                if ($order->updated) {
+                    $number_updated++;
+                }
+            }
+
+
         }
+
+
+
 
     }
 
