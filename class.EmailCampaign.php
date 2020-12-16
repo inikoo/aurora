@@ -119,8 +119,7 @@ class EmailCampaign extends DB_Table {
         }
 
 
-
-        if(empty($data['Email Campaign Metadata'])){
+        if (empty($data['Email Campaign Metadata'])) {
             $data['Email Campaign Metadata'] = '{}';
         }
 
@@ -205,7 +204,7 @@ class EmailCampaign extends DB_Table {
                     return '';
                 }
 
-                return strftime("%a %e %b %H:%M %Z", strtotime($this->data['Email Campaign Second Wave Date'].' +0:00'));
+                return '<i class="fal fa-stopwatch"></i> '.strftime("%a %e %b %H:%M %Z", strtotime($this->data['Email Campaign Second Wave Date'].' +0:00'));
 
 
             case 'Metadata':
@@ -225,28 +224,27 @@ class EmailCampaign extends DB_Table {
                 switch ($this->data['Email Campaign State']) {
                     case 'InProcess':
                         return 10;
-                        break;
+
                     case 'ComposingEmail':
                         return 20;
-                        break;
+
                     case 'Ready':
                         return 30;
-                        break;
+
                     case 'Scheduled':
                         return 40;
-                        break;
+
                     case 'Sending':
                         return 50;
-                        break;
+
                     case 'Stopped':
                         return 60;
-                        break;
+
                     case 'Cancelled':
                         return 70;
-                        break;
+
                     case 'Sent':
                         return 100;
-                        break;
 
 
                     default:
@@ -653,75 +651,94 @@ class EmailCampaign extends DB_Table {
                     break;
                 case 'Marketing':
 
-                    include_once 'utils/asset_marketing_customers.php';
 
 
-                    switch ($this->data['Email Campaign Scope']) {
-                        case 'Customer_List':
+                    if ($this->data['Email Campaign Wave Type'] == 'Wave') {
+                        $sql = "select count(*)  as num from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=? and `Email Tracking State`='Sent'  ";
 
-                            $list = get_object('List', $this->data['Email Campaign Scope Key']);
+                        //print $sql;
 
-                            $estimated_recipients = $list->get('Number Items');
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $this->get('Email Campaign First Wave Key')
+                            )
+                        );
+                        if ($row = $stmt->fetch()) {
+                            $estimated_recipients = $row['num'];
+                        }
 
-                            break;
-                        case 'Product Targeted':
+                    } else {
 
-                            $product = get_object('Product', $this->data['Email Campaign Scope Key']);
-                            if ($product->properties('targeted_marketing_customers') == '' or $product->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
-                                $product->update_product_targeted_marketing_customers();
-                            }
-                            $estimated_recipients = $product->properties('targeted_marketing_customers');
-
-                            break;
-                        case 'Product Wide':
-
-                            $product = get_object('Product', $this->data['Email Campaign Scope Key']);
-                            if ($product->properties('spread_marketing_customers') == '' or $product->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
-                                $product->update_product_spread_marketing_customers();
-                            }
-                            $estimated_recipients = $product->properties('spread_marketing_customers');
-
-                            break;
-                        case 'Product Donut':
-
-                            $product = get_object('Product', $this->data['Email Campaign Scope Key']);
-                            if ($product->properties('donut_marketing_customers') == '' or $product->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
-                                $product->update_product_donut_marketing_customers();
-                            }
-                            $estimated_recipients = $product->properties('donut_marketing_customers');
+                        include_once 'utils/asset_marketing_customers.php';
 
 
-                            break;
-                        case 'Category Targeted':
+                        switch ($this->data['Email Campaign Scope']) {
+                            case 'Customer_List':
 
-                            $category = get_object('Category', $this->data['Email Campaign Scope Key']);
-                            if ($category->properties('targeted_marketing_customers') == '' or $category->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
-                                $category->update_product_category_targeted_marketing_customers();
-                            }
-                            $estimated_recipients = $category->properties('targeted_marketing_customers');
-                            break;
+                                $list = get_object('List', $this->data['Email Campaign Scope Key']);
 
-                        case 'Category Wide':
+                                $estimated_recipients = $list->get('Number Items');
 
-                            $category = get_object('Category', $this->data['Email Campaign Scope Key']);
-                            if ($category->properties('spread_marketing_customers') == '' or $category->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
-                                $category->update_product_category_spread_marketing_customers();
-                            }
-                            $estimated_recipients = $category->properties('spread_marketing_customers');
+                                break;
+                            case 'Product Targeted':
 
-                            break;
-                        case 'Category Donut':
+                                $product = get_object('Product', $this->data['Email Campaign Scope Key']);
+                                if ($product->properties('targeted_marketing_customers') == '' or $product->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
+                                    $product->update_product_targeted_marketing_customers();
+                                }
+                                $estimated_recipients = $product->properties('targeted_marketing_customers');
 
-                            $category = get_object('Category', $this->data['Email Campaign Scope Key']);
-                            if ($category->properties('donut_marketing_customers') == '' or $category->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
-                                $category->update_product_category_donut_marketing_customers();
-                            }
-                            $estimated_recipients = $category->properties('donut_marketing_customers');
+                                break;
+                            case 'Product Wide':
 
-                            break;
+                                $product = get_object('Product', $this->data['Email Campaign Scope Key']);
+                                if ($product->properties('spread_marketing_customers') == '' or $product->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
+                                    $product->update_product_spread_marketing_customers();
+                                }
+                                $estimated_recipients = $product->properties('spread_marketing_customers');
+
+                                break;
+                            case 'Product Donut':
+
+                                $product = get_object('Product', $this->data['Email Campaign Scope Key']);
+                                if ($product->properties('donut_marketing_customers') == '' or $product->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
+                                    $product->update_product_donut_marketing_customers();
+                                }
+                                $estimated_recipients = $product->properties('donut_marketing_customers');
+
+
+                                break;
+                            case 'Category Targeted':
+
+                                $category = get_object('Category', $this->data['Email Campaign Scope Key']);
+                                if ($category->properties('targeted_marketing_customers') == '' or $category->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
+                                    $category->update_product_category_targeted_marketing_customers();
+                                }
+                                $estimated_recipients = $category->properties('targeted_marketing_customers');
+                                break;
+
+                            case 'Category Wide':
+
+                                $category = get_object('Category', $this->data['Email Campaign Scope Key']);
+                                if ($category->properties('spread_marketing_customers') == '' or $category->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
+                                    $category->update_product_category_spread_marketing_customers();
+                                }
+                                $estimated_recipients = $category->properties('spread_marketing_customers');
+
+                                break;
+                            case 'Category Donut':
+
+                                $category = get_object('Category', $this->data['Email Campaign Scope Key']);
+                                if ($category->properties('donut_marketing_customers') == '' or $category->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
+                                    $category->update_product_category_donut_marketing_customers();
+                                }
+                                $estimated_recipients = $category->properties('donut_marketing_customers');
+
+                                break;
+                        }
+
                     }
-
-
                     break;
 
                 case 'Invite Full Mailshot':
@@ -1305,6 +1322,7 @@ class EmailCampaign extends DB_Table {
 
     function get_second_wave_date() {
 
+
         if (in_array(
             date('D'), [
                          'Fri',
@@ -1317,6 +1335,13 @@ class EmailCampaign extends DB_Table {
         } else {
             $second_wave_date = strtotime('+2 days');
         }
+
+
+        if ($this->data['Email Campaign State'] == 'Sent' and ($second_wave_date < strtotime('now'))) {
+            $second_wave_date = strtotime('+1 hour');
+
+        }
+
 
         return gmdate('Y-m-d H:i:s', $second_wave_date);
 
@@ -1674,30 +1699,42 @@ class EmailCampaign extends DB_Table {
                 return $sql;
 
             case 'Marketing':
-                $metadata = $this->get('Metadata');
+
+                if ($this->data['Email Campaign Wave Type'] == 'Wave') {
+                    $sql = sprintf(
+                        "select `Customer Key` ,`Customer Main Plain Email`  from `Email Tracking Dimension` left join   `Customer Dimension` on (`Customer Key`=`Email Tracking Recipient Key`)  where `Customer Main Plain Email`!='' and `Customer Send Newsletter`='Yes' and   `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`='Sent' and  `Customer Type by Activity` not in ('Rejected', 'ToApprove') ",
+
+                        $this->get('Email Campaign First Wave Key')
+                    );
+                    return $sql;
+
+                } else {
 
 
-                if (isset($metadata['type'])) {
-                    switch ($metadata['type']) {
-                        case 'awhere':
-                            include_once 'utils/parse_customer_list.php';
-
-                            list($table, $where, $group_by) = parse_customer_list($metadata['fields'], $this->db);
-
-                            $where = sprintf(' where `Customer Store Key`=%d ', $this->get('Store Key')).$where.' and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" ';
-
-                            $sql = "select C.`Customer Key` ,`Customer Main Plain Email` from $table  $where ";
+                    $metadata = $this->get('Metadata');
 
 
-                            return $sql;
+                    if (isset($metadata['type'])) {
+                        switch ($metadata['type']) {
+                            case 'awhere':
+                                include_once 'utils/parse_customer_list.php';
+
+                                list($table, $where, $group_by) = parse_customer_list($metadata['fields'], $this->db);
+
+                                $where = sprintf(' where `Customer Store Key`=%d ', $this->get('Store Key')).$where.' and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" ';
+
+                                $sql = "select C.`Customer Key` ,`Customer Main Plain Email` from $table  $where ";
 
 
-                        default:
-                            break;
+                                return $sql;
+
+
+                            default:
+                                break;
+                        }
                     }
+
                 }
-
-
                 break;
 
 
@@ -1826,7 +1863,7 @@ class EmailCampaign extends DB_Table {
     function create_second_wave() {
 
 
-        if($this->data['Email Campaign Wave Type']=='Wave'  or $this->data['Email Campaign Wave Type']=='Sent' ){
+        if ($this->data['Email Campaign Wave Type'] == 'Wave' or $this->data['Email Campaign Wave Type'] == 'Sent') {
             return;
         }
 
@@ -1852,7 +1889,6 @@ class EmailCampaign extends DB_Table {
         );
 
 
-
         $this->fast_update(
             [
                 'Email Campaign Second Wave Key' => $second_wave_mailshot->id,
@@ -1872,12 +1908,37 @@ class EmailCampaign extends DB_Table {
             'au_send_mailshots', array(
             'type'         => 'send_mailshot',
             'mailshot_key' => $second_wave_mailshot->id,
-            'editor'      => $this->editor
+            'editor'       => $this->editor
 
         ), DNS_ACCOUNT_CODE
         );
 
 
+    }
+
+    function can_create_second_wave() {
+        $can_create_second_wave = false;
+
+        if (in_array(
+                $this->get('Email Campaign Type'), [
+                'Newsletter',
+                'Marketing'
+            ]
+            ) and $this->data['Email Campaign Wave Type'] != 'Wave') {
+
+
+            $can_create_second_wave = true;
+
+            if ($this->data['Email Campaign State'] == 'Sent' and (strtotime($this->data['Email Campaign End Send Date']) < strtotime('now -4 days'))) {
+                $can_create_second_wave = false;
+
+            }
+
+
+        }
+
+
+        return $can_create_second_wave;
 
 
     }

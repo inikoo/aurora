@@ -135,17 +135,17 @@
                 <span class="_Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
             </div>
 
-            {if $email_campaign->get('Email Campaign Type')=='Newsletter'}
 
 
-                {$email_campaign->get('Email Campaign Wave Type')}
-            {if $email_campaign->get('Email Campaign Wave Type')!='Wave' }
+
+
+            {if $email_campaign->can_create_second_wave() }
 
             <div class="second_wave_option small" style="margin-top: 10px">
                 <span onClick="toggle_set_second_wave(this)" class="button"><span class="_Second_Wave_Option">{t}2nd wave{/t} <i
                                 class="button far {if  $email_campaign->get('Email Campaign Wave Type')=='Yes'} fa-toggle-on {else}  fa-toggle-off{/if}"></i></span></span>
             </div>
-                {/if}
+
             {/if}
 
             <div style="clear:both"></div>
@@ -407,9 +407,17 @@
             </div>
 
 
-            <div class="second_wave_info small {if $email_campaign->get('Email Campaign Wave Type')!='Yes' or $email_campaign->get('Email Campaign Second Wave Date')==''}hide{/if}  " style="margin-top: 10px;font-weight:normal"  >
-                {t}2nd wave{/t}<br> {$email_campaign->get('Second Wave Formatted Date')}
-              </div>
+
+                <div class="second_wave_option small  {if !$email_campaign->can_create_second_wave()}hide{/if}   " style="margin-top: 10px">
+                <span onClick="toggle_set_second_wave(this)" class="button"><span class="_Second_Wave_Option">{t}2nd wave{/t} <i
+                                class="button far {if  $email_campaign->get('Email Campaign Wave Type')=='Yes'} fa-toggle-on {else}  fa-toggle-off{/if}"></i></span></span>
+                </div>
+
+
+            <div class="second_wave_info small {if $email_campaign->get('Email Campaign Wave Type')!='Yes' or $email_campaign->get('Email Campaign Second Wave Date')==''}hide{/if}  " style="margin-top: 4px;font-weight:normal"  >
+                 {$email_campaign->get('Second Wave Formatted Date')}
+            </div>
+
 
 
             <div style="clear:both"></div>
@@ -550,10 +558,14 @@
 
             if (data.state == 200) {
 
-                if (data.second_wave) {
+                if (data.second_wave=='Yes') {
                     icon.removeClass('fa-toggle-off ').addClass('fa-toggle-on')
+                    $('.second_wave_info').removeClass('hide').html(data.second_wave_date)
+
+
                 } else {
                     icon.addClass('fa-toggle-off').removeClass('fa-toggle-on')
+                    $('.second_wave_info').addClass('hide').html(data.second_wave_date)
                 }
             } else {
 

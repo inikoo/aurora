@@ -150,17 +150,27 @@ function set_second_wave($account, $db, $user, $editor, $data) {
     }
 
 
-    if ($mailshot->get('State Index') <= 30) {
+    if ($mailshot->can_create_second_wave() ) {
 
 
         $mailshot->fast_update(
             ['Email Campaign Wave Type'=> $second_wave]);
 
 
+        if($mailshot->get('Email Campaign State')=='Sent'){
+            $mailshot->fast_update(
+                [
+                    'Email Campaign Second Wave Date' => $mailshot->get_second_wave_date()
+                ]
+            );
+        }
+
+
 
         $response = array(
             'state'       => 200,
-            'second_wave' => $second_wave
+            'second_wave' => $second_wave,
+            'second_wave_date'=>$mailshot->get('Second Wave Formatted Date')
         );
         echo json_encode($response);
         exit;
