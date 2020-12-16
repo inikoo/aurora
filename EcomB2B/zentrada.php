@@ -75,14 +75,24 @@ $stmt->execute(
         $website->get('Website Store Key')
     )
 );
+
+
+
 while ($row = $stmt->fetch()) {
+    $short_product_description=$row['Product Published Webpage Description'];
+    $short_product_description = trim(preg_replace('/\s\s+/', ' ', $short_product_description));
+
+    $short_product_description=str_replace("\r\n"," ",$short_product_description);
+    $short_product_description=str_replace("\n"," ",$short_product_description);
+
+
     $data[] = [
         'market_place_allocation'      => 'EU',
         'item_number'                  => $row['Product Code'],
         'ean_code'                     => '',
         'ean_ve'                       => '',
         'product_description'          => $row['Product Name'],
-        'short_product_description'    => $row['Product Published Webpage Description'],
+        'short_product_description'    => ($short_product_description==''?$row['Product Name']:$short_product_description),
         'detailed_product_description' => '',
         'brand_name'                   => '',
         'image'=>$row['img1'],
@@ -132,7 +142,7 @@ function outputCsv($fileName, $assocDataArray) {
         $fp = fopen('php://output', 'w');
         fputcsv($fp, array_keys($assocDataArray['0']));
         foreach ($assocDataArray as $values) {
-            fputcsv($fp, $values);
+            fputcsv($fp, $values,';');
         }
         fclose($fp);
     }
