@@ -388,7 +388,7 @@ function set_orders_as_dispatched($db,$data, $editor) {
             )
         );
         while ($row = $stmt->fetch()) {
-            $dn         = get_object('Deliver_Note', $row['Delivery Note Key']);
+            $dn         = get_object('Delivery_Note', $row['Delivery Note Key']);
             $dn->editor = $editor;
 
 
