@@ -79,9 +79,10 @@ $(function () {
 
         switch ($(this).data('type')) {
             case 'send_orders_to_warehouse':
+            case 'set_orders_as_dispatched':
                 var form_data = new FormData();
 
-                form_data.append("tipo", 'send_orders_to_warehouse')
+                form_data.append("tipo", $(this).data('type'))
                 form_data.append("order_keys", JSON.stringify(order_keys))
 
 

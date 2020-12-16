@@ -355,6 +355,16 @@ switch ($tipo) {
         );
         send_orders_to_warehouse($data, $editor, $smarty);
         break;
+    case 'set_orders_as_dispatched':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'order_keys' => array('type' => 'json array'),
+
+                     )
+        );
+        set_orders_as_dispatched($data, $editor);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -365,6 +375,41 @@ switch ($tipo) {
         break;
 }
 
+function set_orders_as_dispatched($data, $editor) {
+
+    $number_updated=0;
+    foreach ($data['order_keys'] as $order_key) {
+        $order         = get_object('Order', $order_key);
+        $order->editor = $editor;
+
+
+        if ($order->update_state('Dispatched')) {
+            $number_updated++;
+        }
+
+    }
+
+
+    if ($number_updated > 0) {
+        $html = '<i class="fa fa-check success  padding_left_5"></i>';
+
+    } else {
+        $html = '';
+    }
+
+    $html .= ' '.number($number_updated).' '.ngettext('order set as dispatched', 'orders sent as dispached', $number_updated);
+
+
+
+
+    $response = array(
+        'state' => 200,
+        'msg'   => $html
+    );
+    echo json_encode($response);
+
+
+}
 
 function send_orders_to_warehouse($data, $editor, $smarty) {
 
