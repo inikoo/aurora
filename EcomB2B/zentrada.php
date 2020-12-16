@@ -140,7 +140,7 @@ function outputCsv($fileName, $assocDataArray) {
     header('Content-Disposition: attachment;filename='.$fileName);
     if (isset($assocDataArray['0'])) {
         $fp = fopen('php://output', 'w');
-        fputcsv($fp, array_keys($assocDataArray['0']));
+        fputcsv($fp, array_keys($assocDataArray['0']),';');
         foreach ($assocDataArray as $values) {
             fputcsv($fp, $values,';');
         }
