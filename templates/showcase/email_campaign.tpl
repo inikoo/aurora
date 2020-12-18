@@ -563,9 +563,19 @@
                     $('.second_wave_info').removeClass('hide').html(data.second_wave_date)
 
 
+                    $('#Email_Campaign_Second_Wave_Subject_field').removeClass('hide')
+
+                    $('.second_wave_fld_tr').removeClass('hide')
+
                 } else {
                     icon.addClass('fa-toggle-off').removeClass('fa-toggle-on')
                     $('.second_wave_info').addClass('hide').html(data.second_wave_date)
+
+                    $('#Email_Campaign_Second_Wave_Subject_field').addClass('hide')
+
+                    $('.second_wave_fld_tr').addClass('hide')
+
+
                 }
             } else {
 

@@ -47,14 +47,15 @@ $object_fields[] = array(
 
 
 $object_fields[] = array(
-    'label'      => _('Second Wave'),
-    'show_title' => true,
-    'fields'     => array(
+    'label'  => _('Second Wave'),
+    'class'  => 'second_wave_fld_tr '.($object->get('Email Campaign Wave Type') == 'Yes' ? '' : 'hide'),
+    'fields' => array(
 
-
+//
         array(
             'edit'            => ($edit ? 'string' : ''),
             'id'              => 'Email_Campaign_Second_Wave_Subject',
+            'render'          => ($object->get('Email Campaign Wave Type') == 'Yes' ? true : false),
             'value'           => $object->get('Email Campaign Second Wave Subject'),
             'formatted_value' => $object->get('Second Wave Subject'),
 
