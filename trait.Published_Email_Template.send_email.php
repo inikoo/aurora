@@ -41,7 +41,7 @@ trait Send_Email {
 
 
         if ($this->email_template_type->id) {
-            if (  $this->email_template_type->get('Email Campaign Type Scope')!='Marketing' and  $this->email_template_type->get('Email Campaign Type Status') != 'Active') {
+            if ($this->email_template_type->get('Email Campaign Type Scope') != 'Marketing' and $this->email_template_type->get('Email Campaign Type Status') != 'Active') {
                 $this->error = true;
                 $this->msg   = 'Email Campaign Type Status not active '.$this->email_template_type->id;
 
@@ -147,10 +147,9 @@ trait Send_Email {
         $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
 
 
-
-        if(ENVIRONMENT=='DEVEL'){
+        if (ENVIRONMENT == 'DEVEL') {
             $to_address = DEVEL_EMAIL;
-        }else{
+        } else {
             $to_address = $recipient->get('Main Plain Email');
         }
 
@@ -166,7 +165,7 @@ trait Send_Email {
             $send_raw = false;
         }
 
-        $subject   = $this->get_email_subject();
+        $subject = $this->get_email_subject();
         $subject = strtr($subject, $this->placeholders);
 
         $html_part = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
@@ -269,8 +268,7 @@ trait Send_Email {
             ];
 
 
-        }
-        else {
+        } else {
             $request                               = array();
             $request['Source']                     = $_source;
             $request['Destination']['ToAddresses'] = array($to_address);
@@ -324,8 +322,6 @@ trait Send_Email {
             $ses_client = $this->ses_clients[(rand(0, 1) == 0 ? 0 : 1)];
 
 
-
-
             if ($send_raw) {
 
                 $result = $ses_client->sendRawEmail($request);
@@ -347,19 +343,16 @@ trait Send_Email {
             );
 
 
+            /*
+                                    $email_tracking->fast_update(
+                                        array(
+                                            'Email Tracking State'  => "Sent to SES",
+                                            "Email Tracking SES Id" => 'xxxx'.date('U'),
 
 
-/*
-                        $email_tracking->fast_update(
-                            array(
-                                'Email Tracking State'  => "Sent to SES",
-                                "Email Tracking SES Id" => 'xxxx'.date('U'),
-
-
-                            )
-                        );
-*/
-             //usleep(100000);
+                                        )
+                                    );
+            */ //usleep(100000);
 
             //    sleep(1);
 
@@ -385,7 +378,7 @@ trait Send_Email {
                                                                            )
             )) {
 
-                $sql ="insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Compressed Body`) values (?,?,?) ";
+                $sql  = "insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Compressed Body`) values (?,?,?) ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
                     array(
@@ -406,8 +399,7 @@ trait Send_Email {
             $this->email_tracking = $email_tracking;
 
 
-        }
-        catch (AwsException $e) {
+        } catch (AwsException $e) {
 
             //print_r($request);
 
@@ -472,14 +464,12 @@ trait Send_Email {
             );
 
 
-
-
-        }else{
-            if($recipient->get_object_name()=='Prospect'){
+        } else {
+            if ($recipient->get_object_name() == 'Prospect') {
                 /**
                  * @var $recipient \Prospect
                  */
-                $recipient->mailshot_sent($email_tracking->id,$subject);
+                $recipient->mailshot_sent($email_tracking->id, $subject);
             }
         }
 
@@ -534,7 +524,7 @@ trait Send_Email {
                     }
                 }
 
-                $products = preg_replace('/\, $/', '', $products);
+                $products                         = preg_replace('/\, $/', '', $products);
                 $this->placeholders['[Products]'] = $products;
 
                 break;
@@ -664,7 +654,7 @@ trait Send_Email {
                 if ($delivery_note->id) {
                     $this->placeholders['[Delivery Note Number]'] = $delivery_note->get('Delivery Note ID');
 
-                    $auth_data = json_encode(
+                    $auth_data    = json_encode(
                         array(
                             'auth_token' => array(
                                 'logged_in'      => true,
@@ -673,7 +663,7 @@ trait Send_Email {
                             )
                         )
                     );
-                    $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
+                    $sak          = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
                     $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
                 }
 
@@ -738,6 +728,16 @@ trait Send_Email {
                 } else {
                     $subject = _('Delivery note undispatched').' '.$this->store->get('Name');
                 }
+
+                break;
+            case 'Newsletter':
+            case 'Marketing':
+                if ($this->data['Email Campaign Wave Type'] == 'Wave'  and $this->metadata('subject')!=''  ) {
+                    $subject= $this->metadata('subject');
+                } else {
+                    $subject = $this->get('Published Email Template Subject');
+                }
+
 
                 break;
             default:
@@ -845,12 +845,9 @@ trait Send_Email {
                 $link_label = _('Link to customer');
 
 
-
-                    $info = sprintf(
-                        _('%s (%s) has registered'), '<b>'.$this->new_customer->get('Name').'</b>', '<a href="href="mailto:'.$this->new_customer->get('Customer Main Plain Email').'"">'.$this->new_customer->get('Customer Main Plain Email').'</a>'
-                    );
-
-
+                $info = sprintf(
+                    _('%s (%s) has registered'), '<b>'.$this->new_customer->get('Name').'</b>', '<a href="href="mailto:'.$this->new_customer->get('Customer Main Plain Email').'"">'.$this->new_customer->get('Customer Main Plain Email').'</a>'
+                );
 
 
                 $link = sprintf(
@@ -880,27 +877,25 @@ trait Send_Email {
                 );
 
 
-                if($this->account->get('Currency Code')==$this->store->get('Store Currency Code')){
+                if ($this->account->get('Currency Code') == $this->store->get('Store Currency Code')) {
                     /*
                     $info = sprintf(
                         _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>', '<b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
 
                     );
                     */
-                    $title      = '<b>'._('New order').'</b> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
+                    $title = '<b>'._('New order').'</b> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
 
-                }else{
+                } else {
                     /*
                     $info = sprintf(
                         _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>',   '<span>'.$this->order->get('DC Total Amount').'</span> <b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
 
                     );
                     */
-                    $title      = '<b>'._('New order').'</b> <span style="font-style: italic">('.$this->order->get('DC Total Amount').')</span> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
+                    $title = '<b>'._('New order').'</b> <span style="font-style: italic">('.$this->order->get('DC Total Amount').')</span> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
 
                 }
-
-
 
 
                 $smarty->assign('type', 'Success');
@@ -1076,6 +1071,7 @@ trait Send_Email {
                     if (isset($data['Unsubscribe URL'])) {
                         $smarty->assign('localised_labels', $localised_labels);
                         $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
+
                         return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
 
                     }
@@ -1088,13 +1084,12 @@ trait Send_Email {
                     if (isset($data['Unsubscribe URL'])) {
                         $smarty->assign('localised_labels', $localised_labels);
                         $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
+
                         return $smarty->fetch('stop_junk_email.placeholder.tpl');
 
                     }
                 }, $html
                 );
-
-
 
 
         }

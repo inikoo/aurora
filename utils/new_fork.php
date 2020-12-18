@@ -86,6 +86,11 @@ function new_fork($type, $data, $account_code, $db, $priority = 'Normal') {
 
 function new_housekeeping_fork($type, $data, $account_code, $priority = 'Normal') {
 
+
+    if(ENVIRONMENT=='DEVEL'){
+        return;
+    }
+
     if (class_exists('GearmanClient')) {
         $client        = new GearmanClient();
         $fork_metadata = json_encode(

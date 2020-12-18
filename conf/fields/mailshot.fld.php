@@ -18,38 +18,56 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
-$object_fields=array();
+$object_fields = array();
 
-$object_fields[]=
-    array(
-        'label'      => _('Id'),
-        'show_title' => true,
-        'fields'     => array(
-
-
-            array(
-                'edit'              => ($edit ? 'string' : ''),
-                'id'                => 'Email_Campaign_Name',
-                'value'             => $object->get('Email Campaign Name'),
-                'formatted_value' => $object->get('Name'),
-
-                'label'             => ucfirst($object->get_field_label('Email Campaign Name')),
-                'invalid_msg'       => get_invalid_message('string'),
-                'required'          => true,
-                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-                'type' => 'value'
-            ),
-          
-
-         
+$object_fields[] = array(
+    'label'      => _('Id'),
+    'show_title' => true,
+    'fields'     => array(
 
 
-        )
+        array(
+            'edit'            => ($edit ? 'string' : ''),
+            'id'              => 'Email_Campaign_Name',
+            'value'           => $object->get('Email Campaign Name'),
+            'formatted_value' => $object->get('Name'),
+
+            'label'             => ucfirst($object->get_field_label('Email Campaign Name')),
+            'invalid_msg'       => get_invalid_message('string'),
+            'required'          => true,
+            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+            'type'              => 'value'
+        ),
+
+
+    ),
+
 
 );
 
 
+$object_fields[] = array(
+    'label'      => _('Second Wave'),
+    'show_title' => true,
+    'fields'     => array(
 
 
+        array(
+            'edit'            => ($edit ? 'string' : ''),
+            'id'              => 'Email_Campaign_Second_Wave_Subject',
+            'value'           => $object->get('Email Campaign Second Wave Subject'),
+            'formatted_value' => $object->get('Second Wave Subject'),
 
-?>
+            'label'       => _('Subject'),
+            'invalid_msg' => get_invalid_message('string'),
+            'required'    => false,
+            'type'        => 'value'
+        ),
+
+
+    ),
+
+
+);
+
+

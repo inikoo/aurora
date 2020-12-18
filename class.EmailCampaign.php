@@ -198,6 +198,12 @@ class EmailCampaign extends DB_Table {
 
         switch ($key) {
 
+
+            case 'Email Campaign Second Wave Subject':
+            case 'Second Wave Subject':
+
+                return $this->metadata('second_wave_subject');
+
             case 'Second Wave Formatted Date':
 
                 if ($this->data['Email Campaign Second Wave Date'] == '') {
@@ -866,6 +872,11 @@ class EmailCampaign extends DB_Table {
         switch ($field) {
 
 
+            case 'Email Campaign Second Wave Subject':
+
+                $this->fast_update_json_field('Email Campaign Metadata', 'second_wave_subject', $value);
+                break;
+
             case 'Email Campaign State':
 
                 $this->update_state($value);
@@ -1323,6 +1334,8 @@ class EmailCampaign extends DB_Table {
     function get_second_wave_date() {
 
 
+        $store=get_object('Store',$this->data['Email Campaign Store Key']);
+
         if (in_array(
             date('D'), [
                          'Fri',
@@ -1331,9 +1344,9 @@ class EmailCampaign extends DB_Table {
                          'Sun'
                      ]
         )) {
-            $second_wave_date = strtotime('next monday');
+            $second_wave_date = strtotime('next monday 10am '.$store->get('Store Timezone'));
         } else {
-            $second_wave_date = strtotime('+2 days');
+            $second_wave_date = strtotime('+2 days 10am '.$store->get('Store Timezone'));
         }
 
 
@@ -1887,6 +1900,9 @@ class EmailCampaign extends DB_Table {
                 'Email Campaign Composed Date'      => gmdate('Y-m-d H:i:s'),
             )
         );
+
+
+        $this->fast_update_json_field('Email Campaign Metadata', 'subject', $this->metadata('second_wave_subject'));
 
 
         $this->fast_update(
