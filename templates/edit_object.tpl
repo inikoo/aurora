@@ -272,7 +272,7 @@
                                 <i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>
 
                                 <span  class="{if  $class=='operation_with_field'  }hide{/if} " ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i>
-                                <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' or $edit=='no_icon'  or $class=='operation_with_field'  }hide{/if}  edit_button" onclick="open_edit_this_field(this)"></i>
+                                <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom'  or $edit=='editor' or $edit=='no_icon'  or $class=='operation_with_field'  }hide{/if}  edit_button" onclick="open_edit_this_field(this)"></i>
                                 </span>
                             </td>
                             <td id="{$field.id}_container" class="container value  " data-object_field_required="{$required}"
@@ -281,7 +281,6 @@
                                 parent_key='{$state.parent_key}'>
 
                                 {if $edit=='editor'}
-                                    <div id="{$field.id}_formatted_value" class="{$field.id} {$edit} fr-view  formatted_value " ondblclick="open_edit_this_field(this)">{$field.formatted_value}</div>
                                 {elseif $edit=='no_icon' }
                                     <span id="{$field.id}_formatted_value" class=" " >{$field.formatted_value}</span>
                                 {elseif  $edit=='mixed_recipients'}
@@ -356,7 +355,7 @@
                                 {/if}
 
                                 {elseif $edit=='editor'  }
-                                    <div id="editor_container_{$field.id}" class="hide">
+                                    <div  id="editor_container_{$field.id}" class=" editor_container">
                                         {include file="editor.tpl" editor_data=$field.editor_data }
                                     </div>
                                 {elseif $edit=='upload'  }

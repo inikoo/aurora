@@ -31,8 +31,7 @@ $object_fields = array(
                 'class'           => 'editor',
                 'editor_data'     => array(
                     'id'      => 'Account_Suppliers_Terms_and_Conditions',
-                    'content' => $object->get(
-                        'Account Suppliers Terms and Conditions'
+                    'content' => $object->get('Account Suppliers Terms and Conditions'
                     ),
 
                     'data' => base64_encode(
@@ -68,11 +67,9 @@ $object_fields = array(
 
                 ),
                 'value'           => $object->get(
-                    'Account Suppliers Terms and Conditions'
+                    'Account Suppliers Terms and Conditionsx'
                 ),
-                'formatted_value' => $object->get(
-                    'Account Suppliers Terms and Conditions'
-                ),
+                'formatted_value' =>'',
                 'label'           => _('Terms and Conditions'),
                 'required'        => false,
                 'type'            => 'value'

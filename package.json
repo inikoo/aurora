@@ -42,6 +42,6 @@
     "grunt-text-replace": "^0.4.0"
   },
   "dependencies": {
-    "froala-editor": "^3.1.1"
+    "froala-editor": "^3.2.5"
   }
 }

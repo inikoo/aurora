@@ -9,12 +9,31 @@
 
 
     $(function () {
+
         var editor_data = JSON.parse(atob($('#editor_{$editor_data.id}').data('data')));
+
+
+        FroalaEditor.DefineIcon('save', {  FA5NAME:'cloud save  editor_container_{$editor_data.id}_save' , template: 'font_awesome_5'});
+
+
+        FroalaEditor.RegisterCommand('save', {
+            title: 'Save',
+            focus: true,
+            undo: false,
+            refreshAfterCallback: false,
+            callback: function () {
+
+                save_editor_field($('.editor_container_{$editor_data.id}_save'),editor_data, this.html.get(true))
+
+
+            }
+        });
+
 
 
         var buttons={
             'moreText': {
-                'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting']
+                'buttons': ['save','bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting']
             },
             'moreParagraph': {
                 'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote']
@@ -33,12 +52,10 @@
 
         new FroalaEditor('#editor_{$editor_data.id}', {
             key: '{$smarty.const.FROALA_EDITOR_KEY}',
-            saveParam: 'value',
-            saveURL: '/ar_edit.php',
-            saveMethod: 'GET',
+            attribution: false,
+
             pastePlain: true,
-            saveInterval: 36000000,
-            saveParams: editor_data.metadata,
+
 
             pluginsEnabled: editor_data.plugins,
             toolbarInline: false,
@@ -52,69 +69,17 @@
             fontSize: ['8', '10', '12', '14','16', '18', '30', '60', '96'],
             zIndex: 1000,
             pastePlain: true,
-
-
-
-
             events: {
                 'contentChanged': function () {
-                    $('#save_button', window.parent.document).addClass('save button changed valid')
-                },
-                'save.after': function () {
-                    $('#editor_container_{$editor_data.id} div.fr-toolbar i.fa-cloud').removeClass('valid save changed')
-                    $('#editor_container_{$editor_data.id} div.fr-toolbar i.fa-cloud').closest('div').removeClass('changed')
 
-                    data = JSON.parse(data);
+                    $('.editor_container_{$editor_data.id}_save').addClass('valid changed')
 
-                    console.log(data);
-                    if (editor_data.mode == 'edit_object') {
-
-                        var field = editor_data.field;
-                        $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide');
-
-                        $('.' + field).html(data.formatted_value);
-
-
-                        if (data.directory_field != '') {
-                            $('#' + data.directory_field + '_directory').html(data.directory);
-                            if (data.items_in_directory == 0) {
-                                $('#' + data.directory_field + '_field').addClass('hide')
-                            } else {
-                                $('#' + data.directory_field + '_field').removeClass('hide')
-                            }
-                        }
-                        if (data.action == 'new_field') {
-                            if (data.new_fields) {
-                                for (var key in data.new_fields) {
-                                    create_new_field(data.new_fields[key])
-                                }
-                            }
-                        }
-
-
-                        close_edit_field(field)
-
-                        if (data.other_fields) {
-                            for (var key in data.other_fields) {
-                                update_field(data.other_fields[key])
-                            }
-                        }
-
-                        if (data.deleted_fields) {
-                            for (var key in data.deleted_fields) {
-                                delete_field(data.deleted_fields[key])
-                            }
-                        }
-
-                        for (var key in data.update_metadata.class_html) {
-                            $('.' + key).html(data.update_metadata.class_html[key])
-                        }
-
-                        post_save_actions(field, data)
-
-                    }
                 }
             }
+
+
+
+
         })
 
 
@@ -122,5 +87,42 @@
 
 
     });
+
+    function save_editor_field(save_button,editor_data,value) {
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'edit_field')
+        ajaxData.append("object", editor_data.metadata.object)
+        ajaxData.append("key", editor_data.metadata.key)
+        ajaxData.append('field', editor_data.metadata.field)
+        ajaxData.append('value', value)
+
+        var request_file = '/ar_edit.php';
+        $.ajax({
+            url: request_file, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+
+            complete: function () {
+
+            },
+            success: function (data) {
+
+                console.log(save_button)
+
+                save_button.removeClass('valid changed')
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+
+    }
+
 
 </script>

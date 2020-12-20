@@ -922,7 +922,7 @@ function save_field(object, key, field) {
 
     if (!$("#" + field + '_field').hasClass('changed')) {
         console.log($("#" + field + '_field'))
-        console.log('no_change :(' + field)
+        console.log('>>>>>>no_change :(' + field)
         return;
     }
 
@@ -1089,7 +1089,8 @@ function save_field(object, key, field) {
 
         complete: function () {
 
-        }, success: function (data) {
+        },
+        success: function (data) {
 
             $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
             if (data.state == 100) {
