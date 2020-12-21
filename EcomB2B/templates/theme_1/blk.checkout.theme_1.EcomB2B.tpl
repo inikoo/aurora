@@ -683,7 +683,7 @@
 
                                                         switch (tokenizeErr.code) {
                                                             case 'HOSTED_FIELDS_FIELDS_EMPTY':
-                                                                var _msg='{t}Pleas fill the CVV field{/t}';
+                                                                var _msg='{t}Please fill the CVV field{/t}';
                                                                 break;
                                                             case 'HOSTED_FIELDS_FIELDS_INVALID':
                                                                 var _msg='{t}CVV is invalid{/t}';

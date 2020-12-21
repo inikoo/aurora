@@ -143,6 +143,10 @@ if ($parameters['f_field'] == 'subject' and $f_value != '') {
     $wheref = sprintf(
         ' and `Published Email Template Subject` REGEXP "\\\\b%s" ', addslashes($f_value)
     );
+}elseif ($parameters['f_field'] == 'email' and $f_value != '') {
+    $wheref = sprintf(
+        ' and `Email Tracking Email` like "%s%%" ', addslashes($f_value)
+    );
 }
 
 $_order = $order;

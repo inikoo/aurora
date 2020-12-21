@@ -530,9 +530,7 @@ if ($object->get('Supplier Type') != 'Archived') {
                     'class'           => 'editor',
                     'editor_data'     => array(
                         'id'      => 'Supplier_Default_PO_Terms_and_Conditions',
-                        'content' => $object->get(
-                            'Supplier Default PO Terms and Conditions'
-                        ),
+                        'content' => $object->get('Supplier Default PO Terms and Conditions'),
 
                         'data' => base64_encode(
                             json_encode(
@@ -566,12 +564,8 @@ if ($object->get('Supplier Type') != 'Archived') {
                         )
 
                     ),
-                    'value'           => $object->get(
-                        'Supplier Default PO Terms and Conditions'
-                    ),
-                    'formatted_value' => $object->get(
-                        'Default PO Terms and Conditions'
-                    ),
+                    'value'           => $object->get('Supplier Default PO Terms and Conditions'),
+                    'formatted_value' => $object->get('Default PO Terms and Conditions'),
                     'label'           => ucfirst(
                         $object->get_field_label(
                             'Supplier Default PO Terms and Conditions'
