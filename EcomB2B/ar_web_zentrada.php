@@ -59,7 +59,7 @@ $sql = "select `Product Code`,`Product Name`,
     (select concat('[image_address]',`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`='Product' and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`='Yes'  order by `Image Subject Order` limit 1 offset 2) as img3 ,
        `Product Published Webpage Description` ,`Product Units Per Case`,`Product Price`,`Product Availability`,
        `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`
-from `Product Dimension` P where `Product Store Key`=? and `Product Web State` in ('For Sale','Out of Stock')     ";
+from `Product Dimension` P where `Product Store Key`=? and `Product Web State` in ('For Sale','Out of Stock')  and  `Product Price`>0  ";
 
 
 $placeholders = array(
@@ -84,6 +84,9 @@ while ($row = $stmt->fetch()) {
 
     $short_product_description=str_replace("\r\n"," ",$short_product_description);
     $short_product_description=str_replace("\n"," ",$short_product_description);
+
+    $short_product_description = preg_replace("/<p[^>]*?>/", "", $short_product_description);
+    $short_product_description = str_replace("</p>", "<br />", $short_product_description);
 
 
     $data[] = [
