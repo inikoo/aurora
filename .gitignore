@@ -1,6 +1,8 @@
 keyring/*
 .idea/
 .sass-cache/
+.vagrant/
+app_files/conf/
 
 img/
 img/*
@@ -80,3 +82,8 @@ composer.lock
 cron/fix_amount_in.php
 cron/set_up_sk_copy_agents_to.php
 composer.lock
+2020-12-22-10-26-19.043-VBoxSVC-30238.log
+bootstrap.sh
+post_bootstrap.sh
+Vagrantfile
+*.lock

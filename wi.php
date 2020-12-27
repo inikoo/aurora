@@ -94,7 +94,13 @@ if ($row = $stmt->fetch()) {
 
     if (!file_exists($image_path)) {
         header('HTTP/1.0 403 Forbidden');
-        echo _('Forbidden');
+        if (ENVIRONMENT == 'DEVEL') {
+            echo 'Image not found in public DB '.$image_path;
+
+        }else{
+            echo 'Forbidden';
+
+        }
         exit;
     }
 

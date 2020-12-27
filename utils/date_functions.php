@@ -837,7 +837,7 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $_to_date    = preg_replace('/-02-29 00:00:00/', '-02-28 00:00:00', $to_date);
 
             $from_date                 = date('Y-m-d 23:59:59', strtotime("$to_date -1 year"));
-            $from_date_1yb             = date('Y-m-d H:i:s', strtotime("$_to_date -1 year"));
+            $from_date_1yb             = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb                    = date('Y-m-d 23:59:59', strtotime("$to_date -1 year"));
             $from_date_previous_period = date('Y-m-d H:i:s', strtotime("$from_date -2 year"));
             $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("$_to_date -2 year"));
