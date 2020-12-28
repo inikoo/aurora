@@ -711,6 +711,8 @@ function get_checkout_html($data, $website, $customer, $smarty) {
         $basket_url = '/basket.sys';
     }
 
+
+
     $response = array(
         'state'      => 200,
         'html'       => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
@@ -726,7 +728,6 @@ function get_checkout_html($data, $website, $customer, $smarty) {
 function place_order_pay_braintree_using_saved_card($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
 
 
-    //require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
 
 
     $order->fast_update(
@@ -854,12 +855,7 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
     }
 
 
-    /*
-        Braintree_Configuration::environment('production');
-        Braintree_Configuration::merchantId($payment_account->get('Payment Account ID'));
-        Braintree_Configuration::publicKey($payment_account->get('Payment Account Login'));
-        Braintree_Configuration::privateKey($payment_account->get('Payment Account Password'));
-    */
+
 
 
 }

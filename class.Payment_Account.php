@@ -193,40 +193,55 @@ class Payment_Account extends DB_Table {
 
         switch ($key) {
 
+            case 'Payment Account ID':
+                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_MERCHANT_ID : $this->data[$key]);
+            case 'Payment Account Login':
+                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PUBLIC_KEY : $this->data[$key]);
+            case 'Payment Account Password':
+                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PRIVATE_KEY : $this->data[$key]);
+            case 'Payment Account Cart ID':
+                if(ENVIRONMENT == 'DEVEL'){
+
+                    if($this->get('Payment Account Currency')=='EUR'){
+                        return BRAINTREE_SANDBOX_CART_ID_EUR;
+                    }else{
+                        return BRAINTREE_SANDBOX_CART_ID_GBR;
+
+                    }
+
+                }else{
+                    return $this->data[$key];
+                }
+
 
             case 'Default Payment Method':
 
                 switch ($this->data['Payment Account Block']) {
                     case 'BTree':
                         return 'Credit Card';
-                        break;
                     case 'BTreePaypal':
-                        return 'Paypal';
-                        break;
                     case 'Paypal':
                         return 'Paypal';
-                        break;
+
                     case 'Bank':
-                        return 'Bank Transfer';
-                        break;
                     case 'Sofort':
                         return 'Bank Transfer';
-                        break;
+
                     case 'Cash':
                         return 'Cash';
-                        break;
+
                     case 'Other':
                         return 'Other';
-                        break;
+
                     case 'ConD':
                         return 'Cash on Delivery';
-                        break;
+
                     case 'Accounts':
                         return 'Account';
-                        break;
+
                     default:
                         return '';
-                        break;
+
 
                 }
 

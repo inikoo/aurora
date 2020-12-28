@@ -109,6 +109,27 @@ class Public_Payment_Account {
 
         switch ($key) {
 
+            case 'Payment Account ID':
+                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_MERCHANT_ID : $this->data[$key]);
+            case 'Payment Account Login':
+                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PUBLIC_KEY : $this->data[$key]);
+            case 'Payment Account Password':
+                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PRIVATE_KEY : $this->data[$key]);
+            case 'Payment Account Cart ID':
+                if(ENVIRONMENT == 'DEVEL'){
+
+                    if($this->get('Payment Account Currency')=='EUR'){
+                        return BRAINTREE_SANDBOX_CART_ID_EUR;
+                    }else{
+                        return BRAINTREE_SANDBOX_CART_ID_GBR;
+
+                    }
+
+                }else{
+                    return $this->data[$key];
+                }
+
+
             case 'Valid Delivery Countries':
 
                 $_tmp = array();
