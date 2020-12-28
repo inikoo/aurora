@@ -10,22 +10,18 @@
  Version 2.0
 */
 
-
 require_once '../vendor/autoload.php';
 require 'keyring/dns.php';
 require 'keyring/au_deploy_conf.php';
 
 require_once 'utils/sentry.php';
 
-
 $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
 
-
-    include_once('utils/find_website_key.include.php');
-    $website_key = get_website_key_from_domain($redis);
-
+include_once('utils/find_website_key.include.php');
+$website_key = get_website_key_from_domain($redis);
 
 
 $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
@@ -49,7 +45,7 @@ if ($url == 'sitemap.xml') {
     $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
 
 
-    $website = get_object('Website', $website_key);
+    $website       = get_object('Website', $website_key);
     $site_protocol = 'https';
 
     $sql = sprintf(
@@ -125,7 +121,7 @@ if ($redis->exists($url_cache_key)) {
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    $webpage_id = get_url($db,$website_key, $url);
+    $webpage_id = get_url($db, $website_key, $url);
 
 
     $redis_write = new Redis();
@@ -141,7 +137,8 @@ if (is_numeric($webpage_id)) {
 
     include 'display_webpage.php';
 } else {
-    header("Location: https://".$_SERVER['SERVER_NAME']."$webpage_id");
+
+    header("Location: ".(ENVIRONMENT == 'DEVEL' ? 'http' : 'https')."://".$_SERVER['SERVER_NAME']."$webpage_id");
 }
 $db = null;
 

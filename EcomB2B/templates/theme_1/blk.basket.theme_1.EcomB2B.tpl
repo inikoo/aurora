@@ -33,7 +33,7 @@
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
-    <div class="order_header  text_blocks  text_template_21">
+    <div style="margin-left: 20px" class="order_header  text_blocks  text_template_21">
 
 
                 <div class="text_block '">

@@ -28,6 +28,9 @@ function get_website_key_from_domain($redis) {
             $redis_write->connect(REDIS_HOST, REDIS_PORT);
 
             $redis_write->set($redis_key, DEVEL_WEBSITE_KEY);
+
+
+
             return DEVEL_WEBSITE_KEY;
         } else {
 

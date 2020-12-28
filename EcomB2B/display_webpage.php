@@ -253,9 +253,9 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 $smarty->assign('account_code', DNS_ACCOUNT_CODE);
 
 
+
 include_once __DIR__.'/utils/public_object_functions.php';
 include_once __DIR__.'/utils/natural_language.php';
-
 $webpage = get_object('Webpage', $webpage_key);
 if ($webpage->get('Webpage Code') == 'basket.sys' and $website->get('Website Type') == 'EcomDS') {
     exit;
@@ -269,7 +269,7 @@ if (!$webpage->id or ($webpage->get('Webpage Code') == 'reset_pwd.sys' and !isse
     $url = substr($url, 0, 256);
 
 
-    header("Location: https://".$_SERVER['SERVER_NAME']."/404.php?url=$url");
+    header("Location: ".(ENVIRONMENT == 'DEVEL' ? 'http' : 'https')."://".$_SERVER['SERVER_NAME']."/404.php?v=2&url=$url");
     exit;
 
 }
