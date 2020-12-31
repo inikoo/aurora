@@ -44,6 +44,7 @@ trait OrderDiscountOperations {
         $this->get_allowances_from_pinned_deal_components();
 
 
+
         $this->apply_items_discounts();
 
 
@@ -1334,11 +1335,8 @@ trait OrderDiscountOperations {
                         $deals_component_data[$row['Deal Component Key']] = $row;
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
+
 
 
                 foreach ($deals_component_data as $deal_component_data) {
@@ -1372,7 +1370,6 @@ trait OrderDiscountOperations {
 
 
                 $deals_component_data = array();
-                $discounts            = 0;
 
                 $sql = sprintf(
                     "SELECT * FROM `Deal Component Dimension`  LEFT JOIN `Deal Dimension` D ON (D.`Deal Key`=`Deal Component Deal Key`)  WHERE `Deal Component Trigger`='Product' AND `Deal Component Trigger Key` =%d  AND `Deal Component Status`='Active' ",
@@ -1384,16 +1381,11 @@ trait OrderDiscountOperations {
                     foreach ($result as $row) {
                         $deals_component_data[$row['Deal Component Key']] = $row;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
                 foreach ($deals_component_data as $deal_component_data) {
 
-                    $terms_ok                       = false;
                     $this->deals['Product']['Deal'] = true;
                     if (isset($this->deals['Product']['Deal Multiplicity'])) {
                         $this->deals['Product']['Deal Multiplicity']++;
@@ -1413,10 +1405,6 @@ trait OrderDiscountOperations {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
