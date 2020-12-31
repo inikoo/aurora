@@ -6,7 +6,9 @@ function use_this_credit_card(element){
 
     let cc_row=$('.credit_card_input_row')
     cc_row.removeClass('hide')
-    cc_row.find('.card_info').html(card_info.html()).data('token',card_info.data('token'));
+
+
+    cc_row.find('.card_info').html(card_info.html()).data('token',card_info.data('token')).data('nonce',card_info.data('nonce'));
 
     $('#BTree_saved_credit_cards_form .show_saved_cards_list').removeClass('hide')
 

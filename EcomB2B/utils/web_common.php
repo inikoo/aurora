@@ -16,38 +16,36 @@ function get_device() {
 
 
 
-    if (isset($_SERVER['HTTP_X_DEVICE'])) {
-        $detected_device = $_SERVER['HTTP_X_DEVICE'];
-    } else {
-        $detected_device = 'desktop';
+    if (ENVIRONMENT == 'DEVEL') {
+        require_once 'external_libs/mobile_detect/Mobile_Detect.php';
+        $detect = new Mobile_Detect;
+
+        if ($detect->isTablet()) {
+            $detected_device = 'tablet';
+            $template_suffix = '.tablet';
+        } elseif ($detect->isMobile()) {
+            $detected_device = 'mobile';
+            $template_suffix = '.mobile';
+        } else {
+            $detected_device = 'desktop';
+            $template_suffix = '';
+
+        }
+    }else{
+        if (isset($_SERVER['HTTP_X_DEVICE'])) {
+            $detected_device = $_SERVER['HTTP_X_DEVICE'];
+        } else {
+            $detected_device = 'desktop';
+        }
+
+        if ($detected_device == 'desktop') {
+            $template_suffix = '';
+        } else {
+            $template_suffix = '.'.$detected_device;
+
+        }
     }
 
-    if ($detected_device == 'desktop') {
-        $template_suffix = '';
-    } else {
-        $template_suffix = '.'.$detected_device;
-
-    }
-
-
-    //  print_r($_SERVER);
-
-    /*
-    require_once 'external_libs/mobile_detect/Mobile_Detect.php';
-    $detect = new Mobile_Detect;
-
-    if ($detect->isTablet()) {
-        $detected_device = 'tablet';
-        $template_suffix = '.tablet';
-    } elseif ($detect->isMobile()) {
-        $detected_device = 'mobile';
-        $template_suffix = '.mobile';
-    } else {
-        $detected_device = 'desktop';
-        $template_suffix = '';
-
-    }
-    */
 
     return array(
         $detected_device,

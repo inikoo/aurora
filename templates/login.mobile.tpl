@@ -90,7 +90,12 @@
 
 <input id="_request" type="hidden" val="{$_request}">
 <script src="js_libs/material.min.js"></script>
-<script src="js_libs/jquery-3.3.1.min.js"></script>
+{*
+Todo this files has been deleted use bowel or a cdn
+<script src="/js_libs/jquery-3.3.1.min.js"></script>
+<script src="/js_libs/jquery.mobile-1.4.5.js"></script>
+*}
+
 <script src="js_libs/sha256.js"></script>
 <script src="js_libs/aes.js"></script>
 <script src="js/login/login.js"></script>

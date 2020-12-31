@@ -30,7 +30,6 @@ class Public_Payment_Account {
         }
 
 
-
         $this->table_name    = 'Payment Account';
         $this->ignore_fields = array('Payment Account Key');
 
@@ -116,16 +115,16 @@ class Public_Payment_Account {
             case 'Payment Account Password':
                 return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PRIVATE_KEY : $this->data[$key]);
             case 'Payment Account Cart ID':
-                if(ENVIRONMENT == 'DEVEL'){
+                if (ENVIRONMENT == 'DEVEL') {
 
-                    if($this->get('Payment Account Currency')=='EUR'){
+                    if ($this->get('Payment Account Currency') == 'EUR') {
                         return BRAINTREE_SANDBOX_CART_ID_EUR;
-                    }else{
+                    } else {
                         return BRAINTREE_SANDBOX_CART_ID_GBR;
 
                     }
 
-                }else{
+                } else {
                     return $this->data[$key];
                 }
 
@@ -178,9 +177,7 @@ class Public_Payment_Account {
                     return $paypal_data;
 
 
-
-                }
-                elseif ($this->data['Payment Account Block'] == 'BTree') {
+                } elseif ($this->data['Payment Account Block'] == 'BTree') {
 
 
                     $gateway = new Braintree_Gateway(
@@ -213,12 +210,16 @@ class Public_Payment_Account {
                                 ), md5('CCToken'.CKEY), 256
                             );
 
+                            $result = $gateway->paymentMethodNonce()->create($braintree_credit_card->token);
+
+
                             $credit_cards[] = array(
                                 'Masked Number'             => $braintree_credit_card->maskedNumber,
                                 'Last 4 Numbers'            => $braintree_credit_card->last4,
                                 'Image'                     => $braintree_credit_card->imageUrl,
                                 'Formatted Expiration Date' => $braintree_credit_card->expirationDate,
-                                'Token'                     => $token
+                                'Token'                     => $token,
+                                'nonce'                     => $result->paymentMethodNonce->nonce
                             );
                         }
 
@@ -230,14 +231,17 @@ class Public_Payment_Account {
 
                     $_data = array(
 
-                        'client_token'              => $gateway->clientToken()->generate(),
+                        'client_token'              => $gateway->clientToken()->generate(
+                            [
+                                'merchantAccountId' => $this->get('Payment Account Cart ID')
+                            ]
+                        ),
                         'credit_cards'              => $credit_cards,
                         'number_saved_credit_cards' => count($credit_cards)
                     );
 
 
                     return $_data;
-
 
 
                 }
@@ -258,8 +262,6 @@ class Public_Payment_Account {
         return false;
 
     }
-
-
 
 
     function get_settings() {

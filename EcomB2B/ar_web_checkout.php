@@ -16,7 +16,7 @@ require_once 'utils/currency_functions.php';
 require_once 'utils/braintree_error_messages.php';
 
 
-$smarty = new Smarty();
+$smarty               = new Smarty();
 $smarty->caching_type = 'redis';
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -224,7 +224,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
                          'order_key'           => array('type' => 'key'),
-                         'data' => array('type' => 'json array'),
+                         'data'                => array('type' => 'json array'),
 
                      )
         );
@@ -271,7 +271,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
                          'order_key'           => array('type' => 'key'),
-                         'data' => array('type' => 'json array'),
+                         'data'                => array('type' => 'json array'),
 
                      )
         );
@@ -396,12 +396,18 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
     }
 
 
-    $braintree_data           = get_sale_transaction_braintree_data($order, $gateway, $_data['data']['save_card']);
+    $braintree_data = get_sale_transaction_braintree_data($order, $gateway, $_data['data']['save_card']);
+
+
     $braintree_data['amount'] = $order->get('Order Basket To Pay Amount');
 
 
     $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
     $braintree_data['paymentMethodNonce'] = $_data['data']['nonce'];
+
+    if (!empty($_data['data']['deviceData'])) {
+        $braintree_data['deviceData'] = $_data['data']['deviceData'];
+    }
 
 
     $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
@@ -438,8 +444,6 @@ function place_order($store, $order, $payment_account_key, $customer, $website, 
 
 
 }
-
-
 
 
 function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
@@ -548,7 +552,7 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
     $db->exec($sql);
     $reference = $db->lastInsertId();
-    if(!$reference){
+    if (!$reference) {
         throw new Exception('Error inserting CTF');
     }
 
@@ -647,7 +651,7 @@ function get_checkout_html($data, $website, $customer, $smarty) {
         echo json_encode($response);
         exit;
     }
-//
+    //
 
     $order->update_totals();
 
@@ -712,7 +716,6 @@ function get_checkout_html($data, $website, $customer, $smarty) {
     }
 
 
-
     $response = array(
         'state'      => 200,
         'html'       => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
@@ -726,8 +729,6 @@ function get_checkout_html($data, $website, $customer, $smarty) {
 
 
 function place_order_pay_braintree_using_saved_card($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
-
-
 
 
     $order->fast_update(
@@ -759,9 +760,17 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
         $token      = $token_data['t'];
 
 
+        $nonce = $_data['data']['nonce'];
+
+        if (!empty($_data['data']['nonce_for_card_verification'])) {
+            $nonce = $_data['data']['nonce_for_card_verification'];
+
+        }
+
+
         $verification_result = $gateway->paymentMethod()->update(
             $token, [
-                      'paymentMethodNonce' => $_data['data']['nonce'],
+                      'paymentMethodNonce' => $nonce,
                       'options'            => ['verifyCard' => true]
                   ]
         );
@@ -836,12 +845,18 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
         $braintree_data['paymentMethodToken'] = $token;
         $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
 
+        if (!empty($_data['data']['deviceData'])) {
+            $braintree_data['deviceData'] = $_data['data']['deviceData'];
+        }
+
 
         $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
         echo json_encode($response);
 
     } else {
 
+
+        print_r($verification_result);
 
         $response = array(
             'state' => 400,
@@ -853,9 +868,6 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
 
     }
-
-
-
 
 
 }
@@ -1097,12 +1109,11 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             }
 
 
-            if($payment_account->get('Payment Account Block')=='BTreePaypal'){
+            if ($payment_account->get('Payment Account Block') == 'BTreePaypal') {
                 $msg = _('There was a problem processing your payment').', '._('please double check your payment information and try again');
-            }else{
+            } else {
                 $msg = _('There was a problem processing your credit card').', '._('please double check your payment information and try again');
             }
-
 
 
             $payment_metadata = '';
@@ -1153,9 +1164,9 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             }
 
             $response = array(
-                'state' => 400,
-                'msg'   => $msg
-                // 'private_message'=>$private_message,
+                'state'           => 400,
+                'msg'             => $msg,
+                'private_message' => $private_message,
                 // 'transaction_id'=>$transaction_id
 
             );

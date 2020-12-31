@@ -71,7 +71,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 }, src: [
-                    'bower_components/braintree-web/paypal-checkout.js', 'bower_components/braintree-web/client.js', 'bower_components/braintree-web//hosted-fields.js', 'EcomB2B/js/basket_checkout/checkout.js',  'EcomB2B/js/basket_checkout/credit_cards.js' , 'EcomB2B/js/basket_checkout/order_totals.js',
+                    'bower_components/braintree-web/paypal-checkout.js', 'bower_components/braintree-web/client.js', 'bower_components/braintree-web/data-collector.js', 'bower_components/braintree-web/three-d-secure.js', 'bower_components/braintree-web//hosted-fields.js', 'EcomB2B/js/basket_checkout/checkout.js',  'EcomB2B/js/basket_checkout/credit_cards.js' , 'EcomB2B/js/basket_checkout/order_totals.js',
                 ], dest: 'EcomB2B/assets/desktop.checkout.min.js'
             }, ecom_desktop_profile: {
                 options: {
@@ -104,7 +104,7 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 },
                 src: [
-                    'bower_components/braintree-web/paypal-checkout.js', 'bower_components/braintree-web/client.js','bower_components/braintree-web//hosted-fields.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/credit_cards.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
+                    'bower_components/braintree-web/paypal-checkout.js', 'bower_components/braintree-web/client.js', 'bower_components/braintree-web/data-collector.js', 'bower_components/braintree-web/three-d-secure.js','bower_components/braintree-web/hosted-fields.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/credit_cards.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
                 dest: 'EcomB2B/assets/mobile.checkout.min.js'
 
             }, ecom_mobile: {
@@ -187,7 +187,7 @@ module.exports = function (grunt) {
 
                     sourceMap: true,
                 },
-                src: ['js_libs/jquery-3.3.1.min.js', 'js_libs/jquery-migrate-3.0.1.js', 'bower_components/moment/min/moment.min.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js', 'js_libs/sha256.js', 'js_libs/aes.js', 'js_libs/base64.js',
+                src: ['bower_components/jquery/dist/jquery.js', 'js_libs/jquery-migrate-3.0.1.js', 'bower_components/moment/min/moment.min.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js', 'js_libs/sha256.js', 'js_libs/aes.js', 'js_libs/base64.js',
 
                     'js_libs/jquery.backstretch.min.js',
 
