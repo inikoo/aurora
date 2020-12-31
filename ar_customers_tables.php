@@ -139,6 +139,12 @@ function customers($_data, $db, $user) {
      * @var string $total
      */
 
+    if($_data['parameters']['parent']=='campaign'){
+        $campaign= get_object('campaign', $_data['parameters']['parent_key']);
+
+    }
+
+
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
@@ -222,6 +228,10 @@ function customers($_data, $db, $user) {
             } elseif ($parameters['parent'] == 'list') {
                 $link_format  = '/customers/list/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+            }elseif ($parameters['parent'] == 'campaign') {
+                $link_format  = '/customers/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $campaign->get('Deal Campaign Store Key'), $data['Customer Key'], $data['Customer Key']);
 
             } else {
                 $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
