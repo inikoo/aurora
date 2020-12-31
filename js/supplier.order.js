@@ -370,7 +370,7 @@ function validate_new_supplier_delivery(){
 $(document).on('input propertychange', '.create_delivery_item_qty', function (evt) {
 
 
-    if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
+    if (!validate_number($(this).val(), 0,4294967295) || $(this).val() == '') {
 
         $(this).closest('tr').find('i.plus').removeClass('fa-check-circle fa-exclamation-circle error').addClass('fa-plus')
         $(this).closest('tr').find('i.minus').removeClass('invisible')
@@ -550,20 +550,12 @@ function create_delivery_change_quantity(qty,element) {
     console.log(units_qty%cartons_qty)
 
     if(  !Number.isInteger(units_qty)  || !Number.isInteger(skos_qty)){
-        tr.find('.create_delivery_item_qty').addClass('error')
+        tr.find('.create_delivery_item_qty').addClass('warning')
     }else{
-        tr.find('.create_delivery_item_qty').removeClass('error')
-
+        tr.find('.create_delivery_item_qty').removeClass('warning')
     }
 
-    /*
-    if((units_qty%skos_qty)>0.001 || (units_qty%cartons_qty)>0.001 ){
-        tr.find('.create_delivery_item_qty').addClass('error')
-    }else{
-        tr.find('.create_delivery_item_qty').removeClass('error')
 
-    }
-    */
 
     $(element).removeClass('discreet')
 

@@ -154,6 +154,18 @@ html, body, textarea, button {
 
   }
 
+  input.warning {
+    color: $color_warning;
+    background: #ffebeb;
+
+    @include placeholder {
+      color: $color_warning;
+      opacity: .5;
+    }
+
+
+  }
+
   .marked_link {
 
     color: #6a6d91;

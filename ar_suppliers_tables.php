@@ -2177,7 +2177,7 @@ function order_items($_data, $db, $user, $account) {
                 floor($data['Purchase Order Submitted Units']) != $data['Purchase Order Submitted Units'] or floor($skos_qty) != $skos_qty
 
             ) {
-                $class = 'error';
+                $class = 'warning';
             } else {
                 $class = '';
             }
