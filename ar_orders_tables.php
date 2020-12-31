@@ -1139,7 +1139,7 @@ function orders($_data, $db, $user) {
 
 
     if ($parameters['parent'] == 'charge') {
-        $rtext_label = 'submited orders with this charge';
+        $rtext_label = 'submitted orders with this charge';
 
     }
 
@@ -1150,7 +1150,15 @@ function orders($_data, $db, $user) {
     $adata = array();
 
 
+
     if ($parameters['parent'] == 'store') {
+        $link_format = '/orders/%d/%d';
+    }elseif ($parameters['parent'] == 'campaign') {
+
+        $campaign= get_object('campaign', $parameters['parent_key']);
+
+        $parameters['parent_key'] = $campaign->get('Deal Campaign Store Key');
+
         $link_format = '/orders/%d/%d';
     } else {
         if ($parameters['parent'] == 'customer_client') {
