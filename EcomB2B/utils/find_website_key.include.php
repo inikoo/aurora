@@ -16,7 +16,7 @@
  */
 function get_website_key_from_domain($redis) {
     $redis_key = 'GET_WK2'.$_SERVER['SERVER_NAME'];
-    if ($redis->exists($redis_key)) {
+    if ($redis->exists($redis_key) and false) {
         return $redis->get($redis_key);
     } else {
         if (ENVIRONMENT=='DEVEL') {
@@ -61,7 +61,12 @@ function get_website_key_from_domain($redis) {
                 $redis_write->connect(REDIS_HOST, REDIS_PORT);
                 $redis_write->set($redis_key, $row['Website Key']);
                 return $row['Website Key'];
-            } else {
+            }  else if(defined('DEFAULT_WEBSITE_KEY')){
+                $redis_write = new Redis();
+                $redis_write->connect(REDIS_HOST, REDIS_PORT);
+                $redis_write->set($redis_key, DEFAULT_WEBSITE_KEY);
+                return DEFAULT_WEBSITE_KEY;
+            }else {
                 Sentry\captureMessage('Can not find website key from '.$_SERVER['SERVER_NAME']);
                 exit;
             }
