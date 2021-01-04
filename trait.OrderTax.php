@@ -658,19 +658,7 @@ trait OrderTax {
                         'reason_tax_code_selected' => 'billing to GBR',
                         'operations'               => ''
                     );
-                } else{
-                    return array(
-                        'code'                     => $tax_category['Outside']['code'],
-                        'name'                     => $tax_category['Outside']['name'],
-                        'rate'                     => $tax_category['Outside']['rate'],
-                        'reason_tax_code_selected' => 'outside EC',
-                        'operations'               => '<div>'._('Overseas').'</div>'
-
-                    );
-                }
-
-                /*
-                elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
+                } elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
 
 
                     if ($this->data['Order Tax Number Valid'] == 'Yes') {
@@ -758,7 +746,7 @@ trait OrderTax {
                     }
 
                 }
-                */
+                
 
 
                 break;
