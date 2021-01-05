@@ -34,7 +34,7 @@ function menu_in() {
 function menu_out() {
 
 
-    mouse_over_menu_link = falsef
+    mouse_over_menu_link = false
     if (!mouse_over_menu) {
 
 
