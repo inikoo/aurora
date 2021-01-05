@@ -461,7 +461,33 @@ class Order extends DB_Table {
                 );
 
                 return json_encode($address_fields);
+            case 'Clean Order Invoice Address':
+            case 'clean Order Delivery Address':
 
+                if ($key == 'Order Delivery Address') {
+                    $type = 'Delivery';
+                } else {
+                    $type = 'Invoice';
+                }
+
+
+                $address_fields = array(
+
+                    'Address Recipient'            => preg_replace('/"/',' ',$this->get($type.' Address Recipient')),
+                    'Address Organization'         => preg_replace('/"/',' ',$this->get($type.' Address Organization')),
+                    'Address Line 1'               => preg_replace('/"/',' ',$this->get($type.' Address Line 1')),
+                    'Address Line 2'               => preg_replace('/"/',' ',$this->get($type.' Address Line 2')),
+                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+                    'Address Dependent Locality'   => preg_replace('/"/',' ',$this->get($type.' Address Dependent Locality')),
+                    'Address Locality'             => preg_replace('/"/',' ',$this->get($type.' Address Locality')),
+                    'Address Administrative Area'  => preg_replace('/"/',' ',$this->get($type.' Address Administrative Area')),
+                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
+
+
+                );
+
+                return json_encode($address_fields);
             case 'Invoice Address':
             case 'Delivery Address':
 
@@ -1338,13 +1364,13 @@ class Order extends DB_Table {
                     }
 
 
-                    $telephone=$this->data['Order Telephone'];
-                    $email=$this->data['Order Email'];
-                    if($this->data['Order Customer Client Key']){
-                        $client=get_object('Customer Client',$this->data['Order Customer Client Key']);
-                        if($client->id){
-                            $telephone=$client->get_telephone();
-                            $email=$client->get('Customer Client Main Plain Email');
+                    $telephone = $this->data['Order Telephone'];
+                    $email     = $this->data['Order Email'];
+                    if ($this->data['Order Customer Client Key']) {
+                        $client = get_object('Customer Client', $this->data['Order Customer Client Key']);
+                        if ($client->id) {
+                            $telephone = $client->get_telephone();
+                            $email     = $client->get('Customer Client Main Plain Email');
                         }
                     }
 
@@ -1380,6 +1406,8 @@ class Order extends DB_Table {
                         'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
                         'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
                         'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
+                        'Delivery Note External Invoicer Key'        => $this->data['Order External Invoicer Key'],
+
                     );
 
 
@@ -2026,11 +2054,12 @@ class Order extends DB_Table {
 
             'Invoice Total Tax Amount' => $this->data['Order Total Tax Amount'],
 
-            'Invoice Payments Amount' => $this->data['Order Payments Amount'],
-            'Invoice To Pay Amount'   => $this->data['Order To Pay Amount'],
-            'Invoice Total Amount'    => $this->data['Order Total Amount'],
-            'Invoice Currency'        => $this->data['Order Currency'],
-            'Recargo Equivalencia'    => $this->metadata('RE')
+            'Invoice Payments Amount'       => $this->data['Order Payments Amount'],
+            'Invoice To Pay Amount'         => $this->data['Order To Pay Amount'],
+            'Invoice Total Amount'          => $this->data['Order Total Amount'],
+            'Invoice Currency'              => $this->data['Order Currency'],
+            'Recargo Equivalencia'          => $this->metadata('RE'),
+            'Invoice External Invoicer Key' => $this->data['Order External Invoicer Key'],
 
 
         );
@@ -2734,7 +2763,9 @@ class Order extends DB_Table {
             'Invoice To Pay Amount'                => 0,
             'Invoice Total Amount'                 => 0,
             'Invoice Currency'                     => $this->data['Order Currency'],
-            'Recargo Equivalencia'                 => $this->metadata('RE')
+            'Recargo Equivalencia'                 => $this->metadata('RE'),
+            'Invoice External Invoicer Key'        => $this->data['Order External Invoicer Key'],
+
 
         );
 
@@ -2797,13 +2828,13 @@ class Order extends DB_Table {
         $replacement_public_id = $this->get_replacement_public_id($this->data['Order Public ID'].$store->data['Store Replacement Suffix']);
 
 
-        $telephone=$this->data['Order Telephone'];
-        $email=$this->data['Order Email'];
-        if($this->data['Order Customer Client Key']){
-            $client=get_object('Customer Client',$this->data['Order Customer Client Key']);
-            if($client->id){
-                $telephone=$client->get_telephone();
-                $email=$client->get('Customer Client Main Plain Email');
+        $telephone = $this->data['Order Telephone'];
+        $email     = $this->data['Order Email'];
+        if ($this->data['Order Customer Client Key']) {
+            $client = get_object('Customer Client', $this->data['Order Customer Client Key']);
+            if ($client->id) {
+                $telephone = $client->get_telephone();
+                $email     = $client->get('Customer Client Main Plain Email');
             }
         }
 
@@ -2839,6 +2870,8 @@ class Order extends DB_Table {
             'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
             'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
             'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
+            'Delivery Note External Invoicer Key'        => $this->data['Order External Invoicer Key'],
+
         );
 
 

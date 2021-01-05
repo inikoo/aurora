@@ -211,6 +211,7 @@ class Public_Store {
             case 'Store Address':
             case 'Store Invoice Message':
             case 'Store Type':
+            case 'Store External Invoicer Key':
                 return $this->data[$key];
                 break;
 

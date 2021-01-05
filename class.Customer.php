@@ -1046,6 +1046,9 @@ class Customer extends Subject {
 
         $order_data['Recargo Equivalencia'] = $this->get('Customer Recargo Equivalencia');
 
+        $order_data['Order External Invoicer Key'] = $store->get('Store External Invoicer Key');
+
+
         $order = new Order('new', $order_data);
 
 
