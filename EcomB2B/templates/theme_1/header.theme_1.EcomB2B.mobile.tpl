@@ -31,9 +31,7 @@
             </a>
         </div>
         <div class="menu-search">
-            <input id="header_search_input" type="text" class="search-field" value="{t}Search{/t}..." onblur="if (this.value == '') {
-                this.value = '{t}Search{/t}...';}" onfocus="if (this.value == '{t}Search{/t}...') {
-                this.value = '';}" >
+            <input id="header_search_input" type="text" class="search-field" >
             <span id="header_search_icon" class="search-button"><i class="fa fa-fw fa-search"></i></span>
         </div>
         <div class="menu-options icon-background no-submenu-numbers sidebar-menu">
