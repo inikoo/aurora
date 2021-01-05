@@ -118,7 +118,7 @@
                             <td class="label">{t}Country{/t}</td>
                             <td class="show_buttons error super_discreet"><i class="fa fa-asterisk field_state"></i></td>
                             <td  id="{$field.id}_country_container"  _required="" field_type='string'  class="locality {$field.type} address_value "  field="{$field.id}_country" >
-                            <input  id="{$field.id}_country" class="input_field" value="x" type="hidden" field_name="Address Country 2 Alpha Code" >
+                            <input  id="{$field.id}_country" class="input_field" value="" type="hidden" field_name="Address Country 2 Alpha Code" >
                             <input id="{$field.id}_country_select" value="" class="country_select">
                             </td>
                             </tr>
