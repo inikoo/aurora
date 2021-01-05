@@ -108,7 +108,7 @@
     $("#set_price_value").on("input propertychange", function (evt) {
         window.clearTimeout(price_timeout);
 
-        var element=this
+        var element=this;
         price_timeout=setTimeout(function() {
             price_changed(element)
         }, 400);
@@ -177,7 +177,7 @@
     $("#set_rrp_value").on("input propertychange", function (evt) {
         window.clearTimeout(rrp_timeout);
 
-        var element=this
+        var element=this;
         rrp_timeout=setTimeout(function() {
             rrp_changed(element)
         }, 400);
