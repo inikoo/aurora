@@ -547,6 +547,10 @@ function get_object($object_name, $key, $load_other_data = false) {
         include_once 'class.Raw_Material.php';
             $object = new Raw_Material('id', $key);
             break;
+        case 'consignment':
+            include_once 'class.Consignment.php';
+            $object = new Consignment('id', $key);
+            break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
             break;
