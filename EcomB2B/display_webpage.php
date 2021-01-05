@@ -45,8 +45,8 @@ $smarty->addPluginsDir('./smarty_plugins');
 $smarty->registerFilter("output", "etag_output");
 
 
-if (defined('SENTRY_DNS_ECOM_JS')) {
-    $smarty->assign('sentry_js', SENTRY_DNS_ECOM_JS);
+if (defined('SENTRY_DNS_ECOM')) {
+    $smarty->assign('sentry_js', SENTRY_DNS_ECOM);
 }
 
 

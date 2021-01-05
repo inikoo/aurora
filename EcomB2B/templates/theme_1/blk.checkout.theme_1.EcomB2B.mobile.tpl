@@ -519,6 +519,7 @@
             },
             function (clientErr, clientInstance) {
                 if (clientErr) {
+                    Sentry.captureException(clientErr);
                     console.error(clientErr);
                     return;
                 }
@@ -530,7 +531,7 @@
                 }, function (err, dataCollectorInstance) {
                     if (err) {
                         // Handle error in creation of data collector
-
+                        Sentry.captureException(err);
                         return;
                     }
                     // At this point, you should access the dataCollectorInstance.deviceData value and provide it
@@ -546,6 +547,7 @@
                     client: clientInstance
                 }, function (threeDSecureErr, threeDSecureInstance) {
                     if (threeDSecureErr) {
+                        Sentry.captureException(threeDSecureErr);
                         console.error(threeDSecureErr);
                         return;
                     }
@@ -579,6 +581,7 @@
                     function (hostedFieldsErr, hostedFieldsInstance) {
                         if (hostedFieldsErr) {
                             console.error(hostedFieldsErr);
+                            Sentry.captureException(hostedFieldsErr);
                             return;
                         }
 
@@ -671,6 +674,8 @@
                                     }
                                 }, function (err, payload) {
                                     if (err) {
+                                        Sentry.captureException(err);
+
                                         console.error(err);
                                         return;
                                     }
@@ -776,7 +781,13 @@
 
 
                                         var secure_3d_msg='{t}Attempt the transaction again or use other payment method{/t}';
-                                        swal({ title:"{t}3D Secure verification fail{/t}!", text:secure_3d_msg, type:"error", html: true})
+                                        swal({ title:"{t}3D Secure verification failed{/t}!", text:secure_3d_msg, type:"error", html: true})
+
+                                        Sentry.addBreadcrumb({
+
+                                            message: "3D Secure verification failed",
+                                            data: payload
+                                        });
                                         return;
 
 
@@ -827,6 +838,8 @@
                     },
                     function (hostedFieldsErr, hostedFieldsInstance) {
                         if (hostedFieldsErr) {
+                            Sentry.captureException(hostedFieldsErr);
+
                             console.error(hostedFieldsErr);
                             return;
                         }
@@ -900,6 +913,8 @@
                                     }
                                 }, function (err, payload) {
                                     if (err) {
+                                        Sentry.captureException(err);
+
                                         console.error(err);
                                         return;
                                     }
@@ -1000,6 +1015,12 @@
 
                                         var secure_3d_msg='{t}Attempt the transaction again or use other payment method{/t}';
                                         swal({ title:"{t}3D Secure verification fail{/t}!", text:secure_3d_msg, type:"error", html: true})
+
+                                        Sentry.addBreadcrumb({
+
+                                            message: "3D Secure verification failed",
+                                            data: payload
+                                        });
                                         return;
 
 
