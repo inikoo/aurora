@@ -462,7 +462,7 @@ class Order extends DB_Table {
 
                 return json_encode($address_fields);
             case 'Clean Order Invoice Address':
-            case 'clean Order Delivery Address':
+            case 'Clean Order Delivery Address':
 
                 if ($key == 'Order Delivery Address') {
                     $type = 'Delivery';
