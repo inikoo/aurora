@@ -171,6 +171,9 @@ switch ($tipo) {
     case 'order.deals':
         order_deals(get_table_parameters(), $db, $user);
         break;
+    case 'consignments':
+        consignments(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -4104,4 +4107,76 @@ function order_deals($_data, $db, $user) {
 }
 
 
-?>
+
+function consignments($_data, $db, $user) {
+
+
+    $rtext_label = 'consignments';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $notes = '';
+
+        switch ($data['Consignment State']) {
+
+            case 'StandBy':
+                $state = _('Standby');
+                break;
+            case 'Open':
+                $state = _('Open');
+                break;
+            case 'Dispatched':
+                $state = _('Dispatched');
+                break;
+            case 'Cancelled':
+                $state = _('Cancelled');
+                break;
+
+            default:
+                $state = $data['Consignment State'];
+                break;
+        }
+
+
+
+
+
+        $adata[] = array(
+            'id' => (integer)$data['Consignment Key'],
+
+
+            'number'   => sprintf('<span class="link" onclick="change_view(\'consignments/%d\')">%s</span>',  $data['Consignment Key'], $data['Consignment Public ID']),
+
+            'date'    => strftime("%a %e %b %Y", strtotime($data['Consignment Date'].' +0:00')),
+            'boxes' => number($data['Consignment Number Boxes']),
+            'delivery_notes' => number($data['Consignment Number Delivery Notes']),
+            'amount' => money($data['Consignment Net Amount'],$data['Consignment Currency']),
+
+            'state'   => $state,
+            'notes'   => $notes,
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+

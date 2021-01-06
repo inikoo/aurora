@@ -2397,7 +2397,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_shipper_navigation($data, $smarty, $user, $db, $account);
 
                 case ('shipper.new'):
-                    return get_shipper_new_navigation($data, $smarty, $user, $db, $account);
+                    return get_shipper_new_navigation($data, $smarty);
+                case ('consignments'):
+                    return get_consignments_navigation($data, $smarty);
 
             }
 

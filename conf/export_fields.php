@@ -427,8 +427,35 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
         ),
-
         'consignments' => array(
+            array(
+                'name'    => '`Consignment Public ID`',
+                'label'   => _('Number'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Consignment State`',
+                'label'   => _('State'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Consignment Date`',
+                'label'   => _('Date'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Consignment Number Delivery Notes`',
+                'label'   => _('Delivery notes'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Consignment Number Boxes`',
+                'label'   => _('Boxes'),
+                'checked' => 1
+            ),
+        ),
+
+        'shipper_consignments' => array(
             array(
                 'name'    => '`Delivery Note ID`',
                 'label'   => _('ID'),

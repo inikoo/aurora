@@ -739,7 +739,7 @@ function get_tab_defaults_data() {
             'rpp'           => 100,
             'rpp_options'   => $default_rrp_options,
             'f_field'       => '',
-            'export_fields' => get_export_fields('consignments')
+            'export_fields' => get_export_fields('shipper_consignments')
 
         ),
         'order.payments'       => array(
@@ -1111,7 +1111,21 @@ function get_tab_defaults_data() {
             'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
             'elements'      => get_elements_option('delivery_notes')
         ),
+        'consignments'      => array(
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'number',
+            'from'          => '',
+            'to'            => '',
+            'period'        => 'all',
+            'elements_type' => array_keys(get_elements_option('consignments'))[0],
+            'elements'      => get_elements_option('consignments'),
+            'export_fields' => get_export_fields('consignments')
 
+        ),
         'returns_server' => array(
             'view'        => 'overview',
             'sort_key'    => 'id',

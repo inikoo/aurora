@@ -54,6 +54,48 @@ function get_delivery_notes_server_module() {
                 )
 
             ),
+            'consignments'         => array(
+                'type'      => 'navigation',
+                'label'     => _('Consignments'),
+                'icon'      => 'truck-moving',
+                'reference' => 'consignments',
+                'tabs'      => array(
+                    'consignments'         => array(
+                        'icon'  => 'truck-moving',
+                        'label' => _('Consignments'),
+
+                    ),
+
+                )
+
+            ),
+            'consignment'  => array(
+
+                'type'      => 'object',
+                'label'     => _('Consignment'),
+                'icon'      => '',
+                'reference' => '',
+                'tabs'      => array(
+                    'consignment.details'      => array(
+                        'label' => _('Settings'),
+                        'title' => _('Settings'),
+                        'icon'  => 'slider-h'
+                    ),
+                    'consignment.delivery_notes' => array(
+                        'label' => _('Consignments'),
+                        'icon'  => 'truck'
+                    ),
+
+                    'consignment.history' => array(
+                        'label' => _('History/Notes'),
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
 
             'shippers'         => array(
                 'type'      => 'navigation',

@@ -596,6 +596,35 @@ function get_elements_option($option) {
             )
 
         ),
+        'consignments'          => array(
+            'state' => array(
+                'label' => _('Dispatch state'),
+                'items' => array(
+                    'StandBy'    => array(
+                        'label'    => _('Stand by'),
+                        'selected' => true
+                    ),
+                    'Open'  => array(
+                        'label'    => _('Open'),
+                        'selected' => true
+                    ),
+                    'Closed'  => array(
+                        'label'    => _('Closed'),
+                        'selected' => true
+                    ),
+                    'Dispatched'     => array(
+                        'label'    => _('Dispatched'),
+                        'selected' => true
+                    ),
+                    'Cancelled'     => array(
+                        'label'    => _('Cancelled'),
+                        'selected' => true
+                    ),
+
+                )
+            )
+
+        ),
 
         'products' => array(
             'status' => array(

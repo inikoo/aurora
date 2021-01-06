@@ -2810,6 +2810,20 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 }
                 break;
 
+            case 'consignments':
+
+                if (!$user->can_view('orders')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+                $module = 'delivery_notes_server';
+                $section = 'consignments';
+
+                $parent     = 'account';
+                $parent_key = 1;
+
+                break;
 
             case 'order':
 
@@ -5859,6 +5873,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 $module  = 'utils';
                 $section = 'fire';
 
+
             default:
 
                 break;
@@ -5960,6 +5975,8 @@ function parse_tabs($module, $section, $_data, $modules) {
 
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
                 print "problem with M: $module S: >$section<";
+
+               print_r($modules);
             }
 
 
