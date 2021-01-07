@@ -1035,7 +1035,7 @@ class data_entry_picking_aid {
 
         if ($state_index < 70) {
 
-            if ($this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
+            if (  isset($this->shipper) and    $this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
                 $service = '';
                 if (isset($this->data['service'])) {
                     $service = $this->data['service'];
