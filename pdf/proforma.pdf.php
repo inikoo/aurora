@@ -175,16 +175,22 @@ if ($result = $db->query($sql)) {
             $desc             = $name;
             $row['Qty_Units'] = $units * $row['Order Quantity'];
 
-            $unit_cost = $amount / $row['Qty_Units'];
-            if (preg_match('/0000$/', $unit_cost)) {
-                $unit_cost = money($unit_cost, $currency, $_locale, 'NO_FRACTION_DIGITS');
 
-            } elseif (preg_match('/00$/', $unit_cost)) {
-                $unit_cost = money($unit_cost, $currency, $_locale);
+            if($row['Qty_Units']!=0) {
 
-            } else {
-                $unit_cost = money($unit_cost, $currency, $_locale, 'FOUR_FRACTION_DIGITS');
+                $unit_cost = $amount / $row['Qty_Units'];
+                if (preg_match('/0000$/', $unit_cost)) {
+                    $unit_cost = money($unit_cost, $currency, $_locale, 'NO_FRACTION_DIGITS');
 
+                } elseif (preg_match('/00$/', $unit_cost)) {
+                    $unit_cost = money($unit_cost, $currency, $_locale);
+
+                } else {
+                    $unit_cost = money($unit_cost, $currency, $_locale, 'FOUR_FRACTION_DIGITS');
+
+                }
+            }else{
+                $unit_cost='';
             }
 
 
