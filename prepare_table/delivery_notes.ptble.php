@@ -10,6 +10,7 @@ $wheref   = '';
 $group_by = '';
 
 
+
 if (isset($parameters['period'])) {
     include_once('utils/date_functions.php');
     list(
@@ -99,6 +100,11 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     $table          = '`Invoice Delivery Note Bridge` B left join  `Delivery Note Dimension` D  on (D.`Delivery Note Key`=B.`Delivery Note Key`)  ';
     $where          = sprintf('where  B.`Invoice Key`=%d  ', $parameters['parent_key']);
     $where_interval = preg_replace('/Delivery Note Date/', 'Date',$where_interval);
+
+
+}elseif ($parameters['parent'] == 'consignment') {
+
+    $where = sprintf('where  `Delivery Note Consignment Key`=%d  ', $parameters['parent_key']);
 
 
 } else {

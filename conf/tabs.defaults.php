@@ -1126,6 +1126,39 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('consignments')
 
         ),
+        'consignment.delivery_notes' => array(
+            'view'          => 'overview',
+            'sort_key'      => 'number',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'number',
+            'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
+            'export_fields' => get_export_fields('delivery_notes')
+
+        ),
+        'consignment.parts' => array(
+            'view'          => 'overview',
+            'sort_key'      => 'part',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'reference',
+            //'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
+            //'export_fields' => get_export_fields('delivery_notes')
+
+        ),
+        'consignment.tariff_codes' => array(
+            'view'          => 'overview',
+            'sort_key'      => 'tariff_code',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'tariff_code',
+          //  'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
+          //  'export_fields' => get_export_fields('delivery_notes')
+
+        ),
         'returns_server' => array(
             'view'        => 'overview',
             'sort_key'    => 'id',

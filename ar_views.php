@@ -1936,6 +1936,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             include_once 'conf/shipper_chooser.php';
             $html = get_new_shipper_showcase($data, $smarty, $account);
             break;
+        case 'consignment':
+            include_once 'showcase/consignment.show.php';
+            $html = get_consignment_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -2400,6 +2404,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_shipper_new_navigation($data, $smarty);
                 case ('consignments'):
                     return get_consignments_navigation($data, $smarty);
+                case ('consignment'):
+                    return get_consignment_navigation($data, $smarty, $user, $db);
 
             }
 

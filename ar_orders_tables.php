@@ -174,6 +174,12 @@ switch ($tipo) {
     case 'consignments':
         consignments(get_table_parameters(), $db, $user);
         break;
+    case 'consignment_parts':
+        consignment_parts(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'consignment_tariff_codes':
+        consignment_tariff_codes(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1153,12 +1159,11 @@ function orders($_data, $db, $user) {
     $adata = array();
 
 
-
     if ($parameters['parent'] == 'store') {
         $link_format = '/orders/%d/%d';
-    }elseif ($parameters['parent'] == 'campaign') {
+    } elseif ($parameters['parent'] == 'campaign') {
 
-        $campaign= get_object('campaign', $parameters['parent_key']);
+        $campaign = get_object('campaign', $parameters['parent_key']);
 
         $parameters['parent_key'] = $campaign->get('Deal Campaign Store Key');
 
@@ -4107,7 +4112,6 @@ function order_deals($_data, $db, $user) {
 }
 
 
-
 function consignments($_data, $db, $user) {
 
 
@@ -4145,22 +4149,19 @@ function consignments($_data, $db, $user) {
         }
 
 
-
-
-
         $adata[] = array(
             'id' => (integer)$data['Consignment Key'],
 
 
-            'number'   => sprintf('<span class="link" onclick="change_view(\'consignments/%d\')">%s</span>',  $data['Consignment Key'], $data['Consignment Public ID']),
+            'number' => sprintf('<span class="link" onclick="change_view(\'consignments/%d\')">%s</span>', $data['Consignment Key'], $data['Consignment Public ID']),
 
-            'date'    => strftime("%a %e %b %Y", strtotime($data['Consignment Date'].' +0:00')),
-            'boxes' => number($data['Consignment Number Boxes']),
+            'date'           => strftime("%a %e %b %Y", strtotime($data['Consignment Date'].' +0:00')),
+            'boxes'          => number($data['Consignment Number Boxes']),
             'delivery_notes' => number($data['Consignment Number Delivery Notes']),
-            'amount' => money($data['Consignment Net Amount'],$data['Consignment Currency']),
+            'amount'         => money($data['Consignment Net Amount'], $data['Consignment Currency']),
 
-            'state'   => $state,
-            'notes'   => $notes,
+            'state' => $state,
+            'notes' => $notes,
 
         );
 
@@ -4180,3 +4181,130 @@ function consignments($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function consignment_parts($_data, $db, $user, $account) {
+
+
+    include_once('class.DeliveryNote.php');
+    include_once('utils/order_handing_functions.php');
+
+
+    // global $_locale;// fix this locale stuff
+
+
+    $rtext_label = 'part';
+
+
+    //$dn = new DeliveryNote($_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $description = $data['Part Recommended Product Unit Name'];
+
+
+        if ($data['Part UN Number']) {
+            $description .= ' <small style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</small>';
+        }
+
+
+        $adata[] = array(
+            'id'              => (integer)$data['Part SKU'],
+            'reference'       => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'description'     => $description,
+            'tariff_code'     => $data['Part Tariff Code'],
+            'quantity_units'  => number($data['quantity_units']),
+            'weight'          => sprintf('<span title="%s">%s</span>',weight($data['weight']),weight($data['weight'], 'Kg', 1, false, true)),
+
+            'origin'          => $data['Part Origin Country Code'],
+            'invoiced_amount' => money($data['invoiced_amount'], $account->get('Account Currency')),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function consignment_tariff_codes($_data, $db, $user, $account) {
+
+
+    // include_once('class.DeliveryNote.php');
+    // include_once('utils/order_handing_functions.php');
+
+
+    // global $_locale;// fix this locale stuff
+
+
+    $rtext_label = 'item';
+
+
+    //$dn = new DeliveryNote($_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        if($data['parts']==1){
+            $description = $data['Part Recommended Product Unit Name'];
+
+        }else{
+            $description = $data['description'];
+
+        }
+
+
+        $adata[] = array(
+            'id'              => (integer)$data['Part SKU'],
+            'reference'       => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'description'     => $description,
+            'tariff_code'     => $data['Part Tariff Code'],
+            'quantity_units'  => number($data['quantity_units']),
+            'weight'          => sprintf('<span title="%s">%s</span>',weight($data['weight']),weight($data['weight'], 'Kg', 1, false, true)),
+            'origin'          => $data['origin'],
+            'invoiced_amount' => money($data['invoiced_amount'], $account->get('Account Currency')),
+            'parts'           => number($data['parts']),
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

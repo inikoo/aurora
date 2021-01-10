@@ -608,7 +608,6 @@ class DeliveryNote extends DB_Table {
             case 'Date Created':
 
                 return strftime("%e %b %y", strtotime($this->data['Delivery Note '.$key].' +0:00'));
-                break;
             case 'Order Datetime Placed':
 
                 return strftime("%e %b %y %H:%M %Z", strtotime($this->data['Delivery Note Order Date Placed'].' +0:00'));

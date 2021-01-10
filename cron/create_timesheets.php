@@ -16,7 +16,6 @@ require_once 'utils/date_functions.php';
 
 $mode='this HR year';
 
-
 if($mode=='this HR year'){
 
     if(date('m-d')!=$account->get('Account HR Start Year')){
@@ -70,6 +69,7 @@ if ($result = $db->query($sql)) {
 
 
         print "$from $to\n";
+        exit;
 
         if ($from and $to) {
 

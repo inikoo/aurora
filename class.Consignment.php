@@ -159,6 +159,17 @@ class Consignment extends DB_Table {
 
         switch ($key) {
 
+            case 'Creation Date':
+
+            case 'Order Date Placed':
+            case 'Date Created':
+
+                if($this->data['Consignment '.$key]!=''){
+                    return strftime("%e %b %y", strtotime($this->data['Consignment '.$key].' +0:00'));
+
+                }else{
+                    return '';
+                }
 
 
         }
@@ -219,7 +230,6 @@ class Consignment extends DB_Table {
         $old_state = $this->get('Consignment State');
 
         switch ($value) {
-
 
 
 

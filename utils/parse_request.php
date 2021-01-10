@@ -2823,6 +2823,18 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 $parent     = 'account';
                 $parent_key = 1;
 
+                if (isset($view_path[0])) {
+
+                    if (is_numeric($view_path[0])) {
+                        $section = 'consignment';
+                        $object  = 'consignment';
+
+                        $parent     = '';
+                        $parent_key = '';
+                        $key        = $view_path[0];
+                    }
+                }
+
                 break;
 
             case 'order':

@@ -76,21 +76,32 @@ function get_delivery_notes_server_module() {
                 'icon'      => '',
                 'reference' => '',
                 'tabs'      => array(
-                    'consignment.details'      => array(
-                        'label' => _('Settings'),
-                        'title' => _('Settings'),
-                        'icon'  => 'slider-h'
-                    ),
+
                     'consignment.delivery_notes' => array(
-                        'label' => _('Consignments'),
+                        'label' => _('Delivery notes'),
                         'icon'  => 'truck'
+                    ),
+                    'consignment.parts' => array(
+                        'label' => _('Parts'),
+                        'icon'  => 'box'
+                    ),
+                    'consignment.tariff_codes' => array(
+                        'label' => _('Tariff codes'),
+                        'icon'  => ''
                     ),
 
                     'consignment.history' => array(
-                        'label' => _('History/Notes'),
+                        'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
+                    ),
+                    'consignment.details'      => array(
+                        'label' => '',
+                        'title' => _('Data'),
+                        'icon'  => 'database',
+                        'class' => 'right icon_only'
+
                     ),
 
                 )
