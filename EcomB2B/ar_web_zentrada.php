@@ -89,6 +89,10 @@ while ($row = $stmt->fetch()) {
     $short_product_description = str_replace("</p>", "<br />", $short_product_description);
 
 
+    if($row['Product Units Per Case']==0){
+        $row['Product Units Per Case']=1;
+    }
+
     $data[] = [
         'market_place_allocation'      => 'EU',
         'item_number'                  => $row['Product Code'],
@@ -105,7 +109,7 @@ while ($row = $stmt->fetch()) {
         'VAT'=>'',
         'quantity_of_units_per_package'=>$row['Product Units Per Case'],
         'minimum_order_quantity_in_packing_units'=>1,
-        'net_price_per_unit'=>$row['Product Price'],
+        'net_price_per_unit'=>$row['Product Price']/$row['Product Units Per Case'],
         'promotion_discount'=>'',
         'volumedbasedpricing_quantity1'=>'',
         'volumebasedpricing_price1'=>'',
