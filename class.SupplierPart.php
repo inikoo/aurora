@@ -66,13 +66,18 @@ class SupplierPart extends DB_Table {
     }
 
     function find($raw_data, $options) {
+
+
+
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
-                if (array_key_exists($key, $this->editor)) {
+                if (array_key_exists($key, $this->editor)  or in_array($key,['Subject','Subject Key']) ) {
                     $this->editor[$key] = $value;
                 }
             }
         }
+
+
 
         $this->found     = false;
         $this->found_key = false;

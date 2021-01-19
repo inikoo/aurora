@@ -87,3 +87,4 @@ bootstrap.sh
 post_bootstrap.sh
 Vagrantfile
 *.lock
+cron/set_up_spain_copy_suppliers_to.php
