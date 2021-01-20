@@ -281,6 +281,7 @@ trait OrderTax {
 
     function get_tax_data() {
 
+        $account=get_object('Account',1);
 
         include_once 'utils/geography_functions.php';
 
@@ -695,9 +696,30 @@ trait OrderTax {
                                 $tax_category_name = $row['Tax Category Name'];
                         }
 
+                        $_tax_code= $row['Tax Category Code'];
+
+                        if($account->get('Account Country Code')!=$store->data['Store Tax Country Code']){
+
+                            switch ($_tax_code){
+                                case 'S1':
+                                    $_tax_code='XS1';
+                                    break;
+                                case 'OUT':
+                                    $_tax_code='XOU';
+                                    break;
+                                case 'EX':
+                                    $_tax_code='XEX';
+                                    break;
+                                case 'EU':
+                                    $_tax_code='XEU';
+                                    break;
+
+                            }
+
+                        }
 
                         $tax_category[$row['Tax Category Type']] = array(
-                            'code' => $row['Tax Category Code'],
+                            'code' => $_tax_code,
                             'name' => $tax_category_name,
                             'rate' => $row['Tax Category Rate']
                         );
