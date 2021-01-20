@@ -1,5 +1,4 @@
 {assign deliveries $order->get_deliveries('objects')}
-
 <div class="showcase_purchase_order">
 <div class="timeline_horizontal purchase_order cancelled {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
     <ul class="timeline " id="timeline">
@@ -31,7 +30,7 @@
             class="li   {if $order->get('State Index')>=60}hide{/if}  {if $order->get('State Index')>=70 and $order->get('Max Supplier Delivery State Index')>=70   }complete{elseif $order->get('Max Supplier Delivery State Index')>=70 }semi_complete{/if}">
             <div class="label">
                 <span class="state ">
-                                        <span class="state manufacturing_label">{t}Estimated dispatch date{/t}</span>
+                                        <span class="state manufacturing_label">{t}Estimated dispatch{/t}</span>
                 </span>
             </div>
             <div class="timestamp">
@@ -58,7 +57,7 @@
 
             <li id="estimated_send_node" class=" li {if $order->get('State Index')>=80  }hide{/if}"  ">
                 <div class="label">
-                    <span class="state ">{t}Estimated delivery date{/t} <span></i></span></span>
+                    <span class="state ">{t}Estimated delivery{/t} <span></i></span></span>
                 </div>
                 <div class="timestamp">
                     <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp;
