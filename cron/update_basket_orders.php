@@ -32,7 +32,7 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External'  order by `Order Date` desc");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External'    order by `Order Date` desc");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
@@ -41,6 +41,7 @@ if ($result = $db->query($sql)) {
 
       //  print $order->id.' '.$order->get('Order Date')."\n";
 
+        $order->update_tax();
 
         $order->fast_update(
             array(

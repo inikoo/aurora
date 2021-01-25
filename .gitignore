@@ -88,3 +88,5 @@ post_bootstrap.sh
 Vagrantfile
 *.lock
 cron/set_up_spain_copy_suppliers_to.php
+cron/fix_wrong_order_tax.php
+cron/fix_wrong_tax.php
