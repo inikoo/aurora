@@ -2319,15 +2319,16 @@ class PurchaseOrder extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
+            $sql = sprintf(
+                "DELETE FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
+            );
+            $this->db->exec($sql);
 
             $sql = sprintf(
                 "DELETE FROM `Purchase Order Dimension` WHERE `Purchase Order Key`=%d", $this->id
             );
             $this->db->exec($sql);
-            $sql = sprintf(
-                "DELETE FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
-            );
-            $this->db->exec($sql);
+
 
 
             $sql = sprintf(
