@@ -1757,7 +1757,7 @@ class Invoice extends DB_Table {
 
                 if (isset($categorize_invoices_functions[$row['Invoice Category Function Code']])) {
 
-                    if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($invoice_data, $row['Invoice Category Function Argument'])) {
+                    if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($invoice_data, $row['Invoice Category Function Argument'],$this->db)) {
                         $category_key = $row['Invoice Category Key'];
                         break;
                     }
@@ -1767,6 +1767,7 @@ class Invoice extends DB_Table {
 
             }
         }
+
 
 
         if ($category_key) {
@@ -1779,6 +1780,9 @@ class Invoice extends DB_Table {
 
             if ($category->id) {
                 $category->associate_subject($this->id);
+
+
+
                 $this->fast_update(
                     array(
                         'Invoice Category Key' => $category->id
