@@ -41,6 +41,12 @@ $available_reports = array(
         'GroupLabel' => _('Sales'),
 
     ),
+    'report_orders_components' => array(
+        'Label'      => _('Dispatched orders X-rays'),
+        'Group'      => 'sales',
+        'GroupLabel' => _('Sales components'),
+
+    ),
 
     'report_orders' => array(
         'Label'      => _('Dispatched orders'),
