@@ -30,6 +30,7 @@ className: "width_20"
 },
 {
 name: "country",
+editable: false,
 label: "{t}Country{/t}",
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
