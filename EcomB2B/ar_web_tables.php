@@ -456,10 +456,10 @@ function get_clients_table_html($data, $customer) {
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 500,
         'rpp_options' => [
             500,
-            100
+            1000
         ],
         'f_field'     => 'name',
         //    'f_period'      => 'ytd',
