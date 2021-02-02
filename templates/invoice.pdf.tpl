@@ -83,15 +83,13 @@
     <table width="100%" style="font-size: 9pt;" >
 
         <tr>
-            {*} {if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}
-            <td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" title="" alt=""></td>
-            {/if} {*}
-            <td style="width:250px;padding-left:10px;">{$store->get('Store Name')}
+
+            <td style="width:250px;padding-left:10px;">{$invoice->metadata('store_name')}
                 <div style="font-size:7pt">
-                    {$store->get('Store Address')|nl2br}
+                    {$invoice->metadata('store_address')|nl2br}
                 </div>
                 <div style="font-size:7pt">
-                    {$store->get('Store URL')}
+                    {$invoice->metadata('store_url')}
                 </div>
             </td>
 
@@ -115,14 +113,14 @@
         <tr>
         <tr>
             <td width="33%" style="color:#000;text-align: left;">
-                <small> {$store->get('Store Company Name')}<br> {if $store->get('Store VAT Number')!=''}{t}VAT Number{/t}:
-                        <b>{$store->get('Store VAT Number')}</b>
+                <small> {$invoice->metadata('store_company_name')}<br> {if $invoice->metadata('store_vat_number')!=''}{t}VAT Number{/t}:
+                        <b>{$invoice->metadata('store_vat_number')}</b>
                         <br>
-                    {/if} {if $store->get('Store Company Number')!=''}{t}Registration Number{/t}: {$store->get('Store Company Number')}{/if} </small>
+                    {/if} {if $invoice->metadata('store_company_number')!=''}{t}Registration Number{/t}: {$invoice->metadata('store_company_number')}{/if} </small>
             </td>
             <td width="33%" style="color:#000;text-align: center">{t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}</td>
             <td width="34%" style="text-align: right;">
-                <small> {if $store->get('Store Telephone')!=''}{$store->get('Store Telephone')}<br>{/if} {if $store->get('Store Email')!=''}{$store->get('Store Email')}{/if} </small>
+                <small> {if $invoice->metadata('store_telephone')!=''}{$invoice->metadata('store_telephone')}<br>{/if} {if $invoice->metadata('store_email')!=''}{$invoice->metadata('store_email')}{/if} </small>
             </td>
         </tr>
     </table>
@@ -384,9 +382,9 @@
 {/if}
 
 
-{if $store->get('Store Invoice Message')!=''}
+{if $invoice->metadata('store_message')!=''}
     <div style="text-align: center; font-style: italic;">
-        {include file="string:{$store->get('Store Invoice Message')}" }
+        {include file="string:{$invoice->metadata('store_message')}" }
     </div>
     <br>
 {/if}

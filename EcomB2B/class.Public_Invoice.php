@@ -16,11 +16,19 @@ include_once 'class.DBW_Table.php';
 
 class Public_Invoice extends DBW_Table {
 
+    /**
+     * @var array
+     */
+    public $metadata;
+
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $arg4 = false) {
 
         $this->table_name      = 'Invoice';
         $this->ignore_fields   = array('Invoice Key');
         $this->update_customer = true;
+
+        $this->metadata        = array();
+
         global $db;
         $this->db = $db;
 
@@ -57,6 +65,8 @@ class Public_Invoice extends DBW_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Invoice Key'];
+            $this->metadata = json_decode($this->data['Invoice Metadata'], true);
+
         }
 
 
@@ -314,8 +324,11 @@ class Public_Invoice extends DBW_Table {
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
 
 }
 
 
-?>
