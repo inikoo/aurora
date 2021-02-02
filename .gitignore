@@ -91,3 +91,4 @@ cron/set_up_spain_copy_suppliers_to.php
 cron/fix_wrong_order_tax.php
 cron/fix_wrong_tax.php
 cron/create_invoice_categories.php
+cron/fix_invoice_unmutable_data.php

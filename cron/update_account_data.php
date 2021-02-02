@@ -77,7 +77,7 @@ if ($result = $db->query($sql)) {
         $store->update_orders();
 
 
-        $store->update(
+        $store->fast_update(
             array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders Dispatch Approved Number'))
 
         );
