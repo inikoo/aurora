@@ -105,6 +105,13 @@ function get_available_locales() {
             'Language Name'          => 'Portugues',
             'Language Original Name' => 'Portugues'
         ),
+        'ro_RO.UTF-8' => array(
+            'Locale'                 => 'ro_RO.UTF-8',
+            'Flag'                   => 'ro',
+            'Language Code'          => 'ro',
+            'Language Name'          => 'Romanian',
+            'Language Original Name' => 'limba română'
+        ),
         'sk_SK.UTF-8' => array(
             'Locale'                 => 'sk_SK.UTF-8',
             'Flag'                   => 'sk',
