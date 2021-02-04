@@ -1,0 +1,1 @@
+ALTER TABLE `Supplier Delivery Dimension` CHANGE `Supplier Delivery State` `Supplier Delivery State` ENUM('InProcess','Consolidated','Dispatched','Received','Checked','ReadyToPlace','Placed','Costing','Cancelled','InvoiceChecked') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';

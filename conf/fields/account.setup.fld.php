@@ -23,6 +23,8 @@ $options_locale = array(
     'it_IT' => 'it_IT '._('Italian'),
     'sk_SK' => 'sk_SK '._('Slovak'),
     'pt_PT' => 'pt_PT '._('Portuguese'),
+    'ro_RO' => 'ro_RO '._('Romanian'),
+
 );
 asort($options_locale);
 

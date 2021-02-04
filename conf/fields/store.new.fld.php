@@ -45,6 +45,7 @@
         'sk_SK' => 'sk_SK '._('Slovak'),
         'nl_NL' => 'nl_NL '._('Dutch'),
         'pt_PT' => 'pt_PT '._('Portuguese'),
+        'ro_RO' => 'ro_RO '._('Romanian'),
     );
     asort($options_locale);
 

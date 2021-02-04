@@ -1,0 +1,1 @@
+ALTER TABLE `Store Dimension` CHANGE `Store Locale` `Store Locale` ENUM('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT','hu_HU','da_DK','nl_NL','cs_CZ','ro_Ro') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'en_GB';
