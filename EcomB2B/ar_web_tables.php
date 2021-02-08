@@ -456,9 +456,8 @@ function get_clients_table_html($data, $customer) {
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
-        'rpp'         => 500,
+        'rpp'         => 1000,
         'rpp_options' => [
-            500,
             1000
         ],
         'f_field'     => 'name',
