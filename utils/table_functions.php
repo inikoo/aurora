@@ -564,6 +564,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s clocking-in machines', '%s clocking-in machines', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'tariff code') {
+        return sprintf(
+            ngettext('%s tariff code', '%s tariff codes', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -1105,6 +1109,12 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s job order of %s', '%s job orders of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'tariff code') {
+        return sprintf(
+            ngettext(
+                '%s tariff code of %s', '%s tariff codea of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } else {

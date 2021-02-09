@@ -74,14 +74,21 @@ function get_delivery_notes_module() {
                 'tabs'  => array(
 
 
-                    'delivery_note.items' => array(
-                        'label' => _(
-                            'Items'
-                        ),
+                    'delivery_note.items'        => array(
+                        'label' => _('SKOs ordered'),
                         'icon'  => 'bars'
                     ),
 
+                    'delivery_note.units'        => array(
+                        'label' => _('Units'),
+                        'icon'  => 'dot-circle'
+                    ),
+                    'delivery_note.tariff_codes' => array(
+                        'label' => _('Tariff codes'),
+                        'icon'  => 'compress-arrows-alt'
+                    ),
 
+                    /*
                     'delivery_note.fast_track_packing' => array(
                         'label' => _('Fast track packing'),
                         'icon'  => 'bolt'
@@ -91,23 +98,21 @@ function get_delivery_notes_module() {
                         'label' => _('Picking aid'),
                         'icon'  => 'hand-lizard'
                     ),
-
-
-                    'delivery_note.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
+*/
                     'delivery_note.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
+                        'label' => _('History'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
 
 
-                    )
+                    ),
+                    'delivery_note.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'class' => 'right icon_only'
+
+                    ),
+
                     /*
                     ,
                     'delivery_note.orders'   => array(

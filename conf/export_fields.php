@@ -427,6 +427,23 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
         ),
+
+        'delivery_note.parts' => array(
+            array(
+                'name'    => '`Part Reference`',
+                'label'   => _('Reference'),
+                'checked' => 1
+            ),
+
+        ),
+        'delivery_note.tariff_ces' => array(
+            array(
+                'name'    => '`Part Tariff Code`',
+                'label'   => _('Tariff code'),
+                'checked' => 1
+            ),
+
+        ),
         'consignments' => array(
             array(
                 'name'    => '`Consignment Public ID`',

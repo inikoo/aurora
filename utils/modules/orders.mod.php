@@ -169,41 +169,37 @@ function get_orders_module() {
                 'tabs' => array(
 
 
-                    'delivery_note.items' => array(
-                        'label' => _(
-                            'Items'
-                        ),
+                    'delivery_note.items'    => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'delivery_note.tariff_codes'    => array(
+                        'label' => _('Tariff codes'),
                         'icon'  => 'bars'
                     ),
 
 
-                    'delivery_note.picking_aid' => array(
-                        'label' => _('Picking aid'),
-                        'icon'  => 'fa-hand-lizard'
-                    ),
+                    /*
+                                        'delivery_note.picking_aid' => array(
+                                            'label' => _('Picking aid'),
+                                            'icon'  => 'fa-hand-lizard'
+                                        ),
 
+                    */
                     'delivery_note.details'  => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
                     'delivery_note.history'  => array(
-                        'label' => _(
-                            'History'
-                        ),
+                        'label' => _('History'),
                         'icon'  => 'road'
                     ),
                     'delivery_note.orders'   => array(
-                        'label' => _(
-                            'Orders'
-                        ),
+                        'label' => _('Orders'),
                         'icon'  => 'shopping-cart'
                     ),
                     'delivery_note.invoices' => array(
-                        'label' => _(
-                            'Invoices'
-                        ),
+                        'label' => _('Invoices'),
                         'icon'  => 'file-invoice-dollar'
                     ),
                 )

@@ -529,7 +529,7 @@
 <span id="dn_data" class="hide" dn_key="{$delivery_note->id}" picker_key="{$delivery_note->get('Delivery Note Assigned Picker Key')}" packer_key="{$delivery_note->get('Delivery Note Assigned Packer Key')}"
       no_picker_msg="{t}Please assign picker{/t}" no_packer_msg="{t}Please assign packer{/t}"></span>
 
-<div class="table_new_fields delivery_note_handling_fields   {if $delivery_note->get('State Index')<=10    }hide{/if} " style="border-bottom:1px solid #ccc;">
+<div class="table_new_fields delivery_note_handling_fields   {if $delivery_note->get('State Index')<=10 or  $delivery_note->get('State Index')==100  }hide{/if} " style="border-bottom:1px solid #ccc;">
 
     <div style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
 
@@ -577,7 +577,7 @@
         </table>
 
     </div>
-    <div style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
+    <div  style="align-items: stretch;flex: 1;padding:0px 20px;border-left:1px solid #ccc">
         <table style="width:100%;min-height: 100px;" >
 
             <tr>

@@ -853,6 +853,30 @@ function get_tab_defaults_data() {
             'rpp'         => 1000,
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'reference',
+            'export_fields' => get_export_fields('delivery_note.parts')
+
+
+        ),
+        'delivery_note.units'              => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 1000,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'reference',
+            'export_fields' => get_export_fields('delivery_note.units')
+
+
+        ),
+        'delivery_note.tariff_codes'              => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 1000,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'tariff_code',
+            'export_fields' => get_export_fields('delivery_note.tariff_codes')
+
 
         ),
         'delivery_note.picking_aid'        => array(

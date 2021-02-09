@@ -49,7 +49,6 @@ switch ($tipo) {
     case 'orders_in_process':
         orders_in_process(get_table_parameters(), $db, $user);
         break;
-
     case 'orders_in_warehouse':
         orders_in_warehouse(get_table_parameters(), $db, $user);
         break;
@@ -71,16 +70,12 @@ switch ($tipo) {
     case 'orders_dispatched_today':
         orders_dispatched_today(get_table_parameters(), $db, $user, $account);
         break;
-
-
     case 'orders_server':
         orders_server(get_table_parameters(), $db, $user);
         break;
     case 'orders':
         orders(get_table_parameters(), $db, $user);
         break;
-
-
     case 'delivery_notes':
         delivery_notes(get_table_parameters(), $db, $user);
         break;
@@ -96,7 +91,6 @@ switch ($tipo) {
     case 'delivery_notes_group_by_store':
         delivery_notes_group_by_store(get_table_parameters(), $db, $user);
         break;
-
     case 'order.items':
         order_items(get_table_parameters(), $db, $user);
         break;
@@ -140,7 +134,12 @@ switch ($tipo) {
     case 'delivery_note.items':
         delivery_note_items(get_table_parameters(), $db, $user);
         break;
-
+    case 'delivery_note.units':
+        delivery_note_units(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'delivery_note.tariff_codes':
+        delivery_note_tariff_codes(get_table_parameters(), $db, $user, $account);
+        break;
     case 'delivery_note.picking_aid':
         delivery_note_picking_aid(get_table_parameters(), $db, $user);
         break;
@@ -2624,7 +2623,7 @@ function delivery_note_items($_data, $db, $user) {
     global $_locale;// fix this locale stuff
 
 
-    $rtext_label = 'item';
+    $rtext_label = 'part';
 
 
     //$dn = new DeliveryNote($_data['parameters']['parent_key']);
@@ -2641,7 +2640,6 @@ function delivery_note_items($_data, $db, $user) {
 
 
         $description = $data['Part Package Description'];
-
 
         if ($data['Part UN Number']) {
             $description .= ' <small style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</small>';
@@ -2691,6 +2689,155 @@ function delivery_note_items($_data, $db, $user) {
             'overview_picked'   => number($data['Picked']),
             'overview_problem'  => '<span class="'.($data['Out of Stock'] == 0 ? 'very_discreet' : 'error').'">'.number($data['Out of Stock']).'</span>',
             'overview_state'    => $state
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function delivery_note_tariff_codes($_data, $db, $user, $account) {
+
+
+    include_once('class.DeliveryNote.php');
+    include_once('utils/order_handing_functions.php');
+
+
+    global $_locale;// fix this locale stuff
+
+
+    $rtext_label = 'tariff code';
+
+
+    //$dn = new DeliveryNote($_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    //print $sql;
+    $adata = array();
+    $i     = 1;
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $dangerous_goods = '';
+        $references      = '';
+
+
+        if ($data['dangerous_goods'] != '') {
+            foreach (preg_split('/\,/', $data['dangerous_goods']) as $dangerous_good_code) {
+                $dangerous_goods .= ' <small style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%;margin-right:5px">'.$dangerous_good_code.'</small>';
+
+            }
+
+        }
+
+        if ($data['references'] != '') {
+            foreach (preg_split('/\,/', $data['references']) as $_part_data) {
+
+                $part_data = preg_split('/\|/', $_part_data);
+
+
+                $references .= sprintf('<span class="link small" onclick="change_view(\'part/%d\')">%s</span>, ', $part_data[0], $part_data[1]);
+
+            }
+
+        }
+        $references = preg_replace('/, $/', '', $references);
+
+
+        $adata[] = array(
+            'id'                  => $i++,
+            'tariff_code'         => $data['Part Tariff Code'],
+            'references'          => $references,
+            'countries_of_origin' => $data['countries_of_origin'],
+
+            'weight' => weight($data['weight']),
+            'amount' => money($data['amount'], $account->get('Account Currency Code')),
+
+            'dangerous_goods' => $dangerous_goods
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function delivery_note_units($_data, $db, $user, $account) {
+
+
+    include_once('class.DeliveryNote.php');
+    include_once('utils/order_handing_functions.php');
+
+
+    global $_locale;// fix this locale stuff
+
+
+    $rtext_label = 'part';
+
+
+    //$dn = new DeliveryNote($_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    //print $sql;
+    $adata = array();
+    $i     = 1;
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $description     = '<span>'.$data['Part Recommended Product Unit Name'].'</span>';
+        $dangerous_goods = '';
+        if ($data['Part UN Number']) {
+            $dangerous_goods = ' <small style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</small>';
+        }
+
+
+        $adata[] = array(
+            'id'                  => $i++,
+            'tariff_code'         => $data['Part Tariff Code'],
+            'reference'           => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'description'         => $description,
+            'countries_of_origin' => $data['Part Origin Country Code'],
+            'quantity'            => $data['units_invoiced'],
+            'units_invoiced'      => number($data['units_invoiced']),
+
+            'weight'          => weight($data['weight']),
+            'amount'          => money($data['amount'], $account->get('Account Currency Code')),
+            'dangerous_goods' => $dangerous_goods
 
 
         );
@@ -4216,12 +4363,12 @@ function consignment_parts($_data, $db, $user, $account) {
 
 
         $adata[] = array(
-            'id'              => (integer)$data['Part SKU'],
-            'reference'       => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-            'description'     => $description,
-            'tariff_code'     => $data['Part Tariff Code'],
-            'quantity_units'  => number($data['quantity_units']),
-            'weight'          => sprintf('<span title="%s">%s</span>',weight($data['weight']),weight($data['weight'], 'Kg', 1, false, true)),
+            'id'             => (integer)$data['Part SKU'],
+            'reference'      => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'description'    => $description,
+            'tariff_code'    => $data['Part Tariff Code'],
+            'quantity_units' => number($data['quantity_units']),
+            'weight'         => sprintf('<span title="%s">%s</span>', weight($data['weight']), weight($data['weight'], 'Kg', 1, false, true)),
 
             'origin'          => $data['Part Origin Country Code'],
             'invoiced_amount' => money($data['invoiced_amount'], $account->get('Account Currency')),
@@ -4271,10 +4418,10 @@ function consignment_tariff_codes($_data, $db, $user, $account) {
     foreach ($db->query($sql) as $data) {
 
 
-        if($data['parts']==1){
+        if ($data['parts'] == 1) {
             $description = $data['Part Recommended Product Unit Name'];
 
-        }else{
+        } else {
             $description = $data['description'];
 
         }
@@ -4286,7 +4433,7 @@ function consignment_tariff_codes($_data, $db, $user, $account) {
             'description'     => $description,
             'tariff_code'     => $data['Part Tariff Code'],
             'quantity_units'  => number($data['quantity_units']),
-            'weight'          => sprintf('<span title="%s">%s</span>',weight($data['weight']),weight($data['weight'], 'Kg', 1, false, true)),
+            'weight'          => sprintf('<span title="%s">%s</span>', weight($data['weight']), weight($data['weight'], 'Kg', 1, false, true)),
             'origin'          => $data['origin'],
             'invoiced_amount' => money($data['invoiced_amount'], $account->get('Account Currency')),
             'parts'           => number($data['parts']),
