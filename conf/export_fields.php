@@ -479,8 +479,37 @@ function get_export_fields($element, $account_currency_code = '') {
 
             ),
             array(
-                'name'    => '`Part`',
-                'label'   => _('Unit'),
+                'name'    => 'GROUP_CONCAT(DISTINCT `Part Origin Country Code`)',
+                'label'   => _('Origin'),
+                'checked' => 1
+            ),
+
+
+
+
+            array(
+                'name'    => 'GROUP_CONCAT(DISTINCT `Part UN Number`)',
+                'label'   => _('UN numbers'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => 'GROUP_CONCAT(DISTINCT `Part Reference`)',
+                'label'   => _('References'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => 'round(sum(`Inventory Transaction Weight`),3) ',
+                'label'   => _('Weight'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => 'sum(- 1.0 * `Part Units` * `Inventory Transaction Quantity`)',
+                'label'   => _('Units'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => 'sum(`Amount In`)  ',
+                'label'   => _('Amount'),
                 'checked' => 1
             ),
 
