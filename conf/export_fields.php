@@ -428,18 +428,59 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
         ),
 
-        'delivery_note.parts' => array(
+        'delivery_note.units' => array(
             array(
                 'name'    => '`Part Reference`',
                 'label'   => _('Reference'),
                 'checked' => 1
             ),
-
-        ),
-        'delivery_note.tariff_ces' => array(
+            array(
+                'name'    => '`Part Recommended Product Unit Name`',
+                'label'   => _('Unit description'),
+                'checked' => 1
+            ),
             array(
                 'name'    => '`Part Tariff Code`',
                 'label'   => _('Tariff code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Origin Country Code`',
+                'label'   => _('Origin'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part UN Number`',
+                'label'   => _('UN Number'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => 'round(sum(`Inventory Transaction Weight`),3) ',
+                'label'   => _('Weight'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => 'sum(- 1.0 * `Part Units` * `Inventory Transaction Quantity`)',
+                'label'   => _('Units'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`sum(`Amount In`)`',
+                'label'   => _('Amount').' ('._('Account currency').')',
+                'checked' => 1
+            ),
+
+        ),
+        'delivery_note.tariff_codes' => array(
+            array(
+                'name'    => '`Part Tariff Code`',
+                'label'   => _('Tariff code'),
+                'checked' => 1,
+
+            ),
+            array(
+                'name'    => '`Part`',
+                'label'   => _('Unit'),
                 'checked' => 1
             ),
 

@@ -853,7 +853,7 @@ function get_tab_defaults_data() {
             'rpp'         => 1000,
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'reference',
-            'export_fields' => get_export_fields('delivery_note.parts')
+         //   'export_fields' => get_export_fields('delivery_note.parts')
 
 
         ),

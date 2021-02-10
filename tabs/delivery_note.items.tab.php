@@ -30,12 +30,10 @@ $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'units' => array(
-        'label' => _('Units'),
+    'overview' => array(
+        'label' => _('Overview'),
     ),
-    'skos' => array(
-        'label' => _('SKOs'),
-    )
+
 );
 
 $table_filters = array(
