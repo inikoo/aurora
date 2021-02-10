@@ -372,7 +372,7 @@
     </div>
 
 
-    <div class="block" style="padding:20px 10px 0px 10px">
+    <div class="block" style="padding:0px 10px 0px 10px">
 
 
         <table style="min-width:500px " class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90 or $delivery_note->get('Delivery Note Using Shipper API')=='Yes'  }hide{/if} ">
@@ -457,6 +457,14 @@
 
         <table border="0" class="final_info_block  {if  !($delivery_note->get('State Index')==100  or $delivery_note->get('Delivery Note Using Shipper API')=='Yes') }hide{/if} ">
 
+            <tr>
+                <td>{t}Picker{/t}</td><td colspan="2">{$delivery_note->get('Delivery Note Assigned Picker Alias')}</td>
+
+            </tr>
+            <tr>
+                <td>{t}Packer{/t}</td><td colspan="2">{$delivery_note->get('Delivery Note Assigned Packer Alias')}</td>
+
+            </tr>
 
             <tr>
 
