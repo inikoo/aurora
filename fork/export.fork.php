@@ -42,7 +42,7 @@ function fork_export($job) {
     $db        = $_data[1];
     $fork_data = $_data[2];
 
-    // print_r($fork_data);
+    //print_r($fork_data);
 
     $inikoo_account_code = $account->get('Account Code');
 
@@ -60,6 +60,8 @@ function fork_export($job) {
     $description = '';
     $keywords    = '';
     $category    = '';
+
+
 
 
     $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_data['table'].'_'.$download_key;
@@ -170,9 +172,13 @@ function fork_export($job) {
 
     $show_feedback = (float)microtime(true) + .250;
 
+    //print $sql_data."\n";
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
+
+
+           // print_r($row);
 
             if ($row_index == 1) {
 
@@ -491,6 +497,9 @@ function fork_export($job) {
 
     $download_path = 'tmp/';
 
+
+    //print ">>> $output_type <<<<";
+
     switch ($output_type) {
 
         case('csv'):
@@ -553,6 +562,7 @@ function fork_export($job) {
 
 
     unlink($output_file);
+   // exit;
 
     return false;
 }

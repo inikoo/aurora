@@ -465,7 +465,7 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
             array(
-                'name'    => '`sum(`Amount In`)`',
+                'name'    => 'sum(`Amount In`)',
                 'label'   => _('Amount').' ('._('Account currency').')',
                 'checked' => 1
             ),
@@ -508,7 +508,7 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 0
             ),
             array(
-                'name'    => 'sum(`Amount In`)  ',
+                'name'    => 'sum(`Amount In`)',
                 'label'   => _('Amount'),
                 'checked' => 1
             ),

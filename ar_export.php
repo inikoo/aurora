@@ -48,7 +48,7 @@ include 'conf/export_fields.php';
 if ($_data['type'] == 'excel') {
     $output = 'xls';
 } else {
-    $output = $_export_data['type'];
+    $output = $_data['type'];
 }
 
 
