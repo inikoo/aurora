@@ -1251,7 +1251,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
     if($object->get('Order State')=='Dispatched' or  $object->get('Order State')=='Cancelled'){
         $right_buttons[] = array(
-            'html_icon'  => '<i class="fal fa-clone"></i>',
+            'html_icon'  => '<i onClick="open_clone_order()" class="fal fa-clone"></i>',
             'title' => _('Clone order'),
             'class' => ' square_button right  clone_order_open_button '
         );

@@ -2709,9 +2709,8 @@ function save_add_deal_to_order(){
 
 }
 
-$(".clone_order_open_button").on( 'click',function () {
-    open_clone_order()
-})
+
+
 
 
 function close_clone_order(){
