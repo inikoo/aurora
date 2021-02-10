@@ -17,13 +17,22 @@ trait OrderGet {
      */
     public $db;
 
-    function get_deliveries($scope = 'keys') {
+    function get_deliveries($scope = 'keys', $options = '') {
 
 
         $deliveries = array();
-        $sql        = sprintf(
-            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d ORDER BY `Delivery Note Key` DESC ", $this->id
+        $where      = sprintf(
+            " WHERE `Delivery Note Order Key`=%d  ", $this->id
         );
+
+
+        if ($options == 'without_cancelled') {
+            $where .= ' and `Delivery Note State` != "Cancelled" ';
+        }
+
+
+        $sql = "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` $where ORDER BY `Delivery Note Key` DESC ";
+
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -39,11 +48,7 @@ trait OrderGet {
                     $deliveries[$row['Delivery Note Key']] = $row['Delivery Note Key'];
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
         return $deliveries;
 

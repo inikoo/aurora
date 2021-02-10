@@ -1,4 +1,4 @@
-{assign deliveries $order->get_deliveries('objects')}
+{assign deliveries $order->get_deliveries('objects','without_cancelled')}
 {assign returns $order->get_returns('objects')}
 
 {assign invoices $order->get_invoices('objects')}
