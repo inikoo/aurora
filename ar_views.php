@@ -1143,7 +1143,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-credit-cart"></i> '._('Payments').' '.$store->get('Code'));
                         break;
                     case 'credits':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-piggy-bank"></i> '._('Credit vault').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-piggy-bank"></i> '._('Vault').' '.$store->get('Code'));
                         break;
                     case 'deleted_invoices':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-invoice-dollar"></i> '._('Deleted invoices').' '.$store->get('Code'));
@@ -1163,7 +1163,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-credit-cart"></i> '._('Payments').' ('._('All').')');
                         break;
                     case 'credits':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-piggy-bank"></i> '._('Credit vault').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-piggy-bank"></i> '._('Vault').' ('._('All').')');
                         break;
 
 

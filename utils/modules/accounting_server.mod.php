@@ -86,7 +86,7 @@ function get_accounting_server_module() {
 
             'credits' => array(
                 'type'      => 'navigation',
-                'label'     => _('Credit vault').' ('._('All').')',
+                'label'     => _('Vault').' ('._('All').')',
                 'html_icon' => '<i class="fa fa-piggy-bank"></i>',
                 'reference' => 'credits/all',
 

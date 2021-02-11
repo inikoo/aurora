@@ -113,7 +113,7 @@ function get_accounting_module() {
 
             'credits' => array(
                 'type'      => 'navigation',
-                'label'     => _('Credit vault'),
+                'label'     => _('Vault'),
                 'icon'      => 'piggy-bank',
                 'reference' => 'credits/%d',
                 'tabs'      => array(
