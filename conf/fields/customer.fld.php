@@ -31,6 +31,15 @@ $options_delivery_address_link = array(
 );
 
 
+
+if ($user->can_supervisor('customers')) {
+    $can_supervisor_customer_services = true;
+} else {
+    $can_supervisor_customer_services = false;
+
+}
+
+
 $options_yes_no = array(
     'Yes' => _('Yes'),
     'No'  => _('No')
@@ -77,6 +86,41 @@ $edit = true;
 $_edit = ($store->get('Store Type') != 'External' ? true : false);
 
 
+if ($user->can_supervisor('accounting')) {
+    $can_supervisor_accounting = true;
+    $customer_level_type_field= array(
+        'id'     => 'Customer_Level_Type',
+        'edit'   => 'no_icon',
+        'render' => ($store->get('Store Type') == 'Dropshipping' ? false : true),
+
+        'value'           => $object->get('Customer Level Type'),
+        'formatted_value' => '<span class="button" onclick="toggle_subscription(this)"  field="Customer_Level_Type_Partner"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Level Type') == 'Partner' ? 'fa-toggle-on' : 'fa-toggle-off')
+            .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Level Type') == 'Partner' ? 'discreet' : '').'">'._('Partner').'</span></span>',
+        'label'           => _('Type'),
+        'required'        => false,
+        'type'            => 'value'
+    );
+
+} else {
+    $can_supervisor_accounting = false;
+
+
+
+    $customer_level_type_field= array(
+        'id'   => 'Customer_Credit_Limit',
+        'edit' => ($can_supervisor_accounting ? 'string' : ''),
+
+        'value'           => $object->get('Customer Level Type'),
+        'formatted_value' => $object->get('Level Type'),
+        'options'         => $options_sales_representative,
+        'label'           => _('Type'),
+        'required'        => false,
+        'type'            => ''
+
+    );
+}
+
+
 if ($new) {
 
     $customer_fields = array(
@@ -115,6 +159,17 @@ if ($new) {
                     'required'        => false,
                     'type'            => 'value'
                 ),
+                
+                array(
+                    'id'              => 'Customer_EORI',
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => $object->get('Customer EORI'),
+                    'formatted_value' => $object->get('EORI'),
+                    'label'           => ucfirst($object->get_field_label('EORI number')),
+                    'required'        => false,
+                    'type'            => 'value'
+
+                ),
                 array(
                     'id'              => 'Customer_Tax_Number',
                     'edit'            => ($edit ? 'string' : ''),
@@ -139,7 +194,7 @@ if ($new) {
                 array(
                     'id'              => 'Customer_Recargo_Equivalencia',
                     'edit'            => ($edit ? 'option' : ''),
-                    'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
+                    'render'          => ($account->get('Account Country Code') == 'ESP' ? true : false),
                     'options'         => $options_yes_no,
                     'value'           => 'No',
                     'formatted_value' => _('No'),
@@ -354,7 +409,6 @@ if ($new) {
     }
 
 
-
     if ($object->get('Customer Type by Activity') == 'Rejected') {
         $customer_fields[] = array(
             'label'      => _('Approve customer'),
@@ -375,15 +429,10 @@ if ($new) {
                 ),
 
 
-
-
-
             )
 
         );
     }
-
-
 
 
     $customer_fields[] = array(
@@ -396,7 +445,7 @@ if ($new) {
                 'value'           => htmlspecialchars($object->get('Customer Company Name')),
                 'formatted_value' => $object->get('Company Name'),
                 'label'           => ucfirst($object->get_field_label('Customer Company Name')),
-                'required'        => ($object->get('Customer Main Contact Name')==''?true:false),
+                'required'        => ($object->get('Customer Main Contact Name') == '' ? true : false),
                 'type'            => 'value'
             ),
             array(
@@ -405,7 +454,7 @@ if ($new) {
                 'value'           => htmlspecialchars($object->get('Customer Main Contact Name')),
                 'formatted_value' => $object->get('Main Contact Name'),
                 'label'           => ucfirst($object->get_field_label('Customer Main Contact Name')),
-                'required'        => ($object->get('Customer Company Name')==''?true:false),
+                'required'        => ($object->get('Customer Company Name') == '' ? true : false),
                 'type'            => 'value'
             ),
             array(
@@ -418,6 +467,16 @@ if ($new) {
                 ),
                 'required'        => false,
                 'type'            => 'value'
+            ),
+            array(
+                'id'              => 'Customer_EORI',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => $object->get('Customer EORI'),
+                'formatted_value' => $object->get('EORI'),
+                'label'           => ucfirst($object->get_field_label('EORI number')),
+                'required'        => false,
+                'type'            => 'value'
+
             ),
             array(
                 'id'              => 'Customer_Tax_Number',
@@ -444,7 +503,7 @@ if ($new) {
             array(
                 'id'              => 'Customer_Recargo_Equivalencia',
                 'edit'            => ($edit ? 'option' : ''),
-                'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
+                'render'          => ($account->get('Account Country Code') == 'ESP' ? true : false),
                 'options'         => $options_yes_no,
                 'value'           => $object->get('Customer Recargo Equivalencia'),
                 'formatted_value' => $object->get('Recargo Equivalencia'),
@@ -731,34 +790,38 @@ if ($new) {
 
 
     $customer_fields[] = array(
-        'label' => _('Sales representative'),
+        'label' => _('Sales settings'),
 
         'show_title' => true,
         'class'      => 'edit_fields '.($store->get('Store Type') == 'Dropshipping' ? 'hide' : ''),
         'fields'     => array(
 
-            array(
-                'id'     => 'Customer_Level_Type',
-                'edit'   => 'no_icon',
-                'render' => ($store->get('Store Type') == 'Dropshipping' ? false : true),
-
-                'value'           => $object->get('Customer Level Type'),
-                'formatted_value' => '<span class="button" onclick="toggle_subscription(this)"  field="Customer_Level_Type_Partner"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Level Type') == 'Partner' ? 'fa-toggle-on' : 'fa-toggle-off')
-                    .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Level Type') == 'Partner' ? 'discreet' : '').'">'._('Partner').'</span></span>',
-                'label'           => '',
-                'required'        => false,
-                'type'            => 'value'
-            ),
+           $customer_level_type_field,
 
             array(
                 'render' => (($object->get('Customer Level Type') == 'Partner' or $store->get('Store Type') == 'Dropshipping') ? false : true),
                 'id'     => 'Customer_Sales_Representative',
-                'edit'   => ($edit ? 'option_multiple_choices' : ''),
+                'edit'   => ($can_supervisor_customer_services ? 'option_multiple_choices' : ''),
 
                 'value'           => $object->get('Customer Sales Representative'),
                 'formatted_value' => $object->get('Sales Representative'),
                 'options'         => $options_sales_representative,
                 'label'           => ucfirst(_('Account manager')),
+                'required'        => false,
+                'type'            => 'value'
+
+            ),
+
+            array(
+                'id'   => 'Customer_Credit_Limit',
+                'edit' => ($can_supervisor_accounting ? 'amount' : ''),
+
+                'value'           => $object->get('Customer Credit Limit'),
+                'formatted_value' => $object->get('Credit Limit'),
+                'options'         => $options_sales_representative,
+                'label'           => _('Credit limit'),
+                'invalid_msg'     => get_invalid_message('amount'),
+
                 'required'        => false,
                 'type'            => 'value'
 
