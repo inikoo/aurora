@@ -227,8 +227,13 @@ class Public_Customer extends DBW_Table {
 
         switch ($key) {
 
+            case 'Customer EORI':
+            case 'EORI':
+                return $this->metadata('eori');
             case 'Account Balance':
-                return money($this->data['Customer Account Balance'], $this->metadata('cur'));
+            case 'Credit Limit':
+
+            return money($this->data['Customer Account Balance'], $this->metadata('cur'));
             case $this->table_name.' Contact Address':
             case $this->table_name.' Invoice Address':
             case $this->table_name.' Delivery Address':
@@ -274,7 +279,6 @@ class Public_Customer extends DBW_Table {
 
                 return $this->data['Customer Name'];
 
-                break;
 
             case('Tax Number Valid'):
                 if ($this->data['Customer Tax Number'] != '') {
@@ -373,7 +377,7 @@ class Public_Customer extends DBW_Table {
 
                 return $subscriptions;
 
-                break;
+
             default:
 
                 if (array_key_exists($key, $this->data)) {

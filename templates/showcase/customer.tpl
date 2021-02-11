@@ -103,6 +103,13 @@
     <div style="float: right;width: 300px;">
         <div id="overviews">
             <table class="overview" >
+
+                <tr id="credit_limit_tr" class="main {if $customer->get('Customer Credit Limit')==0}hide{/if} ">
+                    <td id="credit_limit_label">{t}Credit limit{/t}</td>
+                    <td class="aright Customer_Credit_Limit">{$customer->get('Credit Limit')}</td>
+
+                </tr>
+
                 <tr id="account_balance_tr" class="main">
                     <td id="account_balance_label">{t}Account Balance{/t}
 

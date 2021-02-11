@@ -273,6 +273,9 @@ class Customer extends Subject {
 
         switch ($key) {
 
+            case 'Customer EORI':
+            case 'EORI':
+                return $this->metadata('eori');
             case 'Last Website Visit':
 
                 if ($this->data['Customer Last Website Visit'] != '') {
@@ -531,15 +534,15 @@ class Customer extends Subject {
 
                 return $this->data['Customer '.$key] == 'Yes' ? _('Yes') : _('No');
 
-                break;
+
             case("ID"):
             case("Formatted ID"):
                 return $this->get_formatted_id();
             case("Sticky Note"):
                 return nl2br($this->data['Customer Sticky Note']);
-                break;
-            case('Account Balance'):
+            case 'Account Balance':
             case 'Invoiced Net Amount':
+            case 'Credit Limit':
 
 
                 if (!isset($this->store)) {
@@ -551,7 +554,8 @@ class Customer extends Subject {
                 return money(
                     $this->data['Customer '.$key], $this->store->get('Store Currency Code')
                 );
-                break;
+
+
             case 'Invoiced Balance Amount':
 
                 if (!isset($this->store)) {
@@ -1109,7 +1113,11 @@ class Customer extends Subject {
         }
 
         switch ($field) {
+            case 'Customer EORI':
 
+                $this->fast_update_json_field('Customer Metadata','eori', $value);
+
+                break;
 
             case 'Customer Order Sticky Note':
 
@@ -1156,13 +1164,8 @@ class Customer extends Subject {
 
                 break;
             case 'Customer Contact Address':
-
-
                 $this->update_address('Contact', json_decode($value, true), $options);
-
-
                 $this->fork_index_elastic_search();
-
 
                 break;
 
@@ -1954,6 +1957,9 @@ class Customer extends Subject {
                 break;
             case 'Customer Website':
                 $label = _('website');
+                break;
+            case 'Customer Credit Limit':
+                $label = _('credit limit');
                 break;
             default:
                 $label = $field;
