@@ -140,6 +140,16 @@ function get_categorize_invoices_functions() {
 
     };
 
+    $categorize_invoices_functions['external_invoicer'] = function ($data, $aux) {
+
+
+        if ($data["Invoice External Invoicer Key"] == $aux) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     $categorize_invoices_functions['other'] = function ($data, $aux) {
 
         return true;
