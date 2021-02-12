@@ -177,6 +177,14 @@ class Customer extends Subject {
         }
 
 
+        $eori='';
+        if(isset($raw_data['Customer EORI'])){
+            $eori=$raw_data['Customer EORI'];
+            unset($raw_data['Customer EORI']);
+
+        }
+
+
         $raw_data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
         $raw_data['Customer Sticky Note']          = '';
         $raw_data['Customer Metadata']             = '{}';
@@ -190,12 +198,14 @@ class Customer extends Subject {
         unset($raw_data['Customer First Order Date']);
 
 
+        //$this->db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+
         $sql = sprintf(
             "INSERT INTO `Customer Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($raw_data)).'`', join(',', array_fill(0, count($raw_data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
-
         $i = 1;
         foreach ($raw_data as $key => $value) {
             $stmt->bindValue($i, $value);
@@ -212,6 +222,10 @@ class Customer extends Subject {
 
 
             $this->get_data('id', $this->id);
+
+
+            $this->fast_update_json_field('Customer Metadata','eori', $eori);
+
 
 
             if ($this->data['Customer Company Name'] != '') {
@@ -252,6 +266,8 @@ class Customer extends Subject {
             $this->sync_aiku();
 
         } else {
+
+
             $this->error = true;
             $this->msg   = 'Error inserting customer record';
         }
