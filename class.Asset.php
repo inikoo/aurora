@@ -386,7 +386,7 @@ class Asset extends DB_Table {
                     false
                 );
 
-                break;
+
             case 'Family Category Key':
             case 'Family Category Code':
 
@@ -522,7 +522,7 @@ class Asset extends DB_Table {
                         ''
                     );
                 }
-                break;
+
 
             case $this->table_name.' Package Dimensions':
             case $this->table_name.' Unit Dimensions':

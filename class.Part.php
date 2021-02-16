@@ -1882,11 +1882,17 @@ class Part extends Asset {
 
         switch ($field) {
 
+
+            case 'materials':
             case 'label unit':
             case 'label sko':
+            case 'label unit':
+            case 'label sko':
+
                 $this->fast_update_json_field('Part Properties', preg_replace('/\s/', '_', $field), $value);
 
                 break;
+
 
             case 'Part Supplier Part Unit Cost':
 
@@ -2454,6 +2460,8 @@ class Part extends Asset {
 
                 $this->update_field('Part Materials', $materials, $options);
                 $updated = $this->updated;
+
+                $this->update(['materials'=>$this->get('Part Materials')],'no_history');
 
 
                 foreach ($this->get_products('objects') as $product) {
@@ -3587,13 +3595,13 @@ class Part extends Asset {
                     $amount = $row['Inventory Transaction Amount'];
                 }
 
-                $amount=round($amount,6);
+                $amount = round($amount, 6);
 
                 //print "$running_stock_value  $amount --->";
 
 
-                $running_stock       = round($running_stock + $row['Inventory Transaction Quantity'],5);
-                $running_stock_value = round($running_stock_value + $amount,6);
+                $running_stock       = round($running_stock + $row['Inventory Transaction Quantity'], 5);
+                $running_stock_value = round($running_stock_value + $amount, 6);
                 if ($running_stock != 0) {
                     $running_cost_per_sko = $running_stock_value / $running_stock;
                 }

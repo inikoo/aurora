@@ -32,13 +32,15 @@ function update_parts_data($db) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
-            print $part->get('Reference')."\n";
+            print $part->get('Reference')."\r";
 
            // foreach($part->get_locations('part_location_object') as $pl) {
            //     $pl->update_stock();
            // }
 
-            $part->update_stock();
+            $part->update(['materials'=>$part->get('Part Materials')],'no_history');
+
+           // $part->update_stock();
             //$part->update_available_forecast();
             //$part->update_stock_status();
 
