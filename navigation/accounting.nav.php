@@ -2211,13 +2211,12 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                 $_section = 'customers';
                 break;
             case 'store':
-                $tab      = 'invoices';
-                $_section = 'invoices';
-                break;
             case 'account':
                 $tab      = 'invoices';
                 $_section = 'invoices';
                 break;
+
+
             case 'order':
                 $tab      = 'order.invoices';
                 $_section = 'orders';
@@ -2597,6 +2596,14 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
+
+
+    if($object->get('Invoice External Invoicer Key')){
+        $external_invoicer=get_object('External_Invoicer',$object->get('Invoice External Invoicer Key'));
+
+        $title.=' <span style="font-weight: normal;color:#7a5aa6" class="padding_left_5 small light">'.sprintf('Invoiced by %s',$external_invoicer->metadata('invoicer_name')).'</span>';
+
+    }
 
     $_content = array(
         'sections_class' => '',
