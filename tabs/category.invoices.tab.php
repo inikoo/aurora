@@ -36,7 +36,19 @@ $parameters = array(
 );
 
 
+$export_omega='No';
+
+if($state['_object']->get('Invoice Category Function Code')=='external_invoicer'){
+    $external_invoicer=get_object('External_Invoicer',$state['_object']->get('Invoice Category Function Argument'));
+    if($external_invoicer->metadata('country')=='SK'){
+        $export_omega='Yes';
+
+    }
+}
+
+$smarty->assign('export_omega_invoices',$export_omega);
+
 include 'utils/get_table_html.php';
 
 
-?>
+

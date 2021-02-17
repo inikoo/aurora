@@ -213,14 +213,14 @@ class Public_Store {
             case 'Store Type':
             case 'Store External Invoicer Key':
                 return $this->data[$key];
-                break;
+
 
             case 'Send Email Address':
                 return $this->data['Store Email'];
-                break;
+
             case 'Name':
                 return $this->data['Store Name'];
-                break;
+
             default:
                 return '';
 

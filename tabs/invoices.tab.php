@@ -35,12 +35,11 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 );
 
-$export_omega=false;
+$export_omega='No';
 
 if($account->get('Account Country 2 Alpha Code')=='SK'){
-    $export_omega=true;
+    $export_omega='Yes';
 }
-
 
 $smarty->assign('export_omega_invoices',$export_omega);
 
