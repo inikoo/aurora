@@ -50,10 +50,25 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account) {
     $invoice = $data['_object'];
 
 
+    $export_omega=false;
+
     if ($account->get('Account Country 2 Alpha Code') == 'SK') {
-        $smarty->assign('export_omega', true);
+        $export_omega=true;
 
     }
+
+
+    if($invoice->get('Invoice External Invoicer Key')){
+        $external_invoicer=get_object('External_Invoicer',$invoice->get('Invoice External Invoicer Key'));
+        if($external_invoicer->metadata('country')=='SK'){
+            $export_omega=true;
+
+        }
+    }
+
+    $smarty->assign('export_omega', $export_omega);
+
+
 
     $tax_data = array();
     $sql      = sprintf(

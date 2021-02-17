@@ -29,9 +29,7 @@ if (!$invoice->id) {
 
 $text = "R00\tT00\r\n";
 
-$text.=get_omega_export_text($db,$account,$invoice);
-
-
+$text.=get_omega_export_text($invoice);
 
 $encoded_text = iconv( mb_detect_encoding( $text ), 'ISO-8859-15//TRANSLIT', utf8_encode($text) );
 header('Content-Type: text/plain');

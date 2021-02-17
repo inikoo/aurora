@@ -218,9 +218,7 @@
         <div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{t}First page{/t}" style="position:relative">
             <i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i>
         </div>
-        <div id="show_export_dialog_omega" class="left square_button  {if !isset($export_omega_invoices)}hide{/if}  " title="{t}Export for Omega accountancy software{/t}">
-            <i onclick="export_omega_invoices(this)" class="fa fa-omega fa-fw"></i>
-        </div>
+
         <div id="show_export_dialog" class="left square_button  {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}">
             <i onclick="show_export_dialog_left_button_expanded(this)" class="fa fa-download fa-fw"></i>
         </div>

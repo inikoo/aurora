@@ -199,7 +199,7 @@
 
 
 
-            {if isset($export_omega)}
+            {if isset($export_omega) and $export_omega}
                 <tr class="state " >
                     <td>
                         <span  class=" button" onclick="export_omega()"><i class="fa fa-omega"></i> Omega export</span>

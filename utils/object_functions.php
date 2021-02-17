@@ -551,6 +551,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Consignment.php';
             $object = new Consignment('id', $key);
             break;
+        case 'external invoicer':
+        case 'external_invoicer':
+            include_once 'class.External_Invoicer.php';
+            $object = new External_Invoicer('id', $key);
+            break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
             break;

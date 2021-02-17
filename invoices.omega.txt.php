@@ -54,7 +54,7 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
 
     $invoice = get_object('Invoice', $row['Invoice Key']);
-    $text    .= get_omega_export_text($db, $account, $invoice);
+    $text    .= get_omega_export_text($invoice);
 
 }
 

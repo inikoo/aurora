@@ -10,7 +10,7 @@
 */
 
 
-function get_omega_export_text($db, $account, $invoice) {
+function get_omega_export_text($invoice,$base_country='SK') {
 
 
     $european_union_2alpha = array(
@@ -58,7 +58,7 @@ function get_omega_export_text($db, $account, $invoice) {
     }
 
 
-    if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Address Country 2 Alpha Code')) {
+    if ($base_country == $invoice->get('Invoice Address Country 2 Alpha Code')) {
         $invoice_numeric_code          = 100;
         $invoice_alpha_code            = 'OF';
         $invoice_alpha_code_bis        = 'OF';
