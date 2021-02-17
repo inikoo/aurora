@@ -1926,6 +1926,15 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
         $title = _("Invoice's category").' <span class="Category_Label id">'.$data['_object']->get('Label').'</span>';
 
 
+
+        if($data['_object']->get('Invoice Category Function Code')=='external_invoicer'){
+            $external_invoicer=get_object('External_Invoicer',$data['_object']->get('Invoice Category Function Argument'));
+
+            $title.=' <span style="font-weight: normal;color:#7a5aa6" class="padding_left_5 small light">'.sprintf('Invoiced by %s',$external_invoicer->metadata('invoicer_name')).'</span>';
+
+        }
+
+
         $left_buttons[] = $up_button;
 
     }
