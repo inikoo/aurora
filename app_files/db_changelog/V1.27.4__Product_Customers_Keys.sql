@@ -1,0 +1,1 @@
+ALTER TABLE `Product Dimension` ADD `Product Customer Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Product Images Updated`, ADD `Product Customer Category Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Product Customer Key`, ADD INDEX (`Product Customer Key`), ADD INDEX (`Product Customer Category Key`);
