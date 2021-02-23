@@ -32,6 +32,7 @@
     "postmen/sdk-php": "^1.0",
     "mpdf/mpdf": "^8.0",
     "mpdf/qrcode": "^1.0",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "spatie/array-to-xml": "^2.16"
   }
 }
