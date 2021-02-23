@@ -10,13 +10,22 @@
 */
 
 
-function get_omega_export_text($invoice,$base_country='SK') {
+function get_omega_export_text($invoice, $base_country = 'SK') {
 
+    $surrogate_code = 'GB';
+
+    $surrogate = false;
+    if (preg_match('/^X/', $invoice->get('Invoice Tax Code'))) {
+        $surrogate = true;
+    }
+
+
+    $invoice_tax_code = preg_replace('/^X/', '', $invoice->get('Invoice Tax Code'));
 
     $european_union_2alpha = array(
         'NL',
         'BE',
-        'GB',
+        //  'GB',
         'BG',
         'ES',
         'IE',
@@ -72,10 +81,35 @@ function get_omega_export_text($invoice,$base_country='SK') {
         $invoice_numeric_code_shipping = 201;
         $invoice_numeric_code_charges  = 202;
 
-        $invoice_alpha_code = 'zOF';
 
-        $invoice_alpha_code_bis = 'zOF'.$store->get('Store Code');
+        if ($surrogate) {
+
+            $invoice_alpha_code     = $surrogate_code;
+            $invoice_alpha_code_bis = $surrogate_code.$store->get('Store Code');
+
+            if ($invoice->get('Invoice Type') == 'Refund') {
+                $invoice_alpha_code = 'zOD';
+            }
+
+
+        } else {
+
+            $invoice_alpha_code = 'zOF';
+
+            $invoice_alpha_code_bis = 'zOF'.$store->get('Store Code');
+
+
+            if ($invoice->get('Invoice Type') == 'Refund') {
+                $invoice_alpha_code     = 'zOD';
+                $invoice_alpha_code_bis = 'zOD'.$store->get('Store Code');
+
+
+            }
+
+        }
+
     }
+
 
     if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
 
@@ -91,8 +125,10 @@ function get_omega_export_text($invoice,$base_country='SK') {
         $code_sum = '03';
     } elseif (in_array($invoice->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
 
-        if ($invoice->get('Invoice Tax Code') != 'S1') {
-            $code_sum = '16';
+        if ($invoice_tax_code != 'S1') {
+            $code_sum = '14';
+
+
             $code_tax = 'X';
         } else {
             $code_sum = '03';
@@ -102,8 +138,8 @@ function get_omega_export_text($invoice,$base_country='SK') {
 
     } else {
 
-        if ($invoice->get('Invoice Tax Code') != 'S1') {
-            $code_sum = '17t';
+        if ($invoice_tax_code != 'S1') {
+            $code_sum = '15t';
             $code_tax = 'X';
         } else {
             $code_sum = '03';
@@ -162,7 +198,7 @@ function get_omega_export_text($invoice,$base_country='SK') {
         '',
         date('H:i:s'),
         '',
-        'Total '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+        'Total '.$store->get('Code').' '.$invoice_tax_code,
         0,
         '',
         '',
@@ -200,7 +236,7 @@ function get_omega_export_text($invoice,$base_country='SK') {
         'R02',
         0,
         311,
-        200,
+        100,
         '',
         '',
         $_total_amount_exchange,
@@ -243,7 +279,7 @@ function get_omega_export_text($invoice,$base_country='SK') {
         $invoice_numeric_code_total,
         round(($invoice->get('Invoice Items Net Amount') - $invoice->get('Invoice Net Amount Off')) * $exchange_rate, 2),
         $invoice->get('Invoice Items Net Amount') - $invoice->get('Invoice Net Amount Off'),
-        'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+        'Items '.$store->get('Code').' '.$invoice_tax_code,
         $code_sum,
         '',
         '',
@@ -289,7 +325,7 @@ function get_omega_export_text($invoice,$base_country='SK') {
             $invoice_numeric_code_shipping,
             round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2),
             $invoice->get('Invoice Shipping Net Amount'),
-            'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+            'Shipping '.$store->get('Code').' '.$invoice_tax_code,
             $code_sum,
             '',
             '',
@@ -336,7 +372,7 @@ function get_omega_export_text($invoice,$base_country='SK') {
             $invoice_numeric_code_charges,
             round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2),
             $invoice->get('Invoice Charges Net Amount'),
-            'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+            'Charges '.$store->get('Code').' '.$invoice_tax_code,
             $code_sum,
             '',
             '',
@@ -381,7 +417,7 @@ function get_omega_export_text($invoice,$base_country='SK') {
             220,
             round($invoice->get('Invoice Total Tax Amount') * $exchange_rate, 2),
             $invoice->get('Invoice Total Tax Amount'),
-            'Tax '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+            'Tax '.$store->get('Code').' '.$invoice_tax_code,
             '04',
             '',
             '',

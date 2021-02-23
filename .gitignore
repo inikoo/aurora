@@ -94,3 +94,10 @@ cron/create_invoice_categories.php
 cron/fix_invoice_unmutable_data.php
 cron/fix_order_external_SK.php
 cron/fix_invoice_external_SK.php
+cron/xxx_aroma.php
+cron/copy_products_from_other_account.aroma.oneoff.php
+cron/create_SK_consolidated_invoice.php
+cron/set_up_aroma_copy_production_to.php
+cron/set_up_aroma_production_stuff.php
+cron/set_up_spain_add_SK_as_supplier_to.php
+cron/syncro_aroma_parts.php
