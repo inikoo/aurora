@@ -114,7 +114,11 @@ function get_omega_export_text($invoice, $base_country = 'SK') {
     }
 
 
+    $_code=200;
+
+
     if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
+        $_code=100;
 
         if ($invoice->get('Invoice Registration Number') != '' or $invoice->get('Invoice Tax Number') != '') {
             $code_tax = 'A1';
@@ -238,11 +242,15 @@ function get_omega_export_text($invoice, $base_country = 'SK') {
     $text .= $invoice_header;
 
 
+
+
+
+
     $row_data = array(
         'R02',
         0,
         311,
-        100,
+        $_code,
         '',
         '',
         $_total_amount_exchange,
