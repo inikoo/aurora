@@ -12,13 +12,14 @@
 
 function get_omega_export_text($invoice, $base_country = 'SK') {
 
-    $surrogate_code = 'GB';
+    $surrogate_code = 'zGB';
 
     $surrogate = false;
 
-    if($invoice->get('Invoice Kind')=='External'){
+    if($invoice->get('Invoice External Invoicer Key')>0){
         $surrogate = true;
     }
+
 
 
 
