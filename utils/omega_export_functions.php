@@ -8,7 +8,7 @@
 
  Version 2.0
 */
-
+include_once 'utils/currency_functions.php';
 
 function get_omega_export_text($invoice, $base_country = 'SK') {
 
@@ -66,7 +66,17 @@ function get_omega_export_text($invoice, $base_country = 'SK') {
         $exchange_rate = 1;
     } else {
 
-        $exchange_rate = $invoice->get('Invoice Currency Exchange');
+
+        if($surrogate){
+            $exchange_rate=get_historic_exchange($invoice->get('Invoice Currency'), 'EUR', gmdate('Y-m-d',strtotime($invoice->get('Invoice Date'))));
+
+        }else{
+            $exchange_rate = $invoice->get('Invoice Currency Exchange');
+        }
+
+
+
+
     }
 
 

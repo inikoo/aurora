@@ -10,7 +10,6 @@
  Version 3.0
 */
 
-
 function currency_conversion($db, $currency_from, $currency_to, $update_interval = "-1 hour") {
 
 
@@ -127,23 +126,20 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     return $exchange;
 }
 
-
 function get_historic_exchange($currency1, $currency2, $date) {
+
+    require 'keyring/currency_exchange_api_keys.php';
+
+
     //https://openexchangerates.org
     $exchange = '';
 
-    $api_keys = array(
-        'raul@inikoo.com'      => '8158586024e345b2b798c26ee50b6987',
-        'exchange1@inikoo.com' => '21467cd6ca2847cf9fdbc913e616d6e9',
-        'exchange2@inikoo.com' => 'e328d66fafc94f6391d2a8e4fbab0389',
-        'exchange3@inikoo.com' => '271f126537a84a3f98599e66781f8bed',
-        'exchange4@inikoo.com' => '756b792276ba4c80807a85b031139d7e',
-        'exchange5@inikoo.com' => '4bc72747362a496c971c528fb1b1d219',
 
 
-    );
+    $api_keys = $currency_exhange_api_keys['copenexchange'];
     shuffle($api_keys);
     $api_key = reset($api_keys);
+
 
     $url  = 'http://openexchangerates.org/api/historical/'.$date.'.json?app_id='.$api_key;
     $data = json_decode(file_get_contents($url), true);
@@ -151,8 +147,8 @@ function get_historic_exchange($currency1, $currency2, $date) {
 
     if (isset($data['rates'][$currency1]) and isset($data['rates'][$currency2])) {
 
-        $usd_cur1 = $data['rates'][$this->currency1];
-        $usd_cur2 = $data['rates'][$this->currency2];
+        $usd_cur1 = $data['rates'][$currency1];
+        $usd_cur2 = $data['rates'][$currency2];
         $exchange = $usd_cur2 * (1 / $usd_cur1);
 
 
@@ -164,4 +160,4 @@ function get_historic_exchange($currency1, $currency2, $date) {
 }
 
 
-?>
+
