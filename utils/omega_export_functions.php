@@ -15,12 +15,14 @@ function get_omega_export_text($invoice, $base_country = 'SK') {
     $surrogate_code = 'GB';
 
     $surrogate = false;
-    if (preg_match('/^X/', $invoice->get('Invoice Tax Code'))) {
+
+    if($invoice->get('Invoice Kind')=='External'){
         $surrogate = true;
     }
 
 
-    $invoice_tax_code = preg_replace('/^X/', '', $invoice->get('Invoice Tax Code'));
+
+    $invoice_tax_code =$invoice->get('Invoice Tax Code');
 
     $european_union_2alpha = array(
         'NL',
@@ -125,26 +127,29 @@ function get_omega_export_text($invoice, $base_country = 'SK') {
         $code_sum = '03';
     } elseif (in_array($invoice->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
 
-        if ($invoice_tax_code != 'S1') {
-            $code_sum = '14';
-
-
-            $code_tax = 'X';
-        } else {
+        if ($invoice_tax_code == 'S1'  or   $invoice_tax_code == 'XS1') {
             $code_sum = '03';
             $code_tax = 'A1';
+        }else{
+            $code_sum = '14';
+            $code_tax = 'X';
         }
+
+
 
 
     } else {
 
-        if ($invoice_tax_code != 'S1') {
-            $code_sum = '15t';
-            $code_tax = 'X';
-        } else {
+        if ($invoice_tax_code == 'S1'  or   $invoice_tax_code == 'XS1') {
             $code_sum = '03';
             $code_tax = 'A1';
+        }else{
+
+            $code_sum = '15t';
+            $code_tax = 'X';
         }
+
+
 
 
     }
