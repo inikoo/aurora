@@ -225,4 +225,4 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account) {
 }
 
 
-?>
+

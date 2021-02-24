@@ -978,6 +978,9 @@ function post_table_rendered(el) {
 }
 
 function export_omega_invoices(){
-
     window.open('/invoices.omega.txt.php', '_blank')
+}
+
+function sk_xml_export_intrastat(){
+    window.open('/intrastat.sk.xml.php?type=export', '_blank')
 }

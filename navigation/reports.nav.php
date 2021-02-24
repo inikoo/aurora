@@ -539,7 +539,7 @@ function get_intrastat_imports_navigation($user, $smarty, $data) {
 }
 
 
-function get_intrastat_navigation($user, $smarty, $data) {
+function get_intrastat_navigation($user, $smarty, $data,$account) {
 
 
     $left_buttons  = array();
@@ -551,6 +551,20 @@ function get_intrastat_navigation($user, $smarty, $data) {
     }
 
     $title = _('Intrastat exports');
+
+
+
+    if ($account->get('Account Country 2 Alpha Code') == 'SK') {
+
+
+        $right_buttons[] = array(
+            'icon'     => 'code',
+            'title'    => _('XML export'),
+            'click'    => "sk_xml_export_intrastat()",
+            'pre_text' => 'XML',
+            'class'    => 'text'
+        );
+    }
 
     $_content = array(
         'sections_class' => '',
