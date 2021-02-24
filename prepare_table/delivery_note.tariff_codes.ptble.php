@@ -11,7 +11,7 @@
 */
 
 
-$group_by = ' group by PD.`Part Tariff Code` ';
+$group_by = ' group by `Part Origin Country Code`,PD.`Part Tariff Code` ';
 $where    = sprintf(
     ' where   ITF.`Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"', $parameters['parent_key']
 );
@@ -36,6 +36,8 @@ if ($order == 'tariff_code') {
     $order = 'amount';
 } elseif ($order == 'units_invoiced') {
     $order = 'units_invoiced';
+}elseif ($order == 'origin') {
+    $order = '`Part Origin Country Code`';
 } else {
     $order = '`Part Tariff Code`';
 }
@@ -52,6 +54,6 @@ $fields = "
 	GROUP_CONCAT(DISTINCT `Part UN Number`) dangerous_goods,
 		sum(- 1.0 * `Part Units` * `Inventory Transaction Quantity`) as units_invoiced,
 		sum(`Amount In`) as amount,		round(sum(`Inventory Transaction Weight`),3) as weight,
-		GROUP_CONCAT(DISTINCT `Part Origin Country Code`) as countries_of_origin
+		`Part Origin Country Code`
 ";
 

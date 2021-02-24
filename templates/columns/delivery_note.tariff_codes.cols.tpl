@@ -7,22 +7,24 @@ cell: "integer",
 renderable: false
 
 
-},{
+},
+
+
+{
 name: "tariff_code",
 label: "{t}Tariff code{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 }),
 },
-
 {
-name: "countries_of_origin",
+name: "origin",
 label: "{t}Origin{/t}",
-sortable:false,
 editable: false,
 cell: "html"
 
 },
+
 {
 name: "dangerous_goods",
 label: "{t}DG{/t}",

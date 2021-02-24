@@ -84,7 +84,7 @@ function get_delivery_notes_module() {
                         'icon'  => 'dot-circle'
                     ),
                     'delivery_note.tariff_codes' => array(
-                        'label' => _('Tariff codes'),
+                        'label' => _('Tariff codes / Origin'),
                         'icon'  => 'compress-arrows-alt'
                     ),
 

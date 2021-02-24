@@ -479,7 +479,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
             ),
             array(
-                'name'    => 'GROUP_CONCAT(DISTINCT `Part Origin Country Code`)',
+                'name'    => '`Part Origin Country Code`',
                 'label'   => _('Origin'),
                 'checked' => 1
             ),

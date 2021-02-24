@@ -2763,10 +2763,10 @@ function delivery_note_tariff_codes($_data, $db, $user, $account) {
 
 
         $adata[] = array(
-            'id'                  => $i++,
-            'tariff_code'         => $data['Part Tariff Code'],
-            'references'          => $references,
-            'countries_of_origin' => $data['countries_of_origin'],
+            'id'          => $i++,
+            'tariff_code' => $data['Part Tariff Code'],
+            'references'  => $references,
+            'origin'      => $data['Part Origin Country Code'],
 
             'weight' => weight($data['weight']),
             'amount' => money($data['amount'], $account->get('Account Currency Code')),
