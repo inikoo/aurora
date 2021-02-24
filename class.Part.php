@@ -966,6 +966,79 @@ class Part extends Asset {
 */
 
 
+            case 'Supplier Part Packages Per Carton':
+            case 'Supplier Part Carton CBM':
+            case 'Supplier Part Carton Barcode':
+
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+
+                $value = $main_supplier_part->get($key);
+                if ($value == '') {
+                    $sql = "select `$key` from `Supplier Part Dimension` where `Supplier Part Part SKU`=? and  `Supplier Part Key`!=?  ";
+
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->id,
+                            $this->get('Part Main Supplier Part Key')
+                        )
+                    );
+                    while ($row = $stmt->fetch()) {
+                        if ($row[$key] != '') {
+                            $value = $row[$key];
+                            break;
+                        }
+                    }
+
+
+                }
+
+
+                return $value;
+
+
+            case 'Supplier Part Carton Weight':
+
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+
+                $value = $main_supplier_part->get($key);
+                if ($value == '') {
+                    $sql = "select `Supplier Part Properties` from `Supplier Part Dimension` where `Supplier Part Part SKU`=? and  `Supplier Part Key`!=?  ";
+
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->id,
+                            $this->get('Part Main Supplier Part Key')
+                        )
+                    );
+                    while ($row = $stmt->fetch()) {
+
+
+                        if ($row['Supplier Part Properties'] != '') {
+
+                            $properties = json_decode($row['Supplier Part Properties'], true);
+
+
+                            if (!empty($properties['carton_weight'])) {
+                                $value = $properties['carton_weight'];
+                                break;
+                            }
+
+
+                        }
+
+
+                    }
+
+
+                }
+
+                return $value;
+
+
             case 'CBM per Unit':
 
                 $value_sum = 0;
@@ -1894,11 +1967,22 @@ class Part extends Asset {
                 break;
 
 
+            case 'Supplier Part Packages Per Carton':
+            case 'Supplier Part Carton CBM':
+            case 'Supplier Part Carton Barcode':
+            case 'Supplier Part Carton Weight':
+
+                foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+                    $supplier_part->editor = $this->editor;
+                    $supplier_part->update(array('Supplier Part Unit Cost' => $value), $options);
+                }
+                break;
+
             case 'Part Supplier Part Unit Cost':
 
                 $main_supplier_part         = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
                 $main_supplier_part->editor = $this->editor;
-                $main_supplier_part->update(array('Supplier Part Unit Cost' => $value), $options);
+                $main_supplier_part->update(array($field => $value), $options);
 
 
                 $this->update_metadata = array(
@@ -2461,7 +2545,7 @@ class Part extends Asset {
                 $this->update_field('Part Materials', $materials, $options);
                 $updated = $this->updated;
 
-                $this->update(['materials'=>$this->get('Part Materials')],'no_history');
+                $this->update(['materials' => $this->get('Part Materials')], 'no_history');
 
 
                 foreach ($this->get_products('objects') as $product) {

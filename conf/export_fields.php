@@ -428,7 +428,7 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
         ),
 
-        'delivery_note.units' => array(
+        'delivery_note.units'        => array(
             array(
                 'name'    => '`Part Reference`',
                 'label'   => _('Reference'),
@@ -485,8 +485,6 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
 
 
-
-
             array(
                 'name'    => 'GROUP_CONCAT(DISTINCT `Part UN Number`)',
                 'label'   => _('UN numbers'),
@@ -514,7 +512,7 @@ function get_export_fields($element, $account_currency_code = '') {
             ),
 
         ),
-        'consignments' => array(
+        'consignments'               => array(
             array(
                 'name'    => '`Consignment Public ID`',
                 'label'   => _('Number'),

@@ -43,7 +43,7 @@ function fork_export_edit_template($job) {
     if ($output_type == 'Excel') {
         $output_type = 'xls';
     }
-
+    $output_type=strtolower($output_type);
 
     $user_key = $fork_data['user_key'];
 

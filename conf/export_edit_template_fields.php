@@ -400,6 +400,47 @@ $export_edit_template_fields = array(
             'cell_type'     => 'string'
         ),
 
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'SKO/Carton',
+            'name'          => 'Supplier Part Packages Per Carton',
+            'label'         => _('Packed units (SKOs) per carton'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton CBM',
+            'name'          => 'Supplier Part Carton CBM',
+            'label'         => _('Carton CBM'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton Weight',
+            'name'          => 'Supplier Part Carton Weight',
+            'label'         => _('Carton gross weight'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton Barcode',
+            'name'          => 'Supplier Part Carton Barcode',
+            'label'         => _('Carton barcode (stock control)'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
 
     ),
     'part'          => array(
@@ -497,17 +538,7 @@ $export_edit_template_fields = array(
             'label'         => _('Units per SKO'),
             'checked'       => 0
         ),
-        /*
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => true,
-            'header'        => 'SKOs per Carton',
-            'name'          => 'Part SKOs per Carton',
-            'label'         => _('SKOs per Carton'),
-            'checked'       => 0
-        ),
-*/
+
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -675,6 +706,50 @@ $export_edit_template_fields = array(
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
+
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'SKO/Carton',
+            'name'          => 'Supplier Part Packages Per Carton',
+            'label'         => '<a class="warning fa fa-exclamation-circle" title="'._('Will change all supplier parts').'" ></a>'._('Packed units (SKOs) per carton'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton CBM',
+            'name'          => 'Supplier Part Carton CBM',
+            'label'         => '<a class="warning fa fa-exclamation-circle" title="'._('Will change all supplier parts').'" ></a>'._('Carton CBM'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton Weight',
+            'name'          => 'Supplier Part Carton Weight',
+            'label'         => '<a class="warning fa fa-exclamation-circle" title="'._('Will change all supplier parts').'" ></a>'._('Carton gross weight'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton Barcode',
+            'name'          => 'Supplier Part Carton Barcode',
+            'label'         => '<a class="warning fa fa-exclamation-circle" title="'._('Will change all supplier parts').'" ></a>'._('Carton barcode (stock control)'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+
 
 
     ),
