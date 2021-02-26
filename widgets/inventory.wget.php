@@ -22,6 +22,8 @@
 function get_dashboard_inventory($type ,$user, $smarty, $parent = '', $display_device_version = 'desktop') {
 
 
+    $account = get_object('Account',1);
+    $account->load_acc_data();
     include_once 'utils/date_functions.php';
 
     $smarty->assign('user', $user);
@@ -32,8 +34,7 @@ function get_dashboard_inventory($type ,$user, $smarty, $parent = '', $display_d
         $title  = sprintf(_('Warehouse %d'), $object->get('Name'));
 
     } else {
-        $object = get_object('Account',1);
-        $object->load_acc_data();
+        $object = $account;
         $title = _('Warehouse');
     }
 
@@ -58,6 +59,7 @@ function get_dashboard_inventory($type ,$user, $smarty, $parent = '', $display_d
 
         $smarty->assign('production_job_orders_elements', $production_job_orders_elements);
 
+        $smarty->assign('production_supplier_key', $account->properties('production_supplier_key'));
 
 
 

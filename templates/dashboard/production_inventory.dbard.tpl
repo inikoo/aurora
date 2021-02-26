@@ -11,11 +11,7 @@
 
 
 <div id="dashboard_production" style="margin-top:5px;padding:0px" class="dashboard">
-
     <input id="production_parent" type="hidden" value="{$parent}">
-
-
-
 </div>
 
 
