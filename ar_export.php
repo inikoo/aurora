@@ -117,7 +117,6 @@ if ($_data['tipo'] == 'stock.history.day') {
         }
     }
 
-
 } else {
 
 
@@ -141,6 +140,8 @@ if ($_data['tipo'] == 'stock.history.day') {
         $_tipo = 'client_order_items';
     } elseif ($_data['tipo'] == 'supplier.order.items_in_process') {
         $_tipo = 'supplier.order.items';
+    }elseif ($_data['tipo'] == 'job_order.items') {
+           $_tipo = 'supplier.order.items';
 
     } elseif ($_data['tipo'] == 'sent_emails') {
         //print_r($_data);
