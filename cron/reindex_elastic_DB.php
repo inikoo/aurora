@@ -930,6 +930,9 @@ function update_parts_index($db) {
  */
 function update_locations_index($db) {
 
+
+    include_once 'class.Location.php';
+
     $object_name = 'Locations';
     $hosts       = get_ES_hosts();
     $print_est   = true;
@@ -950,6 +953,22 @@ function update_locations_index($db) {
             print_lap_times($object_name, $contador, $total, $lap_time0);
         }
     }
+
+    $sql  = "select `Location Deleted Key` from `Location Deleted Dimension` order by `Location Deleted Key` desc  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $object = new Location('deleted', $row['Location Deleted Key']);
+
+        process_indexing($object->index_elastic_search($hosts, true));
+        $contador++;
+        if ($print_est) {
+            print_lap_times($object_name, $contador, $total, $lap_time0);
+        }
+    }
+
+
+
     print "\n";
 }
 

@@ -888,23 +888,37 @@ class Elastic_Indexer {
 
         $this->module = 'warehouse';
 
-        $this->scopes = array(
-            'locations' => 100
-        );
 
         $this->code = $this->object->get('Code');
 
         $this->real_time[] = $this->object->get('Code');
-        //$number_only_id    = trim(preg_replace('/[^0-9]/', ' ', $this->object->get('Category Code')));
-        //$this->real_time[] = $number_only_id;
-        //$this->real_time[] = (int)$number_only_id;
 
-        $this->label_1 = $this->object->get('Code');
-        $this->label_2 = $this->object->get('Warehouse Area Code');
 
-        $this->icon_classes = 'fal  fa-fw fa-pallet';
-        $this->weight       = 60;
+
         $this->url          = sprintf('locations/%d/%d', $this->object->get('Location Warehouse Key'), $this->object->id);
+
+
+        if ($this->object->deleted) {
+            $this->scopes = array(
+                'deleted_locations' => 100
+            );
+
+            $this->icon_classes = 'fal fa-fw fa-pallet | fa fa-fw fa-trash-bin';
+            $this->weight       = 5;
+            $this->label_1 = '<span class="strikethrough discreet">'.$this->object->get('Code').'</span>';
+            $this->label_2 = '<span class="strikethrough discreet">'.$this->object->get('Warehouse Area Code').'</span>';
+
+        }else{
+            $this->scopes = array(
+                'locations' => 100
+            );
+            $this->icon_classes = 'fal fa-fw fa-pallet';
+            $this->weight       = 60;
+            $this->label_1 = $this->object->get('Code');
+            $this->label_2 = $this->object->get('Warehouse Area Code');
+
+        }
+
 
 
     }
@@ -1085,7 +1099,7 @@ class Elastic_Indexer {
         }
 
 
-        $this->icon_classes = 'fal  fa-fw fa-boxes';
+        $this->icon_classes = 'fal fa-fw fa-boxes';
 
 
         switch ($this->object->get('Part Category Status')) {
@@ -1512,7 +1526,7 @@ class Elastic_Indexer {
                 $this->label_2 = '<i class="fal fa-fw fa-user-headset padding_right_10"></i>';
                 break;
             case 'Supplier':
-                $this->label_2 = '<i class="fal  fa-fw fa-hand-holding-box padding_right_10"></i>';
+                $this->label_2 = '<i class="fal fa-fw fa-hand-holding-box padding_right_10"></i>';
                 break;
             case 'Administrator':
                 $this->label_2 = '<i class="fal fa-fw fa-user-cog padding_right_10"></i>';
@@ -1696,7 +1710,7 @@ class Elastic_Indexer {
         $this->real_time[] = $this->object->get('List Name');
 
         $this->label_1      = $this->object->get('Name');
-        $this->icon_classes = 'fal  fa-fw fa-list|'.$this->object->get('Icon');
+        $this->icon_classes = 'fal fa-fw fa-list|'.$this->object->get('Icon');
         $this->weight       = 20;
         $this->url          = sprintf('customers/list/%d', $this->object->id);
 

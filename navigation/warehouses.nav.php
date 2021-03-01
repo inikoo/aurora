@@ -32,7 +32,7 @@ function get_production_deliveries_navigation($data, $smarty) {
         'title'          => _('Production deliveries'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search warehouse')
+            'placeholder' => _('Search locations')
         )
 
     );
@@ -66,7 +66,7 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
         'title'          => _('Warehouse dashboard'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search warehouse')
+            'placeholder' => _('Search locations')
         )
 
     );
@@ -202,7 +202,7 @@ function get_new_warehouse_area_navigation($data, $smarty, $user, $db, $account)
         'title'         => _('New Warehouse area'),
         'search'        => array(
             'show'        => true,
-            'placeholder' => _('Search warehouse')
+            'placeholder' => _('Search locations')
         )
 
     );
@@ -1161,7 +1161,7 @@ function get_deleted_location_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _('Deleted location').' <span class="id Supplier_Code">'.$object->get('Code').'</span>';
+    $title = _('Deleted location').' <span class="id Location_Code">'.$object->get('Code').'</span>';
 
     $_content = array(
         'sections_class' => '',
@@ -1171,7 +1171,7 @@ function get_deleted_location_navigation($data, $smarty, $user, $db, $account) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search suppliers')
+            'placeholder' => _('Search locations')
         )
 
     );
@@ -1477,7 +1477,7 @@ function get_returns_navigation($data, $smarty, $user, $db, $account) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search warehouse')
+            'placeholder' => _('Search locations')
         )
 
     );
@@ -1682,7 +1682,7 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
         'title'         => $title,
         'search'        => array(
             'show'        => true,
-            'placeholder' => _('Search warehouse')
+            'placeholder' => _('Search locations')
         )
 
     );
@@ -1865,7 +1865,7 @@ function get_return_navigation($data, $smarty, $user, $db, $account) {
             }
 
             $sections           = get_sections('warehouses', $data['parent_key']);
-            $search_placeholder = _('Search warehouse');
+            $search_placeholder = _('Search locations');
 
 
         }
@@ -2184,7 +2184,7 @@ function get_feedback_navigation($data, $smarty, $user, $db) {
         'title'          => _('Issues'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search warehouse')
+            'placeholder' => _('Search locations')
         )
 
     );
@@ -2337,7 +2337,7 @@ function get_production_delivery_navigation($data, $smarty, $user, $db) {
 
 
     $sections           = get_sections('warehouses', $data['parent_key']);
-    $search_placeholder = _('Search warehouses');
+    $search_placeholder = _('Search locationss');
 
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
