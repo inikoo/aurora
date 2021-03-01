@@ -1972,9 +1972,15 @@ class Part extends Asset {
             case 'Supplier Part Carton Barcode':
             case 'Supplier Part Carton Weight':
 
+                $this->updated=false;
                 foreach ($this->get_supplier_parts('objects') as $supplier_part) {
                     $supplier_part->editor = $this->editor;
-                    $supplier_part->update(array('Supplier Part Unit Cost' => $value), $options);
+                    $supplier_part->update(array($field => $value), $options);
+                    if($supplier_part->updated){
+                        $this->updated=true;
+                    }
+
+
                 }
                 break;
 
