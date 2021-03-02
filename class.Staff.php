@@ -803,7 +803,12 @@ class Staff extends DB_Table {
                 $roles=get_roles();
                 $positions='';
                 foreach(preg_split('/\,/',$this->get('Staff Position')) as $position){
-                    $positions.=$roles[$position]['title'].', ';
+                    if(isset($roles[$position]['title'])){
+                        $positions.=$roles[$position]['title'].', ';
+                    }elseif($position!=''){
+                        $positions.=$position.', ';
+                    }
+
                 }
 
                 $positions =preg_replace('/, $/','',$positions);
