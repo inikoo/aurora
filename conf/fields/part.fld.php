@@ -756,8 +756,11 @@ $part_fields[] = array(
 
 );
 
+// Remove this until you create an alert saying you will destroy this part for good
+// Dont display if there is associated products (Add a message can not be deleted until all products are disassociated)
 
-if (!$new and !$supplier_part_scope) {
+
+if (!$new and !$supplier_part_scope and false) {
     $operations = array(
         'label'      => _('Operations'),
         'show_title' => true,
@@ -772,7 +775,7 @@ if (!$new and !$supplier_part_scope) {
                  data-labels=\'{ "text":"'._('Please ask an authorised user to delete this part').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
                 onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'BS\')').'"  
                 style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & related supplier's products").' <i class="far fa-trash-alt new_button link"></i></span>',
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & all related supplier's products").' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
