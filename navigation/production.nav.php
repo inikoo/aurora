@@ -102,9 +102,7 @@ function get_production_parts_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => sprintf(
-            _('Production %s parts'), '<span class="id Supplier_Code">'.$data['_object']->get('Code').'</span>'
-        ),
+        'title'          => _('Production products'),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search production')

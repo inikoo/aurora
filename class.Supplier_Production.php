@@ -58,8 +58,20 @@ class Supplier_Production extends Supplier {
         } else {
             return;
         }
+
+        $this->metadata = array();
+
+        $this->production_metadata = array();
+
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Supplier Key'];
+
+            if (!empty($this->data['Supplier Metadata'])) {
+
+                $this->metadata = json_decode(
+                    $this->data['Supplier Metadata'], true
+                );
+            }
 
             $sql = sprintf(
                 'SELECT * FROM `Supplier Production Dimension` WHERE `Supplier Production Supplier Key`=%d ', $this->id
@@ -67,13 +79,34 @@ class Supplier_Production extends Supplier {
             if ($row = $this->db->query($sql)->fetch()) {
 
                 foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
+
+                    if($key=='Supplier Production Metadata'){
+
+                        if ($row[$key]!='') {
+                            $this->production_metadata = json_decode($row[$key], true);
+                        }
+                    }else{
+                        $this->data[$key] = $value;
+                    }
+
+
+
+
+
                 }
             }
 
 
         }
 
+    }
+
+    function production_metadata($key) {
+        return (isset($this->production_metadata[$key]) ? $this->production_metadata[$key] : '');
+    }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
 

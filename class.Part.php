@@ -4537,6 +4537,8 @@ class Part extends Asset {
     function delete($metadata = false) {
 
 
+        //todo dont delete if there is products with this part
+
         $sql = sprintf(
             'INSERT INTO `Part Deleted Dimension`  (`Part Deleted Key`,`Part Deleted Reference`,`Part Deleted Date`,`Part Deleted Metadata`) VALUES (%d,%s,%s,%s) ', $this->id, prepare_mysql($this->get('Part Reference')), prepare_mysql(gmdate('Y-m-d H:i:s')),
             prepare_mysql(gzcompress(json_encode($this->data), 9))

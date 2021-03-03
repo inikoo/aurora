@@ -44,15 +44,11 @@ function get_production_module() {
 
 
                     'production.discontinued_parts'  => array(
-                        'label' => _(
-                            'Discontinued'
-                        ),
+                        'label' => _('Discontinued'),
                         'class' => 'very_discreet right'
                     ),
                     'production.discontinuing_parts' => array(
-                        'label' => _(
-                            'Discontinuing'
-                        ),
+                        'label' => _('Discontinuing'),
                         'class' => 'discreet right'
                     ),
                     'production.in_process_parts'    => array(
@@ -66,7 +62,14 @@ function get_production_module() {
 
 
 
-                    'production.production_parts' => array('label' => _('All parts'))
+                    'production.production_parts' => array(
+                        'label' => _('All product'),
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Parts'
+                        ),
+
+                    )
                 )
 
 
