@@ -116,23 +116,23 @@ function parts($_data, $db, $user, $type, $account) {
 
     if ($type == 'active') {
         $extra_where = ' and `Part Status`="In Use"';
-        $rtext_label = 'part';
+        $rtext_label = 'product';
 
     } elseif ($type == 'discontinuing') {
         $extra_where = ' and `Part Status`="Discontinuing"';
-        $rtext_label = 'part';
+        $rtext_label = 'product';
 
     } elseif ($type == 'discontinued') {
         $extra_where = ' and `Part Status`="Not In Use"';
-        $rtext_label = 'discontinued part';
+        $rtext_label = 'product';
 
     } elseif ($type == 'in_process') {
         $extra_where = ' and `Part Status`="In Process"';
-        $rtext_label = 'part in process';
+        $rtext_label = 'product';
 
     } else {
         $extra_where = ' and `Part Status`!="Not In Use"';
-        $rtext_label = 'part';
+        $rtext_label = 'product';
 
     }
 

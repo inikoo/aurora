@@ -11,15 +11,15 @@
 */
 
 
-function get_production_alerts($supplier, $db, $account, $user, $smarty) {
+function get_production_alerts($production, $db, $account, $user, $smarty) {
 
     $html = '';
 
 
     $data = get_widget_data(
-        $supplier->get('Supplier Production Part Locations Errors'), $supplier->get('Supplier Production Part Locations'), $supplier->get(
+        $production->get('Supplier Production Part Locations Errors'), $production->get('Supplier Production Part Locations'), $production->get(
         'Supplier Production Tolerable Percentage Part Locations Errors'
-    ), $supplier->get(
+    ), $production->get(
         'Supplier Production Max Percentage Part Locations Errors'
     )
 
@@ -33,10 +33,13 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
         );
     }
 
+
+
     $data = get_widget_data(
-        $supplier->get('Supplier Production Paid Ordered Parts Todo'), $supplier->get('Supplier Number Parts'), $supplier->get(
+        $production->get('Supplier Production Paid Ordered Parts Todo'), $production->get('Supplier Number Parts'),
+        $production->get(
         'Supplier Production Tolerable Percentage Paid Ordered Parts Todo'
-    ), $supplier->get(
+    ), $production->get(
         'Supplier Production Max Percentage Paid Ordered Parts Todo'
     )
 
@@ -49,8 +52,8 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
     }
 
     $data = get_widget_data(
-        $supplier->get('Production to do parts'), $supplier->get('Supplier Number Parts'), $supplier->get('Supplier Tolerable Percentage Todo Parts'),
-        $supplier->get('Supplier Max Percentage Todo Parts')
+        $production->get('Production to do parts'), $production->get('Supplier Number Parts'), $production->get('Supplier Tolerable Percentage Todo Parts'),
+        $production->get('Supplier Max Percentage Todo Parts')
 
     );
     if ($data['ok']) {
@@ -62,8 +65,8 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
 
 
     $data = get_widget_data(
-        $supplier->get('Supplier Number Surplus Parts'), $supplier->get('Supplier Number Parts'), $supplier->get('Supplier Tolerable Percentage Surplus Parts'),
-        $supplier->get('Supplier Max Percentage Surplus Parts')
+        $production->get('Supplier Number Surplus Parts'), $production->get('Supplier Number Parts'), $production->get('Supplier Tolerable Percentage Surplus Parts'),
+        $production->get('Supplier Max Percentage Surplus Parts')
 
     );
     if ($data['ok']) {
@@ -77,10 +80,10 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
 
 
     $data = get_widget_data(
-        $supplier->get('Supplier Paid Ordered Parts To Replenish'),
-        $supplier->get('Supplier Paid Ordered Parts'),
-        $supplier->get('Supplier Tolerable Percentage Paid Ordered Parts To Replenish'),
-        $supplier->get('Supplier Max Percentage Paid Ordered Parts To Replenish')
+        $production->get('Supplier Paid Ordered Parts To Replenish'),
+        $production->get('Supplier Paid Ordered Parts'),
+        $production->get('Supplier Tolerable Percentage Paid Ordered Parts To Replenish'),
+        $production->get('Supplier Max Percentage Paid Ordered Parts To Replenish')
 
     );
 
@@ -99,10 +102,10 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
 
 
     $data = get_widget_data(
-        $supplier->get('Supplier Part Locations To Replenish'),
-        $supplier->get('Supplier Replenishable Part Locations'),
-        $supplier->get('Supplier Tolerable Percentage Part Locations To Replenish'),
-        $supplier->get('Supplier Max Percentage Part Locations To Replenish')
+        $production->get('Supplier Part Locations To Replenish'),
+        $production->get('Supplier Replenishable Part Locations'),
+        $production->get('Supplier Tolerable Percentage Part Locations To Replenish'),
+        $production->get('Supplier Max Percentage Part Locations To Replenish')
 
     );
 
@@ -122,6 +125,9 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
 
 function get_widget_data($value, $total, $min, $max) {
 
+    if(!$value){
+        $value=0;
+    }
 
 
     $data = array(
@@ -151,6 +157,7 @@ function get_widget_data($value, $total, $min, $max) {
     }else{
         $data['value'] = $value;
         $data['total'] = $total;
+
 
         $percentage    = $value / $total;
         if ($percentage < $min) {

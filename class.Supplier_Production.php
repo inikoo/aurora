@@ -125,10 +125,6 @@ class Supplier_Production extends Supplier {
             if ($row = $result->fetch()) {
                 $part_locations = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -142,18 +138,14 @@ class Supplier_Production extends Supplier {
             if ($row = $result->fetch()) {
                 $part_locations_with_errors = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Supplier Production Part Locations'        => $part_locations,
                 'Supplier Production Part Locations Errors' => $part_locations_with_errors
 
-            ), 'no_history'
+            )
         );
 
 

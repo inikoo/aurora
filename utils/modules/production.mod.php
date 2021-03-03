@@ -45,25 +45,41 @@ function get_production_module() {
 
                     'production.discontinued_parts'  => array(
                         'label' => _('Discontinued'),
-                        'class' => 'very_discreet right'
+                        'class' => 'very_discreet right',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Discontinued Parts'
+                        ),
                     ),
                     'production.discontinuing_parts' => array(
                         'label' => _('Discontinuing'),
-                        'class' => 'discreet right'
+                        'class' => 'discreet right',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Discontinuing Parts'
+                        ),
                     ),
                     'production.in_process_parts'    => array(
                         'label' => _('In process'),
-                        'class' => 'discreet right'
+                        'class' => 'discreet right',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number In Process Parts'
+                        ),
                     ),
                     'production.parts'               => array(
                         'label' => _('Active'),
-                        'class'=>'right'
+                        'class'=>'right',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Active Parts'
+                        ),
                     ),
 
 
 
                     'production.production_parts' => array(
-                        'label' => _('All product'),
+                        'label' => _('All products'),
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number Parts'

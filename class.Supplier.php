@@ -274,9 +274,6 @@ class Supplier extends SubjectSupplier {
         unset($base_data['Supplier Main Image Key']);
 
 
-
-
-
         $sql = sprintf(
             "INSERT INTO `Supplier Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
@@ -713,9 +710,19 @@ class Supplier extends SubjectSupplier {
             case 'Number Deliveries':
             case 'Number Invoices':
             case 'Number Parts':
+            case 'Number Active Parts':
             case 'Number Images':
 
                 return number($this->data['Supplier '.$key]);
+            case 'Number Discontinuing Parts':
+            case 'Number Discontinued Parts':
+            case 'Number In Process Parts':
+
+                $key = preg_replace('/Number /', '', $key);
+
+                return number($this->metadata(preg_replace('/\s/', '_', $key)));
+
+
             case ('Purchase Order Type'):
                 switch ($this->data['Supplier Purchase Order Type']) {
                     case 'Parcel':
@@ -1486,10 +1493,11 @@ class Supplier extends SubjectSupplier {
     function update_supplier_parts() {
 
 
-        $parts_skos = $this->get_part_skus();
+        //  $parts_skos = $this->get_part_skus();
 
 
-        $supplier_number_parts              = 0;
+        $supplier_number_parts = 0;
+
         $supplier_number_active_parts       = 0;
         $supplier_number_surplus_parts      = 0;
         $supplier_number_optimal_parts      = 0;
@@ -1497,52 +1505,75 @@ class Supplier extends SubjectSupplier {
         $supplier_number_critical_parts     = 0;
         $supplier_number_out_of_stock_parts = 0;
 
+        $supplier_number_in_process_parts    = 0;
+        $supplier_number_discontinuing_parts = 0;
 
-        if ($parts_skos != '') {
-
-
-            $supplier_number_parts = count(preg_split('/,/', $parts_skos));
-
-
-            $parts_skos = $this->get_part_skus('in_use');
-
-            if ($parts_skos != '') {
-
-                $sql = "SELECT count(*) AS num ,
-		sum(if(`Part Stock Status`='Surplus',1,0)) AS surplus,
-		sum(if(`Part Stock Status`='Optimal',1,0)) AS optimal,
-		sum(if(`Part Stock Status`='Low',1,0)) AS low,
-		sum(if(`Part Stock Status`='Critical',1,0)) AS critical,
-		sum(if(`Part Stock Status`='Out_Of_Stock',1,0)) AS out_of_stock
-
-		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=? AND `Supplier Part Part SKU` IN (?) ";
-
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $this->id,
-                        $parts_skos
-                    )
-                );
-                if ($row = $stmt->fetch()) {
-                    $supplier_number_active_parts = $row['num'];
-                    if ($row['num'] > 0) {
-                        $supplier_number_surplus_parts      = $row['surplus'];
-                        $supplier_number_optimal_parts      = $row['optimal'];
-                        $supplier_number_low_parts          = $row['low'];
-                        $supplier_number_critical_parts     = $row['critical'];
-                        $supplier_number_out_of_stock_parts = $row['out_of_stock'];
-                    }
-                }
+        $supplier_number_discontinued_parts = 0;
 
 
+        $sql = "SELECT count(*) AS num ,`Part Status`
+
+		FROM`Part Dimension` P left join  `Supplier Part Dimension` SP   ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=? group by `Part Status` ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id,
+            )
+        );
+
+
+
+
+
+        while ($row = $stmt->fetch()) {
+            if ($row['Part Status'] == 'In Use') {
+                $supplier_number_active_parts = $row['num'];
+            } elseif ($row['Part Status'] = 'Discontinuing') {
+                $supplier_number_discontinuing_parts = $row['num'];
+            } elseif ($row['Part Status'] = 'In Process') {
+                $supplier_number_in_process_parts = $row['num'];
+            } elseif ($row['Part Status'] = 'Not In Use') {
+                $supplier_number_discontinued_parts = $row['num'];
+            }
+
+
+        }
+
+        $supplier_number_parts = $supplier_number_active_parts + $supplier_number_discontinuing_parts + $supplier_number_in_process_parts + $supplier_number_discontinued_parts;
+
+
+        $sql = "SELECT count(*) AS num ,`Part Stock Status`
+
+		FROM `Supplier Part Dimension` SP  LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`)  WHERE `Supplier Part Supplier Key`=? and `Part Status`='In Use' group by `Part Stock Status`  ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id,
+            )
+        );
+        while ($row = $stmt->fetch()) {
+
+
+            if ($row['Part Stock Status'] == 'Surplus') {
+                $supplier_number_surplus_parts = $row['num'];
+            } elseif ($row['Part Stock Status'] == 'Optimal') {
+                $supplier_number_optimal_parts = $row['num'];
+            } elseif ($row['Part Stock Status'] == 'Low') {
+                $supplier_number_low_parts = $row['num'];
+            } elseif ($row['Part Stock Status'] == 'Critical') {
+                $supplier_number_critical_parts = $row['num'];
+            } elseif ($row['Part Stock Status'] == 'Out_Of_Stock') {
+                $supplier_number_out_of_stock_parts = $row['num'];
             }
 
 
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Supplier Number Parts'              => $supplier_number_parts,
                 'Supplier Number Active Parts'       => $supplier_number_active_parts,
@@ -1552,8 +1583,12 @@ class Supplier extends SubjectSupplier {
                 'Supplier Number Critical Parts'     => $supplier_number_critical_parts,
                 'Supplier Number Out Of Stock Parts' => $supplier_number_out_of_stock_parts,
 
-            ), 'no_history'
+            )
         );
+
+        $this->fast_update_json_field('Supplier Metadata', 'Discontinuing_Parts', $supplier_number_discontinuing_parts);
+        $this->fast_update_json_field('Supplier Metadata', 'Discontinued_Parts', $supplier_number_discontinued_parts);
+        $this->fast_update_json_field('Supplier Metadata', 'In_Process_Parts', $supplier_number_in_process_parts);
 
 
         foreach ($this->get_categories('objects') as $category) {
