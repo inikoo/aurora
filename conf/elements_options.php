@@ -833,6 +833,28 @@ function get_elements_option($option) {
             )
         ),
 
+        'production_products' => array(
+            'status'      => array(
+                'label' => _('Status'),
+                'items' => array(
+                    'Available'    => array(
+                        'label'    => _('Available'),
+                        'selected' => true
+                    ),
+                    'NoAvailable'  => array(
+                        'label'    => _("Can not not produce"),
+                        'selected' => true
+                    ),
+                    'Discontinued' => array(
+                        'label'    => _('Discontinued'),
+                        'selected' => false
+                    )
+                )
+
+
+            )
+        ),
+
         'supplier_parts' => array(
             'status'      => array(
                 'label' => _('Status'),

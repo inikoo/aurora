@@ -806,7 +806,7 @@ function production_parts($_data, $db, $user, $account) {
     include_once 'utils/currency_functions.php';
 
 
-    $rtext_label = 'production part';
+    $rtext_label = 'production product';
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -884,16 +884,35 @@ function production_parts($_data, $db, $user, $account) {
             }
 
 
-            $description = $data['Part Package Description'].'<div class="italic very_discreet">('.sprintf(_('%s units per SKO'), $data['Part Units per Package']).')</div>';
+            $description_and_packing = $data['Supplier Part Description'].'<div class="very_discreet">'.sprintf(_('%s units per SKO'), $data['Part Units per Package']).' | '.sprintf(_('%s SKO per Carton'), $data['Supplier Part Packages Per Carton']).'</div>';
+
+
+            $next_deliveries = '';
+
+            if ($data['Part Next Deliveries Data'] != '') {
+                $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
+                if (count($next_deliveries_data) > 0) {
+                    foreach ($next_deliveries_data as $delivery) {
+                        $next_deliveries .= sprintf(
+                            ', '.$delivery['formatted_link']
+                        );
+                    }
+                }
+
+
+            }
+            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
+
 
             $adata[] = array(
                 'id'        => (integer)$data['Production Part Supplier Part Key'],
                 'reference' => sprintf('<span class="link" onclick="change_view(\'/production/%d/part/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
 
+                'description' => $data['Supplier Part Description'],
 
-                'description' => $description,
-                'status'      => $status,
-                'cost'        => money(
+                'description_and_packing' => $description_and_packing,
+                'status'                  => $status,
+                'cost'                    => money(
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
 
@@ -906,7 +925,12 @@ function production_parts($_data, $db, $user, $account) {
 				 '),
                 'stock'      => $stock,
                 'components' => number($data['Production Part Components Number']),
-                'tasks'      => number($data['Production Part Tasks Number'])
+                'tasks'      => number($data['Production Part Tasks Number']),
+
+                'units_per_sko'   => number($data['Part Units per Package']),
+                'sko_per_carton'  => number($data['Supplier Part Packages Per Carton']),
+                'units_per_batch' => (!$data['Production Part Batch Size'] ? sprintf('<span class="italic discret error">%s</span>', _('Not set up')) : number($data['Production Part Batch Size'])),
+                'next_deliveries' => $next_deliveries
 
 
             );
@@ -1080,7 +1104,7 @@ function raw_materials($_data, $db, $user, $account) {
 
             if ($data['Raw Material Type'] == 'Part') {
                 $object = sprintf('<i class="fal button fa-box" onclick="change_view(\'part/%d\')"></i>', $data['Raw Material Type Key']);
-            }elseif ($data['Raw Material Type'] == 'Consumable') {
+            } elseif ($data['Raw Material Type'] == 'Consumable') {
                 $object = sprintf('<i class="fal button fa-water" onclick="change_view(\'consumable/%d\')"></i>', $data['Raw Material Type Key']);
             } else {
                 $object = '';
@@ -1090,12 +1114,12 @@ function raw_materials($_data, $db, $user, $account) {
             $stock_label = '<span class="small discreet">'.strtolower($data['Raw Material Unit Label']).'</span>';
 
             $adata[] = array(
-                'id'        => (integer)$data['Raw Material Key'],
-                'reference' => sprintf('<span class="link" onclick="change_view(\'/production/%d/raw_materials/%d\')">%s</span>', $data['Raw Material Production Supplier Key'], $data['Raw Material Key'], $data['Raw Material Code']),
-                'description' => $data['Raw Material Description'],
-                'stock_units'  => $stock_label.' '.number($data['Raw Material Stock']),
-                'stock_status' => $stock_status,
-                'object'       => $object,
+                'id'               => (integer)$data['Raw Material Key'],
+                'reference'        => sprintf('<span class="link" onclick="change_view(\'/production/%d/raw_materials/%d\')">%s</span>', $data['Raw Material Production Supplier Key'], $data['Raw Material Key'], $data['Raw Material Code']),
+                'description'      => $data['Raw Material Description'],
+                'stock_units'      => $stock_label.' '.number($data['Raw Material Stock']),
+                'stock_status'     => $stock_status,
+                'object'           => $object,
                 'production_links' => number($data['Raw Material Products'])
 
 
@@ -1600,6 +1624,8 @@ function production_urgent_to_do($_data, $db, $user) {
 
 
             }
+            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
+
 
             $stock_available = $data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
 
@@ -1610,7 +1636,6 @@ function production_urgent_to_do($_data, $db, $user) {
 
             $stock .= '<b>'.number($stock_available).'</b>';
 
-            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
 
 
             $table_data[] = array(

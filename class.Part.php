@@ -300,7 +300,10 @@ class Part extends Asset {
                 'Part Next Deliveries Data'     => json_encode($data['deliveries']),
                 'Part Next Shipment Date'       => ($data['next_delivery_time'] != '' ? gmdate('Y-m-d H:i:s', $data['next_delivery_time']) : ''),
                 'Part Number Active Deliveries' => $data['number_non_draft_POs'],
-                'Part Number Draft Deliveries'  => $data['number_draft_POs']
+                'Part Number Draft Deliveries'  => $data['number_draft_POs'],
+                'Part Units in Deliveries'      => $data['units_in_deliveries']
+
+
             )
         );
 
@@ -314,6 +317,7 @@ class Part extends Asset {
 
     function get_next_deliveries_data() {
 
+        $units_in_deliveries = 0;
 
         $next_delivery_time       = 999999999999;
         $valid_next_delivery_time = false;
@@ -358,7 +362,7 @@ class Part extends Asset {
 
                             $raw_units_qty = $row['Supplier Delivery Checked Units'] - $row['placed'];
                         }
-
+                        $units_in_deliveries += $raw_units_qty;
 
                         if ($raw_units_qty > 0) {
 
@@ -495,7 +499,11 @@ class Part extends Asset {
                         $number_draft_POs++;
 
                         $raw_units_qty = $row['Purchase Order Ordering Units'];
-                        $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+
+
+                        $units_in_deliveries += $raw_units_qty;
+
+                        $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
 
                         $_next_delivery_time = 0;
                         $date                = '';
@@ -520,7 +528,11 @@ class Part extends Asset {
                         $number_draft_POs++;
 
                         $raw_units_qty = $row['submitted_units'];
-                        $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+
+                        $units_in_deliveries += $raw_units_qty;
+
+
+                        $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
 
                         $_next_delivery_time = 0;
                         $date                = '';
@@ -576,29 +588,36 @@ class Part extends Asset {
 
                                     $qty = '+'.number($row['submitted_units'] / $row['Part Units Per Package']);
 
-                                    $raw_units_qty = $row['submitted_units'];
-                                    $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+                                    $raw_units_qty       = $row['submitted_units'];
+                                    $units_in_deliveries += $raw_units_qty;
+
+                                    $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
 
                                     break;
                                 case 'Manufactured':
-                                    $formatted_state = _('Manufactured');
-                                    $formatted_link  = sprintf(
+                                    $formatted_state     = _('Manufactured');
+                                    $formatted_link      = sprintf(
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-flag-checkered" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package'])
                                     );
-                                    $qty             = '+'.number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package']);
-                                    $raw_units_qty   = $row['Purchase Order Manufactured Units'];
-                                    $raw_skos_qty    = $raw_units_qty / $row['Part Units Per Package'];
+                                    $qty                 = '+'.number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package']);
+
+                                    $raw_units_qty = $row['Purchase Order Manufactured Units'];
+                                    $units_in_deliveries += $raw_units_qty;
+
+                                    $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
                                     break;
                                 case 'QC_Pass':
-                                    $formatted_state = _('QC pass');
-                                    $formatted_link  = sprintf(
+                                    $formatted_state     = _('QC pass');
+                                    $formatted_link      = sprintf(
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-siren-on" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
                                     );
-                                    $qty             = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
-                                    $raw_units_qty   = $row['Purchase Order QC Pass Units'];
-                                    $raw_skos_qty    = $raw_units_qty / $row['Part Units Per Package'];
+                                    $qty                 = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
+                                    $raw_units_qty       = $row['Purchase Order QC Pass Units'];
+                                    $units_in_deliveries += $raw_units_qty;
+
+                                    $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
                                     break;
                                 case 'Dispatched':
                                 case 'InDelivery':
@@ -606,14 +625,16 @@ class Part extends Asset {
                                 case 'Received':
                                 case 'Checked':
 
-                                    $formatted_state = _('Delivered');
-                                    $formatted_link  = sprintf(
+                                    $formatted_state     = _('Delivered');
+                                    $formatted_link      = sprintf(
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-user-clock" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package'])
                                     );
-                                    $qty             = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
-                                    $raw_units_qty   = $row['Purchase Order QC Pass Units'];
-                                    $raw_skos_qty    = $raw_units_qty / $row['Part Units Per Package'];
+                                    $qty                 = '+'.number($row['Purchase Order QC Pass Units'] / $row['Part Units Per Package']);
+                                    $raw_units_qty       = $row['Purchase Order QC Pass Units'];
+                                    $units_in_deliveries += $raw_units_qty;
+
+                                    $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
                                     break;
                                 default:
                                     $formatted_state = _('Unknown');
@@ -631,8 +652,10 @@ class Part extends Asset {
                             //print_r($row);
 
                             $number_non_draft_POs++;
-                            $raw_units_qty = $row['submitted_units'];
-                            $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+                            $raw_units_qty       = $row['submitted_units'];
+                            $units_in_deliveries += $raw_units_qty;
+
+                            $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
 
 
                             $formatted_link = sprintf(
@@ -703,7 +726,8 @@ class Part extends Asset {
             'deliveries'           => $next_deliveries_data,
             'next_delivery_time'   => (!$next_delivery_time ? '' : $next_delivery_time),
             'number_non_draft_POs' => $number_non_draft_POs,
-            'number_draft_POs'     => $number_draft_POs
+            'number_draft_POs'     => $number_draft_POs,
+            'units_in_deliveries'  => $units_in_deliveries
 
         );
 
@@ -1972,12 +1996,12 @@ class Part extends Asset {
             case 'Supplier Part Carton Barcode':
             case 'Supplier Part Carton Weight':
 
-                $this->updated=false;
+                $this->updated = false;
                 foreach ($this->get_supplier_parts('objects') as $supplier_part) {
                     $supplier_part->editor = $this->editor;
                     $supplier_part->update(array($field => $value), $options);
-                    if($supplier_part->updated){
-                        $this->updated=true;
+                    if ($supplier_part->updated) {
+                        $this->updated = true;
                     }
 
 

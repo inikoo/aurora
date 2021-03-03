@@ -42,7 +42,7 @@ function get_production_module() {
                 'reference' => 'production/%d/parts',
                 'tabs'      => array(
 
-
+/*
                     'production.discontinued_parts'  => array(
                         'label' => _('Discontinued'),
                         'class' => 'very_discreet right',
@@ -76,7 +76,7 @@ function get_production_module() {
                         ),
                     ),
 
-
+*/
 
                     'production.production_parts' => array(
                         'label' => _('All products'),

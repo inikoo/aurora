@@ -378,10 +378,10 @@ function get_rtext($record_label, $total_records) {
                 '%s part location with errors', '%s part locations with errors', $total_records
             ), number($total_records)
         );
-    } elseif ($record_label == 'production part') {
+    } elseif ($record_label == 'production product') {
         return sprintf(
             ngettext(
-                '%s production part', '%s production parts', $total_records
+                '%s production product', '%s production products', $total_records
             ), number($total_records)
         );
     } elseif ($record_label == 'material') {
@@ -897,10 +897,10 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s part location with errors of %s', '%s part locations with errors of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    } elseif ($record_label == 'production part') {
+    } elseif ($record_label == 'production product') {
         return sprintf(
             ngettext(
-                '%s production part of %s', '%s production parts of %s', $total_with_filter
+                '%s production product of %s', '%s production products of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'material') {

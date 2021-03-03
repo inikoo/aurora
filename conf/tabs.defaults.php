@@ -3397,9 +3397,9 @@ function get_tab_defaults_data() {
             'rpp'           => 100,
             'rpp_options'   => $default_rrp_options,
             'f_field'       => 'reference',
-            'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
-            'elements'      => get_elements_option('supplier_parts'),
-            'export_fields' => get_export_fields('supplier_parts')
+            'elements_type' => array_keys(get_elements_option('production_products'))[0],
+            'elements'      => get_elements_option('production_products'),
+            'export_fields' => get_export_fields('production_products')
 
         ),
         'production.materials'         => array(

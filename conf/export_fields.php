@@ -722,6 +722,210 @@ function get_export_fields($element, $account_currency_code = '') {
 
         ),
 
+        'production_products'    => array(
+            array(
+                'name'    => '`Supplier Code`',
+                'label'   => _('Supplier'),
+                'checked' => 0
+            ),
+
+
+            array(
+                'name'    => '`Supplier Part Status`',
+                'label'   => _('Availability'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Reference`',
+                'label'   => _("Supplier's product code"),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Description`',
+                'label'   => _("Supplier's unit description"),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Reference`',
+                'label'   => _('Part reference'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Unit Label`',
+                'label'   => _('Unit label'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Part Package Description`',
+                'label'   => _('Part SKO description').' ('._('for picking aid').')',
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Units Per Package`',
+                'label'   => _('Units per SKO'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Packages Per Carton`',
+                'label'   => _('SKOs per carton'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Part SKO Barcode`',
+                'label'   => _('SKO barcode'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Carton Barcode`',
+                'label'   => _('Carton barcode'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Recommended Packages Per Selling Outer`',
+                'label'   => _('Recommended SKOs per selling outer'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Supplier Part Status`',
+                'label'   => _('Availability'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Supplier Part On Demand`',
+                'label'   => _('On demand'),
+                'checked' => 1
+            ),
+
+
+            array(
+                'name'    => '`Part Unit Weight`',
+                'label'   => _('Weight shown in website'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Unit Dimensions`',
+                'label'   => _('Unit dimensions'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Package Weight`',
+                'label'   => _('SKO Weight'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Package Dimensions`',
+                'label'   => _('SKO dimensions'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Materials`',
+                'label'   => _('Materials'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Origin Country Code`',
+                'label'   => _('Country of origin'),
+                'checked' => 1
+            ),
+
+            array(
+                'name'    => '`Part Tariff Code`',
+                'label'   => _('Tariff code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Duty Rate`',
+                'label'   => _('Duty Rate'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part HTSUS Code`',
+                'label'   => _('HTSUS Code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part UN Number`',
+                'label'   => _('UN Number'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part UN Class`',
+                'label'   => _('UN class'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Packing Group`',
+                'label'   => _('Packing group'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Proper Shipping Name`',
+                'label'   => _('Proper shipping name'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Hazard Identification Number`',
+                'label'   => _('Hazard identification number'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part UFI`',
+                'label'   => _('UFI (Poison Centres)'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Minimum Carton Order`',
+                'label'   => _('Minimum order (cartons)'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Average Delivery Days`',
+                'label'   => _('Average delivery time (days)'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Carton CBM`',
+                'label'   => _('Carton CBM'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Unit Cost`',
+                'label'   => _('Unit cost'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Unit Expense`',
+                'label'   => _('Unit expense'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Supplier Part Unit Extra Cost`',
+                'label'   => _('Unit extra costs'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Unit Price`',
+                'label'   => _('Unit recommended price'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Unit RRP`',
+                'label'   => _('Unit recommended RRP'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Barcode Number`',
+                'label'   => _('Unit barcode').' (for website)',
+                'checked' => 1,
+                'type'    => 'text'
+            ),
+
+
+        ),
 
         'supplier_parts'    => array(
             array(

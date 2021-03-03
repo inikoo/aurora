@@ -16,7 +16,7 @@ $table
 $fields
     = '`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Part Package Description`,`Part Units per Package`,`Production Part Components Number`,`Production Part Tasks Number`,
-`Production Part Supplier Part Key`
+`Production Part Supplier Part Key`,`Production Part Batch Size`,`Part Next Deliveries Data`
 ';
 
 
@@ -95,22 +95,34 @@ if ($parameters['f_field'] == 'reference' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'part_description') {
-    $order = '`Part Reference`';
-} elseif ($order == 'reference') {
+if ($order == 'reference') {
     $order = '`Supplier Part Reference`';
 } elseif ($order == 'cost') {
     $order = '`Supplier Part Unit Cost`';
 } elseif ($order == 'delivered_cost') {
     $order = '(`Supplier Part Unit Cost`+`Supplier Part Unit Extra Cost`)';
-} elseif ($order == 'supplier_code') {
-    $order = '`Supplier Code`';
-} elseif ($order == 'stock') {
+}elseif ($order == 'stock') {
     $order = '`Part Current Stock`';
-} else {
+}elseif ($order == 'components') {
+    $order = '`Production Part Components Number`';
+} elseif ($order == 'tasks') {
+    $order = '`Production Part Tasks Number`';
+} elseif ($order == 'units_per_sko') {
+    $order = '`Part Units per Package`';
+} elseif ($order == 'sko_per_carton') {
+    $order = '`Supplier Part Packages Per Carton`';
+} elseif ($order == 'units_per_batch') {
+    $order = '`Production Part Batch Size`';
+}elseif ($order == 'units_per_batch') {
+    $order = '`Production Part Batch Size`';
+} elseif ($order == 'next_deliveries') {
+    $order = '`Part Units in Deliveries`';
+}  else {
 
     $order = '`Supplier Part Key`';
 }
+
+
 
 
 $sql_totals
