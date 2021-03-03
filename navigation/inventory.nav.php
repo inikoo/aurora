@@ -37,14 +37,17 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-
 function get_inventory_navigation($data, $smarty, $user, $db, $account) {
-
 
 
     $left_buttons = array();
@@ -74,7 +77,11 @@ function get_inventory_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -121,7 +128,11 @@ function get_new_part_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -132,7 +143,6 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     $object = $data['_object'];
 
 
-
     $left_buttons = array();
 
 
@@ -141,10 +151,10 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         switch ($data['parent']) {
 
             case 'category':
-                $tab      = 'category.parts';
+                $tab = 'category.parts';
                 break;
             default:
-                $tab      = 'inventory.parts';
+                $tab = 'inventory.parts';
                 break;
 
         }
@@ -171,7 +181,6 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-
         include_once 'prepare_table/'.$tab.'.ptble.php';
 
         $_order_field       = $order;
@@ -181,152 +190,142 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         $_order_field_value = $object->get($order);
 
 
+
+
         $prev_title = '';
         $next_title = '';
         $prev_key   = 0;
         $next_key   = 0;
 
 
+        $sql = sprintf(
+            "select `Part Reference` object_name,P.`Part SKU` as object_key from %s  
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Part SKU` < %d))  order by $_order_field desc , P.`Part SKU` desc limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        );
 
-                $sql = sprintf(
-                    "select `Part Reference` object_name,P.`Part SKU` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND P.`Part SKU` < %d))  order by $_order_field desc , P.`Part SKU` desc limit 1",
 
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_key   = $row['object_key'];
+                $prev_title = _("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+            }
+        }
+
+
+        $sql = sprintf(
+            "select `Part Reference` object_name,P.`Part SKU` as object_key from %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Part SKU` > %d))  order by $_order_field   , P.`Part SKU`  limit 1", "$table $where $wheref",prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        );
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_key   = $row['object_key'];
+                $next_title = _("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+            }
+        }
+
+
+        if ($order_direction == 'desc') {
+            $_tmp1      = $prev_key;
+            $_tmp2      = $prev_title;
+            $prev_key   = $next_key;
+            $prev_title = $next_title;
+            $next_key   = $_tmp1;
+            $next_title = $_tmp2;
+        }
+
+
+        switch ($data['parent']) {
+            case 'account':
+
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Inventory"),
+                    'reference' => 'inventory'
                 );
 
+                if ($prev_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'part/'.$prev_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-left disabled',
+                        'title' => ''
+                    );
+
+                }
+                $left_buttons[] = $up_button;
 
 
+                if ($next_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'part/'.$next_key
+                    );
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_key   = $row['object_key'];
-                        $prev_title = _("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
-                    }
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-right disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
                 }
 
+                break;
 
-                $sql = sprintf(
-                    "select `Part Reference` object_name,P.`Part SKU` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Part SKU` > %d))  order by $_order_field   , P.`Part SKU`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+            case 'category':
+
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _(
+                        "Parts's families"
+                    ),
+                    'reference' => 'inventory/category/'.$data['parent_key']
                 );
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_key   = $row['object_key'];
-                        $next_title = _("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
-                    }
+                if ($prev_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'category/'.$data['parent_key'].'/part/'.$prev_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-left disabled',
+                        'title' => ''
+                    );
+
+                }
+                $left_buttons[] = $up_button;
+
+
+                if ($next_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'category/'.$data['parent_key'].'/part/'.$next_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-right disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
                 }
 
-
-                if ($order_direction == 'desc') {
-                    $_tmp1      = $prev_key;
-                    $_tmp2      = $prev_title;
-                    $prev_key   = $next_key;
-                    $prev_title = $next_title;
-                    $next_key   = $_tmp1;
-                    $next_title = $_tmp2;
-                }
-
-
-                switch ($data['parent']) {
-                    case 'account':
-
-
-                        $up_button = array(
-                            'icon'      => 'arrow-up',
-                            'title'     => _("Inventory"),
-                            'reference' => 'inventory'
-                        );
-
-                        if ($prev_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-left',
-                                'title'     => $prev_title,
-                                'reference' => 'part/'.$prev_key
-                            );
-
-                        } else {
-                            $left_buttons[]
-                                = array(
-                                'icon'  => 'arrow-left disabled',
-                                'title' => ''
-                            );
-
-                        }
-                        $left_buttons[] = $up_button;
-
-
-                        if ($next_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-right',
-                                'title'     => $next_title,
-                                'reference' => 'part/'.$next_key
-                            );
-
-                        } else {
-                            $left_buttons[]
-                                = array(
-                                'icon'  => 'arrow-right disabled',
-                                'title' => '',
-                                'url'   => ''
-                            );
-
-                        }
-
-                        break;
-
-                    case 'category':
-
-
-                        $up_button = array(
-                            'icon'      => 'arrow-up',
-                            'title'     => _(
-                                "Parts's families"
-                            ),
-                            'reference' => 'inventory/category/'.$data['parent_key']
-                        );
-
-                        if ($prev_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-left',
-                                'title'     => $prev_title,
-                                'reference' => 'category/'.$data['parent_key'].'/part/'.$prev_key
-                            );
-
-                        } else {
-                            $left_buttons[]
-                                = array(
-                                'icon'  => 'arrow-left disabled',
-                                'title' => ''
-                            );
-
-                        }
-                        $left_buttons[] = $up_button;
-
-
-                        if ($next_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-right',
-                                'title'     => $next_title,
-                                'reference' => 'category/'.$data['parent_key'].'/part/'.$next_key
-                            );
-
-                        } else {
-                            $left_buttons[]
-                                = array(
-                                'icon'  => 'arrow-right disabled',
-                                'title' => '',
-                                'url'   => ''
-                            );
-
-                        }
-
-                        break;
-                }
-
-
+                break;
+        }
 
 
     } else {
@@ -346,13 +345,13 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
     $title = _('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span>  <span class="Part_Symbol">'.$object->get('Symbol').'</span> ';
 
-    $supplier_part =get_object('Supplier_Part', $object->get('Part Main Supplier Part Key'));
+    $supplier_part = get_object('Supplier_Part', $object->get('Part Main Supplier Part Key'));
 
-    if($supplier_part->id) {
+    if ($supplier_part->id) {
         if ($object->get('Part Production') == 'Yes') {
 
-            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-industry button" title="'._("Supplier's product").'" onCLick="change_view(\'/production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'
-                .$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-industry button" title="'._("Supplier's product").'" onCLick="change_view(\'/production/'.$supplier_part->get('Supplier Part Supplier Key')
+                .'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
         } else {
 
 
@@ -374,21 +373,18 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         }
     }
 
-    if( !$supplier_part->id and count($supplier_parts) == 0){
+    if (!$supplier_part->id and count($supplier_parts) == 0) {
         $title .= '<span class="small error padding_left_20">'._('No suppliers').'</span>';
 
-    }elseif (count($supplier_parts) ==1) {
+    } elseif (count($supplier_parts) == 1) {
         $title .= '<span class="very_small discreet italic padding_left_20">('._('other supplier').')</span>';
 
 
-    }elseif (count($supplier_parts)>0) {
-        $title .= '<span class="very_small discreet italic padding_left_20">('.sprintf(_('other %d suppliers'),count($supplier_parts) ).')</span>';
+    } elseif (count($supplier_parts) > 0) {
+        $title .= '<span class="very_small discreet italic padding_left_20">('.sprintf(_('other %d suppliers'), count($supplier_parts)).')</span>';
 
 
     }
-
-
-
 
 
     $right_buttons[] = array(
@@ -414,7 +410,11 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -497,8 +497,7 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select `Part Reference` object_name,P.`Part SKU` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Part SKU` > %d))  order by $_order_field   , P.`Part SKU`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Part SKU` > %d))  order by $_order_field   , P.`Part SKU`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -537,8 +536,7 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-left disabled',
                                 'title' => ''
                             );
@@ -555,8 +553,7 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-right disabled',
                                 'title' => '',
                                 'url'   => ''
@@ -588,8 +585,6 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-
-
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,
@@ -607,7 +602,11 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -652,7 +651,11 @@ function get_transactions_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -697,7 +700,11 @@ function get_stock_history_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -768,7 +775,11 @@ function get_stock_history_day_navigation($data, $smarty, $user, $db, $account) 
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -814,7 +825,11 @@ function get_barcodes_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -897,8 +912,7 @@ function get_barcode_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select `Barcode Number` object_name,B.`Barcode Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND B.`Barcode Key` > %d))  order by $_order_field   , B.`Barcode Key`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND B.`Barcode Key` > %d))  order by $_order_field   , B.`Barcode Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -937,8 +951,7 @@ function get_barcode_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-left disabled',
                                 'title' => ''
                             );
@@ -955,8 +968,7 @@ function get_barcode_navigation($data, $smarty, $user, $db, $account) {
                             );
 
                         } else {
-                            $left_buttons[]
-                                = array(
+                            $left_buttons[] = array(
                                 'icon'  => 'arrow-right disabled',
                                 'title' => '',
                                 'url'   => ''
@@ -1007,7 +1019,11 @@ function get_barcode_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1044,7 +1060,11 @@ function get_deleted_barcode_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1080,7 +1100,11 @@ function get_parts_new_main_category_navigation($data, $smarty, $user, $db, $acc
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 
 }
@@ -1127,7 +1151,12 @@ function get_categories_navigation($data, $smarty, $user, $db, $account) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1230,8 +1259,8 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
             $sql = sprintf(
                 "select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
-	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1", $extra_field, "$table $where $wheref",
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Category Key` < %d))  order by $_order_field desc , C.`Category Key` desc limit 1", $extra_field, "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                $category->id
             );
 
             if ($result = $db->query($sql)) {
@@ -1250,8 +1279,8 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
             $sql = sprintf(
                 "select C.`Category Label` object_name,C.`Category Key` as object_key %s from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1", $extra_field, "$table $where $wheref",
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $category->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Category Key`> %d))  order by $_order_field   , C.`Category Key` limit 1", $extra_field, "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                $category->id
             );
 
 
@@ -1339,7 +1368,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
     $sections['categories']['selected'] = true;
 
 
-    if($category->get('Category Branch Type')!='Root') {
+    if ($category->get('Category Branch Type') != 'Root') {
 
         $right_buttons[] = array(
             'icon'  => 'sticky-note',
@@ -1364,7 +1393,12 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1373,7 +1407,6 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 
 
     $object = $data['_object'];
-
 
 
     $left_buttons = array();
@@ -1418,8 +1451,7 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 
     if ($data['parent'] == 'order') {
         $_order_field_value = $data['otf'];
-        $extra_field
-                            = ',OTF.`Order Transaction Fact Key` as extra_field';
+        $extra_field        = ',OTF.`Order Transaction Fact Key` as extra_field';
     } else {
 
         $_order_field_value = $object->get($order);
@@ -1442,8 +1474,7 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 
             $sql = sprintf(
                 "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1", $extra_field,
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
             );
 
             if ($result = $db->query($sql)) {
@@ -1462,8 +1493,7 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 
             $sql = sprintf(
                 "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1", $extra_field, prepare_mysql($_order_field_value),
-                prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
             );
 
 
@@ -1564,14 +1594,13 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 
     $store = new Store($object->get('Product Store Key'));
 
-    $title = '<span style="margin-right:10px" onClick="change_view(\'store/'.$store->id.'\')">'.$store->get('Code').'</span> <i class="fa fa-cube" aria-hidden="true" title="'._('Product')
-        .'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>';
+    $title = '<span style="margin-right:10px" onClick="change_view(\'store/'.$store->id.'\')">'.$store->get('Code').'</span> <i class="fa fa-cube" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>';
 
     $product_parts = $object->get_parts('objects');
 
     if (count($product_parts) == 1) {
 
-        $part = array_values($product_parts)[0];
+        $part  = array_values($product_parts)[0];
         $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'.$part->id
             .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$part->id.'\')">'.$part->get('Reference').'</small>';
 
@@ -1584,7 +1613,6 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
@@ -1593,7 +1621,7 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
     );
 
 
-    if($data['_object']->get('Product Webpage Key')>0) {
+    if ($data['_object']->get('Product Webpage Key') > 0) {
         $right_buttons[] = array(
             'html_icon' => '<i class="far fa-browser"></i>',
 
@@ -1618,7 +1646,11 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1671,7 +1703,11 @@ function get_new_part_attachment_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1726,7 +1762,11 @@ function get_part_attachment_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1779,7 +1819,11 @@ function get_new_supplier_part_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1833,14 +1877,16 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-
 function get_feedback_navigation($data, $smarty, $user, $db, $account) {
-
 
 
     $left_buttons = array();
@@ -1870,7 +1916,11 @@ function get_feedback_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
