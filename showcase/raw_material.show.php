@@ -17,12 +17,7 @@ function get_raw_material_part_showcase($raw_material,$part, $smarty, $account) 
 
     $raw_material->update_raw_material_stock($part);
 
-
-
     $part->load_acc_data();
-
-
-
 
 
     if (!$part->id) {
@@ -327,9 +322,10 @@ function get_raw_material_part_showcase($raw_material,$part, $smarty, $account) 
 
 
     $smarty->assign('part', $part);
+    $smarty->assign('raw_material', $raw_material);
 
 
-    return $smarty->fetch('showcase/part.tpl');
+    return $smarty->fetch('showcase/raw_material.tpl');
 
 
 }
