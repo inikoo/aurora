@@ -1442,15 +1442,94 @@ function get_operative_navigation($data, $smarty, $user, $db, $account) {
 function get_raw_material_navigation($data, $smarty, $user, $db, $account) {
 
 
-    $sections                           = get_sections('production', $data['parent_key']);
+    $sections = get_sections('production', $data['parent_key']);
 
     $sections['raw_materials']['selected'] = true;
-    $title                             = '<i class="fa fa-puzzle-piece" aria-hidden="true"></i> <span class="id Raw_Material_Code">'.$data['_object']->get('Code').'</span>';
-    $object                            = $data['_object'];
+
+    $title = '<i class="fa fa-puzzle-piece" aria-hidden="true"></i> <span class="id Raw_Material_Code">'.$data['_object']->get('Code').'</span>';
+    if($data['_object']->get('Raw Material Type')=='Part'){
+        $title .= ' <small class="padding_right_10"><i class="fa fa-long-arrow-left padding_left_10 padding_right_5"></i>  <i title="'._('Part').'" onClick="change_view(\'part/'.$data['_object']->get('Raw Material Type Key').'\')" class="button far fa-box" aria-hidden="true"></i></small>';
+
+
+        $part=get_object('Part',$data['_object']->get('Raw Material Type Key'));
+
+        $supplier_part = get_object('Supplier_Part', $part->get('Part Main Supplier Part Key'));
+
+        if ($supplier_part->id) {
+            if ($part->get('Part Production') == 'Yes') {
+
+                $supplier_reference='';
+                if($supplier_part->get('Reference')!=$data['_object']->get('Code')){
+                    $supplier_reference='<span class="Supplier_Part_Reference button"  onCLick="change_view(\'production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference');
+                }
+
+
+                $title .= '<small > <i class="fa fa-long-arrow-left "></i> <i class="fa fa-industry button" title="'._("Supplier's product").'" onCLick="change_view(\'/production/'.$supplier_part->get('Supplier Part Supplier Key')
+                    .'/part/'.$supplier_part->id.'\')" ></i> '.$supplier_reference.'</small>';
+
+
+
+
+
+
+            } else {
+
+                $supplier_code='<span class="italic">'.$supplier_part->get('Supplier Code').'</span>';
+
+                if($supplier_part->get('Reference')!=$data['_object']->get('Code')){
+                    $supplier_reference='<span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference');
+                    $supplier_reference.=' ('.$supplier_code.')';
+                }else{
+                    $supplier_reference=$supplier_code;
+                }
+
+
+
+                $title .= '<small    > <i class="fa fa-long-arrow-left "></i> <span class="button" title="'._("Supplier").'"   onCLick="change_view(\'/supplier/'.$supplier_part->get('Supplier Part Supplier Key')
+                    .'/part/'.$supplier_part->id.'\')"   ><i class="fa fa-hand-receiving " ></i> '.$supplier_reference.'</span></small>';
+
+            }
+        }
+
+
+        $supplier_parts = $part->get_supplier_parts('objects');
+
+        foreach ($supplier_parts as $key => $_supplier_part) {
+            if ($_supplier_part->get('Supplier Part Status') == 'Discontinued') {
+                unset($supplier_parts[$key]);
+            }
+            if ($_supplier_part->id == $supplier_part->id) {
+                unset($supplier_parts[$key]);
+            }
+        }
+
+        if (!$supplier_part->id and count($supplier_parts) == 0) {
+            $title .= '<span class="small error padding_left_20">'._('No suppliers').'</span>';
+
+        } elseif (count($supplier_parts) == 1) {
+            $title .= '<span class="very_small discreet italic padding_left_20">('._('other supplier').')</span>';
+
+
+        } elseif (count($supplier_parts) > 0) {
+            $title .= '<span class="very_small discreet italic padding_left_20">('.sprintf(_('other %d suppliers'), count($supplier_parts)).')</span>';
+
+        }
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+
+    $object = $data['_object'];
 
     $left_buttons  = array();
     $right_buttons = array();
-
 
 
     $tab = 'production.materials';
@@ -1579,10 +1658,7 @@ function get_raw_material_navigation($data, $smarty, $user, $db, $account) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
+    } 
 
 
     $_content = array(

@@ -4748,8 +4748,13 @@ class Part extends Asset {
             'editor'                               => $this->editor
         ];
 
-        $raw_material = new Raw_Material('create', $raw_material_data);
+        $raw_material = new Raw_Material('find create', $raw_material_data);
+
+
+
         if ($raw_material->id) {
+
+
             $this->fast_update(['Part Raw Material Key' => $raw_material->id]);
             $raw_material->update_raw_material_stock($this);
         }

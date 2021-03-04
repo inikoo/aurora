@@ -355,8 +355,21 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         } else {
 
 
-            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._("Supplier's product").'" onCLick="change_view(\'/supplier/'.$supplier_part->get('Supplier Part Supplier Key')
-                .'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+            $supplier_code='<span class="italic">'.$supplier_part->get('Supplier Code').'</span>';
+
+            if($supplier_part->get('Reference')!=$data['_object']->get('Reference')){
+                $supplier_reference='<span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference');
+                $supplier_reference.=' ('.$supplier_code.')';
+            }else{
+                $supplier_reference=$supplier_code;
+            }
+
+
+
+            $title .= '<small   class="padding_left_10"  > <i class="fa fa-long-arrow-left padding_right_5 "></i> <span class="button" title="'._("Supplier").'"   onCLick="change_view(\'/supplier/'.$supplier_part->get('Supplier Part Supplier Key')
+                .'/part/'.$supplier_part->id.'\')"   ><i class="fa fa-hand-receiving " ></i> '.$supplier_reference.'</span></small>';
+
+
 
         }
     }
@@ -383,11 +396,19 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     } elseif (count($supplier_parts) > 0) {
         $title .= '<span class="very_small discreet italic padding_left_20">('.sprintf(_('other %d suppliers'), count($supplier_parts)).')</span>';
 
+    }
+
+
+    if ($object->get('Part Raw Material Key')) {
+
+        $title .= ' <small > <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-puzzle-piece button" title="'._("Raw material").'" onCLick="change_view(\'/production/'.$account->properties('production_supplier_key')
+            .'/raw_materials/'.$object->get('Part Raw Material Key').'\')" ></i></small>';
 
     }
 
 
-    $right_buttons[] = array(
+
+        $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
         'class' => 'open_sticky_note  square_button right object_sticky_note  '.($object->get('Sticky Note') == '' ? '' : 'hide')

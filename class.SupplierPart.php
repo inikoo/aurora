@@ -1283,7 +1283,7 @@ class SupplierPart extends DB_Table {
                 $supplier = get_object('Supplier', $this->data['Supplier Part Supplier Key']);
 
                 return $supplier->get('Code');
-                break;
+
             case 'Supplier Key':
                 return $this->get('Supplier Name').(($this->get('Supplier Code') != '' and $this->get('Supplier Code') != $this->get(
                             'Supplier Name'

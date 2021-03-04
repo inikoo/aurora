@@ -49,8 +49,6 @@ class Raw_Material extends DB_Table {
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
-
-
             }
         }
 
