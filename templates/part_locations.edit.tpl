@@ -52,7 +52,7 @@
 	        </span>
         </td>
         <td class="aright  last_audit_days">{$location_data.days_last_audit}</td>
-        <td class="aright  formatted_stock">{$location_data.formatted_stock}  <i onclick="open_sent_part_to_production(this)" location_key="{$location_data.location_key}" max="{$location_data.stock}"  class="far fa-hand-rock padding_left_10 button production_supply_edit {if $part->get('Part Production Supply')=='No'}hide{/if}" aria-hidden="true"></i> </td>
+        <td class="aright  formatted_stock">{$location_data.formatted_stock}  <i onclick="open_sent_part_to_production(this)" location_key="{$location_data.location_key}" max="{$location_data.stock}"  class="far fa-hand-rock padding_left_10 button production_supply_edit {if !$part->get('Part Raw Material Key')>0}hide{/if}" aria-hidden="true"></i> </td>
         <td class="aright  hide stock_input"><span class="stock_change"></span>
 
             <i class="far fa-dot-circle button super_discreet_on_hover set_as_audit" aria-hidden="true" title="{t}Mark as audited{/t}" onclick="set_as_audit(this)"></i>

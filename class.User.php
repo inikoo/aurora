@@ -1770,7 +1770,6 @@ class User extends DB_Table {
 
     function can_do($right_type, $tag, $tag_key = false) {
 
-
         if (!is_string($tag)) {
             return false;
         }
@@ -2109,6 +2108,15 @@ class User extends DB_Table {
 
 
     }
+
+    function get_corporate_dashboard_items() {
+
+        $dashboard_items = array();
+        $dashboard_items[] = 'accounts_overview';
+        return $dashboard_items;
+
+    }
+
 
     function can_view($tag, $tag_key = false) {
 

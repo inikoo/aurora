@@ -176,13 +176,14 @@ class ProductionPart extends SupplierPart {
     }
 
 
-//todo
+    //todo
     function update_production_supply_data() {
 
 
         $number_of_parts_using_part = 0;
-        $sql                        = 'select count(*) as num from `Bill of Materials Bridge` where  `Bill of Materials Supplier Part Component Key`=? ';
-        $stmt                       = $this->db->prepare($sql);
+        
+        $sql  = 'select count(*) as num from `Bill of Materials Bridge` where  `Bill of Materials Supplier Part Component Key`=? ';
+        $stmt = $this->db->prepare($sql);
         if ($stmt->execute(
             array(
                 $this->id,
@@ -201,15 +202,6 @@ class ProductionPart extends SupplierPart {
                 'Part Number Production Links' => $number_of_parts_using_part,
             )
         );
-
-
-        if ($number_of_parts_using_part > 0) {
-            $this->fast_update(
-                array(
-                    'Part Production Supply' => 'Yes',
-                )
-            );
-        }
 
 
     }

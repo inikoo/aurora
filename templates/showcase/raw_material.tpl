@@ -17,7 +17,7 @@
 
 <div class="name_and_categories">
     <span class="strong"><span class="strong Raw_Material_Description">{$raw_material->get('Raw Material Description')}</span> </span>
-    
+
     <div style="clear:both"></div>
 </div>
 

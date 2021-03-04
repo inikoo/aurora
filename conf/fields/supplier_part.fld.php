@@ -803,28 +803,5 @@ $supplier_part_fields[] = array(
 );
 
 
-$part_fields[] = array(
-    'label' => _('Production'),
-
-    'show_title' => true,
-    'fields'     => array(
-
-
-        array(
-            'id'              => 'Part_Production_Supply',
-            'edit'            => ($edit ? 'option' : ''),
-            'right_code'      => 'PE',
-            'options'         => $options_yes_no,
-            'value'           => htmlspecialchars($object->part->get('Part Production Supply')),
-            'formatted_value' => $object->part->get('Production Supply'),
-            'label'           => ucfirst($object->part->get_field_label('Part Production Supply')),
-            'required'        => false,
-            'type'            => 'value'
-        ),
-
-    )
-
-
-);
 
 

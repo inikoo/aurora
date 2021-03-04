@@ -76,6 +76,13 @@ if ($user->can_supervisor('suppliers')) {
 }
 
 
+if ($user->can_supervisor('production')) {
+    $edit_production = true;
+} else {
+    $edit_production = false;
+}
+
+
 $part_fields = array();
 $family      = $object->get('Family');
 
@@ -452,7 +459,7 @@ $part_fields[] = array(
         ),
 
         array(
-            'id'   => 'Part_Package_Weight',
+            'id'              => 'Part_Package_Weight',
             'edit'            => ($edit ? 'numeric' : ''),
             'right_code'      => 'PE',
             'value'           => $object->get('Part Package Weight'),
@@ -544,8 +551,8 @@ if ($account->get('Account Add Stock Value Type') == 'Last Price' and false) {
                 array(
 
 
-                    'id'   => 'Part_Cost_in_Warehouse',
-                    'edit' => ($edit ? 'amount' : ''),
+                    'id'              => 'Part_Cost_in_Warehouse',
+                    'edit'            => ($edit ? 'amount' : ''),
                     'right_code'      => 'PE',
                     'value'           => $object->get('Part Cost in Warehouse'),
                     'formatted_value' => $object->get('Cost in Warehouse'),
@@ -587,8 +594,8 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_Materials',
-            'edit' => ($edit ? 'textarea' : ''),
+            'id'              => 'Part_Materials',
+            'edit'            => ($edit ? 'textarea' : ''),
             'right_code'      => 'PE',
             'value'           => htmlspecialchars($object->get('Part Materials')),
             'formatted_value' => $object->get('Materials'),
@@ -599,11 +606,15 @@ $part_fields[] = array(
 
         array(
             'id'                       => 'Part_Origin_Country_Code',
-            'edit' => ($edit ? 'country_select' : ''),
-            'right_code'      => 'PE',
+            'edit'                     => ($edit ? 'country_select' : ''),
+            'right_code'               => 'PE',
             'options'                  => get_countries($db),
             'scope'                    => 'countries',
-            'value'                    => (($new and $supplier_part_scope) ? strtolower(country_3alpha_to_2alpha($options['parent_object']->get('Supplier Products Origin Country Code'))) : strtolower(country_3alpha_to_2alpha(($object->get('Part Origin Country Code'))))),
+            'value'                    => (($new and $supplier_part_scope)
+                ? strtolower(country_3alpha_to_2alpha($options['parent_object']->get('Supplier Products Origin Country Code')))
+                : strtolower(
+                    country_3alpha_to_2alpha(($object->get('Part Origin Country Code')))
+                )),
             'formatted_value'          => (($new and $supplier_part_scope) ? $options['parent_object']->get('Products Origin Country Code') : $object->get('Origin Country Code')),
             'stripped_formatted_value' => (($new and $supplier_part_scope)
                 ? ($options['parent_object']->get('Part Origin Country Code') != '' ? $options['parent_object']->get('Origin Country').' ('.$options['parent_object']->get('Part Origin Country Code').')' : '')
@@ -617,8 +628,8 @@ $part_fields[] = array(
             'type'                     => 'value'
         ),
         array(
-            'id'   => 'Part_Tariff_Code',
-            'edit' => ($edit ? 'numeric' : ''),
+            'id'              => 'Part_Tariff_Code',
+            'edit'            => ($edit ? 'numeric' : ''),
             'right_code'      => 'PE',
             'value'           => $object->get('Part Tariff Code'),
             'formatted_value' => $object->get('Tariff Code'),
@@ -629,8 +640,8 @@ $part_fields[] = array(
 
         ),
         array(
-            'id'   => 'Part_Duty_Rate',
-            'edit' => ($edit ? 'numeric' : ''),
+            'id'              => 'Part_Duty_Rate',
+            'edit'            => ($edit ? 'numeric' : ''),
             'right_code'      => 'PE',
             'value'           => $object->get('Part Duty Rate'),
             'formatted_value' => $object->get('Duty Rate'),
@@ -640,8 +651,8 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_HTSUS_Code',
-            'edit' => ($edit ? 'numeric' : ''),
+            'id'              => 'Part_HTSUS_Code',
+            'edit'            => ($edit ? 'numeric' : ''),
             'right_code'      => 'PE',
             'value'           => $object->get('Part HTSUS Code'),
             'formatted_value' => $object->get('HTSUS Code'),
@@ -668,8 +679,8 @@ $part_fields[] = array(
     'fields'     => array(
 
         array(
-            'id'   => 'Part_UN_Number',
-            'edit' => ($edit ? 'string' : ''),
+            'id'              => 'Part_UN_Number',
+            'edit'            => ($edit ? 'string' : ''),
             'right_code'      => 'PE',
             'value'           => htmlspecialchars(
                 $object->get('Part UN Number')
@@ -682,8 +693,8 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_UN_Class',
-            'edit' => ($edit ? 'string' : ''),
+            'id'              => 'Part_UN_Class',
+            'edit'            => ($edit ? 'string' : ''),
             'right_code'      => 'PE',
             'value'           => htmlspecialchars(
                 $object->get('Part UN Class')
@@ -707,8 +718,8 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_Proper_Shipping_Name',
-            'edit' => ($edit ? 'string' : ''),
+            'id'              => 'Part_Proper_Shipping_Name',
+            'edit'            => ($edit ? 'string' : ''),
             'right_code'      => 'PE',
             'value'           => htmlspecialchars($object->get('Part Proper Shipping Name')),
             'formatted_value' => $object->get('Proper Shipping Name'),
@@ -717,8 +728,8 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_Hazard_Identification_Number',
-            'edit' => ($edit ? 'string' : ''),
+            'id'              => 'Part_Hazard_Identification_Number',
+            'edit'            => ($edit ? 'string' : ''),
             'right_code'      => 'PE',
             'value'           => htmlspecialchars($object->get('Part Hazard Identification Number')),
             'formatted_value' => $object->get('Hazard Identification Number'),
@@ -732,35 +743,16 @@ $part_fields[] = array(
 );
 
 
-$part_fields[] = array(
-    'label' => _('Production'),
 
-    'show_title' => true,
-    'fields'     => array(
-
-
-        array(
-            'id'              => 'Part_Production_Supply',
-            'edit'            => ($edit ? 'option' : ''),
-            'right_code'      => 'PE',
-            'options'         => $options_yes_no,
-            'value'           => htmlspecialchars($object->get('Part Production Supply')),
-            'formatted_value' => $object->get('Production Supply'),
-            'label'           => ucfirst($object->get_field_label('Part Production Supply')),
-            'required'        => false,
-            'type'            => 'value'
-        ),
-
-    )
-
-
-);
 
 // Remove this until you create an alert saying you will destroy this part for good
 // Dont display if there is associated products (Add a message can not be deleted until all products are disassociated)
 
 
-if (!$new and !$supplier_part_scope and false) {
+
+
+
+if (!$new and  (!$object->get('Part Raw Material Key') and  $edit_production )   ) {
     $operations = array(
         'label'      => _('Operations'),
         'show_title' => true,
@@ -768,14 +760,27 @@ if (!$new and !$supplier_part_scope and false) {
         'fields'     => array(
 
             array(
+                'id'     => 'create_raw_material',
+                'class'  => 'operation',
+                'render' => (($object->get('Part Raw Material Key') and $edit_production ) >0 ? false :true ),
+
+                'value'     => '',
+                'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="set_up_raw_material_object(this)" class="button">'._("Set as raw material").' <i class="fa fa-puzzle-piece success new_button"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+            array(
                 'id'        => 'delete_part',
                 'class'     => 'operation',
                 'value'     => '',
+                'render'    => false,
                 'label'     => '<i class="fa fa-fw fa-'.($super_edit ? 'lock-alt' : 'lock').'  button" 
                  data-labels=\'{ "text":"'._('Please ask an authorised user to delete this part').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
                 onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'BS\')').'"  
-                style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & all related supplier's products").' <i class="far fa-trash-alt new_button link"></i></span>',
+                style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & all related supplier's products")
+                    .' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

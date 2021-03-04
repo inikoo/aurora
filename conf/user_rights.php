@@ -208,6 +208,11 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'production'
     ),
+    'FS' => array(
+        'Right Type' => 'Supervisor',
+        'Right Name' => 'production'
+    ),
+
 
     'RV' => array(
         'Right Type' => 'View',

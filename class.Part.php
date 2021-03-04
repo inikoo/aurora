@@ -187,9 +187,7 @@ class Part extends Asset {
         }
 
 
-        if (!isset($data['Part Production Supply']) or $data['Part Production Supply'] != 'Yes') {
-            $data['Part Production Supply'] = 'No';
-        }
+
 
 
         if (!isset($data['Part Recommended Packages Per Selling Outer'])) {
@@ -4703,9 +4701,7 @@ class Part extends Asset {
             case 'Part Recommended Product Unit Name':
                 $label = _('Unit description');
                 break;
-            case 'Part Production Supply':
-                $label = _('raw material');
-                break;
+
             case 'Part Carton Barcode':
                 $label = _('carton barcode');
                 break;

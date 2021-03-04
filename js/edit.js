@@ -2022,6 +2022,10 @@ function activate_object(element) {
     save_object_operation('activate', element)
 }
 
+function set_up_raw_material_object(element) {
+    save_object_operation('set_up_raw_material', element)
+}
+
 
 function finish_object(element) {
     save_object_operation('finish', element)

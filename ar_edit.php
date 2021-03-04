@@ -1026,11 +1026,13 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             }
             $request = '';
             break;
-
+        case 'set_up_raw_material':
+            $request = $object->create_raw_material();
+            break;
 
         default:
             exit('unknown operation '.$data['operation']);
-            break;
+
     }
 
 

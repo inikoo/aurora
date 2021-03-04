@@ -102,6 +102,7 @@ $user_groups = array(
             'PV',
             'FV',
             'FE',
+            'FS',
         ),
         'Productions_Scope' => true,
         'Warehouses_Scope'  => true
