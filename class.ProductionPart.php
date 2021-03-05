@@ -75,7 +75,7 @@ class ProductionPart extends SupplierPart {
                 }
 
                 if ($raw_materials == '') {
-                    $raw_materials = '<span class="discreet">'._('No parts assigned').'</span>';
+                    $raw_materials = '<span class="discreet">'._('No raw materials assigned').'</span>';
                 }
                 $raw_materials = preg_replace('/^\<br\/\>/', '', $raw_materials);
 
