@@ -16,8 +16,6 @@ include_once 'conf/object_fields.php';
 
 $production_product = $state['_object'];
 
-
-
 $object_fields_production_product = get_object_fields(
     $production_product, $db, $user, $smarty, array(
         'show_full_label' => true,
@@ -26,12 +24,9 @@ $object_fields_production_product = get_object_fields(
     )
 );
 
-
-
 $smarty->assign('object_fields', $object_fields_production_product);
 $smarty->assign('state', $state);
 $smarty->assign('object', $production_product);
-
 
 $html = $smarty->fetch('edit_object.tpl');
 
