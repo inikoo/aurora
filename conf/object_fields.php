@@ -608,6 +608,57 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
             break;
 
+        case 'Production Part':
+
+            $object->get_supplier_data();
+
+
+
+
+
+                    include 'fields/production_part.fld.php';
+
+
+                    if (isset($options['new'])) {
+                        $object = get_object('Part', 0);
+                        include 'fields/part.fld.php';
+                        $supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
+                    } else {
+
+
+                        $operations = array(
+                            'label'      => _('Operations'),
+                            'show_title' => true,
+                            'class'      => 'operations',
+                            'fields'     => array(
+
+                                array(
+                                    'id'    => 'delete_supplier_part',
+                                    'class' => 'operation',
+                                    'value' => '',
+                                    'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                            "Delete supplier's product & related part"
+                                        ).' <i class="far fa-trash-alt new_button link"></i></span>',
+
+                                    'reference' => '',
+                                    'type'      => 'operation'
+                                ),
+
+
+                            )
+
+                        );
+
+                        $supplier_part_fields[] = $operations;
+                    }
+
+
+                    return $supplier_part_fields;
+
+
+
+
         case 'Part':
 
             if (isset($options['new'])) {
@@ -795,7 +846,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
 
-            break;
+
         case 'Order Basket Purge':
             include 'fields/purge.fld.php';
 
@@ -817,12 +868,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             return $object_fields;
-            break;
         default:
             print 'todo object in object fields'.$object->get_object_name();
 
             return '';
-            break;
     }
 
 }

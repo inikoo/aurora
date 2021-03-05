@@ -262,6 +262,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new SupplierPart($key);
             break;
         case 'production_part':
+        case 'production part':
             require_once "class.ProductionPart.php";
             $object = new ProductionPart($key);
             break;
@@ -290,16 +291,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.DealCampaign.php";
             $object = new DealCampaign($key);
             break;
-
         case 'campaign_code-store_key':
             require_once "class.DealCampaign.php";
-
             $keys = preg_split('/\|/', $key);
-
             $object = new DealCampaign('code_store', $keys[0], $keys[1]);
             break;
-
-
         case 'deal':
             require_once "class.Deal.php";
             $object = new Deal($key);
@@ -544,7 +540,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'raw_material':
         case 'rawmaterial':
 
-        include_once 'class.Raw_Material.php';
+            include_once 'class.Raw_Material.php';
             $object = new Raw_Material('id', $key);
             break;
         case 'consignment':

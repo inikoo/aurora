@@ -27,4 +27,3 @@ $smarty->assign('object', $product);
 
 $html = $smarty->fetch('edit_object.tpl');
 
-?>

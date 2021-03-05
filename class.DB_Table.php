@@ -163,6 +163,8 @@ abstract class DB_Table extends stdClass {
             $key_field = "Page Key";
         }
 
+
+
         if ($table_name == 'Page') {
             $extra_data = $this->store_base_data();
 
@@ -175,6 +177,8 @@ abstract class DB_Table extends stdClass {
         } else {
             if ($table_name == 'Part' or $table_full_name == 'Part Data') {
                 $key_field = 'Part SKU';
+            }elseif ($table_name == 'Production Part' ) {
+                $key_field = 'Production Part Supplier Part Key';
             } else {
                 if ($table_name == 'Product' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
                     $key_field = 'Product ID';
@@ -639,6 +643,7 @@ abstract class DB_Table extends stdClass {
             case 'Part':
                 $where_field = 'Part SKU';
                 break;
+
             case 'Product':
                 $where_field = 'Product ID';
                 break;

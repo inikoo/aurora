@@ -203,6 +203,10 @@ function open_edit_field(object, key, field) {
             $('#parts_list').removeClass('hide')
             $('#' + field + '_save_button').removeClass('hide')
             break;
+        case 'raw_materials':
+            $('#raw_materials_list').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
+            break;
         case 'mixed_recipients':
             $('#' + field + '_container').find('.mixed_recipients_container').removeClass('hide')
             $('#' + field + '_save_button').removeClass('hide')
@@ -468,6 +472,9 @@ function close_edit_field(field) {
             break;
         case 'parts_list':
             $('#parts_list').addClass('hide')
+            break;
+        case 'raw_materials':
+            $('#raw_materials_list').addClass('hide')
             break;
         case 'mixed_recipients':
             $('#' + field + '_container').find('.mixed_recipients_container').addClass('hide')
@@ -984,7 +991,7 @@ function save_field(object, key, field) {
 
     var metadata = {};
 
-    //console.log(type)
+    console.log(type)
 
     if (type == 'date') {
         value = value + ' ' + $('#' + field + '_time').val()
@@ -1020,6 +1027,30 @@ function save_field(object, key, field) {
 
 
         value = JSON.stringify(part_list_data)
+
+    } else if (type == 'raw_materials') {
+        var raw_material_list_data = [];
+
+        $('#raw_materials_list  tr.raw_material_tr').each(function (i, obj) {
+
+            if (!$(obj).find('.raw_material_key').val()) return true;
+
+            if ($(obj).hasClass('very_discreet')) {
+                var ratio = 0;
+            } else {
+                var ratio = $(obj).find('.raw_material_qty').val()
+            }
+
+            var part_data = {
+                'Key': $(obj).find('.production_part_raw_material_key').val(), 'Production Part': $(obj).find('.raw_material_key').val(), 'Ratio': ratio, 'Note': $(obj).find('.note').val(),
+
+            }
+            raw_material_list_data.push(part_data)
+
+        });
+
+
+        value = JSON.stringify(raw_material_list_data)
 
     } else if (type == 'mixed_recipients') {
 
@@ -1234,6 +1265,9 @@ function post_save_actions(field, data) {
             break;
         case 'Product_Parts':
             post_save_product_parts(data)
+            break;
+        case 'Raw_Materials':
+            post_save_raw_materials_list(data)
             break;
         case 'Staff_Type':
             if (state.section == 'contractor' && data.value != 'Contractor') {

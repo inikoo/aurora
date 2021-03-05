@@ -37,12 +37,9 @@
 
 
                 <div class="packing_info">{if $production_part->get('Supplier Part Units Per Package')==1}{t}Packed individually{/t}{else}{t}Packed in{/t} {$production_part->get('Supplier Part Units Per Package')}{/if}</div>
-                <div class="carton_info">
+                <div class="carton_info small" style="padding-top:5px;font-size: small ">
                     {if $production_part->get('Supplier Part Packages Per Carton')>1}
-                        {t}Each carton contain{/t}: {$production_part->get('Supplier Part Packages Per Carton')} SKOs
-                        {if  $production_part->get('Supplier Part Units Per Package')!=1}
-                            ({$production_part->get('Units Per Carton')} units)
-                        {/if}
+                        {t}Packs per carton{/t}: {$production_part->get('Packages Per Carton')}
                     {/if}
                 </div>
 

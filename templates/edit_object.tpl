@@ -420,6 +420,8 @@
                                     {include file="salary.edit.tpl" field=$field salary=$salary }
                                 {elseif $edit=='parts_list'  }
                                     {include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='edit'}
+                                {elseif $edit=='raw_materials'  }
+                                    {include file="raw_materials.edit.tpl" field=$field raw_materials_list=$object->get_raw_materials_data(true) mode='edit'}
                                 {elseif $edit=='user_permissions'  }
                                     {include file="user_permissions.edit.tpl" field=$field user_key=$system_user->id user_groups=$system_user->get_groups() user_stores=$system_user->stores mode='edit'}
                                 {elseif $edit=='timezone'  }

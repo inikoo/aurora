@@ -1268,7 +1268,6 @@ class SupplierPart extends DB_Table {
                 $key = preg_replace('/Supplier /', '', $key);
 
                 return $this->part->get($key);
-                break;
 
             case 'Unit Description':
             case 'Unit Label':
@@ -1276,7 +1275,6 @@ class SupplierPart extends DB_Table {
 
 
                 return $this->part->get($key);
-                break;
 
             case 'Supplier Code':
 
@@ -1360,7 +1358,6 @@ class SupplierPart extends DB_Table {
                 return weight(
                     $this->part->data['Part Package Weight'] * $this->data['Supplier Part Packages Per Carton']
                 );
-                break;
             case 'Carton Net Weight Approx':
 
                 return weight(
@@ -1518,8 +1515,13 @@ class SupplierPart extends DB_Table {
 
             case 'Packages Per Carton':
                 if ($this->data['Supplier Part Packages Per Carton'] == '') {
-                    return '';
+                    return _('Not Set');
                 }
+                if ($this->data['Supplier Part Packages Per Carton'] == 1) {
+                    return '<span class="italic discreet">'._('Not packed in cartons').'</span>';
+                }
+
+
                 $value = number($this->data['Supplier Part Packages Per Carton']);
 
 
@@ -2032,7 +2034,6 @@ class SupplierPart extends DB_Table {
             case 'Supplier Part Minimum Carton Order':
                 $label = _("Minimum order (cartons)");
                 break;
-
             case 'Supplier Part Packages Per Carton':
                 $label = _("Packed units per carton");
                 break;

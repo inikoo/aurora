@@ -1,0 +1,1 @@
+ALTER TABLE `Production Part Raw Material Bridge` ADD `Production Part Raw Material Updated` DATETIME NULL DEFAULT NULL AFTER `Production Part Raw Material Note`, ADD `Production Part Raw Material Created` DATETIME NULL DEFAULT NULL AFTER `Production Part Raw Material Updated`;

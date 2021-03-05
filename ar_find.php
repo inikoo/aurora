@@ -220,7 +220,9 @@ switch ($tipo) {
             case 'users':
                 find_users($db, $data);
                 break;
-
+            case 'raw_materials':
+                find_raw_materials($db, $data);
+                break;
             default:
                 $response = array(
                     'state' => 405,
@@ -230,9 +232,7 @@ switch ($tipo) {
                 exit;
         }
 
-
         break;
-
     case 'orders_in_process':
 
         $data = prepare_values(
@@ -296,8 +296,7 @@ function users_with_right($db, $data) {
         $sql        = 'select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`) where `Right Code`=?  ';
 
 
-
-        $stmt       = $db->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute(
             array($data['right'])
         );
@@ -306,8 +305,6 @@ function users_with_right($db, $data) {
         }
 
     }
-
-
 
 
     $response = array(
@@ -1391,7 +1388,7 @@ function find_parts($db, $data) {
                 $candidates[$row['Part SKU']] = 1000;
             } else {
 
-                $len_name                     = strlen($row['Part SKU']);
+                $len_name                     = strlen($row['Part Reference']);
                 $len_q                        = strlen($q);
                 $factor                       = $len_q / $len_name;
                 $candidates[$row['Part SKU']] = 500 * $factor;
@@ -1453,6 +1450,145 @@ function find_parts($db, $data) {
             'value'           => $part_sku,
             'formatted_value' => $candidates_data[$part_sku]['Part Reference'],
             'barcode'         => $candidates_data[$part_sku]['Part SKO Barcode']
+        );
+
+    }
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
+
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+function find_raw_materials($db, $data) {
+
+
+    $max_results = 10;
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+    $candidates = array();
+
+    $candidates_data = array();
+
+
+    $where = " ";
+    $sql   = sprintf(
+        "select `Raw Material Unit Label`,`Raw Material Key`,`Raw Material Code`,`Raw Material Description`,`Raw Material Unit` from `Raw Material Dimension`  where  `Raw Material Code` like '%s%%'  %s   order by `Raw Material Code` limit $max_results ", $q, $where
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Raw Material Code'] == $q) {
+                $candidates[$row['Raw Material Key']] = 1000;
+            } else {
+
+                $len_name                             = strlen($row['Raw Material Code']);
+                $len_q                                = strlen($q);
+                $factor                               = $len_q / $len_name;
+                $candidates[$row['Raw Material Key']] = 500 * $factor;
+            }
+
+            $candidates_data[$row['Raw Material Key']] = array(
+                'Code'       => $row['Raw Material Code'],
+                'Name'       => $row['Raw Material Description'],
+                'Unit'       => $row['Raw Material Unit'],
+                'Unit_Label' => $row['Raw Material Unit Label']
+
+            );
+
+        }
+    }
+
+
+    $where = " ";
+    $sql   = sprintf(
+        "select `Raw Material Unit Label`,`Raw Material Key`,`Raw Material Code`,`Raw Material Description`,`Raw Material Unit` from `Raw Material Dimension`  where  `Raw Material Description` REGEXP '\\\\b%s'  %s   limit $max_results ", $q, $where
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            $candidates[$row['Raw Material Key']] = 250;
+
+
+            $candidates_data[$row['Raw Material Key']] = array(
+                'Code' => $row['Raw Material Code'],
+                'Name' => $row['Raw Material Description'],
+
+                'Unit'       => $row['Raw Material Unit'],
+                'Unit_Label' => $row['Raw Material Unit Label']
+
+            );
+
+        }
+    }
+
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+    $results = array();
+    foreach ($candidates as $raw_material_key => $candidate) {
+
+
+        $description = $candidates_data[$raw_material_key]['Name'];
+        $code        = $candidates_data[$raw_material_key]['Code'];
+
+
+        $results[$raw_material_key] = array(
+            'code'            => $code,
+            'description'     => $description,
+            'value'           => $raw_material_key,
+            'formatted_value' => $code,
+            'metadata'        => [
+                'unit'       => $candidates_data[$raw_material_key]['Unit'],
+                'unit_label' => $candidates_data[$raw_material_key]['Unit_Label'],
+                'description'      => $candidates_data[$raw_material_key]['Name'],
+
+            ]
+
+
         );
 
     }
@@ -3354,7 +3490,7 @@ function find_employees($db, $data) {
             break;
     }
 
-    $join_tables='';
+    $join_tables = '';
 
     if (isset($data['metadata']['option'])) {
         switch ($data['metadata']['option']) {
@@ -3368,8 +3504,8 @@ function find_employees($db, $data) {
 
     }
     if (isset($data['metadata']['role'])) {
-        $join_tables=' left join `Staff Role Bridge` B on (S.`Staff Key`=B.`Staff Key`)';
-                $where .= "and `Role Code`='".addslashes($data['metadata']['role'])."'";
+        $join_tables = ' left join `Staff Role Bridge` B on (S.`Staff Key`=B.`Staff Key`)';
+        $where       .= "and `Role Code`='".addslashes($data['metadata']['role'])."'";
 
 
     }
