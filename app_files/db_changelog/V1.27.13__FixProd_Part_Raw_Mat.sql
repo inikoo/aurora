@@ -1,0 +1,1 @@
+ALTER TABLE `Production Part Raw Material Bridge` DROP INDEX `Production Part Raw Material Raw Material Key`, ADD INDEX `Production Part Raw Material Raw Material Key` (`Production Part Raw Material Raw Material Key`) USING BTREE;
