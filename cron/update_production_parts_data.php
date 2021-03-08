@@ -12,12 +12,7 @@
 require_once 'common.php';
 
 
-create_supplier_production_parts($db);
-
-
-$sql = "select B.`Production Part Supplier Part Key`,`Supplier Part Reference` from `Production Part Dimension` B left join `Supplier Part Dimension` S on (B.`Production Part Supplier Part Key`=S.`Supplier Part Key`) 
-        where `Supplier Part Reference` like '%'
-";
+$sql = "select `Production Part Supplier Part Key` from  `Production Part Dimension` ";
 
 
 $stmt = $db->prepare($sql);
@@ -26,35 +21,29 @@ $stmt->execute(
 );
 while ($row = $stmt->fetch()) {
 
-    $production_part = get_object('Supplier Part', $row['Production Part Supplier Part Key']);
+    $production_part = get_object('Production Part', $row['Production Part Supplier Part Key']);
 
     if ($production_part->id) {
-        // print $production_part->part->get('Reference')."\n";
+        $number_raw_materials = count($production_part->get_raw_materials());
+        $production_part->fast_update(array('Production Part Raw Materials Number' => $number_raw_materials));
 
-        $production_part->part->update_next_deliveries_data();
     }
 }
 
 
-function create_supplier_production_parts($db) {
-    $sql  = "SELECT `Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`)";
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
-    while ($row = $stmt->fetch()) {
+$sql = "select `Raw Material Key` from  `Raw Material Dimension` ";
 
 
-        $sql   = "SELECT `Supplier Part Key` FROM `Supplier Part Dimension` where `Supplier Part Supplier Key`=?";
-        $stmt2 = $db->prepare($sql);
-        $stmt2->execute(
-            [$row['Supplier Key']]
-        );
-        while ($row2 = $stmt2->fetch()) {
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array()
+);
+while ($row = $stmt->fetch()) {
 
+    $raw_material = get_object('RawMaterial', $row['Raw Material Key']);
 
-            $sql = "insert into `Production Part Dimension` (`Production Part Supplier Part Key`) values (?)";
-            $db->prepare($sql)->execute([$row2['Supplier Part Key']]);
+    if ($production_part->id) {
+        $raw_material->production_parts_number();
 
-
-        }
     }
 }

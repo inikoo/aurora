@@ -51,7 +51,7 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
 , {
-name: "production_links",
+name: "production_parts",
 label: "{t}Used in{/t}",
 editable: false,
 sortType: "toggle",

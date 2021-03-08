@@ -13,7 +13,7 @@ $table
     = "`Raw Material Dimension` M   ";
 
 $fields='`Raw Material Key`,`Raw Material Type`,`Raw Material Type Key`,`Raw Material Code`,`Raw Material Description`,`Raw Material Unit`,`Raw Material Unit Label`,
-`Raw Material Unit Cost`,`Raw Material Stock`,`Raw Material Products`,`Raw Material Production Supplier Key`,`Raw Material Stock Status` ';
+`Raw Material Unit Cost`,`Raw Material Stock`,`Raw Material Production Parts Number`,`Raw Material Production Supplier Key`,`Raw Material Stock Status` ';
 
 $filter_msg = '';
 $filter_msg = '';
@@ -35,6 +35,8 @@ if ($order == 'reference') {
     $order = '`Raw Material Code`';
 }elseif ($order == 'stock') {
     $order = '`Raw Material Stock`';
+}elseif ($order == 'production_parts') {
+    $order = '`Raw Material Production Parts Number`';
 } else {
 
     $order = '`Raw Material Key`';

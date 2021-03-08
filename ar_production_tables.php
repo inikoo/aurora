@@ -924,7 +924,7 @@ function production_parts($_data, $db, $user, $account) {
 				<div style="float:right;min-width:20px;text-align:right" title="'._('Packed in (Units per packages)').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
                 'stock'      => $stock,
-                'components' => number($data['Production Part Components Number']),
+                'components' => number($data['Production Part Raw Materials Number']),
                 'tasks'      => number($data['Production Part Tasks Number']),
 
                 'units_per_sko'   => number($data['Part Units per Package']),
@@ -1120,7 +1120,7 @@ function raw_materials($_data, $db, $user, $account) {
                 'stock_units'      => $stock_label.' '.number($data['Raw Material Stock']),
                 'stock_status'     => $stock_status,
                 'object'           => $object,
-                'production_links' => number($data['Raw Material Products'])
+                'production_parts' => number($data['Raw Material Production Parts Number'])
 
 
             );

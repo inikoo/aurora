@@ -208,5 +208,41 @@ class Raw_Material extends DB_Table {
 
     }
 
+
+    function get_production_parts($scope = 'keys') {
+
+
+        $production_parts = array();
+
+        $sql = "SELECT `Production Part Raw Material Production Part Key`  FROM `Production Part Raw Material Bridge` WHERE `Production Part Raw Material Raw Material Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+
+        while ($row = $stmt->fetch()) {
+            if ($scope == 'objects') {
+                $production_parts[$row['Production Part Raw Material Production Part Key']] = get_object('ProductionPart', $row['Production Part Raw Material Production Part Key']);
+            } else {
+                $production_parts[$row['Production Part Raw Material Production Part Key']] = $row['Production Part Raw Material Production Part Key'];
+            }
+        }
+
+        return $production_parts;
+    }
+
+
+    function production_parts_number() {
+
+        $production_parts_number = count($this->get_production_parts());
+
+        $this->fast_update(array('Raw Material Production Parts Number' => $production_parts_number));
+
+
+    }
+
 }
 

@@ -99,74 +99,8 @@ class ProductionPart extends SupplierPart {
         }
     }
 
-    function update_bill_of_materials($data) {
-        $part = get_object('Part', $data['item_key']);
 
 
-        if ($part->sku == $this->get('Supplier Part Part SKU')) {
-            $this->error = true;
-            $this->msg   = _("You can't add same part as a material");
-
-            return false;
-        }
-
-        if ($data['field'] == 'Units') {
-            $qty = $data['qty'] / $part->get('Part Units Per Package');
-
-        } else {
-            $qty = $data['qty'];
-
-        }
-
-        $sql = 'insert into  `Bill of Materials Bridge` (`Bill of Materials Supplier Part Key`,`Bill of Materials Supplier Part Component Key`,`Bill of Materials Quantity`) values (?,?,?) ON DUPLICATE KEY UPDATE `Bill of Materials Quantity`=?';
-
-
-        $stmt = $this->db->prepare($sql);
-        if (!$stmt) {
-            print_r($this->db->errorInfo());
-        }
-
-
-        if (!$stmt->execute(
-            [
-                $this->id,
-                $part->id,
-                $qty,
-                $qty
-            ]
-        )) {
-            print_r($stmt->errorInfo());
-        }
-
-        $this->update_number_components();
-        $part->update_production_supply_data();
-        $this->update_available_to_make_up();
-
-
-        return true;
-    }
-
-    function update_number_components() {
-
-        $number_components = 0;
-
-        $sql = "select count(*) as num from `Bill of Materials Bridge` where  `Bill of Materials Supplier Part Key`=? ";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $this->id,
-            )
-        );
-        if ($row = $stmt->fetch()) {
-            $number_components = $row['num'];
-        }
-
-
-        $this->fast_update(array('Production Part Components Number' => $number_components), 'Production Part Dimension');
-
-
-    }
 
     function update_available_to_make_up() {
 
@@ -466,6 +400,9 @@ class ProductionPart extends SupplierPart {
                 )
             );
 
+            $raw_material=get_object('RawMaterial',$production_part_raw_material_key);
+            $raw_material->get_production_parts();
+
         }
 
 
@@ -539,6 +476,12 @@ class ProductionPart extends SupplierPart {
                     $this->db->exec($sql);
                     $num_parts_edited++;
                     $this->updated = true;
+
+
+                    $raw_material=get_object('RawMaterial',$raw_material_data['Production Part']);
+                    $raw_material->get_production_parts();
+
+
                 }
             }
         }
@@ -547,13 +490,13 @@ class ProductionPart extends SupplierPart {
         $this->get_data('id', $this->id);
 
 
-        $parts        = $this->get_raw_materials();
-        $number_parts = count($parts);
+        $number_raw_materials = count($this->get_raw_materials());
+        $this->fast_update(array('Production Part Raw Materials Number' => $number_raw_materials));
 
 
         if ($num_parts_edited > 0) {
 
-            if ($number_parts == 0) {
+            if ($number_raw_materials == 0) {
                 $history_abstract = _("Raw materials deleted");
             } else {
                 $history_abstract = sprintf(_("Raw materials changed to %s"), $this->get('Parts'));
@@ -579,7 +522,7 @@ class ProductionPart extends SupplierPart {
 
         $raw_materials = array();
 
-        $sql = "SELECT `Production Part Raw Material Raw Material Key`  FROM `Production Part Raw Material Bridge` WHERE `Production Part Raw Material Production Part Key `=?";
+        $sql = "SELECT `Production Part Raw Material Raw Material Key`  FROM `Production Part Raw Material Bridge` WHERE `Production Part Raw Material Production Part Key`=?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -598,6 +541,8 @@ class ProductionPart extends SupplierPart {
 
         return $raw_materials;
     }
+
+
 
 }
 

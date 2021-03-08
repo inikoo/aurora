@@ -15,7 +15,7 @@ $table
 
 $fields
     = '`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
-`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Part Package Description`,`Part Units per Package`,`Production Part Components Number`,`Production Part Tasks Number`,
+`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Part Package Description`,`Part Units per Package`,`Production Part Raw Materials Number`,`Production Part Tasks Number`,
 `Production Part Supplier Part Key`,`Production Part Batch Size`,`Part Next Deliveries Data`
 ';
 
@@ -103,8 +103,8 @@ if ($order == 'reference') {
     $order = '(`Supplier Part Unit Cost`+`Supplier Part Unit Extra Cost`)';
 }elseif ($order == 'stock') {
     $order = '`Part Current Stock`';
-}elseif ($order == 'components') {
-    $order = '`Production Part Components Number`';
+}elseif ($order == 'number_raw_materials') {
+    $order = '`Production Part Raw Materials Number`';
 } elseif ($order == 'tasks') {
     $order = '`Production Part Tasks Number`';
 } elseif ($order == 'units_per_sko') {
