@@ -1112,28 +1112,7 @@ function supplier_parts($_data, $db, $user, $account) {
                 $exchange_info = '';
             }
 
-            switch ($data['Supplier Part Status']) {
-                case 'Available':
-                    $status = sprintf(
-                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
-                    );
-                    break;
-                case 'NoAvailable':
-                    $status = sprintf(
-                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
-                    );
 
-                    break;
-                case 'Discontinued':
-                    $status = sprintf(
-                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
-                    );
-
-                    break;
-                default:
-                    $status = $data['Supplier Part Status'];
-                    break;
-            }
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
@@ -1220,7 +1199,6 @@ function supplier_parts($_data, $db, $user, $account) {
 
             $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
-            $reference = sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
 
 
             $operations = '';
@@ -1243,12 +1221,64 @@ function supplier_parts($_data, $db, $user, $account) {
 
             }
 
+            if($data['Supplier Part Production']=='Yes'){
+                $supplier_code= sprintf('<span class="link" onClick="change_view(\'production/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']);
+                $reference = sprintf('<span class="link" onClick="change_view(\'production/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
+                switch ($data['Supplier Part Status']) {
+                    case 'Available':
+                        $status = sprintf(
+                            '<i class="fa fa-industry success" title="%s"></i>', _('Available')
+                        );
+                        break;
+                    case 'NoAvailable':
+                        $status = sprintf(
+                            '<i class="fa fa-industry warning" title="%s"></i>', _('No available')
+                        );
+
+                        break;
+                    case 'Discontinued':
+                        $status = sprintf(
+                            '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                        );
+
+                        break;
+                    default:
+                        $status = $data['Supplier Part Status'];
+                        break;
+                }
+            }else{
+                $supplier_code= sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']);
+                $reference = sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
+                switch ($data['Supplier Part Status']) {
+                    case 'Available':
+                        $status = sprintf(
+                            '<i class="fa fa-stop success" title="%s"></i>', _('Available')
+                        );
+                        break;
+                    case 'NoAvailable':
+                        $status = sprintf(
+                            '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
+                        );
+
+                        break;
+                    case 'Discontinued':
+                        $status = sprintf(
+                            '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                        );
+
+                        break;
+                    default:
+                        $status = $data['Supplier Part Status'];
+                        break;
+                }
+            }
+
 
             $record_data[] = array(
                 'id' => (integer)$data['Supplier Part Key'],
                 //  'data' => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'.$data['Supplier Part Key'].'" ></span>',
 
-                'supplier_code' => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
+                'supplier_code' => $supplier_code,
                 'principal'     => $principal,
 
                 'reference' => $reference,

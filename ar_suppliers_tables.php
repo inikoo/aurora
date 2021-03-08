@@ -1778,7 +1778,7 @@ function job_order_items($_data, $db, $user, $account) {
             $units_per_sko    = $data['Purchase Order Submitted Units Per SKO'];
 
             $reference = sprintf(
-                '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" title="%s" >%s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+                '<span class="link" onclick="change_view(\'/production/%d/part/%d\')" title="%s" >%s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Production product code'), $data['Supplier Part Reference']
             );
             if ($data['Part Reference'] != $data['Supplier Part Reference']) {
                 $reference .= sprintf(
@@ -1790,11 +1790,7 @@ function job_order_items($_data, $db, $user, $account) {
                 );
             }
 
-            if ($purchase_order->get('Purchase Order Parent') == 'Agent') {
-                $reference .= sprintf(
-                    '<br><span class="small link" onclick="change_view(\'supplier/%d\')" ><i class="fal fa-hand-holding-box" title="%s"></i> %s</span>', $data['Supplier Key'], _('Supplier').': '.$data['Supplier Name'], $data['Supplier Code']
-                );
-            }
+
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
@@ -4815,15 +4811,30 @@ function delivery_items_done($_data, $db, $user) {
             $reference = sprintf(
                 '<span class="link" onclick="change_view(\'/part/%d\')" title="%s" >%s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
             );
-            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
-                $reference .= sprintf(
-                    '<br ><span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')"  title="%s"><i class="fal box"></i> %s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
-                );
-            } else {
-                $reference .= sprintf(
-                    ', <span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')" ><i class="fal fa-box" title="%s"></i> </span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Part reference is same as supplier product code')
-                );
+
+            if($data['Supplier Part Production']=='Yes'){
+                if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                    $reference .= sprintf(
+                        '<br ><span class="small link"  onclick="change_view(\'/production/%d/part/%d\')"  title="%s"><i class="fal fa-industry"></i> %s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Production product code'), $data['Supplier Part Reference']
+                    );
+                } else {
+                    $reference .= sprintf(
+                        ', <span class="small link"  onclick="change_view(\'/production/%d/part/%d\')" ><i class="fal fa-industry" title="%s"></i> </span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Production product code')
+                    );
+                }
+            }else{
+                if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                    $reference .= sprintf(
+                        '<br ><span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')"  title="%s"><i class="fal fa-hand-receiving"></i> %s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+                    );
+                } else {
+                    $reference .= sprintf(
+                        ', <span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')" ><i class="fal fa-hand-receiving" title="%s"></i> </span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Part reference is same as supplier product code')
+                    );
+                }
             }
+
+
 
 
             $table_data[] = array(

@@ -549,7 +549,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     return $supplier_part_fields;
                 } elseif ($options['parent'] == 'production') {
 
-
+/*
                     include 'fields/production_part.fld.php';
 
 
@@ -589,6 +589,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
                     return $supplier_part_fields;
+                    */
+                    return [];
+
                 } elseif ($options['parent'] == 'part') {
                     include 'fields/part.supplier_part.new.fld.php';
 

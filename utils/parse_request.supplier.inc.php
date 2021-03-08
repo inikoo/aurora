@@ -281,5 +281,3 @@ if (isset($view_path[0])) {
 
 }
 
-
-?>

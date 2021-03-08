@@ -363,7 +363,7 @@ function get_job_order_transaction_data($data) {
     $state = '';
 
 
-    $delivery_link = ' ('.sprintf('<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')">%s</span>)', strtolower($data['Supplier Delivery Parent']), $data['Supplier Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']);
+    $delivery_link = ' ('.sprintf('<span class="link" onclick="change_view(\'production/%d/delivery/%d\')">%s</span>)', $data['Supplier Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']);
 
     switch ($data['Purchase Order Transaction State']) {
         case 'InProcess':

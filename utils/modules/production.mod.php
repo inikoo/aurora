@@ -105,11 +105,12 @@ function get_production_module() {
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+                    /*
                     'production_part.batch'   => array(
                         'label' => _('Batch'),
                         'icon'  => 'conveyor-belt'
                     ),
-
+*/
 
                     'production_part.purchase_orders' => array(
                         'label'   => _('Job orders'),

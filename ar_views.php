@@ -145,6 +145,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
+
     $state['current_website']    = (!empty($_SESSION['current_website']) ? $_SESSION['current_website'] : '');
     $state['current_store']      = (!empty($_SESSION['current_store']) ? $_SESSION['current_store'] : '');
     $state['current_warehouse']  = (!empty($_SESSION['current_warehouse']) ? $_SESSION['current_warehouse'] : '');
@@ -338,9 +339,12 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             break;
 
+
+
         case 'supplier':
 
             $_parent = get_object($state['parent'], $state['parent_key']);
+
 
 
             if ($_parent->get('Supplier Production') == 'Yes') {
@@ -365,6 +369,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             break;
 
+
+
         default:
             $_parent = get_object($state['parent'], $state['parent_key']);
 
@@ -373,6 +379,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     $state['_parent'] = $_parent;
+
+
 
     if ($state['object'] != '') {
 
@@ -513,7 +521,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
         }
 
-
+/*
 
         if ($state['module'] != 'production') {
 
@@ -582,6 +590,11 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             }
         }
+
+        */
+
+
+
         //  print_r($state);
 
         // $state['current_store'];
@@ -756,7 +769,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     }
 
-
     if ($state['section'] == 'setup') {
 
         $state = array(
@@ -821,6 +833,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     $state['website']    = $website;
     $state['warehouse']  = $warehouse;
     $state['production'] = $production;
+
+
 
     if (is_object($store) and $store->id) {
         $state['current_store'] = $store->id;

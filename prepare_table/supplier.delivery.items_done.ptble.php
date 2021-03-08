@@ -50,30 +50,11 @@ $sql_totals
     = "select count(distinct  P.`Part SKU`) as num from $table $where";
 //`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units`,`Supplier Delivery Transaction Placed`,`Metadata`,`Purchase Order Transaction Fact Key`,POTF.`Supplier Part Key`
 
-$fields
-    = "`Part SKO Image Key`,`Part SKO Barcode`,POTF.`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Part Package Description`,
-`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
-`Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
-`Supplier Part Unit Cost`,`Part Package Weight`,POTF.`Supplier Delivery CBM`,POTF.`Supplier Delivery Weight`,`Supplier Key`,
-`Supplier Delivery Net Amount`,`Currency Code`,
 
-sum(`Supplier Delivery Placed SKOs`) as skos_in,
-sum(`Supplier Delivery Net Amount`) as items_amount,
-sum(`Supplier Delivery Extra Cost Amount`) as extra_amount,
-sum(`Supplier Delivery Extra Cost Account Currency Amount`) as extra_amount_account_currency,
-
-sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as paid_amount,
-
-            
-
-`Supplier Delivery Net Amount`
-
-
-";
 
 $fields
     = "
-ANY_VALUE(P.`Part SKU`) as `Part SKU`,
+ANY_VALUE(P.`Part SKU`) as `Part SKU`,`Supplier Part Production`,
 ANY_VALUE(P.`Part Reference`) as `Part Reference`,
 ANY_VALUE(P.`Part Package Description`) as `Part Package Description`,
 

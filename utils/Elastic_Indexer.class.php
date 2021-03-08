@@ -894,8 +894,7 @@ class Elastic_Indexer {
         $this->real_time[] = $this->object->get('Code');
 
 
-
-        $this->url          = sprintf('locations/%d/%d', $this->object->get('Location Warehouse Key'), $this->object->id);
+        $this->url = sprintf('locations/%d/%d', $this->object->get('Location Warehouse Key'), $this->object->id);
 
 
         if ($this->object->deleted) {
@@ -905,20 +904,19 @@ class Elastic_Indexer {
 
             $this->icon_classes = 'fal fa-fw fa-pallet | fa fa-fw fa-trash-bin';
             $this->weight       = 5;
-            $this->label_1 = '<span class="strikethrough discreet">'.$this->object->get('Code').'</span>';
-            $this->label_2 = '<span class="strikethrough discreet">'.$this->object->get('Warehouse Area Code').'</span>';
+            $this->label_1      = '<span class="strikethrough discreet">'.$this->object->get('Code').'</span>';
+            $this->label_2      = '<span class="strikethrough discreet">'.$this->object->get('Warehouse Area Code').'</span>';
 
-        }else{
-            $this->scopes = array(
+        } else {
+            $this->scopes       = array(
                 'locations' => 100
             );
             $this->icon_classes = 'fal fa-fw fa-pallet';
             $this->weight       = 60;
-            $this->label_1 = $this->object->get('Code');
-            $this->label_2 = $this->object->get('Warehouse Area Code');
+            $this->label_1      = $this->object->get('Code');
+            $this->label_2      = $this->object->get('Warehouse Area Code');
 
         }
-
 
 
     }
@@ -1271,7 +1269,8 @@ class Elastic_Indexer {
 
 
         if ($supplier->get('Supplier Production') == 'Yes') {
-            $this->module = 'production';
+           return;
+            // $this->module = 'production';
         } else {
             $this->module = 'suppliers';
 
@@ -1350,26 +1349,29 @@ class Elastic_Indexer {
         $this->icon_classes = 'far fa-fw fa-user-secret';
     }
 
+
     private function prepare_supplier_part() {
 
         if ($this->object->get('Supplier Part Production') == 'Yes') {
-            $this->module = 'production';
-            $this->scopes = array(
-                'parts' => 100
-            );
-        } else {
-            $this->module = 'suppliers';
-            $this->scopes = array(
-                'supplier_parts' => 100
-            );
 
-            $this->supplier_user[] = $this->object->get('Supplier Key');
+
+            $this->prepare_production_part();
+
+            return;
 
 
         }
 
 
+        $this->module = 'suppliers';
+        $this->scopes = array(
+            'supplier_parts' => 100
+        );
+
+        $this->supplier_user[] = $this->object->get('Supplier Key');
+
         $this->url = sprintf('supplier/%d/part/%d', $this->object->get('Supplier Part Supplier Key'), $this->object->id);
+
 
         $this->real_time[] = $this->object->get('Supplier Part Reference');
 
@@ -1411,6 +1413,97 @@ class Elastic_Indexer {
             case 'Discontinued':
                 $this->weight       = 5;
                 $this->icon_classes = 'fal fa-fw fa-hand-receiving error';
+                break;
+        }
+
+        $this->label_1 .= '<span class="small">';
+
+        switch ($this->object->part->get('Part Status')) {
+            case 'Discontinuing':
+                $this->weight  = $this->weight - 5;
+                $this->label_1 .= ' <i class="small fal fa-fw fa-box warning"></i>';
+                break;
+            case 'Not In Use':
+                $this->weight = $this->weight - 10;
+
+                $this->label_1 .= ' <i class="small fal fa-fw fa-box very_discreet red"></i>';
+                break;
+            case 'In Use':
+                $this->weight  = 40;
+                $this->label_1 .= '<i class="small fal fa-fw fa-box\"></i>';
+                break;
+            case 'In Process':
+                $this->weight  = 40;
+                $this->label_1 .= ' <i class="small fal fa-fw fa-box discreet"></i>';
+                break;
+            default:
+                $this->label_1 .= ' <i class="small fal fa-fw fa-question-circle"></i>';
+
+
+        }
+
+        if ($this->object->get('Reference') != $this->object->part->get('Part Reference')) {
+            $this->label_1 .= ' '.$this->object->part->get('Part Reference');
+
+        }
+        $this->label_1 .= '</span>';
+
+
+    }
+
+
+    private function prepare_production_part() {
+
+        $this->object=get_object('Production Part',$this->object->id);
+
+
+        $this->module = 'production';
+        $this->scopes = array(
+            'parts' => 100
+        );
+        $this->url    = sprintf('production/%d/part/%d', $this->object->get('Supplier Part Supplier Key'), $this->object->id);
+
+
+        $this->real_time[] = $this->object->get('Supplier Part Reference');
+
+        $this->real_time[] = $this->object->get('Supplier Part Description');
+
+        $this->real_time[] = $this->object->part->get('Part Reference');
+
+        $this->real_time[] = $this->object->part->get('Part Package Description');
+        $this->real_time[] = $this->object->part->get('Part SKO Barcode');
+        $this->real_time[] = strip_tags($this->object->part->get('Materials'));
+
+
+        $this->label_1 = '<span class="padding_right_5">'.$this->object->get('Reference').'</span>';
+
+
+        $this->label_2 = $this->object->get('Supplier Part Description');
+
+        $supplier      = get_object('Supplier', $this->object->get('Supplier Part Supplier Key'));
+        $this->label_3 = $supplier->get('Supplier Code');
+        if ($supplier->get('Supplier Type') == 'Agent') {
+            $this->label_3 .= ' <i class="fal small discreet fa-fw fa-user-secret"></i>';
+
+            foreach ($supplier->get_agents() as $agent_key) {
+                $this->agent_user[] = $agent_key;
+            }
+
+        }
+
+
+        switch ($this->object->get('Supplier Part Status')) {
+            case 'Available':
+                $this->weight       = 50;
+                $this->icon_classes = 'fa fa-fw fa-industry success';
+                break;
+            case 'NoAvailable':
+                $this->weight       = 30;
+                $this->icon_classes = 'fa fa-fw fa-industry warning';
+                break;
+            case 'Discontinued':
+                $this->weight       = 5;
+                $this->icon_classes = 'fal fa-fw fa-industry error';
                 break;
         }
 

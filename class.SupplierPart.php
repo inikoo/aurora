@@ -2104,7 +2104,7 @@ class SupplierPart extends DB_Table {
         $next_deliveries_data = array();
 
 
-        $sql = "SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Supplier Delivery Transaction State`,`Purchase Order Key`,
+        $sql = "SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Supplier Delivery Transaction State`,`Purchase Order Key`,`Supplier Part Production`,
             `Supplier Delivery Units`,`Supplier Delivery Checked Units` ,ifnull(`Supplier Delivery Placed Units`,0) AS placed,
               POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` ,`Part Units Per Package`,`Supplier Delivery State`
             FROM `Purchase Order Transaction Fact` POTF LEFT JOIN 
@@ -2164,6 +2164,12 @@ class SupplierPart extends DB_Table {
                             break;
                     }
 
+                    if($row['Supplier Part Production']=='Yes'){
+                        $link_root='production';
+                    }else{
+                        $link_root=strtolower($row['Supplier Delivery Parent']);
+                    }
+
                     $next_deliveries_data[] = array(
                         'type'            => 'delivery',
                         'qty'             => '+'.number($raw_skos_qty),
@@ -2171,7 +2177,8 @@ class SupplierPart extends DB_Table {
                         'raw_units_qty'   => $raw_units_qty,
                         'date'            => '',
                         'formatted_link'  => sprintf(
-                            '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']),
+                            '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>',
+                            $link_root,
                             $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
                         ),
                         'link'            => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
@@ -2191,8 +2198,9 @@ class SupplierPart extends DB_Table {
         }
 
 
-        $sql = "SELECT `Part Units Per Package`,POTF.`Purchase Order Transaction State`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` 
-FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)   LEFT JOIN 
+        $sql = "SELECT `Supplier Part Supplier Key`,`Part Units Per Package`,POTF.`Purchase Order Transaction State`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,`Supplier Part Production`
+FROM `Purchase Order Transaction Fact` POTF LEFT JOIN 
+    `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)   LEFT JOIN 
             `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
                 `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
 
@@ -2207,6 +2215,12 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
         );
         while ($row = $stmt->fetch()) {
 
+            if($row['Supplier Part Production']=='Yes'){
+                $link_root='production/'.$row['Supplier Part Supplier Key'].'/order';
+            }else{
+                $link_root='suppliers/order';
+            }
+
             if ($row['Purchase Order Transaction State'] == 'InProcess') {
 
                 $raw_units_qty = $row['Purchase Order Ordering Units'];
@@ -2216,7 +2230,7 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
                 $date                = '';
                 $formatted_state     = '<span class="very_discreet italic">'._('Draft').'</span>';
                 $link                = sprintf(
-                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
+                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'%s/%d\')"> %s</span>',_('In process'), $link_root,$row['Purchase Order Key'],
                     $row['Purchase Order Public ID']
                 );
                 $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
@@ -2232,7 +2246,7 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
                 $formatted_state     = '<span class="very_discreet italic">'._('Submitted').'</span>';
 
                 $link            = sprintf(
-                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Submitted'), $row['Purchase Order Key'],
+                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'%s/%d\')">  %s</span>', _('Submitted'),$link_root, $row['Purchase Order Key'],
                     $row['Purchase Order Public ID']
                 );
                 $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
@@ -2253,7 +2267,7 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
                 }
 
                 $link            = sprintf(
-                    '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Confirmed'), $row['Purchase Order Key'],
+                    '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'%s/%d\')">  %s</span>', _('Confirmed'),$link_root, $row['Purchase Order Key'],
                     $row['Purchase Order Public ID']
                 );
                 $qty             = '+'.number($raw_skos_qty);
@@ -2270,7 +2284,7 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
                 'formatted_state' => $formatted_state,
 
                 'formatted_link' => $link,
-                'link'           => sprintf('suppliers/order/%d', $row['Purchase Order Key']),
+                'link'           => sprintf('%s/%d',$link_root, $row['Purchase Order Key']),
                 'order_id'       => $row['Purchase Order Public ID'],
                 'state'          => $row['Purchase Order Transaction State'],
                 'po_key'         => $row['Purchase Order Key']
