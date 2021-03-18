@@ -2034,13 +2034,13 @@ class Account extends DB_Table {
             );
 
 
-            $key = '_acc_Sales_'.$this->get('Account Code');
+           // $key = '_acc_Sales_'.$this->get('Account Code');
 
-            $this->redis->hSet(
-                $key, preg_replace('/\s/','_',$interval), json_encode(
-                        $sales_data
-                    )
-            );
+           // $this->redis->hSet(
+           //     $key, preg_replace('/\s/','_',$interval), json_encode(
+           //             $sales_data
+           //         )
+           // );
 
             $this->fast_update($data_to_update, 'Account Data');
             //  exit();
