@@ -18,7 +18,7 @@ require_once 'utils/ar_common.php';
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,
-        'msg'  => 'Non acceptable request (t)'
+        'msg'   => 'Non acceptable request (t)'
     );
     echo json_encode($response);
     exit;
@@ -48,15 +48,96 @@ switch ($tipo) {
         );
         remove_product_from_portfolio($data, $db, $user);
         break;
+    case 'set_up_integration':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'customer_key'     => array('type' => 'key'),
+                         'integration_type' => array('type' => 'string'),
+                     )
+        );
+        switch ($data['integration_type']){
+            case 'Shopify':
+                set_up_shopify($data, $db, $user);
+                break;
+            default:
+                $response = array(
+                    'state' => 405,
+                    'msg'   => 'Integration not found '.$data['integration_type']
+                );
+                echo json_encode($response);
+                exit;
+        }
+
+
+        break;
     default:
         $response = array(
             'state' => 405,
-            'msg'  => 'Tipo not found '.$tipo
+            'msg'   => 'Tipo not found '.$tipo
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
+
+function set_up_shopify($data, $db, $user){
+
+
+    $customer=get_object('Customer',$data['customer_key']);
+
+
+    if (!defined('SHOPIFY_TOKEN')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Bridge token not set up'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $headers = [
+        "Authorization: Bearer ".SHOPIFY_TOKEN,
+        "Content-Type:multipart/form-data",
+        "Accept: application/json",
+    ];
+
+    $params=[
+        'customer_id'=>$customer->id,
+        'customer_name'=>$customer->get('Name')
+    ];
+
+
+    $curl = curl_init();
+
+    $url = SHOFIFY_URL.'prospect/';
+
+
+    curl_setopt_array(
+        $curl, array(
+                 CURLOPT_URL            => $url,
+                 CURLOPT_RETURNTRANSFER => true,
+                 CURLOPT_ENCODING       => "",
+                 CURLOPT_MAXREDIRS      => 10,
+                 CURLOPT_TIMEOUT        => 0,
+                 CURLOPT_FOLLOWLOCATION => true,
+                 CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                 CURLOPT_CUSTOMREQUEST  => "POST",
+                 CURLOPT_POSTFIELDS     => $params,
+                 CURLOPT_HTTPHEADER     => $headers
+             )
+    );
+
+    $response = curl_exec($curl);
+    echo "Params:".print_r($params).' <<';
+    curl_close($curl);
+    echo "Response:".$response.' <<';
+
+
+    return 1;
+
+}
+
 
 /**
  * @param $data array
@@ -72,7 +153,7 @@ function add_product_to_portfolio($data, $db, $user) {
     if (!($user->can_edit('customers') and in_array($customer->get('Store Key'), $user->stores))) {
         $response = array(
             'state' => 400,
-            'msg'  => 'Forbidden'
+            'msg'   => 'Forbidden'
         );
         echo json_encode($response);
         exit;
@@ -83,7 +164,7 @@ function add_product_to_portfolio($data, $db, $user) {
     if ($product->get('Store Key') != $customer->get('Store Key')) {
         $response = array(
             'state' => 400,
-            'msg'  => 'Product not in Store'
+            'msg'   => 'Product not in Store'
         );
         echo json_encode($response);
         exit;
@@ -102,7 +183,7 @@ function add_product_to_portfolio($data, $db, $user) {
     if ($row = $stmt->fetch()) {
         $response = array(
             'state' => 400,
-            'msg'  => _('Product already in portfolio')
+            'msg'   => _('Product already in portfolio')
         );
         echo json_encode($response);
         exit;
@@ -165,7 +246,7 @@ function remove_product_from_portfolio($data, $db, $user) {
     if (!($user->can_edit('customers') and in_array($customer->get('Store Key'), $user->stores))) {
         $response = array(
             'state' => 400,
-            'msg'  => 'Forbidden'
+            'msg'   => 'Forbidden'
         );
         echo json_encode($response);
         exit;
@@ -176,7 +257,7 @@ function remove_product_from_portfolio($data, $db, $user) {
     if ($product->get('Store Key') != $customer->get('Store Key')) {
         $response = array(
             'state' => 400,
-            'msg'  => 'Product not in Store'
+            'msg'   => 'Product not in Store'
         );
         echo json_encode($response);
         exit;
@@ -231,7 +312,7 @@ function remove_product_from_portfolio($data, $db, $user) {
     } else {
         $response = array(
             'state' => 400,
-            'msg'  => 'Product not in portfolio'
+            'msg'   => 'Product not in portfolio'
         );
         echo json_encode($response);
         exit;

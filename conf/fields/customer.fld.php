@@ -31,7 +31,6 @@ $options_delivery_address_link = array(
 );
 
 
-
 if ($user->can_supervisor('customers')) {
     $can_supervisor_customer_services = true;
 } else {
@@ -88,7 +87,7 @@ $_edit = ($store->get('Store Type') != 'External' ? true : false);
 
 if ($user->can_supervisor('accounting')) {
     $can_supervisor_accounting = true;
-    $customer_level_type_field= array(
+    $customer_level_type_field = array(
         'id'     => 'Customer_Level_Type',
         'edit'   => 'no_icon',
         'render' => ($store->get('Store Type') == 'Dropshipping' ? false : true),
@@ -105,8 +104,7 @@ if ($user->can_supervisor('accounting')) {
     $can_supervisor_accounting = false;
 
 
-
-    $customer_level_type_field= array(
+    $customer_level_type_field = array(
         'id'   => 'Customer_Credit_Limit',
         'edit' => ($can_supervisor_accounting ? 'string' : ''),
 
@@ -159,7 +157,7 @@ if ($new) {
                     'required'        => false,
                     'type'            => 'value'
                 ),
-                
+
                 array(
                     'id'              => 'Customer_EORI',
                     'edit'            => ($edit ? 'string' : ''),
@@ -796,7 +794,7 @@ if ($new) {
         'class'      => 'edit_fields '.($store->get('Store Type') == 'Dropshipping' ? 'hide' : ''),
         'fields'     => array(
 
-           $customer_level_type_field,
+            $customer_level_type_field,
 
             array(
                 'render' => (($object->get('Customer Level Type') == 'Partner' or $store->get('Store Type') == 'Dropshipping') ? false : true),
@@ -822,9 +820,32 @@ if ($new) {
                 'label'           => _('Credit limit'),
                 'invalid_msg'     => get_invalid_message('amount'),
 
+                'required' => false,
+                'type'     => 'value'
+
+            ),
+
+        )
+
+    );
+
+    $customer_fields[] = array(
+        'label' => _('Integrations'),
+
+        'show_title' => true,
+        'class'      => 'edit_fields '.($store->get('Store Type') != 'Dropshipping' ? 'hide' : ''),
+        'fields'     => array(
+
+            $customer_level_type_field,
+
+            array(
+                'id'              => 'Customer_Integration_Shopify',
+                'edit'            => 'no_icon',
+                'value'           => '',
+                'formatted_value' => '<span class="button" onclick="set_up_integration(this,\'Shopify\')"  style="margin-right:40px"> <span>'._('Set up integration').' <i class="fa fa-arrow-right"></i></span></span><span class="result"></span>',
+                'label'           => _('Shopify'),
                 'required'        => false,
                 'type'            => 'value'
-
             ),
 
         )
