@@ -172,6 +172,7 @@ function get_menu_html($data, $user, $smarty, $db, $account) {
 
         if ($account->get('Account Manufacturers') == 1) {
 
+            $account->load_acc_data();
 
             $manufacturer_key = $account->properties('production_supplier_key');
 
@@ -184,6 +185,8 @@ function get_menu_html($data, $user, $smarty, $db, $account) {
                     'module',
                     ''
                 );
+
+
             }
 
         } else {

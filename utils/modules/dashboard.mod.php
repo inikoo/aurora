@@ -31,6 +31,19 @@ function get_dashboard_module() {
               )
 
           ),
+          'corporate_dashboard' => array(
+              'type'  => 'widgets',
+              'label' => _('Home'),
+              'title' => _('Corporate dashboard'),
+              'icon'  => 'home',
+              'tabs'  => array(
+                  'corporate_dashboard' => array(
+                      'label' => _('Dashboard')
+                  ),
+
+              )
+
+          ),
       )
 
   );

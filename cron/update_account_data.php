@@ -1,5 +1,4 @@
 <?php
-
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -15,7 +14,20 @@ require_once 'class.Store.php';
 require_once 'utils/natural_language.php';
 
 
+
 $account->load_acc_data();
+$account->redis=$redis;
+
+$key = '_acc_'.$account->get('Account Code');
+
+$redis->hSet(
+    $key, 'name',$account->get('Name')
+);
+
+
+
+
+
 $account->update_suppliers_data();
 
 $account->update_production_job_orders_stats();

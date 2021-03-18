@@ -63,8 +63,10 @@ class Account extends DB_Table {
             )
         );
         if ($row = $stmt->fetch()) {
+
             foreach ($row as $key => $value) {
                 if ($key == 'Account Properties') {
+
                     $this->properties = json_decode($value, true);
                     $this->settings   = [];
                 } else {
@@ -800,14 +802,14 @@ class Account extends DB_Table {
 
         $data['editor'] = $this->editor;
 
-        $data['Warehouse State']        = 'Active';
-        $data['Warehouse Valid From']   = gmdate('Y-m-d H:i:s');
-        $data['Warehouse Address']      = '';
-        $data['Warehouse Company Name'] = '';
-        $data['Warehouse Company Number']='';
-        $data['Warehouse VAT Number']='';
-        $data['Warehouse Telephone']='';
-        $data['Warehouse Email']='';
+        $data['Warehouse State']          = 'Active';
+        $data['Warehouse Valid From']     = gmdate('Y-m-d H:i:s');
+        $data['Warehouse Address']        = '';
+        $data['Warehouse Company Name']   = '';
+        $data['Warehouse Company Number'] = '';
+        $data['Warehouse VAT Number']     = '';
+        $data['Warehouse Telephone']      = '';
+        $data['Warehouse Email']          = '';
 
         $warehouse = new Warehouse('find', $data, 'create');
 
@@ -2032,6 +2034,14 @@ class Account extends DB_Table {
             );
 
 
+            $key = '_acc_Sales_'.$this->get('Account Code');
+
+            $this->redis->hSet(
+                $key, preg_replace('/\s/','_',$interval), json_encode(
+                        $sales_data
+                    )
+            );
+
             $this->fast_update($data_to_update, 'Account Data');
             //  exit();
         }
@@ -2096,6 +2106,33 @@ class Account extends DB_Table {
         }
 
     }
+
+    function update_account_overview($redis) {
+
+        $account_data = [
+            'name' => $this->data['Account Name']
+        ];
+
+        $key = '_acc_'.$this->get('Account Code');
+
+        $redis->hSet($key, 'code', $this->data['Account Code']);
+        $redis->hSet($key, 'name', $this->data['Account Name']);
+
+        $redis->hSet(
+            $key, 'ytd', json_encode(
+                    [
+                        'sales' => $this->get('Account Year To Day Acc Invoiced Amount')
+                    ]
+                )
+        );
+
+
+        print_r([
+                    'sales' => $this->get('Account Year To Day Acc Invoiced Amount')
+                ]);
+
+    }
+
 
     function get_sales_data($from_date, $to_date) {
 
@@ -2694,9 +2731,6 @@ class Account extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
-
-
 
 
         $data_to_update = array(

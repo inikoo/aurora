@@ -26,7 +26,6 @@ require_once "utils/aes.php";
 require_once "class.Account.php";
 require_once "class.User.php";
 
-
 $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_PORT);
 
@@ -150,13 +149,11 @@ if ($user->id) {
 
     switch ($user->get('User Type')) {
         case 'Staff':
-            break;
         case 'Contractor':
-            break;
-        case 'Supplier':
-            $user->read_suppliers();
-            break;
         case 'Agent':
+            break;
+            case 'Supplier':
+            $user->read_suppliers();
             break;
     }
 

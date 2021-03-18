@@ -22,7 +22,12 @@ function fork_asset_sales($job) {
 
 
     list($account, $db, $data,$editor,$ES_hosts) = $_data;
-    print_r($data);
+
+    $redis = new Redis();
+    $redis->connect(REDIS_HOST, REDIS_PORT);
+    $account->redis=$redis;
+
+    //print_r($data);
    //return true;
 
 

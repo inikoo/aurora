@@ -69,6 +69,15 @@ function parse_request($_data, $db, $modules, $account, $user) {
             case 'dashboard':
                 $module  = 'dashboard';
                 $section = 'dashboard';
+
+            if (isset($view_path[0])) {
+                if ($view_path[0] == 'corporate') {
+
+                    $section = 'corporate_dashboard';
+                }
+            }
+
+
                 break;
             case 'stores':
                 if (!$user->can_view('stores')) {
@@ -1604,6 +1613,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
                     break;
                 }
                 include_once 'utils/parse_request.supplier.inc.php';
+
+
                 break;
             case 'agent':
 
@@ -5976,6 +5987,7 @@ function parse_tabs($module, $section, $_data, $modules) {
 
         $tmp = $_SESSION['state'];
 
+       // print_r($tmp);
 
         if (!empty($tmp[$module][$section]['tab'])) {
 
