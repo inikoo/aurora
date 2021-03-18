@@ -184,6 +184,21 @@ class Invoice extends DB_Table {
 
             $this->get_data('id', $this->id);
 
+            $store=get_object('Store',$this->get('Store Key'));
+
+            $this->fast_update_json_field('Invoice Metadata', 'store_name', $store->get('Store Name'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_address',$store->get('Store Address'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_url',$store->get('Store URL'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
+
+            $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $store->get('Store VAT Number'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_company_number', $store->get('Store Company Number'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_telephone', $store->get('Store Telephone'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_email', $store->get('Store Email'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_message', $store->get('Store Invoice Message'));
+
+
 
             if (isset($recargo_equivalencia)) {
                 $this->fast_update_json_field('Invoice Metadata', 'RE', 'Yes');
@@ -1535,7 +1550,6 @@ class Invoice extends DB_Table {
             $this->fast_update_json_field('Invoice Metadata', 'store_company_number', $store->get('Store Company Number'));
             $this->fast_update_json_field('Invoice Metadata', 'store_telephone', $store->get('Store Telephone'));
             $this->fast_update_json_field('Invoice Metadata', 'store_email', $store->get('Store Email'));
-
             $this->fast_update_json_field('Invoice Metadata', 'store_message', $store->get('Store Invoice Message'));
 
 
