@@ -5,62 +5,6 @@
 
 
 
-function post_update_field(data) {
-
-    if (data.value != undefined) {
-        if (data.field == 'Customer_Main_Plain_Telephone') {
-            console.log(data.field + ' --> ' + data.value)
-            if (data.value == '') {
-                $('#' + data.field + '_display').addClass('hide')
-                $('#show_new_telephone_field').addClass('hide')
-
-            } else {
-                $('#' + data.field + '_display').removeClass('hide')
-                $('#show_new_telephone_field').removeClass('hide')
-
-            }
-        } else if (data.field == 'Customer_Main_Plain_Mobile' || data.field == 'Customer_Main_Plain_FAX') {
-            console.log(data.field + ' --> ' + data.value)
-            if (data.value == '') {
-                $('#' + data.field + '_display').addClass('hide')
-            } else {
-                $('#' + data.field + '_display').removeClass('hide')
-
-            }
-        } else if (data.field == 'Customer_Main_Plain_Email') {
-            if (data.value == '') {
-                $('#' + data.field + '_display').addClass('hide')
-                $('#show_new_email_field').addClass('hide')
-
-            } else {
-                $('#' + data.field + '_display').removeClass('hide')
-                $('#' + 'Customer_Other_Email_mailto').html('<a href="mailto:' + data.value + '" >' + data.value + '</a>')
-                $('#show_new_email_field').removeClass('hide')
-            }
-        }
-
-
-        if (data.field_type != undefined) {
-            if (data.field_type == 'Customer_Other_Email') {
-                if (data.value != '') {
-                    $('#' + data.field + '_mailto').html(data.formatted_email)
-                } else {
-                    $('#' + data.field + '_display').addClass('hide')
-
-                }
-            } else if (data.field_type == 'Customer_Other_Telephone') {
-                if (data.value != '') {
-                    $('#' + data.field + '_display').find('span').html(data.formatted_value)
-                } else {
-                    $('#' + data.field + '_display').addClass('hide')
-
-                }
-            }
-        }
-
-    }
-}
-
 function post_create_action(data) {
 
     var clone = $('#' + data.clone_from + '_display').clone()
@@ -186,6 +130,99 @@ function toggle_subscription_from_new(element){
 
 
 
+
+
+}
+
+function set_up_integration(element,integration_type){
+
+    const icon = $(element).find('i');
+    const container = $(element).closest('td.container');
+
+
+    if(icon.hasClass('wait')){
+        return;
+    }
+
+    icon.removeClass('fa-arrow-right').addClass(' fa-spinner fa-spin wait' )
+
+
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_up_integration')
+
+    ajaxData.append("customer_key", $('#fields').attr('key'))
+
+    ajaxData.append("integration_type", integration_type)
+
+
+    $.ajax({
+        url: "/ar_edit_customers.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+
+            icon.removeClass('wait')
+
+
+            if (data.state == '200') {
+
+
+
+                container.find('.button').addClass('hide');
+
+                container.find('.result').text(data.result)
+
+
+                if (data.other_fields) {
+                    for (var key in data.other_fields) {
+
+                        //   console.log(data.other_fields[key])
+
+                        update_field(data.other_fields[key])
+                    }
+                }
+
+                if (data.deleted_fields) {
+                    for (var key in data.deleted_fields) {
+                        delete_field(data.deleted_fields[key])
+                    }
+                }
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
+
+            } else if (data.state == '400') {
+
+                icon.addClass('fa-arrow-right').removeClass(' fa-spinner fa-spin')
+
+
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
 
 
 }
