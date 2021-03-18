@@ -2035,7 +2035,6 @@ class Account extends DB_Table {
 
 
            // $key = '_acc_Sales_'.$this->get('Account Code');
-
            // $this->redis->hSet(
            //     $key, preg_replace('/\s/','_',$interval), json_encode(
            //             $sales_data

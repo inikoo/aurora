@@ -224,7 +224,11 @@ class DeliveryNote extends DB_Table {
     function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date) {
 
 
-        $product = new Product('id', $product_id);
+
+
+
+        $product=get_object('Product',$product_id);
+
 
         $part_list = $product->get_parts_data();
 
@@ -242,8 +246,8 @@ class DeliveryNote extends DB_Table {
 
         foreach ($part_list as $part_data) {
 
+            $part=get_object('Part',$part_data['Part SKU']);
 
-            $part = new Part ('sku', $part_data['Part SKU']);
             if ($part->sku) {
 
                 $required = $part_data['Ratio'] * $to_sell_quantity;
