@@ -694,7 +694,7 @@ class Category extends DB_Table {
 
                         return '';
 
-                        break;
+
 
 
                     case 'Category Webpage Meta Description':

@@ -48,11 +48,8 @@ $smarty->assign(
     ).'"'
 );
 
-$smarty->assign(
-    'js_code', 'js/injections/part_details.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 $html = $smarty->fetch('edit_object.tpl');
 
-?>
+

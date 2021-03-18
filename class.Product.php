@@ -646,49 +646,49 @@ class Product extends Asset {
 
     function get_parts_data($with_objects = false) {
 
-        include_once 'class.Part.php';
-
-        $sql = sprintf(
-            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` ,`Part Recommended Product Unit Name`,`Part Units`
-              FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ", $this->id
-        );
-
-
         $parts_data = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+
+        $sql =
+            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` ,`Part Recommended Product Unit Name`,`Part Units`
+                FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $part_data = array(
+                'Key'            => $row['Product Part Key'],
+                'Ratio'          => $row['Product Part Ratio'],
+                'Note'           => $row['Product Part Note'],
+                'Part SKU'       => $row['Product Part Part SKU'],
+                'Part Reference' => $row['Part Reference'],
+                'Part Name'      => $row['Part Recommended Product Unit Name'],
+                'Part Units'     => $row['Part Units'],
+                'Units'          => floatval($row['Part Units']) * floatval($row['Product Part Ratio'])
+
+            );
 
 
-                $part_data = array(
-                    'Key'            => $row['Product Part Key'],
-                    'Ratio'          => $row['Product Part Ratio'],
-                    'Note'           => $row['Product Part Note'],
-                    'Part SKU'       => $row['Product Part Part SKU'],
-                    'Part Reference' => $row['Part Reference'],
-                    'Part Name'      => $row['Part Recommended Product Unit Name'],
-                    'Part Units'     => $row['Part Units'],
-                    'Units'          => floatval($row['Part Units']) * floatval($row['Product Part Ratio'])
-
+            if ($row['Product Part Linked Fields'] == '') {
+                $part_data['Linked Fields']        = array();
+                $part_data['Number Linked Fields'] = 0;
+            } else {
+                $part_data['Linked Fields']        = json_decode($row['Product Part Linked Fields'], true);
+                $part_data['Number Linked Fields'] = count(
+                    $part_data['Linked Fields']
                 );
-
-
-                if ($row['Product Part Linked Fields'] == '') {
-                    $part_data['Linked Fields']        = array();
-                    $part_data['Number Linked Fields'] = 0;
-                } else {
-                    $part_data['Linked Fields']        = json_decode($row['Product Part Linked Fields'], true);
-                    $part_data['Number Linked Fields'] = count(
-                        $part_data['Linked Fields']
-                    );
-                }
-                if ($with_objects) {
-                    $part_data['Part'] = new Part($row['Product Part Part SKU']);
-                }
-
-
-                $parts_data[] = $part_data;
             }
+            if ($with_objects) {
+                $part_data['Part'] = get_object('Part', $row['Product Part Part SKU']);
+            }
+
+
+            $parts_data[] = $part_data;
         }
+
 
         return $parts_data;
     }
@@ -1633,10 +1633,10 @@ class Product extends Asset {
 
             case 'Online Force Out of Stock':
                 return 'Out of Stock';
-                break;
+
             case 'Online Force For Sale':
                 return 'For Sale';
-                break;
+
             case 'Online Auto':
 
                 if ($this->data['Product Number of Parts'] == 0) {
@@ -4312,11 +4312,11 @@ class Product extends Asset {
 
         switch ($field) {
             case 'Object':
-                $url    = AIKU_URL.'products/';
+                $url = AIKU_URL.'products/';
 
 
                 $params = $this->get_aiku_params('historic_props')[1];
-                $params+=$this->get_aiku_params('Product Status')[1];
+                $params += $this->get_aiku_params('Product Status')[1];
 
                 $params['legacy_id'] = $this->id;
 

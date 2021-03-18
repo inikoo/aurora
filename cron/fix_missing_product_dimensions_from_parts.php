@@ -40,23 +40,69 @@ if ($result = $db->query($sql)) {
         $part = get_object('Part',$row['Part SKU']);
 
 
-        if($part->get('Part Unit Dimensions')!=''){
-            foreach ($part->get_products('objects') as $product) {
 
-                if (count($product->get_parts()) == 1) {
-                    $product->editor = $editor;
+        foreach ($part->get_products('objects') as $product) {
 
+            $product->fast_update(
+                array(
+                    'Product Tariff Code'                  => $part->get('Part Tariff Code'),
+                    'Product HTSUS Code'                   => $part->get('Part HTSUS Code'),
+                    'Product Duty Rate'                    => $part->get('Part Duty Rate'),
+                    'Product Origin Country Code'          => $part->get('Part Origin Country Code'),
+                    'Product UN Number'                    => $part->get('Part UN Number'),
+                    'Product UN Class'                     => $part->get('Part UN Class'),
+                    'Product Packing Group'                => $part->get('Part Packing Group'),
+                    'Product Proper Shipping Name'         => $part->get('Part Proper Shipping Name'),
+                    'Product Hazard Identification Number' => $part->get('Part Hazard Identification Number'),
+                    'Product Unit Weight'                  => $part->get('Part Unit Weight'),
+                    'Product Unit Dimensions'              => $part->get('Part Unit Dimensions'),
+                    'Product Materials'                    => $part->data['Part Materials'],
+                    'Product Barcode Number'               => $part->data['Part Barcode Number'],
+                    'Product Barcode Key'                  => $part->data['Part Barcode Key'],
 
+                )
+            );
 
-                    $product->update(
-                        array('Product Unit Dimensions' => $part->get('Part Unit Dimensions')), ' from_part'
-                    );
-                }
+            $product->update_updated_markers('Data');
 
+            $sql = "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`='Part' AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`='Marketing' ORDER BY `Image Subject Order` ";
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array($part->id)
+            );
+            while ($row = $stmt->fetch()) {
+                $product->link_image($row['Image Subject Image Key'], 'Marketing');
             }
+
 
         }
 
+
+
+        /*
+                if($part->get('Part Unit Dimensions')!=''){
+                    foreach ($part->get_products('objects') as $product) {
+        
+                        if (count($product->get_parts()) == 1) {
+                            $product->editor = $editor;
+        
+        
+        
+                            $product->update(
+                                array('Product Unit Dimensions' => $part->get('Part Unit Dimensions')), ' from_part'
+                            );
+                        }
+        
+                    }
+        
+        
+                
+        
+        
+        
+                }
+        */
 
 
     }

@@ -42,7 +42,7 @@ $parameters = array(
 );
 
 
-$smarty->assign('js_code', 'js/injections/discontinuing_parts.'.(_DEVEL ? '' : 'min.').'js');
+//$smarty->assign('js_code', 'js/injections/discontinuing_parts.'.(_DEVEL ? '' : 'min.').'js');
 
 
 include 'utils/get_table_html.php';
