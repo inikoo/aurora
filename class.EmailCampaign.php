@@ -201,31 +201,27 @@ class EmailCampaign extends DB_Table {
             case 'Subject':
 
 
-
-
-
-
-                if ($this->data['Email Campaign Wave Type'] == 'Wave'  and $this->metadata('subject')!=''  ) {
-                    $subject= $this->metadata('subject');
+                if ($this->data['Email Campaign Wave Type'] == 'Wave' and $this->metadata('subject') != '') {
+                    $subject = $this->metadata('subject');
                 } else {
 
-                    $email_template=get_object('Email Template',$this->data['Email Campaign Email Template Key']);
+                    $email_template = get_object('Email Template', $this->data['Email Campaign Email Template Key']);
 
                     $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
-                    if($published_email_template->id){
-                        $subject=$published_email_template->get('Subject');
+                    if ($published_email_template->id) {
+                        $subject = $published_email_template->get('Subject');
 
-                    }else{
-                        $subject=$email_template->get('Subject');
+                    } else {
+                        $subject = $email_template->get('Subject');
 
                     }
 
 
                 }
 
-                if($subject==''){
-                    $subject=$this->get('Name');
+                if ($subject == '') {
+                    $subject = $this->get('Name');
                 }
 
                 return $subject;
@@ -254,7 +250,6 @@ class EmailCampaign extends DB_Table {
                 }
 
                 return $content_data;
-
 
 
             case ('State Index'):
@@ -547,14 +542,12 @@ class EmailCampaign extends DB_Table {
                 return percentage($this->data['Email Campaign '.preg_replace('/ Percentage/', '', $key)], $this->data['Email Campaign Sent']);
 
 
-
             case 'Unsubscribed Percentage':
                 if ($this->data['Email Campaign Open'] == 0) {
                     return percentage(0, 1);
                 }
 
                 return percentage($this->data['Email Campaign Unsubscribed'], $this->data['Email Campaign Open']);
-
 
 
             default:
@@ -627,7 +620,7 @@ class EmailCampaign extends DB_Table {
 
                     } else {
 
-                        $sql = "select count(*)  as num from `Customer Dimension` where `Customer Store Key`=? and `Customer Main Plain Email`!='' and `Customer Send Newsletter`='Yes' and  `Customer Type by Activity` not in ('Rejected', 'ToApprove')'";
+                        $sql = "select count(*)  as num from `Customer Dimension` where `Customer Store Key`=? and `Customer Main Plain Email`!='' and `Customer Send Newsletter`='Yes' and  `Customer Type by Activity` not in ('Rejected', 'ToApprove')";
 
 
                         $stmt = $this->db->prepare($sql);
@@ -637,11 +630,15 @@ class EmailCampaign extends DB_Table {
                             )
                         );
                         if ($row = $stmt->fetch()) {
+
+
                             $estimated_recipients = $row['num'];
                         }
 
 
+
                     }
+
 
                     break;
                 case 'OOS Notification':
@@ -903,7 +900,6 @@ class EmailCampaign extends DB_Table {
 
 
         switch ($field) {
-
 
 
             case 'Email Campaign Second Wave Subject':

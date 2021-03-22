@@ -21,32 +21,32 @@ if (isset($options['new']) and $options['new']) {
 $object_fields = array();
 
 /*
-$object_fields[] = array(
-    'label'      => _('Id'),
-    'show_title' => true,
-    'fields'     => array(
+    $object_fields[] = array(
+        'label'      => _('Id'),
+        'show_title' => true,
+        'fields'     => array(
 
 
-        array(
-            'edit'            => ($edit ? 'string' : ''),
-            'id'              => 'Email_Campaign_Name',
-            'value'           => $object->get('Email Campaign Name'),
-            'formatted_value' => $object->get('Name'),
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Email_Campaign_Name',
+                'value'           => $object->get('Email Campaign Name'),
+                'formatted_value' => $object->get('Name'),
 
-            'label'             => ucfirst($object->get_field_label('Email Campaign Name')),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type'              => 'value'
+                'label'             => ucfirst($object->get_field_label('Email Campaign Name')),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+                'type'              => 'value'
+            ),
+
+
         ),
 
 
-    ),
-
-
-);
+    );
+}
 */
-
 $object_fields[] = array(
     'label'  => _('Second Wave'),
     'class'  => 'second_wave_fld_tr '.($object->get('Email Campaign Wave Type') == 'Yes' ? '' : 'hide'),
