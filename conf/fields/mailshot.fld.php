@@ -20,6 +20,7 @@ if (isset($options['new']) and $options['new']) {
 
 $object_fields = array();
 
+/*
 $object_fields[] = array(
     'label'      => _('Id'),
     'show_title' => true,
@@ -44,7 +45,7 @@ $object_fields[] = array(
 
 
 );
-
+*/
 
 $object_fields[] = array(
     'label'  => _('Second Wave'),
