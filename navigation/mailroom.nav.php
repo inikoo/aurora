@@ -769,13 +769,15 @@ function get_mailshot_navigation($data, $smarty, $user, $db, $account) {
 
 
     if ($object->get('Email Campaign Type') == 'Newsletter') {
-        $title     = _('Newsletter').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
+        $title     = _('Newsletter');
+
+
+        $link=sprintf('onclick="change_view(\'mailroom/%d/marketing/%d/mailshot/%d\')"', $data['_parent']->get('Store Key'),$data['_parent']->id,$object->get('Email Campaign First Wave Key'));
 
         if($object->get('Email Campaign Wave Type')=='Wave'){
-            $title.=' <span style="font-size: small">'.sprintf(_('2nd %s of %s'), '<i class="fal fa-water"></i>' ,
-                                                               sprintf('<span class="link" onclick="change_view(\'mailroom/%d/marketing/%d/mailshot/%d\')"><i class="fal fa-container-storage "></i>',$data['_parent']->get('Store Key'),$data['_parent']->id,$object->get('Email Campaign First Wave Key'))
-                ).'</span>'  ;
+            $title.=' <span class="link padding_right_5" '.$link.' >'.sprintf(_('2nd %s') , '<i class="fal fa-water"></i>' ).'</span>'  ;
         }
+        $title     .= ' <span class="id Subject">'.$object->get('Subject').'</span>';
 
 
         $up_button = array(

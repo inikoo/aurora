@@ -428,7 +428,7 @@
             </label>
             <div><span class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</span></div>
             {if isset($second_wave)}
-            <div><span style="font-weight: normal;font-size: xx-small">{t}2nd{/t} <i class="fal fa-water"></i></span> <span class="Second_Wave_Sent">{$second_wave->get('Sent')}</span></div>
+            <div><span class="link " style="font-size: initial" title="{$second_wave->get('Subject')}"  onclick="change_view('mailroom/{$second_wave->get('Store Key')}/marketing/{$second_wave->get('Email Campaign Email Template Type Key')}/mailshot/{$second_wave->id}')"  style="font-weight: normal;font-size: xx-small">{t}2nd{/t} <i class="fal fa-water"></i></span> <span class="Second_Wave_Sent">{$second_wave->get('Sent')}</span></div>
             {/if}
         </div>
         <div>
