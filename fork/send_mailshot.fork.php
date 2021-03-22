@@ -58,9 +58,6 @@ function fork_send_mailshot($job) {
     }
 
 
-
-
-
     $sql =
         "select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=?  and `Email Tracking Thread`=? and `Email Tracking State`='Ready'";
 
@@ -74,6 +71,7 @@ function fork_send_mailshot($job) {
     );
     while ($row = $stmt->fetch()) {
         $send_data = array(
+            'Subject'             => $mailshot->get('Subject'),
             'Email_Template_Type' => $email_template_type,
             'Email_Template'      => $email_template,
             'Email_Tracking'      => get_object('Email_Tracking', $row['Email Tracking Key']),

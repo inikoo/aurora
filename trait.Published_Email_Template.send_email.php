@@ -165,7 +165,11 @@ trait Send_Email {
             $send_raw = false;
         }
 
-        $subject = $this->get_email_subject();
+        if (empty($data['Subject'])) {
+            $subject = $this->get_email_subject();
+        }
+
+
         $subject = strtr($subject, $this->placeholders);
 
         $html_part = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
@@ -732,11 +736,9 @@ trait Send_Email {
                 break;
             case 'Newsletter':
             case 'Marketing':
-                if ($this->data['Email Campaign Wave Type'] == 'Wave'  and $this->metadata('subject')!=''  ) {
-                    $subject= $this->metadata('subject');
-                } else {
-                    $subject = $this->get('Published Email Template Subject');
-                }
+
+
+                $subject = $this->get('Published Email Template Subject');
 
 
                 break;
