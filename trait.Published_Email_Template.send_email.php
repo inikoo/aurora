@@ -167,6 +167,8 @@ trait Send_Email {
 
         if (empty($data['Subject'])) {
             $subject = $this->get_email_subject();
+        }else{
+            $subject=$data['Subject'];
         }
 
 
