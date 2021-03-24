@@ -152,7 +152,7 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
                 $qty = '<b>'.$hole.'</b> ';
 
-                $residuo = round($reminder * $row['Part Units Per Package'],2);
+                $residuo = round($reminder * $row['Part Units Per Package'], 2);
 
                 if ($residuo == 1 and $row['Part Units Per Package'] == 2) {
                     $qty .= '&#xBD;';
@@ -189,8 +189,10 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
 
             $row['qty'] = $qty;
-            if (   $qty>0 and $carton > 1 and fmod($_qty, $carton) == 0) {
-                $row['qty'] .= '<div style="font-style: italic;">('.number($qty / $carton).'c)</div>';
+
+           
+            if ($_qty > 0 and $carton > 1 and fmod($_qty, $carton) == 0) {
+                $row['qty'] .= '<div style="font-style: italic;">('.number($_qty / $carton).'c)</div>';
             }
 
 
