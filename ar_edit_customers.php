@@ -55,7 +55,7 @@ switch ($tipo) {
                          'integration_type' => array('type' => 'string'),
                      )
         );
-        switch ($data['integration_type']){
+        switch ($data['integration_type']) {
             case 'Shopify':
                 set_up_shopify($data, $db, $user);
                 break;
@@ -80,42 +80,37 @@ switch ($tipo) {
 
 }
 
-function set_up_shopify($data, $db, $user){
+function set_up_shopify($data, $db, $user) {
 
 
-    $customer=get_object('Customer',$data['customer_key']);
+    $customer = get_object('Customer', $data['customer_key']);
+    $store    = get_object('Store', $customer->get('Store Key'));
 
 
-    if (!defined('SHOPIFY_TOKEN')) {
+    if ($store->get('Store Shopify API Key') == '' or !defined('SHOPIFY_URL')) {
         $response = array(
             'state' => 400,
-            'msg'   => 'Bridge token not set up'
+            'msg'   => 'Shopify integration not set up'
         );
         echo json_encode($response);
         exit;
     }
 
 
-    $headers = [
-        "Authorization: Bearer ".SHOPIFY_TOKEN,
-        "Content-Type:multipart/form-data",
-        "Accept: application/json",
+    $params = [
+        'id'   => $customer->id,
+        'data' => '{}'
     ];
 
-    $params=[
-        'customer_id'=>$customer->id,
-        'customer_name'=>$customer->get('Name')
-    ];
+
+    $url = SHOPIFY_URL.'/api/register/';
 
 
     $curl = curl_init();
 
-    $url = SHOFIFY_URL.'prospect/';
-
-
     curl_setopt_array(
         $curl, array(
-                 CURLOPT_URL            => $url,
+                 CURLOPT_URL            => $url."?".http_build_query($params),
                  CURLOPT_RETURNTRANSFER => true,
                  CURLOPT_ENCODING       => "",
                  CURLOPT_MAXREDIRS      => 10,
@@ -123,15 +118,40 @@ function set_up_shopify($data, $db, $user){
                  CURLOPT_FOLLOWLOCATION => true,
                  CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
                  CURLOPT_CUSTOMREQUEST  => "POST",
-                 CURLOPT_POSTFIELDS     => $params,
-                 CURLOPT_HTTPHEADER     => $headers
+                 CURLOPT_HTTPHEADER     => array(
+                     "Accept: application/json",
+                     "Authorization: Bearer ".$store->get('Store Shopify API Key')
+                 ),
              )
     );
 
     $response = curl_exec($curl);
-    echo "Params:".print_r($params).' <<';
+
     curl_close($curl);
-    echo "Response:".$response.' <<';
+    //echo "Params:\n".print_r($params)." <<==\n";
+    //echo "Response:".$response.' <<';
+    if ($response) {
+        $res = json_decode($response, true);
+
+
+        $response = array(
+            'state'  => 200,
+            'result' => $res['accessCode'],
+            'update_metadata'   => [
+
+            ]
+        );
+        echo json_encode($response);
+        exit;
+
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Error try again later'
+        );
+        echo json_encode($response);
+        exit;
+    }
 
 
     return 1;

@@ -171,10 +171,11 @@ function set_up_integration(element,integration_type){
             if (data.state == '200') {
 
 
+                console.log(data)
 
                 container.find('.button').addClass('hide');
 
-                container.find('.result').text(data.result)
+                container.find('.integration_result').text(data.result)
 
 
                 if (data.other_fields) {

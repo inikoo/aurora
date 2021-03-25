@@ -842,7 +842,7 @@ if ($new) {
                 'id'              => 'Customer_Integration_Shopify',
                 'edit'            => 'no_icon',
                 'value'           => '',
-                'formatted_value' => '<span class="button" onclick="set_up_integration(this,\'Shopify\')"  style="margin-right:40px"> <span>'._('Set up integration').' <i class="fa fa-arrow-right"></i></span></span><span class="result"></span>',
+                'formatted_value' => '<span class="button" onclick="set_up_integration(this,\'Shopify\')"  style="margin-right:40px"> <span>'._('Get access code').' <i class="fa fa-arrow-right"></i></span></span><span class="integration_result"></span>',
                 'label'           => _('Shopify'),
                 'required'        => false,
                 'type'            => 'value'
