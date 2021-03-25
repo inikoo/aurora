@@ -825,10 +825,10 @@ function sales_history($_data, $db, $user, $account) {
                 'sales'     => '<span class="very_discreet">'.money(0, $currency).'</span>',
                 'customers' => '<span class="very_discreet">'.number(0).'</span>',
                 'invoices'  => '<span class="very_discreet">'.number(0).'</span>',
-                'outers'  => '<span class="very_discreet">'.number(0).'</span>',
+                'outers'    => '<span class="very_discreet">'.number(0).'</span>',
 
-                'refunds'   => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'date'      => $date
+                'refunds' => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'date'    => $date
 
 
             );
@@ -932,8 +932,7 @@ function sales_history($_data, $db, $user, $account) {
                     'sales'     => money($data['sales'], $currency),
                     'customers' => number($data['customers']),
                     'invoices'  => number($data['invoices']),
-                    'outers'  => number($data['outers']),
-
+                    'outers'    => (isset($data['outers']) ? number($data['outers']) : ''),
                     'date'      => $record_data[$_date]['date']
                 );
 
@@ -947,11 +946,7 @@ function sales_history($_data, $db, $user, $account) {
             }
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql";
-        exit;
-    }
+    } 
 
 
     // print_r($record_data);
@@ -1537,12 +1532,9 @@ function shipping_zones($_data, $db, $user) {
             $price_data = json_decode($data['Shipping Zone Price'], true);
 
 
-
             if ($data['Shipping Zone Territories'] != '') {
 
                 $territories_data = json_decode($data['Shipping Zone Territories'], true);
-
-
 
 
                 foreach ($territories_data as $territory) {
@@ -1575,16 +1567,16 @@ function shipping_zones($_data, $db, $user) {
                         $to = ($step['to'] == 'INF' ? '<i class="fal fa-infinity"></i>' : money($step['to'], $_data['parameters']['store_currency']));
 
 
-                        if($step['price'] ==='TBC'){
+                        if ($step['price'] === 'TBC') {
 
-                            $amount='TBC';
-                        }else{
+                            $amount = 'TBC';
+                        } else {
                             $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
 
                         }
-                        $price  .= ' <div class="as_cell">'.money($step['from'], $_data['parameters']['store_currency']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
-                        $price  .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
-                        $price  .= '</div>';
+                        $price .= ' <div class="as_cell">'.money($step['from'], $_data['parameters']['store_currency']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
+                        $price .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
+                        $price .= '</div>';
                     }
                     $price .= '</div>';
                     break;
@@ -1600,16 +1592,15 @@ function shipping_zones($_data, $db, $user) {
                         $to = ($step['to'] == 'INF' ? '<i class="fal fa-infinity"></i>' : smart_weight($step['to']));
 
 
-
-                        if($step['price'] ==='TBC'){
-                            $amount='TBC';
-                        }else{
+                        if ($step['price'] === 'TBC') {
+                            $amount = 'TBC';
+                        } else {
                             $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
 
                         }
-                        $price  .= ' <div class="as_cell">'.smart_weight($step['from']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
-                        $price  .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
-                        $price  .= '</div>';
+                        $price .= ' <div class="as_cell">'.smart_weight($step['from']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
+                        $price .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
+                        $price .= '</div>';
                     }
                     $price .= '</div>';
                     break;
@@ -2003,8 +1994,6 @@ function back_to_stock_notification_request_customers($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
-
 
 
 function webpages($_data, $db, $user) {
