@@ -1646,7 +1646,7 @@ class Account extends DB_Table {
             array(
                 'Account Suppliers'     => $number_suppliers,
                 'Account Agents'        => $number_agents,
-                'Account Manufacturers' => $number_manufacturers
+            //    'Account Manufacturers' => $number_manufacturers
             )
         );
 
