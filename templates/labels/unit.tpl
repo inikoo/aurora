@@ -63,9 +63,9 @@
                     <tr>
                         <td style="font-size: {$signature_font_size}">
                             {if $part->get('Part Origin Country Code')!=$account->get('Account Country Code') and $part->get('Part Production')=='No' }
-                                {t}Imported from{/t} {$part->get('Origin Country')} by {$account->get('Name')}
+                                {t}Imported from{/t} {$part->get('Origin Country')} {t}by{/t} {$account->get('Name')}
                             {elseif $part->get('Part Production')=='Yes'}
-                                {t}Made in{/t} {$part->get('Origin Country')} by {$account->get('Name')}
+                                {t}Made in{/t} {$part->get('Origin Country')} {t}by{/t} {$account->get('Name')}
                             {else}
                                 {t}Made in{/t} {$part->get('Origin Country')}
                             {/if}

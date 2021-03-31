@@ -22,7 +22,7 @@
                                 <tr>
                                     <td>
                                         {if $part->get('Origin Country')!='' and $part->get('Part Origin Country Code')!=$account->get('Account Country Code')  }
-                                            Imported from <b>{$part->get('Part Origin Country Code')}</b>
+                                            {t}Imported from{/t} <b>{$part->get('Part Origin Country Code')}</b>
                                             <br>
                                         {else}
                                             <span >{$account->get('Name')}</span>
