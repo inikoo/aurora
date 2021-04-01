@@ -209,6 +209,16 @@ if ($type == 'carton' or $type == 'carton_with_image') {
 $smarty->assign('account', $account);
 
 
+
+
+$_locale=$account->get('Account Locale');
+putenv('LC_ALL='.$_locale.'.UTF-8');
+setlocale(LC_ALL, $_locale.'.UTF-8');
+bindtextdomain("inikoo", "./locales");
+textdomain("inikoo");
+
+
+
 if ($object_name == 'product') {
     $store = get_object('Store', $object->get('Store Key'));
 
@@ -245,6 +255,12 @@ if ($object_name == 'product') {
 
 
 } elseif ($object_name == 'part') {
+
+
+
+
+
+
     $smarty->assign('part', $object);
 
 
