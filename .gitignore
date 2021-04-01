@@ -104,3 +104,4 @@ cron/syncro_aroma_parts.php
 cron/set_up_aroma_china_agent.php
 paso_china.csv
 app_files/crontab
+au_images/AW
