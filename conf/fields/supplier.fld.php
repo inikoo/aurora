@@ -322,6 +322,17 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'type'      => 'ignore'
             ),
 
+            array(
+                'id'   => 'Supplier_Website',
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'           => $object->get('Supplier Website'),
+                'formatted_value' => $object->get('Website'),
+                'label'           => ucfirst($object->get_field_label('Supplier Website')),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
 
             array(
                 'id'   => 'Supplier_QQ',

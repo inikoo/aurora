@@ -107,6 +107,10 @@
                 </div>
             {/if}
 
+            <div id="Supplier_Website_display"
+                 class="data_field {if !$supplier->get('Supplier Website')}hide{/if}">
+                <i title="Website" class="fal fa-fw fa-globe"></i> <span class="Supplier_Website">{$supplier->get('Website')}</span>
+            </div>
 
             <div id="Supplier_QQ_display"
                  class="data_field {if !$supplier->get('Supplier QQ')}hide{/if}">

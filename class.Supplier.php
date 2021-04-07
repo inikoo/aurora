@@ -1809,7 +1809,9 @@ class Supplier extends SubjectSupplier {
             case 'Supplier Nickname':
                 $label = _("nickname");
                 break;
-
+            case 'Supplier Website':
+                $label = _("Website");
+                break;
             default:
                 $label = $field;
 
