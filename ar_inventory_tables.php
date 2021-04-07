@@ -817,7 +817,7 @@ function stock_transactions($_data, $db, $user) {
                         $note = sprintf(
                             _('%s %s (%s) to be taken from %s'),
 
-                            number($data['Required']), '<span title="'._('Stock keeping outers').'">SKO</span>',
+                            number($data['Required']+$data['Given']), '<span title="'._('Stock keeping outers').'">SKO</span>',
 
                             sprintf(
                                 '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-fw fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
@@ -829,7 +829,7 @@ function stock_transactions($_data, $db, $user) {
                         );
                     } else {
                         $note = sprintf(
-                            _('%sx %s (%s) to be taken from %s'), number($data['Required']),
+                            _('%sx %s (%s) to be taken from %s'), number($data['Required']+$data['Given']),
 
                             ($parameters['parent'] == 'part'
                                 ? sprintf(
