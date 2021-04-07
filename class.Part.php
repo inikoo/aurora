@@ -1477,7 +1477,7 @@ class Part extends Asset {
                 return number($this->data['Part '.$key], 6);
 
 
-                break;
+
 
 
             case('Valid From'):
@@ -3456,7 +3456,7 @@ class Part extends Asset {
         $picked   = 0;
         $required = 0;
 
-        $sql  = "SELECT sum(`Picked`) AS picked, sum(`Required`) AS required FROM `Inventory Transaction Fact` WHERE `Part SKU`=? AND `Inventory Transaction Type`='Order In Process'";
+        $sql  = "SELECT sum(`Picked`) AS picked, sum(`Required`+`Given`) AS required FROM `Inventory Transaction Fact` WHERE `Part SKU`=? AND `Inventory Transaction Type`='Order In Process'";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
