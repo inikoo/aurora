@@ -182,7 +182,7 @@ class Public_Store {
             case 'Home Country Code 2 Alpha':
             case 'Label Signature':
                 return $this->data['Store '.$key];
-                break;
+
 
             case 'Store Customer Payment Account Key':
             case 'Store Currency Code':
@@ -212,6 +212,7 @@ class Public_Store {
             case 'Store Invoice Message':
             case 'Store Type':
             case 'Store External Invoicer Key':
+            case 'Store Shopify API Key':
                 return $this->data[$key];
 
 

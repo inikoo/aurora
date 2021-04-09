@@ -11,6 +11,8 @@
 
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/table_functions.php';
+include_once 'utils/shopify_connect.php';
+
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -137,6 +139,9 @@ function update_portfolio_product_reference($data, $db, $customer) {
             $data['customer_portfolio_key'],
         )
     );
+
+    $store= get_object('Store',$customer->get('Store Key'));
+    shopify_update_portfolio_item($store,$data['customer_portfolio_key'],['product_code'=>$reference]);
 
 
     echo json_encode(
@@ -434,6 +439,7 @@ function add_product_to_portfolio($data, $db, $customer) {
 
     $product = get_object('Product', $data['product_id']);
 
+
     if ($product->get('Store Key') != $customer->get('Store Key')) {
         $response = array(
             'state' => 400,
@@ -443,6 +449,8 @@ function add_product_to_portfolio($data, $db, $customer) {
         exit;
 
     }
+
+    $store = get_object('Store', $product->get('Store Key'));
 
 
     $sql  = "select `Customer Portfolio Key`,`Customer Portfolio Customers State` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=?";
@@ -488,11 +496,12 @@ function add_product_to_portfolio($data, $db, $customer) {
                 )
             );
 
+
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'         => 'customer_portfolio_changed',
                 'customer_key' => $customer->id,
-                'product_id'=>$product->id
+                'product_id'   => $product->id
             ), DNS_ACCOUNT_CODE
             );
 
@@ -526,6 +535,11 @@ function add_product_to_portfolio($data, $db, $customer) {
             )
         );
         $customer_portfolio_key = $db->lastInsertId();
+
+
+        shopify_create_portfolio_item($store,$customer->id, $customer_portfolio_key);
+
+
         if ($customer_portfolio_key) {
             $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
             $stmt = $db->prepare($sql);
@@ -543,7 +557,7 @@ function add_product_to_portfolio($data, $db, $customer) {
                 'au_housekeeping', array(
                 'type'         => 'customer_portfolio_changed',
                 'customer_key' => $customer->id,
-                'product_id'=>$product->id
+                'product_id'   => $product->id
             ), DNS_ACCOUNT_CODE
             );
         }
@@ -585,6 +599,7 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
         exit;
 
     }
+    $store = get_object('Store', $customer->get('Store Key'));
 
 
     $sql  = "select `Customer Portfolio Key` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? and `Customer Portfolio Customers State`='Active'";
@@ -608,6 +623,10 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
 
             )
         );
+
+        shopify_delete_portfolio_item($store,$row['Customer Portfolio Key']);
+
+
         $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
         $stmt = $db->prepare($sql);
         $stmt->execute(
@@ -623,7 +642,7 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
             'au_housekeeping', array(
             'type'         => 'customer_portfolio_changed',
             'customer_key' => $customer->id,
-            'product_id'=>$product->id
+            'product_id'   => $product->id
 
         ), $account->get('Account Code')
         );
@@ -671,6 +690,8 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
         exit;
 
     }
+
+    $store=get_object('Store',$customer->get('Store Key'));
 
     $sql  = "select `Website Webpage Scope Scope Key` as  product_id  from `Website Webpage Scope Map` where  `Website Webpage Scope Type`='Category_Products_Item' and  `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=?  ";
     $stmt = $db->prepare($sql);
@@ -724,8 +745,7 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
                 )
             );
 
-        }
-        else {
+        } else {
 
 
             $sql  =
@@ -741,6 +761,8 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
                 )
             );
             $customer_portfolio_key = $db->lastInsertId();
+            shopify_create_portfolio_item($store,$customer->id, $customer_portfolio_key);
+
             if ($customer_portfolio_key) {
                 $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
                 $stmt = $db->prepare($sql);
@@ -761,7 +783,7 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
             'au_housekeeping', array(
             'type'         => 'update_portfolio_aiku',
             'customer_key' => $customer->id,
-            'product_id' => $product_id,
+            'product_id'   => $product_id,
         ), $account->get('Account Code')
         );
 

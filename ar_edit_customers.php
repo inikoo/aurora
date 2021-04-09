@@ -14,6 +14,7 @@ require 'vendor/autoload.php';
 
 require_once 'common.php';
 require_once 'utils/ar_common.php';
+include_once 'utils/shopify_connect.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -105,72 +106,32 @@ function set_up_shopify($data, $db, $user) {
     $customer = get_object('Customer', $data['customer_key']);
     $store    = get_object('Store', $customer->get('Store Key'));
 
-
-    if ($store->get('Store Shopify API Key') == '' or !defined('SHOPIFY_URL')) {
-        $response = array(
-            'state' => 400,
-            'msg'   => 'Shopify integration not set up'
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-
     $params = [
         'id'   => $customer->id,
         'data' => '{}'
     ];
+    $path   = 'register';
+    $result = shopify_connect($store, $params, $path);
 
 
-    $url = SHOPIFY_URL.'/api/register/';
-
-
-    $curl = curl_init();
-
-    curl_setopt_array(
-        $curl, array(
-                 CURLOPT_URL            => $url."?".http_build_query($params),
-                 CURLOPT_RETURNTRANSFER => true,
-                 CURLOPT_ENCODING       => "",
-                 CURLOPT_MAXREDIRS      => 10,
-                 CURLOPT_TIMEOUT        => 0,
-                 CURLOPT_FOLLOWLOCATION => true,
-                 CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-                 CURLOPT_CUSTOMREQUEST  => "POST",
-                 CURLOPT_HTTPHEADER     => array(
-                     "Accept: application/json",
-                     "Authorization: Bearer ".$store->get('Store Shopify API Key')
-                 ),
-             )
-    );
-
-    $response = curl_exec($curl);
-
-    curl_close($curl);
-    //echo "Params:\n".print_r($params)." <<==\n";
-    //echo "Response:".$response.' <<';
-    if ($response) {
-        $res = json_decode($response, true);
-
+    if ($result['success']) {
 
         $response = array(
-            'state'  => 200,
-            'result' => $res['accessCode'],
-            'update_metadata'   => [
+            'state'           => 200,
+            'result'          => $result['data']['accessCode'],
+            'update_metadata' => [
 
             ]
         );
-        echo json_encode($response);
-        exit;
 
     } else {
         $response = array(
             'state' => 400,
-            'msg'   => 'Error try again later'
+            'msg'   => $result['msg']
         );
-        echo json_encode($response);
-        exit;
     }
+    echo json_encode($response);
+    exit;
 
 
     return 1;
@@ -209,6 +170,7 @@ function add_product_to_portfolio($data, $db, $user) {
         exit;
 
     }
+    $store = get_object('Store', $customer->get('Store Key'));
 
 
     $sql  = "select `Customer Portfolio Key` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? and `Customer Portfolio Customers State`='Active'";
@@ -242,8 +204,12 @@ function add_product_to_portfolio($data, $db, $user) {
             )
         );
         $customer_portfolio_key = $db->lastInsertId();
-        $sql                    = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
-        $stmt                   = $db->prepare($sql);
+
+        shopify_create_portfolio_item($store, $customer->id, $customer_portfolio_key);
+
+
+        $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
+        $stmt = $db->prepare($sql);
         $stmt->execute(
             array(
                 $customer_portfolio_key,
