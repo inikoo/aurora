@@ -648,8 +648,7 @@ class Product extends Asset {
 
         $parts_data = array();
 
-        $sql =
-            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` ,`Part Recommended Product Unit Name`,`Part Units`
+        $sql = "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` ,`Part Recommended Product Unit Name`,`Part Units`
                 FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=? ";
 
         $stmt = $this->db->prepare($sql);
@@ -2325,6 +2324,50 @@ class Product extends Asset {
 
 
         switch ($field) {
+
+            case 'Product Customer Key':
+
+
+
+                if (is_numeric($value) and $value > 0) {
+
+                    if ($this->data['Product Customer Key'] == $value) {
+                        return;
+                    }
+
+                    $customer = get_object('Customer', $value);
+
+
+                    $history_abstract = sprintf(_("Product associated with %s"), $customer->get('Name'));
+
+
+                } else {
+
+                    if (!$this->data['Product Customer Key']) {
+                        return;
+                    }
+                    $customer = get_object('Customer', $this->data['Product Customer Key']);
+
+
+                    $history_abstract = sprintf(_("Product disassociated from %s"), $customer->get('Name'));
+
+
+                }
+                $this->fast_update(['Product Customer Key' => $value]);
+
+
+                $customer->update_associated_products();
+
+                $history_data = array(
+                    'History Abstract' => $history_abstract,
+                    'History Details'  => '',
+                    'Action'           => 'edit'
+                );
+
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
+
 
             case 'Product Webpage Name':
 

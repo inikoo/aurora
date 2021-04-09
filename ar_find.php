@@ -170,7 +170,7 @@ switch ($tipo) {
             case 'assets_on_sale':
                 find_assets_on_sale($db, $data);
                 break;
-                break;
+
             case 'employee':
                 find_employees($db, $data);
                 break;
@@ -1664,6 +1664,7 @@ function find_products($db, $data) {
     }
 
 
+
     $candidates = array();
 
     $candidates_data = array();
@@ -1672,6 +1673,7 @@ function find_products($db, $data) {
     $sql = sprintf(
         "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
     );
+
 
 
     if ($result = $db->query($sql)) {

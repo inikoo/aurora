@@ -229,6 +229,7 @@ switch ($tab) {
         break;
 
     case 'store.products':
+    case 'customer.products':
     case 'category.products':
     case 'part.products':
         $data = prepare_values(
@@ -1473,6 +1474,11 @@ function get_products_element_numbers($db, $data, $user) {
         case 'store':
             $where = sprintf(
                 " where `Product Type`='Product' and `Product Store Key`=%d  ", $data['parent_key']
+            );
+            break;
+        case 'customer_product':
+            $where = sprintf(
+                " where `Product Type`='Product' and `Product Customer Key`=%d  ", $data['parent_key']
             );
             break;
         case 'part':

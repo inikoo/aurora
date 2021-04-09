@@ -322,7 +322,17 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
-}
+},{
+name: "disassociate_from_customer",
+label: "",
+renderable: true,
+editable: false,
+sortable:false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_40 aright"
+})
+
+},
 
 ]
 

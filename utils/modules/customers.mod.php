@@ -239,6 +239,18 @@ function get_customers_module() {
                         ),
                     ),
 
+                    'customer.products' => array(
+                        'label' => _("Products"),
+
+                        'title' => _("Customer's products"),
+                        'icon'  => 'cube',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Products'
+                        ),
+                    ),
+
                     'customer.orders_invoices' => array(
                         'label'   => _('Orders'),
                         'icon'    => 'shopping-cart',

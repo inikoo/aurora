@@ -48,6 +48,25 @@ switch ($tipo) {
         );
         remove_product_from_portfolio($data, $db, $user);
         break;
+
+    case 'add_product_to_customer':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'customer_key' => array('type' => 'key'),
+                         'product_id'   => array('type' => 'key'),
+                     )
+        );
+        add_product_to_customer($data, $db, $user, $editor);
+        break;
+    case 'remove_product_from_customer':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'product_id' => array('type' => 'key'),
+                     )
+        );
+        remove_product_from_customer($data, $db, $user,$editor);
+        break;
+
     case 'set_up_integration':
         $data = prepare_values(
             $_REQUEST, array(
@@ -337,6 +356,104 @@ function remove_product_from_portfolio($data, $db, $user) {
         echo json_encode($response);
         exit;
     }
+
+
+}
+
+
+/**
+ * @param $data array
+ * @param $db   \PDO
+ * @param $user \User
+ */
+function add_product_to_customer($data, $db, $user, $editor) {
+
+    /**
+     * @var $customer \Customer
+     */
+    $customer = get_object('Customer', $data['customer_key']);
+    if (!($user->can_edit('customers') and in_array($customer->get('Store Key'), $user->stores))) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Forbidden'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    $product = get_object('Product', $data['product_id']);
+
+    if ($product->get('Store Key') != $customer->get('Store Key')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Product not in Store'
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+    $product->editor = $editor;
+
+    $product->update(
+        [
+            'Product Customer Key' => $customer->id
+        ]
+    );
+
+    $customer->get_data('id', $customer->id);
+
+
+    $response = array(
+        'state'           => 200,
+        'update_metadata' => array(
+            'class_html' => array(
+                'Number_Products' => '('.$customer->get('Customer Number Products').')'
+
+            )
+        )
+    );
+    echo json_encode($response);
+    exit;
+
+
+}
+
+
+/**
+ * @param $data array
+ * @param $db   \PDO
+ * @param $user \User
+ */
+function remove_product_from_customer($data, $db, $user, $editor) {
+
+
+    $product = get_object('Product', $data['product_id']);
+
+    $customer_key=$product->get('Product Customer Key');
+
+    $product->editor = $editor;
+
+    $product->update(
+        [
+            'Product Customer Key' => null
+        ]
+    );
+
+    $customer = get_object('Customer',$customer_key);
+
+
+
+    $response = array(
+        'state'           => 200,
+        'update_metadata' => array(
+            'class_html' => array(
+                'Number_Products' => '('.$customer->get('Customer Number Products').')'
+
+            )
+        )
+    );
+    echo json_encode($response);
+    exit;
 
 
 }

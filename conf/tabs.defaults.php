@@ -382,6 +382,19 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('invoices')
 
         ),
+        'customer.products'                              => array(
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'code',
+            'f_period'      => 'ytd',
+            'elements_type' => array_keys(get_elements_option('products'))[0],
+            'elements'      => get_elements_option('products'),
+            'export_fields' => get_export_fields('products')
+
+        ),
         'customer.active_portfolio'     => array(
             'view'          => 'overview',
             'sort_key'      => 'code',
@@ -1361,6 +1374,7 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('products')
 
         ),
+
         'back_to_stock_notification_request.products' => array(
             'view'        => 'overview',
             'sort_key'    => 'id',

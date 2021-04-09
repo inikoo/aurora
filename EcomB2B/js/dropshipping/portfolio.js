@@ -94,6 +94,7 @@ $(function () {
 
     });
 
+
     $(document).on('click', '.add_all_family_to_portfolio', function () {
 
 

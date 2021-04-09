@@ -485,6 +485,9 @@ function products($_data, $db, $user, $account) {
                     $data['Product Total Acc Repeat Customers'], $data['Product Total Acc Customers']
                 ),
 
+                'disassociate_from_customer' => sprintf('<i class="far button fa-trash-alt" onclick="remove_product_from_customer(this,%d)" ></i>', $data['Product ID'])
+
+
 
             );
 

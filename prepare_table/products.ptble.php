@@ -53,6 +53,11 @@ switch ($parameters['parent']) {
             " where  `Product Type`='Product' and `Product Store Key`=%d", $parameters['parent_key']
         );
         break;
+    case('customer_product'):
+        $where = sprintf(
+            " where  `Product Type`='Product' and `Product Customer Key`=%d", $parameters['parent_key']
+        );
+        break;
 
     case('part'):
         $table

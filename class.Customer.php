@@ -2742,6 +2742,38 @@ class Customer extends Subject {
 
     }
 
+    public function update_associated_products() {
+
+
+        $associated_products = 0;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Product Dimension` WHERE   `Product Customer Key`=%d  AND `Product Type`='Product' and  `Product Status` not in ( 'Suspended','Discontinued') ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $associated_products = $row['num'];
+
+            }
+        }
+
+
+        $update_data = array(
+            'Customer Number Products' => $associated_products,
+
+
+        );
+
+
+        $this->fast_update($update_data);
+
+
+    }
+
+
     public function update_payments() {
 
 
