@@ -946,6 +946,15 @@ $export_edit_template_fields = array(
             'label'         => _('Units per carton'),
             'checked'       => 0
         ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Customer Id',
+            'name'          => 'Product Customer Key',
+            'label'         => _('Customer Id'),
+            'checked'       => 0
+        ),
 
 
     ),
