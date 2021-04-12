@@ -11,7 +11,6 @@
 */
 
 
-
 include_once 'utils/static_data.php';
 include_once 'utils/country_functions.php';
 
@@ -47,8 +46,7 @@ $number_parts  = count($parts_data);
 $linked_fields = array();
 if ($number_parts == 1 and isset($parts_data[0]['Linked Fields']) and is_array(
         $parts_data[0]['Linked Fields']
-    )
-) {
+    )) {
     $linked_fields = array_flip($parts_data[0]['Linked Fields']);
 }
 
@@ -140,7 +138,7 @@ $product_fields = array(
                     array(
                         'tipo'       => 'check_for_duplicates',
                         'parent'     => 'store',
-                        'parent_key' =>  ($new ? $options['store_key'] :$object->get('Product Store Key')),
+                        'parent_key' => ($new ? $options['store_key'] : $object->get('Product Store Key')),
                         'object'     => 'Product',
                         'key'        => $object->id
                     )
@@ -200,7 +198,7 @@ $product_fields = array(
     ),
 
     array(
-        'label'      => _('Family').$object->get('Family Category Key'),
+        'label'      => _('Family'),
         'show_title' => true,
         'fields'     => array(
             array(
@@ -360,6 +358,30 @@ $product_fields = array(
                 'invalid_msg'     => get_invalid_message('numeric'),
                 'required'        => false,
                 'type'            => 'value'
+            ),
+
+
+        )
+    ),
+
+    array(
+        'label'      => _('Customer'),
+        'show_title' => true,
+        'fields'     => array(
+            array(
+                'id'                       => 'Product_Customer_Key',
+                'edit'                     => 'dropdown_select',
+                'scope'                    => 'customers',
+                'parent'                   => 'store',
+                'parent_key'               => ($new ? $options['store_key'] : $object->get('Product Store Key')),
+                'value'                    => $object->get('Product Customer Key'),
+                'formatted_value'          => $object->get('Customer Key'),
+                'stripped_formatted_value' => '',
+                'label'                    => _('Customer'),
+                'required'                 => true,
+                'type'                     => 'value'
+
+
             ),
 
 
@@ -548,7 +570,8 @@ $product_fields = array(
         )
 
 
-    )
+    ),
+
 
 
 );
@@ -573,91 +596,88 @@ foreach ($product_fields as $key=>$object_field) {
 */
 
 
-    array(
-        'label'      => _('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
-        'show_title' => true,
-        'class' => ($new ? 'hide' : ''),
-        'fields'     => array(
+array(
+    'label'      => _('Webpage').' <span class="no_title">'.$object->webpage->get('Code').'</span>',
+    'show_title' => true,
+    'class'      => ($new ? 'hide' : ''),
+    'fields'     => array(
 
 
+        array(
+            'id'     => 'Product_Webpage_Name',
+            'render' => ($new ? false : true),
+            'edit'   => ($edit ? 'string' : ''),
 
-            array(
-                'id'   => 'Product_Webpage_Name',
-                'render' => ($new ? false : true),
-                'edit' => ($edit ? 'string' : ''),
-
-                'value'           => htmlspecialchars(
-                    $object->get('Product Webpage Name')
-                ),
-                'formatted_value' => $object->get('Webpage Name'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Webpage Name')
-                ),
-                'required'        => true,
-                'type'            => ''
-
-
+            'value'           => htmlspecialchars(
+                $object->get('Product Webpage Name')
             ),
-
-            array(
-                'id'              => 'Product_Description',
-                'edit'            => ($edit ? 'editor' : ''),
-                'render' => ($new ? false : true),
-                'class'           => 'editor',
-                'editor_data'     => array(
-                    'id'      => 'Product_Description',
-                    'content' => $object->get('Product Description'),
-
-                    'data' => base64_encode(
-                        json_encode(
-                            array(
-                                'mode'     => 'edit_object',
-                                'field'    => 'Product_Description',
-                                'plugins'  => array(
-                                    'paragraphStyle',
-                                    'paragraphFormat',
-                                    'fontFamily',
-                                    'fontSize',
-                                    'colors',
-                                    'align',
-                                    'draggable',
-                                    'image',
-                                    'link',
-                                    'save',
-                                    'entities',
-                                    'emoticons',
-                                    'fullscreen',
-                                    'lineBreaker',
-                                    'table',
-                                    'codeView',
-                                    'codeBeautifier'
-                                ),
-                                'metadata' => array(
-                                    'tipo'   => 'edit_field',
-                                    'object' => 'Product',
-                                    'key'    => $object->id,
-                                    'field'  => 'Product Description',
+            'formatted_value' => $object->get('Webpage Name'),
+            'label'           => ucfirst(
+                $object->get_field_label('Product Webpage Name')
+            ),
+            'required'        => true,
+            'type'            => ''
 
 
-                                )
+        ),
+
+        array(
+            'id'              => 'Product_Description',
+            'edit'            => ($edit ? 'editor' : ''),
+            'render'          => ($new ? false : true),
+            'class'           => 'editor',
+            'editor_data'     => array(
+                'id'      => 'Product_Description',
+                'content' => $object->get('Product Description'),
+
+                'data' => base64_encode(
+                    json_encode(
+                        array(
+                            'mode'     => 'edit_object',
+                            'field'    => 'Product_Description',
+                            'plugins'  => array(
+                                'paragraphStyle',
+                                'paragraphFormat',
+                                'fontFamily',
+                                'fontSize',
+                                'colors',
+                                'align',
+                                'draggable',
+                                'image',
+                                'link',
+                                'save',
+                                'entities',
+                                'emoticons',
+                                'fullscreen',
+                                'lineBreaker',
+                                'table',
+                                'codeView',
+                                'codeBeautifier'
+                            ),
+                            'metadata' => array(
+                                'tipo'   => 'edit_field',
+                                'object' => 'Product',
+                                'key'    => $object->id,
+                                'field'  => 'Product Description',
+
+
                             )
                         )
                     )
+                )
 
-                ),
-                'value'           => $object->get('Product Description'),
-                'formatted_value' => $object->get('Product Description'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Description')
-                ),
-                'required'        => false,
-                'type'            => ''
             ),
+            'value'           => $object->get('Product Description'),
+            'formatted_value' => $object->get('Product Description'),
+            'label'           => ucfirst(
+                $object->get_field_label('Product Description')
+            ),
+            'required'        => false,
+            'type'            => ''
+        ),
 
 
-
-
-)
+    )
 );
 
 

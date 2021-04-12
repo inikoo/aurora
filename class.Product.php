@@ -224,6 +224,42 @@ class Product extends Asset {
 
                 return $rrp;
 
+            case 'Formatted Customer Key':
+
+                if($this->data['Product Customer Key']){
+
+                    $customer=get_object('Customer',$this->data['Product Customer Key']);
+                    if($customer->id){
+                        return sprintf('<span onclick="change_view(\'customers/%d,%d\')">%s</span>',
+                                       $customer->get('Store Key').
+                                       $customer->id,
+                                       $customer->get('Name')
+                        );
+                    }else{
+                        return '<span class="very_discreet">'._('No associated (E)').'</span>';
+
+                    }
+
+                }else{
+                    return '<span class="very_discreet">'._('No associated').'</span>';
+                }
+
+            case 'Customer Key':
+
+                if($this->data['Product Customer Key']){
+
+                    $customer=get_object('Customer',$this->data['Product Customer Key']);
+                    if($this->id){
+                        return $customer->get('Name');
+                    }else{
+                        return '';
+
+                    }
+
+                }else{
+                    return '';
+                }
+
 
             case 'Webpage Out of Stock Label':
 
@@ -2329,6 +2365,7 @@ class Product extends Asset {
 
 
 
+
                 if (is_numeric($value) and $value > 0) {
 
                     if ($this->data['Product Customer Key'] == $value) {
@@ -2336,6 +2373,7 @@ class Product extends Asset {
                     }
 
                     $customer = get_object('Customer', $value);
+
 
 
                     $history_abstract = sprintf(_("Product associated with %s"), $customer->get('Name'));

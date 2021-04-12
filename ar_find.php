@@ -1155,6 +1155,8 @@ function find_customers($db, $data) {
             '\\b'.$q
         )
     );
+
+
     while ($row = $stmt->fetch()) {
         if ($row['Customer Name'] == $q) {
             $candidates[$row['Customer Key']] = 1000;
