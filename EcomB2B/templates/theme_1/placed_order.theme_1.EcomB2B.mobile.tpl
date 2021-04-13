@@ -115,7 +115,7 @@
         <tr class="to_pay_amount_tr total {if $placed_order->get('Order Payments Amount')==0 and $placed_order->get('Order Available Credit Amount')==0 }hide{/if} " >
             <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amoount._total!=''}{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
 
-            <td class="text-right to_pay_amount">{$placed_order->get('Basket To Pay Amount')}</td>
+            <td class="text-right to_pay_amount">{$placed_order->get('To Pay Amount')}</td>
         </tr>
 
         </tbody>

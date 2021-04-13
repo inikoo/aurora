@@ -413,6 +413,10 @@ class Public_Order extends DBW_Table {
                     return 0;
 
                 }
+            case 'To Pay Amount':
+
+                return money($this->data['Order To Pay Amount'], $this->data['Order Currency']);
+
 
 
             case('Deal Amount Off'):
