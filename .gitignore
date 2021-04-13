@@ -105,3 +105,4 @@ cron/set_up_aroma_china_agent.php
 paso_china.csv
 app_files/crontab
 au_images/AW
+cron/archive_supplier.php

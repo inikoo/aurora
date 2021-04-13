@@ -815,7 +815,7 @@ class Supplier extends SubjectSupplier {
                 break;
             default:
                 $this->error = true;
-                $this->msg   = 'Not valid supplirt type value '.$value;
+                $this->msg   = 'Not valid supplier type value '.$value;
                 break;
         }
 
@@ -1523,9 +1523,6 @@ class Supplier extends SubjectSupplier {
         );
 
 
-
-
-
         while ($row = $stmt->fetch()) {
             if ($row['Part Status'] == 'In Use') {
                 $supplier_number_active_parts = $row['num'];
@@ -1859,6 +1856,39 @@ class Supplier extends SubjectSupplier {
     function archive() {
 
         $this->update_type('Archived', 'no_history');
+
+
+        $sql  = 'Select `Part SKU`,`Part Reference` from `Part Dimension`   left join `Supplier Part Dimension` on (`Part Main Supplier Part Key`=`Supplier Part Key`)  where `Supplier Part Supplier Key`=?';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $part = get_object('Part', $row['Part SKU']);
+
+
+            $supplier_parts = $part->get_supplier_parts('objects');
+
+            if (count($supplier_parts) > 1) {
+                foreach ($supplier_parts as $supplier_part) {
+                    if ($supplier_part->get('Supplier Part Supplier Key') != $this->id) {
+
+                        $_supplier = get_object('Supplier', $supplier_part->get('Supplier Key'));
+                        if ($_supplier->get('Supplier Type') != 'Archived') {
+                            $part->editor = $this->editor;
+                            $part->update(
+                                [
+                                    'Part Main Supplier Part Key' => $supplier_part->id
+                                ]
+                            );
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
 
         $history_data = array(

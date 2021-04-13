@@ -758,9 +758,6 @@ class Part extends Asset {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $supplier_parts;
