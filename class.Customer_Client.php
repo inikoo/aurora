@@ -350,7 +350,6 @@ class Customer_Client extends Subject {
         $order_data['Order Customer Fiscal Name'] = $customer->get('Fiscal Name');
 
 
-
         $order_data['Order Email']     = $customer->data['Customer Main Plain Email'];
         $order_data['Order Telephone'] = $customer->get_telephone();
 
@@ -398,6 +397,7 @@ class Customer_Client extends Subject {
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
+        $order_data['Recargo Equivalencia'] = $customer->get('Customer Recargo Equivalencia');
 
         include_once 'class.Order.php';
         $order = new Order('new', $order_data);
