@@ -54,7 +54,10 @@ events: {
 },
 className: "link",
 })
-}, {
+},
+
+
+{
 name: "date",
 label: "{t}Date{/t}",
 editable: false,

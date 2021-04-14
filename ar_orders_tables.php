@@ -250,10 +250,11 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
             'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'  => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
 
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
-            'payment_state'  => $payment_state,
-            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-            'actions'        => $operations
+            'dispatch_state'           => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
+            'payment_state'            => $payment_state,
+            'total_amount'             => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'                  => $operations,
+            'customer_invoices_orders' => number($data['Customer Number Invoices'])
 
 
         );
@@ -346,17 +347,18 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
 
         $adata[] = array(
-            'id'             => (integer)$data['Order Key'],
-            'checked'        => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']),
-            'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => $public_id,
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
-            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
-            'payments'       => $payments,
-            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-            'actions'        => $operations
+            'id'                       => (integer)$data['Order Key'],
+            'checked'                  => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']),
+            'store_key'                => (integer)$data['Order Store Key'],
+            'public_id'                => $public_id,
+            'date'                     => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+            'last_date'                => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'customer'                 => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+            'dispatch_state'           => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
+            'payments'                 => $payments,
+            'total_amount'             => money($data['Order Total Amount'], $data['Order Currency']),
+            'actions'                  => $operations,
+            'customer_invoices_orders' => number($data['Customer Number Invoices'])
 
 
         );

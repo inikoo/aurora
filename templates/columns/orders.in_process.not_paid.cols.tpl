@@ -40,6 +40,15 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 
 })
+},
+{
+name: "customer_invoices_orders",
+label: "{t}Customer invoices{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+
+})
 }, {
 name: "date",
 label: "{t}Date{/t}",

@@ -17,7 +17,9 @@ $currency = '';
 
 
 $where = 'where `Order State`="InProcess"  and `Order To Pay Amount`>0 ';
-$table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
+$table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)
+ left join `Customer Dimension` on  (`Order Customer Key`=`Customer Key`)
+';
 
 
 if ($parameters['parent'] == 'store') {
@@ -210,7 +212,8 @@ if ($order == 'public_id') {
 $fields = '
 `Order Priority Level`,`Order Care Level`,
 `Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
-     (select group_concat(`Delivery Note Key`) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key`   ) as delivery_notes
+     (select group_concat(`Delivery Note Key`) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key`   ) as delivery_notes,
+     `Customer Number Invoices`
     
     
     ';
