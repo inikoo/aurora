@@ -330,10 +330,14 @@ $part_fields[] = array(
     )
 );
 
+$can_edit_units_per_package = false;
+
 
 if ($object->get('Part Status') == 'In Process' and $object->get('Part Current On Hand Stock') == 0) {
-    $can_edit_units_per_package = true;
 
+    if ($user->can_edit('parts')) {
+        $can_edit_units_per_package = true;
+    }
     if ($object->get('Part Number Active Products') > 0 or $object->get('Part Number No Active Products') > 0) {
         $warning_units_per_package = '<br><span class="warning"><fa class="fa fa-exclamation-triangle padding_right_5"></fa> '._("Products associated with part").'</span>';
     } else {
@@ -341,12 +345,16 @@ if ($object->get('Part Status') == 'In Process' and $object->get('Part Current O
     }
 } else {
     $warning_units_per_package  = '<br><span class="error"><fa class="fa fa-ban padding_right_5"></fa> '._("Part already in warehouse").'</span>';
-    $can_edit_units_per_package = false;
+
+    if ($user->can_supervisor('parts')) {
+        $can_edit_units_per_package = true;
+
+    }
 
 }
 //todo remove this when we redo the post stuff
-$warning_units_per_package  = '';
-$can_edit_units_per_package = false;
+//$warning_units_per_package  = '';
+//$can_edit_units_per_package = false;
 
 $part_fields[] = array(
     'label' => ($supplier_part_scope
