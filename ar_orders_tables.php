@@ -241,6 +241,18 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
 
         }
 
+
+        $notes='';
+        if($data['Order Sticky Note']!=''){
+            $notes.=' <i  class="open_sticky_note order_sticky_note fa fa-sticky-note"></i>';
+        }
+        if($data['Order Delivery Sticky Note']!=''){
+            $notes.=' <i  class="open_sticky_note delivery_note_sticky_note fa fa-sticky-note"></i>';
+        }
+        if($data['Order Customer Message']!=''){
+            $notes.=' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
+        }
+
         $adata[] = array(
             'id'        => (integer)$data['Order Key'],
             'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']),
@@ -254,7 +266,8 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
             'payment_state'            => $payment_state,
             'total_amount'             => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'                  => $operations,
-            'customer_invoices_orders' => number($data['Customer Number Invoices'])
+            'customer_invoices_orders' => number($data['Customer Number Invoices']),
+            'notes'=>$notes
 
 
         );
@@ -344,7 +357,16 @@ function orders_in_process_paid($_data, $db, $user, $account) {
             $public_id .= ' <i class="fal fa-fragile"></i>';
 
         }
-
+        $notes='';
+        if($data['Order Sticky Note']!=''){
+            $notes.=' <i  class="open_sticky_note order_sticky_note fa fa-sticky-note"></i>';
+        }
+        if($data['Order Delivery Sticky Note']!=''){
+            $notes.=' <i  class="open_sticky_note delivery_note_sticky_note fa fa-sticky-note"></i>';
+        }
+        if($data['Order Customer Message']!=''){
+            $notes.=' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
+        }
 
         $adata[] = array(
             'id'                       => (integer)$data['Order Key'],
@@ -358,7 +380,8 @@ function orders_in_process_paid($_data, $db, $user, $account) {
             'payments'                 => $payments,
             'total_amount'             => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'                  => $operations,
-            'customer_invoices_orders' => number($data['Customer Number Invoices'])
+            'customer_invoices_orders' => number($data['Customer Number Invoices']),
+            'notes'=>$notes
 
 
         );

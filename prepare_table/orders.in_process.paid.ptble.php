@@ -207,7 +207,9 @@ if ($order == 'public_id') {
     $order = 'O.`Order Payment State`';
 } elseif ($order == 'total_amount') {
     $order = 'O.`Order Total Amount`';
-} else {
+}elseif ($order == 'customer_invoices_orders') {
+    $order = '`Customer Number Invoices`';
+}  else {
     $order = 'O.`Order Key`';
 }
 
@@ -218,7 +220,7 @@ $fields
      (select group_concat(`Delivery Note Key`) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key`   ) as delivery_notes,
      (select group_concat(concat_ws("|",`Payment Account Name`,`Payment Account Block`)) from `Order Payment Bridge` OPB  left join `Payment Dimension` P on (OPB.`Payment Key`=P.`Payment Key`) left join `Payment Account Dimension` PA on (PA.`Payment Account Key`=P.`Payment Account Key`)    where OPB.`Order Key`=O.`Order Key` and `Payment Transaction Status`="Completed" ) as payments,
      
-      `Customer Number Invoices`
+      `Customer Number Invoices`,`Order Customer Message`,`Order Sticky Note`,`Order Delivery Sticky Note`
     
     
     ';

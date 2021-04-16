@@ -43,15 +43,37 @@ cell: Backgrid.HtmlCell.extend({
 })
 },
 
+
+
 {
 name: "customer_invoices_orders",
-label: "{t}Customer invoices{/t}",
+label:'',
+html_label: '<i class="fal fa-fw fa-file-invoice" ></i>',
+title: "{t}Previous customer invoices{/t}",
+headerCell: rightHeaderHtmlCell,
+headerClass:"aright",
+
 editable: false,
+defaultOrder:1,
 sortType: "toggle",
+{if $sort_key=='customer_invoices_orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+},
+
+
+{
+name: "notes",
+label: "{t}Notes{/t}",
+editable: false,
+sortable: false,
 cell: Backgrid.HtmlCell.extend({
 
 })
 },
+
+
+
 {
 name: "date",
 label: "{t}Date{/t}",
