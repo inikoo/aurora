@@ -106,3 +106,5 @@ paso_china.csv
 app_files/crontab
 au_images/AW
 cron/archive_supplier.php
+cron/set_up_picking_bands.php
+cron/syncro_sk_parts.php
