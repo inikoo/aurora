@@ -975,9 +975,11 @@ class Supplier extends SubjectSupplier {
                 } else {
 
 
+
+
                     $barcode = $data['Part Barcode'];
                     $error   = '';
-
+                    $_error_mdg='';
 
                     if (!is_numeric($barcode)) {
                         $error = 'No Numeric';
@@ -986,7 +988,7 @@ class Supplier extends SubjectSupplier {
                         if (strlen($barcode) == 12) {
                             $error = 'Checksum_missing';
                             $sql   = sprintf(
-                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($barcode), $this->id
+                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" ', addslashes($barcode)
                             );
 
                             if ($result = $this->db->query($sql)) {
@@ -1004,7 +1006,8 @@ class Supplier extends SubjectSupplier {
                         }
 
 
-                    } else {
+                    }
+                    else {
                         $digits = substr($barcode, 0, 12);
 
                         $digits         = (string)$digits;
@@ -1019,14 +1022,17 @@ class Supplier extends SubjectSupplier {
                             $error = 'Checksum';
                         } else {
                             $sql = sprintf(
-                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($barcode), $this->id
+                                'SELECT `Part SKU`,`Part Reference` FROM `Part Dimension` WHERE `Part Barcode Number`=%s ', prepare_mysql($barcode)
                             );
+
+
 
                             if ($result = $this->db->query($sql)) {
                                 foreach ($result as $row) {
                                     $part = get_object('Part', $row['Part SKU']);
                                     $part->fast_update(array('Part Barcode Number Error' => 'Duplicated'));
                                     $error = 'Duplicated';
+                                    $_error_msg=  _('Duplicated').' '.$row['Part Reference'];
                                 }
 
                             } else {
@@ -1047,7 +1053,7 @@ class Supplier extends SubjectSupplier {
                         switch ($error) {
 
                             case 'Duplicated':
-                                $error_msg = _('Duplicated');
+                                $error_msg = $_error_msg;
                                 break;
                             case 'Size':
                                 $error_msg = _('Barcode should be 13 digits');
