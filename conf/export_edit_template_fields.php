@@ -749,6 +749,27 @@ $export_edit_template_fields = array(
             'cell_type'     => 'string'
         ),
 
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Picking Band',
+            'name'          => 'Part Picking Band Name',
+            'label'         => _('Picking band'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Packing Band',
+            'name'          => 'Part Packing Band Name',
+            'label'         => _('Packing band'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
 
 
 

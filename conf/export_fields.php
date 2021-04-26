@@ -1395,6 +1395,16 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => _('Locations'),
                 'checked' => 1
             ),
+            array(
+                'name'    => '`Part Picking Band Name`',
+                'label'   => _('Picking band'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '`Part Packing Band Name`',
+                'label'   => _('Packing band'),
+                'checked' => 0
+            ),
 
 
         ),

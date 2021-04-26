@@ -1980,8 +1980,57 @@ class Part extends Asset {
 
         switch ($field) {
 
+            case 'Part Picking Band Name':
+                if ($value != '') {
+                    $sql  = "select `Picking Band Key` from `Picking Band Dimension` where `Picking Band Name`=?  and `Picking Band Type`='Picking' ";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $value
+                        )
+                    );
+                    if ($row = $stmt->fetch()) {
 
+                        $this->update_field_switcher('Part Picking Band Key', $row['Picking Band Key'], $options);
+                        return;
+                    }else{
+                        $this->error = true;
+                        $this->msg   = _('Picking Band not found').' ('.$value.')';
+
+                        return;
+                    }
+                }else{
+                    $this->update_field_switcher('Part Picking Band Key', '', $options);
+
+                }
+                break;
+            case 'Part Packing Band Name':
+                if ($value != '') {
+                    $sql  = "select `Picking Band Key` from `Picking Band Dimension` where `Picking Band Name`=?  and `Picking Band Type`='Packing' ";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $value
+                        )
+                    );
+                    if ($row = $stmt->fetch()) {
+                        $this->update_field_switcher('Part Packing Band Key', $row['Picking Band Key'], $options);
+                        return;
+                    }else{
+                        $this->error = true;
+                        $this->msg   = _('Packing Band not found').' ('.$value.')';
+
+                        return;
+                    }
+                }else{
+                    $this->update_field_switcher('Part Packing Band Key', '', $options);
+
+                }
+                break;
             case 'Part Picking Band Key':
+
+
+
                 if ($value) {
                     $band = get_object('PickingBand', $value);
                     if ($band->id) {
