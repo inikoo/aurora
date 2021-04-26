@@ -90,28 +90,33 @@ $account->load_acc_data();
 
 $can_view_picking_bands=false;
 $can_edit_picking_bands=false;
+
+
+$options_picking_bands = [];
+$options_packing_bands = [];
+
+
 if ($user->can_supervisor('parts')) {
     $can_edit_picking_bands = true;
+    $options_picking_bands[] = _('Default').' '.'('.money($account->properties('default_picking_band_amount'), $account->get('Account Currency')).')';
+    $sql                     = " select `Picking Band Key`,`Picking Band Name`,`Picking Band Amount` from `Picking Band Dimension` where `Picking Band Type`='Picking' and `Picking Band Status`='Active'  order by `Picking Band Amount`  ";
+    foreach ($db->query($sql) as $row) {
+        $options_picking_bands[$row['Picking Band Key']] = $row['Picking Band Name'].' ('.money($row['Picking Band Amount'], $account->get('Account Currency')).')';
+    }
+    $options_packing_bands[] = _('Default').' '.'('.money($account->properties('default_packing_band_amount'), $account->get('Account Currency')).')';
+    $sql                     = " select `Picking Band Key`,`Picking Band Name`,`Picking Band Amount` from `Picking Band Dimension` where `Picking Band Type`='Packing' and `Picking Band Status`='Active'  order by `Picking Band Amount`  ";
+    foreach ($db->query($sql) as $row) {
+        $options_packing_bands[$row['Picking Band Key']] = $row['Picking Band Name'].' ('.money($row['Picking Band Amount'], $account->get('Account Currency')).')';
+    }
+
+
 }
 if($account->properties('default_picking_band_amount') and $account->properties('default_packing_band_amount')){
     $can_view_picking_bands=true;
 
 }
 
-$options_picking_bands = [];
-$options_packing_bands = [];
 
-
-$options_picking_bands[] = _('Default').' '.'('.money($account->properties('default_picking_band_amount'), $account->get('Account Currency')).')';
-$sql                     = " select `Picking Band Key`,`Picking Band Name`,`Picking Band Amount` from `Picking Band Dimension` where `Picking Band Type`='Picking' and `Picking Band Status`='Active'  order by `Picking Band Amount`  ";
-foreach ($db->query($sql) as $row) {
-    $options_picking_bands[$row['Picking Band Key']] = $row['Picking Band Name'].' ('.money($row['Picking Band Amount'], $account->get('Account Currency')).')';
-}
-$options_packing_bands[] = _('Default').' '.'('.money($account->properties('default_packing_band_amount'), $account->get('Account Currency')).')';
-$sql                     = " select `Picking Band Key`,`Picking Band Name`,`Picking Band Amount` from `Picking Band Dimension` where `Picking Band Type`='Packing' and `Picking Band Status`='Active'  order by `Picking Band Amount`  ";
-foreach ($db->query($sql) as $row) {
-    $options_packing_bands[$row['Picking Band Key']] = $row['Picking Band Name'].' ('.money($row['Picking Band Amount'], $account->get('Account Currency')).')';
-}
 
 
 $part_fields[] = array(
