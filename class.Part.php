@@ -901,33 +901,45 @@ class Part extends Asset {
 
         switch ($key) {
 
+            case 'Picking Band Key':
+            case 'Packing Band Key':
+
+                if(!$this->data['Part '.$key]){
+                    $account=get_object('Account',1);
+                    $account->load_acc_data();
+
+                    if($key=='Picking Band Key'){
+                        $_key='default_picking_band_amount';
+                    }else{
+                        $_key='default_packing_band_amount';
+
+                    }
+
+                    return _('Default').' '.'('.money($account->properties($_key), $account->get('Account Currency')).')';
+
+                }else{
+                    $band=get_object('PickingBand',$this->data['Part '.$key]);
+                    return $band->get('Name').' ('.$band->get('Amount').')';
+                }
+
+
 
             case 'Symbol':
-
-
                 switch ($this->data['Part Symbol']) {
                     case 'star':
                         return '&#9733;';
-                        break;
                     case 'skull':
                         return '&#9760;';
-                        break;
                     case 'radioactive':
                         return '&#9762;';
-                        break;
                     case 'peace':
                         return '&#9774;';
-                        break;
                     case 'sad':
                         return '&#9785;';
-                        break;
                     case 'gear':
                         return '&#9881;';
-                        break;
                     case 'love':
                         return '&#10084;';
-                        break;
-
 
                 }
 
@@ -4712,6 +4724,13 @@ class Part extends Asset {
             case 'Part UFI':
                 $label = 'UFI (Poison Centres)';
                 break;
+            case 'Part Picking Band Key':
+                $label = _('picking band');
+                break;
+            case 'Part Packing Band Key':
+                $label = _('packing band');
+                break;
+
             default:
                 $label = $field;
 

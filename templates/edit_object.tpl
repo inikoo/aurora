@@ -4,7 +4,7 @@
     {if isset($preferred_countries)}
         <input id="preferred_countries" type="hidden" value="{$preferred_countries}">
     {/if}
-    <table id="edit_container" border=0
+    <table style="margin-bottom: 300px" id="edit_container" border=0
            data-default_telephone_data="{if isset($default_telephone_data)}{$default_telephone_data}{/if}">
         {foreach from=$object_fields item=field_group }
 
@@ -846,6 +846,7 @@
         {/foreach}
 
     </table>
+
 </div>
 <script>
     $(document).on('input propertychange', '.input_field', function (evt) {
@@ -901,4 +902,4 @@
     {if isset($js_code) }{fetch file="$js_code"}{/if}
 
 
-</script> 
+</script>

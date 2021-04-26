@@ -27,6 +27,7 @@ function get_delivery_note_showcase($data, $smarty) {
 
     //  $delivery_note->update_shippers_services();
 
+    //$delivery_note->create_picking_packing_bands();
 
     //$delivery_note->get_label();
     //exit;

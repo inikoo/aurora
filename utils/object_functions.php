@@ -552,9 +552,14 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.External_Invoicer.php';
             $object = new External_Invoicer('id', $key);
             break;
+        case 'picking_band':
+        case 'picking_band':
+        case 'pickingband':
+            include_once 'class.PickingBand.php';
+            $object = new PickingBand('id', $key);
+            break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
-            break;
     }
 
 

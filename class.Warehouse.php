@@ -2320,6 +2320,65 @@ and `Part Distinct Locations`>1
     function settings($key) {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
+
+    function create_picking_band($data) {
+
+        include_once 'class.PickingBand.php';
+
+
+        $this->error_metadata = array();
+
+        // print_r($data);
+        $this->new_warehouse_area             = false;
+        $data['Picking Band Warehouse Key'] = $this->id;
+        $data['editor']                       = $this->editor;
+
+
+    
+
+        if ($data['Picking Band Name'] == '') {
+            $this->error_code       = 'missing_required_fields';
+            $this->error            = true;
+            $this->msg              = _('Missing field');
+            $this->error_metadata[] = _('Name');
+            $this->error_metadata   = json_encode($this->error_metadata);
+
+            return;
+        }
+
+
+
+
+
+        $picking_band = new PickingBand('find create', $data);
+
+
+        if ($picking_band->id) {
+
+            $this->new_area_msg = $picking_band->msg;
+            if ($picking_band->new) {
+                $this->new_warehouse_area     = true;
+                $this->new_warehouse_area_key = $picking_band->id;
+
+
+            } else {
+                $this->error          = true;
+                $this->error_code     = 'duplicated_field';
+                $this->error_metadata = json_encode(array($picking_band->duplicated_field));
+                $this->msg            = $picking_band->msg;
+
+            }
+
+            return $picking_band;
+        } else {
+            $this->error      = true;
+            $this->msg        = $picking_band->msg;
+            $this->error_code = $picking_band->error_code;
+
+            return false;
+        }
+    }
+
 }
 
 

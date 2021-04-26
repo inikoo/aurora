@@ -1,0 +1,1 @@
+ALTER TABLE `Part Dimension` ADD `Part Picking Band Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Part Units in Deliveries`, ADD `Part Packing Band Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Part Picking Band Key`, ADD INDEX (`Part Picking Band Key`), ADD INDEX (`Part Packing Band Key`);

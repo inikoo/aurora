@@ -22,7 +22,7 @@ $editor = array(
     'Subject'      => 'System',
     'Subject Key'  => 0,
     'Author Name'  => 'System',
-    'Author Alias' => 'System (Fix missing dimensions from part)',
+    'Author Alias' => 'System (Fix missing properties from part)',
 
 
 );

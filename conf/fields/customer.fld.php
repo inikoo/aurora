@@ -46,11 +46,6 @@ $options_yes_no = array(
 
 $options_sales_representative = array();
 
-$sql = sprintf(
-    "SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ('Staff','Contractor')  and `User Group Key`=2     and `User Active`='Yes'  group by U.`User Key`  "
-);
-
-
 if ($object->get('Customer Sales Representative Key')) {
     $options_sales_representative[0] = array(
         'label'    => _('Remove account manager'),
@@ -58,6 +53,8 @@ if ($object->get('Customer Sales Representative Key')) {
         'selected' => false
     );
 }
+$sql =
+    "SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ('Staff','Contractor')  and `User Group Key`=2     and `User Active`='Yes'  group by U.`User Key`  ";
 
 
 foreach ($db->query($sql) as $row) {

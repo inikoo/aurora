@@ -86,6 +86,33 @@ if ($user->can_supervisor('production')) {
 $part_fields = array();
 $family      = $object->get('Family');
 
+$account->load_acc_data();
+
+$can_view_picking_bands=false;
+$can_edit_picking_bands=false;
+if ($user->can_supervisor('parts')) {
+    $can_edit_picking_bands = true;
+}
+if($account->properties('default_picking_band_amount') and $account->properties('default_packing_band_amount')){
+    $can_view_picking_bands=true;
+
+}
+
+$options_picking_bands = [];
+$options_packing_bands = [];
+
+
+$options_picking_bands[] = _('Default').' '.'('.money($account->properties('default_picking_band_amount'), $account->get('Account Currency')).')';
+$sql                     = " select `Picking Band Key`,`Picking Band Name`,`Picking Band Amount` from `Picking Band Dimension` where `Picking Band Type`='Picking' and `Picking Band Status`='Active'  order by `Picking Band Amount`  ";
+foreach ($db->query($sql) as $row) {
+    $options_picking_bands[$row['Picking Band Key']] = $row['Picking Band Name'].' ('.money($row['Picking Band Amount'], $account->get('Account Currency')).')';
+}
+$options_packing_bands[] = _('Default').' '.'('.money($account->properties('default_packing_band_amount'), $account->get('Account Currency')).')';
+$sql                     = " select `Picking Band Key`,`Picking Band Name`,`Picking Band Amount` from `Picking Band Dimension` where `Picking Band Type`='Packing' and `Picking Band Status`='Active'  order by `Picking Band Amount`  ";
+foreach ($db->query($sql) as $row) {
+    $options_packing_bands[$row['Picking Band Key']] = $row['Picking Band Name'].' ('.money($row['Picking Band Amount'], $account->get('Account Currency')).')';
+}
+
 
 $part_fields[] = array(
     'label'      => _('Status/Id'),
@@ -344,7 +371,7 @@ if ($object->get('Part Status') == 'In Process' and $object->get('Part Current O
         $warning_units_per_package = '';
     }
 } else {
-    $warning_units_per_package  = '<br><span class="error"><fa class="fa fa-ban padding_right_5"></fa> '._("Part already in warehouse").'</span>';
+    $warning_units_per_package = '<br><span class="error"><fa class="fa fa-ban padding_right_5"></fa> '._("Part already in warehouse").'</span>';
 
     if ($user->can_supervisor('parts')) {
         $can_edit_units_per_package = true;
@@ -494,6 +521,47 @@ $part_fields[] = array(
 
     )
 );
+
+if($can_view_picking_bands) {
+
+    $part_fields[] = array(
+        'label' => _('Picking bands'),
+
+        'show_title' => true,
+        'fields'     => array(
+            array(
+
+
+                'id'         => 'Part_Picking_Band_Key',
+                'edit'       => ($can_edit_picking_bands ? 'option' : ''),
+                'right_code' => 'PS',
+                'options'    => $options_picking_bands,
+
+                'value'           => $object->get('Part Picking Band Key'),
+                'formatted_value' => $object->get('Picking Band Key'),
+                'label'           => ucfirst($object->get_field_label('Part Picking Band Key')),
+                'required'        => true,
+                'type'            => 'value'
+            ),
+            array(
+
+
+                'id'         => 'Part_Packing_Band_Key',
+                'edit'       => ($can_edit_picking_bands ? 'option' : ''),
+                'right_code' => 'PS',
+                'options'    => $options_packing_bands,
+
+                'value'           => $object->get('Part Packing Band Key'),
+                'formatted_value' => $object->get('Packing Band Key'),
+                'label'           => ucfirst($object->get_field_label('Part Packing Band Key')),
+                'required'        => true,
+                'type'            => 'value'
+            )
+
+
+        )
+    );
+}
 
 /*
 if (!$supplier_part_scope) {
@@ -753,14 +821,12 @@ $part_fields[] = array(
 
 
 
+
 // Remove this until you create an alert saying you will destroy this part for good
 // Dont display if there is associated products (Add a message can not be deleted until all products are disassociated)
 
 
-
-
-
-if (!$new and  (!$object->get('Part Raw Material Key') and  $edit_production )   ) {
+if (!$new and (!$object->get('Part Raw Material Key') and $edit_production)) {
     $operations = array(
         'label'      => _('Operations'),
         'show_title' => true,
@@ -770,7 +836,7 @@ if (!$new and  (!$object->get('Part Raw Material Key') and  $edit_production )  
             array(
                 'id'     => 'create_raw_material',
                 'class'  => 'operation',
-                'render' => (($object->get('Part Raw Material Key') and $edit_production ) >0 ? false :true ),
+                'render' => (($object->get('Part Raw Material Key') and $edit_production) > 0 ? false : true),
 
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
