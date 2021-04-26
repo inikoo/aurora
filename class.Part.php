@@ -187,9 +187,6 @@ class Part extends Asset {
         }
 
 
-
-
-
         if (!isset($data['Part Recommended Packages Per Selling Outer'])) {
             $data['Part Recommended Packages Per Selling Outer'] = 1;
         }
@@ -593,17 +590,17 @@ class Part extends Asset {
 
                                     break;
                                 case 'Manufactured':
-                                    $formatted_state     = _('Manufactured');
-                                    $formatted_link      = sprintf(
+                                    $formatted_state = _('Manufactured');
+                                    $formatted_link  = sprintf(
                                         '<i class="fal fa-fw fa-clipboard" ></i> <span class="link " onclick="change_view(\'production/%d/order/%d\')"> %s</span> <i class="fal fa-fw padding_left_5 fa-flag-checkered" title="%s" ></i> <span class="strong">%s</span>',
                                         $row['Supplier Key'], $row['Purchase Order Key'], $row['Purchase Order Public ID'], $formatted_state, number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package'])
                                     );
-                                    $qty                 = '+'.number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package']);
+                                    $qty             = '+'.number($row['Purchase Order Manufactured Units'] / $row['Part Units Per Package']);
 
-                                    $raw_units_qty = $row['Purchase Order Manufactured Units'];
+                                    $raw_units_qty       = $row['Purchase Order Manufactured Units'];
                                     $units_in_deliveries += $raw_units_qty;
 
-                                    $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+                                    $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
                                     break;
                                 case 'QC_Pass':
                                     $formatted_state     = _('QC pass');
@@ -904,24 +901,24 @@ class Part extends Asset {
             case 'Picking Band Key':
             case 'Packing Band Key':
 
-                if(!$this->data['Part '.$key]){
-                    $account=get_object('Account',1);
+                if (!$this->data['Part '.$key]) {
+                    $account = get_object('Account', 1);
                     $account->load_acc_data();
 
-                    if($key=='Picking Band Key'){
-                        $_key='default_picking_band_amount';
-                    }else{
-                        $_key='default_packing_band_amount';
+                    if ($key == 'Picking Band Key') {
+                        $_key = 'default_picking_band_amount';
+                    } else {
+                        $_key = 'default_packing_band_amount';
 
                     }
 
                     return _('Default').' '.'('.money($account->properties($_key), $account->get('Account Currency')).')';
 
-                }else{
-                    $band=get_object('PickingBand',$this->data['Part '.$key]);
+                } else {
+                    $band = get_object('PickingBand', $this->data['Part '.$key]);
+
                     return $band->get('Name').' ('.$band->get('Amount').')';
                 }
-
 
 
             case 'Symbol':
@@ -1486,9 +1483,6 @@ class Part extends Asset {
                 return number($this->data['Part '.$key], 6);
 
 
-
-
-
             case('Valid From'):
             case('Valid From Datetime'):
 
@@ -1987,6 +1981,75 @@ class Part extends Asset {
         switch ($field) {
 
 
+            case 'Part Picking Band Key':
+                if ($value) {
+                    $band = get_object('PickingBand', $value);
+                    if ($band->id) {
+
+                        if ($band->get('Picking Band Type') != 'Picking') {
+                            $this->error = true;
+                            $this->msg   = _('Not a picking band');
+
+                            return;
+                        }
+                        $this->update_field($field, $value, $options);
+                        $this->fast_update(
+                            [
+                                'Part Picking Band Name' => $band->get('Picking Band Name')
+                            ]
+                        );
+
+                    } else {
+                        $this->error = true;
+                        $this->msg   = _('Band name not found');
+
+                        return;
+                    }
+                } else {
+                    $this->update_field($field, '', $options);
+                    $this->fast_update(
+                        [
+                            'Part Picking Band Name' => null
+                        ]
+                    );
+
+                }
+                break;
+            case 'Part Packing Band Key':
+                if ($value) {
+                    $band = get_object('PickingBand', $value);
+                    if ($band->id) {
+
+                        if ($band->get('Picking Band Type') != 'Packing') {
+                            $this->error = true;
+                            $this->msg   = _('Not a packing band');
+
+                            return;
+                        }
+                        $this->update_field($field, $value, $options);
+                        $this->fast_update(
+                            [
+                                'Part Packing Band Name' => $band->get('Picking Band Name')
+                            ]
+                        );
+
+                    } else {
+                        $this->error = true;
+                        $this->msg   = _('Band name not found');
+
+                        return;
+                    }
+                } else {
+                    $this->update_field($field, '', $options);
+                    $this->fast_update(
+                        [
+                            'Part Packing Band Name' => null
+                        ]
+                    );
+
+                }
+
+                break;
             case 'materials':
             case 'label unit':
             case 'label sko':
@@ -4761,7 +4824,6 @@ class Part extends Asset {
         ];
 
         $raw_material = new Raw_Material('find create', $raw_material_data);
-
 
 
         if ($raw_material->id) {

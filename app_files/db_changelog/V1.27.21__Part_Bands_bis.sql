@@ -1,0 +1,1 @@
+ALTER TABLE `Part Dimension` ADD `Part Picking Band Name` VARCHAR(16) NULL DEFAULT NULL AFTER `Part Packing Band Key`, ADD `Part Packing Band Name` VARCHAR(26) NULL DEFAULT NULL AFTER `Part Picking Band Name`;
