@@ -224,10 +224,7 @@ class DeliveryNote extends DB_Table {
     function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date) {
 
 
-
-
-
-        $product=get_object('Product',$product_id);
+        $product = get_object('Product', $product_id);
 
 
         $part_list = $product->get_parts_data();
@@ -246,7 +243,7 @@ class DeliveryNote extends DB_Table {
 
         foreach ($part_list as $part_data) {
 
-            $part=get_object('Part',$part_data['Part SKU']);
+            $part = get_object('Part', $part_data['Part SKU']);
 
             if ($part->sku) {
 
@@ -1134,7 +1131,7 @@ class DeliveryNote extends DB_Table {
         switch ($field) {
 
             case 'Delivery Note Address':
-                if (  !preg_match('/force/',$options) and (   $this->get('State Index') >= 90 or $this->get('State Index') <= 0)) {
+                if (!preg_match('/force/', $options) and ($this->get('State Index') >= 90 or $this->get('State Index') <= 0)) {
                     return;
                 }
 
@@ -1694,9 +1691,9 @@ class DeliveryNote extends DB_Table {
                                 if ($result2 = $this->db->query($sql)) {
                                     foreach ($result2 as $row2) {
 
-                                        $cost=$row2['Part Cost in Warehouse'];
-                                        if(!$cost){
-                                            $cost=$row2['Part Cost'];
+                                        $cost = $row2['Part Cost in Warehouse'];
+                                        if (!$cost) {
+                                            $cost = $row2['Part Cost'];
                                         }
 
                                         $itf_transfer_factor[$row2['Inventory Transaction Key']] = $cost * $row2['Inventory Transaction Quantity'];
@@ -2108,6 +2105,7 @@ class DeliveryNote extends DB_Table {
 
         if ($old_state != $this->get('Delivery Note State')) {
             $this->fork_index_elastic_search();
+
             return true;
         }
 
@@ -3177,9 +3175,9 @@ class DeliveryNote extends DB_Table {
         $services = [];
         while ($row = $stmt->fetch()) {
 
-            $shipper                       = get_object('Shipper', $row['Shipper Key']);
+            $shipper = get_object('Shipper', $row['Shipper Key']);
 
-           // $_services=$shipper->get_services($this);
+            // $_services=$shipper->get_services($this);
 
             $services[$row['Shipper Key']] = $shipper->get_services($this);
 
@@ -3328,6 +3326,118 @@ class DeliveryNote extends DB_Table {
     function update_uuid() {
 
         $this->fast_update(['Delivery Note UUID' => md5(uniqid('', true))]);
+    }
+
+
+    function create_picking_packing_bands() {
+
+
+        $account = get_object('Account', 1);
+        $account->load_acc_data();
+        $default_picking_amount = $account->properties('default_picking_band_amount');
+        $default_packing_amount = $account->properties('default_packing_band_amount');
+
+        $sql = 'select `Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Key`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=? and  `Inventory Transaction Type`="Sale"  ';
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $part = get_object('Part', $row['Part SKU']);
+
+
+            if ($part->id) {
+                //$date = gmdate('Y-m-d H:i:s');
+
+                $picking_amount = 0;
+
+                $picking_band_id          = null;
+                $picking_band_historic_id = null;
+                if ($part->get('Part Picking Band Key')) {
+                    $picking_band = get_object('PickingBand', $part->get('Part Picking Band Key'));
+                    if ($picking_band->id) {
+                        $picking_band_id          = $picking_band->id;
+                        $picking_amount           = $picking_band->get('Picking Band Amount');
+                        $picking_band_historic_id = $picking_band->get_historic_id();
+                    }
+
+
+
+                } else {
+                    $picking_amount = $default_picking_amount;
+
+                }
+
+                $packing_amount = 0;
+
+                $packing_band_id          = null;
+                $packing_band_historic_id = null;
+                if ($part->get('Part Packing Band Key')) {
+                    $packing_band = get_object('PickingBand', $part->get('Part Packing Band Key'));
+                    if ($packing_band->id) {
+                        $packing_band_id          = $packing_band->id;
+                        $packing_amount           = $packing_band->get('Picking Band Amount');
+                        $packing_band_historic_id = $packing_band->get_historic_id();
+                    }
+                } else {
+                    $packing_amount = $default_packing_amount;
+
+                }
+
+
+
+                if ($picking_amount > 0) {
+                    $sql = "insert into `ITF Picking Band Bridge`  (`ITF Picking Band ITF Key`,`ITF Picking Band Type`,`ITF Picking Band Picking Band Key`,`ITF Picking Band Picking Band Historic Key`,`ITF Picking Band Amount`)  values (?,?,?,?,?) 
+ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band Picking Band Historic Key`=?,`ITF Picking Band Amount`=?";
+
+
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $row['Inventory Transaction Key'],
+                            'Picking',
+                            $picking_band_id,
+                            $picking_band_historic_id,
+                            -$picking_amount * $row['Inventory Transaction Quantity'],
+                            $picking_band_id,
+                            $picking_band_historic_id,
+                            -$picking_amount * $row['Inventory Transaction Quantity'],
+                        )
+                    );
+
+
+                }
+
+                if ($packing_amount > 0) {
+                    $sql = "insert into `ITF Picking Band Bridge`  (`ITF Picking Band ITF Key`,`ITF Picking Band Type`,`ITF Picking Band Picking Band Key`,`ITF Picking Band Picking Band Historic Key`,`ITF Picking Band Amount`)  values (?,?,?,?,?) 
+ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band Picking Band Historic Key`=?,`ITF Picking Band Amount`=?";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $row['Inventory Transaction Key'],
+                            'Packing',
+                            $packing_band_id,
+                            $packing_band_historic_id,
+                            -$packing_amount * $row['Inventory Transaction Quantity'],
+                            $packing_band_id,
+                            $packing_band_historic_id,
+                            -$packing_amount * $row['Inventory Transaction Quantity']
+                        )
+                    );
+
+                }
+
+
+            }
+
+        }
+
+
     }
 
 

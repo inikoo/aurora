@@ -402,9 +402,27 @@ function get_warehouses_module() {
                 )
             ),
 
-            'feedback' => array(
+            'warehouse_bands' => array(
                 'type'      => 'navigation',
-                'label'     => _('Issues'),
+                'label'     => _('Bands'),
+                'icon'      => 'hand-holding-usd',
+                'reference' => 'warehouse/%d/bands',
+                'tabs'      => array(
+                    'picking_bands' => array(
+                        'label' => _('Picking'),
+
+                    ),
+                    'packing_bands' => array(
+                        'label' => _('Packing'),
+
+                    ),
+
+                )
+            ),
+
+
+            'feedback' => array(
+                'type'      => 'right_button',
                 'icon'      => 'poop',
                 'reference' => 'warehouse/%d/feedback',
                 'tabs'      => array(
