@@ -18,7 +18,7 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $band = get_object('PickingBand', $row['Picking Band Key']);
 
-        
+
         $band->update_parts();
         $band->update_usage();
 

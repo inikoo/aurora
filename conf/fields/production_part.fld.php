@@ -207,7 +207,7 @@ $supplier_part_fields[] = array(
 );
 
 $supplier_part_fields[] = array(
-    'label'      => _('Raw materials'),
+    'label'      => _('Raw materials per batch'),
     'show_title' => true,
     'fields'     => array(
         array(
