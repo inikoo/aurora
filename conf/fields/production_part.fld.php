@@ -63,6 +63,39 @@ $supplier_part_fields = array();
 $can_edit_units_per_package = false;
 $warning_units_per_package  = '';
 
+$supplier_part_fields[] = array(
+    'label'      => _('Name'),
+    'show_title' => true,
+    'fields'     => array(
+
+        array(
+            'id'                => 'Supplier_Part_Reference',
+            'edit'              => ($edit ? 'string' : ''),
+            'right_code'        => 'PE',
+            'value'             => htmlspecialchars($object->get('Supplier Part Reference')),
+            'formatted_value'   => $object->get('Reference'),
+            'label'             => $object->get_field_label('Supplier Part Reference'),
+            'required'          => true,
+            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+            'type'              => 'value'
+        ),
+
+        array(
+            'id'              => 'Supplier_Part_Description',
+            'edit'            => ($edit ? 'string' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars($object->get('Supplier Part Description')),
+            'formatted_value' => $object->get('Supplier Part Description'),
+            'label'           => $object->get_field_label('Supplier Part Description'),
+
+            'required' => true,
+            'type'     => 'value'
+        ),
+
+
+    )
+
+);
 
 $supplier_part_fields[] = array(
     'label'      => _('Batch & Packing'),
@@ -107,10 +140,10 @@ $supplier_part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'              => 'Supplier_Part_Carton_Weight',
-            'edit'            => ($edit ? 'numeric' : ''),
-            'right_code'      => 'PE',
-            'render'          => (($object->get('Supplier Part Packages Per Carton') == '' or $object->get('Supplier Part Packages Per Carton') == 1) ? false : true),
+            'id'         => 'Supplier_Part_Carton_Weight',
+            'edit'       => ($edit ? 'numeric' : ''),
+            'right_code' => 'PE',
+            'render'     => (($object->get('Supplier Part Packages Per Carton') == '' or $object->get('Supplier Part Packages Per Carton') == 1) ? false : true),
 
             'value'           => $object->get('Supplier Part Carton Weight'),
             'formatted_value' => $object->get('Carton Weight'),
@@ -122,10 +155,10 @@ $supplier_part_fields[] = array(
         ),
 
         array(
-            'id'                => 'Supplier_Part_Carton_Barcode',
-            'render'          => (($object->get('Supplier Part Packages Per Carton') == '' or $object->get('Supplier Part Packages Per Carton') == 1) ? false : true),
+            'id'     => 'Supplier_Part_Carton_Barcode',
+            'render' => (($object->get('Supplier Part Packages Per Carton') == '' or $object->get('Supplier Part Packages Per Carton') == 1) ? false : true),
 
-            'edit'              => ($edit ? 'string' : ''),
+            'edit' => ($edit ? 'string' : ''),
 
             'right_code'        => 'PE',
             'value'             => htmlspecialchars($object->get('Supplier Part Carton Barcode')),
@@ -145,11 +178,9 @@ $supplier_part_fields[] = array(
         ),
 
 
-
     )
 
 );
-
 
 
 $supplier_part_fields[] = array(
@@ -175,7 +206,7 @@ $supplier_part_fields[] = array(
 
 );
 
-$supplier_part_fields[] =array(
+$supplier_part_fields[] = array(
     'label'      => _('Raw materials'),
     'show_title' => true,
     'fields'     => array(
@@ -188,6 +219,58 @@ $supplier_part_fields[] =array(
             'required'        => false,
             'type'            => 'value'
         )
+
+    )
+);
+
+
+$supplier_part_fields[] = array(
+    'label' => _('Cost/Pricing').' <span style="font-weight: normal" class="padding_left_10 small">'._('Future delivered cost').': <span class="Unit_Delivered_Cost">'.$object->get('Unit Delivered Cost').'/'._('unit').'</span></span>',
+
+    'show_title' => true,
+    'fields'     => array(
+
+        array(
+            'id'              => 'Supplier_Part_Unit_Cost',
+            'edit'            => ($edit ? 'amount' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars($object->get('Supplier Part Unit Cost')),
+            'formatted_value' => $object->get('Unit Cost'),
+            'label'           => _('Unit cost'),
+            'required'        => true,
+            'placeholder'     => sprintf(_('amount in %s '), $options['parent_object']->get('Default Currency Code')),
+            'type'            => 'value'
+        ),
+
+
+        array(
+            'id'         => 'Part_Unit_Price',
+            'edit'       => ($edit ? 'amount_margin' : ''),
+            'right_code' => 'PE',
+            'render'     => true,
+
+            'value'           => htmlspecialchars($object->part->get('Part Unit Price')),
+            'formatted_value' => $object->get('Unit Price'),
+            'label'           => ucfirst($object->part->get_field_label('Part Unit Price')),
+            'required'        => true,
+            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency Code')),
+            'type'            => 'value'
+        ),
+        array(
+            'id'              => 'Part_Unit_RRP',
+            'edit'            => ($edit ? 'amount_margin' : ''),
+            'right_code'      => 'PE',
+            'render'          => true,
+            'value'           => htmlspecialchars($object->part->get('Part Unit RRP')),
+            'formatted_value' => $object->part->get('Unit RRP'),
+            'label'           => ucfirst($object->part->get_field_label('Part Unit RRP')),
+            'required'        => true,
+            'placeholder'     => sprintf(
+                _('amount in %s or margin (%%)'), $account->get('Currency Code')
+            ),
+            'type'            => 'value'
+        ),
+
 
     )
 );

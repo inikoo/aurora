@@ -100,8 +100,6 @@ class ProductionPart extends SupplierPart {
     }
 
 
-
-
     function update_available_to_make_up() {
 
 
@@ -195,8 +193,8 @@ class ProductionPart extends SupplierPart {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
-
         switch ($field) {
+
 
             case 'Raw Materials':
 
@@ -205,7 +203,18 @@ class ProductionPart extends SupplierPart {
 
                 break;
             case 'Supplier Part Packages Per Carton':
-                $supplier_part         = get_object('SupplierPart', $this->id);
+            case 'Supplier Part Unit Cost':
+            case 'Part Unit Price':
+            case 'Part Unit RRP':
+            case 'Supplier Part Reference':
+            case 'Supplier Part Description':
+
+            case 'Supplier Part Carton CBM':
+            case 'Supplier Part Carton Weight':
+            case 'Supplier Part Carton Barcode':
+
+
+            $supplier_part         = get_object('SupplierPart', $this->id);
                 $supplier_part->editor = $this->editor;
                 $supplier_part->update_field_switcher($field, $value, $options, $metadata);
                 if ($supplier_part->updated) {
@@ -242,17 +251,17 @@ class ProductionPart extends SupplierPart {
                     $this->other_fields_updated = array(
                         'Supplier_Part_Carton_CBM'     => array(
                             'field'  => 'Supplier_Part_Carton_CBM',
-                            'render' => true,
+                            'render' => (($this->get('Supplier Part Packages Per Carton') == '' or $this->get('Supplier Part Packages Per Carton') == 1) ? false : true),
 
 
                         ),
                         'Supplier_Part_Carton_Weight'  => array(
                             'field'  => 'Supplier_Part_Carton_Weight',
-                            'render' => true,
+                            'render' => (($this->get('Supplier Part Packages Per Carton') == '' or $this->get('Supplier Part Packages Per Carton') == 1) ? false : true),
                         ),
                         'Supplier_Part_Carton_Barcode' => array(
                             'field'  => 'Supplier_Part_Carton_Barcode',
-                            'render' => true,
+                            'render' => (($this->get('Supplier Part Packages Per Carton') == '' or $this->get('Supplier Part Packages Per Carton') == 1) ? false : true),
                         )
                     );
 
@@ -313,8 +322,12 @@ class ProductionPart extends SupplierPart {
             case 'Production Part Raw Materials':
                 $label = _('raw materials');
                 break;
-
-
+            case 'Supplier Part Reference':
+                $label = _('Reference');
+                break;
+            case 'Supplier Part Description':
+                $label = _('Unit name');
+                break;
             default:
                 $label = $field;
 
@@ -389,7 +402,6 @@ class ProductionPart extends SupplierPart {
         }
 
 
-
         foreach (array_diff($old_raw_materials_list_keys, $new_raw_materials_list_keys) as $production_part_raw_material_key) {
             $num_parts_edited++;
             $sql = "delete from `Production Part Raw Material Bridge` where `Production Part Raw Material Key`=? ";
@@ -400,7 +412,7 @@ class ProductionPart extends SupplierPart {
                 )
             );
 
-            $raw_material=get_object('RawMaterial',$production_part_raw_material_key);
+            $raw_material = get_object('RawMaterial', $production_part_raw_material_key);
             $raw_material->get_production_parts();
 
         }
@@ -452,10 +464,9 @@ class ProductionPart extends SupplierPart {
                 }
 
                 if ($this->updated) {
-                    $sql  = sprintf(
-                        'UPDATE `Production Part Raw Material Bridge` SET `Production Part Raw Material Updated`=%s WHERE `Production Part Raw Material Key`=%d AND `Production Part Raw Material Production Part Key`=%d ',
-                        prepare_mysql(gmdate('Y-m-d H:i:s')), $raw_material_data['Key'],
-                        $this->id
+                    $sql = sprintf(
+                        'UPDATE `Production Part Raw Material Bridge` SET `Production Part Raw Material Updated`=%s WHERE `Production Part Raw Material Key`=%d AND `Production Part Raw Material Production Part Key`=%d ', prepare_mysql(gmdate('Y-m-d H:i:s')),
+                        $raw_material_data['Key'], $this->id
                     );
 
 
@@ -478,7 +489,7 @@ class ProductionPart extends SupplierPart {
                     $this->updated = true;
 
 
-                    $raw_material=get_object('RawMaterial',$raw_material_data['Production Part']);
+                    $raw_material = get_object('RawMaterial', $raw_material_data['Production Part']);
                     $raw_material->get_production_parts();
 
 
@@ -541,7 +552,6 @@ class ProductionPart extends SupplierPart {
 
         return $raw_materials;
     }
-
 
 
 }
