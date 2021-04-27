@@ -99,6 +99,12 @@ switch ($tipo) {
     case 'deleted_locations':
         deleted_locations(get_table_parameters(), $db, $user, $account);
         break;
+    case 'picking_bands':
+        picking_bands(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'packing_bands':
+        picking_bands(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -106,8 +112,57 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
+
+
+function picking_bands($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'band';
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'             => (integer)$data['Picking Band Key'],
+                'name'           => sprintf('<span class="link" onClick="change_view(\'warehouse/%d/bands/%d\')" >%s</span>', $data['Picking Band Warehouse Key'], $data['Picking Band Key'], $data['Picking Band Name']),
+                'amount'         => money($data['Picking Band Amount'], $account->get('Account Currency')),
+                'parts'          => number($data['Picking Band Number Parts']),
+                'delivery_notes' => number($data['Picking Band Number Delivery Notes']),
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
 
 function warehouses($_data, $db, $user) {
 
@@ -144,6 +199,7 @@ function warehouses($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
 
 function areas($_data, $db, $user) {
 
@@ -1289,7 +1345,6 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
 }
 
 
-
 function returns($_data, $db, $user) {
     $rtext_label = 'delivery';
 
@@ -2044,14 +2099,13 @@ function external_warehouse_replenishes($_data, $db, $user) {
     $table_data = array();
 
 
-
     foreach ($db->query($sql) as $data) {
 
-        $locations        = '';
+        $locations = '';
         if ($data['location_data'] != '') {
             $locations_data = preg_split('/,/', $data['location_data']);
 
-            $number_locations=0;
+            $number_locations = 0;
 
             $locations = '<div  class="part_locations mini_table left "  >';
 
@@ -2059,7 +2113,8 @@ function external_warehouse_replenishes($_data, $db, $user) {
                 $number_locations++;
                 $location_data = preg_split('/\:/', $location_data);
                 $locations     .= ' <div class="part_location button" style="clear:both;"  location_key="'.$location_data[0].'" >
-				<div onclick="change_view(\'locations/'.$location_data[5].'/'.$location_data[0].'\')"  class="code data w150"  >'.$location_data[1].' '.($location_data[4]=='External'?'<i style="color: tomato" class="fal padding_left_5 small fa-garage-car"></i>':'').' </div>
+				<div onclick="change_view(\'locations/'.$location_data[5].'/'.$location_data[0].'\')"  class="code data w150"  >'.$location_data[1].' '.($location_data[4] == 'External' ? '<i style="color: tomato" class="fal padding_left_5 small fa-garage-car"></i>'
+                        : '').' </div>
 
 				<div class="data w30 aright" >'.number($location_data[3]).'</div>
 				</div>';
@@ -2067,8 +2122,6 @@ function external_warehouse_replenishes($_data, $db, $user) {
             }
             $locations .= '<div style="clear:both"></div></div>';
         }
-
-
 
 
         /*
@@ -2102,15 +2155,15 @@ function external_warehouse_replenishes($_data, $db, $user) {
 
 
         $table_data[] = array(
-            'id'=>(integer) $data['Part SKU'],
+            'id'        => (integer)$data['Part SKU'],
             'reference' => $reference,
 
-            'stock_external' => number(floor($data['Part Current On Hand Stock External'] )),
-            'stock_local' => number(floor($data['Part Current On Hand Stock']-$data['Part Current On Hand Stock External'] )),
-            'to_pick'             => number(ceil($data['to_pick'])),
-            'total_stock'        => number(floor($data['Part Current On Hand Stock'])),
-            'locations' => $locations,
-           // 'next_deliveries'    => $next_deliveries
+            'stock_external' => number(floor($data['Part Current On Hand Stock External'])),
+            'stock_local'    => number(floor($data['Part Current On Hand Stock'] - $data['Part Current On Hand Stock External'])),
+            'to_pick'        => number(ceil($data['to_pick'])),
+            'total_stock'    => number(floor($data['Part Current On Hand Stock'])),
+            'locations'      => $locations,
+            // 'next_deliveries'    => $next_deliveries
 
         );
 

@@ -2030,6 +2030,11 @@ class Part extends Asset {
             case 'Part Picking Band Key':
 
 
+                $old_value=$this->get('Part Picking Band Key');
+
+                if($old_value==$value){
+                    return;
+                }
 
                 if ($value) {
                     $band = get_object('PickingBand', $value);
@@ -2047,7 +2052,7 @@ class Part extends Asset {
                                 'Part Picking Band Name' => $band->get('Picking Band Name')
                             ]
                         );
-
+                        $band->update_parts();
                     } else {
                         $this->error = true;
                         $this->msg   = _('Band name not found');
@@ -2063,8 +2068,22 @@ class Part extends Asset {
                     );
 
                 }
+
+                if($old_value){
+                    $old_band = get_object('PickingBand', $old_value);
+                    $old_band->update_parts();
+
+                }
+
                 break;
             case 'Part Packing Band Key':
+                $old_value=$this->get('Part Picking Band Key');
+
+                if($old_value==$value){
+                    return;
+                }
+
+
                 if ($value) {
                     $band = get_object('PickingBand', $value);
                     if ($band->id) {
@@ -2081,6 +2100,8 @@ class Part extends Asset {
                                 'Part Packing Band Name' => $band->get('Picking Band Name')
                             ]
                         );
+                        $band->update_parts();
+
 
                     } else {
                         $this->error = true;
@@ -2097,7 +2118,11 @@ class Part extends Asset {
                     );
 
                 }
+                if($old_value){
+                    $old_band = get_object('PickingBand', $old_value);
+                    $old_band->update_parts();
 
+                }
                 break;
             case 'materials':
             case 'label unit':

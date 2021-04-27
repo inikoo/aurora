@@ -568,6 +568,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s tariff code', '%s tariff codes', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'band') {
+        return sprintf(
+            ngettext('%s band', '%s bands', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -1114,7 +1118,13 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
     } elseif ($record_label == 'tariff code') {
         return sprintf(
             ngettext(
-                '%s tariff code of %s', '%s tariff codea of %s', $total_with_filter
+                '%s tariff code of %s', '%s tariff codes of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'band') {
+        return sprintf(
+            ngettext(
+                '%s band of %s', '%s bands of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } else {

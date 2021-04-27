@@ -260,10 +260,48 @@ class PickingBand extends DB_Table {
 
     }
 
-    function get_historic_id(){
+    function update_parts() {
 
-        $date=gmdate('Y-m-d H:i:s');
-        $sql="insert into `Picking Band Historic Fact` (`Picking Band Historic Band Key`,`Picking Band Historic Type`,`Picking Band Historic Name`,`Picking Band Historic Amount`,`Picking Band Historic Created`,`Picking Band Historic Updated`) values(?,?,?,?,?,?) on duplicate key update `Picking Band Historic Updated`=? ";
+        $parts = 0;
+
+
+        if ($this->data['Picking Band Type'] == 'Picking') {
+            $sql = "SELECT count(*) as parts  from `Part Dimension` WHERE `Part Picking Band Key`=? and `Part Status`!='Not In Use'  ";
+
+        } else {
+            $sql = "SELECT count(*) as parts  from `Part Dimension` WHERE `Part Packing Band Key`=? and `Part Status`!='Not In Use'  ";
+
+        }
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $parts = $row['parts'];
+
+
+        }
+
+
+
+        $this->fast_update(
+            [
+                'Picking Band Number Parts' => $parts,
+            ]
+        );
+
+
+    }
+
+    function get_historic_id() {
+
+        $date = gmdate('Y-m-d H:i:s');
+        $sql  =
+            "insert into `Picking Band Historic Fact` (`Picking Band Historic Band Key`,`Picking Band Historic Type`,`Picking Band Historic Name`,`Picking Band Historic Amount`,`Picking Band Historic Created`,`Picking Band Historic Updated`) values(?,?,?,?,?,?) on duplicate key update `Picking Band Historic Updated`=? ";
 
         $this->db->prepare($sql)->execute(
             array(

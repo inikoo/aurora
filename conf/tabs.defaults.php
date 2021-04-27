@@ -2222,6 +2222,22 @@ function get_tab_defaults_data() {
             'period'      => 'all',
 
         ),
+        'picking_bands' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'amount',
+            'sort_order'  => 0,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => ''
+        ),
+        'packing_bands' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'amount',
+            'sort_order'  => 0,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => ''
+        ),
 
         'supplier.order.history' => array(
             'view'          => 'overview',

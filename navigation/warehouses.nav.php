@@ -12,6 +12,39 @@
 
 include_once 'class.Warehouse.php';
 
+function get_warehouse_bands_navigation($data, $smarty) {
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections($data['module'], $data['key']);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Warehouse bands'),
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search locations')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+}
+
 function get_production_deliveries_navigation($data, $smarty) {
 
     $left_buttons  = array();

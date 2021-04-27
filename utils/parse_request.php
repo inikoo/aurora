@@ -3672,6 +3672,12 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     }
                                 }
 
+                            }elseif($view_path[1]=='bands'){
+                                $section='warehouse_bands';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
                             }
 
 
