@@ -2683,7 +2683,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_report_delivery_notes_navigation($user, $smarty, $data);
 
                 case ('intrastat'):
-                    return get_intrastat_navigation($user, $smarty, $data);
+                    return get_intrastat_navigation($user, $smarty, $data,$account);
 
                 case ('intrastat_orders'):
                     return get_intrastat_orders_navigation($user, $smarty, $data);
