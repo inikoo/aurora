@@ -459,11 +459,11 @@
 
             <tr>
                 <td>{t}Picker{/t}</td><td colspan="2">{$delivery_note->get('Delivery Note Assigned Picker Alias')}</td>
-
+                <td><i class="far fa-hand-holding-usd " title="{t}Picking bonus{/t}"></i> {$delivery_note->get('Picking Band Amount')}</td>
             </tr>
             <tr>
                 <td>{t}Packer{/t}</td><td colspan="2">{$delivery_note->get('Delivery Note Assigned Packer Alias')}</td>
-
+                <td><i class="far fa-hand-holding-usd "  title="{t}Packing bonus{/t}"></i> {$delivery_note->get('Packing Band Amount')}</td>
             </tr>
 
             <tr>

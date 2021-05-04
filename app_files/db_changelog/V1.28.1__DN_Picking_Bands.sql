@@ -1,0 +1,1 @@
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Picking Bands Date` DATETIME NULL DEFAULT NULL AFTER `Delivery Note Consignment Key`, ADD `Delivery Note Picking Band Amount` DECIMAL(12,2) NULL DEFAULT NULL AFTER `Delivery Note Picking Bands Date`, ADD `Delivery Note Packing Band Amount` DECIMAL(12,2) NULL DEFAULT NULL AFTER `Delivery Note Picking Band Amount`;

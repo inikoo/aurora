@@ -15,20 +15,19 @@ require_once 'common.php';
 
 
 
-
-
-$sql = sprintf("SELECT `Delivery Note Key` FROM `Delivery Note Dimension`   ");
+$sql = sprintf("SELECT `Delivery Note Key` FROM `Delivery Note Dimension` where `Delivery Note Date`>'2021-01-01'  ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $dn = get_object('Delivery Note', $row['Delivery Note Key']);
 
+        if($dn->get('State Index')>=80){
+            $dn->update_picking_packing_bands();
+        }
+
         //$dn->update_totals();
-        $dn->update_uuid();
+       // $dn->update_uuid();
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 

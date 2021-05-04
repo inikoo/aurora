@@ -108,3 +108,5 @@ au_images/AW
 cron/archive_supplier.php
 cron/set_up_picking_bands.php
 cron/syncro_sk_parts.php
+cron/bands.csv
+cron/update_bands.php
