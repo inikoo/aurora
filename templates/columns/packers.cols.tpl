@@ -125,6 +125,30 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
+{
+name: "salary",
+label: "{t}Salary{/t}",
+editable: false,
+sortable:false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='salary'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
+name: "bonus_net",
+label: "{t}Bonus net{/t}",
+editable: false,
+sortable:false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='bonus_net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
 {*/*
 {
 name: "deliveries_with_errors",
@@ -182,6 +206,8 @@ $('.view').removeClass('selected');
 $('#view_'+view).addClass('selected');
 
 grid.columns.findWhere({ name: 'bonus'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'salary'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'bonus_net'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dp'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dp_percentage'} ).set("renderable", false)
 
@@ -198,6 +224,8 @@ grid.columns.findWhere({ name: 'dp_percentage'} ).set("renderable", true)
 }else if(view=='bonus'){
 
 grid.columns.findWhere({ name: 'bonus'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'salary'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'bonus_net'} ).set("renderable", true)
 
 }
 

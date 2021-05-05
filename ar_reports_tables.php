@@ -1791,6 +1791,7 @@ function prospect_agents($_data, $db, $user, $account) {
 
 function pickers($_data, $db, $user, $account) {
 
+    $account->load_acc_data();
     $rtext_label = 'picker';
 
 
@@ -1826,6 +1827,13 @@ function pickers($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
+            $bonus_net=$data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
+
+            if($bonus_net>0){
+                $bonus_net='<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            }elseif($bonus_net<0){
+                $bonus_net='<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            }
 
             $adata[] = array(
                 'id'                => $data['Staff Key'],
@@ -1841,6 +1849,8 @@ function pickers($_data, $db, $user, $account) {
                 'hrs'               => number($data['hrs'], 1, true),
                 'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
                 'bonus'             => money($data['bonus'], $account->get('Currency Code')),
+                'salary'            => money($data['hrs'] * $account->properties('picking_salary_hr_rate'), $account->get('Currency Code')),
+                'bonus_net'         => $bonus_net
 
             );
 
@@ -1867,6 +1877,7 @@ function pickers($_data, $db, $user, $account) {
 
 function packers($_data, $db, $user, $account) {
 
+    $account->load_acc_data();
     $rtext_label = 'packer';
 
     foreach ($_data['parameters'] as $parameter => $parameter_value) {
@@ -1897,6 +1908,15 @@ function packers($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+
+            $bonus_net=$data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
+
+            if($bonus_net>0){
+                $bonus_net='<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            }elseif($bonus_net<0){
+                $bonus_net='<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            }
+
             $adata[] = array(
                 'id'                => $data['Staff Key'],
                 'name'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
@@ -1911,6 +1931,8 @@ function packers($_data, $db, $user, $account) {
                 'hrs'               => number($data['hrs'], 1, true),
                 'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
                 'bonus'             => money($data['bonus'], $account->get('Currency Code')),
+                'salary'            => money($data['hrs'] * $account->properties('picking_salary_hr_rate'), $account->get('Currency Code')),
+                'bonus_net'         => $bonus_net
 
             );
 
