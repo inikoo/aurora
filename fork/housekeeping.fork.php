@@ -1854,6 +1854,8 @@ function fork_housekeeping($job) {
 
             $customer->update_part_bridge();
 
+            $dn=get_object('DeliveryNote',$data['delivery_note_key']);
+            $dn->update_picking_packing_bands();
 
             $suppliers            = array();
             $suppliers_categories = array();

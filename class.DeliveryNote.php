@@ -3350,6 +3350,11 @@ class DeliveryNote extends DB_Table {
         $default_packing_amount = $account->properties('default_packing_band_amount');
 
 
+        if($default_picking_amount=='' and $default_packing_amount==''){
+            return [false,0,0,[]];
+        }
+
+
         $total_picking_band_amount = 0;
         $total_packing_band_amount = 0;
         $itf_band                  = [];
@@ -3463,6 +3468,7 @@ class DeliveryNote extends DB_Table {
       //  print_r($itf_band);exit;
 
         return [
+            true,
             $total_picking_band_amount,
             $total_packing_band_amount,
             $itf_band
@@ -3474,8 +3480,15 @@ class DeliveryNote extends DB_Table {
     function update_picking_packing_bands() {
 
 
-        list($total_picking_band_amount, $total_packing_band_amount, $itf_bands) = $this->get_picking_packing_bands();
+        if($this->get('State Index')<80) {
+            return;
+        }
+        list($ok,$total_picking_band_amount, $total_packing_band_amount, $itf_bands) = $this->get_picking_packing_bands();
 
+
+        if(!$ok){
+            return;
+        }
 
         foreach ($itf_bands as $itf_key => $itf_band_data) {
 
