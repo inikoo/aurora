@@ -3350,8 +3350,13 @@ class DeliveryNote extends DB_Table {
         $default_packing_amount = $account->properties('default_packing_band_amount');
 
 
-        if($default_picking_amount=='' and $default_packing_amount==''){
-            return [false,0,0,[]];
+        if ($default_picking_amount == '' and $default_packing_amount == '') {
+            return [
+                false,
+                0,
+                0,
+                []
+            ];
         }
 
 
@@ -3431,8 +3436,21 @@ class DeliveryNote extends DB_Table {
 
                 $qty = $skos + $cartons;
 
-                $picking_amount = $picking_amount * $qty;
-                $packing_amount = $packing_amount * $qty;
+                if ($qty > $account->properties('max_part_picking_qty')) {
+                    $qty_picking = $account->properties('max_part_picking_qty');
+                } else {
+                    $qty_picking = $qty;
+                }
+                if ($qty > $account->properties('max_part_packing_qty')) {
+                    $qty_packing = $account->properties('max_part_packing_qty');
+                } else {
+                    $qty_packing = $qty;
+
+                }
+
+
+                $picking_amount = $picking_amount * $qty_picking;
+                $packing_amount = $packing_amount * $qty_packing;
 
                 $total_picking_band_amount += $picking_amount;
                 $total_packing_band_amount += $packing_amount;
@@ -3447,7 +3465,8 @@ class DeliveryNote extends DB_Table {
                     'packing_amount'           => $packing_amount,
                     'cartons'                  => $cartons,
                     'skos'                     => $skos,
-                    'qty'                      => $qty,
+                    'qty_picking'              => $qty_picking,
+                    'qty_packing'              => $qty_picking,
                     'reference'                => $part->get('Reference')
 
                 ];
@@ -3457,15 +3476,15 @@ class DeliveryNote extends DB_Table {
 
         }
 
-        if($total_picking_band_amount<$account->properties('min_dn_picking_bonus_amount')){
-            $total_picking_band_amount=$account->properties('min_dn_picking_bonus_amount');
+        if ($total_picking_band_amount < $account->properties('min_dn_picking_bonus_amount')) {
+            $total_picking_band_amount = $account->properties('min_dn_picking_bonus_amount');
         }
 
-        if($total_packing_band_amount<$account->properties('min_dn_packing_bonus_amount')){
-            $total_packing_band_amount=$account->properties('min_dn_packing_bonus_amount');
+        if ($total_packing_band_amount < $account->properties('min_dn_packing_bonus_amount')) {
+            $total_packing_band_amount = $account->properties('min_dn_packing_bonus_amount');
         }
 
-      //  print_r($itf_band);exit;
+        //  print_r($itf_band);exit;
 
         return [
             true,
@@ -3480,13 +3499,13 @@ class DeliveryNote extends DB_Table {
     function update_picking_packing_bands() {
 
 
-        if($this->get('State Index')<80) {
+        if ($this->get('State Index') < 80) {
             return;
         }
-        list($ok,$total_picking_band_amount, $total_packing_band_amount, $itf_bands) = $this->get_picking_packing_bands();
+        list($ok, $total_picking_band_amount, $total_packing_band_amount, $itf_bands) = $this->get_picking_packing_bands();
 
 
-        if(!$ok){
+        if (!$ok) {
             return;
         }
 
@@ -3562,7 +3581,6 @@ ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band 
             }
 
         }
-
 
 
         $this->fast_update(
