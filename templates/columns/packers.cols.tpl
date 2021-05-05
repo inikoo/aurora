@@ -112,6 +112,19 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: rightHeaderHtmlCell
 },
+
+
+{
+name: "bonus",
+label: "{t}Bonus{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='bonus'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
 {*/*
 {
 name: "deliveries_with_errors",
@@ -161,4 +174,39 @@ headerCell: integerHeaderCell
 
 ]
 
-function change_table_view(view,save_state){}
+
+function change_table_view(view,save_state){
+
+
+$('.view').removeClass('selected');
+$('#view_'+view).addClass('selected');
+
+grid.columns.findWhere({ name: 'bonus'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'dp'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'dp_percentage'} ).set("renderable", false)
+
+grid.columns.findWhere({ name: 'dp_per_hour'} ).set("renderable", false)
+
+
+
+
+if(view=='overview'){
+grid.columns.findWhere({ name: 'dp'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'dp_per_hour'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'dp_percentage'} ).set("renderable", true)
+
+}else if(view=='bonus'){
+
+grid.columns.findWhere({ name: 'bonus'} ).set("renderable", true)
+
+}
+
+
+if(save_state){
+var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
+
+$.getJSON(request, function(data) {});
+}
+
+}
+

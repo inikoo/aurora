@@ -24,10 +24,19 @@ if (isset($_SESSION['table_state']['pickers']['from'])) {
 if (isset($_SESSION['table_state']['pickers']['period'])) {
     $default['period'] = $_SESSION['table_state']['pickers']['period'];
 }
-$table_views = array();
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
+    'bonus'  => array(
+        'label' => _('Bonus'),
+        'title' => _('Bonus')
+    ),
+);
+
 
 $table_filters = array(
-    //	'customer'=>array('label'=>_('Customer'), 'title'=>_('Customer name')),
     'name' => array('label' => _('Name')),
 
 );
@@ -43,4 +52,4 @@ $parameters = array(
 include 'utils/get_table_html.php';
 
 
-?>
+

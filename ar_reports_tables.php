@@ -311,7 +311,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
     $adata = array();
 
-    $total=0;
+    $total = 0;
     //print $sql;
 
     $sum_invoices = 0;
@@ -411,7 +411,6 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
         $rtext .= ' ('._('Excluding').': '.$excluded_stores.')';
     }
-
 
 
     $response = array(
@@ -1822,25 +1821,26 @@ function pickers($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-  //  print $sql;
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-
             $adata[] = array(
                 'id'                => $data['Staff Key'],
-                'name'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'], $data['Staff Name']),
+                'name'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
                 'deliveries'        => number($data['deliveries']),
-                'issues'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  number($data['issues'])),
-                'issues_percentage'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  percentage($data['issues'], $data['dp'])),
+                'issues'            => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], number($data['issues'])),
+                'issues_percentage' => sprintf(
+                    '<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], percentage($data['issues'], $data['dp'])
+                ),
                 'picked'            => number($data['picked'], 0),
                 'dp'                => number($data['dp']),
                 'dp_percentage'     => percentage($data['dp'], $total_dp),
                 'hrs'               => number($data['hrs'], 1, true),
                 'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+                'bonus'             => money($data['bonus'], $account->get('Currency Code')),
 
             );
 
@@ -1899,15 +1899,19 @@ function packers($_data, $db, $user, $account) {
 
             $adata[] = array(
                 'id'                => $data['Staff Key'],
-                'name'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'], $data['Staff Name']),
+                'name'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
                 'deliveries'        => number($data['deliveries']),
-                'issues'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  number($data['issues'])),
-                'issues_percentage'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  percentage($data['issues'], $data['dp'])),
+                'issues'            => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], number($data['issues'])),
+                'issues_percentage' => sprintf(
+                    '<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], percentage($data['issues'], $data['dp'])
+                ),
                 'packed'            => number($data['packed'], 0),
                 'dp'                => number($data['dp']),
                 'dp_percentage'     => percentage($data['dp'], $total_dp),
                 'hrs'               => number($data['hrs'], 1, true),
                 'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+                'bonus'             => money($data['bonus'], $account->get('Currency Code')),
+
             );
 
         }
@@ -2129,8 +2133,8 @@ function sales($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $where_dates_1yb $wheref $group_by limit $start_from,$number_results";
 
-  //  print $sql;
-//exit;
+    //  print $sql;
+    //exit;
 
     if ($result = $db->query($sql)) {
 
@@ -3386,14 +3390,12 @@ sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery C
 }
 
 
-
 function picker_packer_feedback($_data, $db, $user, $account) {
 
 
     $rtext_label = 'issue';
 
     include_once 'prepare_table/init.php';
-
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -3405,20 +3407,20 @@ function picker_packer_feedback($_data, $db, $user, $account) {
 
 
             $record_data[] = array(
-                'id'       => (integer)$data['Feedback Key'],
-                'delivery_note' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
-                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-                'delivery_note_date'     => strftime("%a %e %b %Y", strtotime($data['Delivery Note Date']." +00:00")),
+                'id'                 => (integer)$data['Feedback Key'],
+                'delivery_note'      => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+                'reference'          => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'delivery_note_date' => strftime("%a %e %b %Y", strtotime($data['Delivery Note Date']." +00:00")),
 
-                'date'     => strftime("%a %e %b %Y", strtotime($data['Feedback Date']." +00:00")),
-                'note'     => $data['Feedback Message'],
-                'author'   => $data['User Alias'],
+                'date'   => strftime("%a %e %b %Y", strtotime($data['Feedback Date']." +00:00")),
+                'note'   => $data['Feedback Message'],
+                'author' => $data['User Alias'],
 
             );
 
 
         }
-    }else {
+    } else {
         print_r($error_info = $db->errorInfo());
         print $sql;
         exit;

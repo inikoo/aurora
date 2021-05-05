@@ -67,6 +67,8 @@ if ($order == 'name') {
     $order = 'dp_per_hour';
 } elseif ($order == 'issues') {
     $order = '1';
+}elseif ($order == 'bonus') {
+    $order = 'bonus';
 } elseif ($order == 'issues_percentage') {
     $order                   = '3';
     $issues_percentage_field = "(select count(distinct `Feedback Key`) from `Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
@@ -81,7 +83,11 @@ if ($order == 'name') {
 
 $group_by = 'group by `Picker Key`';
 
-$table = ' `Inventory Transaction Fact` ITF  left join `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Inventory Transaction Key`)   left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) ';
+$table = ' `Inventory Transaction Fact` ITF  left join 
+`ITF Picking Band Bridge` on (`ITF Picking Band ITF Key`=ITF.`Inventory Transaction Key` and `ITF Picking Band Type`="Picking") left join 
+
+        `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Inventory Transaction Key`)   left join 
+        `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) ';
 
 $fields = "`Picker Key`,ITF.`Inventory Transaction Key`,
 (select count(distinct `Feedback Key`) from `Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
@@ -96,7 +102,8 @@ $fields = "`Picker Key`,ITF.`Inventory Transaction Key`,
   count(distinct ITF.`Delivery Note Key`,`Part SKU`)/ (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours )  as dp_per_hour,
   @deliveries_with_error := count(distinct OPTD.`Picker Fault Delivery Note Key`) as deliveries_with_errors,
    sum( OPTD.`Picker Fault`) as picks_with_errors,
-    sum( OPTD.`Picker Fault`)/count(*) as picks_with_errors_percentage
+    sum( OPTD.`Picker Fault`)/count(*) as picks_with_errors_percentage,
+    sum(`ITF Picking Band Amount`) as bonus
      
 
 ";
