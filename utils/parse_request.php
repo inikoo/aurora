@@ -3678,6 +3678,18 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $parent     = 'staff';
+                                        $parent_key = $view_path[2];
+                                        $section = 'staff_warehouse_kpi';
+                                        $key     = $view_path[2];
+                                    }
+                                }
+
+
+
                             }
 
 

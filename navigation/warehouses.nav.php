@@ -12,6 +12,46 @@
 
 include_once 'class.Warehouse.php';
 
+
+function get_staff_warehouse_kpi_navigation($data, $smarty) {
+
+    $left_buttons[] = array(
+        'icon'      => 'arrow-up',
+        'title'     => _('Warehouse KPIs'),
+        'reference' => 'warehouse/1/kpis',
+        'parent'    => ''
+    );
+
+    $right_buttons = array();
+    $sections      = get_sections($data['module'], $data['key']);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => sprintf(_('%s KPIs'),$data['_parent']->get('Name')),
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search locations')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+}
+
 function get_warehouse_kips_navigation($data, $smarty) {
 
     $left_buttons  = array();

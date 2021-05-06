@@ -4369,6 +4369,19 @@ function get_tab_defaults_data() {
             'period'      => 'last_w'
 
         ),
+        'staff_warehouse_kpi.delivery_notes'    => array(
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => '',
+            'export_fields' => get_export_fields('delivery_notes'),
+            'period'        => 'last_w',
+            'from'          => '',
+            'to'            => '',
+
+        ),
         'pickers'                  => array(
             'view'        => 'overview',
             'sort_key'    => 'name',

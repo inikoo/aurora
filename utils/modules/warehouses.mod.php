@@ -35,7 +35,7 @@ function get_warehouses_module() {
                 'sections_class' => 'icon-only',
 
                 'tabs' => array(
-                    'warehouse.details'  => array(
+                    'warehouse.details' => array(
                         'label' => _('Settings'),
                         'title' => _('Warehouse settings'),
                         'icon'  => 'sliders-h'
@@ -126,13 +126,13 @@ function get_warehouses_module() {
                 'tabs'      => array(
 
 
-                    'warehouse.locations' => array(
+                    'warehouse.locations'         => array(
                         'label'             => _('Locations'),
                         'icon'              => 'pallet',
                         'dynamic_reference' => 'warehouse/%d/locations',
 
                     ),
-                    'warehouse.areas'     => array(
+                    'warehouse.areas'             => array(
                         'label'             => _('Warehouse areas'),
                         'title'             => _('Warehouse areas (Rankings, aisles, rooms)'),
                         'icon'              => 'inventory',
@@ -143,15 +143,13 @@ function get_warehouses_module() {
                         'label'             => _('Deleted locations'),
                         'icon'              => 'ban',
                         'dynamic_reference' => 'warehouse/%d/deleted_locations',
-                        'class'=>'right'
+                        'class'             => 'right'
 
                     ),
 
                 )
 
             ),
-
-
 
 
             'warehouse.new'      => array(
@@ -339,28 +337,28 @@ function get_warehouses_module() {
                 'icon'      => 'industry',
                 'reference' => 'warehouse/%d/production_deliveries',
                 'tabs'      => array(
-                    'warehouse.production_deliveries.todo' => array(
+                    'warehouse.production_deliveries.todo'      => array(
                         'label' => _('To-do'),
                         'icon'  => 'clipboard-list'
                     ),
-                    'warehouse.production_deliveries.done' => array(
+                    'warehouse.production_deliveries.done'      => array(
                         'label' => _('Done'),
                         'icon'  => 'clipboard-check'
                     ),
                     'warehouse.production_deliveries.cancelled' => array(
                         'label' => _('Cancelled')
                     ),
-                    'warehouse.production_deliveries.all' => array(
+                    'warehouse.production_deliveries.all'       => array(
                         'label' => _('All'),
-                        'class'=>'right'
+                        'class' => 'right'
                     )
 
                 )
             ),
-            'production_delivery' => array(
+            'production_delivery'   => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'supplier.delivery.items'   => array(
+                    'supplier.delivery.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
@@ -376,8 +374,7 @@ function get_warehouses_module() {
                     ),
 
 
-
-                    'supplier.delivery.history'     => array(
+                    'supplier.delivery.history' => array(
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
@@ -387,7 +384,7 @@ function get_warehouses_module() {
                 )
 
             ),
-            'returns'  => array(
+            'returns'               => array(
                 'type'      => 'navigation',
                 'label'     => _('Returns'),
                 'icon'      => 'backspace',
@@ -403,8 +400,6 @@ function get_warehouses_module() {
             ),
 
 
-
-
             'warehouse_kpis' => array(
                 'type'      => 'navigation',
                 'label'     => _('KPIs'),
@@ -415,19 +410,34 @@ function get_warehouses_module() {
                         'label' => _('Bonus report'),
 
                     ),
-                    'picking_bands' => array(
+                    'picking_bands'          => array(
                         'label' => _('Picking bands'),
-                        'class'=>'right'
+                        'class' => 'right'
 
                     ),
-                    'packing_bands' => array(
+                    'packing_bands'          => array(
                         'label' => _('Packing bands'),
-                        'class'=>'right'
+                        'class' => 'right'
                     ),
 
                 )
             ),
 
+
+            'staff_warehouse_kpi' => array(
+                'type' => '',
+                'tabs' => array(
+                    'staff_warehouse_kpi.delivery_notes' => array(
+                        'label' => _('Deliveries'),
+                        'icon'  => 'truck'
+                    ),
+                  //  'staff_warehouse_kpi.feedback'       => array(
+                  //      'label' => _('Feedback'),
+                  //      'icon'  => 'poop'
+                  //  ),
+                )
+
+            ),
 
             'feedback' => array(
                 'type'      => 'right_button',

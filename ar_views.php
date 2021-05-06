@@ -3215,6 +3215,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                 case ('warehouse_kpis'):
                     return get_warehouse_kips_navigation($data, $smarty, $user, $db, $account);
+                case ('staff_warehouse_kpi'):
+                    return get_staff_warehouse_kpi_navigation($data, $smarty, $user, $db, $account);
 
 
             }

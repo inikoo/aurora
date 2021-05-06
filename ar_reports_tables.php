@@ -121,6 +121,9 @@ switch ($tipo) {
     case 'warehouse_bonus_report':
         warehouse_bonus_report(get_table_parameters(), $db, $user, $account);
         break;
+    case 'staff_warehouse_kpi.delivery_notes':
+        staff_warehouse_kpi_delivery_notes(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -128,8 +131,162 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
+
+
+
+function staff_warehouse_kpi_delivery_notes($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'delivery_note';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+
+        switch ($data['Delivery Note State']) {
+
+
+            case 'Ready to be Picked':
+                $state = _('Waiting');
+                break;
+            case 'Picker Assigned':
+                $state = _('Picker assigned');
+                break;
+            case 'Picking':
+                $state = _('Picking');
+                break;
+            case 'Picked':
+                $state = _('Picked');
+                break;
+            case 'Packing':
+                $state = _('Packing');
+                break;
+            case 'Packed':
+                $state = _('Packed');
+                break;
+            case 'Approved':
+                $state = _('Approved');
+                $notes = sprintf(
+                    '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                );
+                break;
+            case 'Dispatched':
+                $state = _('Dispatched');
+                $notes = sprintf(
+                    '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                );
+                break;
+            case 'Cancelled':
+                $state = _('Cancelled');
+                break;
+            case 'Cancelled to Restock':
+                $state = _('Cancelled to restock');
+                break;
+            case 'Packed Done':
+                $state = _('Packed & Closed');
+                break;
+            default:
+                $state = $data['Delivery Note State'];
+                break;
+        }
+
+        switch ($data['Delivery Note Type']) {
+            case('Order'):
+                $type = _('Order');
+                break;
+            case('Sample'):
+                $type = _('Sample');
+                break;
+            case('Donation'):
+                $type = _('Donation');
+                break;
+            case('Replacement'):
+            case('Replacement & Shortages'):
+                $type = _('Replacement');
+                break;
+            case('Shortages'):
+                $type = _('Shortages');
+                break;
+            default:
+                $type = $data['Delivery Note Type'];
+
+        }
+
+        switch ($data['Delivery Note Parcel Type']) {
+            case('Pallet'):
+                $parcel_type = ' <i class="fa fa-calendar  fa-flip-vertical" aria-hidden="true"></i>';
+                break;
+            case('Envelope'):
+                $parcel_type = ' <i class="fa fa-envelope" aria-hidden="true"></i>';
+                break;
+            default:
+                $parcel_type = ' <i class="fa fa-archive" aria-hidden="true"></i>';
+
+        }
+
+        if ($data['Delivery Note Number Parcels'] == '') {
+            $parcels = '?';
+        } elseif ($data['Delivery Note Parcel Type'] == 'Pallet' and $data['Delivery Note Number Boxes']) {
+            $parcels = number($data['Delivery Note Number Parcels']).$parcel_type.' ('.$data['Delivery Note Number Boxes'].' b)';
+        } else {
+            $parcels = number($data['Delivery Note Number Parcels']).$parcel_type;
+        }
+
+
+        $bonus_picker=money($data['Delivery Note Picking Band Amount'],$account->get('Account Currency'));
+        if($data['Picker Key']!=$_data['parameters']['parent_key']){
+            $bonus_picker='';
+        }
+
+        $bonus_packer=money($data['Delivery Note Packing Band Amount'],$account->get('Account Currency'));
+        if($data['Packer Key']!=$_data['parameters']['parent_key']){
+            $bonus_packer='';
+        }
+
+
+        $adata[] = array(
+            'id' => (integer)$data['Delivery Note Key'],
+
+
+            'number'   => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
+           // 'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
+
+            'date_packed'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Finish Packing'].' +0:00')),
+            'weight'  => weight($data['Delivery Note Estimated Weight'], ' Kg', 3, false, true),
+            'parcels' => $parcels,
+            'type'    => $type,
+            'state'   => $state,
+            //'notes'   => $notes,
+            'bonus_picker'=>$bonus_picker,
+            'bonus_packer'=>$bonus_packer
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 function reports($_data, $db, $user) {
@@ -1971,24 +2128,12 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
-    $total_dp = 0;
-    $sql      = sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Picker Key` ");
 
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $total_dp += ($row['units']);
-
-        }
-    }
-
-    if ($total_dp == 0) {
-        $total_dp = 1;
-    }
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
+    //exit($sql);
 
     if ($result = $db->query($sql)) {
 
@@ -2004,7 +2149,7 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
 
             $adata[] = array(
                 'id'         => $data['Staff Key'],
-                'name'       => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
+                'name'       => sprintf('<span class="link" onclick="change_view(\'warehouse/%d/kpis/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Warehouse Key'],$data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
                 'deliveries' => number($data['deliveries']),
                 'picked'     => number($data['picked'], 0),
                 'picks'     => number($data['picks'], 0),

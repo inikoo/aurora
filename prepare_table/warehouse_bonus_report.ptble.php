@@ -24,7 +24,7 @@ if (isset($parameters['period'])) {
         ) = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
-    $where_interval               = prepare_mysql_dates($from, $to, '`Date`');
+    $where_interval               = prepare_mysql_dates($from, $to, '`Date Packed`');
     $where                        .= $where_interval['mysql'];
     $where_interval_working_hours = prepare_mysql_dates($from, $to, '`Timesheet Date`', 'only dates')['mysql'];
     $where_interval_feedback      = prepare_mysql_dates($from, $to, 'ITF2.`Date Picked`')['mysql'];
@@ -73,25 +73,19 @@ if ($order == 'name') {
     $order = 'cartons';
 }elseif ($order == 'bonus') {
     $order = 'bonus';
-} elseif ($order == 'issues_percentage') {
-    $order                   = '3';
-    $issues_percentage_field = "(select count(distinct `Feedback Key`) from `Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
-             left join `Inventory Transaction Fact` ITF2 on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  where   `Feedback Picker`=\'Yes\' and  ITF2.`Picker Key`=ITF.`Picker Key` $where_interval_feedback ) /
-  count(distinct ITF.`Delivery Note Key`,`Part SKU`)";
+}  else {
 
-} else {
-
-    $order = '`Picker Key`';
+    $order = 'S.`Staff Key`';
 }
 
 
-$group_by = 'group by `Picker Key`';
+$group_by = 'group by S.`Staff Key`';
 
 $table = ' `Inventory Transaction Fact` ITF  left join 
 `ITF Picking Band Bridge` on (`ITF Picking Band ITF Key`=ITF.`Inventory Transaction Key` ) left join 
 
         `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Inventory Transaction Key`)   left join 
-        `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`) left join  
+        `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`  or S.`Staff Key`=ITF.`Packer Key`) left join  
         `Staff Role Bridge` SRB on (SRB.`Staff Key`=S.`Staff Key`)
         '
 
@@ -111,7 +105,7 @@ $fields = "`Picker Key`,ITF.`Inventory Transaction Key`,
     sum( OPTD.`Picker Fault`)/count(*) as picks_with_errors_percentage,
     sum(`ITF Picking Band Amount`) as bonus,
          sum(`ITF Picking Band SKOs`) as picks,
-    sum(`ITF Picking Band Cartons`) as cartons
+    sum(`ITF Picking Band Cartons`) as cartons,`Warehouse Key`
 
 
 ";
