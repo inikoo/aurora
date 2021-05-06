@@ -3213,8 +3213,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_feedback_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                case ('warehouse_bands'):
-                    return get_warehouse_bands_navigation($data, $smarty, $user, $db, $account);
+                case ('warehouse_kpis'):
+                    return get_warehouse_kips_navigation($data, $smarty, $user, $db, $account);
 
 
             }

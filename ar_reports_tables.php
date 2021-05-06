@@ -118,6 +118,9 @@ switch ($tipo) {
     case 'packer_feedback':
         picker_packer_feedback(get_table_parameters(), $db, $user, $account);
         break;
+    case 'warehouse_bonus_report':
+        warehouse_bonus_report(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1827,12 +1830,12 @@ function pickers($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
-            $bonus_net=$data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
+            $bonus_net = $data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
 
-            if($bonus_net>0){
-                $bonus_net='<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
-            }elseif($bonus_net<0){
-                $bonus_net='<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            if ($bonus_net > 0) {
+                $bonus_net = '<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            } elseif ($bonus_net < 0) {
+                $bonus_net = '<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
             }
 
             $adata[] = array(
@@ -1909,12 +1912,12 @@ function packers($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-            $bonus_net=$data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
+            $bonus_net = $data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
 
-            if($bonus_net>0){
-                $bonus_net='<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
-            }elseif($bonus_net<0){
-                $bonus_net='<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            if ($bonus_net > 0) {
+                $bonus_net = '<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            } elseif ($bonus_net < 0) {
+                $bonus_net = '<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
             }
 
             $adata[] = array(
@@ -1953,6 +1956,87 @@ function packers($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
+function warehouse_bonus_report($_data, $db, $user, $account) {
+
+    $account->load_acc_data();
+    $rtext_label = 'picker';
+
+
+    foreach ($_data['parameters'] as $parameter => $parameter_value) {
+        $_SESSION['table_state']['packers'][$parameter] = $parameter_value;
+
+    }
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $total_dp = 0;
+    $sql      = sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Picker Key` ");
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $total_dp += ($row['units']);
+
+        }
+    }
+
+    if ($total_dp == 0) {
+        $total_dp = 1;
+    }
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $bonus_net = $data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
+
+            if ($bonus_net > 0) {
+                $bonus_net = '<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            } elseif ($bonus_net < 0) {
+                $bonus_net = '<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
+            }
+
+            $adata[] = array(
+                'id'         => $data['Staff Key'],
+                'name'       => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
+                'deliveries' => number($data['deliveries']),
+                'picked'     => number($data['picked'], 0),
+                'picks'     => number($data['picks'], 0),
+                'cartons'     => number($data['cartons'], 0),
+
+                'hrs'       => number($data['hrs'], 1, true),
+                'bonus'     => money($data['bonus'], $account->get('Currency Code')),
+                'salary'    => money($data['hrs'] * $account->properties('picking_salary_hr_rate'), $account->get('Currency Code')),
+                'bonus_net' => $bonus_net
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function sales($_data, $db, $user, $account) {
 

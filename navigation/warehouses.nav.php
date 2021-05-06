@@ -12,7 +12,7 @@
 
 include_once 'class.Warehouse.php';
 
-function get_warehouse_bands_navigation($data, $smarty) {
+function get_warehouse_kips_navigation($data, $smarty) {
 
     $left_buttons  = array();
     $right_buttons = array();
@@ -29,7 +29,7 @@ function get_warehouse_bands_navigation($data, $smarty) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _('Warehouse bands'),
+        'title'          => _('Warehouse KPIs'),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search locations')

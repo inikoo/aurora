@@ -4357,6 +4357,18 @@ function get_tab_defaults_data() {
             'period'      => 'mtd'
 
         ),
+        'warehouse_bonus_report'                  => array(
+            'view'        => 'overview',
+            'sort_key'    => 'name',
+            'sort_order'  => -1,
+            'rpp'         => 500,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'name',
+            'from'        => '',
+            'to'          => '',
+            'period'      => 'last_w'
+
+        ),
         'pickers'                  => array(
             'view'        => 'overview',
             'sort_key'    => 'name',

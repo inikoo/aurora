@@ -3672,8 +3672,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     }
                                 }
 
-                            }elseif($view_path[1]=='bands'){
-                                $section='warehouse_bands';
+                            }elseif($view_path[1]=='kpis'){
+                                $section='warehouse_kpis';
                                 $object  = '';
 
                                 $parent     = 'warehouse';
