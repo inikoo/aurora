@@ -23,10 +23,12 @@ $fields = '';
 
 if ($parameters['parent'] == 'part') {
 
+  //  $where = sprintf(
+  //      " where   ( `Inventory Transaction Type`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0  and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
+  //  );
     $where = sprintf(
-        " where   ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0  and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
+        " where    `Inventory Transaction Type`='In'   and ITF.`Part SKU`=%d", $parameters['parent_key']
     );
-
 
 } elseif ($parameters['parent'] == 'account') {
 

@@ -3832,9 +3832,15 @@ class Part extends Asset {
             $data_to_update = array();
             while ($row = $stmt->fetch()) {
 
-                //print_r($row);
 
-                if (!($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Quantity'] > 0) and $running_cost_per_sko != '') {
+
+                if (
+
+                (  !($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Quantity'] > 0) and $running_cost_per_sko != '') or
+                (  $row['Inventory Transaction Section']=='In' and   $row['Inventory Transaction Type']!='In'  )
+
+
+                ) {
 
 
                     $sql = sprintf(
@@ -3855,7 +3861,7 @@ class Part extends Asset {
 
                 $amount = round($amount, 6);
 
-                //print "$running_stock_value  $amount --->";
+               // print "$running_stock_value  $amount --->";
 
 
                 $running_stock       = round($running_stock + $row['Inventory Transaction Quantity'], 5);
@@ -3865,7 +3871,7 @@ class Part extends Asset {
                 }
 
 
-                //print "$running_stock_value  \n";
+               // print "$running_stock_value  \n";
 
 
                 $data_to_update[] = array(
