@@ -1032,11 +1032,11 @@ class PartLocation extends DB_Table {
 
     }
 
-    function add_stock($data, $date) {
+    function add_stock($data) {
 
         $stock_transfer_data = array(
             'Quantity'         => $data['Quantity'],
-            'Transaction Type' => 'In',
+            'Transaction Type' => $data['Transaction Type'],
             'Destination'      => $this->location_key,
             'Origin'           => $data['Origin']
         );
@@ -1050,7 +1050,7 @@ class PartLocation extends DB_Table {
 
         if (!$transaction_id) {
             $this->error = true;
-            $this->msg   = 'Can add stock';
+            $this->msg   = 'Can not add stock';
         } else {
 
 

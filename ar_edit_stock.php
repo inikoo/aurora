@@ -222,7 +222,7 @@ switch ($tipo) {
         );
 
 
-        edit_leakages($data,$editor,  $smarty);
+        edit_leakages($data, $editor, $smarty);
         break;
     case 'send_to_production':
 
@@ -349,8 +349,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     $sql = sprintf(
         'select ANY_VALUE(`Supplier Part Part SKU`) as `Supplier Part Part SKU`,
         ANY_VALUE(`Purchase Order Transaction Fact Key`) as `Purchase Order Transaction Fact Key`,
-        ANY_VALUE(`Metadata`) as `Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ',
-        $delivery->id
+        ANY_VALUE(`Metadata`) as `Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ', $delivery->id
     );
     if ($result = $db->query($sql)) {
         $all_parts_min_date = '';
@@ -544,7 +543,7 @@ function edit_part_stock_check($data, $editor, $smarty) {
     }
 
 
-    $part=get_object('Part', $data['part_sku']);
+    $part = get_object('Part', $data['part_sku']);
     $smarty->assign('part_sku', $part->id);
     $smarty->assign('part', $part);
     $smarty->assign('locations_data', $part->get_locations('data'));
@@ -1179,7 +1178,8 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 
 
     $sql = sprintf(
-        'SELECT `Supplier Delivery Extra Cost Amount`,`Supplier Delivery Extra Cost Account Currency Amount`,`Supplier Delivery Key`,`Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units` ,`Supplier Part Packages Per Carton` FROM	
+        'SELECT `Purchase Order Transaction Type`,`Supplier Delivery Extra Cost Amount`,`Supplier Delivery Extra Cost Account Currency Amount`,`Supplier Delivery Key`,`Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units` ,`Supplier Part Packages Per Carton` 
+FROM	
   `Purchase Order Transaction Fact` POTF
 LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
@@ -1240,13 +1240,20 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             //exit($amount_per_sko);
 
 
+            if ($row['Purchase Order Transaction Type'] == 'Return') {
+                $transaction_type = 'Restock';
+            } else {
+                $transaction_type = 'In';
+            }
+
             if ($account->get('Account Add Stock Value Type') == 'Last Price') {
 
                 $oif_key = $part_location->add_stock(
                     array(
-                        'Quantity' => $data['qty'],
-                        'Origin'   => $origin
-                    ), gmdate('Y-m-d H:i:s')
+                        'Quantity'         => $data['qty'],
+                        'Origin'           => $origin,
+                        'Transaction Type' => $transaction_type
+                    )
                 );
 
             } else {
@@ -1254,10 +1261,11 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
                 $oif_key = $part_location->add_stock(
                     array(
-                        'Quantity' => $data['qty'],
-                        'Origin'   => $origin,
-                        'Amount'   => $data['qty'] * $amount_per_sko
-                    ), gmdate('Y-m-d H:i:s')
+                        'Quantity'         => $data['qty'],
+                        'Origin'           => $origin,
+                        'Amount'           => $data['qty'] * $amount_per_sko,
+                        'Transaction Type' => $transaction_type
+                    )
                 );
 
 
@@ -1393,7 +1401,7 @@ function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) 
 
     }
 
-    $part->update_aiku('Part Dimension','locations');
+    $part->update_aiku('Part Dimension', 'locations');
 
 
     echo json_encode($response);
@@ -1402,7 +1410,7 @@ function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) 
 }
 
 
-function edit_leakages($data,$editor,  $smarty) {
+function edit_leakages($data, $editor, $smarty) {
 
     include_once 'class.PartLocation.php';
 
