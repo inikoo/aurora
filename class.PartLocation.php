@@ -1101,6 +1101,10 @@ class PartLocation extends DB_Table {
 
 
         $details = '';
+
+
+       // print $transaction_type."\n";
+
         switch ($transaction_type) {
             case('Production'):
                 $record_type = 'Movement';
@@ -1165,6 +1169,19 @@ class PartLocation extends DB_Table {
 
                 break;
             case('In'):
+
+                $record_type = 'Movement';
+                $section     = 'In';
+                $details     = sprintf(
+                    _('%d SKO %s received in %s from %s'), $qty_change, sprintf(
+                    '<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $this->part_sku, $this->part->get('Reference')
+                ), sprintf(
+                        '<span class="link" onClick="change_view(\'location/%d/%d\')">%s</span>', $this->location->get('Location Warehouse Key'), $this->location->id, $this->location->get('Code')
+                    ), $data['Origin']
+
+                );
+                break;
+            case('Restock'):
 
                 $record_type = 'Movement';
                 $section     = 'In';
