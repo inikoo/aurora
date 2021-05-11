@@ -46,8 +46,36 @@ function update_products_categories_products_data($db, $print_est) {
         foreach ($result as $row) {
             $category = new Category($row['Category Key']);
             $category->update_product_category_products_data();
-            
-    
+
+
+            $webpage = get_object('Webpage', $category->get('Product Category Webpage Key'));
+            if ($webpage->id) {
+
+                $content_data = $webpage->get('Content Data');
+
+                $web_text = '';
+
+                if (isset($content_data['blocks']) and is_array($content_data['blocks'])) {
+                    foreach ($content_data['blocks'] as $block) {
+
+                        if ($block['type'] == 'blackboard' and $block['show']) {
+
+                            if (isset($block['texts'])) {
+                                foreach ($block['texts'] as $text) {
+                                    $web_text .= $text['text'].' ';
+
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                $category->fast_update(array('Product Category Published Webpage Description' => $web_text));
+
+            }
+
+
             $contador++;
             $lap_time1 = date('U');
 
@@ -61,8 +89,6 @@ function update_products_categories_products_data($db, $print_est) {
         }
 
     }
-
-
 
 
 }

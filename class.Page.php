@@ -3006,6 +3006,28 @@ class Page extends DB_Table {
             }
 
 
+
+            $web_text = '';
+
+            if (isset($content_data['blocks']) and is_array($content_data['blocks'])) {
+                foreach ($content_data['blocks'] as $block) {
+
+                    if ($block['type'] == 'blackboard' and $block['show']) {
+
+                        if(isset($block['texts'])) {
+                            foreach ($block['texts'] as $text) {
+                                $web_text .= $text['text'].' ';
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            $category->fast_update(array('Product Category Published Webpage Description' => $web_text));
+
+
+
             if ($publish_products) {
                 include_once 'class.Page.php';
                 $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
