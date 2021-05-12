@@ -71,7 +71,8 @@ function update_products_categories_products_data($db, $print_est) {
                 }
 
 
-                $category->fast_update(array('Product Category Published Webpage Description' => $web_text));
+
+                $category->fast_update(array('Product Category Published Webpage Description' => $web_text),'Product Category Dimension');
 
             }
 

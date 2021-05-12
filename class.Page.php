@@ -3024,7 +3024,7 @@ class Page extends DB_Table {
                 }
             }
 
-            $category->fast_update(array('Product Category Published Webpage Description' => $web_text));
+            $category->fast_update(array('Product Category Published Webpage Description' => $web_text),'Product Category Dimension');
 
 
 
