@@ -3844,7 +3844,6 @@ class Product extends Asset {
         $sko              = '';
         $carton           = '';
         $batch            = '';
-       // $outers_in_carton = '';
 
 
         if ($this->get('Product Number of Parts') == 1) {
@@ -3854,7 +3853,6 @@ class Product extends Asset {
                 $sko    = $part_data['Ratio'];
                 if($part_data['Part']->get('Part SKOs per Carton')>0) {
                     $carton           = $part_data['Ratio'] / $part_data['Part']->get('Part SKOs per Carton');
-                   // $outers_in_carton = $part_data['Part']->get('Part SKOs per Carton')/$part_data['Ratio'];
                 }
             }
         }
@@ -3862,7 +3860,6 @@ class Product extends Asset {
         $this->fast_update_json_field('Product Properties', 'packing_sko', $sko);
         $this->fast_update_json_field('Product Properties', 'packing_carton', $carton);
         $this->fast_update_json_field('Product Properties', 'packing_batch', $batch);
-       // $this->fast_update_json_field('Product Properties', 'outers_in_carton', $outers_in_carton);
 
     }
 

@@ -957,7 +957,7 @@ class Part extends Asset {
                 }
 
 
-                break;
+
 
 
             case 'Units Per Carton':
@@ -965,7 +965,7 @@ class Part extends Asset {
                 return $this->data['Part Units Per Package'] * $this->data['Part SKOs per Carton'];
 
 
-                break;
+
 
 
             case 'SKOs per Carton':
@@ -1438,7 +1438,7 @@ class Part extends Asset {
                     return '';
                 }
 
-                break;
+
 
 
             case 'Next Shipment':
@@ -1565,7 +1565,7 @@ class Part extends Asset {
 
                 return '<i class="fa fa-exclamation-circle error" ></i> '.$error;
 
-                break;
+
 
             case 'Barcode Number Error with Duplicates Links':
 
@@ -1979,6 +1979,15 @@ class Part extends Asset {
         }
 
         switch ($field) {
+
+            case 'Part SKOs per Carton':
+                $this->update_field($field, $value, $options);
+
+                foreach ($this->get_products('objects') as $product) {
+                    $product->editor = $this->editor;
+                    $product->updating_packing_data();
+                }
+                break;
 
             case 'Part Picking Band Name':
                 if ($value != '') {
@@ -3200,6 +3209,12 @@ class Part extends Asset {
 
 
                 $this->update_field('Part SKOs per Carton', $supplier_part->get('Supplier Part Packages Per Carton'), $options);
+
+                foreach ($this->get_products('objects') as $product) {
+                    $product->editor = $this->editor;
+                    $product->updating_packing_data();
+                }
+
 
                 break;
 

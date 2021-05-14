@@ -1344,7 +1344,6 @@ class Supplier extends SubjectSupplier {
 
 
                         $part->fast_update(array('Part Carton Barcode' => $supplier_part->get('Supplier Part Carton Barcode')));
-                        $part->fast_update(array('Part SKOs per Carton' => $supplier_part->get('Supplier Part Packages Per Carton')));
 
 
                         $part->update(
@@ -1352,6 +1351,7 @@ class Supplier extends SubjectSupplier {
                                 'Part Materials'          => $materials,
                                 'Part Package Dimensions' => $package_dimensions,
                                 'Part Unit Dimensions'    => $unit_dimensions,
+                                'Part SKOs per Carton'=> $supplier_part->get('Supplier Part Packages Per Carton')
 
                             ), 'no_history'
                         );
