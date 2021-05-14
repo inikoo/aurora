@@ -924,9 +924,11 @@ function save_item_qty_change(element) {
 
                 for (var key in data.discounts_data) {
                     console.log(key+': '+data.discounts_data[key])
+                    console.log(key+':  ----->  '+data.discounts_data[key]['packing'])
                     $('#transaction_deal_info_'+key).html(data.discounts_data[key]['deal_info'])
                     $('#transaction_discounts_'+key).html(data.discounts_data[key]['discounts'])
                     $('#transaction_item_net_'+key).html(data.discounts_data[key]['item_net'])
+                    $('#transaction_packing_'+key).html(data.discounts_data[key]['packing'])
 
                     //$('.' + key).html(data.metadata.class_html[key])
                 }

@@ -3102,13 +3102,15 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function update_shipper_services($shipper) {
+
+    function update_shipper_services($shipper, $debug = false) {
 
         $post = $this->get_shipping_parameters($shipper);
         $curl = curl_init();
 
-
-        // print_r($post);
+        if ($debug) {
+           // print_r($post);
+        }
 
         curl_setopt_array(
             $curl, array(
@@ -3127,10 +3129,15 @@ class DeliveryNote extends DB_Table {
                  )
         );
 
+
         curl_setopt($curl, CURLOPT_POST, 1);
 
         curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
         $tmp = curl_exec($curl);
+
+        if ($debug) {
+            print_r($tmp);
+        }
 
         $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
@@ -3145,7 +3152,7 @@ class DeliveryNote extends DB_Table {
     }
 
 
-    function update_shippers_services() {
+    function update_shippers_services($debug=false) {
 
         $sql  = "select `Shipper Key`,`Shipper Metadata` from `Shipper Dimension` where `Shipper API Key`>0   ";
         $stmt = $this->db->prepare($sql);
@@ -3160,7 +3167,7 @@ class DeliveryNote extends DB_Table {
 
 
                     if ($metadata['services'] == 'api') {
-                        $this->update_shipper_services(get_object('Shipper', $row['Shipper Key']));
+                        $this->update_shipper_services(get_object('Shipper', $row['Shipper Key']),$debug);
                     } else {
                         $this->fast_update_json_field('Delivery Note Properties', 'shipper_services_'.$row['Shipper Key'], json_encode($metadata['services']));
 

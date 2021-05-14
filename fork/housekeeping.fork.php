@@ -2307,6 +2307,8 @@ function fork_housekeeping($job) {
 
             $product->update_availability();
             $product->update_cost();
+            $product->updating_packing_data();
+
 
 
             foreach ($product->get_parts('objects') as $part) {

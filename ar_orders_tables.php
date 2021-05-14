@@ -242,15 +242,15 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
         }
 
 
-        $notes='';
-        if($data['Order Sticky Note']!=''){
-            $notes.=' <i  class="open_sticky_note order_sticky_note fa fa-sticky-note"></i>';
+        $notes = '';
+        if ($data['Order Sticky Note'] != '') {
+            $notes .= ' <i  class="open_sticky_note order_sticky_note fa fa-sticky-note"></i>';
         }
-        if($data['Order Delivery Sticky Note']!=''){
-            $notes.=' <i  class="open_sticky_note delivery_note_sticky_note fa fa-sticky-note"></i>';
+        if ($data['Order Delivery Sticky Note'] != '') {
+            $notes .= ' <i  class="open_sticky_note delivery_note_sticky_note fa fa-sticky-note"></i>';
         }
-        if($data['Order Customer Message']!=''){
-            $notes.=' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
+        if ($data['Order Customer Message'] != '') {
+            $notes .= ' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
         }
 
         $adata[] = array(
@@ -267,7 +267,7 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
             'total_amount'             => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'                  => $operations,
             'customer_invoices_orders' => number($data['Customer Number Invoices']),
-            'notes'=>$notes
+            'notes'                    => $notes
 
 
         );
@@ -357,15 +357,15 @@ function orders_in_process_paid($_data, $db, $user, $account) {
             $public_id .= ' <i class="fal fa-fragile"></i>';
 
         }
-        $notes='';
-        if($data['Order Sticky Note']!=''){
-            $notes.=' <i  class="open_sticky_note order_sticky_note fa fa-sticky-note"></i>';
+        $notes = '';
+        if ($data['Order Sticky Note'] != '') {
+            $notes .= ' <i  class="open_sticky_note order_sticky_note fa fa-sticky-note"></i>';
         }
-        if($data['Order Delivery Sticky Note']!=''){
-            $notes.=' <i  class="open_sticky_note delivery_note_sticky_note fa fa-sticky-note"></i>';
+        if ($data['Order Delivery Sticky Note'] != '') {
+            $notes .= ' <i  class="open_sticky_note delivery_note_sticky_note fa fa-sticky-note"></i>';
         }
-        if($data['Order Customer Message']!=''){
-            $notes.=' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
+        if ($data['Order Customer Message'] != '') {
+            $notes .= ' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
         }
 
         $adata[] = array(
@@ -381,7 +381,7 @@ function orders_in_process_paid($_data, $db, $user, $account) {
             'total_amount'             => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'                  => $operations,
             'customer_invoices_orders' => number($data['Customer Number Invoices']),
-            'notes'=>$notes
+            'notes'                    => $notes
 
 
         );
@@ -1769,6 +1769,12 @@ function order_items($_data, $db, $user) {
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
+        $properties = json_decode($data['Product Properties'], true);
+
+        if(empty($properties['packing_sko']))$properties['packing_sko']='';
+        if(empty($properties['packing_carton']))$properties['packing_carton']='';
+        if(empty($properties['packing_batch']))$properties['packing_batch']='';
+
 
         if ($data['Product Availability State'] == 'OnDemand') {
             $stock = _('On demand');
@@ -1817,7 +1823,15 @@ function order_items($_data, $db, $user) {
         }
 
 
-        $description .= ' <span style="color:#777">['.$stock.']</span> '.$deal_info;
+        $description .= ' <span style="color:#777" title="'._('Stock').'">['.$stock.']</span> '.$deal_info;
+
+        if($properties['packing_carton']>0 and $properties['packing_carton']!=1){
+            $outers_per_carton=round(1/ $properties['packing_carton'],4);
+
+
+            $description .= '<span class="small italic '.(floor($outers_per_carton) == $outers_per_carton?'':'error').' ">'.number($outers_per_carton).'=<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Outers per carton').'"></i></span>';
+
+        }
 
 
         if ($data['Current Dispatching State'] == 'Out of Stock in Basket') {
@@ -1886,6 +1900,37 @@ function order_items($_data, $db, $user) {
             ).'</span> <span class="'.($data['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($data['Order Transaction Total Discount Amount'], $data['Order Currency Code']).'</span></span>';
 
 
+
+
+
+
+        $packing = '<span id="transaction_packing_'.$data['Order Transaction Fact Key'].'" class="small _transaction_packing">';
+        if ($data['Product Number of Parts'] <= 0) {
+            $packing .= '<span class="error">'._('No parts').'</span>';
+        } elseif ($data['Product Number of Parts'] > 1) {
+            $packing .= '<span class="dicreet italic">'._('Multi part').'</span>';
+        } else {
+
+            if ($data['Product Units Per Case'] != 1  and  $data['Product Units Per Case']!=$properties['packing_sko'] ) {
+                $packing .= '<i class="fa-fw fal fa-stop-circle" title="'._('Units').'"></i>';
+
+
+                $packing .= ' '.number($data['Order Quantity'] * $data['Product Units Per Case']);
+            }
+            if ($properties['packing_sko'] > 0) {
+                $packing .= '<i class="padding_left_5 fa-fw fal fa-box" title="'._('SKOs').'"></i> '.number($data['Order Quantity'] * $properties['packing_sko']);
+            }
+            if ($properties['packing_carton'] > 0 and $properties['packing_carton'] != $properties['packing_sko']) {
+                $packing .= '<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Cartons').'"></i> '.float2rat($data['Order Quantity'] * $properties['packing_carton']);
+            }
+
+            if ($properties['packing_batch'] > 0) {
+                $packing .= '<i class="padding_left_5 fa-fw fal fa-fill-drip" title="'._('Batch').'"></i> '.number($data['Order Quantity'] * $properties['packing_batch']);
+            }
+
+        }
+        $packing .= '</span>';
+
         $adata[] = array(
 
             'id'            => (integer)$data['Order Transaction Fact Key'],
@@ -1900,8 +1945,8 @@ function order_items($_data, $db, $user) {
             'package_weight' => weight($data['Product Package Weight'], 'Kg', 3, false, true),
             'tariff_code'    => $data['Product Tariff Code'],
 
-            'net' => sprintf('<span  id="transaction_item_net_'.$data['Order Transaction Fact Key'].'" class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
-
+            'net'     => sprintf('<span  id="transaction_item_net_'.$data['Order Transaction Fact Key'].'" class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
+            'packing' => $packing
 
         );
 

@@ -29,14 +29,18 @@ $editor = array(
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-$sql =  "SELECT `Product ID`,`Product Code`,`Product Code File As` FROM `Product Dimension`   ";
+$sql = "SELECT `Product ID`  FROM `Product Dimension`  order by `Product Code`   ";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $product = new Product($row['Product ID']);
-        $file_as=get_file_as($product->get('Code'));
+
+        $product = get_object('Product',$row['Product ID']);
+        print $product->get('Product Code')."\r";
 
 
-        $product->fast_update(['Product Code File As'=>$file_as]);
+        //$file_as = get_file_as($product->get('Code'));
+        $product->updating_packing_data();
+
+        //$product->fast_update(['Product Code File As'=>$file_as]);
 
     }
 }
@@ -104,8 +108,6 @@ function update_products_status_availability_state($db) {
             $product->update_status_availability_state();
 
 
-
-
         }
 
     } else {
@@ -114,7 +116,6 @@ function update_products_status_availability_state($db) {
     }
 
 }
-
 
 
 function update_products_data($db) {

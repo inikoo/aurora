@@ -14,12 +14,12 @@ require_once 'common.php';
 
 
 
-$sql = sprintf("SELECT `Delivery Note Key` FROM `Delivery Note Dimension` where `Delivery Note State` not in ('Dispatched','Cancelled') ");
+$sql = sprintf("SELECT `Delivery Note Key` FROM `Delivery Note Dimension` where `Delivery Note Key`=2438876  and `Delivery Note State` not in ('Dispatched','Cancelled') ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $dn = get_object('Delivery Note', $row['Delivery Note Key']);
-        $dn->update_shippers_services();
-        print_r($dn->get_shippers_services());
+        $dn->update_shippers_services(true);
+       // print_r($dn->get_shippers_services());
 
     }
 

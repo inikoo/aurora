@@ -50,6 +50,16 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
+name: "packing",
+label: "{t}Packing{/t}",
+defaultOrder:1,
+editable: false,
+sortable: false,
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
 name: "quantity",
 label: "{t}Quantity{/t}",
 renderable: {if $object->get('Order State')=='InBasket' or $object->get('Order State')=='InProcess'}false{else}true{/if},

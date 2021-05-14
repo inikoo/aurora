@@ -9,7 +9,6 @@
 
 */
 
-
 require 'vendor/autoload.php';
 
 require_once 'common.php';
@@ -363,7 +362,7 @@ switch ($tipo) {
 
                      )
         );
-        set_orders_as_dispatched($db,$data, $editor);
+        set_orders_as_dispatched($db, $data, $editor);
         break;
 
     case 'approve_orders':
@@ -374,9 +373,8 @@ switch ($tipo) {
 
                      )
         );
-        approve_orders($db,$data, $editor);
+        approve_orders($db, $data, $editor);
         break;
-
 
 
     default:
@@ -390,22 +388,21 @@ switch ($tipo) {
 }
 
 
-function approve_orders($db,$data, $editor) {
+function approve_orders($db, $data, $editor) {
 
-    $number_updated=0;
+    $number_updated = 0;
     foreach ($data['order_keys'] as $order_key) {
         $order         = get_object('Order', $order_key);
         $order->editor = $editor;
 
-        if($order->get('Order State')=='PackedDone'){
+        if ($order->get('Order State') == 'PackedDone') {
             if ($order->update_state('Approved')) {
                 $number_updated++;
             }
-        }else{
-            $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`='Packed Done' and `Delivery Note Type`  
+        } else {
+            $sql = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`='Packed Done' and `Delivery Note Type`  
                                                                                                                                             
                                                                         in ('Replacement & Shortages','Replacement','Shortages')  ";
-
 
 
             $stmt = $db->prepare($sql);
@@ -416,7 +413,7 @@ function approve_orders($db,$data, $editor) {
             );
             while ($row = $stmt->fetch()) {
 
-                 $order->update(array('Replacement State' => 'Replacement Approved'), '', '{"Delivery Note Key":"'.$row['Delivery Note Key'].'"}');
+                $order->update(array('Replacement State' => 'Replacement Approved'), '', '{"Delivery Note Key":"'.$row['Delivery Note Key'].'"}');
 
                 if ($order->updated) {
                     $number_updated++;
@@ -425,8 +422,6 @@ function approve_orders($db,$data, $editor) {
 
 
         }
-
-
 
 
     }
@@ -451,7 +446,7 @@ function approve_orders($db,$data, $editor) {
 
 }
 
-function set_orders_as_dispatched($db,$data, $editor) {
+function set_orders_as_dispatched($db, $data, $editor) {
 
     $number_updated = 0;
     foreach ($data['order_keys'] as $order_key) {
@@ -472,8 +467,6 @@ function set_orders_as_dispatched($db,$data, $editor) {
                 $number_updated++;
             }
         }
-
-
 
 
     }
@@ -874,6 +867,7 @@ function update_po_item_note($data, $db) {
  */
 function edit_item_in_order($db, $editor, $data) {
 
+
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -907,20 +901,30 @@ function edit_item_in_order($db, $editor, $data) {
     }
 
 
-        $transaction_data = $parent->update_item($data);
+    $transaction_data = $parent->update_item($data);
 
 
     $discounts_data = array();
 
     if ($data['parent'] == 'order') {
         $sql = sprintf(
-            'SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
+            'SELECT `Product Number of Parts`, `Product Units Per Case`,`Order Quantity`,`Product Properties`,`Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` 
+FROM `Order Transaction Fact` OTF left join  
+    `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) left join  
+    `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+
+WHERE OTF.`Order Key`=%s ',
             $parent->id
         );
+
+
+
+
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
+          
 
                 if (in_array(
                     $parent->get('Order State'), array(
@@ -943,26 +947,60 @@ function edit_item_in_order($db, $editor, $data) {
                     ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
 
 
+
+                $properties = json_decode($row['Product Properties'], true);
+
+                if(empty($properties['packing_sko']))$properties['packing_sko']='';
+                if(empty($properties['packing_carton']))$properties['packing_carton']='';
+                if(empty($properties['packing_batch']))$properties['packing_batch']='';
+
+                $packing = '';
+                if ($row['Product Number of Parts'] <= 0) {
+                    $packing .= '<span class="error">'._('No parts').'</span>';
+                } elseif ($row['Product Number of Parts'] > 1) {
+                    $packing .= '<span class="dicreet italic">'._('Multi part').'</span>';
+                } else {
+
+                    if ($row['Product Units Per Case'] != 1  and  $row['Product Units Per Case']!=$properties['packing_sko'] ) {
+                        $packing .= '<i class="fa-fw fal fa-stop-circle" title="'._('Units').'"></i>';
+
+
+                        $packing .= ' '.number($row['Order Quantity'] * $row['Product Units Per Case']);
+                    }
+                    if ($properties['packing_sko'] > 0) {
+                        $packing .= '<i class="padding_left_5 fa-fw fal fa-box" title="'._('SKOs').'"></i> '.number($row['Order Quantity'] * $properties['packing_sko']);
+                    }
+                    if ($properties['packing_carton'] > 0 and $properties['packing_carton'] != $properties['packing_sko']) {
+                        $packing .= '<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Cartons').'"></i> '.float2rat($row['Order Quantity'] * $properties['packing_carton']);
+                    }
+
+                    if ($properties['packing_batch'] > 0) {
+                        $packing .= '<i class="padding_left_5 fa-fw fal fa-fill-drip" title="'._('Batch').'"></i> '.number($row['Order Quantity'] * $properties['packing_batch']);
+                    }
+
+                }
+
+
+
+
                 if (isset($data['tab']) and $data['tab'] == 'order.all_products') {
                     $discounts_data[$row['Product ID']] = array(
                         'deal_info' => $row['Deal Info'],
                         'discounts' => $discounts,
+                        'packing' => $packing,
                         'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
                     );
                 } else {
                     $discounts_data[$row['Order Transaction Fact Key']] = array(
                         'deal_info' => $row['Deal Info'],
                         'discounts' => $discounts,
+                        'packing' => $packing,
                         'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
                     );
                 }
 
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $update_metadata                 = $parent->get_update_metadata();

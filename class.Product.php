@@ -226,37 +226,35 @@ class Product extends Asset {
 
             case 'Formatted Customer Key':
 
-                if($this->data['Product Customer Key']){
+                if ($this->data['Product Customer Key']) {
 
-                    $customer=get_object('Customer',$this->data['Product Customer Key']);
-                    if($customer->id){
-                        return sprintf('<span onclick="change_view(\'customers/%d,%d\')">%s</span>',
-                                       $customer->get('Store Key').
-                                       $customer->id,
-                                       $customer->get('Name')
+                    $customer = get_object('Customer', $this->data['Product Customer Key']);
+                    if ($customer->id) {
+                        return sprintf(
+                            '<span onclick="change_view(\'customers/%d,%d\')">%s</span>', $customer->get('Store Key').$customer->id, $customer->get('Name')
                         );
-                    }else{
+                    } else {
                         return '<span class="very_discreet">'._('No associated (E)').'</span>';
 
                     }
 
-                }else{
+                } else {
                     return '<span class="very_discreet">'._('No associated').'</span>';
                 }
 
             case 'Customer Key':
 
-                if($this->data['Product Customer Key']){
+                if ($this->data['Product Customer Key']) {
 
-                    $customer=get_object('Customer',$this->data['Product Customer Key']);
-                    if($this->id){
+                    $customer = get_object('Customer', $this->data['Product Customer Key']);
+                    if ($this->id) {
                         return $customer->get('Name');
-                    }else{
+                    } else {
                         return '';
 
                     }
 
-                }else{
+                } else {
                     return '';
                 }
 
@@ -2364,8 +2362,6 @@ class Product extends Asset {
             case 'Product Customer Key':
 
 
-
-
                 if (is_numeric($value) and $value > 0) {
 
                     if ($this->data['Product Customer Key'] == $value) {
@@ -2373,7 +2369,6 @@ class Product extends Asset {
                     }
 
                     $customer = get_object('Customer', $value);
-
 
 
                     $history_abstract = sprintf(_("Product associated with %s"), $customer->get('Name'));
@@ -3840,6 +3835,34 @@ class Product extends Asset {
 
         $this->update_aiku($this->get_table_name(), 'parts');
 
+
+    }
+
+
+    function updating_packing_data() {
+
+        $sko              = '';
+        $carton           = '';
+        $batch            = '';
+       // $outers_in_carton = '';
+
+
+        if ($this->get('Product Number of Parts') == 1) {
+            foreach ($this->get_parts_data('Objects') as $part_data) {
+
+
+                $sko    = $part_data['Ratio'];
+                if($part_data['Part']->get('Part SKOs per Carton')>0) {
+                    $carton           = $part_data['Ratio'] / $part_data['Part']->get('Part SKOs per Carton');
+                   // $outers_in_carton = $part_data['Part']->get('Part SKOs per Carton')/$part_data['Ratio'];
+                }
+            }
+        }
+
+        $this->fast_update_json_field('Product Properties', 'packing_sko', $sko);
+        $this->fast_update_json_field('Product Properties', 'packing_carton', $carton);
+        $this->fast_update_json_field('Product Properties', 'packing_batch', $batch);
+       // $this->fast_update_json_field('Product Properties', 'outers_in_carton', $outers_in_carton);
 
     }
 
