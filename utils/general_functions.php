@@ -394,6 +394,9 @@ function safeDecrypt($encrypted, $key) {
 }
 
 function float2rat($n, $tolerance = 1.e-6) {
+    if($n==0){
+        return 0;
+    }
     $h1=1; $h2=0;
     $k1=0; $k2=1;
     $b = 1/$n;
