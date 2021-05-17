@@ -286,26 +286,27 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
 
 
     if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Priority Level') != 'Normal') {
-
         $urgent = true;
-
     } else {
         $urgent = false;
-
     }
 
     if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Care Level') != 'Normal') {
-
         $fragile = true;
-
     } else {
         $fragile = false;
+    }
 
+    if ($delivery_note->get('Delivery Note Type') == 'Order' and $order->get('Order Shipping Level') != 'Normal') {
+        $use_tracking = true;
+    } else {
+        $use_tracking = false;
     }
 
 
     $smarty->assign('urgent', $urgent);
     $smarty->assign('fragile', $fragile);
+    $smarty->assign('use_tracking', $use_tracking);
 
     //exit;
 

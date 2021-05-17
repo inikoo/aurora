@@ -233,12 +233,15 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
         );
 
         if ($data['Order Priority Level'] != 'Normal') {
-            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
+            $public_id .= ' <i class="fal fa-shipping-fast" title="'._('Premium dispatching').'" ></i>';
         }
 
         if ($data['Order Care Level'] != 'Normal') {
-            $public_id .= ' <i class="fal fa-fragile"></i>';
+            $public_id .= ' <i class="fal fa-fragile" title="'._('Fragile').'" ></i>';
+        }
 
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
 
@@ -355,8 +358,12 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
         if ($data['Order Care Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-fragile"></i>';
-
         }
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
+        }
+
+
         $notes = '';
         if ($data['Order Sticky Note'] != '') {
             $notes .= ' <i  class="open_sticky_note order_sticky_note fa fa-sticky-note"></i>';
@@ -452,7 +459,9 @@ function orders_in_warehouse($_data, $db, $user) {
 
         if ($data['Order Care Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-fragile"></i>';
-
+        }
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
         $adata[] = array(
@@ -577,7 +586,9 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
 
         if ($data['Order Care Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-fragile"></i>';
-
+        }
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
         $adata[] = array(
@@ -664,7 +675,9 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
 
         if ($data['Order Care Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-fragile"></i>';
-
+        }
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
 
@@ -751,7 +764,9 @@ function orders_packed($_data, $db, $user, $account) {
 
         if ($data['Order Care Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-fragile"></i>';
-
+        }
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
 
@@ -837,7 +852,9 @@ function orders_packed_done($_data, $db, $user, $account) {
 
         if ($data['Order Care Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-fragile"></i>';
-
+        }
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
 
@@ -924,7 +941,9 @@ function orders_approved($_data, $db, $user, $account) {
 
         if ($data['Order Care Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-fragile"></i>';
-
+        }
+        if ($data['Order Shipping Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
         $adata[] = array(

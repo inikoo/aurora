@@ -513,6 +513,16 @@ trait OrderChargesOperations {
         }
 
 
+        if ($charge->get('Charge Scope') == 'Tracking') {
+            $this->fast_update(
+                array(
+                    'Order Shipping Level' => 'Tracking'
+                )
+            );
+
+        }
+
+
         $net = 0;
         $tax = 0;
 
@@ -571,6 +581,13 @@ trait OrderChargesOperations {
             $this->fast_update(
                 array(
                     'Order Care Level' => 'Normal'
+                )
+            );
+        }
+        if ($charge->get('Charge Scope') == 'Tracking') {
+            $this->fast_update(
+                array(
+                    'Order Shipping Level' => 'Normal'
                 )
             );
         }

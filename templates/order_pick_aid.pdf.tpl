@@ -192,13 +192,16 @@
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
 
-	{if $urgent or $fragile}
+	{if $urgent or $fragile or $use_tracking}
 		<div style="font-size: x-large">
 			{if $urgent}
 				<b>{t}Priority dispatch{/t}</b>
 			{/if}
 			{if $fragile}
 				<b>{if $urgent}-{/if} {t}Pack with extra care{/t}</b>
+			{/if}
+			{if $use_tracking}
+				<b>{if $urgent or $fragile}-{/if} {t}Use full tracking{/t}</b>
 			{/if}
 		</div>
 	{/if}

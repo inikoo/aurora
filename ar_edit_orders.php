@@ -913,18 +913,13 @@ FROM `Order Transaction Fact` OTF left join
     `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) left join  
     `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
 
-WHERE OTF.`Order Key`=%s ',
-            $parent->id
+WHERE OTF.`Order Key`=%s ', $parent->id
         );
-
-
-
 
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-          
 
                 if (in_array(
                     $parent->get('Order State'), array(
@@ -947,12 +942,17 @@ WHERE OTF.`Order Key`=%s ',
                     ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
 
 
-
                 $properties = json_decode($row['Product Properties'], true);
 
-                if(empty($properties['packing_sko']))$properties['packing_sko']='';
-                if(empty($properties['packing_carton']))$properties['packing_carton']='';
-                if(empty($properties['packing_batch']))$properties['packing_batch']='';
+                if (empty($properties['packing_sko'])) {
+                    $properties['packing_sko'] = '';
+                }
+                if (empty($properties['packing_carton'])) {
+                    $properties['packing_carton'] = '';
+                }
+                if (empty($properties['packing_batch'])) {
+                    $properties['packing_batch'] = '';
+                }
 
                 $packing = '';
                 if ($row['Product Number of Parts'] <= 0) {
@@ -961,7 +961,7 @@ WHERE OTF.`Order Key`=%s ',
                     $packing .= '<span class="dicreet italic">'._('Multi part').'</span>';
                 } else {
 
-                    if ($row['Product Units Per Case'] != 1  and  $row['Product Units Per Case']!=$properties['packing_sko'] ) {
+                    if ($row['Product Units Per Case'] != 1 and $row['Product Units Per Case'] != $properties['packing_sko']) {
                         $packing .= '<i class="fa-fw fal fa-stop-circle" title="'._('Units').'"></i>';
 
 
@@ -981,20 +981,18 @@ WHERE OTF.`Order Key`=%s ',
                 }
 
 
-
-
                 if (isset($data['tab']) and $data['tab'] == 'order.all_products') {
                     $discounts_data[$row['Product ID']] = array(
                         'deal_info' => $row['Deal Info'],
                         'discounts' => $discounts,
-                        'packing' => $packing,
+                        'packing'   => $packing,
                         'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
                     );
                 } else {
                     $discounts_data[$row['Order Transaction Fact Key']] = array(
                         'deal_info' => $row['Deal Info'],
                         'discounts' => $discounts,
-                        'packing' => $packing,
+                        'packing'   => $packing,
                         'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
                     );
                 }
@@ -2377,12 +2375,9 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
-
-
-            'Order_Number_items' => $order->get('Number Items')
+            'Order_Number_items'            => $order->get('Number Items')
 
         ),
-        //  'operations'    => $operations,
         'state_index' => $order->get('State Index'),
         'to_pay'      => $order->get('Order To Pay Amount'),
         'total'       => $order->get('Order Total Amount'),
@@ -2396,7 +2391,8 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
         'state'            => 200,
         'metadata'         => $metadata,
         'operation'        => $data['operation'],
-        'transaction_data' => $transaction_data
+        'transaction_data' => $transaction_data,
+        'charge_scope'     => $charge->get('Charge Scope')
     );
     echo json_encode($response);
 

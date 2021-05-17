@@ -293,6 +293,11 @@
             {t}Priority{/t} <i title="'._('Priority dispatching').'" style="font-size: 25px" class="fas fa-shipping-fast"></i>
         </div>
 
+        <div class="state   use_tracking_label  {if $order->get('Order Shipping Level')=='Normal' or $order->get('State Index')<0 or $order->get('State Index')==100   }hide{/if}  "
+             style="height:30px;text-align: center;line-height: 30px;color: tomato;font-family:'Ubuntu', Tahoma, Verdana, Segoe, sans-serif;font-weight: 800">
+            {t}Use full tracking{/t}
+        </div>
+
         <div class="state" style="height:30px;">
             <div id="back_operations">
 
