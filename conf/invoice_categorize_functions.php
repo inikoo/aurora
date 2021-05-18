@@ -104,6 +104,17 @@ function get_categorize_invoices_functions() {
             return false;
         }
     };
+
+    $categorize_invoices_functions['customers']        = function ($data, $aux) {
+
+        $aux = json_decode($aux, true);
+
+        if (in_array($data["Invoice Customer Key"], $aux)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
     $categorize_invoices_functions['not_in_stores'] = function ($data, $aux) {
 
         $aux = json_decode($aux, true);
