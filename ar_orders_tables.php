@@ -132,7 +132,7 @@ switch ($tipo) {
         delivery_note_cancelled_items(get_table_parameters(), $db, $user);
         break;
     case 'delivery_note.items':
-        delivery_note_items(get_table_parameters(), $db, $user);
+        delivery_note_items(get_table_parameters(), $db, $user, $account);
         break;
     case 'delivery_note.units':
         delivery_note_units(get_table_parameters(), $db, $user, $account);
@@ -1790,9 +1790,15 @@ function order_items($_data, $db, $user) {
 
         $properties = json_decode($data['Product Properties'], true);
 
-        if(empty($properties['packing_sko']))$properties['packing_sko']='';
-        if(empty($properties['packing_carton']))$properties['packing_carton']='';
-        if(empty($properties['packing_batch']))$properties['packing_batch']='';
+        if (empty($properties['packing_sko'])) {
+            $properties['packing_sko'] = '';
+        }
+        if (empty($properties['packing_carton'])) {
+            $properties['packing_carton'] = '';
+        }
+        if (empty($properties['packing_batch'])) {
+            $properties['packing_batch'] = '';
+        }
 
 
         if ($data['Product Availability State'] == 'OnDemand') {
@@ -1844,11 +1850,11 @@ function order_items($_data, $db, $user) {
 
         $description .= ' <span style="color:#777" title="'._('Stock').'">['.$stock.']</span> '.$deal_info;
 
-        if($properties['packing_carton']>0 and $properties['packing_carton']!=1){
-            $outers_per_carton=round(1/ $properties['packing_carton'],4);
+        if ($properties['packing_carton'] > 0 and $properties['packing_carton'] != 1) {
+            $outers_per_carton = round(1 / $properties['packing_carton'], 4);
 
 
-            $description .= '<span class="small italic '.(floor($outers_per_carton) == $outers_per_carton?'':'error').' ">'.number($outers_per_carton).'=<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Outers per carton').'"></i></span>';
+            $description .= '<span class="small italic '.(floor($outers_per_carton) == $outers_per_carton ? '' : 'error').' ">'.number($outers_per_carton).'=<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Outers per carton').'"></i></span>';
 
         }
 
@@ -1919,10 +1925,6 @@ function order_items($_data, $db, $user) {
             ).'</span> <span class="'.($data['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($data['Order Transaction Total Discount Amount'], $data['Order Currency Code']).'</span></span>';
 
 
-
-
-
-
         $packing = '<span id="transaction_packing_'.$data['Order Transaction Fact Key'].'" class="small _transaction_packing">';
         if ($data['Product Number of Parts'] <= 0) {
             $packing .= '<span class="error">'._('No parts').'</span>';
@@ -1930,7 +1932,7 @@ function order_items($_data, $db, $user) {
             $packing .= '<span class="dicreet italic">'._('Multi part').'</span>';
         } else {
 
-            if ($data['Product Units Per Case'] != 1  and  $data['Product Units Per Case']!=$properties['packing_sko'] ) {
+            if ($data['Product Units Per Case'] != 1 and $data['Product Units Per Case'] != $properties['packing_sko']) {
                 $packing .= '<i class="fa-fw fal fa-stop-circle" title="'._('Units').'"></i>';
 
 
@@ -2702,7 +2704,7 @@ function delivery_note_picking_aid($_data, $db, $user) {
 }
 
 
-function delivery_note_items($_data, $db, $user) {
+function delivery_note_items($_data, $db, $user, $account) {
 
 
     include_once('class.DeliveryNote.php');
@@ -2721,7 +2723,8 @@ function delivery_note_items($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
 
-    // print $sql;
+    //print $sql;
+    //exit;
     $adata = array();
 
 
@@ -2777,8 +2780,11 @@ function delivery_note_items($_data, $db, $user) {
             'overview_packed'   => number($data['Packed']),
             'overview_picked'   => number($data['Picked']),
             'overview_problem'  => '<span class="'.($data['Out of Stock'] == 0 ? 'very_discreet' : 'error').'">'.number($data['Out of Stock']).'</span>',
-            'overview_state'    => $state
-
+            'overview_state'    => $state,
+            'picker_bonus'      => ($data['picker_bonus_amount'] == '' ? '' : '<span class="padding_right_10">'.$data['picker_band'].'</span> '.money($data['picker_bonus_amount'], $account->get('Account Currency'), false, 'FOUR_FRACTION_DIGITS')),
+            'packer_bonus'      => ($data['packer_bonus_amount'] == '' ? '' : '<span class="padding_right_10">'.$data['packer_band'].'</span> '.money($data['packer_bonus_amount'], $account->get('Account Currency'), false, 'FOUR_FRACTION_DIGITS')),
+            'cartons_bonus'     => (!$data['cartons_bonus'] ? '<span class="super_discreet">0</span>' : number($data['cartons_bonus'])),
+            'skos_bonus'        => (!$data['skos_bonus'] ? '<span class="super_discreet">0</span>' : number($data['skos_bonus'])),
 
         );
 

@@ -301,7 +301,8 @@ class PickingBand extends DB_Table {
 
         $date = gmdate('Y-m-d H:i:s');
         $sql  =
-            "insert into `Picking Band Historic Fact` (`Picking Band Historic Band Key`,`Picking Band Historic Type`,`Picking Band Historic Name`,`Picking Band Historic Amount`,`Picking Band Historic Created`,`Picking Band Historic Updated`) values(?,?,?,?,?,?) on duplicate key update `Picking Band Historic Updated`=? ";
+            "insert into `Picking Band Historic Fact` (`Picking Band Historic Band Key`,`Picking Band Historic Type`,`Picking Band Historic Name`,`Picking Band Historic Amount`,`Picking Band Historic Created`,`Picking Band Historic Updated`) values(?,?,?,?,?,?) on duplicate key update 
+  `Picking Band Historic Updated`=?    , `Picking Band Historic Key`=LAST_INSERT_ID(`Picking Band Historic Key`) ";
 
         $this->db->prepare($sql)->execute(
             array(

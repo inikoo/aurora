@@ -33,8 +33,11 @@ $table_views = array(
     'overview' => array(
         'label' => _('Overview'),
     ),
-
+    'bonus'    => array(
+        'label' => _('Picker/Packer bonus'),
+    ),
 );
+
 
 $table_filters = array(
     'reference' => array(
