@@ -14,6 +14,7 @@
 
 class Public_Account  {
 
+    private $properties;
     function __construct($_db = false) {
 
         if (!$_db) {
@@ -25,7 +26,7 @@ class Public_Account  {
 
 
         $this->table_name = 'Account';
-
+        $this->properties = array();
 
         $this->get_data();
     }
@@ -52,8 +53,22 @@ class Public_Account  {
     }
 
      function load_properties() {
-        
+         $sql = "SELECT `Account Properties` FROM `Account Data`  WHERE `Account Key`=?";
+
+         $stmt = $this->db->prepare($sql);
+         $stmt->execute(
+             array(
+                 $this->id
+             )
+         );
+         while ($row = $stmt->fetch()) {
+             $this->properties = json_decode($row['Account Properties'], true);
+         }
      }
+
+    public function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
 
     function get($key) {
 
