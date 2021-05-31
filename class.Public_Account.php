@@ -51,6 +51,9 @@ class Public_Account  {
 
     }
 
+     function load_properties() {
+        
+     }
 
     function get($key) {
 
