@@ -78,6 +78,24 @@ class Account extends DB_Table {
 
     }
 
+    function load_properties() {
+
+        $sql = "SELECT `Account Properties` FROM `Account Data`  WHERE `Account Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $this->properties = json_decode($row['Account Properties'], true);
+        }
+
+
+    }
+
+
     function settings($key) {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
@@ -1644,9 +1662,9 @@ class Account extends DB_Table {
 
         $this->fast_update(
             array(
-                'Account Suppliers'     => $number_suppliers,
-                'Account Agents'        => $number_agents,
-            //    'Account Manufacturers' => $number_manufacturers
+                'Account Suppliers' => $number_suppliers,
+                'Account Agents'    => $number_agents,
+                //    'Account Manufacturers' => $number_manufacturers
             )
         );
 
@@ -2034,12 +2052,12 @@ class Account extends DB_Table {
             );
 
 
-           // $key = '_acc_Sales_'.$this->get('Account Code');
-           // $this->redis->hSet(
-           //     $key, preg_replace('/\s/','_',$interval), json_encode(
-           //             $sales_data
-           //         )
-           // );
+            // $key = '_acc_Sales_'.$this->get('Account Code');
+            // $this->redis->hSet(
+            //     $key, preg_replace('/\s/','_',$interval), json_encode(
+            //             $sales_data
+            //         )
+            // );
 
             $this->fast_update($data_to_update, 'Account Data');
             //  exit();
@@ -2126,9 +2144,11 @@ class Account extends DB_Table {
         );
 
 
-        print_r([
-                    'sales' => $this->get('Account Year To Day Acc Invoiced Amount')
-                ]);
+        print_r(
+            [
+                'sales' => $this->get('Account Year To Day Acc Invoiced Amount')
+            ]
+        );
 
     }
 

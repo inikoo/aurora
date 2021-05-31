@@ -112,3 +112,4 @@ cron/bands.csv
 cron/update_bands.php
 cron/fix_submited_orders_wrong_shipping.php
 cron/create_new_system_webpage.php
+cron/set_items_different_tax.php

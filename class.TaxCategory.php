@@ -34,9 +34,7 @@ class TaxCategory extends DB_Table {
         if ($key == 'code') {
 
 
-            $account=get_object('Account',1);
-
-
+            $account = get_object('Account', 1);
 
 
             $sql = sprintf(
@@ -51,16 +49,19 @@ class TaxCategory extends DB_Table {
         }
 
 
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Tax Category Key'];
             $this->code = $this->data['Tax Category Code'];
-        }
+            $this->metadata = json_decode($this->data['Tax Category Metadata'], true);
 
+        }
 
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
 
     function get($key, $data = false) {
         switch ($key) {

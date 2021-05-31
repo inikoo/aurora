@@ -330,6 +330,12 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
             $old_used_deals = $this->get_used_deals();
 
+            $account = get_object('Account', 1);
+            $account->load_properties();
+
+            if ($account->properties('tax_per_item')) {
+                $this->update_tax();
+            }
 
             $this->update_totals();
             $this->update_discounts_items();

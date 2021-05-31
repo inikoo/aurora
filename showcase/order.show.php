@@ -26,6 +26,8 @@ function get_order_showcase($data, $smarty, $user, $db) {
     //$order->update_aiku($order->get_table_name(), 'refresh_order');
     //exit;
 
+    //    $order->update_tax();
+
     //$order->update_totals();
     /*
             $order->update_totals();
@@ -45,12 +47,12 @@ function get_order_showcase($data, $smarty, $user, $db) {
         $smarty->assign('delivery_note', get_object('DeliveryNote', $order->get('Order Delivery Note Key')));
     }
 
-    if ($store->get('Store Type')=='Dropshipping') {
+    if ($store->get('Store Type') == 'Dropshipping') {
         $smarty->assign('customer_client', get_object('customer_client', $order->get('Order Customer Client Key')));
 
     }
 
-        $smarty->assign(
+    $smarty->assign(
         'object_data', json_encode(
                          array(
                              'object'              => $data['object'],
