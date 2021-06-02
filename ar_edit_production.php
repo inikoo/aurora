@@ -108,7 +108,7 @@ function job_order_forward_item_action($data, $db, $editor) {
             case 'sko':
                 $qty = $data['qty'] * $row['Purchase Order Submitted Units Per SKO'];
                 break;
-            case 'sko':
+            case 'carton':
                 $qty = $data['qty'] * $row['Purchase Order Submitted Units Per SKO'] * $row['Purchase Order Submitted SKOs Per Carton'];
                 break;
             default:
