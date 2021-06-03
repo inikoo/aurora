@@ -68,15 +68,18 @@ class SupplierPart extends DB_Table {
     function find($raw_data, $options) {
 
 
-
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
-                if (array_key_exists($key, $this->editor)  or in_array($key,['Subject','Subject Key']) ) {
+                if (array_key_exists($key, $this->editor) or in_array(
+                        $key, [
+                                'Subject',
+                                'Subject Key'
+                            ]
+                    )) {
                     $this->editor[$key] = $value;
                 }
             }
         }
-
 
 
         $this->found     = false;
@@ -362,7 +365,7 @@ class SupplierPart extends DB_Table {
 
 
                 if ($updated) {
-                    $this->part->editor=$this->editor;
+                    $this->part->editor = $this->editor;
                     $this->part->update_on_demand();
                 }
                 break;
@@ -824,8 +827,6 @@ class SupplierPart extends DB_Table {
                 }
 
 
-
-
                 $this->update_field($field, $value, $options);
 
                 $updated = $this->updated;
@@ -995,9 +996,9 @@ class SupplierPart extends DB_Table {
                 $this->update_field($field, $value, $options);
 
                 //if ($this->part->get('Part Main Supplier Part Key') == $this->id) {
-                    $this->part->editor = $this->editor;
-                    $this->part->update(array('Part Carton Barcode' => $value), $options);
-               // }
+                $this->part->editor = $this->editor;
+                $this->part->update(array('Part Carton Barcode' => $value), $options);
+                // }
 
 
                 break;
@@ -1038,9 +1039,9 @@ class SupplierPart extends DB_Table {
 
 
                 //if ($this->part->get('Part Main Supplier Part Key') == $this->id) {
-                    $this->part->editor = $this->editor;
-                    $this->part->update(array('Part SKOs per Carton' => $value));
-               // }
+                $this->part->editor = $this->editor;
+                $this->part->update(array('Part SKOs per Carton' => $value));
+                // }
 
 
                 if (!preg_match('/skip_update_historic_object/', $options)) {
@@ -1659,7 +1660,7 @@ class SupplierPart extends DB_Table {
                     '<span title="%s(%s) +%s(%s) @%s ">%s </span>', money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']), _('cost'), money($extra_cost, $this->data['Supplier Part Currency Code']), _('extra costs'), $exchange,
 
 
-                    money( $delivered_cost, $account->get('Account Currency'))
+                    money($delivered_cost, $account->get('Account Currency'))
                 );
 
                 return $cost;
@@ -1977,9 +1978,6 @@ class SupplierPart extends DB_Table {
         );
 
 
-
-
-
         $sql = sprintf(
             'DELETE FROM `Supplier Part Dimension`  WHERE `Supplier Part Key`=%d ', $this->id
         );
@@ -2164,10 +2162,10 @@ class SupplierPart extends DB_Table {
                             break;
                     }
 
-                    if($row['Supplier Part Production']=='Yes'){
-                        $link_root='production';
-                    }else{
-                        $link_root=strtolower($row['Supplier Delivery Parent']);
+                    if ($row['Supplier Part Production'] == 'Yes') {
+                        $link_root = 'production';
+                    } else {
+                        $link_root = strtolower($row['Supplier Delivery Parent']);
                     }
 
                     $next_deliveries_data[] = array(
@@ -2177,9 +2175,8 @@ class SupplierPart extends DB_Table {
                         'raw_units_qty'   => $raw_units_qty,
                         'date'            => '',
                         'formatted_link'  => sprintf(
-                            '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>',
-                            $link_root,
-                            $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
+                            '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', $link_root, $row['Supplier Delivery Parent Key'],
+                            $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
                         ),
                         'link'            => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
                         'order_id'        => $row['Supplier Delivery Public ID'],
@@ -2215,10 +2212,10 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
         );
         while ($row = $stmt->fetch()) {
 
-            if($row['Supplier Part Production']=='Yes'){
-                $link_root='production/'.$row['Supplier Part Supplier Key'].'/order';
-            }else{
-                $link_root='suppliers/order';
+            if ($row['Supplier Part Production'] == 'Yes') {
+                $link_root = 'production/'.$row['Supplier Part Supplier Key'].'/order';
+            } else {
+                $link_root = 'suppliers/order';
             }
 
             if ($row['Purchase Order Transaction State'] == 'InProcess') {
@@ -2230,12 +2227,12 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
                 $date                = '';
                 $formatted_state     = '<span class="very_discreet italic">'._('Draft').'</span>';
                 $link                = sprintf(
-                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'%s/%d\')"> %s</span>',_('In process'), $link_root,$row['Purchase Order Key'],
-                    $row['Purchase Order Public ID']
+                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw  very_discreet fa-seedling" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'%s/%d\')"> %s</span>', _('In process'), $link_root,
+                    $row['Purchase Order Key'], $row['Purchase Order Public ID']
                 );
                 $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
-            } elseif($row['Purchase Order Transaction State'] == 'Submitted'){
+            } elseif ($row['Purchase Order Transaction State'] == 'Submitted') {
 
                 $raw_units_qty = $row['Purchase Order Submitted Units'];
                 $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
@@ -2243,34 +2240,34 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
                 $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
                 $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
 
-                $formatted_state     = '<span class="very_discreet italic">'._('Submitted').'</span>';
+                $formatted_state = '<span class="very_discreet italic">'._('Submitted').'</span>';
 
-                $link            = sprintf(
-                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'%s/%d\')">  %s</span>', _('Submitted'),$link_root, $row['Purchase Order Key'],
-                    $row['Purchase Order Public ID']
+                $link = sprintf(
+                    '<i class="fal fa-fw  fa-clipboard very_discreet" ></i> <i class="fal fa-fw very_discreet fa-paper-plane" title="%s" ></i> <span class="link very_discreet" onclick="change_view(\'%s/%d\')">  %s</span>', _('Submitted'), $link_root,
+                    $row['Purchase Order Key'], $row['Purchase Order Public ID']
                 );
-                $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
+                $qty  = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
-            }else {
+            } else {
 
                 $raw_units_qty = $row['Purchase Order Submitted Units'];
                 $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
-                if($row['Purchase Order Estimated Receiving Date']!='') {
+                if ($row['Purchase Order Estimated Receiving Date'] != '') {
                     $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
                     $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
                     $formatted_state     = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                }else{
-                    $_next_delivery_time=0;
-                    $date='';
-                    $formatted_state='';
+                } else {
+                    $_next_delivery_time = 0;
+                    $date                = '';
+                    $formatted_state     = '';
                 }
 
-                $link            = sprintf(
-                    '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'%s/%d\')">  %s</span>', _('Confirmed'),$link_root, $row['Purchase Order Key'],
+                $link = sprintf(
+                    '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-calendar-check" title="%s" ></i> <span class="link" onclick="change_view(\'%s/%d\')">  %s</span>', _('Confirmed'), $link_root, $row['Purchase Order Key'],
                     $row['Purchase Order Public ID']
                 );
-                $qty             = '+'.number($raw_skos_qty);
+                $qty  = '+'.number($raw_skos_qty);
             }
 
 
@@ -2284,7 +2281,7 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
                 'formatted_state' => $formatted_state,
 
                 'formatted_link' => $link,
-                'link'           => sprintf('%s/%d',$link_root, $row['Purchase Order Key']),
+                'link'           => sprintf('%s/%d', $link_root, $row['Purchase Order Key']),
                 'order_id'       => $row['Purchase Order Public ID'],
                 'state'          => $row['Purchase Order Transaction State'],
                 'po_key'         => $row['Purchase Order Key']
@@ -2298,6 +2295,82 @@ WHERE POTF.`Supplier Part Key`=?  AND  POTF.`Supplier Delivery Key` IS NULL AND 
 
 
         return $next_deliveries_data;
+
+    }
+
+    function send_raw_materials_to_production($units, $note = '') {
+
+
+        if($units==0){
+            return;
+        }
+
+        $editor = array(
+            'Author Type'  => '',
+            'Author Key'   => '',
+            'User Key'     => 0,
+            'Date'         => gmdate('Y-m-d H:i:s'),
+            'Subject'      => 'System',
+            'Subject Key'  => 0,
+            'Author Name'  => 'System (Auto pick raw materials)',
+            'Author Alias' => 'System (Auto pick raw materials)',
+
+
+        );
+
+        //print "========\n";
+
+        $sql  = "select `Part Reference`,`Part Units Per Package`,`Part SKU`,`Production Part Raw Material Ratio`,`Production Part Batch Size` from 
+        `Production Part Raw Material Bridge` left join `Production Part Dimension` on (`Production Part Raw Material Production Part Key`=`Production Part Supplier Part Key`)
+        
+                        left join `Raw Material Dimension`  on (`Raw Material Key`=`Production Part Raw Material Raw Material Key`)
+
+          left join `Part Dimension`  on (`Raw Material Type Key`=`Part SKU` and `Raw Material Type`='Part')
+
+        where `Production Part Raw Material Production Part Key`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if ($row['Production Part Batch Size'] > 0) {
+                //print_r($row);
+
+                $raw_materials_skos = $units / $row['Production Part Batch Size'] * $row['Production Part Raw Material Ratio'] / $row['Part Units Per Package'];
+                //print "XX: $raw_materials_skos\n";
+
+                $part = get_object('Part', $row['Part SKU']);
+
+                foreach ($part->get_locations('part_location_object', 'can_pick') as $part_location) {
+
+                    $part_location->edior = $editor;
+
+                   // $raw_materials_skos=-1*$raw_materials_skos;
+
+                   // if($raw_materials_skos<0){
+                   //     $note=' '._('')
+
+                   // }
+
+
+                    $_data = array(
+                        'Quantity'         => -$raw_materials_skos,
+                        'Transaction Type' => 'Production',
+                        'Note'             => $note
+                    );
+
+                    $part_location->stock_transfer($_data);
+
+
+                    break;
+                }
+
+
+            }
+        }
+
 
     }
 

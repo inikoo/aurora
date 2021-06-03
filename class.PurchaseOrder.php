@@ -1256,7 +1256,7 @@ class PurchaseOrder extends DB_Table {
         );
 
 
-       // print $sql;
+        // print $sql;
 
 
         if ($result = $this->db->query($sql)) {
@@ -1267,8 +1267,6 @@ class PurchaseOrder extends DB_Table {
                 $total_net  = $row['items_net'];
                 $extra_cost = $row['extra_cost'];
                 $total      = $total_net + $extra_cost;
-
-
 
 
                 $this->fast_update(
@@ -2028,7 +2026,7 @@ class PurchaseOrder extends DB_Table {
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_housekeeping', array(
-                'type'   => 'update_operative_stats',
+                'type'          => 'update_operative_stats',
                 'operative_key' => $row['Purchase Order Transaction Operator Key']
             ), DNS_ACCOUNT_CODE, $this->db
             );
@@ -2328,7 +2326,6 @@ class PurchaseOrder extends DB_Table {
                 "DELETE FROM `Purchase Order Dimension` WHERE `Purchase Order Key`=%d", $this->id
             );
             $this->db->exec($sql);
-
 
 
             $sql = sprintf(
@@ -2806,14 +2803,53 @@ class PurchaseOrder extends DB_Table {
                     );
 
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE `Purchase Order Transaction State`='Confirmed' and `Purchase Order Key`=?";
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            'Submitted',
-                            $this->id
-                        )
-                    );
-                    $this->db->exec($sql);
+
+
+
+                    if ($this->get('Purchase Order Type') == 'Production') {
+                        // Take ingredients
+                        $sql  = "select `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Purchase Order Submitted Units` from  `Purchase Order Transaction Fact` WHERE `Purchase Order Transaction State`='Confirmed' and  `Purchase Order Key`=? ";
+
+
+
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $this->id
+                            )
+                        );
+                        while ($row = $stmt->fetch()) {
+
+
+
+                            $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`='Submitted' WHERE `Purchase Order Transaction Fact Key`=?";
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $row['Purchase Order Transaction Fact Key']
+                                )
+                            );
+
+                            $supplier_part=get_object('Supplier Part',$row['Supplier Part Key']);
+                            $supplier_part->send_raw_materials_to_production(-$row['Purchase Order Submitted Units'],'<i  class="far fa-clipboard padding_left_5 "></i>  <span onclick="change_view(\'production/'.$this->get('Purchase Order Parent Key').'/order/'.$this->id.'\')" class="link">'.$this->get('Purchase Order Public ID').'</span>');
+
+                        }
+
+
+                    } else {
+
+
+                        $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`='Submitted' WHERE `Purchase Order Transaction State`='Confirmed' and  `Purchase Order Key`=?";
+                        $this->db->prepare($sql)->execute(
+                            array(
+
+                                $this->id
+                            )
+                        );
+
+                    }
+
+
+
                     $this->update_purchase_order_items_state();
 
                     break;
@@ -2865,13 +2901,48 @@ class PurchaseOrder extends DB_Table {
                     }
                     $this->update_purchase_order_date();
 
-                    $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=? WHERE  `Purchase Order Transaction State`='Submitted' and  `Purchase Order Key`=?";
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            'Confirmed',
-                            $this->id
-                        )
-                    );
+
+                    if ($this->get('Purchase Order Type') == 'Production') {
+                        // Take ingredients
+                        $sql  = "select `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Purchase Order Submitted Units` from  `Purchase Order Transaction Fact` WHERE `Purchase Order Transaction State`='Submitted' and  `Purchase Order Key`=? ";
+
+
+
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $this->id
+                            )
+                        );
+                        while ($row = $stmt->fetch()) {
+
+
+
+                            $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`='Confirmed' WHERE `Purchase Order Transaction Fact Key`=?";
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $row['Purchase Order Transaction Fact Key']
+                                )
+                            );
+
+                            $supplier_part=get_object('Supplier Part',$row['Supplier Part Key']);
+                            $supplier_part->send_raw_materials_to_production($row['Purchase Order Submitted Units'],'<i  class="far fa-clipboard padding_left_5 "></i> <span onclick="change_view(\'production/'.$this->get('Purchase Order Parent Key').'/order/'.$this->id.'\')" class="link">'.$this->get('Purchase Order Public ID').'</span>');
+
+                        }
+
+
+                    } else {
+
+
+                        $sql = "UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`='Confirmed' WHERE `Purchase Order Transaction State`='Submitted' and  `Purchase Order Key`=?";
+                        $this->db->prepare($sql)->execute(
+                            array(
+
+                                $this->id
+                            )
+                        );
+
+                    }
 
 
                     if ($this->get('Purchase Order Type') == 'Production') {

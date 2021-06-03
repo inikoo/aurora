@@ -1107,10 +1107,20 @@ class PartLocation extends DB_Table {
 
         switch ($transaction_type) {
             case('Production'):
-                $record_type = 'Movement';
-                $section     = 'Out';
-                $details     = sprintf(_('%s SKO send to production'), -$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
-                break;
+
+                if($qty_change>0){
+                    $record_type = 'Movement';
+                    $section     = 'In';
+                    $details     = sprintf(_('%s SKO %s due to cancelled manufacturing'), $qty_change,'<b>'._('send back').'</b>').' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+
+                }else{
+                    $record_type = 'Movement';
+                    $section     = 'Out';
+                    $details     = sprintf(_('%s SKO send to production'), -$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+
+                }
+
+                      break;
             case('Lost'):
                 $record_type = 'Movement';
                 $section     = 'Lost';
