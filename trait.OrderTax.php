@@ -233,6 +233,8 @@ trait OrderTax {
             $tax_data = $this->get_tax_data();
 
 
+
+
             $new_tax_code = $tax_data['code'];
             $tax_rate     = $tax_data['rate'];
 
@@ -253,50 +255,53 @@ trait OrderTax {
 
         }
 
-        if ($update_from_invoice_key > 0) {
-            $sql  =
-                'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) where `Order Key`=? AND `Invoice Key`=? and `Product Tax Category Key` is not null ';
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $this->id,$update_from_invoice_key
-                )
-            );
-        }else {
-
-            $sql  =
-                'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) where `Order Key`=? and `Product Tax Category Key` is not null ';
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $this->id
-                )
-            );
-        }
-
         $products_with_different_tax = [];
-        while ($row = $stmt->fetch()) {
+        if($tax_data['rate']>0) {
 
+            if ($update_from_invoice_key > 0) {
+                $sql  =
+                    'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) where `Order Key`=? AND `Invoice Key`=? and `Product Tax Category Key` is not null ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id,
+                        $update_from_invoice_key
+                    )
+                );
+            } else {
 
-            if($order_has_re){
-
-                $metadata = json_decode($row['Tax Category Metadata'], true);
-
-                $_rate     = $metadata['With_RE'][2];
-                $_tax_code = $metadata['With_RE'][1];
-            }else{
-                $_rate     = $row['Tax Category Rate'];
-                $_tax_code = $row['Tax Category Code'];
+                $sql  =
+                    'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) where `Order Key`=? and `Product Tax Category Key` is not null ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
             }
 
 
+            while ($row = $stmt->fetch()) {
 
-            $products_with_different_tax[$row['Order Transaction Fact Key']] = [
-                'rate'     => $_rate,
-                'tax_code' => $_tax_code
-            ];
+
+                if ($order_has_re) {
+
+                    $metadata = json_decode($row['Tax Category Metadata'], true);
+
+                    $_rate     = $metadata['With_RE'][2];
+                    $_tax_code = $metadata['With_RE'][1];
+                } else {
+                    $_rate     = $row['Tax Category Rate'];
+                    $_tax_code = $row['Tax Category Code'];
+                }
+
+
+                $products_with_different_tax[$row['Order Transaction Fact Key']] = [
+                    'rate'     => $_rate,
+                    'tax_code' => $_tax_code
+                ];
+            }
         }
-
 
 
 
