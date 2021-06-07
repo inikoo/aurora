@@ -596,10 +596,16 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
             array(
+                'name'    => '`Invoice Tax Number`',
+                'label'   => _('Tax number'),
+                'checked' => 1
+            ),
+            array(
                 'name'    => '`Invoice Customer Key`',
                 'label'   => _('Customer Id'),
                 'checked' => 0
             ),
+
             array(
                 'name'    => '`Invoice Date`',
                 'label'   => _('Date'),
