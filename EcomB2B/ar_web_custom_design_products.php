@@ -40,16 +40,13 @@ switch ($tipo) {
         break;
 
 
-
-
 }
-
 
 
 function get_custom_design_products_html($data, $customer, $db) {
 
 
-    $smarty = new Smarty();
+    $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -89,6 +86,14 @@ function get_custom_design_products_html($data, $customer, $db) {
         echo json_encode($response);
         exit;
     }
+
+
+    $placeholders = array(
+        '[Customer Name]' => $customer->get('Name'),
+
+    );
+
+
     $smarty->assign('order', $order);
     $smarty->assign('customer', $customer);
     $smarty->assign('website', $website);
@@ -106,8 +111,7 @@ function get_custom_design_products_html($data, $customer, $db) {
     $customer_custom_products = array();
 
     $sql = sprintf(
-        "SELECT `Product ID`  FROM `Product Dimension` P   WHERE  `Product Customer Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Code`",
-        $customer->id
+        "SELECT `Product ID`  FROM `Product Dimension` P   WHERE  `Product Customer Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Code`", $customer->id
     );
 
 
@@ -147,9 +151,14 @@ function get_custom_design_products_html($data, $customer, $db) {
 
     $smarty->assign('products', $customer_custom_products);
 
+    $html = $smarty->fetch('theme_1/blk.custom_design_products.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl');
+
+    $html = strtr($html, $placeholders);
+
+
     $response = array(
         'state' => 200,
-        'html'  => $smarty->fetch('theme_1/blk.custom_design_products.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        'html'  => $html,
     );
 
 
