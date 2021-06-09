@@ -152,13 +152,9 @@
 
             <a id="link_stem_cell" class="item" href=""><i style=";min-width: 16px" class="fa item_icon fa-fw fa-caret-right"></i> <span class="_item_label" contenteditable="true">{t}New link{/t}</span>
                 <i class="fal item_delete  aux fa-trash-alt button  " style="float: right" title="{t}Remove link{/t}"></i>
-
                 <i url="" class="fal item_link  aux fa-link button  " style="float: right;margin-right: 10px" title="{t}Update link{/t}"></i>
                 <i url="" class="fal item_handle  aux far fa-hand-rock like_button  hide" style="float: right;margin-right: 10px" title="{t}Move link{/t}"></i>
-
             </a>
-
-
 
         <li id="single_column_link_stem_cell" class="_item" type="item">
             <a href="">
@@ -169,38 +165,18 @@
             </a>
         </li>
 
-
-
-
-
-
-
-
         <ul id="items_stem_cell" >
-
             <a class="add_link button" href=""><i  class="fa item_icon fa-fw fa-plus"></i> <span class="_item_label">{t}Add link{/t}</span></a>
         </ul>
         <ul id="empty_stem_cell"></ul>
 
         <ul id="text_stem_cell">
-
-
-
-                <img data-type="image_and_text" link=""   src="https://placehold.it/360x120" alt=""   />
-
-
+                <img data-type="image_and_text" link=""   src="https://via.placeholder.com/360x120.png" alt=""   />
             <div class="new_editor"></div>
-
-
         </ul>
 
         <ul id="image_stem_cell">
-
-
-
-                <img data-type="image" link=""  src="https://placehold.it/360x240" alt=""   />
-
-
+            <img data-type="image" link=""  src="https://via.placeholder.com/360x240.png" alt=""   />
         </ul>
 
         <ul id="catalogue_stem_cell">
@@ -210,12 +186,9 @@
         </ul>
 
         <ul id="three_columns_stem_cell" >
-
             <div  data-type="nothing" class="submenu nothing _1"></div>
             <div  data-type="nothing" class="submenu nothing _2"></div>
             <div  data-type="nothing" class="submenu nothing _3"></div>
-
-
         </ul>
 
         <div id="single_column_stem_cell" >

@@ -1286,6 +1286,10 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
+    if($object->get('Product Customer Key')){
+        $title.='<small  class="padding_left_20 purple"> <i title="'._('Customer custom product').'" class="far fa-user-shield padding_left_5" aria-hidden="true"></i> '.$object->get('Customer Key').'</small>';
+    }
+
 
 
     $right_buttons[] = array(

@@ -647,7 +647,7 @@ class SupplierDelivery extends DB_Table {
                 } else {
 
                     if ($this->data['Supplier Delivery Estimated Receiving Date']) {
-                        return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime(
+                        return '<span class="discreet"><i class="fa fa-thumbtack" aria-hidden="true"></i> '.strftime(
                                 "%e %b %Y", strtotime($this->get('Estimated Receiving Date'))
                             ).'</span>';
                     } else {

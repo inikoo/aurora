@@ -949,7 +949,7 @@ class Page extends DB_Table {
         $items_out_of_stock     = array();
 
 
-        $sql = "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  WHERE  `Category Key`=?  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,`Product Code File As`";
+        $sql = "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  WHERE  `Category Key`=?  AND `Product Web State` IN  ('For Sale','Out of Stock') and `Product Customer Key` is null  ORDER BY `Product Web State`,`Product Code File As`";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -2481,7 +2481,8 @@ class Page extends DB_Table {
                 $max_customers = 0;
 
                 $sql = sprintf(
-                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
+                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`) 
+                    WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  and P.`Product Customer Key` is null  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
                     $product->id, $product->get('Product Family Category Key')
 
                 );
@@ -2513,10 +2514,6 @@ class Page extends DB_Table {
                         }
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 if ($number_links >= $max_links) {
@@ -2683,7 +2680,7 @@ class Page extends DB_Table {
             } elseif ($item['type'] == 'product') {
 
 
-                $sql = "SELECT `Product Web State` FROM `Product Dimension` WHERE `Product ID`=?";
+                $sql = "SELECT `Product Web State`,`Product Customer Key` FROM `Product Dimension` WHERE `Product ID`=?";
 
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
@@ -2692,7 +2689,7 @@ class Page extends DB_Table {
                     )
                 );
                 if ($row = $stmt->fetch()) {
-                    if ($row['Product Web State'] == 'For Sale' or $row['Product Web State'] == 'Out of Stock') {
+                    if ($row['Product Web State'] == 'For Sale' or $row['Product Web State'] == 'Out of Stock' and   $row['Product Customer Key']=='') {
 
                         $product = get_object('Public_Product', $item['product_id']);
                         $product->load_webpage();
@@ -3377,10 +3374,6 @@ class Page extends DB_Table {
                 } else {
                     unset($content_data['blocks'][$block_key]['items'][$item_key]);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 

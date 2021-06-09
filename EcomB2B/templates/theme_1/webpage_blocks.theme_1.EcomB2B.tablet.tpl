@@ -61,6 +61,7 @@
             {assign "with_checkout" false}
             {assign "with_profile" false}
             {assign "with_favourites" false}
+            {assign "with_custom_design_products" false}
             {assign "with_client" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
@@ -229,7 +230,20 @@
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                             {/if}
-                        {elseif $block.type=='portfolio'}
+                     {elseif $block.type=='custom_design_products'}
+                         {if $logged_in}
+                             {assign "with_custom_design_products" 1}
+                             {assign "with_category_products" 1}
+                             <div id="custom_design_products">
+                                 <div style="text-align: center">
+                                     <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
+                                 </div>
+                             </div>
+                         {else}
+                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
+                         {/if}
+
+                     {elseif $block.type=='portfolio'}
 
                          {if $logged_in}
                              {assign "with_portfolio" 1}

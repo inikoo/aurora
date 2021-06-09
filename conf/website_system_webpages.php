@@ -133,6 +133,35 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
+        'custom_design_products.sys' => array(
+            'Webpage Scope'            => 'CustomDesignProducts',
+            'Webpage Scope Metadata'   => '',
+            'Webpage Type'             => 'Customer',
+            'Webpage Code'             => 'custom_design_products.sys',
+            'Webpage Name'             => _('Custom Design Products'),
+            'Webpage Meta Description' => '',
+            'Webpage Scope Metadata'   => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'custom_design_products',
+                            'label'         => _('Custom Design Products'),
+                            'icon'          => 'fa-user-shield',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+                                'with_items' => '<h1>'._('Custom Design Products').'</h1><p>'._('Here you can order your custom design products').'</p>',
+                                'no_items'   => '<h1>'._('Custom Design Products').'</h1><p>'._('Contact us to create your own custom products').'</p>',
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
 
 
         'login.sys' => array(

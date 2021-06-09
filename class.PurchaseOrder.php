@@ -901,7 +901,7 @@ class PurchaseOrder extends DB_Table {
                 } else {
 
                     if ($this->data['Purchase Order Estimated Receiving Date']) {
-                        return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date').' +0:00')).'</span>';
+                        return '<span class="discreet"><i class="fa fa-thumbtack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date').' +0:00')).'</span>';
                     } else {
 
                         $parent = get_object(

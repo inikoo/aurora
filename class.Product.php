@@ -457,10 +457,10 @@ class Product extends Asset {
                         $web_configuration = _('Automatic');
                         break;
                     case 'Online Force For Sale':
-                        $web_configuration = _('For sale').' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>';
+                        $web_configuration = _('For sale').' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>';
                         break;
                     case 'Online Force Out of Stock':
-                        $web_configuration = _('Out of Stock').' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>';
+                        $web_configuration = _('Out of Stock').' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>';
                         break;
                     case 'Offline':
                         $web_configuration = _('Offline');
@@ -478,13 +478,13 @@ class Product extends Asset {
                 switch ($this->data['Product Web State']) {
                     case 'For Sale':
                         $web_state = '<span class="'.(($this->get('Product Availability') <= 0 and $this->data['Product Number of Parts'] > 0 and $this->data['Product Availability State'] != 'OnDemand') ? 'error' : '').'">'._('Online').'</span>'
-                            .($this->data['Product Web Configuration'] == 'Online Force For Sale' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                            .($this->data['Product Web Configuration'] == 'Online Force For Sale' ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
                         break;
                     case 'Out of Stock':
                         $web_state = '<span  class="'.(($this->get(
                                     'Product Availability'
                                 ) > 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($this->data['Product Web Configuration'] == 'Online Force Out of Stock'
-                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                                ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
                         break;
                     case 'Discontinued':
                         $web_state = _('Discontinued');
@@ -497,7 +497,7 @@ class Product extends Asset {
 
                             $web_state = '<span class="'.(($this->get(
                                         'Product Availability'
-                                    ) > 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($this->data['Product Status'] == 'Active' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                                    ) > 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($this->data['Product Status'] == 'Active' ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
                         }
                         break;
                     default:

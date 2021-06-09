@@ -13,6 +13,10 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
+
+{if $public_product}
+
+
 <div id="block_{$key}" class="{if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
     <div class="product product_container" data-product_id="{$product->id}" style="display: flex; justify-content: space-evenly" itemscope itemtype="http://schema.org/Product">
         <div class="images" style="flex-grow:1;padding-left: 20px;min-width: 350px;flex-basis: auto;flex-grow: 1;">
@@ -209,6 +213,8 @@
     ga('auTracker.ec:addProduct', { 'id': '{$product->get('Code')}',  'category': '{$product->get('Family Code')}','price': '{$product->get('Product Price')}','name': '{$product->get('Name')|escape:'quotes'}', });
     ga('auTracker.ec:setAction', 'detail');
 </script>
-
+{else}
+    <div style="padding: 150px 0px;text-align: center;font-weight: 800;font-size: large">{t}Private product{/t}</div>
+{/if}
 
 

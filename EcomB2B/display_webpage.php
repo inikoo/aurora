@@ -23,14 +23,14 @@ list($detected_device, $template_suffix) = get_device();
 
 date_default_timezone_set('UTC');
 
-if(isset($_SERVER['HTTP_X_STATE'])){
-    if($_SERVER['HTTP_X_STATE']=='I'){
-        $logged_in=true;
-    }else{
-        $logged_in=false;
+if (isset($_SERVER['HTTP_X_STATE'])) {
+    if ($_SERVER['HTTP_X_STATE'] == 'I') {
+        $logged_in = true;
+    } else {
+        $logged_in = false;
     }
 
-}else{
+} else {
     $logged_in = get_logged_in();
 
 }
@@ -64,7 +64,7 @@ if (!isset($db) or is_null($db)) {
 $cacheable = 'Yes';
 include_once __DIR__.'/utils/public_object_functions.php';
 
-$website = get_object('Website',$website_key);
+$website = get_object('Website', $website_key);
 if (isset($is_homepage)) {
 
 
@@ -223,7 +223,7 @@ if (isset($_REQUEST['snapshot'])) {
 
     if (isset($_REQUEST['logged_in']) and $_REQUEST['logged_in']) {
 
-        $logged_in                    = 1;
+        $logged_in = 1;
 
     }
 
@@ -251,7 +251,6 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 //}
 
 $smarty->assign('account_code', DNS_ACCOUNT_CODE);
-
 
 
 include_once __DIR__.'/utils/public_object_functions.php';
@@ -288,7 +287,7 @@ $store = get_object('Store', $website->get('Website Store Key'));
 //    $website_locale = $_SESSION['website_locale'];
 //} else {
 //    $_SESSION['website_locale'] = $website->get('Website Locale');
-    $website_locale             = $website->get('Website Locale');
+$website_locale = $website->get('Website Locale');
 //}
 $language = set_locate($website_locale);
 
@@ -428,6 +427,22 @@ if ($webpage->get('Webpage Scope') == 'Product') {
      * @var $product \Public_Product
      */
     $product = get_object('Product', $webpage->get('Webpage Scope Key'));
+
+    $public_product=false;
+    if($product->get('Product Customer Key')>0){
+
+        if(!empty($_SESSION['customer_key'])  and $_SESSION['customer_key']== $product->get('Product Customer Key') ){
+            $public_product=true;
+
+        }
+
+
+    }else{
+        $public_product=true;
+
+    }
+    $smarty->assign('public_product', $public_product);
+
     $smarty->assign('product', $product);
 
 }
@@ -448,10 +463,8 @@ header('X-WK: '.DNS_ACCOUNT_CODE.'-'.$website->id);
 //header('X-ProdK: '.$webpage->properties('products_keys'));
 
 
-
-
 $smarty->assign('settings', $website_settings);
-if($cacheable=='Yes') {
+if ($cacheable == 'Yes') {
     header_remove("Expires");
     header_remove("Pragma");
     header_remove("Cache-Control");

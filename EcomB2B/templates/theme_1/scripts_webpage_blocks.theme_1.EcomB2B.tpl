@@ -1596,23 +1596,23 @@
                                 $('.order_row i').removeClass('hide');
                                 $('.order_row span').removeClass('hide');
                                 $.each(data.ordered_products, function (index, value) {
-                    $('.order_row_' + index).find('input').val(value).data('ovalue', value)
-                    $('.order_row_' + index).find('i').removeClass('fa-hand-pointer fa-flip-horizontal').addClass('fa-thumbs-up fa-flip-horizontal')
-                    $('.order_row_' + index).find('.label span').html('{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}')
-                });
+                                    $('.order_row_' + index).find('input').val(value).data('ovalue', value)
+                                    $('.order_row_' + index).find('i').removeClass('fa-hand-pointer fa-flip-horizontal').addClass('fa-thumbs-up fa-flip-horizontal')
+                                    $('.order_row_' + index).find('.label span').html('{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}')
+                                });
                                 $.each(data.favourite, function (index, value) {
-                    $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
-                });
+                                    $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
+                                });
                                 $.each(data.out_of_stock_reminders, function (index, value) {
-                    var reminder_icon = $('.out_of_stock_reminders_' + index);
-                    reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
-                });
+                                    var reminder_icon = $('.out_of_stock_reminders_' + index);
+                                    reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
+                                });
                                 $.each(data.stock, function (index, value) {
-                    if (value[0] != '') {
-                        $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
-                        $('.product_stock_label_' + index).html(value[1])
-                    }
-                });
+                                    if (value[0] != '') {
+                                        $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
+                                        $('.product_stock_label_' + index).html(value[1])
+                                    }
+                                });
 
                             });
 
@@ -1620,60 +1620,71 @@
                      getScript("/assets/desktop.logged_in.min.js", function () {
                         $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
                         {if $with_favourites==1}
-
                          $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=", function (data) {
-
-
                         $('#favourites').html(data.html)
-
                         $.getJSON("ar_web_customer_products.php?tipo=category_products&with_favourites_products=Yes&webpage_key={$webpage->id}", function (data) {
-
-
-
                             $('.order_row i').removeClass('hide')
                             $('.order_row span').removeClass('hide')
-
                             $.each(data.ordered_products, function (index, value) {
                                 $('.order_row_' + index).find('input').val(value).data('ovalue', value)
                                 $('.order_row_' + index).find('i').removeClass('fa-hand-pointer fa-flip-horizontal').addClass('fa-thumbs-up fa-flip-horizontal')
                                 $('.order_row_' + index).find('.label span').html('{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}')
                             });
-
-
                             $.each(data.favourite, function (index, value) {
                                 $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
                             });
-
                             $.each(data.out_of_stock_reminders, function (index, value) {
-
                                 var reminder_icon=$('.out_of_stock_reminders_' + index)
                                 reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
                             });
-
                             $.each(data.stock, function (index, value) {
                                 if(value[0]!=''){
                                     $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title',value[1])
-
                                     $('.product_stock_label_'+ index).html(value[1])
-
                                 }
-
                             });
-
                             $('#header_order_totals').find('.ordered_products_number').html(data.items)
                             $('#header_order_totals').find('.order_amount').html(data.total)
                             $('#header_order_totals').find('i').attr('title',data.label)
                             ga('auTracker.send', 'pageview');
-
                         });
-
-
-
                     })
-
-
-
                 {/if}
+                         {if $with_custom_design_products==1}
+                         $.getJSON("ar_web_custom_design_products.php?tipo=get_custom_design_products_html&device_prefix=", function (data) {
+                             $('#custom_design_products').html(data.html)
+                             $.getJSON("ar_web_customer_products.php?tipo=category_products&with_custom_design_products=Yes&webpage_key={$webpage->id}", function (data) {
+                                 $('.order_row i').removeClass('hide')
+                                 $('.order_row span').removeClass('hide')
+                                 $.each(data.ordered_products, function (index, value) {
+                                     $('.order_row_' + index).find('input').val(value).data('ovalue', value)
+                                     $('.order_row_' + index).find('i').removeClass('fa-hand-pointer fa-flip-horizontal').addClass('fa-thumbs-up fa-flip-horizontal')
+                                     $('.order_row_' + index).find('.label span').html('{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}')
+                                 });
+                                 $.each(data.favourite, function (index, value) {
+                                     $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
+                                 });
+                                 $.each(data.out_of_stock_reminders, function (index, value) {
+                                     var reminder_icon=$('.out_of_stock_reminders_' + index)
+                                     reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
+                                 });
+                                 $.each(data.stock, function (index, value) {
+                                     if(value[0]!=''){
+                                         $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title',value[1])
+                                         $('.product_stock_label_'+ index).html(value[1])
+                                     }
+                                 });
+                                 $('#header_order_totals').find('.ordered_products_number').html(data.items)
+                                 $('#header_order_totals').find('.order_amount').html(data.total)
+                                 $('#header_order_totals').find('i').attr('title',data.label)
+                                 ga('auTracker.send', 'pageview');
+                             });
+                         })
+                         {/if}
+
+
+
+
                     })
               {/if}
                             {/if}
@@ -1687,7 +1698,7 @@
     })();
 
 
-    {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
+    {if $with_search!=1 and $with_favourites!=1 and $with_custom_design_products!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
     ga('auTracker.send', 'pageview');
     {/if}
 

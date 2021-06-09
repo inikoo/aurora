@@ -204,77 +204,7 @@
 
 
 
-    function xsave() {
 
-        if (!$('#save_button', window.parent.document).hasClass('save')) {
-            return;
-        }
-
-        $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
-
-
-        content_data = {
-
-        }
-        labels= { };
-
-        $('[contenteditable=true]').each(function (i, obj) {
-
-
-            content_data[$(obj).attr('id')] = $(obj).html()
-        })
-
-        $('.website_localized_label').each(function (i, obj) {
-            if($(obj).val()!=''){
-                labels[$(obj).attr('id')] = $(obj).val()
-
-
-            }
-
-        })
-
-        $('.label_field').each(function (i, obj) {
-
-                content_data[$(obj).attr('id')] = $(obj).val()
-
-
-
-
-        })
-
-
-        var ajaxData = new FormData();
-
-        ajaxData.append("tipo", 'save_webpage_content')
-        ajaxData.append("key", '{$webpage->id}')
-        ajaxData.append("content_data", JSON.stringify(content_data))
-        ajaxData.append("labels", JSON.stringify(labels))
-
-
-        $.ajax({
-            url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-            complete: function () {
-            }, success: function (data) {
-
-                if (data.state == '200') {
-
-                    $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
-
-                } else if (data.state == '400') {
-                    swal({
-                        title: data.title, text: data.msg, confirmButtonText: "OK"
-                    });
-                }
-
-
-
-            }, error: function () {
-
-            }
-        });
-
-
-    }
 
 
     function show_edit_input(element) {

@@ -35,8 +35,8 @@ $options_status            = array(
 );
 $options_web_configuration = array(
     'Online Auto'               => _('Automatic'),
-    //	'Online Force For Sale'=>_('For sale').' <i class="fa fa-thumb-tack" aria-hidden="true"></i>' ,
-    'Online Force Out of Stock' => _('Out of stock').' <i class="fa fa-thumb-tack" aria-hidden="true"></i>',
+    //	'Online Force For Sale'=>_('For sale').' <i class="fa fa-thumbtack" aria-hidden="true"></i>' ,
+    'Online Force Out of Stock' => _('Out of stock').' <i class="fa fa-thumbtack" aria-hidden="true"></i>',
     'Offline'                   => _('Offline')
 );
 

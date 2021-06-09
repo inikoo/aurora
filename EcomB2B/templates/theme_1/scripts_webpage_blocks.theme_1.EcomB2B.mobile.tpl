@@ -226,12 +226,8 @@
             {/if}
             {if $with_favourites==1}
             getScript("/assets/mobile.logged_in.min.js", function () {
-
                 $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=mobile", function (data) {
-
-
                     $('#favourites').html(data.html)
-
                     $.getJSON("ar_web_customer_products.php?with_favourites_products=Yes&tipo=category_products&webpage_key={$webpage->id}", function (data) {
                         $.each(data.ordered_products, function (index, value) {
                             $('.order_qty_' + index).val(value)
@@ -248,17 +244,37 @@
                             if (value[0] != '') {
                                 $('.image_stock_hint_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0])
                                 $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
-
                             }
                         });
-
                     });
-
-
                 })
-
             })
+            {/if}
+            {if $with_custom_design_products==1}
+            getScript("/assets/mobile.logged_in.min.js", function () {
+                $.getJSON("ar_web_custom_design_products.php?tipo=get_custom_design_products_html&device_prefix=mobile", function (data) {
+                    $('#custom_design_products').html(data.html)
+                    $.getJSON("ar_web_customer_products.php?with_custom_design_products=Yes&tipo=category_products&webpage_key={$webpage->id}", function (data) {
+                        $.each(data.ordered_products, function (index, value) {
+                            $('.order_qty_' + index).val(value)
+                        });
+                        $.each(data.favourite, function (index, value) {
+                            $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
+                        });
+                        $.each(data.out_of_stock_reminders, function (index, value) {
 
+                            var reminder_icon = $('.out_of_stock_reminders_' + index)
+                            reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
+                        });
+                        $.each(data.stock, function (index, value) {
+                            if (value[0] != '') {
+                                $('.image_stock_hint_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0])
+                                $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
+                            }
+                        });
+                    });
+                })
+            })
             {/if}
             {if $with_profile==1}
             getScript("/assets/mobile.forms.min.js", function () {
@@ -1653,7 +1669,7 @@
 
 
 
-    {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
+    {if $with_search!=1 and $with_favourites!=1 and $with_custom_design_products!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
     ga('auTracker.send', 'pageview');
     {/if}
 

@@ -141,8 +141,12 @@
                         <span class="order_amount" style="padding-right:10px" title="">{$zero_money}</span>
                     </a>
                     <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px;padding-right: 8px;padding-left: 8px">
-                        <i class=" far fa-heart fa-flip-horizontal  "  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
+                        <i class=" far fa-heart"  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
                     </a>
+                    <a id="customer_products_button" href="custom_design_products.sys" class="button" style="padding:4px 8px 4px 2px  ; margin-left: 0px;margin-right: 0px;">
+                        <i class=" far fa-user-shield  "  title="{if empty($labels._Customer_Products)}{t}My products{/t}{else}{$labels._Customer_Products}{/if}" aria-hidden="true"></i>
+                    </a>
+
                     <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
 

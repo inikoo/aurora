@@ -39,7 +39,7 @@
 
 <div id="block_{$key}" block="{$data.type}" class=" _block {if !$data.show}hide{/if} ">
 
-    <div class="fancy_button  button_block " button_bg="{$data.bg_image}" style="background-image:url('{if $data.bg_image!=''}{$data.bg_image}{else}https://placehold.it/1240x750{/if}')">
+    <div class="fancy_button  button_block " button_bg="{$data.bg_image}" style="background-image:url('{if $data.bg_image!=''}{$data.bg_image}{else}https://via.placeholder.com/1240x750.png{/if}')">
         <div class="container">
             <h2 contenteditable="true" class="_title">{$data.title}</h2>
             <p contenteditable="true" class="_text">{$data.text}</p>

@@ -231,7 +231,7 @@ class Public_Product {
                 }
 
                 return $ordered_quantity;
-                break;
+
 
 
             case 'Product Name':
@@ -244,11 +244,11 @@ class Public_Product {
             case 'Product Family Category Key':
             case 'Product Department Category Key':
             case 'Product Web State':
-
+            case 'Product Customer Key':
             return $this->data[$key];
 
 
-                break;
+
 
             case 'Name':
 

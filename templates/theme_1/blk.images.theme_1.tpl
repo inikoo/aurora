@@ -21,26 +21,26 @@
             <div class="blk_images "  template="4">
     <span class=" image">
         <figure>
-            <img class="button" src="https://placehold.it/300x250"  data-width="300" alt="" display_class="caption_left">
+            <img class="button" src="https://via.placeholder.com/300x250.png"  data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
     <span class=" image">
         <figure>
-            <img class="button" src="https://placehold.it/300x250" data-width="300" alt="" display_class="caption_left">
+            <img class="button" src="https://via.placeholder.com/300x250.png" data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
     <span class=" image">
         <figure>
-            <img class="button" src="https://placehold.it/300x250" data-width="300" alt="" display_class="caption_left">
+            <img class="button" src="https://via.placeholder.com/300x250.png" data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
     <span class=" image">
 
         <figure>
-            <img class="button" src="https://placehold.it/300x250" data-width="300" alt="" display_class="caption_left">
+            <img class="button" src="https://via.placeholder.com/300x250.png" data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
