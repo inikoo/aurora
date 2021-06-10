@@ -507,7 +507,7 @@ function send_test_email() {
 
 
             } else if (data.state == '400') {
-                swal("{t}Error{/t}", data.msg, "error");
+                swal("Error", data.msg, "error");
 
             }
 
