@@ -378,25 +378,24 @@ function mailroom_group_by_store($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    $total_sent     = 0;
-    $total_newsletters   = 0;
-    $total_marketing    = 0;
-
+    $total_sent        = 0;
+    $total_newsletters = 0;
+    $total_marketing   = 0;
 
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
-/*
-            $total_orders     += $data['orders'];
-            $total_invoices   += $data['Store Invoices'];
-            $total_refunds    += $data['Store Refunds'];
-            $total_in_basket  += $data['in_basket'];
-            $total_in_process += $data['in_process'];
+            /*
+                        $total_orders     += $data['orders'];
+                        $total_invoices   += $data['Store Invoices'];
+                        $total_refunds    += $data['Store Refunds'];
+                        $total_in_basket  += $data['in_basket'];
+                        $total_in_process += $data['in_process'];
 
-            $total_sent      += $data['sent'];
-            $total_cancelled += $data['cancelled'];
-*/
+                        $total_sent      += $data['sent'];
+                        $total_cancelled += $data['cancelled'];
+            */
             $adata[] = array(
                 'store_key' => $data['Store Key'],
                 'code'      => sprintf('<span class="link" onclick="change_view(\'mailroom/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
@@ -415,9 +414,9 @@ function mailroom_group_by_store($_data, $db, $user) {
         'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
 
 
-        'sent'      => number($total_sent),
+        'sent'        => number($total_sent),
         'newsletters' => number($total_newsletters),
-        'marketing' => number($total_marketing),
+        'marketing'   => number($total_marketing),
 
     );
 
@@ -822,7 +821,6 @@ function customer_notifications($_data, $db, $user) {
 }
 
 
-
 function sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
@@ -842,7 +840,6 @@ function sent_emails($_data, $db, $user) {
     $adata = array();
 
 
-
     if ($_data['parameters']['parent'] == 'mailshot') {
 
         if ($email_campaign_type->get('Email Campaign Type Scope') == 'Marketing') {
@@ -855,12 +852,11 @@ function sent_emails($_data, $db, $user) {
     }
 
 
-
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-  //          print_r($data);
-//exit;
+            //          print_r($data);
+            //exit;
             switch ($data['Email Campaign Type Code']) {
                 case 'Newsletter':
                     $_type = _('Newsletter');
@@ -941,13 +937,11 @@ function sent_emails($_data, $db, $user) {
 
             $state = sprintf('<span class="email_tracking_state_%d">%s</span>', $data['Email Tracking Key'], $state);
 
-            $customer  = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
+            $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
             $prospect = sprintf('<span class="link" onclick="change_view(\'prospects/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
 
             $subject = '';
             if ($_data['parameters']['parent'] == 'email_campaign_type') {
-
-
 
 
                 switch ($parent->get('Email Campaign Type Scope')) {
@@ -995,8 +989,6 @@ function sent_emails($_data, $db, $user) {
             }
 
 
-
-
             $adata[] = array(
                 'id'       => (integer)$data['Email Tracking Key'],
                 'state'    => $state,
@@ -1029,7 +1021,7 @@ function sent_emails($_data, $db, $user) {
 }
 
 
-function user_notification_sent_emails($_data, $db, $user){
+function user_notification_sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
     include_once 'prepare_table/init.php';
@@ -1049,9 +1041,7 @@ function user_notification_sent_emails($_data, $db, $user){
         $_parent = get_object('customer', $_data['parameters']['parent_key']);
     }
 
-  //  $link = 'mailroom/%d/staff_notifications/%d/mailshot/%d/tracking/%d';
-
-
+    //  $link = 'mailroom/%d/staff_notifications/%d/mailshot/%d/tracking/%d';
 
 
     //'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
@@ -1271,26 +1261,28 @@ function gr_reminder_next_recipients($_data, $db, $user) {
 function mailshots($_data, $db, $user) {
 
 
-    $email_template_type = get_object('email_template_type', $_data['parameters']['parent_key']);
 
-    if ($email_template_type->get('Code') == 'Newsletter') {
-        $rtext_label = 'newsletter';
+    $rtext_label = 'mailshot';
 
-    } else {
-        $rtext_label = 'mailshot';
+    if ($_data['parameters']['parent'] == 'email_campaign_type') {
+        $email_template_type = get_object('email_template_type', $_data['parameters']['parent_key']);
+        if ($email_template_type->get('Code') == 'Newsletter') {
+            $rtext_label = 'newsletter';
 
+        }
     }
 
 
-    if ($email_template_type->get('Email Campaign Type Scope') == 'Marketing') {
-        $link = 'mailroom/%d/marketing/%d/mailshot/%d';
+    /*
+        if ($email_template_type->get('Email Campaign Type Scope') == 'Marketing') {
+            $link = 'mailroom/%d/marketing/%d/mailshot/%d';
 
 
-    } else {
-        $link = 'mailroom/%d/notifications/%d/mailshot/%d';
+        } else {
+            $link = 'mailroom/%d/notifications/%d/mailshot/%d';
 
-    }
-
+        }
+    */
 
     include_once 'prepare_table/init.php';
 
@@ -1301,6 +1293,18 @@ function mailshots($_data, $db, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+
+            // print_r($data);
+
+
+            if ($data['Email Campaign Type'] == 'Marketing') {
+                $link = 'mailroom/%d/marketing/%d/mailshot/%d';
+
+
+            } else {
+                $link = 'mailroom/%d/notifications/%d/mailshot/%d';
+
+            }
 
             switch ($data['Email Campaign State']) {
 
@@ -1322,12 +1326,12 @@ function mailshots($_data, $db, $user) {
 
 
             $name = sprintf(
-                '<span class="link" onclick="change_view(\''.$link.'\')"  title="%s" >%s</span>', $data['Email Campaign Store Key'], $_data['parameters']['parent_key'], $data['Email Campaign Key'], $data['Email Campaign Name'], $subject
+                '<span class="link" onclick="change_view(\''.$link.'\')"  title="%s" >%s</span>', $data['Email Campaign Store Key'], $data['Email Campaign Email Template Type Key'], $data['Email Campaign Key'], $data['Email Campaign Name'], $subject
             );
 
 
-            if($data['Email Campaign Wave Type']=='Wave'){
-                $name.=' <span style="font-size: x-small">2nd <i class="fal fa-water"></i></span>';
+            if ($data['Email Campaign Wave Type'] == 'Wave') {
+                $name .= ' <span style="font-size: x-small">2nd <i class="fal fa-water"></i></span>';
             }
 
             $adata[] = array(
