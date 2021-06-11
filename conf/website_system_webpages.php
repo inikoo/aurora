@@ -163,6 +163,36 @@ function website_system_webpages_config($website_type) {
 
         ),
 
+        'customer_discounts.sys' => array(
+            'Webpage Scope'            => 'CustomerDiscounts',
+            'Webpage Scope Metadata'   => '',
+            'Webpage Type'             => 'Customer',
+            'Webpage Code'             => 'customer_discounts.sys',
+            'Webpage Name'             => _('Customer discounts'),
+            'Webpage Meta Description' => '',
+            'Webpage Scope Metadata'   => '',
+            'Page Store Content Data'  => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'customer_discounts',
+                            'label'         => _('Customer discounts'),
+                            'icon'          => 'fa-user-tag',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+                                'with_items' => '<h1>'._('Customer discounts').'</h1><p>'._('Here you can see for bulk discounts').'</p>',
+                                'no_items'   => '<h1>'._('Customer discounts').'</h1><p>'._('Contact us to ask for bulk discounts').'</p>',
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
+
 
         'login.sys' => array(
             'Webpage Scope'            => 'Login',

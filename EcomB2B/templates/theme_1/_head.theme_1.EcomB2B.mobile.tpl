@@ -189,6 +189,7 @@
     {assign "with_profile" false}
     {assign "with_favourites" false}
     {assign "with_custom_design_products" false}
+    {assign "with_customer_discounts" false}
     {assign "with_search" false}
     {assign "with_thanks" false}
     {assign "with_gallery" false}
@@ -230,6 +231,12 @@
                     {assign "with_not_found" 1}
                 {else}
                     {assign "with_custom_design_products" 1}
+                {/if}
+            {elseif $block.type=='customer_discounts'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "with_customer_discounts" 1}
                 {/if}
             {elseif $block.type=='catalogue'}
                 {assign "with_datatables" 1}

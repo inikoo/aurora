@@ -578,7 +578,10 @@
 
     set_up_froala_editor('block_{$key}_with_items_editor');
     set_up_froala_editor('block_{$key}_no_items_editor');
+    {elseif $block.type=='customer_discounts'}
 
+    set_up_froala_editor('block_{$key}_with_items_editor');
+    set_up_froala_editor('block_{$key}_no_items_editor');
     {elseif $block.type=='text'}
 
 
@@ -1028,6 +1031,23 @@
                         type: 'custom_design_products',
                         label: '{t}Custom Design Products{/t}',
                         icon: 'fa-user-shield',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+
+                    })
+                    break;
+                case 'customer_discounts':
+
+                    var content_data = {
+                        'with_items': $(obj).find('.with_items').data('editor').html.get(), 'no_items': $(obj).find('.no_items').data('editor').html.get()
+                    }
+
+                    blocks.push({
+                        type: 'customer_discounts',
+                        label: '{t}Customer discounts{/t}',
+                        icon: 'fa-user-tag',
                         show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),

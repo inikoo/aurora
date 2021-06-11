@@ -2,28 +2,27 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 8 Jun 2021 at 16:29 GMT+8, Kuala Lumpur , Malaysia
+ Created: 11 June 2021 17:59 GMT+8, Kaula Lumpur, Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3
 -->
 *}
 
-
+<div style="display: flex;padding: 10px 0px 2px 0px">
+    <div style="flex-grow:1;text-align: center;border-bottom: 2px solid purple;font-weight: 800;padding-bottom: 5px"><i class="fa fa-user-tag"></i> {t}Customer discounts{/t}</div>
+    <a style="flex-grow:1;" href="custom_design_products.sys"><div style="flex-grow:1;text-align: center;border-bottom: 1px solid #ccc;padding-bottom: 5px"><i class="fa fa-user-shield"></i> {t}Personalized products{/t}</div></a>
+</div>
 
 
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "0"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
-<div style="display: flex;padding: 10px 0px 2px 0px">
-    <a style="flex-grow:1;" href="customer_discounts.sys"><div style="flex-grow:1;text-align: center;border-bottom: 1px solid #ccc;padding-bottom: 5px"><i class="fa fa-user-tag"></i> {t}Customer discounts{/t}</div></a>
-    <div style="flex-grow:1;text-align: center;border-bottom: 2px solid purple;font-weight: 800;padding-bottom: 5px" ><i class="fa fa-user-shield"></i> {t}Personalized products{/t}</div>
-</div>
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}   {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 <div class="container _au_vw_">
-{if  ($products|@count)==0}
+{if  ($products|@count)==0  and ($families|@count)==0  }
     <div  >{$data.labels.no_items}</div>
 
 {else}
@@ -34,15 +33,58 @@
 
 </div>
 
+    {if  ($families|@count)>0  }
+        <h4 style="padding-left: 20px;padding-top:30px">{t}Discounted families{/t}</h4>
 
-<div class="warp products no_items_header clear">
+        <div class="section " >
+
+
+
+            <div class="section_items">
+                {foreach from=$families item=category_data}
+                <div class="category_wrap"">
+
+
+                    <div class="category_block" style="position:relative" >
+
+                        <div class="item_header_text" style="margin-bottom: 0;padding: 4px 0 0 0 ">
+                            <a href="{$category_data.link}" >
+                                <div style="font-weight: 800;padding-bottom: 3px;color: purple">{$category_data.allowance}</div> {$category_data.header_text|strip_tags}
+                            </a>
+                        </div>
+                        <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center "   >
+                            <a href="{$category_data.link}">
+                                <img src="{if empty($category_data.image_website)}{$category_data.image_src}{else}{$category_data.image_website}{/if}"  />
+                            </a>
+                        </div>
+
+                    </div>
+
+
+
+            </div>
+            {/foreach}</div>
+
+    <div style="clear:both"></div>
+</div>
+
+    {/if}
+
+    {if  ($products|@count)>0  }
+
+
+    <h4 style="padding-left: 20px;padding-top:30px">{t}Discounted products{/t}</h4>
+<div class="warp products  clear">
+
     {counter start=-1 print=false assign="counter"}
     {foreach from=$products item=item }
         {counter print=false assign="counter"}
-    <div class="product_wrap  {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if} wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
+    <div style="clear: both" class="product_wrap  {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if} wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
         <div class="product_block item product_container" data-product_id="{$item.product_id}">
 
-
+            <div class="product_header_text _au_vw_" style="text-align: center;font-weight: 800;color: purple">
+                {$item.allowance}
+            </div>
 
             <div class="wrap_to_center product_image" >
                 <a href="{$item.link}"
@@ -154,3 +196,5 @@
     {/if}
     {/foreach}
 </script>
+
+{/if}

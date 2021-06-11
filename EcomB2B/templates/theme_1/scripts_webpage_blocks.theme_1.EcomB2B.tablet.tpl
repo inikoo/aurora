@@ -307,6 +307,31 @@
                     })
                 })
                 {/if}
+                {if $with_customer_discounts==1}
+                getScript("/assets/mobile.logged_in.min.js", function () {
+                    $.getJSON("ar_web_customer_discounts.php?tipo=get_customer_discounts_html&device_prefix=tablet", function (data) {
+                        $('#customer_discounts').html(data.html)
+                        $.getJSON("ar_web_customer_products.php?with_customer_discounts=Yes&tipo=category_products&webpage_key={$webpage->id}", function (data) {
+                            $.each(data.ordered_products, function (index, value) {
+                                $('.order_qty_' + index).val(value)
+                            });
+                            $.each(data.favourite, function (index, value) {
+                                $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
+                            });
+                            $.each(data.out_of_stock_reminders, function (index, value) {
+                                var reminder_icon=$('.out_of_stock_reminders_' + index)
+                                reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
+                            });
+                            $.each(data.stock, function (index, value) {
+                                if (value[0] != '') {
+                                    $('.image_stock_hint_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0])
+                                    $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
+                                }
+                            });
+                        });
+                    })
+                })
+                {/if}
                 {if $with_profile==1}
                     getScript("/assets/mobile.forms.min.js", function () {
                     getScript("/assets/mobile.profile.min.js", function () {
@@ -1617,7 +1642,7 @@
         })
 
 
-        {if $with_search!=1 and $with_favourites!=1  and $with_custom_design_products!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
+        {if $with_search!=1 and $with_favourites!=1  and $with_custom_design_products!=1  and $with_customer_discounts!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
         ga('auTracker.send', 'pageview');
         {/if}
 
