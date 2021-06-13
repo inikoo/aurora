@@ -13,9 +13,10 @@
     {if !empty($sentry_js)}
 
         <script
-                src="https://browser.sentry-cdn.com/5.16.0/bundle.min.js"
-                integrity="sha384-8XeHBuZ2XhMbhyH74W/+6MLGL3PfryfC87kUgxZXJ/z3cUmSETfEZLMo4CPVxh1r"
-                crossorigin="anonymous"></script>
+                src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
+                integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
+                crossorigin="anonymous"
+        ></script>
 
     <script>
         Sentry.init({
