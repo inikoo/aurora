@@ -122,8 +122,8 @@
 
     {if isset($sentry_js)  }
         <script
-                src="https://browser.sentry-cdn.com/5.29.2/bundle.min.js"
-                integrity="sha384-ir4+BihBClNpjZk3UKgHTr0cwRhujAjy/M5VEGvcOzjhM1Db79GAg9xLxYn4uVK4"
+                src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
+                integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
                 crossorigin="anonymous"
         ></script>
         <script>

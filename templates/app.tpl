@@ -12,9 +12,10 @@
 
     {if !empty($sentry_js)}
         <script
-                src="https://browser.sentry-cdn.com/5.11.1/bundle.min.js"
-                integrity="sha384-r7/ZcDRYpWjCNXLUKk3iuyyyEcDJ+o+3M5CqXP5GUGODYbolXewNHAZLYSJ3ZHcV"
-                crossorigin="anonymous"></script>
+                src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
+                integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
+                crossorigin="anonymous"
+        ></script>
 
     {/if}
 
