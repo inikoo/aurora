@@ -40,6 +40,8 @@ function shopify_connect($store, $params, $path,$method='POST') {
              )
     );
 
+
+
     $response = curl_exec($curl);
 
     curl_close($curl);
@@ -48,10 +50,16 @@ function shopify_connect($store, $params, $path,$method='POST') {
     //echo "Response:".$response.' <<';
 
     if ($response) {
-        return array(
-            'success'  => true,
-            'data' => json_decode($response, true)
-        );
+
+        $response=json_decode($response, true);
+        if(!isset($response['success'])){
+            $response['success']=false;
+        }
+
+        return $response;
+
+
+
     }else{
         return array(
             'success'  => false,

@@ -153,7 +153,7 @@
     <tr>
         <td class="icons"><i class="far fa-fw fa-warehouse-alt"></i> <i class="far fa-fw  fa-box"></i></td>
 
-        <td class="label">{t}Warehouse and stock control{/t} </td>
+        <td class="label">{t}Warehouse and stock control{/t}</td>
 
         <td>
              <span data-group_id="22" class=" button permission_type {if 22|in_array:$user_groups}{else}discreet_on_hover{/if} ">
@@ -170,11 +170,31 @@
 
     </tr>
 
+    <tr class="{if !$account->properties('fulfilment')}hide{/if}">
+        <td class="icons"><i class="far fa-fw fa-box-up"></i></td>
+
+        <td class="label">{t}Fulfilment{/t}</td>
+
+        <td>
+             <span data-group_id="32" class=" button permission_type {if 32|in_array:$user_groups}{else}discreet_on_hover{/if} ">
+            <i class="far {if 32|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
+            <span title="{t}Fulfilment set prices{/t}" class="padding_right_10">{t}Supervisor{/t}</span>
+            </span>
+            <span data-group_id="31" class=" button permission_type {if 31|in_array:$user_groups}{else}discreet_on_hover{/if} ">
+            <i class="far {if 31|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
+            <span title="{t}Fulfilment view and handling{/t}" class="padding_right_10">{t}Worker{/t}</span>
+            </span>
+
+
+        </td>
+
+    </tr>
+
 
     <tr>
         <td class="icons"><i class="far fa-fw fa-abacus"></i></td>
 
-        <td class="label">{t}Invoices, credits and payments{/t} </td>
+        <td class="label">{t}Invoices, credits and payments{/t}</td>
 
         <td>
 

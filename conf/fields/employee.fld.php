@@ -10,6 +10,7 @@
 */
 
 include 'conf/user_groups.php';
+$account->load_acc_data();
 
 
 if ($user->can_edit('users')) {

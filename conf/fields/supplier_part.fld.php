@@ -74,7 +74,6 @@ if ($user->can_supervisor('parts')) {
     $super_edit = true;
 } else {
     $super_edit = false;
-
 }
 
 $supplier_part_fields = array();

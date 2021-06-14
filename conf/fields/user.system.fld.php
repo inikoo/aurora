@@ -10,6 +10,8 @@
  Version 3.0
 */
 
+$account->load_acc_data();
+
 include_once 'utils/available_locales.php';
 $available_locales=get_available_locales();
 
@@ -63,13 +65,13 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'render'          => ((is_array($options) and  in_array(
+                'render'          => is_array($options) and  in_array(
                     $options['parent'], array(
                                           'supplier',
                                           'agent',
                                           'contractor'
                                       )
-                ) )? true : false),
+                ),
                 'id'              => 'User_Alias',
                 'edit'            => 'string',
                 'value'           => $object->get('User Alias'),
@@ -164,12 +166,12 @@ $object_fields = array(
             array(
                 'render'          => ($new
                     ? ($options['parent'] == 'Staff' ? true : false)
-                    : (in_array(
+                    : in_array(
                         $object->get('User Type'), array(
                                                      'Staff',
                                                      'Contractor'
                                                  )
-                    ) ? true : false)),
+                    )),
                 'id'              => 'User_PIN',
                 'edit'            => 'pin',
                 'value'           => '',
@@ -427,5 +429,3 @@ if (!$new) {
 
 }
 
-
-?>

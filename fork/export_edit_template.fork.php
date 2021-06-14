@@ -43,7 +43,7 @@ function fork_export_edit_template($job) {
     if ($output_type == 'Excel') {
         $output_type = 'xls';
     }
-    $output_type=strtolower($output_type);
+    $output_type = strtolower($output_type);
 
     $user_key = $fork_data['user_key'];
 
@@ -83,9 +83,9 @@ function fork_export_edit_template($job) {
 
     $number_rows = 0;
 
-
     switch ($objects) {
         case 'supplier_part':
+        case 'production_part':
             include_once 'class.SupplierPart.php';
             $object_id_name = 'Id: Supplier Part Key';
             switch ($parent) {
@@ -104,10 +104,11 @@ function fork_export_edit_template($job) {
                     break;
                 default:
                     return true;
-                    break;
-            }
-            break;
 
+            }
+
+
+            break;
         case 'part':
             include_once 'class.Part.php';
             $object_id_name = 'Id: Part SKU';
@@ -243,10 +244,9 @@ function fork_export_edit_template($job) {
 
         default:
 
-            //   exit;
+
             break;
     }
-
 
     if ($result = $db->query($sql_count)) {
         if ($row = $result->fetch()) {
@@ -282,7 +282,7 @@ function fork_export_edit_template($job) {
 
     $_objects = $objects;
 
-    //print $_objects;
+    //print $object_id_name;
     //print_r($export_edit_template_fields);
     //print_r($field_keys);
 
@@ -314,6 +314,7 @@ function fork_export_edit_template($job) {
 
             switch ($objects) {
                 case 'supplier_part':
+                case 'production_part':
                     $object = new SupplierPart($row['id']);
                     $object->get_supplier_data();
 

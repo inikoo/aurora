@@ -273,6 +273,20 @@ $user_rights = array(
         'Right Name' => 'workers_hr'
     ),
 
+    'FUV' => array(
+        'Right Type' => 'View',
+        'Right Name' => 'fulfilment'
+    ),
+    'FUE' => array(
+        'Right Type' => 'Edit',
+        'Right Name' => 'fulfilment'
+    ),
+    'FUS' => array(
+        'Right Type' => 'Supervisor',
+        'Right Name' => 'fulfilment'
+    ),
+
+
 );
 
 

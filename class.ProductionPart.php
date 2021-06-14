@@ -42,9 +42,6 @@ class ProductionPart extends SupplierPart {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -69,7 +66,7 @@ class ProductionPart extends SupplierPart {
                 foreach ($raw_materials_data as $raw_material_data) {
 
                     $raw_materials .= '<br/><span>'.number($raw_material_data['Ratio'], 5).' '.$raw_material_data['Unit Label'].'   <span class="button padding_left_20" onClick="change_view(\'production/'.$account->properties('production_supplier_key').'/raw_materials/'
-                        .$raw_material_data['Raw Material Key'].'\')">'.$raw_material_data['Code'].'</span></span>';
+                        .$raw_material_data['Raw Material Key'].'\')">'.$raw_material_data['Code'].'</span> <span class="margin_left_5 discreet">'.$raw_material_data['Name'].'</span></span>';
 
 
                 }
@@ -202,19 +199,52 @@ class ProductionPart extends SupplierPart {
 
 
                 break;
-            case 'Supplier Part Packages Per Carton':
-            case 'Supplier Part Unit Cost':
-            case 'Part Unit Price':
-            case 'Part Unit RRP':
             case 'Supplier Part Reference':
             case 'Supplier Part Description':
-
-            case 'Supplier Part Carton CBM':
-            case 'Supplier Part Carton Weight':
+            case 'Part Family Category Code':
+            case 'Part Unit Label':
+            case 'Part Units Per Package':
+            case 'Part Package Description':
+            case 'Part SKO Barcode':
             case 'Supplier Part Carton Barcode':
+            case 'Supplier Part Packages Per Carton':
+            case 'Part Recommended Packages Per Selling Outer':
+            case 'Supplier Part On Demand':
+            case 'Supplier Part Carton CBM':
+            case 'Supplier Part Unit Cost':
+            case 'Part Part Unit Price':
+            case 'Part Part Unit RRP':
+
+            case 'Part Recommended Product Unit Name':
+            case 'Part Barcode':
+            case 'Part Part Unit Weigh':
+            case 'Part Part Unit Dimensions':
+            case 'Part Part Package Weight':
+            case 'Part Part Package Dimensions':
+            case 'Part Part Materials':
+            case 'Part Part Origin Country Code':
+            case 'Part Part Duty Rate':
+            case 'Part Part Tariff Code':
+            case 'Part Part HTSUS Code':
+            case 'Part Part UN Number':
+            case 'Part Part Packing Group':
+            case 'Part Part Proper Shipping Name':
+            case 'Part Part Hazard Identification Number':
+            case 'Part Part CPNP Number':
+            case 'Part Part UFI':
+            case 'Supplier Part Packages Per Carton':
+            case 'Supplier Part Carton Weight':
 
 
-            $supplier_part         = get_object('SupplierPart', $this->id);
+
+            case 'Part Unit RRP':
+
+
+
+            case 'Supplier Part Fresh':
+
+
+                $supplier_part         = get_object('SupplierPart', $this->id);
                 $supplier_part->editor = $this->editor;
                 $supplier_part->update_field_switcher($field, $value, $options, $metadata);
                 if ($supplier_part->updated) {

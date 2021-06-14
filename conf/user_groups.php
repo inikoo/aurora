@@ -419,7 +419,32 @@ $user_groups = array(
         )
 
     ),
+    31 => array(
+        'Key'    => 31,
+        'Name'   => _('Fulfilment'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'FUV',
+            'FUE',
 
+
+        )
+
+    ),
+    32 => array(
+        'Key'    => 32,
+        'Name'   => _('Fulfilment supervisor'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'FUV',
+            'FUE',
+            'FUS'
+
+        )
+
+    ),
 );
 
 

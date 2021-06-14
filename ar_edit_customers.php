@@ -65,7 +65,7 @@ switch ($tipo) {
                          'product_id' => array('type' => 'key'),
                      )
         );
-        remove_product_from_customer($data, $db, $user,$editor);
+        remove_product_from_customer($data, $db, $user, $editor);
         break;
 
     case 'set_up_integration':
@@ -118,23 +118,23 @@ function set_up_shopify($data, $db, $user) {
 
         $response = array(
             'state'           => 200,
-            'result'          => $result['data']['accessCode'],
+            'result'          => $result['accessCode'],
             'update_metadata' => [
 
             ]
         );
 
     } else {
+
+
         $response = array(
             'state' => 400,
-            'msg'   => $result['msg']
+            'msg'   => $result['message']
         );
     }
     echo json_encode($response);
     exit;
 
-
-    return 1;
 
 }
 
@@ -395,7 +395,7 @@ function remove_product_from_customer($data, $db, $user, $editor) {
 
     $product = get_object('Product', $data['product_id']);
 
-    $customer_key=$product->get('Product Customer Key');
+    $customer_key = $product->get('Product Customer Key');
 
     $product->editor = $editor;
 
@@ -405,8 +405,7 @@ function remove_product_from_customer($data, $db, $user, $editor) {
         ]
     );
 
-    $customer = get_object('Customer',$customer_key);
-
+    $customer = get_object('Customer', $customer_key);
 
 
     $response = array(

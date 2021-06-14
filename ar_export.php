@@ -142,7 +142,6 @@ if ($_data['tipo'] == 'stock.history.day') {
         $_tipo = 'supplier.order.items';
     }elseif ($_data['tipo'] == 'job_order.items') {
            $_tipo = 'supplier.order.items';
-
     } elseif ($_data['tipo'] == 'sent_emails') {
         //print_r($_data);
         // todo parse request for prospects (ise state to find out)
@@ -213,7 +212,6 @@ $db->prepare($_sql)->execute(
         $user->id
     )
 );
-
 
 $download_key = $db->lastInsertId();
 

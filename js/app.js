@@ -247,6 +247,13 @@ function change_menu_view(module) {
         case 'agent_profile':
             change_view('profile');
             break;
+        case 'fulfilment':
+            if (state.current_warehouse) {
+                change_view('fulfilment/' + state.current_warehouse + '/dashboard')
+            } else {
+                change_view('warehouses')
+            }
+            break;
 
     }
 }

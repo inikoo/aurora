@@ -5909,6 +5909,459 @@ function parse_request($_data, $db, $modules, $account, $user) {
                 $section = 'pending_delivery_notes';
 
                 break;
+            case 'fulfilment':
+
+                if (!$user->can_view('fulfilment')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module  = 'fulfilment';
+                $section = 'warehouse';
+
+
+                if (isset($view_path[0])) {
+
+                    if (is_numeric($view_path[0])) {
+                        $object = 'warehouse';
+                        $key    = $view_path[0];
+                        if (isset($view_path[1])) {
+
+                            if ($view_path[1] == 'dashboard') {
+
+                                $section = 'dashboard';
+
+
+                            } elseif ($view_path[1] == 'feedback') {
+
+                                $section = 'feedback';
+
+
+                            } elseif ($view_path[1] == 'delivery_notes') {
+                                //===
+
+                                if (!$user->can_view('orders')) {
+                                    $module  = 'utils';
+                                    $section = 'forbidden';
+                                    break;
+                                }
+
+                                $section = 'delivery_notes';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+                            } elseif ($view_path[1] == 'returns') {
+
+                                $section = 'returns';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                if (isset($view_path[2])) {
+                                    $section = 'return';
+                                    $object  = 'supplierdelivery';
+
+                                    if (is_numeric($view_path[2])) {
+                                        if (is_numeric($view_path[2])) {
+                                            $key = $view_path[2];
+                                        }
+
+                                    }
+
+
+                                }
+
+
+                            } elseif ($view_path[1] == 'leakages') {
+
+
+                                $section = 'leakages';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $key = $view_path[2];
+
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+                                                $section    = 'timeseries_record';
+                                                $parent     = 'timeseries';
+                                                $parent_key = $view_path[2];
+                                                $object     = 'timeseries_record';
+
+                                                $key = $view_path[3];
+
+
+                                            }
+
+                                        }
+
+
+                                    }
+
+                                }
+
+
+                            } elseif ($view_path[1] == 'locations') {
+                                $section = 'locations';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
+                                if (isset($view_path[2])) {
+                                    if ($view_path[2] == 'upload') {
+
+                                        $section = 'upload';
+                                        $object  = 'upload';
+
+
+                                        if (isset($view_path[3])) {
+
+                                            if (is_numeric($view_path[3])) {
+                                                $key = $view_path[3];
+                                            }
+
+                                        }
+
+                                    }
+
+                                } else {
+                                    $_data['tab'] = 'warehouse.locations';
+                                }
+
+
+                            } elseif ($view_path[1] == 'deleted_locations') {
+                                $section = 'locations';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
+                                $_data['tab'] = 'warehouse.deleted_locations';
+
+
+                            } elseif ($view_path[1] == 'areas') {
+                                $section = 'locations';
+
+
+                                $object = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                if (isset($view_path[2])) {
+                                    $object = 'warehouse_area';
+                                    if ($view_path[2] == 'new') {
+
+                                        $section = 'warehouse_area.new';
+                                        $key     = 0;
+
+
+                                    } elseif (is_numeric($view_path[2])) {
+                                        $key     = $view_path[2];
+                                        $section = 'warehouse_area';
+
+                                        if (isset($view_path[3])) {
+
+                                            if ($view_path[3] == 'location') {
+
+
+                                                if (isset($view_path[4])) {
+
+                                                    $parent     = 'warehouse_area';
+                                                    $parent_key = $key;
+                                                    $object     = 'location';
+                                                    if ($view_path[4] == 'new') {
+
+
+                                                        $section = 'location.new';
+                                                        $key     = 0;
+
+
+                                                    } elseif (is_numeric($view_path[4])) {
+
+                                                        $section = 'location';
+                                                        $key     = $view_path[4];
+                                                    }
+
+                                                }
+
+                                            } elseif ($view_path[3] == 'upload') {
+
+
+                                                $parent     = 'warehouse_area';
+                                                $parent_key = $key;
+
+
+                                                $section = 'upload';
+
+                                                $object = 'upload';
+                                                if (isset($view_path[4])) {
+                                                    if (is_numeric($view_path[4])) {
+
+                                                        $key = $view_path[4];
+                                                    }
+                                                }
+
+                                            }
+
+
+                                        }
+
+
+                                    } elseif ($view_path[2] == 'all') {
+                                        $object       = '';
+                                        $_data['tab'] = 'warehouse.areas';
+
+                                    } elseif ($view_path[2] == 'upload') {
+                                        $section = 'upload';
+
+                                        $object = 'upload';
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+
+                                                $key = $view_path[3];
+                                            }
+                                        }
+
+                                    }
+
+
+                                } else {
+                                    $_data['tab'] = 'warehouse.areas';
+                                }
+
+
+                            } elseif ($view_path[1] == 'area') {
+                                $section = 'warehouse_area';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                if (isset($view_path[2])) {
+                                    $object = 'warehouse_area';
+                                    if ($view_path[2] == 'new') {
+
+                                        $section = 'warehouse_area.new';
+                                        $key     = 0;
+
+
+                                    } elseif (is_numeric($view_path[2])) {
+                                        $key     = $view_path[2];
+                                        $section = 'warehouse_area';
+
+                                    }
+
+
+                                }
+
+
+                            } elseif ($view_path[1] == 'categories') {
+                                $object     = 'warehouse';
+                                $key        = $view_path[0];
+                                $section    = 'categories';
+                                $parent     = 'warehouse';
+                                $parent_key = $view_path[0];
+                            } elseif ($view_path[1] == 'category') {
+                                $section = 'category';
+                                $object  = 'category';
+
+                                if (isset($view_path[2])) {
+
+                                    $view_path[2] = preg_replace('/>$/', '', $view_path[2]);
+                                    if (preg_match('/^(\d+>)+(\d+)$/', $view_path[2])) {
+
+                                        $parent_categories = preg_split('/>/', $view_path[2]);
+                                        $metadata          = $parent_categories;
+                                        $key               = array_pop(
+                                            $parent_categories
+                                        );
+
+                                        $parent = 'category';
+
+
+                                        $parent_key = array_pop(
+                                            $parent_categories
+                                        );
+
+
+                                        if (isset($view_path[3])) {
+
+                                            if ($view_path[3] == 'location') {
+
+                                                $parent_key = $key;
+
+                                                $section = 'location';
+                                                $object  = 'location';
+                                                if (isset($view_path[4]) and is_numeric(
+                                                        $view_path[4]
+                                                    )) {
+
+                                                    $key = $view_path[4];
+
+                                                }
+
+                                            }
+
+
+                                        }
+
+                                    } elseif (is_numeric($view_path[2])) {
+                                        $key = $view_path[2];
+                                        include_once 'class.Category.php';
+                                        $category = new Category($key);
+                                        if ($category->get(
+                                                'Category Branch Type'
+                                            ) == 'Root') {
+                                            $parent     = 'warehouse';
+                                            $parent_key = $category->get(
+                                                'Category Store Key'
+                                            );
+                                        } else {
+                                            $parent     = 'category';
+                                            $parent_key = $category->get(
+                                                'Category Parent Key'
+                                            );
+
+                                        }
+
+
+                                        if (isset($view_path[3])) {
+
+
+                                            if (is_numeric($view_path[3])) {
+                                                $section    = 'location';
+                                                $parent     = 'category';
+                                                $parent_key = $category->id;
+                                                $object     = 'location';
+                                                $key        = $view_path[3];
+                                            } elseif ($view_path[3] == 'location') {
+                                                $section = 'location';
+                                                $object  = 'location';
+                                                if (isset($view_path[4]) and is_numeric(
+                                                        $view_path[4]
+                                                    )) {
+
+                                                    $key = $view_path[4];
+
+                                                }
+
+                                            } elseif ($view_path[3] == 'upload') {
+                                                //$module='account';
+                                                $section    = 'upload';
+                                                $parent     = 'category';
+                                                $parent_key = $key;
+                                                $object     = 'upload';
+                                                if (isset($view_path[4])) {
+                                                    if (is_numeric(
+                                                        $view_path[4]
+                                                    )) {
+
+                                                        $key = $view_path[4];
+                                                    }
+                                                }
+
+                                            }
+
+                                        }
+
+
+                                    } elseif ($view_path[2] == 'new') {
+
+                                        $section = 'main_category.new';
+
+                                        $parent     = 'warehouse';
+                                        $parent_key = $view_path[0];
+                                        $key        = 0;
+                                    }
+                                }
+
+                            } elseif ($view_path[1] == 'production_deliveries') {
+
+
+                                $section = 'production_deliveries';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                if (isset($view_path[2]) and in_array(
+                                        $view_path[2], [
+                                                         'todo',
+                                                         'all',
+                                                         'done',
+                                                         'cancelled'
+                                                     ]
+                                    )) {
+
+                                    if (isset($view_path[3])) {
+                                        if (is_numeric($view_path[3])) {
+                                            $key = $view_path[3];
+
+                                            $extra   = $view_path[2];
+                                            $section = 'production_delivery';
+                                            $parent  = 'warehouse';
+                                            $object  = 'supplier_delivery';
+
+
+                                        }
+
+                                    }
+                                }
+
+                            }elseif($view_path[1]=='kpis'){
+                                $section='warehouse_kpis';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $parent     = 'staff';
+                                        $parent_key = $view_path[2];
+                                        $section = 'staff_warehouse_kpi';
+                                        $key     = $view_path[2];
+                                    }
+                                }
+
+
+
+                            }
+
+
+                        }
+                    } elseif ($view_path[0] == 'new') {
+                        $object  = 'warehouse';
+                        $section = 'warehouse.new';
+
+
+                    }
+
+
+                } else {
+                    if ($user->data['User Hooked Warehouse Key'] and in_array(
+                            $user->data['User Hooked Warehouse Key'], $user->stores
+                        )) {
+                        $key = $user->data['User Hooked Warehouse Key'];
+                    } else {
+                        $_tmp = $user->warehouses;
+                        $key  = array_shift($_tmp);
+                    }
+                }
+
+
+                break;
 
             case 'fire':
                 $module  = 'utils';
@@ -6018,7 +6471,7 @@ function parse_tabs($module, $section, $_data, $modules) {
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
                 print "problem with M: $module S: >$section<";
 
-               print_r($modules);
+               //print_r($modules);
             }
 
 

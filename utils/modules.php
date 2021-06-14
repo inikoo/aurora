@@ -68,11 +68,12 @@ function get_modules($user) {
 
             $modules['reports'] = get_reports_module();
 
-            $modules['profile'] = get_profile_module();
-            $modules['users']   = get_users_module();
-            $modules['account'] = get_account_module();
-            $modules['utils']   = get_utils_module();
-            $modules['help']    = get_help_module();
+            $modules['profile']    = get_profile_module();
+            $modules['users']      = get_users_module();
+            $modules['account']    = get_account_module();
+            $modules['utils']      = get_utils_module();
+            $modules['help']       = get_help_module();
+            $modules['fulfilment'] = get_fulfilment_module();
 
             return $modules;
 
@@ -122,7 +123,6 @@ function get_sections($module, $parent_key = false) {
     global $modules;
 
     $sections = array();
-
 
 
     foreach ($modules[$module]['sections'] as $key => $value) {

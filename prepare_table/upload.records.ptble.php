@@ -37,6 +37,16 @@ switch ($parameters['parent']) {
                 );
 
                 break;
+            case 'production_part':
+                $table
+                       = '  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Supplier Part Dimension` O on (O.`Supplier Part Key`=R.`Upload Record Object Key`)  left join `Supplier Part Deleted Dimension` OD on (OD.`Supplier Part Deleted Key`=R.`Upload Record Object Key`) ';
+                $object_field
+                       = ' `Supplier Part Reference` as object_name,`Supplier Part Deleted Reference` as object_auxiliar_name,CONCAT("production/",`Supplier Part Supplier Key`,"/part/",`Upload Record Object Key`) as link ';
+                $where = sprintf(
+                    " where  `Upload Record Upload Key`=%d ", $parameters['parent_key']
+                );
+
+                break;
             case 'part':
                 $table
                        = '  `Upload Record Dimension` as R  left join `Upload File Dimension` F on (F.`Upload File Key`=`Upload Record Upload File Key`)  left join `Part Dimension` O on (O.`Part SKU`=R.`Upload Record Object Key`)  left join `Part Deleted Dimension` OD on (OD.`Part Deleted Key`=R.`Upload Record Object Key`) ';

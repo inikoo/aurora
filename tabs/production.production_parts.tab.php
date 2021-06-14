@@ -49,12 +49,12 @@ include_once 'conf/export_edit_template_fields.php';
 $edit_table_dialog = array(
     'new_item'         => array(
         'icon'      => 'plus',
-        'title'     => _("New supplier's product"),
+        'title'     => _("New production product"),
         'reference' => "production/".$state['key']."/part/new"
     ),
     'upload_items'     => array(
         'icon'         => 'plus',
-        'label'        => _("Upload supplier's products"),
+        'label'        => _("Upload products"),
         'template_url' => '/upload_arrangement.php?object=supplier_part&parent=supplier&parent_key='.$state['key'],
 
         'tipo'       => 'edit_objects',
@@ -68,7 +68,7 @@ $edit_table_dialog = array(
         'tipo'        => 'edit_objects',
         'parent'      => $state['object'],
         'parent_key'  => $state['key'],
-        'object'      => 'supplier_part',
+        'object'      => 'production_part',
         'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
     ),
 
@@ -80,19 +80,9 @@ $smarty->assign('edit_table_dialog', $edit_table_dialog);
 $objects = 'supplier_part';
 
 
-$edit_fields = $export_edit_template_fields[$objects];
+$edit_fields = $export_edit_template_fields['production_part'];
 
 
-if ($state['_object']->data['Supplier On Demand'] == 'No') {
-
-    foreach ($edit_fields as $key => $value) {
-        if ($value['name'] == 'Supplier Part On Demand') {
-            unset($edit_fields[$key]);
-            break;
-        }
-    }
-
-}
 
 
 $smarty->assign('edit_fields', $edit_fields);
@@ -102,7 +92,7 @@ $table_buttons = array();
 
 $table_buttons[] = array(
     'icon'  => 'edit_add',
-    'title' => _("Edit supplier's products"),
+    'title' => _("Edit products"),
     'id'    => 'edit_dialog'
 );
 

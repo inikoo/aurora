@@ -99,15 +99,7 @@ $export_edit_template_fields = array(
             'checked'       => 0
         ),
 
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => false,
-            'header'        => 'Carton Barcode',
-            'name'          => 'Supplier Part Carton Barcode',
-            'label'         => _('Carton Barcode').' ('._('stock control').')',
-            'checked'       => 0
-        ),
+
 
         array(
             'default_value' => '',
@@ -404,9 +396,9 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => false,
-            'header'        => 'SKO/Carton',
-            'name'          => 'Supplier Part Packages Per Carton',
-            'label'         => _('Packed units (SKOs) per carton'),
+            'header'        => 'Carton Weight',
+            'name'          => 'Supplier Part Carton Weight',
+            'label'         => _('Carton gross weight'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
@@ -414,12 +406,339 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => false,
-            'header'        => 'Carton CBM',
-            'name'          => 'Supplier Part Carton CBM',
-            'label'         => _('Carton CBM'),
+            'header'        => 'Carton Barcode',
+            'name'          => 'Supplier Part Carton Barcode',
+            'label'         => _('Carton barcode (stock control)'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
+
+
+    ),
+    'production_part' => array(
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => "Supplier's product code",
+            'name'          => 'Supplier Part Reference',
+            'label'         => _("Reference"),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => "Supplier's unit description",
+            'name'          => 'Supplier Part Description',
+            'label'         => _("Unit description"),
+            'checked'       => 0
+        ),
+
+
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Family',
+            'name'          => 'Part Family Category Code',
+            'label'         => _('Family'),
+            'checked'       => 0
+        ),
+         array(
+            'default_value' => _('Piece'),
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit label',
+            'name'          => 'Part Unit Label',
+            'label'         => _('Unit label'),
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Units per SKO',
+            'name'          => 'Part Units Per Package',
+            'label'         => _('Units per SKO'),
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'SKO description (picking aid)',
+            'name'          => 'Part Package Description',
+            'label'         => _('SKO description').' ('._('for picking aid').')',
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'SKO Barcode',
+            'name'          => 'Part SKO Barcode',
+            'label'         => _('SKO Barcode').' ('._('stock control').')',
+            'checked'       => 0
+        ),
+
+
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'SKOs per carton',
+            'name'          => 'Supplier Part Packages Per Carton',
+            'label'         => _('SKOs per carton'),
+            'checked'       => 0
+        ),
+
+
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Recommended SKOs per selling outer',
+            'name'          => 'Part Recommended Packages Per Selling Outer',
+            'label'         => _('Recommended SKOs per selling outer'),
+            'checked'       => 0
+        ),
+
+
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => false,
+            'required'      => false,
+            'header'        => 'On Demand',
+            'name'          => 'Supplier Part On Demand',
+            'label'         => _('On Demand'),
+            'checked'       => 0
+        ),
+
+
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton CBM',
+            'name'          => 'Supplier Part Carton CBM',
+            'label'         => _('Carton CBM'),
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit cost',
+            'name'          => 'Supplier Part Unit Cost',
+            'label'         => _('Unit cost'),
+            'checked'       => 0
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Unit recommended price',
+            'name'          => 'Part Part Unit Price',
+            'label'         => _('Unit recommended price'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Unit recommended RRP',
+            'name'          => 'Part Part Unit RRP',
+            'label'         => _('Unit recommended RRP'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit recommended description (website)',
+            'name'          => 'Part Recommended Product Unit Name',
+            'label'         => _('Unit recommended description').' ('._('website').')',
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Unit barcode (EAN-13, for website)',
+            'name'          => 'Part Barcode',
+            'label'         => _('Unit barcode'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Unit weight (kg)',
+            'name'          => 'Part Part Unit Weight',
+            'label'         => _('Weight shown in website'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Unit dimensions'.' (l x w x h) in cm',
+            'name'          => 'Part Part Unit Dimensions',
+            'label'         => _('Unit dimensions'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'SKO weight (kg)',
+            'name'          => 'Part Part Package Weight',
+            'label'         => _('SKO weight'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'SKO dimensions'.' (l x w x h) in cm',
+            'name'          => 'Part Part Package Dimensions',
+            'label'         => _('SKO dimensions'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Materials',
+            'name'          => 'Part Part Materials',
+            'label'         => _('Materials'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Country of origin',
+            'name'          => 'Part Part Origin Country Code',
+            'label'         => _('Country of origin'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Tariff code',
+            'name'          => 'Part Part Tariff Code',
+            'label'         => _('Tariff code'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Duty rate',
+            'name'          => 'Part Part Duty Rate',
+            'label'         => _('Duty rate'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'HTSUS',
+            'name'          => 'Part Part HTSUS Code',
+            'label'         => 'HTS US',
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'UN number',
+            'name'          => 'Part Part UN Number',
+            'label'         => _('UN number'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'UN class',
+            'name'          => 'Part Part UN Class',
+            'label'         => _('UN class'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Packing group',
+            'name'          => 'Part Part Packing Group',
+            'label'         => _('Packing group'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Proper shipping name',
+            'name'          => 'Part Part Proper Shipping Name',
+            'label'         => _('Proper shipping name'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Hazard identification number',
+            'name'          => 'Part Part Hazard Identification Number',
+            'label'         => _('Hazard identification number'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'CPNP Number',
+            'name'          => 'Part Part CPNP Number',
+            'label'         => _('CPNP number'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'UFI',
+            'name'          => 'Part Part UFI',
+            'label'         => _('UFI (Poison Centres)'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+
         array(
             'default_value' => '',
             'show_for_new'  => true,

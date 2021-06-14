@@ -60,18 +60,131 @@ function get_dashboard_accounts_overview($db, $redis,$account, $user, $smarty, $
 
             $key = '_acc_Sales_'.$account_code;
 
-            print "$db_interval ";
+            //print "$key $db_interval ";
 
             $sales_data=json_decode($redis->hGet(
                 $key, preg_replace('/\s/','_',$db_interval)
-            ));
+            ),true);
 
-            print_r($sales_data);
+           // print_r($account_code);
+           // print_r($sales_data);
+
+            $sales_overview[] = array(
+                'id'               => 'totals',
+                'class'            => 'totals',
+                'label'            => array(
+                    'label'       => _('Total'),
+                    'short_label' => _('Total')
+                ),
+                'in_basket'        => array('value' => number($sum_in_basket)),
+                'in_basket_amount' => array(
+                    'value' => ($currency == 'store' ? '' : money($sum_in_basket_amount, $account->get('Account Currency')))
+                ),
+
+                'in_process_paid'            => array(
+                    'value' => number(
+                        $sum_in_process_paid
+                    )
+                ),
+                'in_process_amount_paid'     => array(
+                    'value' => ($currency == 'store'
+                        ? ''
+                        : money(
+                            $sum_in_process_amount_paid, $account->get('Account Currency')
+                        ))
+                ),
+                'in_process_not_paid'        => array(
+                    'value' => number(
+                        $sum_in_process_not_paid
+                    )
+                ),
+                'in_process_amount_not_paid' => array(
+                    'value' => ($currency == 'store'
+                        ? ''
+                        : money(
+                            $sum_in_process_amount_not_paid, $account->get('Account Currency')
+                        ))
+                ),
+
+                'in_warehouse'        => array('value' => number($sum_in_warehouse)),
+                'in_warehouse_amount' => array(
+                    'value' => ($currency == 'store'
+                        ? ''
+                        : money(
+                            $sum_in_warehouse_amount, $account->get('Account Currency')
+                        ))
+                ),
+                'packed'              => array('value' => number($sum_packed)),
+                'packed_amount'       => array(
+                    'value' => ($currency == 'store' ? '' : money($sum_packed_amount, $account->get('Account Currency')))
+                ),
+
+
+                'in_dispatch_area'        => array(
+                    'value' => number(
+                        $sum_in_dispatch_area
+                    )
+                ),
+                'in_dispatch_area_amount' => array(
+                    'value' => ($currency == 'store'
+                        ? ''
+                        : money(
+                            $sum_in_dispatch_area_amount, $account->get('Account Currency')
+                        ))
+                ),
+
+                'invoices'       => array('value' => number($sum_invoices)),
+                'invoices_1yb'   => number($sum_invoices_1yb),
+                'invoices_delta' => delta($sum_invoices, $sum_invoices_1yb).' '.delta_icon($sum_invoices, $sum_invoices_1yb),
+
+                'delivery_notes'       => number($sum_delivery_notes),
+                'delivery_notes_1yb'   => number($sum_delivery_notes_1yb),
+                'delivery_notes_delta' => delta(
+                        $sum_delivery_notes, $sum_delivery_notes_1yb
+                    ).' '.delta_icon($sum_delivery_notes, $sum_delivery_notes_1yb),
+
+                'refunds' => array('value' => number($sum_refunds)),
+
+                'refunds_1yb'   => number($sum_refunds_1yb),
+                'refunds_delta' => delta($sum_refunds, $sum_refunds_1yb).' '.delta_icon($sum_refunds, $sum_refunds_1yb, $inverse = true),
+
+                'replacements'                => number($sum_replacements),
+                'replacements_percentage'     => percentage(
+                    $sum_replacements, $sum_delivery_notes
+                ),
+                'replacements_delta'          => delta(
+                        $sum_replacements, $sum_replacements_1yb
+                    ).' '.delta_icon($sum_replacements, $sum_replacements_1yb, $inverse = true),
+                'replacements_percentage_1yb' => percentage(
+                    $sum_replacements_1yb, $sum_delivery_notes_1yb
+                ),
+                'replacements_1yb'            => number($sum_replacements_1yb),
+
+                'sales'       => ($currency == 'store'
+                    ? ''
+                    : money(
+                        $sum_dc_sales, $account->get('Account Currency')
+                    )),
+                'sales_1yb'   => ($currency == 'store'
+                    ? ''
+                    : money(
+                        $sum_dc_sales_1yb, $account->get('Account Currency')
+                    )),
+                'sales_delta' => ($currency == 'store'
+                        ? ''
+                        : delta(
+                            $sum_dc_sales, $sum_dc_sales_1yb
+                        )).' '.delta_icon($sum_dc_sales, $sum_dc_sales_1yb)
+
+            );
+
+
+            //print_r($sales_data);
 
         }
 
     }
-    exit;
+
 
     $sales_overview[] = array(
         'id'               => 'totals',

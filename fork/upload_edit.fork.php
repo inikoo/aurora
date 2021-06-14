@@ -75,6 +75,12 @@ function fork_upload_edit($job) {
             $valid_fields = $export_edit_template_fields['supplier_part'];
             $object_name  = 'supplier_part';
             break;
+        case 'production_part':
+            include_once 'class.ProductionPart.php';
+            $valid_keys   = array('Supplier Part Key');
+            $valid_fields = $export_edit_template_fields['supplier_part'];
+            $object_name  = 'supplier_part';
+            break;
         case 'part':
             include_once 'class.Part.php';
             $valid_keys   = array('Part SKU');

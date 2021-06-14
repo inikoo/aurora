@@ -139,6 +139,18 @@ function get_menu_html($data, $user, $smarty, $db, $account) {
 
     }
 
+    if ($account->properties('fulfilment') and $user->can_view('fulfilment')) {
+
+        $nav_menu[] = array(
+            '<i class="button fal fa-box-up fa-fw"></i>',
+            _('Fulfilment'),
+            '',
+            'fulfilment',
+            'module',
+            ''
+        );
+    }
+
     if ($user->can_view('parts')) {
 
 
@@ -176,7 +188,7 @@ function get_menu_html($data, $user, $smarty, $db, $account) {
 
             $manufacturer_key = $account->properties('production_supplier_key');
 
-            if($manufacturer_key) {
+            if ($manufacturer_key) {
                 $nav_menu[] = array(
                     '<i class="button far fa-industry fa-fw"></i>',
                     _('Production'),

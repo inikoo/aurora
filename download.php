@@ -191,7 +191,8 @@ if (is_file($file_path)) {
 
         while (!feof($file)) {
             print(@fread($file, 1024 * 8));
-            ob_flush();
+            //ob_flush();
+            if (ob_get_level() > 0) {ob_flush();}
             flush();
             if (connection_status() != 0) {
                 @fclose($file);
