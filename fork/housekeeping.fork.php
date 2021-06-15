@@ -1401,7 +1401,6 @@ function fork_housekeeping($job) {
             break;
 
 
-
         case 'payment_added_order':
 
 
@@ -1431,8 +1430,6 @@ function fork_housekeeping($job) {
         case 'delivery_note_created':
 
 
-
-
             $store = get_object('Store', $data['store_key']);
             $store->load_acc_data();
             $account->load_acc_data();
@@ -1460,10 +1457,9 @@ function fork_housekeeping($job) {
                 }
             }
 
-            $delivery_note=get_object('Delivery Note',$data['delivery_note_key']);
+            $delivery_note = get_object('Delivery Note', $data['delivery_note_key']);
 
             $delivery_note->update_shippers_services();
-
 
 
             break;
@@ -1482,12 +1478,12 @@ function fork_housekeeping($job) {
             $account->update_dispatching_time_data('1m');
             $account->update_sitting_time_in_warehouse();
 
-            $store = get_object('Store', $data['store_key']);
-            $store->load_acc_data();
+
+            
             $store->update_dispatching_time_data('1m');
             $store->update_sitting_time_in_warehouse();
 
-            $delivery_note=get_object('Delivery Note',$data['delivery_note_key']);
+            $delivery_note = get_object('Delivery Note', $data['delivery_note_key']);
 
             $delivery_note->update_shippers_services();
 
@@ -1513,7 +1509,6 @@ function fork_housekeeping($job) {
                     $part->update_stock_in_paid_orders();
                 }
             }
-
 
 
             $email_template_type      = get_object('Email_Template_Type', 'Order Confirmation|'.$website->get('Website Store Key'), 'code_store');
@@ -1678,7 +1673,6 @@ function fork_housekeeping($job) {
                              'assets_interval'
                          ]
             );
-
 
 
             include_once 'class.google_drive.php';
@@ -1846,7 +1840,6 @@ function fork_housekeeping($job) {
             break;
 
 
-
         case 'delivery_note_packed_done':
 
 
@@ -1854,7 +1847,7 @@ function fork_housekeeping($job) {
 
             $customer->update_part_bridge();
 
-            $dn=get_object('DeliveryNote',$data['delivery_note_key']);
+            $dn = get_object('DeliveryNote', $data['delivery_note_key']);
             $dn->update_picking_packing_bands();
 
             $suppliers            = array();
@@ -2310,7 +2303,6 @@ function fork_housekeeping($job) {
             $product->updating_packing_data();
 
 
-
             foreach ($product->get_parts('objects') as $part) {
                 $part->update_products_data();
                 $part->update_commercial_value();
@@ -2319,10 +2311,10 @@ function fork_housekeeping($job) {
             break;
         case 'update_product_webpages':
 
-            $product         = get_object('product', $data['product_id']);
+            $product = get_object('product', $data['product_id']);
 
 
-            if($product->id) {
+            if ($product->id) {
                 $product->editor = $data['editor'];
                 $product->update_webpages($data['scope']);
             }
@@ -2784,15 +2776,15 @@ function fork_housekeeping($job) {
 
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_portfolio();
-            if(!empty($data['product_id'])){
-                $customer->update_aiku('Customer Dimension','sync_portfolio', $data['product_id']);
+            if (!empty($data['product_id'])) {
+                $customer->update_aiku('Customer Dimension', 'sync_portfolio', $data['product_id']);
             }
 
             break;
         case 'update_portfolio_aiku':
 
             $customer = get_object('Customer', $data['customer_key']);
-            $customer->update_aiku('Customer Dimension','sync_portfolio', $data['product_id']);
+            $customer->update_aiku('Customer Dimension', 'sync_portfolio', $data['product_id']);
 
             break;
         case 'unsubscribe_prospect':
