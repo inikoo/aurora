@@ -219,7 +219,13 @@ function mergePDFFiles($type, array $filenames, $outFile, $title = '', $author =
                         $mpdf->UseTemplate($tplId);
                     } else {
                         $mpdf->state = 1;
-                        $mpdf->AddPage($wh['w'] > $wh['h'] ? 'L' : 'P');
+
+                        $orientation='P';
+                        if(isset($wh['w']) and isset($wh['h'])){
+                            $orientation=($wh['w'] > $wh['h'] ? 'L' : 'P');
+                        }
+
+                        $mpdf->AddPage($orientation);
                         $mpdf->UseTemplate($tplId);
                     }
                 }
