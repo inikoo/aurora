@@ -276,7 +276,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     $warehouse->update_inventory_snapshot($date);
                 }
             }
-            bresk;
+            break;
 
         case 'update_parts_cost':
 
