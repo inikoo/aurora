@@ -358,6 +358,12 @@ class ProductionPart extends SupplierPart {
             case 'Supplier Part Description':
                 $label = _('Unit name');
                 break;
+            case 'Supplier Part On Demand':
+                $label = _('on demand');
+                break;
+            case 'Supplier Part Fresh':
+                $label = _('make to order');
+                break;
             default:
                 $label = $field;
 
