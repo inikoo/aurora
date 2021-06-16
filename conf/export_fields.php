@@ -1573,6 +1573,21 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
             array(
+                'name'    => '`Part Tariff Code`',
+                'label'   => _('Tariff code'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part Origin Country Code`',
+                'label'   => _('Origin'),
+                'checked' => 1
+            ),
+            array(
+                'name'    => '`Part UN Number`',
+                'label'   => _('UN Number'),
+                'checked' => 1
+            ),
+            array(
                 'name'    => '`Purchase Order Submitted Units`',
                 'label'   => _('Ordered units'),
                 'checked' => 1
