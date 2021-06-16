@@ -626,10 +626,11 @@ function change_order_data_entry_picking_aid_state_after_save(element) {
     var icon = $(element).find('i')
 
 
-    var level=0;
+    var level=5;
 
 
     switch ($(element).data('level')) {
+        /*
         case 'L5':
             if (icon.hasClass('fa-check-square')) {
 
@@ -644,13 +645,15 @@ function change_order_data_entry_picking_aid_state_after_save(element) {
                 level=5;
             }
             break;
+
+         */
         case 'L10':
             if (icon.hasClass('fa-check-square')) {
 
                 icon.removeClass('fa-check-square').addClass('fa-square')
                 $('.L20 i').removeClass('fa-check-square').addClass('fa-square')
                 $('.L30 i').removeClass('fa-check-square').addClass('fa-square')
-                level=0;
+                level=5;
             } else {
                 icon.addClass('fa-check-square').removeClass('fa-square')
                 level=10;

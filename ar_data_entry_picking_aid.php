@@ -26,7 +26,13 @@ $data = prepare_values(
                  'fields'  => array('type' => 'json array'),
              )
 );
+if ($data['level'] ==0) {
+    $response = array(
+        'state' => 400
+    );
 
+    echo json_encode($response);
+}
 
 $data_entry_picking_aid = new data_entry_picking_aid($data, $editor, $db, $account);
 $validation             = $data_entry_picking_aid->parse_input_data();

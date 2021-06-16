@@ -283,7 +283,10 @@
                     </div>
                 </div>
 
-                <div id="packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
+                {*
+                <!--
+                Can not be used until the button actually packs all items, for now you need to do it in data entry in order 
+                <div id="packed_done_operations" class="hide order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
                     <div class="square_button right  " title="{t}Close boxes{/t}">
                         <i id="packed_done_save_buttons"
                            class="fa button fa-archive  fa-fw  {if $delivery_note->get('Delivery Note Weight Source')!='Given'  or  $delivery_note->get('Delivery Note Number Parcels')=='' }  very_discreet{/if} "
@@ -291,7 +294,8 @@
 
                     </div>
                 </div>
-
+                -->
+                *}
 
                 <div id="dispatch_operations" class="order_operation {if $delivery_note->get('State Index')!=90    } hide{/if}">
                     <div id="dispatch_operation" class="square_button right  " title="{if $order->get('Order For Collection')=='Yes' }{t}Set as collected{/t}{else}{t}Dispatched{/t}{/if}">

@@ -66,7 +66,7 @@
     {assign parcel_default_dimensions ['','',''] }
 
 {/if}
-{if   $order->get('State Index')>=50 and $order->get('State Index')<100  }
+{if   $dn->get('State Index')>=70  }
     {assign is_packed 'Yes'}
 
 {else}
@@ -261,13 +261,13 @@
             <input type="hidden"  id="is_order_packed" value="{$is_packed}" />
 
             <input type="hidden" class="order_data_entry_picking_aid_state_after_save"
-                   value="{if $parent->settings('data_entry_picking_aid_state_after_save')=='' or   $parent->settings('data_entry_picking_aid_state_after_save')==0 }{if $is_packed=='Yes'}10{else}0{/if}{elseif $parent->settings('data_entry_picking_aid_state_after_save')=='5'}{if $is_packed=='Yes'}10{else}5{/if}{else}{$parent->settings('data_entry_picking_aid_state_after_save')}{/if}" >
+                   value="{if $parent->settings('data_entry_picking_aid_state_after_save')=='' or   $parent->settings('data_entry_picking_aid_state_after_save')==0 }{if $is_packed=='Yes'}10{else}5{/if}{elseif $parent->settings('data_entry_picking_aid_state_after_save')=='5'}{if $is_packed=='Yes'}10{else}5{/if}{else}{$parent->settings('data_entry_picking_aid_state_after_save')}{/if}" >
 
 
 
             <div class="{if $is_packed=='Yes'}hide{/if}"><span data-level="L5" class=" L5" ><i class="far fa-check-square"></i> {t}Set as packed{/t} </span></div>
 
-            <div style="margin-top:5px;margin-bottom: 5px"><span data-level="L10" class="{if $order->get('State Index')<50}button{/if} L10" {if $order->get('State Index')<50}onclick="change_order_data_entry_picking_aid_state_after_save(this)"{/if}><i class="far {if $parent->settings('data_entry_picking_aid_state_after_save')>=10 or $is_packed=='Yes'}fa-check-square{else}fa-square{/if}"></i>  {t}Mark out of stocks{/t} </span></div>
+            <div style="margin-top:5px;margin-bottom: 5px"><span data-level="L10" class="{if $dn->get('State Index')<70}button{/if} L10" {if $dn->get('State Index')<70}onclick="change_order_data_entry_picking_aid_state_after_save(this)"{/if}><i class="far {if $parent->settings('data_entry_picking_aid_state_after_save')>=10 or $is_packed=='Yes'}fa-check-square{else}fa-square{/if}"></i>  {t}Mark out of stocks{/t} </span></div>
 
 
             {if  isset($dn)  and  !( $dn->get('Delivery Note Type')=='Order'  or  $dn->get('Delivery Note Type')=='Sample' or  $dn->get('Delivery Note Type')=='Donation' )    }
