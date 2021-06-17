@@ -395,7 +395,7 @@ function remove_item_from_portfolio(element,customer_key,product_id) {
 
     var request = $.ajax({
 
-        url: '/ae_edit_customer.php',
+        url: '/ar_edit_customer.php',
         data: form_data,
         processData: false,
         contentType: false,
