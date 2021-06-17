@@ -3003,7 +3003,24 @@ function get_tab_defaults_data() {
             'elements_type' => array_keys(get_elements_option('part_stock_transactions'))[0],
             'elements'      => get_elements_option('part_stock_transactions'),
         ),
+        'fulfilment.locations'         => array(
+            'view'          => 'overview',
+            'sort_key'      => 'code',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'code',
+        ),
+        'fulfilment.stored_parts'         => array(
+            'view'            => 'overview',
+            'sort_key'        => 'id',
+            'sort_order'      => 1,
+            'rpp'             => 100,
+            'rpp_options'     => $default_rrp_options,
+            'f_field'         => 'reference',
+            'show_production' => 'No',
 
+        ),
         'inventory.parts'         => array(
             'view'            => 'overview',
             'sort_key'        => 'id',

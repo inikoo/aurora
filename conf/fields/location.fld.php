@@ -11,7 +11,23 @@
 */
 
 
-function get_location_object_fields($object,$db,$options) {
+
+function get_location_object_fields($object, $user,$account,$db, $options) {
+
+    $account->load_acc_data();
+
+    $options_yes_no = array(
+        'Yes' => _('Yes'),
+        'No'  => _('No')
+    );
+
+
+    if ($user->can_supervisor('locations')) {
+        $can_supervisor = true;
+    } else {
+        $can_supervisor = false;
+
+    }
 
     if (isset($options['new']) and $options['new']) {
         $new = true;
@@ -21,7 +37,7 @@ function get_location_object_fields($object,$db,$options) {
         $new = false;
     }
 
-    $edit=true;
+    $edit = true;
 
     $sql = sprintf(
         'select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ', ($new ? $options['warehouse_key'] : $object->get('Location Warehouse Key'))
@@ -32,10 +48,6 @@ function get_location_object_fields($object,$db,$options) {
         foreach ($result as $row) {
             $flags[$row['Warehouse Flag Key']] = sprintf('<i class="fa fa-flag %s padding_right_10 "  aria-hidden="true"></i> %s', strtolower($row['Warehouse Flag Color']), $row['Warehouse Flag Label']);
         }
-    } else {
-        print_r($error_info = $this->db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
@@ -154,6 +166,27 @@ function get_location_object_fields($object,$db,$options) {
                     'label'                    => _('Area'),
                     'required'                 => true,
                     'type'                     => 'value'
+                ),
+
+
+            )
+        );
+    }
+
+    if ($account->properties('fulfilment')) {
+        $object_fields[] = array(
+            'label'      => _('Fulfilment'),
+            'show_title' => true,
+            'fields'     => array(
+
+                array(
+                    'id'              => 'Location_Fulfilment',
+                    'edit'            => ($can_supervisor ? 'option' : ''),
+                    'options'         => $options_yes_no,
+                    'value'           => $object->get('Location Fulfilment'),
+                    'formatted_value' => $object->get('Fulfilment'),
+                    'label'           => ucfirst($object->get_field_label('Location Fulfilment')),
+                    'type'            => ''
                 ),
 
 

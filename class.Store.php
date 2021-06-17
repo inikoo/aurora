@@ -3440,6 +3440,10 @@ class Store extends DB_Table {
             unset($data['Customer Contact Address administrativeArea']);
         }
 
+        if($this->get('Store Type')=='Fulfilment'){
+            $data['Customer Fulfilment']='Yes';
+        }
+
         //print_r($address_fields);
         // print_r($data);
 

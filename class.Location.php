@@ -146,22 +146,22 @@ class Location extends DB_Table {
         }
 
 
-        if($this->data['Location Warehouse Area Key']==''){
-            $this->data['Location Warehouse Area Key']=null;
+        if ($this->data['Location Warehouse Area Key'] == '') {
+            $this->data['Location Warehouse Area Key'] = null;
         }
 
-        if($this->data['Location Shelf Key']==''){
-            $this->data['Location Shelf Key']=null;
+        if ($this->data['Location Shelf Key'] == '') {
+            $this->data['Location Shelf Key'] = null;
         }
-        if($this->data['Location Mainly Used For']==''){
-            $this->data['Location Mainly Used For']=null;
+        if ($this->data['Location Mainly Used For'] == '') {
+            $this->data['Location Mainly Used For'] = null;
         }
-        if($this->data['Location Shape Type']==''){
-            $this->data['Location Shape Type']='Unknown';
+        if ($this->data['Location Shape Type'] == '') {
+            $this->data['Location Shape Type'] = 'Unknown';
         }
 
 
-      //  print_r($this->data);
+        //  print_r($this->data);
 
         $sql = sprintf(
             "INSERT INTO `Location Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
@@ -974,7 +974,6 @@ class Location extends DB_Table {
         );
 
 
-
         $sql = "DELETE FROM `Location Dimension` WHERE `Location Key`=?";
         $this->db->prepare($sql)->execute(
             array(
@@ -1008,18 +1007,17 @@ class Location extends DB_Table {
             case 'Location Code':
                 $label = _('code');
                 break;
-            /*
-                        case 'Location Mainly Used For':
-                            $label = _('used for');
-                            break;
-            */ case 'Location Warehouse Flag Key':
-            $label = _('flag');
-            break;
+            case 'Location Warehouse Flag Key':
+                $label = _('flag');
+                break;
             case 'Location Max Weight':
                 $label = _('max weight').' (Kg)';
                 break;
             case 'Location Max Volume':
                 $label = _('max volume').' (m³)';
+                break;
+            case 'Location Fulfilment':
+                $label = _('Used for external fulfilment/storage');
                 break;
 
 

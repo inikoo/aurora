@@ -19,7 +19,7 @@ function get_fulfilment_module() {
                 'type'      => 'left_button',
                 'title'     => _('Dashboard'),
                 'icon'      => 'tachometer',
-                'reference' => 'fulfilment/dashboard',
+                'reference' => 'fulfilment/%d/dashboard',
                 'tabs'      => array(
                     'fulfilment.dashboard' => array('label' => _('Dashboard'))
 
@@ -36,12 +36,9 @@ function get_fulfilment_module() {
 
 
 
-                    'fulfilment.fulfilment_parts' => array(
+                    'fulfilment.stored_parts' => array(
                         'label' => _('Stored items'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Parts'
-                        ),
+
 
                     )
                 )
@@ -63,12 +60,7 @@ function get_fulfilment_module() {
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    /*
-                    'fulfilment_part.batch'   => array(
-                        'label' => _('Batch'),
-                        'icon'  => 'conveyor-belt'
-                    ),
-*/
+
 
                     'fulfilment_part.purchase_orders' => array(
                         'label'   => _('Job orders'),
@@ -130,13 +122,17 @@ function get_fulfilment_module() {
                 'type'      => 'navigation',
                 'label'     => _('Customers'),
                 'icon'      => 'user',
-                'reference' => '',
+                'reference' => 'fulfilment/%d/customers',
 
                 'tabs' => array(
-
-                    'fulfilment.customers' => array(
-                        'label' => _('Customers'),
+                    'fulfilment.current_customers' => array(
+                        'label' => _('Current customers'),
                         'icon'  => 'user',
+                        'class' => ''
+                    ),
+                    'fulfilment.all_customers' => array(
+                        'label' => _('All customers'),
+                        'icon'  => 'user-friends',
                         'class' => ''
                     ),
 
@@ -150,14 +146,14 @@ function get_fulfilment_module() {
                 'type'      => 'navigation',
                 'label'     => _('Locations'),
                 'icon'      => 'pallet',
-                'reference' => 'fulfilment/locations',
+                'reference' => 'fulfilment/%d/locations',
                 'tabs'      => array(
 
 
                     'fulfilment.locations' => array(
                         'label'             => _('Locations'),
                         'icon'              => 'pallet',
-                        'dynamic_reference' => 'fulfilment/locations',
+                        'dynamic_reference' => 'fulfilment/%d/locations',
 
                     ),
 

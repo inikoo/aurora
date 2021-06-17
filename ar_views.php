@@ -3714,112 +3714,35 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
         case ('fulfilment'):
             require_once 'navigation/fulfilment.nav.php';
-
-
             switch ($data['section']) {
                 case ('dashboard'):
                     return get_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
-                case ('warehouses'):
-                    return get_warehouses_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('warehouse'):
-                    return get_warehouse_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('warehouse.new'):
-                    return get_new_warehouse_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('warehouse_area.new'):
-                    return get_new_warehouse_area_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('warehouse_areas'):
-                    return get_warehouse_areas_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('warehouse_area'):
-                    return get_warehouse_area_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
                 case ('locations'):
                     return get_locations_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
-
                 case ('location'):
                     return get_location_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
-
-                case ('location.new'):
-                    return get_new_location_navigation(
+                case ('customers'):
+                    return get_customers_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
-                case ('deleted_location'):
-                    return get_deleted_location_navigation(
+                case ('customer'):
+                    return get_customer_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                case ('fulfilment_parts'):
+                    return get_stored_parts_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                 case 'production_deliveries':
                     return get_production_deliveries_navigation($data, $smarty);
                 case 'production_delivery':
                     return get_production_delivery_navigation($data, $smarty, $user, $db);
-                case ('categories'):
-                    return get_categories_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('category'):
-                    return get_locations_category_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-                case ('main_category.new'):
-                    return get_locations_new_main_category_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
-
-                case ('delivery_notes'):
-                    return get_delivery_notes_navigation($data, $smarty, $user, $db, $account);
-
-                case ('leakages'):
-                    return get_leakages_navigation($data, $smarty, $user, $db, $account);
-
-                case ('timeseries_record'):
-                    return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
-
-                case ('returns'):
-                    return get_returns_navigation($data, $smarty, $user, $db, $account);
-
-                case ('return'):
-                    return get_return_navigation($data, $smarty, $user, $db, $account);
-
-
-                case ('upload'):
-                    return get_upload_navigation($data, $smarty, $user, $db, $account);
-
-                case ('feedback'):
-                    return get_feedback_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                case ('warehouse_kpis'):
-                    return get_warehouse_kips_navigation($data, $smarty, $user, $db, $account);
-                case ('staff_warehouse_kpi'):
-                    return get_staff_warehouse_kpi_navigation($data, $smarty, $user, $db, $account);
 
 
             }
@@ -9046,6 +8969,21 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             break;
+
+        case 'fulfilment':
+            switch ($state['section']) {
+                case 'dashboard':
+                    $branch[] = array(
+                        'label'     => _('Warehouse dashboard'),
+                        'icon'      => 'tachometer',
+                        'reference' => ''
+                    );
+
+                    break;
+
+            }
+            break;
+
         case 'websites_server':
 
 

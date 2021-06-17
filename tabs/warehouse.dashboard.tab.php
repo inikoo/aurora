@@ -3,7 +3,7 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 5 February 2017 at 18:38:11 GMT+8, Cyberjaya , Malydia
+ Created: 5 February 2017 at 18:38:11 GMT+8, Cyberjaya , Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3.0

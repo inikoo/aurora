@@ -212,7 +212,7 @@
     <tr>
         <td class="icons"><i class="far fa-fw fa-conveyor-belt-alt"></i></td>
 
-        <td class="label">{t}Order fulfillment{/t} </td>
+        <td class="label">{t}Order handing{/t} </td>
 
         <td>
              <span data-group_id="17" class=" button permission_type {if 17|in_array:$user_groups}{else}discreet_on_hover{/if}">

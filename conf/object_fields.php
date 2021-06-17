@@ -712,7 +712,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Location':
             include 'fields/location.fld.php';
 
-            return get_location_object_fields($object,$db,$options);
+            return get_location_object_fields($object,$user,$account,$db,$options);
             break;
         case 'Store':
             if (!empty($options['new'])) {

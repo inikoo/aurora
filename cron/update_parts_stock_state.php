@@ -33,7 +33,7 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-//$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Key`=24 ');
+//$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part SKU`=2705 ');
 $sql = sprintf(
     'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU` DESC  '
 );
@@ -47,6 +47,7 @@ if ($result = $db->query($sql)) {
         //foreach($part->get_locations('part_location_object') as $part_location){
         //    $part_location->update_stock();
         // }
+        $part->update_on_demand();
 
         $part->update_sales_from_invoices('1 Quarter',true,false);
         $part->update_stock();
