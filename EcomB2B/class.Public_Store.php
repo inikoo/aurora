@@ -356,6 +356,27 @@ class Public_Store {
 
             if ($customer->new) {
 
+
+                if($this->get('Store Type')=='Fulfilment'){
+
+                    $account=get_object('Account',1);
+                    $account->load_properties();
+
+                    $status=($customer->get('Customer Type by Activity') == 'ToApprove' ? 'ToApprove' : 'Approved');
+
+
+                    $sql="insert into `Customer Fulfilment Dimension` (`Customer Fulfilment Customer Key`,`Customer Fulfilment Metadata`,`Customer Fulfilment Warehouse Key`,`Customer Fulfilment Status`) values (?,'{}',?,?)";
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $customer->id,
+                            $account->properties('fulfilment_warehouse_key'),
+                            $status
+
+                        )
+                    );
+
+                }
+
                 $customer->fast_update_json_field('Customer Metadata', 'cur', $this->data['Store Currency Code']);
 
                 include_once 'utils/network_functions.php';

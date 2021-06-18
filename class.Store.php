@@ -3458,6 +3458,23 @@ class Store extends DB_Table {
 
             if ($customer->new) {
 
+
+                if($this->get('Store Type')=='Fulfilment'){
+
+                    $account=get_object('Account',1);
+                    $account->load_acc_data();
+                    $sql="insert into `Customer Fulfilment Dimension` (`Customer Fulfilment Customer Key`,`Customer Fulfilment Metadata`,`Customer Fulfilment Warehouse Key`) values (?,'{}',?)";
+                    $this->db->prepare($sql)->execute(
+                        array(
+                            $customer->id,
+                            $account->properties('fulfilment_warehouse_key')
+
+                        )
+                    );
+
+                }
+
+
                 $customer->fast_update_json_field('Customer Metadata', 'cur', $this->get('Store Currency Code'));
                 $this->new_customer = true;
 

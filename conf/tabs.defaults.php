@@ -3018,8 +3018,23 @@ function get_tab_defaults_data() {
             'rpp'             => 100,
             'rpp_options'     => $default_rrp_options,
             'f_field'         => 'reference',
-            'show_production' => 'No',
 
+        ),
+        'fulfilment.current_customers'         => array(
+            'view'            => 'overview',
+            'sort_key'        => 'id',
+            'sort_order'      => 1,
+            'rpp'             => 100,
+            'rpp_options'     => $default_rrp_options,
+            'f_field'         => 'name',
+        ),
+        'fulfilment.all_customers'         => array(
+            'view'            => 'overview',
+            'sort_key'        => 'id',
+            'sort_order'      => 1,
+            'rpp'             => 100,
+            'rpp_options'     => $default_rrp_options,
+            'f_field'         => 'name',
         ),
         'inventory.parts'         => array(
             'view'            => 'overview',

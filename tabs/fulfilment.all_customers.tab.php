@@ -12,9 +12,9 @@
 if ( $user->can_view('fulfilment')) {
 
 
-        $tab     = 'customers';
+        $tab     = 'fulfilment.all_customers';
         $ar_file = 'ar_fulfilment_tables.php';
-        $tipo    = 'customers';
+        $tipo    = 'all_customers';
 
 
 
@@ -63,7 +63,6 @@ if ( $user->can_view('fulfilment')) {
         'parent_key' => $state['parent_key'],
 
     );
-
 
 
     $table_buttons = array();

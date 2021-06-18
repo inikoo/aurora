@@ -1888,10 +1888,6 @@ function customers($_data, $db, $user) {
             );
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 

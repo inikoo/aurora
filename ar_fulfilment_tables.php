@@ -44,7 +44,12 @@ switch ($tipo) {
     case 'locations':
         locations(get_table_parameters(), $db, $user, $account);
         break;
-
+    case 'current_customers':
+        current_customers(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'all_customers':
+        all_customers(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -113,6 +118,154 @@ function locations($_data, $db, $user, $account) {
         );
 
     }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function current_customers($_data, $db, $user) {
+
+    $rtext_label = 'customer';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Customer Type by Activity']) {
+                case 'ToApprove':
+                    $activity = _('To be approved');
+                    break;
+                case 'Inactive':
+                    $activity = _('Lost');
+                    break;
+                case 'Active':
+                    $activity = _('Active');
+                    break;
+                case 'Prospect':
+                    $activity = _('Prospect');
+                    break;
+                default:
+                    $activity = $data['Customer Type by Activity'];
+                    break;
+            }
+
+
+            $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
+
+            $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => $formatted_id,
+
+                'name' => $data['Customer Name'],
+
+                'location' => $data['Customer Location'],
+                'activity' => $activity,
+                'invoices' => number($data['invoices']),
+                'orders'   => number($data['orders']),
+                'amount'   => money($data['amount'], $data['Store Currency Code'])
+
+
+            );
+        }
+
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function all_customers($_data, $db, $user) {
+
+    $rtext_label = 'customer';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Customer Fulfilment Status']) {
+                case 'ToApprove':
+                    $activity = _('To be approved');
+                    break;
+                case 'Inactive':
+                    $activity = _('Inactive');
+                    break;
+                case 'Active':
+                    $activity = _('Active');
+                    break;
+                case 'Prospect':
+                    $activity = _('Prospect');
+                    break;
+                default:
+                    $activity = $data['Customer Type by Activity'];
+                    break;
+            }
+
+
+            $link_format = '/fulfilment/%d/customer/%d';
+
+            $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => $formatted_id,
+
+                'name' => $data['Customer Name'],
+
+                'location' => $data['Customer Location'],
+                'activity' => $activity,
+                //'invoices' => number($data['invoices']),
+                //'orders'   => number($data['orders']),
+                //'amount'   => money($data['amount'], $data['Store Currency Code'])
+
+
+            );
+        }
+
+    }
+
 
     $response = array(
         'resultset' => array(
