@@ -140,16 +140,30 @@
     {if isset($sentry_js)  }
 
         <script
-                src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
-                integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
+                src="https://browser.sentry-cdn.com/6.7.1/bundle.min.js"
+                integrity="sha384-+GoWV2WnDUGsSmipBvyBrWuhW8hPa/D21fH+j3NoZxDf9RgDryqh4Ug4L+7E1nxM"
                 crossorigin="anonymous"
         ></script>
 
         <script>
             Sentry.init({
                 dsn: '{$sentry_js}' ,
-                release: "__AURORA_RELEASE__"
+                release: "__AURORA_RELEASE__" ,
+                denyUrls: [
+                    /load\.sumo\.com/i,
 
+                ],
+                beforeSend(event, hint) {
+                    const error = hint.originalException;
+                    if (
+                        error &&
+                        error.message &&
+                        error.message.match(/Non-Error promise rejection captured with value: Object Not Found Matching Id/i)
+                    ) {
+                        return null;
+                    }
+                    return event;
+                }
             });
         </script>
     {/if}
