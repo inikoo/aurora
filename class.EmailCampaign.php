@@ -1913,6 +1913,7 @@ class EmailCampaign extends DB_Table {
 
         $email_template_type = get_object('EmailCampaignType', $this->get('Email Campaign Email Template Type Key'));
 
+        //todo Create 2nd waves for Marketing emails (Needs to pass scope and scope key somehow)
         $second_wave_mailshot = $email_template_type->create_mailshot(
             array(
                 'Email Campaign Name' => $this->get('Email Campaign Name').' ('._('2nd wave').')',
@@ -1969,7 +1970,7 @@ class EmailCampaign extends DB_Table {
         if (in_array(
                 $this->get('Email Campaign Type'), [
                                                      'Newsletter',
-                                                     'Marketing'
+                                                    // 'Marketing'
                                                  ]
             ) and $this->data['Email Campaign Wave Type'] != 'Wave') {
 

@@ -560,7 +560,7 @@ class EmailCampaignType extends DB_Table {
             }
             elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
 
-                if ($data[' Type'] == 'Customer_List') {
+                if ($data['Type'] == 'Customer_List') {
                     $scope     = 'Customer_List';
                     $scope_key = $data['List'];
 
@@ -592,7 +592,8 @@ class EmailCampaignType extends DB_Table {
                     $data['Email Campaign Metadata'] = json_encode($data['Email Campaign Metadata']);
 
 
-                } elseif ($data[' Type'] == 'Product_Category') {
+                }
+                elseif ($data['Type'] == 'Product_Category') {
 
                     switch ($data[' Scope Type']) {
                         case 'Targeted':
@@ -628,7 +629,8 @@ class EmailCampaignType extends DB_Table {
                         $data['Email Campaign Metadata'] = json_encode($data['Email Campaign Metadata']);
 
 
-                    } elseif (preg_match('/^C(\d+)/', $data['Asset'], $match)) {
+                    }
+                    elseif (preg_match('/^C(\d+)/', $data['Asset'], $match)) {
 
 
                         if (empty($data[' Scope Type'])) {

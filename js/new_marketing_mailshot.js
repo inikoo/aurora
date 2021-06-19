@@ -13,7 +13,7 @@ $(function () {
         const parent = element.data('parent')
         const parent_key = element.data('parent_key')
         const fields_data = {
-            ' Type': element.data('scope'),
+            'Type': element.data('scope'),
             'List': element.data('list'),
             'Asset': element.data('asset'),
             'Email Campaign Name': element.data('name'),
