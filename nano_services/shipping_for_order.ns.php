@@ -69,7 +69,6 @@ class shipping_for_order {
 
 
                 $price_data = $this->get_price_from_method($shipping_price_data, $_data);
-
                 $price_data['shipping_zone_key']        = $row['Shipping Zone Key'];
                 $price_data['shipping_zone_schema_key'] = $shipping_zone_schema_key;
 
@@ -142,7 +141,13 @@ class shipping_for_order {
 
                     $counter++;
                 }
-                break;
+                return array(
+                    'price'  => '',
+                    'step'   => '',
+                    'method' => 'TBC'
+
+                );
+
             case 'Step Order Estimated Weight':
 
                 $weight = $_data['Order Data']['Order Estimated Weight'];
@@ -174,7 +179,13 @@ class shipping_for_order {
 
                     $counter++;
                 }
-                break;
+                return array(
+                    'price'  => '',
+                    'step'   => '',
+                    'method' => 'TBC'
+
+                );
+
             default:
                 return array(
                     'price'  => '',
