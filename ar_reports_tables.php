@@ -2168,7 +2168,7 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
             );
 
         }
-    } 
+    }
 
     $response = array(
         'resultset' => array(

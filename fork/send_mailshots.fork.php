@@ -104,8 +104,11 @@ function fork_send_mailshots($job) {
             break;
         case 'create_and_send_second_wave_mailshot':
             $mailshot = get_object('mailshot', $data['mailshot_key']);
-            $mailshot->editor=$editor;
-            $mailshot->create_second_wave();
+            // This is restricted as well in EmailCampaign class can_create_second_wave
+            if($mailshot->get('Email Campaign Type')=='Newsletter') {
+                $mailshot->editor = $editor;
+                $mailshot->create_second_wave();
+            }
             break;
 
     }

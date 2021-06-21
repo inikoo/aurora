@@ -1967,6 +1967,7 @@ class EmailCampaign extends DB_Table {
     function can_create_second_wave() {
         $can_create_second_wave = false;
 
+        // This is restricted as well in send_mailshots.fork.php line 86
         if (in_array(
                 $this->get('Email Campaign Type'), [
                                                      'Newsletter',
