@@ -45,25 +45,25 @@ $asset = $state['_object'];
  */
 $family = get_object('Category', $asset->get('Product Family Category Key'));
 
-$result = get_elastic_sales_correlated_assets($asset->id, 'products_bought', $period_suffix,  $family->get('Category Number Subjects') + $size + 5);
-
+$result = get_elastic_sales_correlated_assets($asset->id, 'products_bought', $period_suffix, $family->get('Category Number Subjects') + $size + 5);
 
 
 $assets_ids  = [];
 $assets_data = [];
-foreach ($result['aggregations']['assets']['buckets'] as $result) {
-    if ($result['key'] == $asset->id) {
-        continue;
+if (isset($result['aggregations']['assets']['buckets']) and is_array($result['aggregations']['assets']['buckets'])) {
+    foreach ($result['aggregations']['assets']['buckets'] as $result) {
+        if ($result['key'] == $asset->id) {
+            continue;
+        }
+        $assets_ids[]                         = $result['key'];
+        $assets_data[$result['key']]          = [
+            'score' => $result['score']
+        ];
+        $assets_data_diff_fam[$result['key']] = [
+            'score' => $result['score']
+        ];
     }
-    $assets_ids[]                         = $result['key'];
-    $assets_data[$result['key']]          = [
-        'score' => $result['score']
-    ];
-    $assets_data_diff_fam[$result['key']] = [
-        'score' => $result['score']
-    ];
 }
-
 
 if (count($assets_ids) > 0) {
 
@@ -157,7 +157,7 @@ if (count($assets_ids) > 0) {
 
 
         $assets_data[$row['Product ID']]['icons'] = $icons;
-        $assets_data[$row['Product ID']]['code']  =  sprintf('<span class="link" onclick="\'products/%d/%d\'">%s</span>',$row['Product Store Key'],$row['Product ID'],$row['Product Code']);
+        $assets_data[$row['Product ID']]['code']  = sprintf('<span class="link" onclick="\'products/%d/%d\'">%s</span>', $row['Product Store Key'], $row['Product ID'], $row['Product Code']);
         $assets_data[$row['Product ID']]['name']  = $row['Product Units Per Case'].'x '.$row['Product Name'];
 
         if ($row['Product Family Category Key'] != $asset->get('Product Family Category Key')) {
