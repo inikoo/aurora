@@ -2135,11 +2135,16 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
 
     //exit($sql);
 
+    $picking_salary_hr_rate = $account->properties('picking_salary_hr_rate');
+    if ($picking_salary_hr_rate == '') {
+        $picking_salary_hr_rate = 0;
+    }
+
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
-            $bonus_net = $data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
+            $bonus_net = $data['bonus'] - ($data['hrs'] * $picking_salary_hr_rate);
 
             if ($bonus_net > 0) {
                 $bonus_net = '<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
@@ -2157,17 +2162,13 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
 
                 'hrs'       => number($data['hrs'], 1, true),
                 'bonus'     => money($data['bonus'], $account->get('Currency Code')),
-                'salary'    => money($data['hrs'] * $account->properties('picking_salary_hr_rate'), $account->get('Currency Code')),
+                'salary'    => money($data['hrs'] * $picking_salary_hr_rate, $account->get('Currency Code')),
                 'bonus_net' => $bonus_net
 
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
+    } 
 
     $response = array(
         'resultset' => array(
