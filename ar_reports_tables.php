@@ -135,8 +135,7 @@ switch ($tipo) {
 }
 
 
-
-function staff_warehouse_kpi_delivery_notes($_data, $db, $user,$account) {
+function staff_warehouse_kpi_delivery_notes($_data, $db, $user, $account) {
 
 
     $rtext_label = 'delivery_note';
@@ -149,7 +148,6 @@ function staff_warehouse_kpi_delivery_notes($_data, $db, $user,$account) {
 
 
     foreach ($db->query($sql) as $data) {
-
 
 
         switch ($data['Delivery Note State']) {
@@ -242,14 +240,14 @@ function staff_warehouse_kpi_delivery_notes($_data, $db, $user,$account) {
         }
 
 
-        $bonus_picker=money($data['Delivery Note Picking Band Amount'],$account->get('Account Currency'));
-        if($data['Picker Key']!=$_data['parameters']['parent_key']){
-            $bonus_picker='';
+        $bonus_picker = money($data['Delivery Note Picking Band Amount'], $account->get('Account Currency'));
+        if ($data['Picker Key'] != $_data['parameters']['parent_key']) {
+            $bonus_picker = '';
         }
 
-        $bonus_packer=money($data['Delivery Note Packing Band Amount'],$account->get('Account Currency'));
-        if($data['Packer Key']!=$_data['parameters']['parent_key']){
-            $bonus_packer='';
+        $bonus_packer = money($data['Delivery Note Packing Band Amount'], $account->get('Account Currency'));
+        if ($data['Packer Key'] != $_data['parameters']['parent_key']) {
+            $bonus_packer = '';
         }
 
 
@@ -257,17 +255,17 @@ function staff_warehouse_kpi_delivery_notes($_data, $db, $user,$account) {
             'id' => (integer)$data['Delivery Note Key'],
 
 
-            'number'   => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
-           // 'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
+            'number' => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
+            // 'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
 
-            'date_packed'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Finish Packing'].' +0:00')),
-            'weight'  => weight($data['Delivery Note Estimated Weight'], ' Kg', 3, false, true),
-            'parcels' => $parcels,
-            'type'    => $type,
-            'state'   => $state,
+            'date_packed'  => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Finish Packing'].' +0:00')),
+            'weight'       => weight($data['Delivery Note Estimated Weight'], ' Kg', 3, false, true),
+            'parcels'      => $parcels,
+            'type'         => $type,
+            'state'        => $state,
             //'notes'   => $notes,
-            'bonus_picker'=>$bonus_picker,
-            'bonus_packer'=>$bonus_packer
+            'bonus_picker' => $bonus_picker,
+            'bonus_packer' => $bonus_packer
 
         );
 
@@ -286,7 +284,6 @@ function staff_warehouse_kpi_delivery_notes($_data, $db, $user,$account) {
     );
     echo json_encode($response);
 }
-
 
 
 function reports($_data, $db, $user) {
@@ -2065,11 +2062,16 @@ function packers($_data, $db, $user, $account) {
     $adata = array();
 
 
+    $picking_salary_hr_rate = $account->properties('picking_salary_hr_rate');
+    if ($picking_salary_hr_rate == '') {
+        $picking_salary_hr_rate = 0;
+    }
+
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
 
-            $bonus_net = $data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
+            $bonus_net = $data['bonus'] - ($data['hrs'] * $picking_salary_hr_rate);
 
             if ($bonus_net > 0) {
                 $bonus_net = '<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
@@ -2090,8 +2092,8 @@ function packers($_data, $db, $user, $account) {
                 'dp_percentage'     => percentage($data['dp'], $total_dp),
                 'hrs'               => number($data['hrs'], 1, true),
                 'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
-                'bonus'             => money($data['bonus'], $account->get('Currency Code')),
-                'salary'            => money($data['hrs'] * $account->properties('picking_salary_hr_rate'), $account->get('Currency Code')),
+                'bonus'             => money(($data['bonus'] == '' ? 0 : $data['bonus']), $account->get('Currency Code')),
+                'salary'            => money(($data['hrs'] == '' ? 0 : $data['hrs']) * $picking_salary_hr_rate, $account->get('Currency Code')),
                 'bonus_net'         => $bonus_net
 
             );
@@ -2128,8 +2130,6 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
-
-
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
@@ -2149,11 +2149,11 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
 
             $adata[] = array(
                 'id'         => $data['Staff Key'],
-                'name'       => sprintf('<span class="link" onclick="change_view(\'warehouse/%d/kpis/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Warehouse Key'],$data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
+                'name'       => sprintf('<span class="link" onclick="change_view(\'warehouse/%d/kpis/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Warehouse Key'], $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
                 'deliveries' => number($data['deliveries']),
                 'picked'     => number($data['picked'], 0),
-                'picks'     => number($data['picks'], 0),
-                'cartons'     => number($data['cartons'], 0),
+                'picks'      => number($data['picks'], 0),
+                'cartons'    => number($data['cartons'], 0),
 
                 'hrs'       => number($data['hrs'], 1, true),
                 'bonus'     => money($data['bonus'], $account->get('Currency Code')),
