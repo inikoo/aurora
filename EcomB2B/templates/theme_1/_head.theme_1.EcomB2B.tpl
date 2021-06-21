@@ -158,7 +158,7 @@
                     if (
                         error &&
                         error.message &&
-                        error.message.match(/Non-Error promise rejection captured with value: Object Not Found Matching Id/i)
+                        error.message.match(/Non*Error promise rejection captured with value/i)
                     ) {
                         return null;
                     }
