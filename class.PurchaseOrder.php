@@ -2708,16 +2708,16 @@ class PurchaseOrder extends DB_Table {
                     );
                     while ($row = $stmt->fetch()) {
                         $supplier_part = get_object('Supplier_Part', $row['Supplier Part Key']);
+                        if($supplier_part->id) {
+                            if ($supplier_part->get('Supplier Part Unit Extra Cost Percentage') == '') {
+                                $extra_cost_percentage = 0;
+                            } else {
+                                $extra_cost_percentage = floatval($supplier_part->get('Supplier Part Unit Extra Cost Fraction'));
 
-                        if ($supplier_part->get('Supplier Part Unit Extra Cost Percentage') == '') {
-                            $extra_cost_percentage = 0;
-                        } else {
-                            $extra_cost_percentage = floatval($supplier_part->get('Supplier Part Unit Extra Cost Fraction'));
-
-                        }
+                            }
 
 
-                        $sql = "update `Purchase Order Transaction Fact` set 
+                            $sql = "update `Purchase Order Transaction Fact` set 
                                              `Purchase Order Transaction State`=?,
                                              `Purchase Order Submitted Units`=? ,
                                              `Purchase Order Submitted Unit Cost`=?,
@@ -2727,20 +2727,30 @@ class PurchaseOrder extends DB_Table {
                                              `Supplier Part Historic Key`=? 
                                                 where `Purchase Order Transaction Fact Key`=? ";
 
-                        $this->db->prepare($sql)->execute(
-                            array(
-                                'Submitted',
-                                $row['Purchase Order Ordering Units'],
-                                $supplier_part->get('Supplier Part Unit Cost'),
-                                $supplier_part->part->get('Part Units Per Package'),
-                                $supplier_part->get('Supplier Part Packages Per Carton'),
-                                $extra_cost_percentage,
-                                $supplier_part->get('Supplier Part Historic Key'),
-                                $row['Purchase Order Transaction Fact Key']
-                            )
-                        );
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    'Submitted',
+                                    $row['Purchase Order Ordering Units'],
+                                    $supplier_part->get('Supplier Part Unit Cost'),
+                                    $supplier_part->part->get('Part Units Per Package'),
+                                    $supplier_part->get('Supplier Part Packages Per Carton'),
+                                    $extra_cost_percentage,
+                                    $supplier_part->get('Supplier Part Historic Key'),
+                                    $row['Purchase Order Transaction Fact Key']
+                                )
+                            );
+
+                        }else{
+                            $sql="delete from `Purchase Order Transaction Fact` where  `Purchase Order Transaction Fact Key`=?";
+
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $row['Purchase Order Transaction Fact Key']
+                                )
+                            );
 
 
+                        }
                     }
 
                     $history_abstract = _('Purchase order submitted');
