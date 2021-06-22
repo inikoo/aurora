@@ -133,6 +133,18 @@ class DeliveryNote extends DB_Table {
 
             }
 
+            $store = get_object('Store', $this->get('Store Key'));
+
+            $this->fast_update_json_field('Delivery Note Properties', 'store_name', $store->get('Store Name'));
+            $this->fast_update_json_field('Delivery Note Properties', 'store_address', $store->get('Store Address'));
+            $this->fast_update_json_field('Delivery Note Properties', 'store_url', $store->get('Store URL'));
+            $this->fast_update_json_field('Delivery Note Properties', 'store_company_name', $store->get('Store Company Name'));
+
+            $this->fast_update_json_field('Delivery Note Properties', 'store_vat_number', $store->get('Store VAT Number'));
+            $this->fast_update_json_field('Delivery Note Properties', 'store_company_number', $store->get('Store Company Number'));
+            $this->fast_update_json_field('Delivery Note Properties', 'store_telephone', $store->get('Store Telephone'));
+            $this->fast_update_json_field('Delivery Note Properties', 'store_email', $store->get('Store Email'));
+
 
             $total_estimated_weight = 0;
             $distinct_items         = 0;

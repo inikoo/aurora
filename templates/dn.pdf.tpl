@@ -73,12 +73,12 @@ div.inline { float:left; }
 			{if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}
 			<td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" title="" alt=""></td>
 			{/if} 
-			<td style="width:250px;padding-left:10px;">{$store->get('Store Name')} 
+			<td style="width:250px;padding-left:10px;">{$delivery_note->properties('store_name')}
 			<div style="font-size:7pt">
-				{$store->get('Store Address')|nl2br} 
+				{$delivery_note->properties('store_address')|nl2br}
 			</div>
 			<div style="font-size:7pt">
-				{$store->get('Store URL')} 
+				{$delivery_note->properties('store_url')}
 			</div>
 			</td>
 			<td style="text-align: right;">{t}Delivery Note No.{/t}<br />
@@ -91,9 +91,9 @@ div.inline { float:left; }
 	<table width="100%">
 		<tr>
 			<tr>
-				<td width="33%" style="color:#000;text-align: left;"> <small> {$store->get('Store Company Name')}<br> {if $store->get('Store VAT Number')!=''}{t}VAT Number{/t}: {$store->get('Store VAT Number')}<br>{/if} {if $store->get('Store Company Number')!=''}{t}Registration number{/t}: {$store->get('Store Company Number')}{/if} </small></td>
+				<td width="33%" style="color:#000;text-align: left;"> <small> {$delivery_note->properties('store_company_name')}<br> {if $delivery_note->properties('store_vat_number')!=''}{t}VAT Number{/t}: {$delivery_note->properties('store_vat_number')}<br>{/if} {if $delivery_note->properties('store_company_number')!=''}{t}Registration number{/t}: {$delivery_note->properties('store_company_number')}{/if} </small></td>
 				<td width="33%" style="color:#000;text-align: center">{t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}</td>
-				<td width="34%" style="text-align: right;"> <small> {if $store->get('Store Telephone')!=''}{$store->get('Store Telephone')}<br>{/if} {if $store->get('Store Email')!=''}{$store->get('Store Email')}{/if} </small></td>
+				<td width="34%" style="text-align: right;"> <small> {if $delivery_note->properties('store_telephone')!=''}{$delivery_note->properties('store_telephone')}<br>{/if} {if $delivery_note->properties('store_email')!=''}{$delivery_note->properties('store_email')}{/if} </small></td>
 			</tr>
 		</table>
 	</div>

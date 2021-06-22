@@ -91,7 +91,7 @@ class Invoice extends DB_Table {
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['Invoice Key'];
+            $this->id       = $this->data['Invoice Key'];
             $this->metadata = json_decode($this->data['Invoice Metadata'], true);
         }
 
@@ -184,20 +184,21 @@ class Invoice extends DB_Table {
 
             $this->get_data('id', $this->id);
 
-            $store=get_object('Store',$this->get('Store Key'));
+            $store = get_object('Store', $this->get('Store Key'));
 
             $this->fast_update_json_field('Invoice Metadata', 'store_name', $store->get('Store Name'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_address',$store->get('Store Address'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_url',$store->get('Store URL'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_address', $store->get('Store Address'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_url', $store->get('Store URL'));
             $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
 
             $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
+
+
             $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $store->get('Store VAT Number'));
             $this->fast_update_json_field('Invoice Metadata', 'store_company_number', $store->get('Store Company Number'));
             $this->fast_update_json_field('Invoice Metadata', 'store_telephone', $store->get('Store Telephone'));
             $this->fast_update_json_field('Invoice Metadata', 'store_email', $store->get('Store Email'));
             $this->fast_update_json_field('Invoice Metadata', 'store_message', $store->get('Store Invoice Message'));
-
 
 
             if (isset($recargo_equivalencia)) {
@@ -1487,12 +1488,19 @@ class Invoice extends DB_Table {
         include_once 'utils/new_fork.php';
 
         $account = get_object('Account', 1);
+        $account->load_properties();
 
         $base_data = $this->base_data();
 
         $this->editor = $invoice_data['editor'];
 
         unset($invoice_data['editor']);
+
+        $extra_data = [];
+        if (isset($invoice_data['extra_data'])) {
+            $extra_data = $invoice_data['extra_data'];
+            unset($invoice_data['extra_data']);
+        }
 
         if (isset($invoice_data['Recargo Equivalencia'])) {
             if ($invoice_data['Recargo Equivalencia'] == 'Yes') {
@@ -1538,20 +1546,38 @@ class Invoice extends DB_Table {
             }
             $this->get_data('id', $this->id);
 
-            $store=get_object('Store',$this->get('Store Key'));
+            $store = get_object('Store', $this->get('Store Key'));
 
             $this->fast_update_json_field('Invoice Metadata', 'store_name', $store->get('Store Name'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_address',$store->get('Store Address'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_url',$store->get('Store URL'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_address', $store->get('Store Address'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_url', $store->get('Store URL'));
             $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
 
             $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $store->get('Store VAT Number'));
             $this->fast_update_json_field('Invoice Metadata', 'store_company_number', $store->get('Store Company Number'));
             $this->fast_update_json_field('Invoice Metadata', 'store_telephone', $store->get('Store Telephone'));
             $this->fast_update_json_field('Invoice Metadata', 'store_email', $store->get('Store Email'));
             $this->fast_update_json_field('Invoice Metadata', 'store_message', $store->get('Store Invoice Message'));
+            $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $store->get('Store VAT Number'));
 
+
+            if (isset($extra_data['ups']) and $extra_data['ups']) {
+                if ($account->properties('ups_tax_number') != '') {
+                    $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $account->properties('ups_tax_number'));
+
+                }
+                $this->fast_update_json_field('Invoice Metadata', 'ups', true);
+
+                if (isset($extra_data['dn_key']) and $extra_data['dn_key']) {
+
+                    $dn = get_object('DeliveryNote', $extra_data['dn_key']);
+                    $dn->fast_update_json_field('Delivery Note Properties', 'ups', true);
+                    if ($account->properties('ups_tax_number') != '') {
+                        $dn->fast_update_json_field('Delivery Note Properties', 'store_vat_number',$account->properties('ups_tax_number'));
+                    }
+                }
+
+            }
 
 
             if (isset($recargo_equivalencia)) {
@@ -1786,7 +1812,7 @@ class Invoice extends DB_Table {
 
                 if (isset($categorize_invoices_functions[$row['Invoice Category Function Code']])) {
 
-                    if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($invoice_data, $row['Invoice Category Function Argument'],$this->db)) {
+                    if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($invoice_data, $row['Invoice Category Function Argument'], $this->db)) {
                         $category_key = $row['Invoice Category Key'];
                         break;
                     }
@@ -1796,7 +1822,6 @@ class Invoice extends DB_Table {
 
             }
         }
-
 
 
         if ($category_key) {
@@ -1809,7 +1834,6 @@ class Invoice extends DB_Table {
 
             if ($category->id) {
                 $category->associate_subject($this->id);
-
 
 
                 $this->fast_update(
@@ -2857,7 +2881,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     function upload_pdf_to_google_drive($google_drive) {
 
-        $account = get_object('Account',1);
+        $account = get_object('Account', 1);
         $account->load_acc_data();
 
         if ($account->properties('google_drive_folder_key')) {

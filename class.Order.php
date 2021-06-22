@@ -473,15 +473,15 @@ class Order extends DB_Table {
 
                 $address_fields = array(
 
-                    'Address Recipient'            => preg_replace('/"/',' ',$this->get($type.' Address Recipient')),
-                    'Address Organization'         => preg_replace('/"/',' ',$this->get($type.' Address Organization')),
-                    'Address Line 1'               => preg_replace('/"/',' ',$this->get($type.' Address Line 1')),
-                    'Address Line 2'               => preg_replace('/"/',' ',$this->get($type.' Address Line 2')),
+                    'Address Recipient'            => preg_replace('/"/', ' ', $this->get($type.' Address Recipient')),
+                    'Address Organization'         => preg_replace('/"/', ' ', $this->get($type.' Address Organization')),
+                    'Address Line 1'               => preg_replace('/"/', ' ', $this->get($type.' Address Line 1')),
+                    'Address Line 2'               => preg_replace('/"/', ' ', $this->get($type.' Address Line 2')),
                     'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
                     'Address Postal Code'          => $this->get($type.' Address Postal Code'),
-                    'Address Dependent Locality'   => preg_replace('/"/',' ',$this->get($type.' Address Dependent Locality')),
-                    'Address Locality'             => preg_replace('/"/',' ',$this->get($type.' Address Locality')),
-                    'Address Administrative Area'  => preg_replace('/"/',' ',$this->get($type.' Address Administrative Area')),
+                    'Address Dependent Locality'   => preg_replace('/"/', ' ', $this->get($type.' Address Dependent Locality')),
+                    'Address Locality'             => preg_replace('/"/', ' ', $this->get($type.' Address Locality')),
+                    'Address Administrative Area'  => preg_replace('/"/', ' ', $this->get($type.' Address Administrative Area')),
                     'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
 
 
@@ -1008,7 +1008,7 @@ class Order extends DB_Table {
         $show = array();
 
         $account = get_object('Account', 1);
-
+        $account->load_properties();
 
         $old_value         = $this->get('Order State');
         $operations        = array();
@@ -1665,10 +1665,17 @@ class Order extends DB_Table {
                     }
                     $this->update_field('Order State', $value, 'no_history');
 
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
 
-                    $invoice = $this->create_invoice($date);
+                    $extra_data = [];
+                    if ($account->properties('ups_shipper_key') == $dn->get('Delivery Note Shipper Key')) {
+                        $extra_data['ups'] = true;
+                        $extra_data['dn_key'] = $dn->id;
 
-                    $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+                    }
+
+                    $invoice = $this->create_invoice($date, $extra_data);
+
                     $dn->editor = $this->editor;
 
                     $dn->fast_update(
@@ -1828,9 +1835,18 @@ class Order extends DB_Table {
                     include_once('class.Invoice.php');
 
 
-                    $invoice = $this->create_invoice($date);
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
 
-                    $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+
+                    $extra_data = [];
+                    if ($account->properties('ups_shipper_key') == $dn->get('Delivery Note Shipper Key')) {
+                        $extra_data['ups'] = true;
+                        $extra_data['dn_key'] = $dn->id;
+
+                    }
+
+                    $invoice = $this->create_invoice($date, $extra_data);
+
                     $dn->editor = $this->editor;
 
                     $dn->update(
@@ -1955,7 +1971,7 @@ class Order extends DB_Table {
 
     }
 
-    function create_invoice($date) {
+    function create_invoice($date, $extra_data = []) {
 
 
         $store = get_object('Store', $this->data['Order Store Key']);
@@ -2060,6 +2076,7 @@ class Order extends DB_Table {
             'Invoice Currency'              => $this->data['Order Currency'],
             'Recargo Equivalencia'          => $this->metadata('RE'),
             'Invoice External Invoicer Key' => $this->data['Order External Invoicer Key'],
+            'extra_data'                    => $extra_data
 
 
         );
