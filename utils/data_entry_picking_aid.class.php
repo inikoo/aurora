@@ -55,7 +55,7 @@ class data_entry_picking_aid {
             if (empty($this->data['fields']['Delivery Note Assigned Picker Key'])) {
                 $response = array(
                     'state' => 400,
-                    'msg'   => 'delivery note assigned picker key missing'
+                    'msg'   => _('Picker missing')
                 );
 
                 return array(
@@ -70,7 +70,7 @@ class data_entry_picking_aid {
             if (empty($this->data['fields']['Delivery Note Assigned Packer Key'])) {
                 $response = array(
                     'state' => 400,
-                    'msg'   => 'delivery note assigned packer key missing'
+                    'msg'   => _('Packer missing')
                 );
 
                 return array(
@@ -83,7 +83,7 @@ class data_entry_picking_aid {
             if (!isset($this->data['fields']['Delivery Note Shipper Key'])) {
                 $response = array(
                     'state' => 400,
-                    'msg'   => 'delivery note shipper key missing'
+                    'msg'   => _('Courier missing')
                 );
 
                 return array(
@@ -96,7 +96,7 @@ class data_entry_picking_aid {
             if (!isset($this->data['fields']['Delivery Note Shipper Tracking'])) {
                 $response = array(
                     'state' => 400,
-                    'msg'   => 'delivery note tracking missing'
+                    'msg'   => _('Tracking missing')
                 );
 
                 return array(

@@ -712,7 +712,6 @@ class DeliveryNote extends DB_Table {
 
                     return "&#8494;".$weight;
                 }
-                break;
 
             case('Weight For Edit'):
 
@@ -721,8 +720,16 @@ class DeliveryNote extends DB_Table {
                 } else {
                     return "";
                 }
-                break;
 
+            case('Best Weight'):
+                include_once 'utils/natural_language.php';
+
+                if ($this->data['Delivery Note Weight Source'] == 'Given') {
+                    return $this->data['Delivery Note Weight'];
+                } else {
+                    return $this->data['Delivery Note Estimated Weight'];
+
+                }
 
             case('Consignment'):
 

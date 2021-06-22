@@ -658,10 +658,16 @@
                                     class="fal fw fa-pager " style="font-size: larger"></i></a>
 
                         <a class="pdf_link {if $dn->get('State Index')<90 }hide{/if}" target='_blank' href="/pdf/dn.pdf.php?id={$dn->id}"> <img style="width: 50px;height:16px;position: relative;top:2px"
-                                                                                                                                                src="/art/pdf.gif"></a>
+
+                                                                                                                                            src="/art/pdf.gif"></a>
                     </span>
 
+                    {if $dn->properties('ups')}
+                    <a class="pdf_link discreet" title="Shipment" href="/ups_shipment_feed.csv.php?id={$dn->id}"><i style="padding-left: 5px;padding-top: 8px" class="fab fa-ups"></i> </a>
+                        <a class="pdf_link purple" title="Order-invoice" href="/ups_invoice_feed.csv.php?id={$dn->id}"><i style="padding-left: 0px;padding-top: 8px" class="fab fa-ups"></i> </a>
 
+
+                    {/if}
                     <div class="delivery_note_operation data_entry_delivery_note   {if ($dn->get('State Index')==100  and $dn->get('dispatched_since')>86400 )  or $dn->get('State Index')<0  or $dn->get('Delivery Note Using Shipper API')!='Yes' }hide{/if}">
 
                         <div class="square_button right" title="{t}Shipping labels{/t}">
