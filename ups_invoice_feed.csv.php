@@ -29,7 +29,7 @@ if (!$dn->id) {
 $store = get_object('Store', $dn->get('Store Key'));
 $account=get_object('Account',1);
 $account->load_properties();
-$fileName = 'ups_order_invoice_'.$dn->get('ID').'.csv';
+$fileName = 'OrderInvoiceFile.csv';
 
 $spreadsheet = new Spreadsheet();
 $sheet       = $spreadsheet->getActiveSheet();

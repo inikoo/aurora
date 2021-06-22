@@ -28,7 +28,7 @@ if (!$dn->id) {
 }
 $store = get_object('Store', $dn->get('Store Key'));
 
-$fileName = 'ups_shipment_'.$dn->get('ID').'.csv';
+$fileName = 'ShipmentToFile.csv';
 
 $spreadsheet = new Spreadsheet();
 $sheet       = $spreadsheet->getActiveSheet();
