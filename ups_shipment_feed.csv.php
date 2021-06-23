@@ -16,6 +16,7 @@ require_once 'common.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 
 if (empty($_REQUEST['id'])) {
@@ -72,7 +73,7 @@ $rows[] = [
     $dn->get('Delivery Note Address Locality'),
     $dn->get('Delivery Note Address Administrative Area'),
     trim($dn->get('Delivery Note Address Sorting Code').' '.$dn->get('Delivery Note Address Postal Code')),
-    $dn->get('Delivery Note Telephone'),
+    (string) $dn->get('Delivery Note Telephone'),
     $dn->get('Delivery Note Address Country 2 Alpha Code'),
     'ST',
     'PP',
@@ -89,12 +90,13 @@ $rows[] = [
 
 ];
 
-$j = 0;
+$j = 1;
 foreach ($rows as $row) {
     foreach ($row as $i => $col) {
-
-        $sheet->setCellValueByColumnAndRow( ($i + 1 ),$j + 1, $col);
-
+        $char = number2alpha($i+1);
+        $sheet->setCellValueExplicit(
+            $char.$j, strip_tags($col), DataType::TYPE_STRING
+        );
     }
     $j++;
 }
