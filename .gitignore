@@ -121,3 +121,4 @@ cron/fix_dn_unmutable_data.php
 cron/set_up_UPS_consolidated_invoice_EU.php
 hello world.xlsx
 cron/fix_dn_ups.php
+cron/set_up_intrastad_SK.php

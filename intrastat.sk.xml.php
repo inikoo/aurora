@@ -12,11 +12,13 @@ Version 2.0
 
 /** @var \User $user */
 
+
 use Spatie\ArrayToXml\ArrayToXml;
 
 require_once 'common.php';
 
 require_once 'utils/object_functions.php';
+$account->load_properties();
 
 
 $tab = 'intrastat';
@@ -43,72 +45,82 @@ if (isset($_SESSION['table_state'][$tab])) {
 }
 
 
-
 $tab = 'intrastat';
-
-
-
 include_once 'prepare_table/'.$tab.'.ptble.php';
+$sql = "select $fields from  $table   $where $wheref $group_by  order by `Delivery Note Address Country 2 Alpha Code`,`Product Tariff Code`  ";
 
-$text = "R00\tT00\r\n";
 
-
-$sql = "select `Invoice Key` from  $table   $where $wheref ";
-
-exit($sql);
-
+$date = strtotime($from);
 
 $currency            = $account->get('Account Currency');
-$declarationTypeCode = 2; //simplified declaration
+$declarationTypeCode = 2;
 $flowCode            = 'D';
 $functionCode        = 'O';
 
+
+$report_ID= 'AA'.date('ym', $date);
+
 $data = [
-    'envelopeId'        => 'envelopeId',
-    'partyType'         => 'partyType',
-    'partyId'           => 'partyId',
-    'organizationUnit'  => 'organizationUnit',
-    'partyName'         => 'partyName',
-    'streetName'        => 'streetName',
-    'postalCode'        => 'postalCode',
-    'cityName'          => 'cityName',
-    'softwareUsed'      => 'softwareUsed',
-    'declarationId'     => 'declarationId',
-    'referencePeriod'   => 'referencePeriod',
-    'PSIId'             => 'PSIId',
-    'organizationUnit1' => 'organizationUnit1',
-    'partyId1'          => 'partyId1',
-    'organizationUnit2' => 'organizationUnit2',
-    'partyName1'        => 'partyName1',
-    'streetName1'       => 'streetName1',
-    'postalCode1'       => 'postalCode1',
-    'cityName1'         => 'cityName1',
-    'contactPersonName' => 'contactPersonName',
-    'streetName2'       => 'streetName2',
-    'phoneNumber'       => 'phoneNumber',
-    'faxNumber'         => 'faxNumber',
-    'e-mail'            => 'e-mail',
+    'envelopeId'        => $report_ID,
+    'partyType'         => $account->properties('intrastat_partyType'),
+    'partyId'           => $account->properties('intrastat_partyId'),
+    'organizationUnit'  => $account->properties('intrastat_organizationUnit'),
+    'partyName'         => $account->properties('intrastat_partyName'),
+    'streetName'        => $account->properties('intrastat_streetName'),
+    'postalCode'        => $account->properties('intrastat_postalCode'),
+    'cityName'          => $account->properties('intrastat_cityName'),
+    'softwareUsed'      => 'Aurora',
+    'declarationId'     => date('m', $date),
+    'referencePeriod'   => date('Y-m', $date),
+    'PSIId'             => $account->properties('intrastat_PSIId'),
+    'organizationUnit1' => $account->properties('intrastat_organizationUnit1'),
+    'partyId1'          => $account->properties('intrastat_partyId1'),
+    'organizationUnit2' => $account->properties('intrastat_organizationUnit2'),
+    'partyName1'        => $account->properties('intrastat_partyName1'),
+    'streetName1'       => $account->properties('intrastat_streetName1'),
+    'postalCode1'       => $account->properties('intrastat_postalCode1'),
+    'cityName1'         => $account->properties('intrastat_cityName1'),
+    'contactPersonName' => $account->properties('intrastat_contactPersonName'),
+    'streetName2'       => $account->properties('intrastat_streetName2'),
+    'phoneNumber'       => $account->properties('intrastat_phoneNumber'),
+    'faxNumber'         => $account->properties('intrastat_faxNumber'),
+    'e-mail'            => $account->properties('intrastat_e-mail'),
 
 ];
+
+
 
 $totalNumberLines         = 0;
-$totalNumberDetailedLines = 0;
+$totalNumberDetailedLines = '';
 
+$items = [];
+$stmt  = $db->prepare($sql);
+$stmt->execute(
+    array()
+);
 
+while ($row = $stmt->fetch()) {
+    $totalNumberLines++;
+    $items[] = [
+        'itemNumber'     => $totalNumberLines,
+        'CN8'            => [
+            'CN8Code' => $row['tariff_code'],
+        ],
+        'MSConsDestCode' => $row['Delivery Note Address Country 2 Alpha Code'],
+        'invoicedAmount' => floor($row['value']),
+        'partnerId'      => ''
+    ];
+}
 
-$items                    = [
-    ['a' => 'x'],
-    ['a' => 'y']
-];
 
 $array = [
     'Envelope' => [
-        'envelopeId'   => $data['envelopeId'],
-        'DateTime'     => [
+        'envelopeId'           => $data['envelopeId'],
+        'DateTime'             => [
             'date' => date('Y-m-d'),
             'time' => date('H:i:s'),
         ],
-        'Party'        => [
+        'Party'                => [
             '_attributes'      => [
                 'partyType' => $data['partyType'],
                 'partyRole' => 'sender'
@@ -122,8 +134,8 @@ $array = [
                 'cityName'   => $data['cityName'],
             ]
         ],
-        'softwareUsed' => $data['softwareUsed'],
-        'Declaration'  => [
+        'softwareUsed'         => $data['softwareUsed'],
+        'Declaration'          => [
             'declarationId'            => $data['declarationId'],
             'referencePeriod'          => $data['referencePeriod'],
             'PSIId'                    => $data['PSIId'],
@@ -163,7 +175,8 @@ $array = [
             'totalNumberDetailedLines' => $totalNumberDetailedLines,
 
 
-        ]
+        ],
+        'numberOfDeclarations' => 1
 
     ]
 ];
@@ -176,56 +189,13 @@ $result = ArrayToXml::convert(
         'xsi:noNamespaceSchemaLocation' => 'instat62.xsd',
 
     ]
-], true, 'ISO-8859-2'
+], true, 'UTF-8'
 );
 
 
 header('Content-Type: application/xml; charset=utf-8');
-//header("Content-Disposition: attachment; filename=intrastat_export.xml");
+header("Content-Disposition: attachment; filename=intrastat_export_$report_ID.xml");
 
 
 print $result;
 
-
-/*
- *
- *
- * <Party partyType = "partyType" partyRole = "sender">
-<partyId>partyId</partyId>
-<organizationUnit>organizationUnit</organizationUnit>
-<partyName>partyName</partyName>
-<Address>
-<streetName>streetName</streetName>
-<postalCode>postalCode</postalCode>
-<cityName>cityName</cityName>
-</Address>
-</Party>
- *
-
-$tab = 'intrastat';
-
-
-
-include_once 'prepare_table/'.$tab.'.ptble.php';
-
-$text = "R00\tT00\r\n";
-
-
-$sql = "select `Invoice Key` from  $table   $where $wheref ";
-
-$stmt = $db->prepare($sql);
-$stmt->execute(
-    array()
-);
-while ($row = $stmt->fetch()) {
-
-    $invoice = get_object('Invoice', $row['Invoice Key']);
-    $text    .= get_omega_export_text($invoice);
-
-}
-
-
-$encoded_text = iconv(mb_detect_encoding($text), 'ISO-8859-15//TRANSLIT', utf8_encode($text));
-
-
-*/
