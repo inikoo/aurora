@@ -85,7 +85,7 @@ $stmt->execute(
 );
 while ($row = $stmt->fetch()) {
     $rows[] = [
-        $dn->get('ID'),
+        $dn->get('ID').'UP',
         $row['Country 2 Alpha Code'],
         $row['Part Reference'],
         $row['Part Recommended Product Unit Name'],

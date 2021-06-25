@@ -62,7 +62,7 @@ $rows[] = [
     'Declaration'
 ];
 $rows[] = [
-    $dn->get('ID'),
+    $dn->get('ID').'UP',
     $dn->get('Best Weight'),
     $dn->get('Delivery Note Number Parcels'),
     $dn->get('Delivery Note Customer Name'),
