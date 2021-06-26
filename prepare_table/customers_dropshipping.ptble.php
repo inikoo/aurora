@@ -208,7 +208,7 @@ if ($order == 'name') {
 }elseif ($order == 'portfolio') {
     $order = '`Customer Number Products in Portfolio`';
 } else {
-    $order = '`Customer File As`';
+    $order = '`Customer Name`';
 }
 
 

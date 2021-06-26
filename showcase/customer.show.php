@@ -38,7 +38,7 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
 
         return $smarty->fetch('showcase/deleted_customer.tpl');
 
-    } elseif ($data['store']->get('Store Type') == 'Dropshipping' and $customer->get('Customer Type by Activity') == 'ToApprove') {
+    }elseif ( $customer->get('Customer Type by Activity') == 'ToApprove') {
         $poll_data = array();
 
         $sql = "SELECT `Customer Poll Query Key` FROM `Customer Poll Query Dimension` WHERE `Customer Poll Query Store Key`=?";
@@ -101,7 +101,14 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
 
         return $smarty->fetch('showcase/customer_to_approve.tpl');
 
-    } else {
+    }  elseif ($data['store']->get('Store Type') == 'Fulfilment') {
+        $smarty->assign('customer', $customer);
+        $fulfilment_customer=get_object('FulfilmentCustomer',$customer->id);
+        $smarty->assign('fulfilment_customer',$fulfilment_customer);
+
+        return $smarty->fetch('showcase/fulfilment_customer.tpl');
+
+    }else {
 
         //$customer->update_account_balance();
         //$customer->update_credit_account_running_balances();
@@ -210,10 +217,6 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
                     case 'InProcess':
                         $order_in_process['icon']       = sprintf('<i class="fal fa-paper-plane" title="%s"></i>', $order->get('State'));
                         $order_in_process['operations'] = '';
-                        break;
-                    case 'InWarehouse':
-                        $order_in_process['operations'] = '';
-                        $order_in_process['icon']       = sprintf('<i class="fal fa-warehouse-alt" title="%s"></i>', $order->get('Order State'));
                         break;
                     default:
                         $order_in_process['operations'] = '';

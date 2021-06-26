@@ -1148,7 +1148,7 @@ function find_customers($db, $data) {
     }
 
     $sql  =
-        "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer Name` REGEXP ?  order by `Customer File As` limit $max_results ";
+        "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer Name` REGEXP ?  order by `Customer Name` limit $max_results ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(

@@ -242,7 +242,7 @@ function all_customers($_data, $db, $user) {
             }
 
 
-            $link_format = '/fulfilment/%d/customer/%d';
+            $link_format = '/fulfilment/%d/customers/%d';
 
             $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 

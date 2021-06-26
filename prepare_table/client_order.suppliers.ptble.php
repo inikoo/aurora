@@ -25,7 +25,7 @@ $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'order') {
-    $order = '`gent Supplier Purchase Order File As`';
+    $order = '`Agent Supplier Purchase Order File As`';
 }elseif ($order == 'supplier') {
     $order = '`Supplier Code`';
 }elseif ($order == 'state') {
@@ -55,6 +55,6 @@ $fields
 ";
 
 
-?>
+
 
 

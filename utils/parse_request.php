@@ -5933,7 +5933,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $section = 'dashboard';
 
 
-                            }  elseif ($view_path[1] == 'locations') {
+                            } elseif ($view_path[1] == 'locations') {
                                 $section = 'locations';
                                 $object  = '';
 
@@ -5942,14 +5942,22 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
                             } elseif ($view_path[1] == 'customers') {
-                                $section = 'customers';
-                                $object  = '';
-
+                                $section    = 'customers';
+                                $object     = '';
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
 
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $object     = 'customer';
+                                        $extra      = 'all_customers';
+                                        $section    = 'customer';
+                                        $key        = $view_path[2];
+                                    }
+                                }
 
-                            }elseif ($view_path[1] == 'production_deliveries') {
+
+                            } elseif ($view_path[1] == 'production_deliveries') {
 
 
                                 $section = 'production_deliveries';

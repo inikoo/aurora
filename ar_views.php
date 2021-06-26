@@ -3541,7 +3541,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             require_once 'navigation/account.nav.php';
 
             return get_settings_navigation($data);
-            break;
+
         case 'agent_profile':
             require_once 'navigation/agent.nav.php';
             switch ($data['section']) {
@@ -3714,6 +3714,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
         case ('fulfilment'):
             require_once 'navigation/fulfilment.nav.php';
+
             switch ($data['section']) {
                 case ('dashboard'):
                     return get_dashboard_navigation(

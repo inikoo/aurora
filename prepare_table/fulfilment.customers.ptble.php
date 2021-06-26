@@ -46,7 +46,7 @@ if ($order == 'name') {
 } elseif ($order == 'location') {
     $order = '`Customer Location`';
 } else {
-    $order = '`Customer File As`';
+    $order = '`Customer Name`';
 }
 
 

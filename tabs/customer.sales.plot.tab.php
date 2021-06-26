@@ -17,7 +17,7 @@ $data = base64_encode(
     json_encode(
         array(
             'valid_from'   => $customer->get('Customer First Contacted Date'),
-            'valid_to'     => ($customer->get('Customer Type') == 'Archived' ? $customer->get('Customer First Contacted Date') : gmdate("Y-m-d H:i:s")),
+            'valid_to'     => gmdate("Y-m-d H:i:s"),
             'parent'       => 'customer',
             'parent_key'   => $state['key'],
             'title_value'  => _('Sales'),
@@ -31,4 +31,3 @@ $smarty->assign('data', $data);
 $html = $smarty->fetch('asset_sales.chart.tpl');
 
 
-?>

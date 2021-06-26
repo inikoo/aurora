@@ -363,7 +363,7 @@ if ($order == 'name') {
 } elseif ($order == 'invoices') {
     $order = '`Customer Number Invoices`';
 } else {
-    $order = '`Customer File As`';
+    $order = '`Customer Name`';
 }
 
 

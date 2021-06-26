@@ -102,7 +102,7 @@ if ($order == 'name') {
 } elseif ($order == 'favourited') {
     $order = 'favourited';
 } else {
-    $order = '`Customer File As`';
+    $order = '`Customer Name`';
 }
 
 

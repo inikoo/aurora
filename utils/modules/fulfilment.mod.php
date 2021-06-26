@@ -139,7 +139,38 @@ function get_fulfilment_module() {
                 )
 
             ),
+            'customer' => array(
 
+                'type'      => 'object',
+                'label'     => _('Customer'),
+                'icon'      => 'user',
+                'reference' => '',
+                'tabs'      => array(
+
+                    'customer.parts'              => array(
+                        'label' => _('Parts'),
+                        'icon'  => 'box'
+                    ),
+                    'customer.locations' => array(
+                        'label' => _('Locations'),
+                        'icon'  => 'map-sings'
+                    ),
+
+                    'location.history' => array(
+                        'title'         => _('History'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
+                    ),
+
+
+                )
+
+            ),
 
             'locations' => array(
 

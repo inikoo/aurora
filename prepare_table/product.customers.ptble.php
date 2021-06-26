@@ -58,7 +58,7 @@ if ($order == 'name') {
 }elseif ($order == 'qty') {
     $order = 'qty';
 } else {
-    $order = '`Customer File As`';
+    $order = '`Customer Name`';
 }
 
 

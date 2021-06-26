@@ -61,7 +61,7 @@ $_dir   = $order_direction;
 
 
 if ($order == 'name') {
-    $order = '`Customer File As`';
+    $order = '`Customer Name`';
 } elseif ($order == 'status') {
     $order = '`Customer Type by Activity`';
 } elseif ($order == 'number') {

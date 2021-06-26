@@ -558,6 +558,12 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.PickingBand.php';
             $object = new PickingBand('id', $key);
             break;
+        case 'fulfilment_customer':
+        case 'fulfilment customer':
+        case 'fulfilmentcustomer':
+            include_once 'class.Fulfilment_Customer.php';
+            $object = new Fulfilment_Customer('id', $key);
+            break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
     }
