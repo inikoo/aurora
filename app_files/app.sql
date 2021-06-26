@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.20, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.23-14, for Linux (x86_64)
 --
 -- Host: localhost    Database: _aurora
 -- ------------------------------------------------------
--- Server version	8.0.20-0ubuntu0.19.10.1
+-- Server version	8.0.23-14
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,15 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!50717 SELECT COUNT(*) INTO @rocksdb_has_p_s_session_variables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'performance_schema' AND TABLE_NAME = 'session_variables' */;
+/*!50717 SET @rocksdb_get_is_supported = IF (@rocksdb_has_p_s_session_variables, 'SELECT COUNT(*) INTO @rocksdb_is_supported FROM performance_schema.session_variables WHERE VARIABLE_NAME=\'rocksdb_bulk_load\'', 'SELECT 0') */;
+/*!50717 PREPARE s FROM @rocksdb_get_is_supported */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+/*!50717 SET @rocksdb_enable_bulk_load = IF (@rocksdb_is_supported, 'SET SESSION rocksdb_bulk_load = 1', 'SET @rocksdb_dummy_bulk_load = 0') */;
+/*!50717 PREPARE s FROM @rocksdb_enable_bulk_load */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
 
 --
 -- Table structure for table `API Key Deleted Dimension`
@@ -158,6 +167,8 @@ CREATE TABLE `Account Data` (
   `Account Orders In Warehouse With Alerts Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders Packed Number` mediumint NOT NULL DEFAULT '0',
   `Account Orders Packed Amount` decimal(12,0) NOT NULL DEFAULT '0',
+  `Account Orders Packed Done Number` mediumint unsigned NOT NULL DEFAULT '0',
+  `Account Orders Packed Done Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders In Dispatch Area Number` mediumint unsigned NOT NULL DEFAULT '0',
   `Account Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders Dispatched Today Number` mediumint unsigned NOT NULL DEFAULT '0',
@@ -755,7 +766,15 @@ CREATE TABLE `Account Data` (
   `Account Total Acc Distinct Parts Dispatched` mediumint unsigned DEFAULT '0',
   `Account Parts No Products` mediumint unsigned DEFAULT '0',
   `Account Parts Forced not for Sale` mediumint unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Account Key`)
+  `Account Production Active Parts Number` mediumint unsigned NOT NULL DEFAULT '0',
+  `Account Production In Process Parts Number` mediumint unsigned NOT NULL DEFAULT '0',
+  `Account Production Discontinued Parts Number` mediumint unsigned NOT NULL DEFAULT '0',
+  `Account Production Discontinuing Parts Number` mediumint unsigned NOT NULL DEFAULT '0',
+  `Account Production Parts No Products` mediumint unsigned NOT NULL DEFAULT '0',
+  `Account Production Parts Forced not for Sale` mediumint unsigned NOT NULL DEFAULT '0',
+  `Account Shopify Key` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`Account Key`),
+  KEY `Account Shopify Key` (`Account Shopify Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1334,7 +1353,7 @@ DROP TABLE IF EXISTS `Agent Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Agent Dimension` (
   `Agent Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Agent Purchase Order Type` enum('Parcel','Container') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Parcel',
+  `Agent Purchase Order Type` enum('Parcel','Container') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Parcel',
   `Agent Products Origin Country Code` varchar(3) DEFAULT NULL,
   `Agent Code` varchar(16) NOT NULL,
   `Agent Name` varchar(255) DEFAULT NULL,
@@ -1865,6 +1884,7 @@ CREATE TABLE `Category Dimension` (
   `Category Main Image Key` mediumint unsigned DEFAULT NULL,
   `Category Number History Records` mediumint unsigned NOT NULL DEFAULT '0',
   `Category Properties` json DEFAULT NULL,
+  `Category Shopify Key` mediumint unsigned DEFAULT NULL,
   PRIMARY KEY (`Category Key`),
   UNIQUE KEY `Category Code` (`Category Code`,`Category Root Key`),
   KEY `Category Default` (`Category Default`),
@@ -1877,7 +1897,8 @@ CREATE TABLE `Category Dimension` (
   KEY `Category Root Key` (`Category Root Key`),
   KEY `Category Locked` (`Category Locked`),
   KEY `Category Name` (`Category Code`(20)),
-  KEY `Category Scope` (`Category Scope`)
+  KEY `Category Scope` (`Category Scope`),
+  KEY `Category Shopify Key` (`Category Shopify Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1936,7 +1957,7 @@ DROP TABLE IF EXISTS `Charge Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Charge Dimension` (
   `Charge Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Charge Scope` enum('Hanging','Premium','Insurance') DEFAULT NULL,
+  `Charge Scope` enum('Hanging','Premium','Insurance','Tracking') CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `Charge Name` varchar(255) NOT NULL,
   `Charge Store Key` smallint unsigned DEFAULT NULL,
   `Store Key` mediumint unsigned NOT NULL,
@@ -2080,6 +2101,62 @@ CREATE TABLE `Clocking Machine NFC Tag History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Consignment Dimension`
+--
+
+DROP TABLE IF EXISTS `Consignment Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Consignment Dimension` (
+  `Consignment Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Consignment External Invoicer Key` tinyint DEFAULT NULL,
+  `Consignment State` enum('StandBy','Open','Closed','Dispatched','Cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'StandBy',
+  `Consignment Public ID` varchar(255) NOT NULL,
+  `Consignment Date` datetime NOT NULL,
+  `Consignment Creation Date` datetime NOT NULL,
+  `Consignment Scheduled Date` datetime DEFAULT NULL,
+  `Consignment Closed Date` datetime DEFAULT NULL,
+  `Consignment Dispatched Date` datetime DEFAULT NULL,
+  `Consignment Cancelled Date` datetime DEFAULT NULL,
+  `Consignment Metadata` json DEFAULT NULL,
+  `Consignment Number Delivery Notes` smallint unsigned NOT NULL DEFAULT '0',
+  `Consignment Number Boxes` mediumint unsigned NOT NULL DEFAULT '0',
+  `Consignment Number Tariff Codes` mediumint unsigned NOT NULL DEFAULT '0',
+  `Consignment Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Consignment Tax Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Consignment Total Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Consignment Currency` varchar(3) NOT NULL,
+  `Consignment Exchange` float NOT NULL,
+  PRIMARY KEY (`Consignment Key`),
+  KEY `Consignment State` (`Consignment State`),
+  KEY `Consignment Date` (`Consignment Date`),
+  KEY `Consignment Public ID` (`Consignment Public ID`),
+  KEY `Consignment External Invoicer Key` (`Consignment External Invoicer Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Consignment History Bridge`
+--
+
+DROP TABLE IF EXISTS `Consignment History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Consignment History Bridge` (
+  `Consignment Key` mediumint unsigned NOT NULL,
+  `History Key` int unsigned NOT NULL,
+  `Deletable` enum('Yes','No') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Attachments') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`Consignment Key`,`History Key`),
+  KEY `Delivery Note Key` (`Consignment Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Credit Transaction Fact`
 --
 
@@ -2096,7 +2173,7 @@ CREATE TABLE `Credit Transaction Fact` (
   `Credit Transaction Customer Key` mediumint unsigned NOT NULL,
   `Credit Transaction Payment Key` int unsigned DEFAULT NULL,
   `Credit Transaction Top Up Key` mediumint DEFAULT NULL,
-  `Credit Transaction Running Amount` decimal(16,2) NOT NULL,
+  `Credit Transaction Running Amount` decimal(16,2) DEFAULT NULL,
   PRIMARY KEY (`Credit Transaction Key`),
   KEY `Credit Transaction Customer Key` (`Credit Transaction Customer Key`),
   KEY `Credit Transaction Top Up Key` (`Credit Transaction Top Up Key`),
@@ -2212,6 +2289,7 @@ CREATE TABLE `Customer Client Dimension` (
   `Customer Client Currency Code` varchar(3) DEFAULT NULL,
   `Customer Client Number History Records` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Client Metadata` json DEFAULT NULL,
+  `Customer Client Shopify Key` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Client Key`) USING BTREE,
   UNIQUE KEY `Customer Client Customer Key_2` (`Customer Client Customer Key`,`Customer Client Code`),
   KEY `Customer Client Store Key` (`Customer Client Store Key`),
@@ -2226,7 +2304,8 @@ CREATE TABLE `Customer Client Dimension` (
   KEY `Customer Client Main Plain Postal Code` (`Customer Client Main Plain Postal Code`),
   KEY `Customer Client Customer Key` (`Customer Client Customer Key`),
   KEY `Customer Client Code` (`Customer Client Code`),
-  KEY `Customer Client Status` (`Customer Client Status`)
+  KEY `Customer Client Status` (`Customer Client Status`),
+  KEY `Customer Client Shopify Key` (`Customer Client Shopify Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2367,6 +2446,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `Customer Store Key` smallint unsigned NOT NULL DEFAULT '1',
   `Customer Level Type` enum('Normal','VIP','Partner','Staff') NOT NULL DEFAULT 'Normal',
+  `Customer Fulfilment` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Customer Main Contact Name` varchar(255) DEFAULT '',
   `Customer Tax Number` varchar(64) DEFAULT NULL,
   `Customer Registration Number` varchar(255) DEFAULT NULL,
@@ -2421,7 +2501,6 @@ CREATE TABLE `Customer Dimension` (
   `Customer Billing Address Link` enum('Contact','None') NOT NULL DEFAULT 'Contact',
   `Customer Delivery Address Link` enum('Contact','Billing','None') NOT NULL DEFAULT 'Contact',
   `Customer Name` varchar(255) DEFAULT NULL,
-  `Customer File As` varchar(255) DEFAULT NULL,
   `Customer Fiscal Name` varchar(255) DEFAULT NULL,
   `Customer Orders Invoiced` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Orders Cancelled` smallint unsigned NOT NULL DEFAULT '0',
@@ -2458,7 +2537,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Customer With Orders` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Customer New` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Customer Recargo Equivalencia` enum('Yes','No') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No',
+  `Customer Recargo Equivalencia` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Customer Preferred Contact Number` enum('Telephone','Mobile') NOT NULL DEFAULT 'Mobile',
   `Customer Preferred Contact Number Formatted Number` varchar(255) DEFAULT NULL,
   `Customer Tax Number Valid` enum('Yes','No','Unknown','API_Down') NOT NULL DEFAULT 'Unknown',
@@ -2475,6 +2554,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Number History Records` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Number Clients` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Number Products in Portfolio` smallint unsigned NOT NULL DEFAULT '0',
+  `Customer Credit Limit` decimal(18,2) NOT NULL DEFAULT '0.00',
   `Customer Metadata` json DEFAULT NULL,
   `Customer Orders` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Net Balance` decimal(16,2) NOT NULL DEFAULT '0.00',
@@ -2496,6 +2576,8 @@ CREATE TABLE `Customer Dimension` (
   `Customer Email State` enum('Valid','Error','Warning') NOT NULL DEFAULT 'Valid',
   `Customer Account Balance` decimal(14,2) NOT NULL DEFAULT '0.00',
   `Customer Number Credit Transactions` smallint unsigned NOT NULL DEFAULT '0',
+  `Customer Shopify Key` int unsigned DEFAULT NULL,
+  `Customer Number Products` mediumint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Customer Key`) USING BTREE,
   KEY `Customer Store Key` (`Customer Store Key`),
   KEY `Customer Name` (`Customer Name`),
@@ -2508,7 +2590,9 @@ CREATE TABLE `Customer Dimension` (
   KEY `Customer Account Balance` (`Customer Account Balance`),
   KEY `Customer Contact Address Locality` (`Customer Contact Address Locality`(12)),
   KEY `Customer New` (`Customer New`),
-  KEY `Customer With Orders` (`Customer With Orders`)
+  KEY `Customer With Orders` (`Customer With Orders`),
+  KEY `Customer Shopify Key` (`Customer Shopify Key`),
+  KEY `Customer Fulfilment` (`Customer Fulfilment`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2529,6 +2613,26 @@ CREATE TABLE `Customer Favourite Product Fact` (
   UNIQUE KEY `Customer Favourite Product Store Key` (`Customer Favourite Product Store Key`,`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`),
   KEY `Customer Favourite Product Customer Key` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Fulfilment Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Fulfilment Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Customer Fulfilment Dimension` (
+  `Customer Fulfilment Customer Key` mediumint NOT NULL,
+  `Customer Fulfilment Warehouse Key` mediumint unsigned NOT NULL,
+  `Customer Fulfilment Status` enum('ToApprove','Rejected','Approved','InProcess','Storing','StoringEnd','Lost') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Approved',
+  `Customer Fulfilment Parts` mediumint unsigned NOT NULL DEFAULT '0',
+  `Customer Fulfilment Stored Parts` mediumint unsigned NOT NULL DEFAULT '0',
+  `Customer Fulfilment Locations` mediumint unsigned NOT NULL DEFAULT '0',
+  `Customer Fulfilment Metadata` json DEFAULT NULL,
+  PRIMARY KEY (`Customer Fulfilment Customer Key`),
+  KEY `Customer Fulfilment Customer Status` (`Customer Fulfilment Status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2859,6 +2963,8 @@ CREATE TABLE `Customer Portfolio Fact` (
   `Customer Portfolio Ordered Quantity` mediumint unsigned NOT NULL DEFAULT '0' COMMENT 'Ordered quantity',
   `Customer Portfolio Orders` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Portfolio Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Customer Portfolio Shopify Key` int unsigned DEFAULT NULL,
+  `Customer Portfolio Shopify State` enum('Linked','Unlinked','NA') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'NA',
   PRIMARY KEY (`Customer Portfolio Key`),
   UNIQUE KEY `Customer Portfolio Customer Key` (`Customer Portfolio Customer Key`,`Customer Portfolio Product ID`) USING BTREE,
   UNIQUE KEY `Customer Portfolio Customer Ke_2` (`Customer Portfolio Customer Key`,`Customer Portfolio Reference`),
@@ -2866,7 +2972,8 @@ CREATE TABLE `Customer Portfolio Fact` (
   KEY `Customer Portfolio Store Key` (`Customer Portfolio Store Key`),
   KEY `Customer Portfolio Customers State` (`Customer Portfolio Customers State`),
   KEY `Customer Portfolio Reference` (`Customer Portfolio Reference`),
-  KEY `Customer Portfolio Product ID` (`Customer Portfolio Product ID`)
+  KEY `Customer Portfolio Product ID` (`Customer Portfolio Product ID`),
+  KEY `Customer Portfolio Shopify Key` (`Customer Portfolio Shopify Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3012,7 +3119,7 @@ CREATE TABLE `DB Changelog` (
   `success` tinyint(1) NOT NULL,
   PRIMARY KEY (`installed_rank`),
   KEY `DB Changelog_s_idx` (`success`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3301,6 +3408,8 @@ DROP TABLE IF EXISTS `Delivery Note Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Delivery Note External Invoicer Key` tinyint unsigned DEFAULT NULL,
+  `Delivery Note Kind` enum('Internal','External') NOT NULL DEFAULT 'Internal',
   `Delivery Note Order Key` mediumint unsigned DEFAULT NULL,
   `Delivery Note Warehouse Key` smallint unsigned NOT NULL,
   `Delivery Note Order Date Placed` datetime DEFAULT NULL,
@@ -3312,11 +3421,13 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Date Done Approved` datetime DEFAULT NULL,
   `Delivery Note Date Dispatched Approved` datetime DEFAULT NULL,
   `Delivery Note Date Dispatched` datetime DEFAULT NULL,
+  `Delivery Note Date Delivered` datetime DEFAULT NULL,
   `Delivery Note Date Cancelled` datetime DEFAULT NULL,
   `Delivery Note Date` datetime DEFAULT NULL COMMENT 'Date when the DN dispatched',
   `Delivery Note Approved Done` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Delivery Note Approved To Dispatch` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Delivery Note State` enum('Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock') NOT NULL DEFAULT 'Ready to be Picked',
+  `Delivery Note Dispatched State` varchar(64) DEFAULT NULL,
   `Delivery Note Waiting State` enum('Customer','Restock','Production') DEFAULT NULL,
   `Delivery Note Assigned Picker Key` mediumint unsigned DEFAULT NULL,
   `Delivery Note Assigned Picker Alias` varchar(255) DEFAULT NULL,
@@ -3375,6 +3486,14 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Shipper Key` mediumint unsigned DEFAULT NULL,
   `Delivery Note Shipper Tracking` varchar(255) DEFAULT NULL,
   `Delivery Note Number History Records` smallint unsigned NOT NULL DEFAULT '0',
+  `Delivery Note Properties` json DEFAULT NULL,
+  `Delivery Note Using Shipper API` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Delivery Note UUID` varchar(255) DEFAULT NULL,
+  `Delivery Note Delivery Data` json DEFAULT NULL,
+  `Delivery Note Consignment Key` mediumint DEFAULT NULL,
+  `Delivery Note Picking Bands Date` datetime DEFAULT NULL,
+  `Delivery Note Picking Band Amount` decimal(12,2) DEFAULT NULL,
+  `Delivery Note Packing Band Amount` decimal(12,2) DEFAULT NULL,
   PRIMARY KEY (`Delivery Note Key`),
   KEY `Metadata` (`Delivery Note Metadata`(12)),
   KEY `Delivery Note Type` (`Delivery Note Type`),
@@ -3391,7 +3510,12 @@ CREATE TABLE `Delivery Note Dimension` (
   KEY `Delivery Note Premium Key` (`Delivery Note Premium Key`),
   KEY `Delivery Note Address Country 2 Alpha Code` (`Delivery Note Address Country 2 Alpha Code`),
   KEY `Delivery Note Shipper Key` (`Delivery Note Shipper Key`),
-  KEY `Delivery Note Customer Client Key` (`Delivery Note Customer Client Key`)
+  KEY `Delivery Note Customer Client Key` (`Delivery Note Customer Client Key`),
+  KEY `Delivery Note Using Shipper API` (`Delivery Note Using Shipper API`),
+  KEY `Delivery Note UUID` (`Delivery Note UUID`),
+  KEY `Delivery Note Kind` (`Delivery Note Kind`),
+  KEY `Delivery Note External Invoicer Key` (`Delivery Note External Invoicer Key`),
+  KEY `Delivery Note Consignment Key` (`Delivery Note Consignment Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3506,10 +3630,11 @@ CREATE TABLE `Email Campaign Dimension` (
   `Email Campaign Setup Date` datetime DEFAULT NULL,
   `Email Campaign Composed Date` datetime DEFAULT NULL,
   `Email Campaign Last Updated Date` datetime NOT NULL,
-  `Email Campaign Start Overdue Date` datetime DEFAULT NULL,
+  `Email Campaign Scheduled Date` datetime DEFAULT NULL,
   `Email Campaign Stopped Date` datetime DEFAULT NULL,
   `Email Campaign Start Send Date` datetime DEFAULT NULL,
   `Email Campaign End Send Date` datetime DEFAULT NULL,
+  `Email Campaign Second Wave Date` datetime DEFAULT NULL,
   `Email Campaign Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Email Campaign State` enum('InProcess','SetRecipients','ComposingEmail','Ready','Scheduled','Sending','Sent','Cancelled','Stopped') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'InProcess',
   `Email Campaign Selecting Blueprints` enum('Yes','No') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
@@ -3523,13 +3648,19 @@ CREATE TABLE `Email Campaign Dimension` (
   `Email Campaign Hard Bounces` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Soft Bounces` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Spams` mediumint unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Spam Soft Bounces` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Unsubscribed` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Metadata` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `Email Campaign Wave Type` enum('No','Yes','Wave','Sent','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No',
+  `Email Campaign Second Wave Key` mediumint unsigned DEFAULT NULL,
+  `Email Campaign First Wave Key` mediumint unsigned DEFAULT NULL,
   PRIMARY KEY (`Email Campaign Key`),
   KEY `Email Campaign Status` (`Email Campaign State`),
   KEY `Email Campaign Store Key` (`Email Campaign Store Key`),
-  KEY `Email Campaign Type` (`Email Campaign Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `Email Campaign Type` (`Email Campaign Type`),
+  KEY `Email Campaign Second Wave Date` (`Email Campaign Second Wave Date`),
+  KEY `Email Campaign Wave Type` (`Email Campaign Wave Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3576,6 +3707,7 @@ CREATE TABLE `Email Campaign Type Dimension` (
   `Email Campaign Type Hard Bounces` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Type Soft Bounces` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Type Spams` mediumint unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Spam Soft Bounces` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Type Unsubscribed` mediumint unsigned NOT NULL DEFAULT '0',
   `Email Campaign Type Email Template Key` mediumint unsigned DEFAULT NULL,
   `Email Campaign Type Metadata` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
@@ -3604,42 +3736,6 @@ CREATE TABLE `Email Campaign Type History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Email Site Reminder Dimension`
---
-
-DROP TABLE IF EXISTS `Email Site Reminder Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Email Site Reminder Dimension` (
-  `Email Site Reminder Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Email Site Reminder State` enum('Waiting','Ready','Sent','Cancelled') NOT NULL DEFAULT 'Waiting',
-  `Email Site Reminder In Process` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Email Site Reminder Subject` enum('Customer','User') NOT NULL DEFAULT 'User',
-  `User Key` mediumint DEFAULT NULL,
-  `Customer Key` mediumint unsigned NOT NULL,
-  `Customer Name` varchar(255) NOT NULL,
-  `Site Key` mediumint unsigned NOT NULL,
-  `Store Key` mediumint unsigned NOT NULL,
-  `Trigger Scope` enum('Back in Stock') NOT NULL,
-  `Trigger Scope Key` mediumint unsigned DEFAULT NULL,
-  `Trigger Scope Name` varchar(64) NOT NULL,
-  `Creator Subject` enum('Staff','User') NOT NULL,
-  `Creator Subject Key` mediumint unsigned NOT NULL DEFAULT '0',
-  `Creation Date` datetime NOT NULL,
-  `Finish Date` datetime DEFAULT NULL,
-  PRIMARY KEY (`Email Site Reminder Key`),
-  KEY `Customer Site Email Reminder State` (`Email Site Reminder State`),
-  KEY `User Key` (`User Key`),
-  KEY `Email Site Reminder Subject` (`Email Site Reminder Subject`),
-  KEY `Email Site Reminder In Process` (`Email Site Reminder In Process`),
-  KEY `Email Site Reminder In Process_2` (`Email Site Reminder In Process`,`Trigger Scope`,`Trigger Scope Key`,`User Key`),
-  KEY `Email Site Reminder State` (`Email Site Reminder State`,`Trigger Scope`,`Trigger Scope Key`),
-  KEY `Trigger Scope Name` (`Trigger Scope Name`),
-  KEY `Customer Name` (`Customer Name`(64))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3706,7 +3802,7 @@ CREATE TABLE `Email Template Dimension` (
   `Email Template Unsubscribed` mediumint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Email Template Key`),
   KEY `Email Template Email Campaign Type Key` (`Email Template Email Campaign Type Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3741,7 +3837,7 @@ CREATE TABLE `Email Tracking Dimension` (
   `Email Tracking Key` int unsigned NOT NULL AUTO_INCREMENT,
   `Email Tracking Email` varchar(255) DEFAULT NULL,
   `Email Tracking State` enum('Ready','Sent to SES','Rejected by SES','Sent','Soft Bounce','Hard Bounce','Delivered','Spam','Opened','Clicked','Error') NOT NULL DEFAULT 'Ready',
-  `Email Tracking Delivery Status Code` varchar(64) DEFAULT NULL,
+  `Email Tracking Delivery Status Code` varchar(10) DEFAULT NULL,
   `Email Tracking Email Template Type Key` mediumint unsigned DEFAULT NULL,
   `Email Tracking Email Mailshot Key` mediumint unsigned DEFAULT NULL,
   `Email Tracking Email Template Key` mediumint unsigned DEFAULT NULL,
@@ -3810,6 +3906,43 @@ CREATE TABLE `Email Tracking Event Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `External Invoicer Dimension`
+--
+
+DROP TABLE IF EXISTS `External Invoicer Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `External Invoicer Dimension` (
+  `External Invoicer Key` tinyint unsigned NOT NULL AUTO_INCREMENT,
+  `External Invoicer Account Code` varchar(64) NOT NULL,
+  `External Invoicer Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `External Invoicer Creation Date` datetime NOT NULL,
+  `External Invoicer Metadata` json DEFAULT NULL,
+  PRIMARY KEY (`External Invoicer Key`),
+  KEY `External Invoicer Account Code` (`External Invoicer Account Code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `External Invoicing Customer Dimension`
+--
+
+DROP TABLE IF EXISTS `External Invoicing Customer Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `External Invoicing Customer Dimension` (
+  `External Invoicing Customer Key` tinyint unsigned NOT NULL AUTO_INCREMENT,
+  `External Invoicing Customer Account Code` varchar(64) NOT NULL,
+  `External Invoicing Customer External Invoicer Key` tinyint unsigned NOT NULL,
+  `External Invoicing Customer Name` varchar(255) NOT NULL,
+  `External Invoicing Customer Creation Date` datetime NOT NULL,
+  `External Invoicing Customer Metadata` json DEFAULT NULL,
+  PRIMARY KEY (`External Invoicing Customer Key`),
+  UNIQUE KEY `External Invoicing Customer Account Code` (`External Invoicing Customer Account Code`,`External Invoicing Customer External Invoicer Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Feedback Dimension`
 --
 
@@ -3834,8 +3967,8 @@ CREATE TABLE `Feedback Dimension` (
   PRIMARY KEY (`Feedback Key`),
   KEY `Feedback User Key` (`Feedback User Key`),
   KEY `Feedback Supplier` (`Feedback Supplier`),
-  KEY `Feedback Picker` (`Feedback Picker`),
   KEY `Feedback Packer` (`Feedback Packer`),
+  KEY `Feedback Picker` (`Feedback Picker`),
   KEY `Feedback Warehouse` (`Feedback Warehouse`),
   KEY `Feedback Courier` (`Feedback Courier`),
   KEY `Feedback Marketing` (`Feedback Marketing`),
@@ -3962,14 +4095,14 @@ CREATE TABLE `History Dimension` (
   `Subject` enum('Customer','Staff','Supplier','Administrator','System') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Subject Key` mediumint unsigned DEFAULT NULL,
   `Action` enum('sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset','search') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'edited',
-  `Direct Object` enum('Order Basket Purge','Email Campaign','Deal Campaign','Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website','Prospect') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Direct Object` enum('Staff','Supplier Part','Order Basket Purge','Email Campaign','Deal Campaign','Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Invoice','Webpage','Website','Prospect','Supplier Delivery') DEFAULT NULL,
   `Direct Object Key` mediumint unsigned DEFAULT '0',
   `Preposition` enum('about','','to','on','because') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Indirect Object` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Indirect Object Key` mediumint unsigned DEFAULT NULL,
   `History Abstract` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `History Details` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `History Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `History Date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `User Key` mediumint unsigned DEFAULT NULL,
   `Deep` enum('1','2') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
   `Metadata` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -4009,7 +4142,7 @@ CREATE TABLE `Human Resources Spanshot Fact` (
   `Transfer Count` smallint NOT NULL,
   `Promotion Count` smallint NOT NULL,
   PRIMARY KEY (`Human Resources Spanshot Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4020,7 +4153,7 @@ DROP TABLE IF EXISTS `ITF POTF Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ITF POTF Bridge` (
-  `ITF POTF Bridge Key` mediumint unsigned NOT NULL,
+  `ITF POTF Bridge Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `ITF POTF ITF Key` mediumint unsigned DEFAULT NULL,
   `ITF POTF POTF Key` mediumint unsigned DEFAULT NULL,
   `ITF POTF ITF State` enum('Costing','Placed','InvoiceChecked') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -4047,23 +4180,27 @@ CREATE TABLE `ITF POTF Costing Done Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Image Bridge`
+-- Table structure for table `ITF Picking Band Bridge`
 --
 
-DROP TABLE IF EXISTS `Image Bridge`;
+DROP TABLE IF EXISTS `ITF Picking Band Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Image Bridge` (
-  `Subject Type` enum('Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail') DEFAULT NULL,
-  `Subject Key` mediumint unsigned NOT NULL,
-  `Image Key` mediumint unsigned NOT NULL,
-  `Is Principal` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Image Caption` varchar(1024) NOT NULL,
-  UNIQUE KEY `unique` (`Subject Type`,`Subject Key`,`Image Key`),
-  KEY `Subject Key` (`Subject Key`),
-  KEY `Image Key` (`Image Key`),
-  KEY `Subject Type` (`Subject Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `ITF Picking Band Bridge` (
+  `ITF Picking Band Key` int NOT NULL AUTO_INCREMENT,
+  `ITF Picking Band ITF Key` int unsigned NOT NULL,
+  `ITF Picking Band Type` enum('Picking','Packing') NOT NULL,
+  `ITF Picking Band Picking Band Key` smallint unsigned DEFAULT NULL,
+  `ITF Picking Band Picking Band Historic Key` mediumint unsigned DEFAULT NULL,
+  `ITF Picking Band Amount` decimal(10,3) NOT NULL,
+  `ITF Picking Band Cartons` mediumint unsigned NOT NULL DEFAULT '0',
+  `ITF Picking Band SKOs` mediumint unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ITF Picking Band Key`),
+  UNIQUE KEY `ITF Picking Band ITF Key_2` (`ITF Picking Band ITF Key`,`ITF Picking Band Type`),
+  KEY `ITF Picking Band Picking Band Key` (`ITF Picking Band Picking Band Key`),
+  KEY `ITF Picking Band Picking Band Historic Key` (`ITF Picking Band Picking Band Historic Key`),
+  KEY `ITF Picking Band ITF Key` (`ITF Picking Band ITF Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4311,19 +4448,15 @@ CREATE TABLE `Inventory Transaction Fact` (
   KEY `Inventory Transaction Record Type` (`Inventory Transaction Record Type`),
   KEY `Inventory Transaction Type` (`Inventory Transaction Type`),
   KEY `Inventory Transaction Fact Delivery 2 Alpha Code` (`Inventory Transaction Fact Delivery 2 Alpha Code`),
-  KEY `Part SKU_2` (`Part SKU`,`Location Key`)
+  KEY `Part SKU_2` (`Part SKU`,`Location Key`),
+  KEY `Date Picked` (`Date Picked`),
+  KEY `Date Packed` (`Date Packed`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (year(`Date`))
-(PARTITION p09 VALUES LESS THAN (2010) ENGINE = InnoDB,
- PARTITION p10 VALUES LESS THAN (2011) ENGINE = InnoDB,
- PARTITION p11 VALUES LESS THAN (2012) ENGINE = InnoDB,
- PARTITION p12 VALUES LESS THAN (2013) ENGINE = InnoDB,
- PARTITION p13 VALUES LESS THAN (2014) ENGINE = InnoDB,
- PARTITION p14 VALUES LESS THAN (2015) ENGINE = InnoDB,
- PARTITION p15 VALUES LESS THAN (2016) ENGINE = InnoDB,
- PARTITION p16 VALUES LESS THAN (2017) ENGINE = InnoDB,
+(PARTITION p16 VALUES LESS THAN (2017) ENGINE = InnoDB,
  PARTITION p17 VALUES LESS THAN (2018) ENGINE = InnoDB,
  PARTITION p18 VALUES LESS THAN (2019) ENGINE = InnoDB,
+ PARTITION p19 VALUES LESS THAN (2020) ENGINE = InnoDB,
  PARTITION pnow VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4742,7 +4875,7 @@ DROP TABLE IF EXISTS `Invoice Category Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Invoice Category Dimension` (
   `Invoice Category Key` mediumint unsigned NOT NULL,
-  `Invoice Category Status` enum('InProcess','Normal','Closed','Suspended','CoolDown') NOT NULL DEFAULT 'InProcess',
+  `Invoice Category Status` enum('InProcess','Normal','ClosingDown','Closed') NOT NULL DEFAULT 'InProcess',
   `Invoice Category Store Key` mediumint unsigned DEFAULT NULL,
   `Invoice Category Currency Code` varchar(3) DEFAULT NULL,
   `Invoice Category Valid From` datetime DEFAULT NULL,
@@ -4806,6 +4939,8 @@ DROP TABLE IF EXISTS `Invoice Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Invoice Dimension` (
   `Invoice Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Invoice External Invoicer Key` tinyint unsigned DEFAULT NULL,
+  `Invoice Kind` enum('Internal','External') NOT NULL DEFAULT 'Internal',
   `Invoice Order Key` mediumint unsigned DEFAULT NULL,
   `Invoice Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date when the order where first placed',
   `Invoice Paid Date` datetime DEFAULT NULL,
@@ -4893,7 +5028,9 @@ CREATE TABLE `Invoice Dimension` (
   KEY `Invoice Order Key` (`Invoice Order Key`),
   KEY `Invoice Sales Representative Key` (`Invoice Sales Representative Key`),
   KEY `Invoice Public ID` (`Invoice Public ID`),
-  KEY `Invoice Customer Client Key` (`Invoice Customer Client Key`)
+  KEY `Invoice Customer Client Key` (`Invoice Customer Client Key`),
+  KEY `Invoice Kind` (`Invoice Kind`),
+  KEY `Invoice External Invoicer Key` (`Invoice External Invoicer Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5080,11 +5217,20 @@ DROP TABLE IF EXISTS `Location Deleted Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Location Deleted Dimension` (
-  `Location Deleted Key` mediumint NOT NULL,
-  `Location Deleted Code` varchar(255) DEFAULT NULL,
+  `Location Deleted Key` mediumint unsigned NOT NULL,
+  `Location Deleted Code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Location Deleted File As` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Location Deleted Warehouse Key` smallint unsigned DEFAULT NULL,
+  `Location Deleted Warehouse Area Key` smallint unsigned DEFAULT NULL,
+  `Location Deleted Warehouse Area Code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Location Deleted Date` datetime DEFAULT NULL,
-  `Location Deleted Metadata` blob,
-  PRIMARY KEY (`Location Deleted Key`)
+  `Location Deleted Metadata` json DEFAULT NULL,
+  `Location Deleted Note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  PRIMARY KEY (`Location Deleted Key`),
+  KEY `Location Deleted Warehouse Area Code` (`Location Deleted Warehouse Area Code`),
+  KEY `Location Deleted Warehouse Area Key` (`Location Deleted Warehouse Area Key`),
+  KEY `Location Deleted File As` (`Location Deleted File As`),
+  KEY `Location Deleted Warehouse Key` (`Location Deleted Warehouse Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5097,6 +5243,7 @@ DROP TABLE IF EXISTS `Location Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Location Dimension` (
   `Location Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Location Place` enum('Local','External') NOT NULL DEFAULT 'Local',
   `Location Warehouse Key` smallint unsigned DEFAULT NULL,
   `Location Warehouse Area Key` mediumint unsigned DEFAULT NULL,
   `Location Shelf Key` mediumint DEFAULT NULL,
@@ -5119,13 +5266,16 @@ CREATE TABLE `Location Dimension` (
   `Location Warehouse Flag Key` tinyint unsigned DEFAULT NULL,
   `Location Number History Records` mediumint unsigned DEFAULT '0',
   `Location Sticky Note` text,
+  `Location Fulfilment` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Location Key`),
   KEY `Location Warehouse Key` (`Location Warehouse Key`),
   KEY `Location Code` (`Location Code`),
   KEY `Location Mainly Used For` (`Location Mainly Used For`),
   KEY `Location File As` (`Location File As`(16)),
   KEY `Location Warehouse Flag Key` (`Location Warehouse Flag Key`),
-  KEY `Location Type` (`Location Type`)
+  KEY `Location Type` (`Location Type`),
+  KEY `Location Place` (`Location Place`),
+  KEY `Location Fulfilment` (`Location Fulfilment`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5191,7 +5341,7 @@ CREATE TABLE `Marketing Post Dimension` (
   `Marketing Post Name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `Store Key` mediumint NOT NULL,
   PRIMARY KEY (`Marketing Post Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5444,7 +5594,10 @@ DROP TABLE IF EXISTS `Order Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Order Dimension` (
   `Order Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Order State` enum('InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled') NOT NULL DEFAULT 'InBasket',
+  `Order External Invoicer Key` tinyint unsigned DEFAULT NULL,
+  `Order Kind` enum('Internal','External') NOT NULL DEFAULT 'Internal',
+  `Order State` enum('InBasket','InProcess','InWarehouse','Packed','PackedDone','Approved','Dispatched','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InBasket',
+  `Order Dispatched State` varchar(64) DEFAULT NULL,
   `Order Payment State` enum('NA','Paid','ToPay','OverPaid') NOT NULL DEFAULT 'NA',
   `Order Replacement State` enum('NA','InWarehouse','PackedDone','Approved','Dispatched') NOT NULL DEFAULT 'NA',
   `Order Delivery Note Key` mediumint unsigned DEFAULT NULL,
@@ -5453,9 +5606,11 @@ CREATE TABLE `Order Dimension` (
   `Order Created Date` datetime DEFAULT NULL,
   `Order Submitted by Customer Date` datetime DEFAULT NULL,
   `Order Send to Warehouse Date` datetime DEFAULT NULL,
+  `Order Packed Date` datetime DEFAULT NULL,
   `Order Packed Done Date` datetime DEFAULT NULL,
   `Order Invoiced Date` datetime DEFAULT NULL,
   `Order Dispatched Date` datetime DEFAULT NULL,
+  `Order Delivered Date` datetime DEFAULT NULL,
   `Order Post Transactions Dispatched Date` datetime DEFAULT NULL,
   `Order Suspended Date` datetime DEFAULT NULL,
   `Order Cancelled Date` datetime DEFAULT NULL,
@@ -5651,12 +5806,15 @@ CREATE TABLE `Order Dimension` (
   `Order Website Key` smallint unsigned DEFAULT NULL,
   `Order Priority Level` enum('PaidPremium','Urgent','Normal') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Normal',
   `Order Care Level` enum('PaidPremium','TakeCare','Normal') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Normal',
+  `Order Shipping Level` enum('Normal','Tracking') DEFAULT 'Normal',
   `Order Replacements In Warehouse without Alerts` smallint unsigned DEFAULT '0',
   `Order Replacements In Warehouse with Alerts` smallint unsigned DEFAULT '0',
   `Order Replacements Packed Done` smallint unsigned DEFAULT '0',
   `Order Replacements Approved` smallint unsigned DEFAULT '0',
   `Order Replacements Dispatched Today` smallint unsigned DEFAULT '0',
   `Order Number History Records` smallint unsigned NOT NULL DEFAULT '0',
+  `Order Delivery Data` json DEFAULT NULL,
+  `Order Attention` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Order Key`,`Order Store Key`,`Order Date`) USING BTREE,
   KEY `Order Original Data Source` (`Order Original Data Source`),
   KEY `Order Public ID` (`Order Public ID`),
@@ -5695,7 +5853,11 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Customer Level Type` (`Order Customer Level Type`),
   KEY `Order Last Updated by Customer` (`Order Last Updated by Customer`),
   KEY `Order Customer Client Key` (`Order Customer Client Key`),
-  KEY `Order Import ID` (`Order Import ID`)
+  KEY `Order Import ID` (`Order Import ID`),
+  KEY `Order Attention` (`Order Attention`),
+  KEY `Order Kind` (`Order Kind`),
+  KEY `Order External Invoicer Key` (`Order External Invoicer Key`),
+  KEY `Order Shipping Level` (`Order Shipping Level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5811,9 +5973,11 @@ CREATE TABLE `Order No Product Transaction Deal Bridge` (
   `Amount Discount` decimal(8,2) NOT NULL DEFAULT '0.00',
   `Fraction Discount` float NOT NULL DEFAULT '0',
   `Order No Product Transaction Deal Pinned` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Order No Product Transaction Deal Source` enum('items','no_items') NOT NULL DEFAULT 'no_items',
   PRIMARY KEY (`Order No Product Transaction Deal Key`),
   UNIQUE KEY `Order No Product Transaction Fact Key` (`Order No Product Transaction Fact Key`,`Deal Component Key`),
-  KEY `Order Key` (`Order Key`)
+  KEY `Order Key` (`Order Key`),
+  KEY `Order No Product Transaction Deal Source` (`Order No Product Transaction Deal Source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6038,6 +6202,8 @@ DROP TABLE IF EXISTS `Order Transaction Fact`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Order Transaction Fact` (
   `Order Transaction Fact Key` int unsigned NOT NULL AUTO_INCREMENT,
+  `Order Transaction External Invoicer Key` tinyint unsigned DEFAULT NULL,
+  `Order Transaction Fact Kind` enum('Internal','External') NOT NULL DEFAULT 'Internal',
   `Order Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `Order Last Updated Date` datetime DEFAULT NULL,
   `Invoice Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -6086,22 +6252,17 @@ CREATE TABLE `Order Transaction Fact` (
   KEY `Order Transaction Fact Key` (`Order Transaction Fact Key`),
   KEY `Product ID_2` (`Product ID`,`Customer Key`),
   KEY `OTF Category Family Key` (`OTF Category Family Key`),
-  KEY `OTF Category Department Key` (`OTF Category Department Key`)
+  KEY `OTF Category Department Key` (`OTF Category Department Key`),
+  KEY `Order Transaction Fact Kind` (`Order Transaction Fact Kind`),
+  KEY `Order Transaction External Invoicer Key` (`Order Transaction External Invoicer Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (year(`Invoice Date`))
 SUBPARTITION BY KEY (`Store Key`)
-SUBPARTITIONS 16
-(PARTITION p2009 VALUES LESS THAN (2009) ENGINE = InnoDB,
- PARTITION p2010 VALUES LESS THAN (2010) ENGINE = InnoDB,
- PARTITION p2011 VALUES LESS THAN (2011) ENGINE = InnoDB,
- PARTITION p2012 VALUES LESS THAN (2012) ENGINE = InnoDB,
- PARTITION p2013 VALUES LESS THAN (2013) ENGINE = InnoDB,
- PARTITION p2014 VALUES LESS THAN (2014) ENGINE = InnoDB,
- PARTITION p2015 VALUES LESS THAN (2015) ENGINE = InnoDB,
- PARTITION p2016 VALUES LESS THAN (2016) ENGINE = InnoDB,
- PARTITION p2017 VALUES LESS THAN (2017) ENGINE = InnoDB,
+SUBPARTITIONS 19
+(PARTITION p2017 VALUES LESS THAN (2017) ENGINE = InnoDB,
  PARTITION p2018 VALUES LESS THAN (2018) ENGINE = InnoDB,
  PARTITION p2019 VALUES LESS THAN (2019) ENGINE = InnoDB,
+ PARTITION p2020 VALUES LESS THAN (2020) ENGINE = InnoDB,
  PARTITION pcurrent VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6178,83 +6339,6 @@ CREATE TABLE `Page Dimension` (
   `Page Published` enum('Yes','No') DEFAULT 'No',
   PRIMARY KEY (`Page Key`),
   KEY `Page URL` (`Page URL`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Footer Dimension`
---
-
-DROP TABLE IF EXISTS `Page Footer Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Footer Dimension` (
-  `Page Footer Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Page Footer Name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Page Footer Preview Image Key` mediumint DEFAULT NULL,
-  `Page Footer Preview Snapshot Last Update` datetime DEFAULT NULL,
-  `Site Key` mediumint unsigned NOT NULL,
-  `Number Pages` mediumint NOT NULL DEFAULT '0',
-  `Template` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `CSS` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Javascript` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  PRIMARY KEY (`Page Footer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Footer External File Bridge`
---
-
-DROP TABLE IF EXISTS `Page Footer External File Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Footer External File Bridge` (
-  `Page Store External File Key` mediumint unsigned NOT NULL,
-  `Page Footer Key` mediumint unsigned NOT NULL,
-  `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`,`Page Footer Key`),
-  KEY `Page Footer Key` (`Page Footer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Header Dimension`
---
-
-DROP TABLE IF EXISTS `Page Header Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Header Dimension` (
-  `Page Header Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Page Header Name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Page Header Preview Image Key` mediumint DEFAULT NULL,
-  `Page Header Preview Snapshot Last Update` datetime DEFAULT NULL,
-  `Site Key` mediumint unsigned NOT NULL,
-  `Number Pages` mediumint NOT NULL DEFAULT '0',
-  `Template` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Default Site` enum('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Yes',
-  `CSS` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Javascript` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  PRIMARY KEY (`Page Header Key`),
-  KEY `Default Site` (`Default Site`),
-  KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Header External File Bridge`
---
-
-DROP TABLE IF EXISTS `Page Header External File Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Header External File Bridge` (
-  `Page Store External File Key` mediumint unsigned NOT NULL,
-  `Page Header Key` mediumint unsigned NOT NULL,
-  `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`,`Page Header Key`),
-  KEY `Page Header Key` (`Page Header Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6556,52 +6640,6 @@ CREATE TABLE `Page Store Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Page Store External File Bridge`
---
-
-DROP TABLE IF EXISTS `Page Store External File Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Store External File Bridge` (
-  `Page Store External File Key` mediumint unsigned NOT NULL,
-  `Page Key` mediumint unsigned NOT NULL,
-  `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`,`Page Key`),
-  KEY `Page Key` (`Page Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Store External File Dimension`
---
-
-DROP TABLE IF EXISTS `Page Store External File Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Store External File Dimension` (
-  `Page Store External File Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Page Store External File Name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Page Store External File Type` enum('Javascript','CSS') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Page Store External File Content` longtext NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Store Found In Bridge`
---
-
-DROP TABLE IF EXISTS `Page Store Found In Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Store Found In Bridge` (
-  `Page Store Key` mediumint unsigned NOT NULL,
-  `Page Store Found In Key` mediumint unsigned NOT NULL,
-  PRIMARY KEY (`Page Store Key`,`Page Store Found In Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Page Store Search Dimension`
 --
 
@@ -6621,7 +6659,7 @@ CREATE TABLE `Page Store Search Dimension` (
   FULLTEXT KEY `Page Store Title_2` (`Page Store Title`),
   FULLTEXT KEY `Page Store Resume` (`Page Store Resume`),
   FULLTEXT KEY `Page Store Content` (`Page Store Content`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6642,48 +6680,6 @@ CREATE TABLE `Page Store Section Dimension` (
   `Page Store Section Layout Data` text,
   PRIMARY KEY (`Page Store Section Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Store See Also Bridge`
---
-
-DROP TABLE IF EXISTS `Page Store See Also Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Page Store See Also Bridge` (
-  `Page Store Key` mediumint unsigned NOT NULL,
-  `Page Store See Also Key` mediumint unsigned NOT NULL,
-  `Correlation Type` enum('Manual','Sales','Semantic','New') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Correlation Value` float DEFAULT NULL,
-  `Webpage See Also Order` mediumint unsigned DEFAULT NULL,
-  PRIMARY KEY (`Page Store Key`,`Page Store See Also Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Part Availability for Products Timeline`
---
-
-DROP TABLE IF EXISTS `Part Availability for Products Timeline`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Part Availability for Products Timeline` (
-  `Part Availability for Products Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Part SKU` mediumint unsigned NOT NULL,
-  `Warehouse Key` smallint unsigned NOT NULL,
-  `User Key` mediumint unsigned NOT NULL,
-  `Date` datetime NOT NULL,
-  `Duration` mediumint DEFAULT NULL COMMENT 'In seconds',
-  `Availability for Products` enum('Yes','No') NOT NULL,
-  `Source` enum('Manual','Automatic','Fix') NOT NULL DEFAULT 'Manual',
-  PRIMARY KEY (`Part Availability for Products Key`),
-  KEY `Date` (`Date`),
-  KEY `Part SKU` (`Part SKU`),
-  KEY `Warehouse Key` (`Warehouse Key`),
-  KEY `User Key` (`User Key`),
-  KEY `Source` (`Source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -7602,6 +7598,8 @@ DROP TABLE IF EXISTS `Part Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Part Dimension` (
   `Part SKU` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Part Type` enum('ForSale','RawMaterial','Fulfilment') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'ForSale',
+  `Part SKO Type` enum('Unit','Pack','Carton') NOT NULL DEFAULT 'Pack',
   `Part Main Supplier Part Key` mediumint unsigned DEFAULT NULL,
   `Part Reference` varchar(32) DEFAULT NULL,
   `Part Symbol` enum('star','skull','radioactive','peace','sad','gear','love') DEFAULT NULL,
@@ -7609,8 +7607,6 @@ CREATE TABLE `Part Dimension` (
   `Part Unit Label` varchar(255) NOT NULL DEFAULT 'unit',
   `Part Status` enum('In Use','Discontinuing','In Process','Not In Use') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'In Process',
   `Part Available` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Part Available for Products` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Part Available for Products Configuration` enum('Yes','No','Automatic') NOT NULL DEFAULT 'No',
   `Part Cost` decimal(12,4) DEFAULT '0.0000',
   `Part Cost in Warehouse` decimal(12,4) DEFAULT NULL,
   `Part Margin` float DEFAULT NULL,
@@ -7626,11 +7622,11 @@ CREATE TABLE `Part Dimension` (
   `Part Stock Found Value` decimal(16,0) NOT NULL DEFAULT '0',
   `Part Unit Price` float unsigned DEFAULT NULL,
   `Part Unit RRP` float unsigned DEFAULT NULL,
-  `Part XHTML Currently Used In` text,
   `Part Stock Status` enum('Surplus','Optimal','Low','Critical','Out_Of_Stock','Error') NOT NULL DEFAULT 'Optimal',
   `Part Last Stock` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Package Description` varchar(255) DEFAULT NULL,
   `Part Package Description Note` varchar(255) DEFAULT NULL,
+  `Part Carton` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Part SKOs per Carton` smallint unsigned DEFAULT NULL,
   `Part SKO Barcode` varchar(128) DEFAULT NULL,
   `Part Carton Barcode` varchar(64) DEFAULT NULL,
@@ -7640,15 +7636,12 @@ CREATE TABLE `Part Dimension` (
   `Part Barcode Key` mediumint unsigned DEFAULT NULL,
   `Part Barcode Number` varchar(128) DEFAULT NULL,
   `Part Barcode Number Error` enum('Checksum','Size','Duplicated','Short_Duplicated','Checksum_missing') DEFAULT NULL,
-  `Part General Description` longtext,
-  `Part Health And Safety` longtext,
   `Part UN Number` varchar(4) DEFAULT NULL,
   `Part UN Class` varchar(4) DEFAULT NULL,
   `Part Packing Group` enum('None','I','II','III') DEFAULT 'None',
   `Part Proper Shipping Name` varchar(255) DEFAULT NULL,
   `Part Hazard Identification Number` varchar(64) DEFAULT NULL,
   `Part MSDS Attachment Bridge Key` mediumint unsigned DEFAULT NULL,
-  `Part MSDS Attachment XHTML Info` text,
   `Part Tariff Code` varchar(255) DEFAULT NULL,
   `Part Tariff Code Valid` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Duty Rate` varchar(255) DEFAULT NULL,
@@ -7666,13 +7659,13 @@ CREATE TABLE `Part Dimension` (
   `Part Unit Weight Display` float DEFAULT NULL,
   `Part Unit Weight Display Units` enum('Kg','g','oz','lb') DEFAULT 'Kg',
   `Part Package Dimensions` varchar(255) DEFAULT NULL,
-  `Part Unit Dimensions Length` float DEFAULT NULL,
   `Part Unit Dimensions` varchar(255) DEFAULT NULL,
   `Part Unit Volume` float DEFAULT NULL,
   `Part Materials` text,
   `Part Commercial Value` decimal(12,2) DEFAULT NULL,
   `Part Current Stock` decimal(24,6) DEFAULT NULL,
   `Part Current On Hand Stock` decimal(24,6) NOT NULL DEFAULT '0.000000',
+  `Part Current On Hand Stock External` decimal(24,6) NOT NULL DEFAULT '0.000000',
   `Part Current Stock Ordered Paid` decimal(24,6) NOT NULL DEFAULT '0.000000',
   `Part Current Stock In Process` decimal(24,6) NOT NULL DEFAULT '0.000000',
   `Part Current Stock Picked` decimal(24,6) NOT NULL DEFAULT '0.000000',
@@ -7718,6 +7711,7 @@ CREATE TABLE `Part Dimension` (
   `Part On Demand` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Fresh` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part CPNP Number` varchar(64) DEFAULT NULL COMMENT 'For EU notification of cosmetic products',
+  `Part UFI` varchar(255) DEFAULT NULL,
   `Part ISF Records` mediumint unsigned DEFAULT '0',
   `Part ISF Updated` datetime DEFAULT NULL,
   `Part Acc To Day Updated` datetime DEFAULT NULL,
@@ -7734,12 +7728,14 @@ CREATE TABLE `Part Dimension` (
   `Part SKO Image Key` mediumint unsigned DEFAULT NULL,
   `Part Recommended Product Unit Name` varchar(255) DEFAULT NULL,
   `Part Production Supply` enum('Yes','No') DEFAULT 'No',
-  `Part Made in Production` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Part Number Components` smallint unsigned NOT NULL DEFAULT '0',
-  `Part Number Production Tasks` smallint unsigned NOT NULL DEFAULT '0',
-  `Part Number Production Links` smallint unsigned NOT NULL DEFAULT '0',
   `Part Next Deliveries Data` text,
   `Part Properties` json DEFAULT NULL,
+  `Part Raw Material Key` mediumint unsigned DEFAULT NULL,
+  `Part Units in Deliveries` mediumint unsigned NOT NULL DEFAULT '0',
+  `Part Picking Band Key` mediumint unsigned DEFAULT NULL,
+  `Part Packing Band Key` mediumint unsigned DEFAULT NULL,
+  `Part Picking Band Name` varchar(16) DEFAULT NULL,
+  `Part Packing Band Name` varchar(26) DEFAULT NULL,
   PRIMARY KEY (`Part SKU`),
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
@@ -7747,17 +7743,21 @@ CREATE TABLE `Part Dimension` (
   KEY `Part Available` (`Part Available`),
   KEY `Part Tarrif Code Valid` (`Part Tariff Code Valid`),
   KEY `Part Reference` (`Part Reference`),
-  KEY `Part Available for Products Configuration` (`Part Available for Products Configuration`),
   KEY `Part Next Shipment State` (`Part Next Shipment State`),
   KEY `Part Units` (`Part Units`),
   KEY `Part Barcode Number` (`Part Barcode Number`),
   KEY `Part Barcode Key` (`Part Barcode Key`),
   KEY `Part Production` (`Part Production`),
-  KEY `Part Made in Production` (`Part Made in Production`),
   KEY `Part Package Weight Status` (`Part Package Weight Status`),
   KEY `Part Main Supplier Part Key` (`Part Main Supplier Part Key`),
   KEY `Part Stock Status` (`Part Stock Status`),
-  KEY `Part Products Web Status` (`Part Products Web Status`)
+  KEY `Part Products Web Status` (`Part Products Web Status`),
+  KEY `Part Status` (`Part Status`,`Part Products Web Status`),
+  KEY `Part Type_2` (`Part Type`),
+  KEY `Part SKO Type` (`Part SKO Type`),
+  KEY `Part Raw Material Key` (`Part Raw Material Key`),
+  KEY `Part Picking Band Key` (`Part Picking Band Key`),
+  KEY `Part Packing Band Key` (`Part Packing Band Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -8349,28 +8349,6 @@ CREATE TABLE `Payment Account History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Payment Account Site Bridge`
---
-
-DROP TABLE IF EXISTS `Payment Account Site Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Payment Account Site Bridge` (
-  `Payment Account Key` mediumint NOT NULL,
-  `Site Key` mediumint NOT NULL DEFAULT '0',
-  `Store Key` mediumint NOT NULL,
-  `Valid From` datetime DEFAULT NULL,
-  `Valid To` datetime DEFAULT NULL,
-  `Status` enum('Active','Inactive') NOT NULL DEFAULT 'Inactive',
-  `Show In Cart` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Show Cart Order` smallint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Payment Account Key`,`Site Key`),
-  KEY `Site Key` (`Site Key`,`Show In Cart`),
-  KEY `Show Cart Order` (`Show Cart Order`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Payment Account Store Bridge`
 --
 
@@ -8936,7 +8914,6 @@ CREATE TABLE `Payment Service Provider Dimension` (
   `Payment Service Provider Transactions` mediumint unsigned NOT NULL DEFAULT '0',
   `Payment Service Provider Currency` text NOT NULL,
   `Payment Service Provider Payments Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
-  `Payment Service Provider Refunded Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Payment Service Provider Credited Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Payment Service Provider Refunds Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Payment Service Provider Balance Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
@@ -8960,6 +8937,74 @@ CREATE TABLE `Payment Service Provider History Bridge` (
   `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
   PRIMARY KEY (`Payment Service Provider Key`,`History Key`),
   KEY `Payment Service Provider Key` (`Payment Service Provider Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Picking Band Dimension`
+--
+
+DROP TABLE IF EXISTS `Picking Band Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Picking Band Dimension` (
+  `Picking Band Key` smallint unsigned NOT NULL AUTO_INCREMENT,
+  `Picking Band Warehouse Key` smallint unsigned NOT NULL,
+  `Picking Band Status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `Picking Band Type` enum('Picking','Packing') NOT NULL,
+  `Picking Band Name` varchar(255) NOT NULL,
+  `Picking Band Amount` decimal(8,3) NOT NULL,
+  `Picking Band From` datetime NOT NULL,
+  `Picking Band To` datetime DEFAULT NULL,
+  `Picking Band Number Parts` mediumint unsigned NOT NULL DEFAULT '0',
+  `Picking Band Number Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
+  `Picking Band Quantity Processed` mediumint unsigned NOT NULL DEFAULT '0',
+  `Picking Band Amount Out` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Picking Band Number History Records` mediumint unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Picking Band Key`),
+  KEY `Picking Band Status` (`Picking Band Status`),
+  KEY `Picking Band Warehouse Key` (`Picking Band Warehouse Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Picking Band Historic Fact`
+--
+
+DROP TABLE IF EXISTS `Picking Band Historic Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Picking Band Historic Fact` (
+  `Picking Band Historic Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Picking Band Historic Band Key` smallint unsigned DEFAULT NULL,
+  `Picking Band Historic Type` enum('Picking','Packing') NOT NULL,
+  `Picking Band Historic Name` varchar(255) NOT NULL,
+  `Picking Band Historic Amount` decimal(8,3) NOT NULL,
+  `Picking Band Historic Created` datetime DEFAULT NULL,
+  `Picking Band Historic Updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`Picking Band Historic Key`),
+  UNIQUE KEY `Picking Band Historic Band Key` (`Picking Band Historic Band Key`,`Picking Band Historic Name`,`Picking Band Historic Amount`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Picking Band History Bridge`
+--
+
+DROP TABLE IF EXISTS `Picking Band History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Picking Band History Bridge` (
+  `Picking Band Key` mediumint unsigned NOT NULL,
+  `History Key` int unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Changes',
+  PRIMARY KEY (`Picking Band Key`,`History Key`),
+  KEY `Picking Band Key` (`Picking Band Key`),
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
@@ -9579,6 +9624,7 @@ CREATE TABLE `Product Category Dimension` (
   `Product Category Valid From` datetime DEFAULT NULL,
   `Product Category Valid To` datetime DEFAULT NULL,
   `Product Category Part Family Category Key` mediumint unsigned DEFAULT NULL,
+  `Product Category Published Webpage Description` longtext,
   `Product Category New Products` mediumint unsigned NOT NULL DEFAULT '0' COMMENT 'Products lees than 2 weeks ',
   `Product Category In Process Products` smallint unsigned NOT NULL DEFAULT '0',
   `Product Category Active Products` smallint unsigned NOT NULL DEFAULT '0',
@@ -9632,7 +9678,7 @@ CREATE TABLE `Product Category History Bridge` (
   PRIMARY KEY (`Product Category History Bridge Key`),
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10536,479 +10582,6 @@ CREATE TABLE `Product Data Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Product Department Data Dimension`
---
-
-DROP TABLE IF EXISTS `Product Department Data Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Department Data Dimension` (
-  `Product Department Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Product Department Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Quantity Ordered` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Quantity Invoiced` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Quantity Delivered` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Days On Sale` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Days Available` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Total Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Total Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 3 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 3 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 3 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 3 Year Acc Days Available` float DEFAULT NULL,
-  `Product Department 3 Year Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Year To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Year To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Year To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Year To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Year To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Year To Day Acc Days Available` float DEFAULT NULL,
-  `Product Department Year To Day Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Month To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Month To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Month To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Month To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Month To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Month To Day Acc Days Available` float DEFAULT NULL,
-  `Product Department Month To Day Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Week To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Week To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Week To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Week To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Week To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Week To Day Acc Days Available` float DEFAULT NULL,
-  `Product Department Week To Day Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Department Today Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Today Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Today Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Today Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Today Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Today Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Today Acc Days Available` float DEFAULT NULL,
-  `Product Department Today Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Today Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Department Today Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Last Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Last Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Last Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Last Week Acc Days Available` float DEFAULT NULL,
-  `Product Department Last Week Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Last Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Last Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Last Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Last Month Acc Days Available` float DEFAULT NULL,
-  `Product Department Last Month Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Yesterday Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Yesterday Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Yesterday Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Yesterday Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Yesterday Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Yesterday Acc Days Available` float DEFAULT NULL,
-  `Product Department Yesterday Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Year Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Year Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 6 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 6 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 6 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 6 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 6 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 6 Month Acc Days Available` float DEFAULT NULL,
-  `Product Department 6 Month Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Quarter Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 3 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 3 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 3 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 3 Month Acc Days Available` float DEFAULT NULL,
-  `Product Department 3 Month Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Month Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Month Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Month Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Month Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 10 Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 10 Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 10 Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 10 Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 10 Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 10 Day Acc Days Available` float DEFAULT NULL,
-  `Product Department 10 Day Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Week Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Week Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Total Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Today Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Today Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Department Default Currency`
---
-
-DROP TABLE IF EXISTS `Product Department Default Currency`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Department Default Currency` (
-  `Product Department Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Product Department DC Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 3 Year Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 3 Year Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 3 Year Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Department Dimension`
---
-
-DROP TABLE IF EXISTS `Product Department Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Department Dimension` (
-  `Product Department Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Product Department Type` enum('Normal','Unknown','Historic') NOT NULL DEFAULT 'Normal',
-  `Product Department Sales Type` enum('Public Sale','Private Sale','Not for Sale') NOT NULL DEFAULT 'Public Sale',
-  `Product Department Store Key` smallint unsigned NOT NULL,
-  `Product Department Store Code` varchar(32) NOT NULL,
-  `Product Department Code` varchar(255) DEFAULT NULL,
-  `Product Department Name` varchar(255) DEFAULT NULL,
-  `Product Department Description` text NOT NULL,
-  `Product Department Slogan` varchar(255) DEFAULT NULL,
-  `Product Department Marketing Resume` varchar(1024) DEFAULT NULL,
-  `Product Department Marketing Presentation` text NOT NULL,
-  `Product Department Main Image` varchar(255) NOT NULL DEFAULT 'art/nopic.png',
-  `Product Department Main Image Key` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Valid From` datetime DEFAULT NULL,
-  `Product Department Valid To` datetime DEFAULT NULL,
-  `Product Department Number Days on Sale` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Number Days with Sales` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Number Days Available` float NOT NULL DEFAULT '0',
-  `Product Department Avg Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department Avg with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department STD with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department Max Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department Sticky Note` text,
-  `Product Department Most Recent` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Product Department Most Recent Key` mediumint unsigned DEFAULT NULL,
-  `Product Department Page Key` mediumint unsigned DEFAULT NULL,
-  `Product Department Families` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department For Public For Sale Families` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department For Public Discontinued Families` mediumint NOT NULL DEFAULT '0',
-  `Product Department For Public Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department For Private Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department In Process Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Not For Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Discontinued Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Historic Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Surplus Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Optimal Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Low Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Critical Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Out Of Stock Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Unknown Stock Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Department Stock Value` decimal(14,2) NOT NULL DEFAULT '0.00',
-  `Product Department Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
-  `Product Department Active Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Active Customers More 0.75 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Active Customers More 0.5 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Active Customers More 0.25 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers More 0.75 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers More 0.5 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers More 0.25 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers More 0.75 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers More 0.5 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers More 0.25 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Department Last Updated` datetime DEFAULT NULL,
-  PRIMARY KEY (`Product Department Key`),
-  UNIQUE KEY `Product Department Store Key_2` (`Product Department Store Key`,`Product Department Code`),
-  KEY `code` (`Product Department Code`(16)),
-  KEY `Product Department Most Recent` (`Product Department Most Recent`),
-  KEY `Product Depxartment Discontinued Products` (`Product Department In Process Products`,`Product Department Historic Products`),
-  KEY `Product Department Type` (`Product Department Type`),
-  KEY `Product Department Name` (`Product Department Name`),
-  KEY `Product Department Store Key` (`Product Department Store Key`),
-  KEY `Product Department Sales Type` (`Product Department Sales Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Department History Bridge`
---
-
-DROP TABLE IF EXISTS `Product Department History Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Department History Bridge` (
-  `Department Key` mediumint unsigned NOT NULL,
-  `History Key` int unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  PRIMARY KEY (`Department Key`,`History Key`),
-  KEY `Department Key` (`Department Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Product Dimension`
 --
 
@@ -11095,6 +10668,7 @@ CREATE TABLE `Product Dimension` (
   `Product Label in Family` varchar(255) DEFAULT NULL,
   `Product Materials` text,
   `Product CPNP Number` varchar(64) DEFAULT NULL,
+  `Product UFI` varchar(255) DEFAULT NULL,
   `Product OSF Records` mediumint unsigned DEFAULT '0',
   `Product OSF Updated` datetime DEFAULT NULL,
   `Product Acc To Day Updated` datetime DEFAULT NULL,
@@ -11105,7 +10679,6 @@ CREATE TABLE `Product Dimension` (
   `Product Number Customers Favored` smallint unsigned NOT NULL DEFAULT '0',
   `Product Number Customers` smallint unsigned NOT NULL DEFAULT '0',
   `Product Number Orders` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Number Parts` smallint unsigned NOT NULL DEFAULT '0',
   `Product Number History Records` smallint unsigned NOT NULL DEFAULT '0',
   `Product Number Images` smallint unsigned NOT NULL DEFAULT '0',
   `Product Published Webpage Description` text,
@@ -11116,6 +10689,10 @@ CREATE TABLE `Product Dimension` (
   `Product Stock Updated` datetime DEFAULT NULL,
   `Product Price Updated` datetime DEFAULT NULL,
   `Product Images Updated` datetime DEFAULT NULL,
+  `Product Customer Key` mediumint unsigned DEFAULT NULL,
+  `Product Customer Category Key` mediumint unsigned DEFAULT NULL,
+  `Product Shopify Key` int unsigned DEFAULT NULL,
+  `Product Tax Category Key` smallint DEFAULT NULL,
   PRIMARY KEY (`Product ID`,`Product Store Key`),
   KEY `Product Alphanumeric Code` (`Product Code File As`(16)),
   KEY `date` (`Product Valid From`),
@@ -11137,600 +10714,10 @@ CREATE TABLE `Product Dimension` (
   KEY `Product Webpage Key` (`Product Webpage Key`),
   KEY `Product Category Department Key` (`Product Department Category Key`),
   KEY `Product Ignore Correlation` (`Product Ignore Correlation`),
-  KEY `Product Status Availability State` (`Product Status Availability State`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Category Dimension`
---
-
-DROP TABLE IF EXISTS `Product Family Category Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Family Category Dimension` (
-  `Product Family Category Key` mediumint unsigned NOT NULL,
-  `Product Family Category Store Key` mediumint unsigned NOT NULL DEFAULT '1',
-  `Product Family Category XHTML Description` text NOT NULL,
-  `Product Family Category Valid From` datetime DEFAULT NULL,
-  `Product Family Category Valid To` datetime DEFAULT NULL,
-  `Product Family Category Departments` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Families` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category For Public Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category For Private Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category In Process Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Not For Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Discontinued Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Unknown Sales State Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Surplus Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Optimal Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Low Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Critical Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Out Of Stock Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Unknown Stock Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Invoiced Discount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Quantity Ordered` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Quantity Invoiced` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Quantity Delivered` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Days On Sale` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Days Available` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Total Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Total Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Year Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Year Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Month Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Month Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Week Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Week Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Stock Value` decimal(14,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Invoiced Discount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
-  PRIMARY KEY (`Product Family Category Key`,`Product Family Category Store Key`),
-  KEY `Product Family Category Store Key` (`Product Family Category Store Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Data Dimension`
---
-
-DROP TABLE IF EXISTS `Product Family Data Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Family Data Dimension` (
-  `Product Family Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Product Family Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Total Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Total Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Total Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Total Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Total Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Total Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Total Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Total Acc Days Available` float DEFAULT NULL,
-  `Product Family 3 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 3 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 3 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 3 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 3 Year Acc Days Available` float DEFAULT NULL,
-  `Product Family 3 Year Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Year Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Year Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Year To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Year To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Year To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Year To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Year To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Year To Day Acc Days Available` float DEFAULT NULL,
-  `Product Family Year To Day Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Month To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Month To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Month To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Month To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Month To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Month To Day Acc Days Available` float DEFAULT NULL,
-  `Product Family Month To Day Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Week To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Week To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Week To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Week To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Week To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Week To Day Acc Days Available` float DEFAULT NULL,
-  `Product Family Week To Day Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Family Today Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Today Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Today Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Today Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Today Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Today Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Today Acc Days Available` float DEFAULT NULL,
-  `Product Family Today Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Today Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Family Today Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Last Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Last Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Last Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Last Week Acc Days Available` float DEFAULT NULL,
-  `Product Family Last Week Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Last Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Last Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Last Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Last Month Acc Days Available` float DEFAULT NULL,
-  `Product Family Last Month Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Yesterday Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Yesterday Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Yesterday Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Yesterday Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Yesterday Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Yesterday Acc Days Available` float DEFAULT NULL,
-  `Product Family Yesterday Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc Customers` mediumint NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc Pending Orders` mediumint NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 6 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 6 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 6 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 6 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 6 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 6 Month Acc Days Available` float DEFAULT NULL,
-  `Product Family 6 Month Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Quarter Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 3 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 3 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 3 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 3 Month Acc Days Available` float DEFAULT NULL,
-  `Product Family 3 Month Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Month Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Month Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Month Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Month Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 10 Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 10 Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 10 Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 10 Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 10 Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 10 Day Acc Days Available` float DEFAULT NULL,
-  `Product Family 10 Day Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Week Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Week Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc Pending Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family Total Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Today Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Today Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Default Currency`
---
-
-DROP TABLE IF EXISTS `Product Family Default Currency`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Family Default Currency` (
-  `Product Family Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Product Family DC Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 3 Year Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 3 Year Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 3 Year Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Dimension`
---
-
-DROP TABLE IF EXISTS `Product Family Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Family Dimension` (
-  `Product Family Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Product Family Stealth` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Product Family Code` varchar(255) DEFAULT NULL,
-  `Product Family Name` varchar(255) DEFAULT NULL,
-  `Product Family Description` text,
-  `Product Family Slogan` varchar(255) DEFAULT NULL,
-  `Product Family Marketing Description` varchar(1024) DEFAULT NULL,
-  `Product Family Special Characteristic` varchar(255) NOT NULL,
-  `Product Family Main Image` varchar(255) NOT NULL DEFAULT 'art/nopic.png',
-  `Product Family Main Image Key` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Main Department Key` mediumint unsigned DEFAULT NULL,
-  `Product Family Main Department Code` varchar(255) DEFAULT NULL,
-  `Product Family Main Department Name` varchar(255) DEFAULT NULL,
-  `Product Family Record Type` enum('Normal','Discontinued','NoSale','Private') NOT NULL DEFAULT 'Normal',
-  `Product Family Sales Type` enum('Public Sale','Private Sale Only','Not for Sale','Unknown','No Applicable') NOT NULL DEFAULT 'Public Sale',
-  `Product Family Availability` enum('Normal','Some Out of Stock','All Out of Stock','No Applicable') NOT NULL DEFAULT 'No Applicable',
-  `Product Family Web Products` enum('With Products For Sale','Empty') NOT NULL DEFAULT 'With Products For Sale',
-  `Product Family From Price` float unsigned NOT NULL DEFAULT '0',
-  `Product Family Product Price Multiplicity` smallint(5) unsigned zerofill NOT NULL DEFAULT '00000',
-  `Product Family Valid From` datetime DEFAULT NULL,
-  `Product Family Valid To` datetime DEFAULT NULL,
-  `Product Family Number Days on Sale` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Number Days with Sales` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Number Days Available` float NOT NULL DEFAULT '0',
-  `Product Family Avg Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family Avg with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family STD with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family Max Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family Sticky Note` text,
-  `Product Family Most Recent` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Product Family Most Recent Key` mediumint unsigned DEFAULT NULL,
-  `Product Family Page Key` mediumint unsigned DEFAULT NULL,
-  `Product Family For Public Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family For Private Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family In Process Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Not For Sale Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Discontinued Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Historic Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Surplus Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Optimal Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Low Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Critical Availability Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Out Of Stock Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Unknown Stock Products` smallint unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers More 0.75 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers More 0.5 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers More 0.25 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers More 0.75 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers More 0.5 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers More 0.25 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers More 0.75 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers More 0.5 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers More 0.25 Share` mediumint unsigned NOT NULL DEFAULT '0',
-  `Product Family Stock Value` decimal(14,2) DEFAULT NULL,
-  `Product Family Store Key` smallint unsigned NOT NULL,
-  `Product Family Store Code` varchar(32) NOT NULL,
-  `Product Family Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
-  `Product Family Last Updated` datetime DEFAULT NULL,
-  PRIMARY KEY (`Product Family Key`),
-  UNIQUE KEY `Product Family Code` (`Product Family Code`,`Product Family Store Key`),
-  KEY `code` (`Product Family Code`(16)),
-  KEY `Product Family Most Recent` (`Product Family Most Recent`),
-  KEY `Product Family Store Key` (`Product Family Store Key`),
-  KEY `Product Family Main Department Key` (`Product Family Main Department Key`),
-  KEY `Product Family Sales Type` (`Product Family Sales Type`),
-  KEY `Product Family Record Type` (`Product Family Record Type`),
-  KEY `Product Family Product Price Multiplicity` (`Product Family Product Price Multiplicity`),
-  KEY `Product Family Stealth` (`Product Family Stealth`),
-  KEY `Product Family Name` (`Product Family Name`(128)),
-  KEY `Product Family Special Characteristic` (`Product Family Special Characteristic`(128)),
-  KEY `Product Family Web Products` (`Product Family Web Products`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family History Bridge`
---
-
-DROP TABLE IF EXISTS `Product Family History Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Family History Bridge` (
-  `Family Key` mediumint unsigned NOT NULL,
-  `History Key` int unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  PRIMARY KEY (`Family Key`,`History Key`),
-  KEY `Family Key` (`Family Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Semantic Correlation`
---
-
-DROP TABLE IF EXISTS `Product Family Semantic Correlation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Product Family Semantic Correlation` (
-  `Family A Key` mediumint unsigned NOT NULL,
-  `Family B Key` mediumint unsigned NOT NULL,
-  `Weight` float NOT NULL,
-  PRIMARY KEY (`Family A Key`,`Family B Key`)
+  KEY `Product Status Availability State` (`Product Status Availability State`),
+  KEY `Product Customer Key` (`Product Customer Key`),
+  KEY `Product Customer Category Key` (`Product Customer Category Key`),
+  KEY `Product Shopify Key` (`Product Shopify Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12256,6 +11243,67 @@ CREATE TABLE `Production Material Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Production Part Dimension`
+--
+
+DROP TABLE IF EXISTS `Production Part Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Production Part Dimension` (
+  `Production Part Supplier Part Key` mediumint unsigned NOT NULL,
+  `Production Part Raw Materials Number` smallint unsigned NOT NULL DEFAULT '0',
+  `Production Part Tasks Number` smallint unsigned NOT NULL DEFAULT '0',
+  `Production Part Links Number` smallint unsigned NOT NULL DEFAULT '0',
+  `Production Part Available to Make up` double unsigned DEFAULT NULL,
+  `Production Part Batch Size` mediumint unsigned DEFAULT NULL,
+  PRIMARY KEY (`Production Part Supplier Part Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Production Part History Bridge`
+--
+
+DROP TABLE IF EXISTS `Production Part History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Production Part History Bridge` (
+  `Production Part Key` mediumint unsigned NOT NULL,
+  `History Key` int unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Production Part Key`,`History Key`),
+  KEY `API Key Key` (`Production Part Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Production Part Raw Material Bridge`
+--
+
+DROP TABLE IF EXISTS `Production Part Raw Material Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Production Part Raw Material Bridge` (
+  `Production Part Raw Material Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Production Part Raw Material Production Part Key` mediumint unsigned NOT NULL,
+  `Production Part Raw Material Raw Material Key` mediumint unsigned DEFAULT NULL,
+  `Production Part Raw Material Ratio` decimal(20,6) NOT NULL DEFAULT '1.000000',
+  `Production Part Raw Material Note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Production Part Raw Material Updated` datetime DEFAULT NULL,
+  `Production Part Raw Material Created` datetime DEFAULT NULL,
+  PRIMARY KEY (`Production Part Raw Material Key`),
+  UNIQUE KEY `Production Part Raw Material Production Part Key` (`Production Part Raw Material Production Part Key`,`Production Part Raw Material Raw Material Key`),
+  KEY `Production Part Raw Material P_2` (`Production Part Raw Material Production Part Key`),
+  KEY `Production Part Raw Material Raw Material Key` (`Production Part Raw Material Raw Material Key`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Prospect Dimension`
 --
 
@@ -12296,7 +11344,7 @@ CREATE TABLE `Prospect Dimension` (
   `Prospect Registration Date` datetime DEFAULT NULL,
   `Prospect Invoiced Date` datetime DEFAULT NULL,
   `Prospect Lost Date` datetime DEFAULT NULL,
-  `Prospect Status` enum('NoContacted','Contacted','NotInterested','Registered','Invoiced','Bounced') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'NoContacted',
+  `Prospect Status` enum('NoContacted','Contacted','NotInterested','Registered','Invoiced','Bounced') NOT NULL DEFAULT 'NoContacted',
   `Prospect Preferred Contact Number` enum('Telephone','Mobile') NOT NULL DEFAULT 'Mobile',
   `Prospect Preferred Contact Number Formatted Number` varchar(255) DEFAULT NULL,
   `Prospect Website` varchar(255) DEFAULT NULL,
@@ -12389,7 +11437,7 @@ CREATE TABLE `Published Email Template Dimension` (
   PRIMARY KEY (`Published Email Template Key`),
   KEY `Published Email Template Email Template Key` (`Published Email Template Email Template Key`),
   KEY `Published Email Template Published By` (`Published Email Template Published By`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12438,25 +11486,32 @@ DROP TABLE IF EXISTS `Purchase Order Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Purchase Order Source` enum('Manual','Aurora') NOT NULL DEFAULT 'Manual',
-  `Purchase Order Type` enum('Production','Parcel','Container') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Parcel',
+  `Purchase Order Source` enum('Manual','Aurora') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Manual',
+  `Purchase Order Type` enum('Production','Parcel','Container','Fulfulment') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Parcel',
   `Purchase Order Supplier Delivery Key` mediumint unsigned DEFAULT NULL,
-  `Purchase Order Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Purchase Order Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
+  `Purchase Order Locked` enum('Yes','No') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'No',
+  `Purchase Order Parent` enum('Supplier','Agent','Customer') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Supplier',
   `Purchase Order Parent Key` mediumint unsigned DEFAULT NULL,
-  `Purchase Order Parent Code` varchar(255) DEFAULT NULL,
-  `Purchase Order Parent Name` varchar(255) DEFAULT NULL,
-  `Purchase Order Parent Contact Name` varchar(255) DEFAULT NULL,
-  `Purchase Order Parent Email` varchar(255) DEFAULT NULL,
-  `Purchase Order Parent Telephone` varchar(255) DEFAULT NULL,
-  `Purchase Order Parent Address` text,
-  `Purchase Order Parent Country Code` varchar(2) DEFAULT NULL,
+  `Purchase Order Parent Code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Parent Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Parent Contact Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Parent Email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Parent Telephone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Parent Address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Purchase Order Parent Country Code` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Purchase Order Agent Key` mediumint unsigned DEFAULT NULL,
-  `Purchase Order Agent Data` text,
+  `Purchase Order Agent Data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `Purchase Order Date` date DEFAULT NULL,
-  `Purchase Order Date Type` enum('Created','Submitted','ETA','Received','Cancelled') DEFAULT NULL,
+  `Purchase Order Date Type` enum('Created','Submitted','ETA','Received','Cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Purchase Order Creation Date` datetime DEFAULT NULL COMMENT 'Date when the purchase order where first placed',
   `Purchase Order Confirmed Date` datetime DEFAULT NULL,
+  `Purchase Order Manufactured Date` datetime DEFAULT NULL,
+  `Purchase Order QC Pass Date` datetime DEFAULT NULL,
+  `Purchase Order Estimated Container Loading Date` date DEFAULT NULL,
+  `Purchase Order Estimated Container Dispatch Date` date DEFAULT NULL,
+  `Purchase Order Estimated Container Arrival Date` date DEFAULT NULL,
+  `Purchase Order Estimated Container Unloading Date` date DEFAULT NULL,
+  `Purchase Order Estimated Start Production Date` date DEFAULT NULL,
   `Purchase Order Estimated Production Date` datetime DEFAULT NULL,
   `Purchase Order Submitted Agent Date` datetime DEFAULT NULL,
   `Purchase Order Submitted Date` datetime DEFAULT NULL,
@@ -12468,17 +11523,18 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Consolidated Date` datetime DEFAULT NULL,
   `Purchase Order Cancelled Date` datetime DEFAULT NULL,
   `Purchase Order Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Purchase Order Transaction or Data',
-  `Purchase Order Public ID` varchar(255) DEFAULT NULL,
-  `Purchase Order File As` varchar(255) DEFAULT NULL,
-  `Purchase Order XHTML PO Invoices` text,
+  `Purchase Order Public ID` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order File As` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order XHTML PO Invoices` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `Purchase Order Warehouse Key` smallint unsigned NOT NULL,
   `Purchase Order Main Buyer Key` mediumint unsigned DEFAULT NULL,
-  `Purchase Order Main Buyer Name` varchar(255) DEFAULT NULL,
-  `Purchase Order Main Source Type` enum('Post','Internet','Telephone','Fax','In Person','Unknown','Email','Other') NOT NULL DEFAULT 'Unknown',
-  `Purchase Order State` enum('Cancelled','NoReceived','InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked') NOT NULL DEFAULT 'InProcess',
-  `Purchase Order Max Supplier Delivery State` enum('NA','InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked') NOT NULL DEFAULT 'NA',
-  `Purchase Order Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
-  `Purchase Order Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
+  `Purchase Order Main Buyer Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Main Source Type` enum('Post','Internet','Telephone','Fax','In Person','Unknown','Email','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Unknown',
+  `Purchase Order State` enum('Cancelled','NoReceived','InProcess','Submitted','Confirmed','Manufactured','QC_Pass','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'InProcess',
+  `Purchase Order Max State` enum('Cancelled','NoReceived','InProcess','Submitted','Confirmed','Manufactured','QC_Pass','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'InProcess',
+  `Purchase Order Max Supplier Delivery State` enum('NA','InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NA',
+  `Purchase Order Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'None',
+  `Purchase Order Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'No Applicable',
   `Purchase Order Number Suppliers` smallint unsigned NOT NULL DEFAULT '0',
   `Purchase Order Number Items` smallint unsigned NOT NULL DEFAULT '0',
   `Purchase Order Ordered Number Items` smallint unsigned NOT NULL DEFAULT '0',
@@ -12497,35 +11553,35 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Total Tax Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Total Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Total To Pay Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Purchase Order Main XHTML Ship From` text,
-  `Purchase Order Main XHTML Ship To` text,
-  `Purchase Order Supplier Message` text,
+  `Purchase Order Main XHTML Ship From` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Purchase Order Main XHTML Ship To` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Purchase Order Supplier Message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `Purchase Order Original Lines` smallint NOT NULL DEFAULT '0' COMMENT 'Number of distinct products originally purchase ordered.',
   `Purchase Order Current Lines` smallint NOT NULL DEFAULT '0',
-  `Purchase Order Data MIME Type` varchar(255) DEFAULT NULL COMMENT 'Two-part identifier for file formats (RFC 2046). Ref: http://www.iana.org/assignments/media-types/',
+  `Purchase Order Data MIME Type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Two-part identifier for file formats (RFC 2046). Ref: http://www.iana.org/assignments/media-types/',
   `Purchase Order Data` blob COMMENT 'Original purchase order, E.G.: Email body message,cnversation audio file or a scaned document.',
-  `Purchase Order Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
+  `Purchase Order Currency Code` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'GBP',
   `Purchase Order Currency Exchange` float NOT NULL DEFAULT '1',
-  `Purchase Order Cancel Note` text,
-  `Purchase Order Warehouse Code` varchar(64) DEFAULT NULL,
-  `Purchase Order Warehouse Name` varchar(255) DEFAULT NULL,
-  `Purchase Order Warehouse Address` text,
-  `Purchase Order Warehouse Company Name` varchar(255) DEFAULT NULL,
-  `Purchase Order Warehouse Company Number` varchar(255) DEFAULT NULL,
-  `Purchase Order Warehouse VAT Number` varchar(255) DEFAULT NULL,
-  `Purchase Order Warehouse Telephone` varchar(255) DEFAULT NULL,
-  `Purchase Order Warehouse Email` varchar(255) DEFAULT NULL,
+  `Purchase Order Cancel Note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Purchase Order Warehouse Code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Warehouse Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Warehouse Address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Purchase Order Warehouse Company Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Warehouse Company Number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Warehouse VAT Number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Warehouse Telephone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Warehouse Email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Purchase Order Account Number` varchar(255) DEFAULT NULL,
-  `Purchase Order Incoterm` varchar(3) DEFAULT NULL,
-  `Purchase Order Port of Export` varchar(255) DEFAULT NULL,
-  `Purchase Order Port of Import` varchar(255) DEFAULT NULL,
-  `Purchase Order Terms and Conditions` text,
+  `Purchase Order Incoterm` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Port of Export` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Port of Import` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Purchase Order Terms and Conditions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `Purchase Order Weight` float DEFAULT NULL,
   `Purchase Order CBM` float DEFAULT NULL,
   `Purchase Order Missing Weights` smallint unsigned NOT NULL DEFAULT '0',
   `Purchase Order Missing CBMs` smallint unsigned NOT NULL DEFAULT '0',
   `Purchase Order Metadata` json DEFAULT NULL,
-  `Purchase Order Production` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Purchase Order Operator Key` smallint unsigned DEFAULT NULL,
   `Purchase Order Number History Records` smallint NOT NULL DEFAULT '0',
   PRIMARY KEY (`Purchase Order Key`),
   KEY `Purchase Order Parent` (`Purchase Order Parent`),
@@ -12567,6 +11623,7 @@ DROP TABLE IF EXISTS `Purchase Order Transaction Fact`;
 CREATE TABLE `Purchase Order Transaction Fact` (
   `Purchase Order Transaction Fact Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `Purchase Order Key` mediumint unsigned DEFAULT NULL,
+  `Purchase Order Transaction Type` enum('Production','Parcel','Container','Return','Fulfilment') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Purchase Order Item Index` smallint unsigned DEFAULT NULL,
   `User Key` mediumint unsigned DEFAULT NULL,
   `Creation Date` datetime DEFAULT NULL,
@@ -12586,6 +11643,8 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Purchase Order Net Amount` decimal(16,2) DEFAULT NULL,
   `Purchase Order Submitted Units` float unsigned DEFAULT NULL,
   `Purchase Order Submitted Cancelled Units` float DEFAULT '0',
+  `Purchase Order Manufactured Units` float DEFAULT NULL,
+  `Purchase Order QC Pass Units` float DEFAULT NULL,
   `Purchase Order Submitted Unit Cost` decimal(16,4) DEFAULT NULL,
   `Purchase Order Submitted Unit Extra Cost Percentage` decimal(6,3) DEFAULT NULL,
   `Purchase Order Submitted Units Per SKO` mediumint unsigned DEFAULT NULL,
@@ -12593,7 +11652,7 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Purchase Order Extra Cost Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Tax Amount` decimal(16,3) NOT NULL DEFAULT '0.000',
   `Purchase Order Shipping Contribution Amount` double(15,2) NOT NULL DEFAULT '0.00',
-  `Purchase Order Transaction State` enum('Cancelled','NoReceived','InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','InvoiceChecked') NOT NULL DEFAULT 'InProcess',
+  `Purchase Order Transaction State` enum('Cancelled','NoReceived','InProcess','Submitted','ProblemSupplier','Confirmed','Manufactured','QC_Pass','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','InvoiceChecked') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'InProcess',
   `Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   `Supplier Invoice Current Payment State` enum('No Applicable','Paid') NOT NULL DEFAULT 'No Applicable',
   `Supplier Delivery Key` mediumint unsigned DEFAULT NULL,
@@ -12620,12 +11679,48 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Note Problem with Supplier` text,
   `Note Delivery Problem` text,
   `Purchase Order Transaction Return ITF Key` int unsigned DEFAULT NULL,
+  `Purchase Order Transaction Operator Key` smallint unsigned DEFAULT NULL,
   PRIMARY KEY (`Purchase Order Transaction Fact Key`),
   KEY `Purchase Order Key` (`Purchase Order Key`),
   KEY `User Key` (`User Key`),
   KEY `Purchase Order Item Index` (`Purchase Order Item Index`),
-  KEY `Agent Supplier Purchase Order Key` (`Agent Supplier Purchase Order Key`)
+  KEY `Agent Supplier Purchase Order Key` (`Agent Supplier Purchase Order Key`),
+  KEY `Purchase Order Transaction Operator Key` (`Purchase Order Transaction Operator Key`),
+  KEY `Purchase Order Transaction Type` (`Purchase Order Transaction Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Raw Material Dimension`
+--
+
+DROP TABLE IF EXISTS `Raw Material Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Raw Material Dimension` (
+  `Raw Material Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Raw Material Type` enum('Part','Consumable','Intermediate') DEFAULT NULL,
+  `Raw Material Type Key` mediumint unsigned DEFAULT NULL,
+  `Raw Material State` enum('InProcess','InUse','Orphan','Discontinued') NOT NULL DEFAULT 'InProcess',
+  `Raw Material Production Supplier Key` mediumint unsigned DEFAULT NULL,
+  `Raw Material Creation Date` datetime DEFAULT NULL,
+  `Raw Material Code` varchar(64) DEFAULT NULL,
+  `Raw Material Description` varchar(255) DEFAULT NULL,
+  `Raw Material Part Raw Material Unit Ratio` decimal(20,6) NOT NULL DEFAULT '1.000000',
+  `Raw Material Unit` enum('Unit','Pack','Carton','Liter','Kilogram') DEFAULT NULL,
+  `Raw Material Unit Label` varchar(64) DEFAULT NULL,
+  `Raw Material Unit Cost` decimal(18,3) DEFAULT NULL,
+  `Raw Material Stock` decimal(18,3) NOT NULL DEFAULT '0.000',
+  `Raw Material Stock Status` enum('Unlimited','Surplus','Optimal','Low','Critical','Out_Of_Stock','Error') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Optimal',
+  `Raw Material Production Parts Number` mediumint unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Raw Material Key`),
+  KEY `Raw Material Type` (`Raw Material Type`),
+  KEY `Raw Material Type Key` (`Raw Material Type Key`),
+  KEY `Raw Material Code` (`Raw Material Code`),
+  KEY `Raw Material Stock Status` (`Raw Material Stock Status`),
+  KEY `Raw Material Production Supplier Key` (`Raw Material Production Supplier Key`),
+  KEY `Raw Material State` (`Raw Material State`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12697,29 +11792,6 @@ CREATE TABLE `Sales Representative History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Shelf Type Dimension`
---
-
-DROP TABLE IF EXISTS `Shelf Type Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Shelf Type Dimension` (
-  `Shelf Type Key` smallint NOT NULL AUTO_INCREMENT,
-  `Shelf Type Name` varchar(255) NOT NULL,
-  `Shelf Type Description` text NOT NULL,
-  `Shelf Type Type` enum('Pallet','Shelf','Drawer','Other') NOT NULL DEFAULT 'Other',
-  `Shelf Type Rows` smallint NOT NULL DEFAULT '1',
-  `Shelf Type Columns` smallint NOT NULL DEFAULT '1',
-  `Shelf Type Location Height` float DEFAULT NULL,
-  `Shelf Type Location Length` float DEFAULT NULL,
-  `Shelf Type Location Deep` float DEFAULT NULL,
-  `Shelf Type Location Max Weight` float DEFAULT NULL,
-  `Shelf Type Location Max Volume` float DEFAULT NULL,
-  PRIMARY KEY (`Shelf Type Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Shipper Dimension`
 --
 
@@ -12741,6 +11813,8 @@ CREATE TABLE `Shipper Dimension` (
   `Shipper Consignments` mediumint NOT NULL DEFAULT '0',
   `Shipper Number Parcels` mediumint NOT NULL DEFAULT '0',
   `Shipper Dispatched Weight` float NOT NULL DEFAULT '0',
+  `Shipper API Key` int DEFAULT NULL,
+  `Shipper Metadata` json DEFAULT NULL,
   PRIMARY KEY (`Shipper Key`),
   KEY `Shipper Active` (`Shipper Active`),
   KEY `Shipper Warehouse Key` (`Shipper Warehouse Key`)
@@ -12937,8 +12011,24 @@ CREATE TABLE `Sitemap Dimension` (
   `Sitemap Number` smallint unsigned NOT NULL DEFAULT '1',
   `Sitemap Content` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci,
   PRIMARY KEY (`Sitemap Key`),
-  UNIQUE KEY `Sitemap Site Key` (`Sitemap Name`)
+  UNIQUE KEY `Sitemap Site Key` (`Sitemap Website Key`,`Sitemap Name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Slave Account Dimension`
+--
+
+DROP TABLE IF EXISTS `Slave Account Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Slave Account Dimension` (
+  `Slave Account Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Slave Account Type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Slave Account Creation Date` datetime DEFAULT NULL,
+  `Slave Account Metadata` json DEFAULT NULL,
+  PRIMARY KEY (`Slave Account Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12975,7 +12065,7 @@ CREATE TABLE `Stack Dimension` (
   `Stack Operation` enum('store_data_feed','department_data_feed','update_isf','email_template_update_sent_emails_totals','email_campaign_update_sent_emails_totals','email_template_type_update_sent_emails_totals','shipping_zone_usage','timeseries_stats','data_sets_stats','deal_campaign','deal','deal_component','update_order_in_basket_low_priority','update_order_in_basket','reindex_webpage','warehouse_ISF','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy','product_sales','product_family_sales','product_department_sales','part_sales','part_category_sales','supplier_sales','supplier_category_sales') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Stack Object Key` int unsigned DEFAULT NULL,
   `Stack Counter` mediumint unsigned NOT NULL DEFAULT '1',
-  `Stack Metadata` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Stack Metadata` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`Stack Key`),
   UNIQUE KEY `Stack Operation` (`Stack Operation`,`Stack Object Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
@@ -13041,7 +12131,8 @@ CREATE TABLE `Staff Dimension` (
   `Staff Warehouse Key` mediumint unsigned DEFAULT NULL,
   `Staff Main Image Key` mediumint unsigned DEFAULT NULL,
   `Staff Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
-  `Staff Attendance Status` enum('Work','Home','Outside','Off','Break','Finish') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Off',
+  `Staff Number History Records` smallint NOT NULL DEFAULT '0',
+  `Staff Attendance Status` enum('Work','Home','Outside','Off','Break','Finish') NOT NULL DEFAULT 'Off',
   `Staff Attendance Start` datetime DEFAULT NULL,
   `Staff Attendance End` datetime DEFAULT NULL,
   `Staff Properties` json DEFAULT NULL,
@@ -13100,7 +12191,49 @@ CREATE TABLE `Staff History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Staff Operative Data`
+--
+
+DROP TABLE IF EXISTS `Staff Operative Data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Staff Operative Data` (
+  `Staff Operative Key` smallint unsigned NOT NULL,
+  `Staff Operative Status` enum('Worker','Other','NoWorking') NOT NULL DEFAULT 'Other',
+  `Staff Operative Purchase Orders Planning` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Purchase Orders Queued` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Purchase Orders Manufacturing` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Purchase Orders Waiting QC` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Purchase Orders QC Pass` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Purchase Orders Waiting Placing` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Purchase Orders` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Deliveries` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Deliveries In Process` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Today Deliveries` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions Planning` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions Queued` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions Manufacturing` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions Waiting QC` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions QC Pass` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions Waiting Placing` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions Waiting Placing Today` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Transactions` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products Planning` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products Queued` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products Manufacturing` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products Waiting QC` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products QC Pass` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products Waiting Placing` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products Placed` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products Delivered Today` smallint unsigned NOT NULL DEFAULT '0',
+  `Staff Operative Products` smallint unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Staff Operative Key`),
+  KEY `Staff Operative Status` (`Staff Operative Status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13168,6 +12301,7 @@ CREATE TABLE `Store DC Data` (
   `Store DC Orders Dispatch Approved Amount` decimal(12,2) DEFAULT '0.00',
   `Store DC Orders Dispatched Today Amount` decimal(12,2) DEFAULT '0.00',
   `Store DC Orders Packed Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Store DC Orders Packed Done Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Orders Dispatched Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `Store DC Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Orders Cancelled Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -13323,6 +12457,8 @@ CREATE TABLE `Store Data` (
   `Store Orders In Warehouse No Alerts Amount` decimal(12,2) DEFAULT '0.00',
   `Store Orders Packed Number` mediumint unsigned NOT NULL DEFAULT '0',
   `Store Orders Packed Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Store Orders Packed Done Number` mediumint unsigned NOT NULL DEFAULT '0',
+  `Store Orders Packed Done Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Orders In Dispatch Area Number` mediumint unsigned NOT NULL DEFAULT '0',
   `Store Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Orders Dispatched Today Number` mediumint unsigned DEFAULT '0',
@@ -13871,278 +13007,6 @@ CREATE TABLE `Store Data` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Store Data Dimension`
---
-
-DROP TABLE IF EXISTS `Store Data Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Store Data Dimension` (
-  `Store Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Store Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Total Acc Quantity Ordered` float NOT NULL DEFAULT '0',
-  `Store Total Acc Quantity Invoiced` float NOT NULL DEFAULT '0',
-  `Store Total Acc Quantity Delivered` float NOT NULL DEFAULT '0',
-  `Store Total Acc Days On Sale` float NOT NULL DEFAULT '0',
-  `Store Total Acc Days Available` float NOT NULL DEFAULT '0',
-  `Store Total Acc Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Total Acc Invoices` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Total Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Total Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Total Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 3 Year Acc Invoiced Discount Amount` decimal(10,2) DEFAULT '0.00',
-  `Store 3 Year Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 3 Year Acc Invoices` mediumint DEFAULT '0',
-  `Store 3 Year Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 3 Year Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 3 Year Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 3 Year Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 3 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store 3 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store 3 Year Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store 3 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Year Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Year Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Year Acc Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Year Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Year Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Year Acc 1YB Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Year Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store Year To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Year To Day Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Year To Day Acc Invoices` mediumint DEFAULT '0',
-  `Store Year To Day Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store Year To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Year To Day Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Year To Day Acc 1YB Invoices` mediumint DEFAULT '0',
-  `Store Year To Day Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store Month To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Month To Day Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Month To Day Acc Invoices` mediumint DEFAULT '0',
-  `Store Month To Day Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Month To Day Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Month To Day Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Month To Day Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store Month To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Month To Day Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Month To Day Acc 1YB Invoices` mediumint DEFAULT '0',
-  `Store Month To Day Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Month To Day Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Month To Day Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Month To Day Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store Week To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Week To Day Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Week To Day Acc Invoices` mediumint DEFAULT '0',
-  `Store Week To Day Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Week To Day Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Week To Day Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Week To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Week To Day Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store Week To Day Acc 1YB Invoices` mediumint DEFAULT '0',
-  `Store Week To Day Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Week To Day Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Week To Day Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Week To Day Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store Week To Day Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 6 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 6 Month Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 6 Month Acc Invoices` decimal(12,2) DEFAULT '0.00',
-  `Store 6 Month Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 6 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 6 Month Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 6 Month Acc 1YB Invoices` mediumint DEFAULT '0',
-  `Store 6 Month Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Quarter Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Quarter Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Quarter Acc Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Quarter Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Quarter Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Quarter Acc 1YB Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Quarter Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Month Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Month Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Month Acc Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Month Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Month Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Month Acc 1YB Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Month Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 10 Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 10 Day Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 10 Day Acc Invoices` mediumint unsigned DEFAULT '0',
-  `Store 10 Day Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store 10 Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store 10 Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store 10 Day Acc 1YB Invoices` mediumint unsigned DEFAULT '0',
-  `Store 10 Day Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Week Acc Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Week Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Week Acc Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Week Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week Acc 1YB Invoiced Discount Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Week Acc 1YB Invoiced Amount` decimal(12,2) DEFAULT '0.00',
-  `Store 1 Week Acc 1YB Invoices` mediumint unsigned DEFAULT '0',
-  `Store 1 Week Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week Acc 1YB Profit` decimal(12,2) DEFAULT '0.00',
-  `Store Today Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Today Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Today Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Today Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Today Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Today Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Today Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Today Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Today Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Today Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Today Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Today Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Today Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Yesterday Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Yesterday Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Yesterday Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Yesterday Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Yesterday Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Yesterday Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Yesterday Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Yesterday Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Yesterday Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Yesterday Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Yesterday Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Yesterday Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Yesterday Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Week Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Week Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Last Week Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Week Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Week Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Week Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Week Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Last Week Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Week Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Week Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Month Acc Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Last Month Acc Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Month Acc Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Month Acc Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Last Month Acc 1YB Invoices` mediumint NOT NULL DEFAULT '0',
-  `Store Last Month Acc 1YB Delivery Notes` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Month Acc 1YB Replacements` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Month Acc 1YB Refunds` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Last Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Store Total Users` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 3 Year New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Day New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day New Contacts With Orders` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 3 Year Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Day Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day Lost Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 3 Year New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Year New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 6 Month New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Quarter New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Month New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 10 Day New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Week New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store 1 Day New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Year To Day New Contacts` mediumint unsigned NOT NULL DEFAULT '0',
-  `Store Total Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 3 Year Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 1 Year Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store Year To Day Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store Month To Day Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store Week To Day Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 6 Month Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 1 Quarter Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 1 Month Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 10 Day Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 1 Week Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store Today Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store Yesterday Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store Last Week Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store Last Month Acc Average Dispatch Time` float DEFAULT NULL,
-  `Store 1 Week Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store 10 Day Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store 1 Day Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store 1 Month Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store 6 Month Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store 1 Quarter Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store 1 Year Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store 3 Year Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  `Store Year To Day Lost Contacts With Orders` mediumint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Store Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Store Default Currency`
 --
 
@@ -14268,7 +13132,9 @@ DROP TABLE IF EXISTS `Store Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Store Dimension` (
   `Store Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Store Type` enum('B2B','B2C','Dropshipping','External') DEFAULT NULL,
+  `Store External Invoicer Key` tinyint unsigned DEFAULT NULL,
+  `Store Kind` enum('Internal','External') NOT NULL DEFAULT 'Internal',
+  `Store Type` enum('B2B','B2C','Dropshipping','External','Fulfilment') CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `Store Code` varchar(16) DEFAULT NULL,
   `Store Name` varchar(255) DEFAULT NULL,
   `Store Contact Name` varchar(64) DEFAULT NULL,
@@ -14278,7 +13144,7 @@ CREATE TABLE `Store Dimension` (
   `Store Slogan` varchar(64) DEFAULT NULL,
   `Store Address` varchar(255) DEFAULT NULL,
   `Store Google Map URL` text,
-  `Store Status` enum('InProcess','Normal','CoolDown','Closed') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess',
+  `Store Status` enum('InProcess','Normal','ClosingDown','Closed') NOT NULL DEFAULT 'InProcess',
   `Store Website Key` smallint unsigned DEFAULT NULL,
   `Store Valid From` datetime DEFAULT NULL,
   `Store Valid To` datetime DEFAULT NULL,
@@ -14289,7 +13155,7 @@ CREATE TABLE `Store Dimension` (
   `Store Avg with Sale Day Sales` float NOT NULL DEFAULT '0',
   `Store STD with Sale Day Sales` float NOT NULL DEFAULT '0',
   `Store Max Day Sales` float NOT NULL DEFAULT '0',
-  `Store Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT','hu_HU','da_DK','nl_NL','cs_CZ') DEFAULT 'en_GB',
+  `Store Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT','hu_HU','da_DK','nl_NL','cs_CZ','ro_Ro') CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'en_GB',
   `Store Timezone` varchar(64) NOT NULL DEFAULT 'Europe/London',
   `Store Sticky Note` text,
   `Store Departments` smallint unsigned NOT NULL DEFAULT '0',
@@ -14405,13 +13271,18 @@ CREATE TABLE `Store Dimension` (
   `Store Reviews Settings` text,
   `Store Properties` json DEFAULT NULL,
   `Store Settings` json DEFAULT NULL,
+  `Store Shopify API Key` varchar(255) DEFAULT NULL,
   `Store Label Signature` varchar(255) DEFAULT NULL,
+  `Store Shopify Key` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Store Key`),
   UNIQUE KEY `Store Name` (`Store Name`),
   KEY `code` (`Store Code`),
   KEY `Store State` (`Store Status`),
   KEY `Store Show in Warehouse Orders` (`Store Show in Warehouse Orders`),
-  KEY `Store Customer Payment Account Key` (`Store Customer Payment Account Key`)
+  KEY `Store Customer Payment Account Key` (`Store Customer Payment Account Key`),
+  KEY `Store Kind` (`Store Kind`),
+  KEY `Store External Invoicer Key` (`Store External Invoicer Key`),
+  KEY `Store Shopify Key` (`Store Shopify Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15339,7 +14210,7 @@ DROP TABLE IF EXISTS `Supplier Delivery Dimension`;
 CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `Supplier Delivery Source` enum('Manual','Aurora') NOT NULL DEFAULT 'Manual',
-  `Supplier Delivery Type` enum('Production','Parcel','Container') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Parcel',
+  `Supplier Delivery Type` enum('Production','Parcel','Container') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Parcel',
   `Supplier Delivery Purchase Order Key` mediumint unsigned DEFAULT NULL,
   `Supplier Delivery Parent` enum('Supplier','Agent','Order') DEFAULT NULL,
   `Supplier Delivery Parent Key` mediumint unsigned DEFAULT NULL,
@@ -15352,12 +14223,10 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Parent Country Code` varchar(2) DEFAULT NULL,
   `Supplier Delivery Warehouse Key` smallint unsigned DEFAULT NULL,
   `Supplier Delivery Warehouse Metadata` text,
-  `Supplier Delivery State` enum('InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked') NOT NULL DEFAULT 'InProcess',
-  `Supplier Delivery Receipt Confirmed Date` datetime DEFAULT NULL,
+  `Supplier Delivery State` enum('InProcess','Consolidated','Dispatched','Received','Checked','ReadyToPlace','Placed','Costing','Cancelled','InvoiceChecked') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess',
   `Supplier Delivery Date` date DEFAULT NULL,
   `Supplier Delivery Date Type` enum('Creation','ETA','Received','Cancelled') DEFAULT NULL,
   `Supplier Delivery Creation Date` datetime NOT NULL,
-  `Supplier Delivery Consolidated Date` datetime DEFAULT NULL,
   `Supplier Delivery Dispatched Date` datetime DEFAULT NULL,
   `Supplier Delivery Estimated Receiving Date` datetime DEFAULT NULL,
   `Supplier Delivery Received Date` datetime DEFAULT NULL,
@@ -15369,6 +14238,10 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Invoice Date` date DEFAULT NULL,
   `Supplier Delivery Cancelled Date` datetime DEFAULT NULL,
   `Supplier Delivery Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Delivery Transaction or Data',
+  `Supplier Delivery Estimated Container Loading Date` date DEFAULT NULL,
+  `Supplier Delivery Estimated Container Dispatch Date` date DEFAULT NULL,
+  `Supplier Delivery Estimated Container Arrival Date` date DEFAULT NULL,
+  `Supplier Delivery Estimated Container Unloading Date` date DEFAULT NULL,
   `Supplier Delivery Main Inputter Key` mediumint unsigned DEFAULT NULL,
   `Supplier Delivery Main Receiver Key` mediumint DEFAULT NULL,
   `Supplier Delivery Main Checker Key` mediumint DEFAULT NULL,
@@ -15405,7 +14278,6 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery CBM` float DEFAULT NULL,
   `Supplier Delivery Metadata` text,
   `Supplier Delivery Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
-  `Supplier Delivery Production` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Delivery Invoice Public ID` varchar(255) DEFAULT NULL,
   `Supplier Delivery Number History Records` smallint NOT NULL DEFAULT '0',
   PRIMARY KEY (`Supplier Delivery Key`),
@@ -15446,7 +14318,7 @@ DROP TABLE IF EXISTS `Supplier Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Supplier Dimension` (
   `Supplier Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Supplier Purchase Order Type` enum('Production','Parcel','Container') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Parcel',
+  `Supplier Purchase Order Type` enum('Production','Parcel','Container') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Parcel',
   `Supplier Type` enum('Free','Agent','Archived') NOT NULL DEFAULT 'Free',
   `Supplier Has Agent` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Products Origin Country Code` varchar(3) DEFAULT NULL,
@@ -15455,14 +14327,8 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier File As` varchar(255) NOT NULL,
   `Supplier Nickname` varchar(255) DEFAULT NULL,
   `Supplier Fiscal Name` varchar(255) DEFAULT NULL,
-  `Supplier Company Key` mediumint unsigned NOT NULL,
-  `Supplier Main Contact Key` mediumint unsigned DEFAULT NULL,
-  `Supplier Accounts Payable Contact Key` mediumint unsigned DEFAULT NULL,
-  `Supplier Sales Contact Key` mediumint unsigned DEFAULT NULL,
-  `Supplier Main Address Key` mediumint unsigned NOT NULL,
   `Supplier Main XHTML Address` varchar(1024) DEFAULT '',
   `Supplier Main Plain Address` varchar(1024) DEFAULT NULL,
-  `Supplier Main Country Key` smallint unsigned NOT NULL,
   `Supplier Main Country Code` varchar(3) NOT NULL,
   `Supplier Main Country` varchar(255) NOT NULL,
   `Supplier Main Location` varchar(255) DEFAULT NULL,
@@ -15482,7 +14348,6 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Contact Address Checksum` varchar(64) DEFAULT NULL,
   `Supplier Contact Address Formatted` text,
   `Supplier Contact Address Postal Label` text,
-  `Supplier Main Email Key` mediumint unsigned DEFAULT NULL,
   `Supplier Company Name` varchar(255) DEFAULT NULL,
   `Supplier Main Contact Name` varchar(255) DEFAULT NULL,
   `Supplier QQ` varchar(64) DEFAULT NULL,
@@ -15491,10 +14356,8 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Main Plain Mobile` varchar(255) DEFAULT NULL,
   `Supplier Main XHTML Mobile` varchar(255) DEFAULT NULL,
   `Supplier Main XHTML Telephone` varchar(255) DEFAULT NULL,
-  `Supplier Main Telephone Key` mediumint unsigned DEFAULT NULL,
   `Supplier Main Plain Telephone` varchar(255) NOT NULL,
   `Supplier Main XHTML FAX` varchar(100) DEFAULT NULL,
-  `Supplier Main FAX Key` mediumint unsigned DEFAULT NULL,
   `Supplier Main Plain FAX` varchar(100) NOT NULL DEFAULT '',
   `Supplier Website` varchar(255) NOT NULL,
   `Supplier Default Incoterm` varchar(3) DEFAULT NULL,
@@ -15568,12 +14431,6 @@ CREATE TABLE `Supplier Dimension` (
   KEY `Supplier Most Recent` (`Supplier Active`),
   KEY `Supplier Main Email` (`Supplier Main Plain Email`(80)),
   KEY `Supplier Main Telephone` (`Supplier Main Plain Telephone`(20)),
-  KEY `Supplier Main Contact Key` (`Supplier Main Contact Key`),
-  KEY `Supplier Company Key` (`Supplier Company Key`),
-  KEY `Supplier Main Email Key` (`Supplier Main Email Key`),
-  KEY `Supplier Main Address Key` (`Supplier Main Address Key`),
-  KEY `Supplier Main Telephone Key` (`Supplier Main Telephone Key`),
-  KEY `Supplier Main FAX Key` (`Supplier Main FAX Key`),
   KEY `Supplier Is Agent` (`Supplier Has Agent`),
   KEY `Supplier Type` (`Supplier Type`),
   KEY `Supplier Production` (`Supplier Production`)
@@ -15741,21 +14598,6 @@ CREATE TABLE `Supplier Part History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Supplier Part Production Dimension`
---
-
-DROP TABLE IF EXISTS `Supplier Part Production Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Supplier Part Production Dimension` (
-  `Supplier Part Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Supplier Part Available to Make up` double unsigned DEFAULT NULL,
-  `Supplier Part Batch Size` mediumint unsigned DEFAULT NULL,
-  PRIMARY KEY (`Supplier Part Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Supplier Production Dimension`
 --
 
@@ -15772,6 +14614,7 @@ CREATE TABLE `Supplier Production Dimension` (
   `Supplier Production Tolerable Percentage Paid Ordered Parts Todo` float NOT NULL DEFAULT '0.05',
   `Supplier Production Max Percentage Part Locations Errors` float unsigned DEFAULT '0.1',
   `Supplier Production Max Percentage Paid Ordered Parts Todo` float unsigned NOT NULL DEFAULT '0.1',
+  `Supplier Production Metadata` json DEFAULT NULL,
   PRIMARY KEY (`Supplier Production Supplier Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -15820,49 +14663,6 @@ CREATE TABLE `Tax Category Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Template Dimension`
---
-
-DROP TABLE IF EXISTS `Template Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Template Dimension` (
-  `Template Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Template Website Key` mediumint unsigned DEFAULT NULL,
-  `Template Code` varchar(255) DEFAULT NULL,
-  `Template Scope Key` mediumint unsigned NOT NULL,
-  `Template Scope` varchar(16) NOT NULL,
-  `Template Base` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Template Device` enum('Desktop','Tablet','Mobile') NOT NULL DEFAULT 'Desktop',
-  `Template Source` text,
-  `Template Number Webpages` mediumint unsigned NOT NULL DEFAULT '0',
-  `Template Number Webpage Versions` mediumint unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Template Key`),
-  KEY `Template Code` (`Template Code`),
-  KEY `Template Website Key` (`Template Website Key`),
-  KEY `Template Scope Key` (`Template Scope Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Template Scope Dimension`
---
-
-DROP TABLE IF EXISTS `Template Scope Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Template Scope Dimension` (
-  `Template Scope Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `Template Scope Website Key` mediumint unsigned NOT NULL,
-  `Template Scope Code` varchar(255) NOT NULL,
-  `Template Scope Number Templates` mediumint unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Template Scope Key`),
-  UNIQUE KEY `Template Scope Website Key_2` (`Template Scope Website Key`,`Template Scope Code`),
-  KEY `Template Scope Website Key` (`Template Scope Website Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Theme Background Bridge`
 --
 
@@ -15873,43 +14673,6 @@ CREATE TABLE `Theme Background Bridge` (
   `Theme Key` mediumint NOT NULL,
   `Theme Background Key` mediumint NOT NULL,
   PRIMARY KEY (`Theme Key`,`Theme Background Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Time Series Dimension`
---
-
-DROP TABLE IF EXISTS `Time Series Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Time Series Dimension` (
-  `Time Series Date` date NOT NULL,
-  `Time Series Frequency` enum('Daily','Weekly','Monthly','Quarterly','Yearly') NOT NULL,
-  `Time Series Name` varchar(255) NOT NULL,
-  `Time Series Name Key` mediumint unsigned NOT NULL DEFAULT '0',
-  `Time Series Name Second Key` mediumint NOT NULL DEFAULT '0',
-  `Time Series Parent Key` mediumint unsigned NOT NULL,
-  `Time Series Label` varchar(16) NOT NULL,
-  `Time Series Value` float NOT NULL,
-  `Time Series Count` int unsigned NOT NULL,
-  `Open` float DEFAULT NULL,
-  `High` float DEFAULT NULL,
-  `Low` float DEFAULT NULL,
-  `Close` float DEFAULT NULL,
-  `Volume` float DEFAULT NULL,
-  `Adj Close` float DEFAULT NULL,
-  `Time Series Type` enum('Data','Forecast','First','Current','Target') NOT NULL,
-  `Time Series Metadata` varchar(4) NOT NULL,
-  `Time Series Tag` varchar(1) NOT NULL,
-  UNIQUE KEY `Constraction` (`Time Series Date`,`Time Series Frequency`,`Time Series Name`(16),`Time Series Name Key`,`Time Series Name Second Key`,`Time Series Type`),
-  KEY `Time Series Type` (`Time Series Type`),
-  KEY `Time Series Parent Key` (`Time Series Parent Key`),
-  KEY `Time Series Date` (`Time Series Date`),
-  KEY `Time Series Frequency` (`Time Series Frequency`),
-  KEY `Time Series Name` (`Time Series Name`(24)),
-  KEY `Time Series Name Key` (`Time Series Name Key`),
-  KEY `Time Series Label` (`Time Series Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -16067,7 +14830,7 @@ DROP TABLE IF EXISTS `Timesheet Record Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Timesheet Record Dimension` (
-  `Timesheet Record Key` mediumint NOT NULL AUTO_INCREMENT,
+  `Timesheet Record Key` int NOT NULL AUTO_INCREMENT,
   `Timesheet Record Timesheet Key` mediumint unsigned DEFAULT NULL,
   `Timesheet Record Type` enum('WorkingHoursMark','OvertimeMark','ClockingRecord','BreakMark') NOT NULL DEFAULT 'ClockingRecord',
   `Timesheet Record Ignored` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -16075,7 +14838,7 @@ CREATE TABLE `Timesheet Record Dimension` (
   `Timesheet Record Action Type` enum('MarkStart','Start','End','MarkEnd','Ignored','Unknown') NOT NULL DEFAULT 'Unknown',
   `Timesheet Record Staff Key` mediumint unsigned NOT NULL,
   `Timesheet Record Date` datetime NOT NULL,
-  `Timesheet Record Source` enum('ClockingMachine','Manual','API','System','WorkHome','WorkOutside','Break') CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'Manual',
+  `Timesheet Record Source` enum('ClockingMachine','Manual','API','System','WorkHome','WorkOutside','Break') DEFAULT 'Manual',
   `Timesheet Authoriser Key` mediumint unsigned DEFAULT NULL,
   `Timesheet Remover Key` mediumint unsigned DEFAULT NULL,
   `Timesheet Record Note` text,
@@ -16124,9 +14887,9 @@ CREATE TABLE `Upload Dimension` (
   `Upload Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `Upload Type` enum('NewObjects','EditObjects') NOT NULL DEFAULT 'NewObjects',
   `Upload State` enum('Uploaded','InProcess','Finished','Cancelled') NOT NULL DEFAULT 'Uploaded',
-  `Upload Parent` varchar(16) NOT NULL,
+  `Upload Parent` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `Upload Parent Key` mediumint unsigned NOT NULL,
-  `Upload Object` varchar(16) NOT NULL,
+  `Upload Object` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `Upload User Key` mediumint unsigned DEFAULT NULL,
   `Upload Created` datetime DEFAULT NULL,
   `Upload Records` mediumint unsigned NOT NULL DEFAULT '0',
@@ -16532,6 +15295,7 @@ DROP TABLE IF EXISTS `Warehouse Area Dimension`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Warehouse Area Dimension` (
   `Warehouse Area Key` smallint unsigned NOT NULL AUTO_INCREMENT,
+  `Warehouse Area Place` enum('Local','External') NOT NULL DEFAULT 'Local',
   `Warehouse Area Code` varchar(16) NOT NULL,
   `Warehouse Area Name` varchar(64) NOT NULL,
   `Warehouse Area Description` text,
@@ -16541,7 +15305,8 @@ CREATE TABLE `Warehouse Area Dimension` (
   `Warehouse Area Distinct Parts` mediumint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Warehouse Area Key`),
   UNIQUE KEY `Warehouse Area Code_2` (`Warehouse Area Code`,`Warehouse Area Warehouse Key`),
-  KEY `Warehouse Area Code` (`Warehouse Area Code`)
+  KEY `Warehouse Area Code` (`Warehouse Area Code`),
+  KEY `Warehouse Area Place` (`Warehouse Area Place`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -16822,26 +15587,6 @@ CREATE TABLE `Webpage History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Webpage Panel Dimension`
---
-
-DROP TABLE IF EXISTS `Webpage Panel Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Webpage Panel Dimension` (
-  `Webpage Panel Key` int NOT NULL AUTO_INCREMENT,
-  `Webpage Panel Id` varchar(255) NOT NULL,
-  `Webpage Panel Webpage Key` mediumint unsigned NOT NULL,
-  `Webpage Panel Section Key` mediumint unsigned DEFAULT '0',
-  `Webpage Panel Type` enum('code','text','image','page_break') NOT NULL,
-  `Webpage Panel Data` text,
-  `Webpage Panel Metadata` text,
-  PRIMARY KEY (`Webpage Panel Key`),
-  UNIQUE KEY `Webpage Panel Id` (`Webpage Panel Id`,`Webpage Panel Webpage Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Webpage Publishing History Bridge`
 --
 
@@ -16969,28 +15714,6 @@ CREATE TABLE `Webpage Type Dimension` (
   UNIQUE KEY `Webpage Type Code_2` (`Webpage Type Code`,`Webpage Type Website Key`),
   KEY `Webpage Type Code` (`Webpage Type Code`),
   KEY `Webpage Type Websiite Key` (`Webpage Type Website Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Webpage Version Dimension`
---
-
-DROP TABLE IF EXISTS `Webpage Version Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Webpage Version Dimension` (
-  `Webpage Version Key` mediumint NOT NULL AUTO_INCREMENT,
-  `Webpage Version Webpage Key` mediumint NOT NULL,
-  `Webpage Version Code` varchar(64) DEFAULT NULL,
-  `Webpage Version Device` enum('Desktop','Tablet','Mobile') NOT NULL DEFAULT 'Desktop',
-  `Webpage Version Template Key` mediumint NOT NULL,
-  `Webpage Version Display Probability` float NOT NULL DEFAULT '1',
-  `Webpage Version Metadata` text,
-  `Webpage Version Valid From` datetime NOT NULL,
-  PRIMARY KEY (`Webpage Version Key`),
-  KEY `Webpage Version Webpage Key` (`Webpage Version Webpage Key`),
-  KEY `Webpage Version Code` (`Webpage Version Code`,`Webpage Version Webpage Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -17148,7 +15871,7 @@ DROP TABLE IF EXISTS `Website Dimension`;
 CREATE TABLE `Website Dimension` (
   `Website Key` smallint unsigned NOT NULL AUTO_INCREMENT,
   `Website Store Key` smallint unsigned NOT NULL,
-  `Website Type` enum('Ecom','EcomB2B','EcomDS') DEFAULT NULL,
+  `Website Type` enum('Ecom','EcomB2B','EcomDS','Fulfilment') CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `Website From` datetime DEFAULT NULL,
   `Website Launched` datetime DEFAULT NULL,
   `Website Status` enum('InProcess','Active','Maintenance','Closed') NOT NULL DEFAULT 'InProcess',
@@ -17693,6 +16416,10 @@ CREATE TABLE `todo_users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50112 SET @disable_bulk_load = IF (@is_rocksdb_supported, 'SET SESSION rocksdb_bulk_load = @old_rocksdb_bulk_load', 'SET @dummy_rocksdb_bulk_load = 0') */;
+/*!50112 PREPARE s FROM @disable_bulk_load */;
+/*!50112 EXECUTE s */;
+/*!50112 DEALLOCATE PREPARE s */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -17703,4 +16430,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-17 16:19:24
+-- Dump completed on 2021-06-26  9:03:17
