@@ -112,8 +112,8 @@ foreach ($rows as $row) {
     $j++;
 }
 $writer = new Csv($spreadsheet);
-$writer->setDelimiter(';');
-$writer->setEnclosure('"');
+$writer->setDelimiter(',');
+$writer->setEnclosure('');
 $writer->setLineEnding("\r\n");
 $writer->setSheetIndex(0);
 
