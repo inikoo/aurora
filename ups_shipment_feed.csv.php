@@ -65,13 +65,13 @@ $rows[] = [
     $dn->get('ID').'UP',
     $dn->get('Best Weight'),
     $dn->get('Delivery Note Number Parcels'),
-    $dn->get('Delivery Note Customer Name'),
-    $dn->get('Delivery Note Customer Contact Name'),
-    $dn->get('Delivery Note Address Line 1'),
-    $dn->get('Delivery Note Address Line 2'),
-    $dn->get('Delivery Note Address Dependent Locality'),
-    $dn->get('Delivery Note Address Locality'),
-    $dn->get('Delivery Note Address Administrative Area'),
+    str_replace(',',' ',$dn->get('Delivery Note Customer Name')),
+    str_replace(',',' ',$dn->get('Delivery Note Customer Contact Name')),
+    str_replace(',',' ',$dn->get('Delivery Note Address Line 1')),
+    str_replace(',',' ',$dn->get('Delivery Note Address Line 2')),
+    str_replace(',',' ',$dn->get('Delivery Note Address Dependent Locality')),
+    str_replace(',',' ',$dn->get('Delivery Note Address Locality')),
+    str_replace(',',' ',$dn->get('Delivery Note Address Administrative Area')),
     trim($dn->get('Delivery Note Address Sorting Code').' '.$dn->get('Delivery Note Address Postal Code')),
     (string) $dn->get('Delivery Note Telephone'),
     $dn->get('Delivery Note Address Country 2 Alpha Code'),
@@ -89,6 +89,8 @@ $rows[] = [
 
 
 ];
+
+
 
 $j = 1;
 foreach ($rows as $row) {
