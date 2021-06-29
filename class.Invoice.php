@@ -759,6 +759,7 @@ class Invoice extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
+            $this->categorize(false);
 
             new_housekeeping_fork(
                 'au_housekeeping', array(
@@ -1772,6 +1773,7 @@ class Invoice extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
+            $this->categorize(true);
 
             new_housekeeping_fork(
                 'au_housekeeping', array(

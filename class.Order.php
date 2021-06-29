@@ -1669,8 +1669,13 @@ class Order extends DB_Table {
 
                     $extra_data = [];
                     if ($account->properties('ups_shipper_key') == $dn->get('Delivery Note Shipper Key')) {
-                        $extra_data['ups'] = true;
+                        $extra_data['ups']    = true;
                         $extra_data['dn_key'] = $dn->id;
+                        $this->fast_update_json_field('Order Metadata', 'ups', true);
+
+
+                    }else{
+                        $this->fast_update_json_field('Order Metadata', 'ups', false);
 
                     }
 
@@ -1840,8 +1845,12 @@ class Order extends DB_Table {
 
                     $extra_data = [];
                     if ($account->properties('ups_shipper_key') == $dn->get('Delivery Note Shipper Key')) {
-                        $extra_data['ups'] = true;
+                        $extra_data['ups']    = true;
                         $extra_data['dn_key'] = $dn->id;
+                        $this->fast_update_json_field('Order Metadata', 'ups', true);
+
+                    }else{
+                        $this->fast_update_json_field('Order Metadata', 'ups', false);
 
                     }
 
@@ -1881,7 +1890,7 @@ class Order extends DB_Table {
 
                 default:
                     exit('unknown state:::'.$value);
-                    break;
+
             }
 
 
@@ -1966,6 +1975,7 @@ class Order extends DB_Table {
             }
 
         } else {
+
             return false;
         }
 
@@ -1974,39 +1984,64 @@ class Order extends DB_Table {
     function create_invoice($date, $extra_data = []) {
 
 
-        $store = get_object('Store', $this->data['Order Store Key']);
+        $store   = get_object('Store', $this->data['Order Store Key']);
+        $account = get_object('Account', 1);
+        $account->load_properties();
+
+        $id_done           = false;
+        $invoice_public_id = '';
+        $file_as           = '';
+
+        if (isset($extra_data['ups']) and $extra_data['ups']) {
+            if ($account->properties('ups_public_id_type') != '') {
+
+                if ($account->properties('ups_public_id_type') == 'alt_account_field') {
+
+                    $sql = "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Alt Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Alt Public ID` + 1) WHERE `Account Key`=1";
+                    $this->db->exec($sql);
+                    $public_id = $this->db->lastInsertId();
+
+                    $invoice_public_id = sprintf(
+                        $account->properties('ups_public_id_invoice_format'), $public_id
+                    );
+
+                    $file_as = get_file_as($invoice_public_id);
+                    $id_done = true;
+                }
 
 
-        if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
-            $invoice_public_id = $this->data['Order Public ID'];
-            $file_as           = $this->data['Order File As'];
-        } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+            }
 
-            $sql = sprintf(
-                "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-            );
-            $this->db->exec($sql);
-            $public_id = $this->db->lastInsertId();
-
-            $invoice_public_id = sprintf($store->data['Store Invoice Public ID Format'], $public_id);
-            $file_as           = get_file_as($invoice_public_id);
-
-        } else {
-
-            $sql = sprintf(
-                "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
-            );
-            $this->db->exec($sql);
-            $public_id = $this->db->lastInsertId();
-
-            $account           = get_object('Account', 1);
-            $invoice_public_id = sprintf(
-                $account->data['Account Invoice Public ID Format'], $public_id
-            );
-
-            $file_as = get_file_as($invoice_public_id);
         }
 
+        if (!$id_done) {
+            if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+                $invoice_public_id = $this->data['Order Public ID'];
+                $file_as           = $this->data['Order File As'];
+            } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+
+                $sql = sprintf(
+                    "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                );
+                $this->db->exec($sql);
+                $public_id = $this->db->lastInsertId();
+
+                $invoice_public_id = sprintf($store->data['Store Invoice Public ID Format'], $public_id);
+                $file_as           = get_file_as($invoice_public_id);
+
+            } else {
+
+                $sql = "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1";
+                $this->db->exec($sql);
+                $public_id = $this->db->lastInsertId();
+
+                $invoice_public_id = sprintf(
+                    $account->data['Account Invoice Public ID Format'], $public_id
+                );
+
+                $file_as = get_file_as($invoice_public_id);
+            }
+        }
 
         $data_invoice = array(
             'editor'               => $this->editor,
@@ -2559,6 +2594,9 @@ class Order extends DB_Table {
     }
 
     function get_number_products() {
+
+        $number=0;
+
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
         );
@@ -2568,10 +2606,6 @@ class Order extends DB_Table {
                 $number = ($row['num'] == '' ? 0 : $row['num']);
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2585,23 +2619,129 @@ class Order extends DB_Table {
         include_once 'class.Invoice.php';
 
         $store = get_object('Store', ($this->data['Order Store Key']));
+        $account = get_object('Account', 1);
+        $account->load_properties();
 
 
+
+        $id_done           = false;
         $invoice_public_id = '';
 
+        if ($this->metadata('ups')) {
+            if ($account->properties('ups_public_id_type') != '') {
 
-        if ($store->data['Store Refund Public ID Method'] == 'Same Invoice ID') {
+                if ($account->properties('ups_public_id_type') == 'alt_account_field') {
 
+                    $sql = "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Alt Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Alt Public ID` + 1) WHERE `Account Key`=1";
+                    $this->db->exec($sql);
+                    $public_id = $this->db->lastInsertId();
 
-            foreach ($this->get_invoices('objects') as $_invoice) {
-                if ($_invoice->data['Invoice Type'] == 'Invoice') {
-                    $invoice_public_id = $_invoice->data['Invoice Public ID'];
+                    $invoice_public_id = sprintf(
+                        $account->properties('ups_public_id_refund_format'), $public_id
+                    );
+
+                    $id_done = true;
                 }
+
+
             }
 
+        }
 
-            if ($invoice_public_id == '') {
-                //Next Invoice ID
+
+
+        if (!$id_done) {
+
+
+            if ($store->data['Store Refund Public ID Method'] == 'Same Invoice ID') {
+
+
+                foreach ($this->get_invoices('objects') as $_invoice) {
+                    if ($_invoice->data['Invoice Type'] == 'Invoice') {
+                        $invoice_public_id = $_invoice->data['Invoice Public ID'];
+                    }
+                }
+
+
+                if ($invoice_public_id == '') {
+                    //Next Invoice ID
+
+                    if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+
+                        $sql = sprintf(
+                            "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                        );
+                        $this->db->exec($sql);
+
+
+                        $invoice_public_id = sprintf(
+                            $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
+                        );
+
+
+                    } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+
+                        $sql = sprintf(
+                            "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                        );
+                        $this->db->exec($sql);
+                        $invoice_public_id = sprintf(
+                            $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
+                        );
+
+
+                    } else {
+
+                        $sql = sprintf(
+                            "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
+                        );
+                        $this->db->exec($sql);
+                        $public_id = $this->db->lastInsertId();
+                        include_once 'class.Account.php';
+                        $account           = new Account();
+                        $invoice_public_id = sprintf(
+                            $account->data['Account Invoice Public ID Format'], $public_id
+                        );
+
+
+                    }
+
+
+                }
+
+
+                if ($invoice_public_id != '') {
+                    $invoice_public_id = $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
+                }
+
+            } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
+
+
+                include_once 'class.Account.php';
+                $account = new Account();
+                $sql     = sprintf(
+                    "UPDATE `Account Dimension` SET `Account Invoice Last Refund Public ID` = LAST_INSERT_ID(`Account Invoice Last Refund Public ID` + 1) WHERE `Account Key`=1"
+                );
+                $this->db->exec($sql);
+                $invoice_public_id = sprintf(
+                    $account->data['Account Refund Public ID Format'], $this->db->lastInsertId()
+                );
+
+
+            } elseif ($store->data['Store Refund Public ID Method'] == 'Store Own Index') {
+
+
+                $sql = sprintf(
+                    "UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+                );
+                $this->db->exec($sql);
+                $invoice_public_id = sprintf(
+                    $store->data['Store Refund Public ID Format'], $this->db->lastInsertId()
+                );
+
+
+            } else { //Next Invoice ID
+
 
                 if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
 
@@ -2609,12 +2749,9 @@ class Order extends DB_Table {
                         "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
                     );
                     $this->db->exec($sql);
-
-
                     $invoice_public_id = sprintf(
                         $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
                     );
-
 
                 } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
 
@@ -2640,84 +2777,10 @@ class Order extends DB_Table {
                         $account->data['Account Invoice Public ID Format'], $public_id
                     );
 
-
                 }
 
-
             }
-
-
-            if ($invoice_public_id != '') {
-                $invoice_public_id = $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
-            }
-
-        } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
-
-
-            include_once 'class.Account.php';
-            $account = new Account();
-            $sql     = sprintf(
-                "UPDATE `Account Dimension` SET `Account Invoice Last Refund Public ID` = LAST_INSERT_ID(`Account Invoice Last Refund Public ID` + 1) WHERE `Account Key`=1"
-            );
-            $this->db->exec($sql);
-            $invoice_public_id = sprintf(
-                $account->data['Account Refund Public ID Format'], $this->db->lastInsertId()
-            );
-
-
-        } elseif ($store->data['Store Refund Public ID Method'] == 'Store Own Index') {
-
-
-            $sql = sprintf(
-                "UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-            );
-            $this->db->exec($sql);
-            $invoice_public_id = sprintf(
-                $store->data['Store Refund Public ID Format'], $this->db->lastInsertId()
-            );
-
-
-        } else { //Next Invoice ID
-
-
-            if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
-
-                $sql = sprintf(
-                    "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-                );
-                $this->db->exec($sql);
-                $invoice_public_id = sprintf(
-                    $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
-                );
-
-            } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
-
-                $sql = sprintf(
-                    "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-                );
-                $this->db->exec($sql);
-                $invoice_public_id = sprintf(
-                    $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
-                );
-
-
-            } else {
-
-                $sql = sprintf(
-                    "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
-                );
-                $this->db->exec($sql);
-                $public_id = $this->db->lastInsertId();
-                include_once 'class.Account.php';
-                $account           = new Account();
-                $invoice_public_id = sprintf(
-                    $account->data['Account Invoice Public ID Format'], $public_id
-                );
-
-            }
-
         }
-
 
         $file_as = get_file_as($invoice_public_id);
 
