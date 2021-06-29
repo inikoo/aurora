@@ -237,7 +237,16 @@ function get_fulfilment_module() {
 
             ),
 
+            'customer_part.new'            => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'customer_part.new' => array(
+                        'label' => _("New customer's part")
+                    ),
 
+                )
+
+            )
 
 
         )

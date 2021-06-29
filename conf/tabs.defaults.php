@@ -3011,6 +3011,18 @@ function get_tab_defaults_data() {
             'rpp_options'   => $default_rrp_options,
             'f_field'       => 'code',
         ),
+        'customer.parts' => array(
+            'view'          => 'overview',
+            'sort_key'      => 'reference',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'reference',
+           // 'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+           // 'elements'      => get_elements_option('customer_parts'),
+           // 'export_fields' => get_export_fields('customer_parts')
+
+        ),
         'fulfilment.stored_parts'         => array(
             'view'            => 'overview',
             'sort_key'        => 'id',

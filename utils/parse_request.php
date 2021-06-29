@@ -5949,11 +5949,35 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                                 if (isset($view_path[2])) {
                                     if (is_numeric($view_path[2])) {
-                                        $object     = 'customer';
-                                        $extra      = 'all_customers';
-                                        $section    = 'customer';
-                                        $key        = $view_path[2];
+                                        $object  = 'customer';
+                                        $extra   = 'all_customers';
+                                        $section = 'customer';
+                                        $key     = $view_path[2];
                                     }
+
+                                    if (isset($view_path[3])) {
+                                        if ($view_path[3] == 'parts') {
+                                            if (isset($view_path[4])) {
+                                                if (is_numeric($view_path[4])) {
+                                                    $parent     = 'customer';
+                                                    $parent_key = $view_path[2];
+                                                    $section    = 'customer_part';
+                                                    $key        = $view_path[4];
+                                                }elseif ($view_path[4] == 'new') {
+
+
+                                                    $key     = '';
+                                                    $section = 'customer_part.new';
+                                                    $object  = 'customer_part';
+
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+
                                 }
 
 

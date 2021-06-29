@@ -71,9 +71,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Delivery Note':
 
 
-            if(!empty($options['retry_shipment_label'])){
+            if (!empty($options['retry_shipment_label'])) {
                 include 'fields/retry_shipment_label.fld.php';
-            }else{
+            } else {
                 include 'fields/delivery_note.fld.php';
             }
 
@@ -122,7 +122,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
-
 
 
         case 'Attachment':
@@ -199,10 +198,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
         case 'Purchase Order':
 
-            if($object->get('Purchase Order Type')=='Production'){
+            if ($object->get('Purchase Order Type') == 'Production') {
                 include 'fields/job_order.fld.php';
 
-            }else{
+            } else {
                 include 'fields/supplier.order.fld.php';
 
             }
@@ -390,6 +389,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     include 'fields/website.fld.php';
                 }
             }
+
             return $object_fields;
             break;
         case 'Agent':
@@ -409,7 +409,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $barcode_fields;
             break;
         case 'User':
-
 
 
             if (is_array($options) and $options['type'] == 'profile') {
@@ -472,12 +471,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     include 'fields/agent_supplier.fld.php';
 
                 } else {
-                    if (isset($options['new']) and $options['new'] ) {
+                    if (isset($options['new']) and $options['new']) {
                         include 'fields/supplier.new.fld.php';
-                    }else{
+                    } else {
                         include 'fields/supplier.fld.php';
                     }
-
 
 
                 }
@@ -504,10 +502,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                         $part = new Part(0);
 
 
-                        if($supplier->get('Supplier Production')=='Yes'){
+                        if ($supplier->get('Supplier Production') == 'Yes') {
                             include 'fields/production.new.fld.php';
 
-                        }else{
+                        } else {
                             include 'fields/supplier_part.new.fld.php';
 
                         }
@@ -549,47 +547,47 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     return $supplier_part_fields;
                 } elseif ($options['parent'] == 'production') {
 
-/*
-                    include 'fields/production_part.fld.php';
+                    /*
+                                        include 'fields/production_part.fld.php';
 
 
-                    if (isset($options['new'])) {
-                        $object = get_object('Part', 0);
-                        include 'fields/part.fld.php';
-                        $supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
-                    } else {
+                                        if (isset($options['new'])) {
+                                            $object = get_object('Part', 0);
+                                            include 'fields/part.fld.php';
+                                            $supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
+                                        } else {
 
 
-                        $operations = array(
-                            'label'      => _('Operations'),
-                            'show_title' => true,
-                            'class'      => 'operations',
-                            'fields'     => array(
+                                            $operations = array(
+                                                'label'      => _('Operations'),
+                                                'show_title' => true,
+                                                'class'      => 'operations',
+                                                'fields'     => array(
 
-                                array(
-                                    'id'    => 'delete_supplier_part',
-                                    'class' => 'operation',
-                                    'value' => '',
-                                    'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
-                                            "Delete supplier's product & related part"
-                                        ).' <i class="far fa-trash-alt new_button link"></i></span>',
+                                                    array(
+                                                        'id'    => 'delete_supplier_part',
+                                                        'class' => 'operation',
+                                                        'value' => '',
+                                                        'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                                                            .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                                                "Delete supplier's product & related part"
+                                                            ).' <i class="far fa-trash-alt new_button link"></i></span>',
 
-                                    'reference' => '',
-                                    'type'      => 'operation'
-                                ),
-
-
-                            )
-
-                        );
-
-                        $supplier_part_fields[] = $operations;
-                    }
+                                                        'reference' => '',
+                                                        'type'      => 'operation'
+                                                    ),
 
 
-                    return $supplier_part_fields;
-                    */
+                                                )
+
+                                            );
+
+                                            $supplier_part_fields[] = $operations;
+                                        }
+
+
+                                        return $supplier_part_fields;
+                                        */
                     return [];
 
                 } elseif ($options['parent'] == 'part') {
@@ -616,50 +614,93 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             $object->get_supplier_data();
 
 
+            include 'fields/production_part.fld.php';
 
 
-
-                    include 'fields/production_part.fld.php';
-
-
-                    if (isset($options['new'])) {
-                        $object = get_object('Part', 0);
-                        include 'fields/part.fld.php';
-                        $supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
-                    } else {
+            if (isset($options['new'])) {
+                $object = get_object('Part', 0);
+                include 'fields/part.fld.php';
+                $supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
+            } else {
 
 
-                        $operations = array(
-                            'label'      => _('Operations'),
-                            'show_title' => true,
-                            'class'      => 'operations',
-                            'fields'     => array(
+                $operations = array(
+                    'label'      => _('Operations'),
+                    'show_title' => true,
+                    'class'      => 'operations',
+                    'fields'     => array(
 
-                                array(
-                                    'id'    => 'delete_supplier_part',
-                                    'class' => 'operation',
-                                    'value' => '',
-                                    'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
-                                            "Delete supplier's product & related part"
-                                        ).' <i class="far fa-trash-alt new_button link"></i></span>',
+                        array(
+                            'id'    => 'delete_supplier_part',
+                            'class' => 'operation',
+                            'value' => '',
+                            'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                                .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                    "Delete supplier's product & related part"
+                                ).' <i class="far fa-trash-alt new_button link"></i></span>',
 
-                                    'reference' => '',
-                                    'type'      => 'operation'
-                                ),
-
-
-                            )
-
-                        );
-
-                        $supplier_part_fields[] = $operations;
-                    }
+                            'reference' => '',
+                            'type'      => 'operation'
+                        ),
 
 
-                    return $supplier_part_fields;
+                    )
+
+                );
+
+                $supplier_part_fields[] = $operations;
+            }
 
 
+            return $supplier_part_fields;
+
+        case 'Customer Part':
+
+
+            $customer = $options['parent_object'];
+
+
+            if (isset($options['new'])) {
+                $part = new Part(0);
+
+
+                include 'fields/customer_part.new.fld.php';
+
+
+            } else {
+                include 'fields/customer_part.fld.php';
+
+                $operations = array(
+                    'label'      => _('Operations'),
+                    'show_title' => true,
+                    'class'      => 'operations',
+                    'fields'     => array(
+
+                        array(
+                            'id'    => 'delete_supplier_part',
+                            'class' => 'operation',
+                            'value' => '',
+                            'label' => '<i class="fa fa-fw fa-'.($super_edit ? 'lock-alt' : 'lock').'  button" 
+                                                data-labels=\'{ "text":"'._("Please ask an authorised user to delete this supplier's product").'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
+                                            onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'PS\')').'"  
+                                            style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                    "Delete supplier's product & related part"
+                                ).' <i class="far fa-trash-alt new_button link"></i></span>',
+
+                            'reference' => '',
+                            'type'      => 'operation'
+                        ),
+
+
+                    )
+
+                );
+
+                $customer_part_fields[] = $operations;
+            }
+
+
+            return $customer_part_fields;
 
 
         case 'Part':
@@ -682,10 +723,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             include 'fields/raw_material.fld.php';
 
             if (isset($options['new'])) {
-                return get_raw_material_new_fields($object,$user);
+                return get_raw_material_new_fields($object, $user);
 
-            }else{
-                return get_raw_material_edit_fields($object,$user);
+            } else {
+                return get_raw_material_edit_fields($object, $user);
 
             }
 
@@ -712,7 +753,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Location':
             include 'fields/location.fld.php';
 
-            return get_location_object_fields($object,$user,$account,$db,$options);
+            return get_location_object_fields($object, $user, $account, $db, $options);
             break;
         case 'Store':
             if (!empty($options['new'])) {
@@ -720,6 +761,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             } else {
                 include 'fields/store.fld.php';
             }
+
             return $object_fields;
 
             break;

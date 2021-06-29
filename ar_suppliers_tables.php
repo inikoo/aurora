@@ -4906,10 +4906,7 @@ function supplier_parts($_data, $db, $user, $account) {
                 if ($row = $result->fetch()) {
                     $ok = $row['num'];
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
+            } \
             if ($ok == 0) {
                 echo json_encode(
                     array(

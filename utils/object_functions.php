@@ -564,6 +564,12 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Fulfilment_Customer.php';
             $object = new Fulfilment_Customer('id', $key);
             break;
+        case 'customer_part':
+        case 'customerpart':
+        case 'customer part':
+            require_once "class.CustomerPart.php";
+            $object = new CustomerPart($key);
+            break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
     }
