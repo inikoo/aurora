@@ -53,4 +53,4 @@ $group_by='';
 $sql_totals = "select count(*) as num from $table $where ";
 
 
-?>
+

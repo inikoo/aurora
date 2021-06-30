@@ -410,7 +410,6 @@ class Category extends DB_Table {
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
 
-            $this->update_branch_tree();
             $this->update_number_of_subjects();
             $parent_category = get_object('Category', $data['Category Parent Key']);
             if ($parent_category->id) {
@@ -427,76 +426,6 @@ class Category extends DB_Table {
 
     }
 
-    function update_branch_tree() {
-
-        //'Product','Supplier','Customer','Family','Invoice','Part'
-
-        switch ($this->data['Category Subject']) {
-            case('Part'):
-                $link = 'part_category.php';
-                break;
-            case('Customer'):
-                $link = 'customer_category.php';
-                break;
-            case('Invoice'):
-                $link = 'invoice_category.php';
-                break;
-            case('Supplier'):
-                $link = 'supplier_category.php';
-                break;
-            case('Product'):
-                $link = 'product_category.php';
-                break;
-            case('Family'):
-                $link = 'family_category.php';
-                break;
-            default:
-                $link = 'category.php';
-        }
-
-        $category_keys = preg_split(
-            '/\>/', preg_replace('/\>$/', '', $this->data['Category Position'])
-        );
-
-        $sql = sprintf(
-            "SELECT `Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key` IN (%s)", join(',', $category_keys)
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $category_data[$row['Category Key']] = $row['Category Code'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $xhtml_tree = '';
-        $plain_tree = '';
-
-
-        foreach ($category_keys as $key) {
-            if (array_key_exists($key, $category_data)) {
-                $xhtml_tree .= sprintf(
-                    " <a href='%s?id=%d'>%s</a> &rarr;", $link, $key, $category_data[$key]
-                );
-                $plain_tree .= sprintf(" %s >", $category_data[$key]);
-            }
-        }
-        $xhtml_tree = preg_replace('/\s*\&rarr\;$/', '', $xhtml_tree);
-        $plain_tree = preg_replace('/\s*\>$/', '', $plain_tree);
-
-        $this->data['Category XHTML Branch Tree'] = $xhtml_tree;
-        $this->data['Category Plain Branch Tree'] = $plain_tree;
-
-        $sql = sprintf(
-            "UPDATE `Category Dimension` SET `Category XHTML Branch Tree`=%s ,`Category Plain Branch Tree`=%s WHERE `Category Key`=%d ", prepare_mysql($this->data['Category XHTML Branch Tree']), prepare_mysql($this->data['Category Plain Branch Tree']), $this->id
-        );
-        $this->db->exec($sql);
-
-
-    }
 
     function update_number_of_subjects() {
 
@@ -693,8 +622,6 @@ class Category extends DB_Table {
                         }
 
                         return '';
-
-
 
 
                     case 'Category Webpage Meta Description':
@@ -1476,8 +1403,10 @@ class Category extends DB_Table {
             $data['Category Store Key'] = $this->data['Category Store Key'];
         }
 
+        if (empty($data['Category Branch Type'])) {
+            $data['Category Branch Type'] = 'Head';
+        }
 
-        $data['Category Branch Type']          = 'Head';
         $data['Category Subject Multiplicity'] = $this->data['Category Subject Multiplicity'];
 
         $data['Category Root Key']   = $this->data['Category Root Key'];
@@ -1495,7 +1424,6 @@ class Category extends DB_Table {
             $data['Is Category Field Other'] = 'No';
         }
         // $data['editor']
-
 
         $subcategory       = new Category('find create', $data);
         $subcategory->fork = $this->fork;
@@ -1591,13 +1519,13 @@ class Category extends DB_Table {
         $this->deleted = false;
 
         $sql_new_deleted_category = sprintf(
-            "INSERT INTO `Category Deleted Dimension` (`Category Deleted Key`, `Category Deleted Branch Type`, `Category Deleted Store Key`, `Category Deleted Warehouse Key`, `Category Deleted XHTML Branch Tree`, `Category Deleted Plain Branch Tree`,
+            "INSERT INTO `Category Deleted Dimension` (`Category Deleted Key`, `Category Deleted Branch Type`, `Category Deleted Store Key`, `Category Deleted Warehouse Key`,
 `Category Deleted Deep`, `Category Deleted Children`, `Category Deleted Code`, `Category Deleted Label`, `Category Deleted Subject`,  `Category Deleted Number Subjects`,`Category Deleted Date`)
-VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
+VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
-            prepare_mysql($this->data['Category Branch Type']), $this->data['Category Store Key'], $this->data['Category Warehouse Key'], prepare_mysql($this->data['Category XHTML Branch Tree']), prepare_mysql($this->data['Category Plain Branch Tree']),
-            $this->data['Category Deep'], $this->data['Category Children'], prepare_mysql($this->data['Category Code']), prepare_mysql($this->data['Category Label']), prepare_mysql($this->data['Category Subject']), $this->data['Category Number Subjects']
+            prepare_mysql($this->data['Category Branch Type']), $this->data['Category Store Key'], $this->data['Category Warehouse Key'], $this->data['Category Deep'], $this->data['Category Children'], prepare_mysql($this->data['Category Code']),
+            prepare_mysql($this->data['Category Label']), prepare_mysql($this->data['Category Subject']), $this->data['Category Number Subjects']
 
         );
 
@@ -2166,15 +2094,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                 $this->update_field($field, $value, $options);
-                $this->update_branch_tree();
 
                 $this->load_all_descendants_keys();
 
-                foreach ($this->all_descendants_keys as $descendant_key) {
-                    $descendant         = get_object('Category', $descendant_key);
-                    $descendant->editor = $this->editor;
-                    $descendant->update_branch_tree();
-                }
 
                 $this->fork_index_elastic_search();
 
@@ -2214,7 +2136,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     if ($value) {
 
 
-                        if ($this->data['Product Category Department Category Key'] != $value ) {
+                        if ($this->data['Product Category Department Category Key'] != $value) {
 
 
                             $old_parent_category = get_object('Category', $this->data['Product Category Department Category Key']);
@@ -2278,7 +2200,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $hide = array('no_department_warning');
 
 
-
                     } else {
                         if ($this->data['Product Category Department Category Key'] != '') {
 
@@ -2329,7 +2250,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     }
 
                     $webpage = $this->get_webpage();
-                    if($webpage->id) {
+                    if ($webpage->id) {
                         $webpage->update_navigation();
 
                         $this->update_metadata = array(
@@ -2697,8 +2618,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     case('Product'):
 
 
-
-
                         $store = get_object('Store', $this->get('Category Store Key'));
 
                         if ($this->get('Category Subject') == 'Category') {
@@ -2991,7 +2910,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
              * @var $webpage \Page
              */
             $webpage = get_object('Webpage', $this->get('Product Category Webpage Key'));
-            if($webpage->id) {
+            if ($webpage->id) {
                 $webpage->reindex();
 
 

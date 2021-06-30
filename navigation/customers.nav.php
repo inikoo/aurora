@@ -107,7 +107,11 @@ function get_customers_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -287,7 +291,11 @@ function get_customers_list_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -306,7 +314,7 @@ function get_customers_categories_navigation($data, $smarty, $user, $db) {
             break;
     }
 
-    $block_view = $data['section'];
+    //  $block_view = $data['section'];
 
 
     $left_buttons = array();
@@ -324,9 +332,6 @@ function get_customers_categories_navigation($data, $smarty, $user, $db) {
             } else {
                 $prev_title = '';
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -339,9 +344,6 @@ function get_customers_categories_navigation($data, $smarty, $user, $db) {
             } else {
                 $next_title = '';
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -362,12 +364,6 @@ function get_customers_categories_navigation($data, $smarty, $user, $db) {
 
     $right_buttons = array();
 
-    $right_buttons[] = array(
-        'icon'  => 'edit',
-        'title' => _('Edit'),
-        'url'   => "edit_customer_categories.php?store_id=".$store->id
-    );
-
     $sections = get_sections('customers', $store->id);
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -386,7 +382,12 @@ function get_customers_categories_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -398,26 +399,27 @@ function get_customers_category_navigation($data, $smarty, $user, $db) {
     require_once 'class.Store.php';
 
 
-    $category = new Category($data['key']);
+    $store = $data['store'];
 
     $left_buttons  = array();
     $right_buttons = array();
 
-    switch ($data['parent']) {
-        case 'category':
+    switch ($data['_object']->get('Category Branch Type')) {
+        case 'Node':
 
-            $parent_category = new Category($data['parent_key']);
-            $store           = new Store(
-                $data['_object']->get('Category Store Key')
-            );
-            break;
-        case 'store':
-            $store = new Store($data['parent_key']);
 
             $left_buttons[] = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Customer's Categories").' '.$store->data['Store Code'],
                 'reference' => 'customers/'.$store->id.'/categories'
+            );
+            break;
+        case 'Head':
+
+            $left_buttons[] = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Customer's Categories").' '.$data['_parent']->get('Code'),
+                'reference' => 'customers/'.$store->id.'/categories/'.$data['_parent']->id
             );
 
 
@@ -429,9 +431,9 @@ function get_customers_category_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title = ' <span class="Category_Label">'.$data['_object']->get('Label').'</span> (<span class="Category_Code id">'.$data['_object']->get(
-            'Code'
-        ).'</span>)';
+
+    $title = ' <span class="Category_Label">'.$data['_object']->get('Label').'</span>';
+    $title .= '<span class="Category_Code_Container '.($data['_object']->get('Label')==$data['_object']->get('Code')?'hide':'').' ">(<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)</span>';
 
 
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
@@ -452,7 +454,12 @@ function get_customers_category_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -548,7 +555,11 @@ function get_customers_lists_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -644,7 +655,11 @@ function get_customers_dashboard_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -739,7 +754,11 @@ function get_customers_insights_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -791,10 +810,13 @@ function get_customers_server_navigation($data, $smarty, $user, $db) {
     $smarty->assign('content', $_content);
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
-
 
 
 function get_customer_navigation($data, $smarty, $user, $db) {
@@ -802,7 +824,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
     $customer = $data['_object'];
     $store    = $data['store'];
-
 
 
     if (!$customer->id) {
@@ -821,7 +842,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
                 $_section = 'customers';
                 break;
             case 'category':
-                $tab      = 'customer.categories';
+                $tab      = 'customer_category.customers';
                 $_section = 'categories';
                 break;
             case 'list':
@@ -839,7 +860,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         }
 
 
-
         if (isset($_SESSION['table_state'][$tab])) {
             $number_results  = $_SESSION['table_state'][$tab]['nr'];
             $start_from      = 0;
@@ -849,19 +869,18 @@ function get_customer_navigation($data, $smarty, $user, $db) {
             $parameters      = $_SESSION['table_state'][$tab];
         } else {
 
-            $default                  = $user->get_tab_defaults($tab);
-            $number_results           = $default['rpp'];
-            $start_from               = 0;
-            $order                    = $default['sort_key'];
-            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
-            $f_value                  = '';
-            $parameters               = $default;
+            $default         = $user->get_tab_defaults($tab);
+            $number_results  = $default['rpp'];
+            $start_from      = 0;
+            $order           = $default['sort_key'];
+            $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
+            $f_value         = '';
+            $parameters      = $default;
 
         }
         $parameters['parent']     = $data['parent'];
         $parameters['parent_key'] = $data['parent_key'];
         include_once 'prepare_table/'.$tab.'.ptble.php';
-
 
 
         $_order_field       = $order;
@@ -894,9 +913,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
                         $prev_title = _("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
 
                     }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
                 }
 
 
@@ -911,9 +927,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
                         $next_title = _("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
 
                     }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
                 }
 
 
@@ -928,16 +941,11 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
         $placeholder = _('Search customers');
         $sections    = get_sections('customers', $customer->data['Customer Store Key']);
-
-
 
 
         if ($data['parent'] == 'list') {
@@ -986,48 +994,46 @@ function get_customer_navigation($data, $smarty, $user, $db) {
             }
 
 
-        }
-        elseif ($data['parent'] == 'category') {
+        } elseif ($data['parent'] == 'category') {
 
-
-            include_once 'class.Category.php';
-            $category = new Category($data['parent_key']);
-
-
-            $category_keys = preg_split(
-                '/\>/', preg_replace('/\>$/', '', $category->data['Category Position'])
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Category").' '.$data['_parent']->data['Category Code'],
+                'reference' => 'customers/'.$store->id.'/category/'.$data['_parent']->get('Category Parent Key').'/'.$data['_parent']->id
             );
-            array_pop($category_keys);
-            if (count($category_keys) > 0) {
-                $sql = sprintf(
-                    "SELECT `Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key` IN (%s)", join(',', $category_keys)
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'customers/'.$store->id.'/category/'.$data['_parent']->get('Category Parent Key').'/'.$data['_parent']->id.'/customer/'.$prev_key
                 );
 
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $branch[] = array(
-                            'label' => $row['Category Code'],
-                            'icon'  => '',
-                            'url'   => 'customer_category.php?id='.$row['Category Key']
-                        );
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
 
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
+            }
+            $left_buttons[] = $up_button;
 
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'customers/'.$store->id.'/category/'.$data['_parent']->get('Category Parent Key').'/'.$data['_parent']->id.'/customer/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
 
             }
 
-
-            $up_button = array(
-                'icon'  => 'arrow-up',
-                'title' => _(
-                        "Category"
-                    ).' '.$category->data['Category Code'],
-                'url'   => 'customer_category.php?id='.$category->id
-            );
 
         } elseif ($data['parent'] == 'campaign') {
 
@@ -1174,9 +1180,9 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         $_section = 'customers';
 
     }
-    //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$customer->id);
-    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
-    //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
+
+
+
     if (!($store->get('Store Type') == 'External' or $store->get('Store Type') == 'Dropshipping')) {
         $right_buttons[] = array(
             'icon'  => 'shopping-cart',
@@ -1219,7 +1225,8 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span class="Customer_Level_Type_Icon">'.$customer->get('Level Type Icon').'</span>';
-    $title .= '<span class="id"><span class="Customer_Name_Truncated Name_Truncated">'.(strlen($customer->get('Customer Name')) > 50 ? substrwords($customer->get('Customer Name'), 55) : $customer->get('Customer Name')).'</span> ('.$customer->get_formatted_id().')</span>';
+    $title .= '<span class="id"><span class="Customer_Name_Truncated Name_Truncated">'.(strlen($customer->get('Customer Name')) > 50 ? substrwords($customer->get('Customer Name'), 55) : $customer->get('Customer Name')).'</span> ('.$customer->get_formatted_id()
+        .')</span>';
     if ($customer->get('Customer Type by Activity') == 'ToApprove') {
         $title .= ' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('To be approved').'</span>';
     } elseif ($customer->get('Customer Type by Activity') == 'Rejected') {
@@ -1242,7 +1249,11 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1288,7 +1299,11 @@ function get_deleted_customer_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1334,7 +1349,11 @@ function get_new_customer_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1381,7 +1400,11 @@ function get_new_list_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1431,7 +1454,11 @@ function get_customers_new_poll_query_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1626,7 +1653,11 @@ function get_customers_poll_query_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1673,7 +1704,11 @@ function get_customers_new_poll_query_option_navigation($data, $smarty, $user, $
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1720,7 +1755,11 @@ function get_customers_deleted_poll_query_option_navigation($data, $smarty, $use
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1915,7 +1954,11 @@ function get_customers_poll_query_option_navigation($data, $smarty, $user, $db) 
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2012,7 +2055,11 @@ function get_prospects_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2214,7 +2261,11 @@ function get_prospect_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2261,7 +2312,11 @@ function get_new_prospect_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2308,7 +2363,11 @@ function get_new_prospect_compose_email_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2678,7 +2737,11 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2725,7 +2788,11 @@ function get_prospects_new_template_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2923,7 +2990,11 @@ function get_prospects_email_template_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -3134,7 +3205,11 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -3315,7 +3390,11 @@ function get_mailshot_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -3370,15 +3449,19 @@ function get_new_customer_client_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 /**
  * @param $data
  * @param $smarty \Smarty
- * @param $user \User
- * @param $db \PDO
+ * @param $user   \User
+ * @param $db     \PDO
  *
  * @return string
  */
@@ -3521,9 +3604,9 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
 
 
     $right_buttons[] = array(
-        'html_icon'  => '<i class="fas fa-cart-arrow-down"></i>',
-        'title' => _("New dropshipping order"),
-        'id'    => 'take_customer_client_order'
+        'html_icon' => '<i class="fas fa-cart-arrow-down"></i>',
+        'title'     => _("New dropshipping order"),
+        'id'        => 'take_customer_client_order'
     );
 
 
@@ -3533,10 +3616,10 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<i class="far fa-address-book"></i> <span class="id Formatted_Client_Code">['.$client->get('Formatted Client Code').']</span> <span class="Name_Truncated">'.$client->get('Name Truncated').'</span>';
-    if($client->get('Customer Client Status')=='Inactive'){
-        $title.=' <span class="warning"><i class="fal fa-eye-slash"></i> '._('Removed').'</span>';
+    if ($client->get('Customer Client Status') == 'Inactive') {
+        $title .= ' <span class="warning"><i class="fal fa-eye-slash"></i> '._('Removed').'</span>';
     }
-    $title.=' <span class="very_small button padding_left_20" onclick="change_view(\'customers/'.$customer->get('Customer Store Key').'/'.$customer->id.'\')"><i class="fal fa-level-up"></i> <i class="fal fa-user"></i> '.$customer->get('Formatted ID').'</span>';
+    $title .= ' <span class="very_small button padding_left_20" onclick="change_view(\'customers/'.$customer->get('Customer Store Key').'/'.$customer->id.'\')"><i class="fal fa-level-up"></i> <i class="fal fa-user"></i> '.$customer->get('Formatted ID').'</span>';
 
     $_content = array(
         'sections_class' => '',
@@ -3553,7 +3636,11 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -3565,10 +3652,6 @@ function get_upload_navigation($data, $smarty, $user, $db) {
 
 
     $sections = get_sections('customers', $data['parent_key']);
-
-
-
-
 
 
     if ($data['_object']->get('Upload Object') == 'prospect') {
@@ -3608,7 +3691,11 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 

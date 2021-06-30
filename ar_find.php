@@ -1096,6 +1096,8 @@ function find_warehouse_areas($db, $data) {
 function find_customers($db, $data) {
 
 
+
+
     $max_results = 10;
     $q           = trim($data['query']);
 
@@ -1112,6 +1114,12 @@ function find_customers($db, $data) {
     }
 
 
+    if(empty($data['parent_key'])){
+        $data['parent_key']=$data['metadata']['parent_key'];
+    }
+
+
+
     $where_stores = sprintf(
         ' and `Customer Store Key`=%d', $data['parent_key']
     );
@@ -1124,7 +1132,7 @@ function find_customers($db, $data) {
 
     if (is_numeric($q)) {
         $sql = sprintf(
-            "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer ID`=%d  ", $q
+            "select `Customer Key`,`Customer Name`,`Store Key`,`Store Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where true $where_stores and `Customer Key`=%d  ", $q
         );
 
 
@@ -1206,7 +1214,7 @@ function find_customers($db, $data) {
 
 
             'value'           => $customer_key,
-            'formatted_value' => $candidates_data[$customer_key]['Customer Name']
+            'formatted_value' => $customer_key
 
 
         );

@@ -38,6 +38,18 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('customers')
 
         ),
+        'customer_category.customers' => array(
+            'view'          => 'overview',
+            'sort_key'      => 'formatted_id',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'name',
+            'elements_type' => array_keys(get_elements_option('customers'))[0],
+            'elements'      => get_elements_option('customers'),
+            'export_fields' => get_export_fields('customers')
+
+        ),
 
         'customers_dropshipping' => array(
             'view'          => 'overview',
@@ -60,6 +72,14 @@ function get_tab_defaults_data() {
             'f_field'       => 'name',
             'export_fields' => get_export_fields('customers')
 
+        ),
+        'customers.sub_categories'                => array(
+            'view'        => 'overview',
+            'sort_key'    => 'code',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'code'
         ),
 
         'customers.lists'        => array(

@@ -219,6 +219,7 @@ switch ($tab) {
     case 'poll_query_option.customers':
     case 'sales_representative.customers':
     case 'customers_dropshipping':
+    case 'customer_category.customers':
 
         $data = prepare_values(
             $_REQUEST, array(
@@ -1717,7 +1718,12 @@ function get_customers_element_numbers($db, $data) {
             $where = sprintf(' where `Customer Sales Representative Key`=%d  ', $data['parent_key']);
             break;
         case 'category':
-            $tab = 'customer.categories';
+
+            $where = sprintf(
+                " where `Subject`='Customer' and  `Category Key`=%d", $data['parent_key']
+            );
+            $table = ' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`) ';
+
             break;
         case 'list':
             $tab = 'customers.list';

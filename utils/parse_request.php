@@ -2124,9 +2124,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                         $parent_key = $category->get('Category Store Key');
 
 
-                        if (isset($view_path[1]) and is_numeric(
-                                $view_path[1]
-                            )) {
+                        if (isset($view_path[1]) and is_numeric($view_path[1])) {
                             $section    = 'customer';
                             $parent     = 'category';
                             $parent_key = $category->id;
@@ -2292,25 +2290,47 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                         } elseif ($view_path[0] == 'category') {
 
-                            $section = 'category';
+                            $section = 'sub_category';
                             $object  = 'category';
 
-                            if (isset($view_path[1]) and is_numeric($view_path[1])) {
 
-                                include_once 'class.Category.php';
-                                $key = $view_path[1];
+                            if (isset($view_path[1])) {
 
-                                $category = new Category($key);
+                                if (is_numeric($view_path[1])) {
+                                    $key = $view_path[1];
+                                    include_once 'class.Category.php';
+                                    $category = get_object('Category', $key);
+
+                                    $parent     = 'category';
+                                    $parent_key = $category->get('Category Parent Key');
 
 
-                                $parent     = 'category';
-                                $parent_key = $category->get(
-                                    'Category Parent Key'
-                                );
+                                    if (isset($view_path[2]) and is_numeric($view_path[2])) {
 
-                                //if ($category->get('Category Branch Type')=='Root') {
-                                //}
+
+                                        $parent     = 'category';
+                                        $parent_key = $category->id;
+                                        $section    = 'category';
+                                        $key        = $view_path[2];
+
+                                        if (isset($view_path[3]) and $view_path[3] == 'customer' and isset($view_path[4]) and is_numeric($view_path[4])) {
+
+                                            $section    = 'customer';
+                                            $parent     = 'category';
+                                            $parent_key = $view_path[2];
+                                            $object     = 'customer';
+                                            $key        = $view_path[4];
+
+                                        }
+
+
+                                    }
+
+
+                                }
                             }
+
+
                         } elseif ($view_path[0] == 'new') {
                             $section = 'customer.new';
                             $object  = '';
@@ -5963,7 +5983,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                                     $parent_key = $view_path[2];
                                                     $section    = 'customer_part';
                                                     $key        = $view_path[4];
-                                                }elseif ($view_path[4] == 'new') {
+                                                } elseif ($view_path[4] == 'new') {
 
 
                                                     $key     = '';
@@ -5975,7 +5995,6 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                             }
                                         }
                                     }
-
 
 
                                 }

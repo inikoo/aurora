@@ -1001,7 +1001,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
         $response['object_showcase'] = '_';
 
-
         switch ($state['module']) {
 
             case 'inventory':
@@ -1077,12 +1076,14 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 }
                 break;
             case 'customers':
+
+
                 switch ($state['section']) {
                     case 'customer_notifications':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-paper-plane"></i> '._("Notifications").' '.$store->get('Code'));
                         break;
                     case 'insights':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-graduation-cap"></i> '._("Customer's insigths").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-graduation-cap"></i> '._("Customer's insights").' '.$store->get('Code'));
                         break;
                     case 'lists':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-list"></i> '._("Customer's lists").' '.$store->get('Code'));
@@ -1093,6 +1094,13 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         break;
                     case 'prospects':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-user-friends"></i> '._('Prospects').' '.$store->get('Code'));
+                        break;
+                    case 'categories':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._("Customer's categories").' '.$store->get('Code'));
+                        break;
+                    case 'sub_category':
+                        exit;
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> <i class="fal fa-fw fa-sitemap"></i> '._("Customer's category"));
                         break;
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> '._('Customers').' '.$store->get('Code'));
@@ -1782,15 +1790,18 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
 
             } elseif ($data['_object']->get('Category Scope') == 'Supplier') {
                 include_once 'showcase/supplier_category_showcase.show.php';
-                $html = get_supplier_category_showcase(
-                    $data, $smarty, $user, $db
-                );
+                $html = get_supplier_category_showcase($data, $smarty, $user, $db);
 
             } elseif ($data['_object']->get('Category Scope') == 'Invoice') {
                 include_once 'showcase/invoice_category_showcase.show.php';
-                $html = get_invoice_category_showcase(
-                    $data, $smarty, $user, $db
-                );
+                $html = get_invoice_category_showcase($data, $smarty, $user, $db);
+
+            }elseif ($data['_object']->get('Category Scope') == 'Customer') {
+                include_once 'showcase/customer_category_showcase.show.php';
+                $html = get_customer_category_showcase($data, $smarty, $user, $db);
+
+                $web_location = '<i class="fal fa-fw fa-users"></i> <i class="fal fa-fw fa-sitemap"></i> '.$data['_object']->get('Category Code');
+
 
             } else {
                 return '_';
@@ -2167,9 +2178,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             switch ($data['section']) {
 
                 case ('customer'):
-                    return get_customer_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_customer_navigation($data, $smarty, $user, $db, $account);
 
 
                 case ('customers'):
@@ -2179,15 +2188,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('categories'):
 
-                    return get_customers_categories_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_customers_categories_navigation($data, $smarty, $user, $db, $account);
 
                 case ('category'):
+                case ('sub_category'):
 
-                    return get_customers_category_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_customers_category_navigation($data, $smarty, $user, $db, $account);
 
                 case ('lists'):
                     return get_customers_lists_navigation(
@@ -4332,8 +4338,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        } else {
-            $_content['tabs']['category.customers']['class'] = 'hide';
         }
 
 
@@ -5748,6 +5752,36 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'icon'      => 'user',
                             'reference' => 'customers/'.$state['store']->id.'/lists/'.$state['_parent']->id.'/'.$state['_object']->id
                         );
+                    } elseif ($state['parent'] == 'category') {
+                        $store = $state['store'];
+
+
+                        $branch[] = array(
+                            'label'     => _("Customer's categories").' '.$store->data['Store Code'],
+                            'icon'      => 'sitemap',
+                            'reference' => 'customers/'.$store->id.'/categories'
+                        );
+
+                        $grandparent = get_object('Category', $state['_parent']->get('Category Parent Key'));
+
+                        $branch[] = array(
+                            'label'     => $grandparent->get('Code'),
+                            'icon'      => '',
+                            'reference' => 'customers/'.$store->id.'/category/'.$state['_parent']->get('Category Parent Key')
+                        );
+
+                        $branch[] = array(
+                            'label'     => $state['_parent']->get('Code'),
+                            'icon'      => '',
+                            'reference' => 'customers/'.$store->id.'/category/'.$state['_parent']->get('Category Parent Key').'/'.$state['_parent']->id
+                        );
+
+
+                        $branch[] = array(
+                            'label'     => _('Customer').' '.$state['_object']->get_formatted_id(),
+                            'icon'      => 'user',
+                            'reference' => 'customers/'.$store->id.'/category/'.$state['_parent']->get('Category Parent Key').'/'.$state['_parent']->id.'/customer/'.$state['_object']->id
+                        );
                     }
                     break;
 
@@ -5959,13 +5993,51 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 case 'categories':
                     $branch[] = array(
-                        'label'     => _(
-                                "Customer's categories"
-                            ).' '.$store->data['Store Code'],
+                        'label'     => _("Customer's categories").' '.$store->data['Store Code'],
                         'icon'      => 'sitemap',
-                        'reference' => 'customers/categories/'.$store->id
+                        'reference' => 'customers/'.$store->id.'/categories'
                     );
                     break;
+                case 'sub_category':
+
+                    $store = $state['store'];
+
+                    $branch[] = array(
+                        'label'     => _("Customer's categories").' '.$store->data['Store Code'],
+                        'icon'      => 'sitemap',
+                        'reference' => 'customers/'.$store->id.'/categories'
+                    );
+
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Code'),
+                        'icon'      => '',
+                        'reference' => 'customers/'.$store->id.'/category/'.$state['_object']->id
+                    );
+                    break;
+                case 'category':
+
+                    $store = $state['store'];
+
+                    $branch[] = array(
+                        'label'     => _("Customer's categories").' '.$store->data['Store Code'],
+                        'icon'      => 'sitemap',
+                        'reference' => 'customers/'.$store->id.'/categories'
+                    );
+
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get('Code'),
+                        'icon'      => '',
+                        'reference' => 'customers/'.$store->id.'/category/'.$state['_parent']->id
+                    );
+
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Code'),
+                        'icon'      => '',
+                        'reference' => 'customers/'.$store->id.'/category/'.$state['_parent']->id.'/'.$state['_object']->id
+                    );
+                    break;
+
+
                 case 'lists':
                     $branch[] = array(
                         'label'     => _(

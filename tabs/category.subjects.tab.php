@@ -221,9 +221,6 @@ if ($category->get('Category Scope') == 'Product') {
 
 
 
-        $smarty->assign(
-            'js_code', 'js/injections/edit_categories.'.(_DEVEL ? '' : 'min.').'js'
-        );
 
 
 

@@ -2762,7 +2762,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             $object = $parent->create_category($data['fields_data']);
 
-
             if (!$parent->error) {
 
                 $smarty->assign('account', $account);
@@ -2895,6 +2894,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $updated_data    = array();
 
             break;
+
 
         case 'Category_Category':
 
@@ -3653,12 +3653,21 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             print_r($data);
 
             exit;
+        case 'Associate_Customer_Category':
 
+
+            $object=get_object('Customer',$data['fields_data']['Customer Key']);
+            if($object->id){
+                $parent->associate_subject($object->id);
+
+            }
+            $new_object_html = '';
+            $updated_data    = array();
             break;
         default:
             $response = array(
                 'state' => 400,
-                'msg'   => 'object process not found: '.$data['object']
+                'msg'   => 'object process not found: >>'.$data['object']
 
             );
 

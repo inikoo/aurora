@@ -495,24 +495,20 @@ function save_inline_new_object(trigger) {
     $('#' + object + '_save').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
 
-    var fields_data = {};
+
+    var fields_data = $('#inline_new_object').data('other_fields');
+
     var re = new RegExp('_', 'g');
 
     if (field_edit == 'time') {
         value = clean_time($('#' + field).val())
-
-
         value = $('#' + field + '_date').val() + ' ' + value
-        // value = fixedEncodeURIComponent(value)
     } else {
         var value = $('#' + field).val()
-        //var value = fixedEncodeURIComponent($('#' + field).val())
     }
 
 
     fields_data[field.replace(re, ' ')] = value
-    //var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
-    //console.log(request)
     var form_data = new FormData();
     form_data.append("tipo", 'new_object')
     form_data.append("object", object)

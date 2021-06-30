@@ -42,7 +42,6 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
 }
 
 

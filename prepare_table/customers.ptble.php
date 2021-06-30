@@ -9,7 +9,6 @@ $group_by = '';
 $fields = ' *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`';
 
 
-//print_r($parameters);
 
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
@@ -75,7 +74,6 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
         $where = sprintf(' where  P.`Product Family Category Key`=%d ', $parameters['parent_key']);
 
 
-
     }elseif($store->get('Store Department Category Key')==$category->get('Category Root Key')){
 
     }else{
@@ -85,7 +83,6 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 
 } elseif ($parameters['parent'] == 'category') {
-
     include_once 'class.Category.php';
     $category = new Category($parameters['parent_key']);
 

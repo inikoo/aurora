@@ -63,6 +63,9 @@ switch ($tipo) {
     case 'categories':
         categories(get_table_parameters(), $db, $user);
         break;
+    case 'sub_categories':
+        sub_categories(get_table_parameters(), $db, $user);
+        break;
     case 'customers_geographic_distribution':
         customers_geographic_distribution(get_table_parameters(), $db, $user);
         break;
@@ -139,8 +142,8 @@ function customers($_data, $db, $user) {
      * @var string $total
      */
 
-    if($_data['parameters']['parent']=='campaign'){
-        $campaign= get_object('campaign', $_data['parameters']['parent_key']);
+    if ($_data['parameters']['parent'] == 'campaign') {
+        $campaign = get_object('campaign', $_data['parameters']['parent_key']);
 
     }
 
@@ -217,6 +220,7 @@ function customers($_data, $db, $user) {
             }
 
 
+
             if ($parameters['parent'] == 'store') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
@@ -229,9 +233,13 @@ function customers($_data, $db, $user) {
                 $link_format  = '/customers/list/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
-            }elseif ($parameters['parent'] == 'campaign') {
+            } elseif ($parameters['parent'] == 'campaign') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $campaign->get('Deal Campaign Store Key'), $data['Customer Key'], $data['Customer Key']);
+
+            }elseif ($parameters['parent'] == 'category') {
+                $link_format  = '/customers/%d/category/%d/%d/customer/%s';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>',$parameters['store_key'],$parameters['grandparent_key'],$parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
             } else {
                 $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
@@ -286,6 +294,8 @@ function customers($_data, $db, $user) {
                 'failed_logins' => number($data['Customer Number Web Failed Logins']),
                 'requests'      => number($data['Customer Number Web Requests']),
                 'clients'       => number($data['Customer Number Clients']),
+                'disassociate_from_category' => sprintf('<i class="fa button fa-unlink" onclick="disassociate_category_from_table(this,%d,%d)" ></i>',$_data['parameters']['parent_key'], $data['Customer Key'])
+
 
 
             );
@@ -311,7 +321,6 @@ function customers($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function customers_dropshipping($_data, $db, $user) {
@@ -386,16 +395,15 @@ function customers_dropshipping($_data, $db, $user) {
             }
 
 
-
             switch ($data['Customer Type by Activity']) {
                 case 'ToApprove':
-                    $customer_status =sprintf('<i class="fal purple fa-question-circle" title="%s"></i>', _('To be approved'));
+                    $customer_status = sprintf('<i class="fal purple fa-question-circle" title="%s"></i>', _('To be approved'));
                     break;
                 case 'Lost':
-                    $customer_status =sprintf('<i class="fa error fa-do-not-enter" title="%s"></i>', _('Lost'));
+                    $customer_status = sprintf('<i class="fa error fa-do-not-enter" title="%s"></i>', _('Lost'));
                     break;
                 case 'Losing':
-                    $customer_status =sprintf('<i class="fa warning fa-check-circle" title="%s"></i>', _('Losing'));
+                    $customer_status = sprintf('<i class="fa warning fa-check-circle" title="%s"></i>', _('Losing'));
                     break;
                 case 'Active':
                     $customer_status = sprintf('<i class="fa success fa-check-circle" title="%s"></i>', _('Active'));
@@ -412,9 +420,8 @@ function customers_dropshipping($_data, $db, $user) {
             }
 
 
-                $link_format  = '/customers/%d/%d';
-                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
+            $link_format  = '/customers/%d/%d';
+            $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
 
             $table_data[] = array(
@@ -445,13 +452,13 @@ function customers_dropshipping($_data, $db, $user) {
                 'total_invoiced_net_amount' => money($data['Customer Invoiced Net Amount'], $currency),
 
 
-                'address'          => $data['Customer Contact Address Formatted'],
-                'billing_address'  => $billing_address,
+                'address'         => $data['Customer Contact Address Formatted'],
+                'billing_address' => $billing_address,
 
-                'customer_status'      => $customer_status,
+                'customer_status' => $customer_status,
 
-                'clients'       => number($data['Customer Number Clients']),
-                'portfolio'       => number($data['Customer Number Products in Portfolio']),
+                'clients'   => number($data['Customer Number Clients']),
+                'portfolio' => number($data['Customer Number Products in Portfolio']),
 
 
             );
@@ -631,6 +638,46 @@ function categories($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function sub_categories($_data, $db, $user) {
+    $rtext_label = 'category';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //print_r($_data);
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $adata[] = array(
+            'id'                  => (integer)$data['Category Key'],
+            'code'                => sprintf(
+                '<span class="link" onClick="change_view(\'customers/%d/category/%d/%d\')">%s</span>', $data['Category Store Key'], $data['Category Parent Key'], $data['Category Key'], $data['Category Code']
+            ),
+            'label'               => $data['Category Label'],
+            'customers'           => number($data['Category Number Subjects']),
+            'subcategories'       => number($data['Category Children']),
+            'percentage_assigned' => percentage(
+                $data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
+            )
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function customers_server($_data, $db, $user) {
 
@@ -2319,22 +2366,22 @@ function customer_clients($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            if($data['Customer Client Code']==''){
-                $code=sprintf('<span class="italic">%05d</span>',$data['Customer Client Key']);
-            }else{
-                $code=$data['Customer Client Code'];
+            if ($data['Customer Client Code'] == '') {
+                $code = sprintf('<span class="italic">%05d</span>', $data['Customer Client Key']);
+            } else {
+                $code = $data['Customer Client Code'];
             }
 
-            if($data['Customer Client Status']=='Active'){
-                $status='';
-            }else{
-                $status='<i class="warning fa fa-eye-slash fa-fw" title="'._('Removed').'"></i>';
+            if ($data['Customer Client Status'] == 'Active') {
+                $status = '';
+            } else {
+                $status = '<i class="warning fa fa-eye-slash fa-fw" title="'._('Removed').'"></i>';
             }
 
 
             $table_data[] = array(
                 'id'             => (integer)$data['Customer Client Key'],
-                'status'=>$status,
+                'status'         => $status,
                 'code'           => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/client/%d\')">%s</span>', $data['Customer Client Store Key'], $data['Customer Client Customer Key'], $data['Customer Client Key'], $code),
                 'name'           => $data['Customer Client Name'],
                 'since'          => strftime("%e %b %y", strtotime($data['Customer Client Creation Date'].' +0:00')),
@@ -2452,7 +2499,7 @@ function customer_portfolio($_data, $db, $user) {
                 'code'         => $code.$status_icon,
                 'name'         => $name,
                 'stock_status' => $stock_status,
-                'created'        => ($data['Customer Portfolio Creation Date'] == ''
+                'created'      => ($data['Customer Portfolio Creation Date'] == ''
                     ? ''
                     : sprintf(
                         '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Customer Portfolio Creation Date'].' +0:00')), strftime("%e %b %Y", strtotime($data['Customer Portfolio Creation Date'].' +0:00'))

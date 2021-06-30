@@ -154,9 +154,6 @@ class Store extends DB_Table {
 
                 return;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -286,14 +283,24 @@ class Store extends DB_Table {
             $account->editor = $this->editor;
 
 
+            $customer_root_category=$account->create_category(
+                [
+                    'Category Code'      => 'Cust_.'.$this->get('Store Code'),
+                    'Category Label'     => 'Cust_.'.$this->get('Store Code'),
+                    'Category Scope'     => 'Customer',
+                    'Category Subject'   => 'Customer',
+                    'Category Store Key' => $this->id
+                ]
+            );
+            $this->fast_update_json_field('Store Properties', 'customer_root_category_key', $customer_root_category->id);
+
+
             $families_category_data = array(
                 'Category Code'      => 'Fam.'.$this->get('Store Code'),
                 'Category Label'     => 'Families',
                 'Category Scope'     => 'Product',
                 'Category Subject'   => 'Product',
                 'Category Store Key' => $this->id
-
-
             );
 
 
@@ -1087,7 +1094,6 @@ class Store extends DB_Table {
             $amount = 'Store '.$key;
 
 
-
             return number($this->data[$amount]);
         }
         if (preg_match(
@@ -1117,7 +1123,6 @@ class Store extends DB_Table {
         if (array_key_exists('Store '.$key, $this->data)) {
             return $this->data['Store '.$key];
         }
-
 
     }
 
@@ -2577,8 +2582,6 @@ class Store extends DB_Table {
         }
 
 
-
-
         $data_to_update = array(
             'Store Orders Packed Number' => $data['packed']['number'],
             'Store Orders Packed Amount' => round($data['packed']['amount'], 2)
@@ -2594,10 +2597,6 @@ class Store extends DB_Table {
 
         );
         $this->fast_update($data_to_update, 'Store DC Data');
-
-
-
-
 
 
     }
@@ -2616,7 +2615,6 @@ class Store extends DB_Table {
         $sql = sprintf(
             "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State` ='PackedDone'  ", $this->id
         );
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -2647,14 +2645,12 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
             'Store Orders Packed Done Number' => $data['packed']['number'],
             'Store Orders Packed Done Amount' => round($data['packed']['amount'], 2)
 
 
         );
-
 
 
         $this->fast_update($data_to_update, 'Store Data');
@@ -2664,10 +2660,6 @@ class Store extends DB_Table {
 
         );
         $this->fast_update($data_to_update, 'Store DC Data');
-
-
-
-
 
 
     }
@@ -3440,8 +3432,8 @@ class Store extends DB_Table {
             unset($data['Customer Contact Address administrativeArea']);
         }
 
-        if($this->get('Store Type')=='Fulfilment'){
-            $data['Customer Fulfilment']='Yes';
+        if ($this->get('Store Type') == 'Fulfilment') {
+            $data['Customer Fulfilment'] = 'Yes';
         }
 
         //print_r($address_fields);
@@ -3459,11 +3451,11 @@ class Store extends DB_Table {
             if ($customer->new) {
 
 
-                if($this->get('Store Type')=='Fulfilment'){
+                if ($this->get('Store Type') == 'Fulfilment') {
 
-                    $account=get_object('Account',1);
+                    $account = get_object('Account', 1);
                     $account->load_acc_data();
-                    $sql="insert into `Customer Fulfilment Dimension` (`Customer Fulfilment Customer Key`,`Customer Fulfilment Metadata`,`Customer Fulfilment Warehouse Key`) values (?,'{}',?)";
+                    $sql = "insert into `Customer Fulfilment Dimension` (`Customer Fulfilment Customer Key`,`Customer Fulfilment Metadata`,`Customer Fulfilment Warehouse Key`) values (?,'{}',?)";
                     $this->db->prepare($sql)->execute(
                         array(
                             $customer->id,
@@ -4928,7 +4920,7 @@ class Store extends DB_Table {
                 ];
 
                 $settings = [
-                    'can_collect'      => $this->data['Store Can Collect']=='Yes',
+                    'can_collect' => $this->data['Store Can Collect'] == 'Yes',
 
                 ];
 
@@ -4981,7 +4973,7 @@ class Store extends DB_Table {
                 $params['data'] = json_encode(['timezone' => $value]);
                 break;
             case 'Store Can Collect':
-                $params['settings'] = json_encode(['can_collect' => $value=='Yes']);
+                $params['settings'] = json_encode(['can_collect' => $value == 'Yes']);
                 break;
             default:
                 return [

@@ -153,7 +153,7 @@ module.exports = function (grunt) {
                     'js_libs/amcharts/amcharts.js', 'js_libs/amcharts/serial.js', 'js_libs/amcharts/amstock.js', 'js_libs/amcharts/plugins/dataloader/dataloader.min.js', 'js_libs/amcharts/plugins/export/export.min.js', 'js_libs/jquery.fancybox.min.js', 'js_libs/jquery.awesome-cursor.min.js', 'js_libs/base64.js', //'js_libs/jquery.formatCurrency-1.4.0.min.js',
 
                     'js_libs/jquery.formatCurrency.js', //'bower_components/autobahn/autobahn.js',
-                    'js_libs/autobahn.v1.js',
+                    'js_libs/autobahn.v1.js'
 
                 ], dest: 'assets/aurora_libs.min.js',
 
@@ -176,7 +176,7 @@ module.exports = function (grunt) {
                     'js/inline_editing.js','js/dashboard.js',
                     'js/supplier.order.js', 'js/supplier.delivery.js','js/supplier.delivery.costing.js',
                     'js/part_locations.edit.js', 'js/part_locations.edit_locations.js', 'js/part_locations.stock_check.js', 'js/part_locations.move_stock.js', 'js/fast_track_packing.js', 'js/sticky_notes.js', 'js/picking_and_packing.js', 'js/app.js', 'js/real_time.js', 'js/customers.js', 'js/customer_orders.js', 'js/customer_client.js', 'js/customer_client_orders.js',
-                    'js/add_item_to_order.js','js/upload.js','js/islands.js','js/orders_control_panel.js','js/production.js','js/inventory.js'
+                    'js/add_item_to_order.js','js/upload.js','js/islands.js','js/orders_control_panel.js','js/production.js','js/inventory.js','js/edit_categories.js'
 
 
 

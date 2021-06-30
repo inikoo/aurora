@@ -18,7 +18,7 @@ function get_customers_module() {
         'sections'    => array(
             'dashboard' => array(
                 'type'      => 'left_button',
-                'label'     => _('Dashboard'),
+                'label'     => '',
                 'title'     => _("Customer's dashboard"),
                 'icon'      => 'tachometer',
                 'reference' => 'customers/%d/dashboard',
@@ -26,7 +26,6 @@ function get_customers_module() {
                     'customers.dashboard' => array()
                 )
             ),
-
 
 
             'upload' => array(
@@ -40,7 +39,7 @@ function get_customers_module() {
                 )
             ),
 
-            'customers' => array(
+            'customers'  => array(
                 'type'      => 'navigation',
                 'label'     => _('Customers'),
                 'icon'      => 'user',
@@ -51,7 +50,66 @@ function get_customers_module() {
 
 
             ),
-            'lists'     => array(
+            'categories' => array(
+                'type'      => 'navigation',
+                'label'     => _('Categories'),
+                'icon'      => 'sitemap',
+                'reference' => 'customers/%d/categories',
+                'tabs'      => array(
+                    'customers.categories' => array()
+                )
+            ),
+
+            'sub_category' => array(
+                'type' => 'object',
+
+                'tabs' => array(
+                    'customers.sub_categories' => array(
+                        'icon'      => 'sitemap',
+
+                        'label' => _('Subcategories'),
+                    ),
+                    'category.details'         => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'category.history'         => array(
+                        'title' => _('History, notes'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'icon_only right'
+                    ),
+
+                ),
+
+            ),
+
+
+            'category' => array(
+                'type' => 'object',
+
+                'tabs' => array(
+                    'customer_category.customers' => array(
+                        'label' => _('Customers'),
+                        'icon'  => 'user'
+                    ),
+                    'category.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'category.history' => array(
+                        'title' => _('History, notes'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'icon_only right'
+                    ),
+
+                ),
+
+            ),
+
+
+            'lists' => array(
                 'type'      => 'navigation',
                 'label'     => _('Lists'),
                 'icon'      => 'list',
@@ -98,9 +156,6 @@ function get_customers_module() {
             ),
 
 
-
-
-
             'list' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -141,30 +196,6 @@ function get_customers_module() {
 
             ),
 
-
-            'category' => array(
-                'type' => 'object',
-
-                'tabs' => array(
-                    'category.details'   => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'category.history'   => array(
-                        'label' => _('History'),
-                        'icon'  => 'sticky-note'
-                    ),
-                    'category.customers' => array('label' => _('Customers')),
-
-                    'category.categories' => array(
-                        'label' => _(
-                            'Subcategories'
-                        )
-                    ),
-
-                )
-
-            ),
 
             'customer' => array(
                 'type'           => 'object',
@@ -282,7 +313,7 @@ function get_customers_module() {
                                 'label' => _('Sales history')
                             ),
 
-                            'customer.sales.info'      => array(
+                            'customer.sales.info' => array(
                                 'label'   => '',
                                 'title'   => _('Sales data info'),
                                 'icon_v2' => 'fal fa-fw fa-chess-clock',
@@ -408,7 +439,6 @@ function get_customers_module() {
             ),
 
 
-
             'poll_query' => array(
                 'type'  => 'object',
                 'label' => _('Poll query'),
@@ -445,7 +475,7 @@ function get_customers_module() {
             ),
 
 
-            'poll_query_option' => array(
+            'poll_query_option'                  => array(
                 'type'  => 'object',
                 'label' => _('Poll query option'),
                 'title' => _('Poll query option'),
@@ -467,7 +497,7 @@ function get_customers_module() {
 
                 )
             ),
-            'poll_query_option.new' => array(
+            'poll_query_option.new'              => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'poll_query_option.new' => array(
@@ -488,7 +518,7 @@ function get_customers_module() {
 
                 )
             ),
-            'deleted_customer' => array(
+            'deleted_customer'                   => array(
                 'type' => 'object',
                 'tabs' => array(
                     'customer.history' => array(
@@ -526,7 +556,7 @@ function get_customers_module() {
                 )
 
             ),
-            'product' => array(
+            'product'                => array(
                 'type' => 'object',
                 'tabs' => array(
                     'customer.product.orders' => array(
@@ -585,7 +615,7 @@ function get_customers_module() {
 
             ),
 
-            'prospects' => array(
+            'prospects'                => array(
                 'type'      => 'navigation',
                 'label'     => _('Prospects'),
                 'title'     => _('Prospects'),
@@ -607,7 +637,7 @@ function get_customers_module() {
 
 
             ),
-            'prospect' => array(
+            'prospect'                 => array(
                 'type'      => 'object',
                 'label'     => _('Prospect'),
                 'title'     => _('Prospect'),
@@ -632,7 +662,7 @@ function get_customers_module() {
 
                 )
             ),
-            'prospect.new' => array(
+            'prospect.new'             => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'prospect.new' => array(
@@ -658,7 +688,7 @@ function get_customers_module() {
                 )
 
             ),
-            'prospects.template.new' => array(
+            'prospects.template.new'   => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'prospects.template.new' => array(

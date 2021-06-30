@@ -48,7 +48,7 @@ switch ($parameters['parent']) {
         switch ($parameters['subject']) {
 
             case('customer'):
-                $where .= sprintf(" and `Category Scope`='Customer'");
+                $where = sprintf(" where `Category Scope`='Customer'  and `Category Branch Type`='Node' and `Category Store Key`=%d ",$parameters['parent_key']);
                 break;
             case('product'):
                 $where .= sprintf(" and `Category Scope`='Product' ");

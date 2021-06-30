@@ -32,4 +32,4 @@ $smarty->assign('object', $category);
 
 $html = $smarty->fetch('edit_object.tpl');
 
-?>
+
