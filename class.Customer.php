@@ -763,6 +763,26 @@ class Customer extends Subject {
 
 
                 }
+                if (preg_match('/^Category (\d+)/i', $key, $matches)) {
+
+                    $category_key   = $matches[1];
+                    $category_code='';
+                    $category = get_object('Category', $category_key);
+                    if($category->id){
+                        foreach($category->get_children_with_subject($this->id) as $children_data){
+                            $category_code.=', '.$children_data[1];
+                        }
+
+                    }
+                    if($category_code==''){
+                        $category_code=_('Not assigned');
+
+                    }
+
+                    return preg_replace('/^, /', '', $category_code);
+
+
+                }
 
 
                 if (preg_match(
@@ -1587,6 +1607,27 @@ class Customer extends Subject {
 
                     $poll_key = $matches[1];
                     $this->update_poll_answer($poll_key, $value, $options);
+
+                    return;
+                }
+
+                if (preg_match('/^Customer Category (\d+)/i', $field, $matches)) {
+
+                    if($value>0){
+                        $category=get_object('Category',$value);
+                        $category->editor=$this->editor;
+                        $category->associate_subject($this->id);
+
+                    }else{
+                        $category=get_object('Category',$matches[1]);
+                        foreach($category->get_children_with_subject($this->id) as $child_key=>$children_data){
+                            $category=get_object('Category',$child_key);
+                            $category->editor=$this->editor;
+                            $category->disassociate_subject($this->id);
+                        }
+
+                    }
+
 
                     return;
                 }

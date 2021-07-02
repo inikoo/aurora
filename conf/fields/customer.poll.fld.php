@@ -67,10 +67,6 @@ while ($row = $stmt->fetch()) {
                 $options[$row2['Customer Poll Query Option Key']] = $row2['Customer Poll Query Option Label'];
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         list($answer_code, $answer_label, $answer_key) = $poll_query->get_answer($customer->id);

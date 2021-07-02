@@ -2087,6 +2087,7 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
+
         if (array_key_exists($field, $this->base_data())) {
 
 
@@ -2956,6 +2957,31 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     function properties($key) {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
+
+    function get_children_with_subject($subject_key) {
+
+        $children = [];
+        $sql      = "select B.`Category Key`,`Category Code`,`Category Label` from `Category Bridge` B left join `Category Dimension` C on (B.`Category Key`=C.`Category Key`)  where `Category Parent Key`=? and `Subject Key`=? ";
+        $stmt     = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id,
+                $subject_key
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $children[$row['Category Key']] = [
+                $row['Category Key'],
+                $row['Category Code'],
+                $row['Category Label']
+
+            ];
+        }
+
+        return $children;
+
     }
 
 

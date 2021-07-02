@@ -102,7 +102,7 @@ if ($user->can_supervisor('accounting')) {
 
 
     $customer_level_type_field = array(
-        'id'   => 'Customer_Credit_Limit',
+        'id'   => 'Customer_Level_Type',
         'edit' => ($can_supervisor_accounting ? 'string' : ''),
 
         'value'           => $object->get('Customer Level Type'),
@@ -114,6 +114,60 @@ if ($user->can_supervisor('accounting')) {
 
     );
 }
+
+$customer_category_fields = [];
+
+$customer_category_fields[]=$customer_level_type_field;
+
+$sql  = "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Customer' and  `Category Branch Type`='Node' and `Category Store Key`=? and `Category Children`>0";
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array(
+        $store->id
+    )
+);
+while ($row = $stmt->fetch()) {
+
+
+    $options = array();
+    $options[0]=_('Not assigned');
+    $sql     = 'SELECT `Category Key`,`Category Code`  FROM `Category Dimension` WHERE `Category Parent Key`=? ';
+    $stmt2   = $db->prepare($sql);
+    $stmt2->execute(
+        array(
+            $row['Category Key']
+        )
+    );
+    while ($row2 = $stmt2->fetch()) {
+        $options[$row2['Category Key']] = $row2['Category Code'];
+    }
+
+    $answer_key     = 0;
+    $answer_label   = _('Not assigned');
+    $category       = get_object('Category', $row['Category Key']);
+    $current_values = $category->get_children_with_subject($object->id);
+    if (count($current_values) > 0) {
+        $current_value = array_pop($current_values);
+        $answer_key    = $current_value[0];
+        $answer_label  = $current_value[1];
+    }
+
+
+    $customer_category_fields[] = array(
+        'id'              => 'Customer_Category_'.$row['Category Key'],
+        'edit'            => ($edit ? 'option' : ''),
+        'options'         => $options,
+        'value'           => $answer_key,
+        'formatted_value' => $answer_label,
+        'label'           => $row['Category Code'],
+        'type'            => 'value'
+
+
+    );
+
+
+}
+
 
 
 if ($new) {
@@ -791,7 +845,6 @@ if ($new) {
         'class'      => 'edit_fields '.($store->get('Store Type') == 'Dropshipping' ? 'hide' : ''),
         'fields'     => array(
 
-            $customer_level_type_field,
 
             array(
                 'render' => (($object->get('Customer Level Type') == 'Partner' or $store->get('Store Type') == 'Dropshipping') ? false : true),
@@ -826,14 +879,25 @@ if ($new) {
 
     );
 
+    $cat_fields= array(
+        'label' => _('Categories'),
+
+        'show_title' => true,
+        'fields'     => $customer_category_fields
+
+    );
+
+
+
+    $customer_fields[] =$cat_fields;
+
     $customer_fields[] = array(
         'label' => _('Integrations'),
 
         'show_title' => true,
-        'class'      => 'edit_fields '.($store->get('Store Type') != 'Dropshipping' ? 'hide' : ''),
+        // 'class'      => 'edit_fields '.($store->get('Store Type') != 'Dropshipping' ? 'hide' : ''),
         'fields'     => array(
 
-            $customer_level_type_field,
 
             array(
                 'id'              => 'Customer_Integration_Shopify',
@@ -848,6 +912,7 @@ if ($new) {
         )
 
     );
+
 
     $customer_fields[] = array(
         'label'      => _('Operations'),
