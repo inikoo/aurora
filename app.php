@@ -14,18 +14,16 @@ require_once 'common.php';
 require_once 'utils/timezones.php';
 
 $smarty->assign('_request', $_SERVER['REQUEST_URI']);
-$smarty->assign('_side_block', (!empty($_SESSION['side_block']) ? $_SESSION['side_block'] : 'real_time_users'));
-
-;
+$smarty->assign('_side_block', (!empty($_SESSION['side_block']) ? $_SESSION['side_block'] : 'real_time_users'));;
 require_once 'external_libs/mobile_detect/Mobile_Detect.php';
 $detect = new Mobile_Detect;
 
 if ($detect->isMobile() and false) {
     $display_device_version = 'mobile';
-    $detected_device = 'mobile';
+    $detected_device        = 'mobile';
 } else {
     $display_device_version = 'desktop';
-    $detected_device = 'desktop';
+    $detected_device        = 'desktop';
 
 }
 
@@ -33,18 +31,24 @@ if (isset($_SESSION['display_device_version']) and $_SESSION['display_device_ver
     $display_device_version = $_SESSION['display_device_version'];
 
 }
-$display_device_version='desktop';
+$display_device_version = 'desktop';
 
 
-
-$_SESSION['display_device_version']=$display_device_version;
-$_SESSION['detected_device']=$detected_device;
+$_SESSION['display_device_version'] = $display_device_version;
+$_SESSION['detected_device']        = $detected_device;
 
 $smarty->assign('timezone_info', get_timezone_info());
 
 
 $smarty->assign('firebase', get_firebase_data());
-$smarty->assign('is_devel', (ENVIRONMENT=='DEVEL'?true:false));
+$smarty->assign('is_devel', (ENVIRONMENT == 'DEVEL' ? true : false));
+
+$jira_widget = '';
+if (defined('JIRA_WIDGET')) {
+    $jira_widget = JIRA_WIDGET;
+}
+$smarty->assign('jira_widget', $jira_widget);
+
 
 if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');

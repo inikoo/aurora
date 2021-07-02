@@ -90,8 +90,9 @@
 
     </script>
 {/if}
-
-
+{if $jira_widget!=''}
+<script data-jsd-embedded data-key="{$jira_widget}" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>
+{/if}
 <div id="top_bar">
 
 
