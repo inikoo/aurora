@@ -684,19 +684,40 @@ class Customer extends Subject {
                 );
                 while ($row = $stmt->fetch()) {
 
-                    if($row['Customer Poll Query Option Key']){
-                        $poll_overview .= sprintf(' <span>&#183;</span> <span class="link" onClick="change_view(\'customers/%d/poll_query/%d/option/%d\')">%s</span>', $this->get('Store Key'),$row['Customer Poll Query Key'],$row['Customer Poll Query Option Key'],
-                                                  trim($row['Customer Poll Query Option Name'].' '.$row['Customer Poll Reply']));
-                    }else{
+                    if ($row['Customer Poll Query Option Key']) {
+                        $poll_overview .= sprintf(
+                            ' <span>&#183;</span> <span class="link" onClick="change_view(\'customers/%d/poll_query/%d/option/%d\')">%s</span>', $this->get('Store Key'), $row['Customer Poll Query Key'], $row['Customer Poll Query Option Key'],
+                            trim($row['Customer Poll Query Option Name'].' '.$row['Customer Poll Reply'])
+                        );
+                    } else {
                         $poll_overview .= sprintf(' <span>&#183;</span> <span class=" italic" >%s</span>', $row['Customer Poll Reply']);
                     }
 
 
                 }
-                $poll_overview = preg_replace('/^ \<span>\&\#183;\<\/span>/', '', $poll_overview);
 
-                return $poll_overview;
+                return preg_replace('/^ \<span>\&\#183;\<\/span>/', '', $poll_overview);
+            case 'Categories Overview':
+                $categories_overview = '';
 
+                $sql  =
+                    "select `Category Code`,`Category Label`,`Category Parent Key`,B.`Category Key` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where `Subject Key`=? and `Category Scope`='Customer' and `Category Branch Type`='Head' ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+
+                    $categories_overview .= sprintf(
+                        ' <span>&#183;</span> <span class="link" onClick="change_view(\'customers/%d/category/%d/%d\')">%s</span>', $this->get('Store Key'), $row['Category Parent Key'], $row['Category Key'], $row['Category Code']
+                    );
+
+
+                }
+
+                return preg_replace('/^ \<span>\&\#183;\<\/span>/', '', $categories_overview);
             default:
 
 
@@ -1632,6 +1653,19 @@ class Customer extends Subject {
                     $poll_key = $matches[1];
                     $this->update_poll_answer($poll_key, $value, $options);
 
+                    $poll_overview = $this->get('Poll Overview');
+
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'poll_overview' => $poll_overview,
+                        )
+                    );
+
+                    if ($poll_overview == '') {
+                        $this->update_metadata['hide'] = array('poll_overview_display');
+                    } else {
+                        $this->update_metadata['show'] = array('poll_overview_display');
+                    }
                     return;
                 }
 
@@ -1652,6 +1686,20 @@ class Customer extends Subject {
 
                     }
 
+
+                    $categories_overview = $this->get('Categories Overview');
+
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'categories_overview' => $categories_overview,
+                        )
+                    );
+
+                    if ($categories_overview == '') {
+                        $this->update_metadata['hide'] = array('categories_overview_display');
+                    } else {
+                        $this->update_metadata['show'] = array('categories_overview_display');
+                    }
 
                     return;
                 }

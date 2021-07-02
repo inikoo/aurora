@@ -178,9 +178,12 @@
                     </td>
                 </tr>
                 {assign "poll_overview" $customer->get('Poll Overview')}
-                <tr  class="poll_overview small {if $poll_overview==''}hide{/if}">
-                    <td colspan=2 style="border-top:1px solid #ccc;padding:3px 0px" class="discreet ">{$poll_overview}</td>
-
+                <tr  class="poll_overview_display small {if $poll_overview==''}hide{/if}">
+                    <td colspan=2 style="border-top:1px solid #ccc;padding:3px 0px" class="discreet poll_overview">{$poll_overview}</td>
+                </tr>
+                {assign "categories_overview" $customer->get('Categories Overview')}
+                <tr  class="categories_overview_display small {if $categories_overview==''}hide{/if}">
+                    <td colspan=2 style="border-top:1px solid #ccc;padding:3px 0px" class="categories_overview discreet ">{$categories_overview}</td>
                 </tr>
 
             </table>
