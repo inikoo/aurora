@@ -177,9 +177,9 @@ class Customer extends Subject {
         }
 
 
-        $eori='';
-        if(isset($raw_data['Customer EORI'])){
-            $eori=$raw_data['Customer EORI'];
+        $eori = '';
+        if (isset($raw_data['Customer EORI'])) {
+            $eori = $raw_data['Customer EORI'];
             unset($raw_data['Customer EORI']);
 
         }
@@ -206,7 +206,7 @@ class Customer extends Subject {
         );
 
         $stmt = $this->db->prepare($sql);
-        $i = 1;
+        $i    = 1;
         foreach ($raw_data as $key => $value) {
             $stmt->bindValue($i, $value);
             $i++;
@@ -224,8 +224,7 @@ class Customer extends Subject {
             $this->get_data('id', $this->id);
 
 
-            $this->fast_update_json_field('Customer Metadata','eori', $eori);
-
+            $this->fast_update_json_field('Customer Metadata', 'eori', $eori);
 
 
             if ($this->data['Customer Company Name'] != '') {
@@ -652,7 +651,7 @@ class Customer extends Subject {
                     default:
                         return '';
                 }
-                break;
+
             case 'Absolute Refunded Net Amount':
                 if (!isset($this->store)) {
                     $store       = get_object('Store', $this->data['Customer Store Key']);
@@ -672,6 +671,31 @@ class Customer extends Subject {
                                            $this->data['Customer First Contacted Date'].' +0:00'
                                        )
                 );
+            case 'Poll Overview':
+                $poll_overview = '';
+
+                $sql  =
+                    "select `Customer Poll Reply`,`Customer Poll Query Option Name`,CPF.`Customer Poll Query Key`,CPF.`Customer Poll Query Option Key` from `Customer Poll Fact` CPF left join `Customer Poll Query Option Dimension` CPQOD on (CPQOD.`Customer Poll Query Option Key`=CPF.`Customer Poll Query Option Key`) where `Customer Poll Customer Key`=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                while ($row = $stmt->fetch()) {
+
+                    if($row['Customer Poll Query Option Key']){
+                        $poll_overview .= sprintf(' <span>&#183;</span> <span class="link" onClick="change_view(\'customers/%d/poll_query/%d/option/%d\')">%s</span>', $this->get('Store Key'),$row['Customer Poll Query Key'],$row['Customer Poll Query Option Key'],
+                                                  trim($row['Customer Poll Query Option Name'].' '.$row['Customer Poll Reply']));
+                    }else{
+                        $poll_overview .= sprintf(' <span>&#183;</span> <span class=" italic" >%s</span>', $row['Customer Poll Reply']);
+                    }
+
+
+                }
+                $poll_overview = preg_replace('/^ \<span>\&\#183;\<\/span>/', '', $poll_overview);
+
+                return $poll_overview;
 
             default:
 
@@ -765,17 +789,17 @@ class Customer extends Subject {
                 }
                 if (preg_match('/^Category (\d+)/i', $key, $matches)) {
 
-                    $category_key   = $matches[1];
-                    $category_code='';
-                    $category = get_object('Category', $category_key);
-                    if($category->id){
-                        foreach($category->get_children_with_subject($this->id) as $children_data){
-                            $category_code.=', '.$children_data[1];
+                    $category_key  = $matches[1];
+                    $category_code = '';
+                    $category      = get_object('Category', $category_key);
+                    if ($category->id) {
+                        foreach ($category->get_children_with_subject($this->id) as $children_data) {
+                            $category_code .= ', '.$children_data[1];
                         }
 
                     }
-                    if($category_code==''){
-                        $category_code=_('Not assigned');
+                    if ($category_code == '') {
+                        $category_code = _('Not assigned');
 
                     }
 
@@ -1148,7 +1172,7 @@ class Customer extends Subject {
         switch ($field) {
             case 'Customer EORI':
 
-                $this->fast_update_json_field('Customer Metadata','eori', $value);
+                $this->fast_update_json_field('Customer Metadata', 'eori', $value);
 
                 break;
 
@@ -1613,16 +1637,16 @@ class Customer extends Subject {
 
                 if (preg_match('/^Customer Category (\d+)/i', $field, $matches)) {
 
-                    if($value>0){
-                        $category=get_object('Category',$value);
-                        $category->editor=$this->editor;
+                    if ($value > 0) {
+                        $category         = get_object('Category', $value);
+                        $category->editor = $this->editor;
                         $category->associate_subject($this->id);
 
-                    }else{
-                        $category=get_object('Category',$matches[1]);
-                        foreach($category->get_children_with_subject($this->id) as $child_key=>$children_data){
-                            $category=get_object('Category',$child_key);
-                            $category->editor=$this->editor;
+                    } else {
+                        $category = get_object('Category', $matches[1]);
+                        foreach ($category->get_children_with_subject($this->id) as $child_key => $children_data) {
+                            $category         = get_object('Category', $child_key);
+                            $category->editor = $this->editor;
                             $category->disassociate_subject($this->id);
                         }
 
