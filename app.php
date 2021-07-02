@@ -49,6 +49,11 @@ if (defined('JIRA_WIDGET')) {
 }
 $smarty->assign('jira_widget', $jira_widget);
 
+$jira_portal = '';
+if (defined('JIRA_WIDGET')) {
+    $jira_portal = JIRA_PORTAL;
+}
+$smarty->assign('jira_portal', $jira_portal);
 
 if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');

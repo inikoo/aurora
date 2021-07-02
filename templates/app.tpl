@@ -10,14 +10,13 @@
 
 
 
-    {if !empty($sentry_js)}
-        <script
-                src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
-                integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
-                crossorigin="anonymous"
-        ></script>
-
-    {/if}
+        {if !empty($sentry_js)}
+            <script
+                    src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
+                    integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
+                    crossorigin="anonymous"
+            ></script>
+        {/if}
 
     {/if}
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -36,7 +35,6 @@
 
 
     <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" async></script>
-
 
 </head>
 <body
@@ -91,14 +89,14 @@
     </script>
 {/if}
 {if $jira_widget!=''}
-<script data-jsd-embedded data-key="{$jira_widget}" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>
+    <script data-jsd-embedded data-key="{$jira_widget}" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>
 {/if}
 <div id="top_bar">
 
 
     <div id="view_position"></div>
 
-    <div id="profile_section" >
+    <div id="profile_section">
 
         <span class="button" style="margin-right: 15px" " onclick="change_view('profile')">
         <i class="button fa fa-user-circle  " style="margin-right: 4px"></i>
@@ -143,11 +141,18 @@
                     </li>
                 {/if}
                 {if  $user->get('User Type')=='Staff' or   $user->get('User Type')=='Contractor' }
-                <li class="hide_desktop" onclick="change_view('/fire')"><i class="fa fa-chess-clock fa-fw"  title="{t}Attendance{/t}"></i> <span class="label"> {t}Attendance{/t}</span> </li>
+                    <li class="hide_desktop" onclick="change_view('/fire')"><i class="fa fa-chess-clock fa-fw" title="{t}Attendance{/t}"></i> <span class="label"> {t}Attendance{/t}</span></li>
                 {/if}
 
 
             </ul>
+            {if $jira_portal!=''}
+                <ul class="help" style="margin-top: 5px">
+                    <li><span onclick="window.open('{$jira_portal}', '_blank')">
+                        <i class="fal fa-question-circle fa-fw"></i><span class="label"> {t}Help center{/t}</span></span></span>
+                    </li>
+                </ul>
+            {/if}
 
 
             <div class="aurora_version">
@@ -161,13 +166,6 @@
                 <div class=" small"></div>
 
 
-                <div id="submit_ticket" style="margin-top: 10px" onclick="FreshWidget.show(); return false;">
-                    <span class="button" onclick="show_side_content('help')">{t}Submit ticket{/t}</span>
-
-                    <i class=" far fa-headset" title="{t}Submit ticket{/t}"></i>
-                </div>
-
-
             </div>
 
         </div>
@@ -175,17 +173,17 @@
             <div id="navigation">
                 <div id="address_bar" style="display: flex;position: relative;">
 
-                    <div id="top_menu" >
+                    <div id="top_menu">
 
                     </div>
 
                     <div class="smart_search_input">
 
-                        <label  for="smart_search" aria-label="{t}Search{/t}">
+                        <label for="smart_search" aria-label="{t}Search{/t}">
                             <i class="far fa-search"></i>
                         </label>
                         <form>
-                            <input />
+                            <input/>
                         </form>
                         <div class="options">
                             <span class="close_search ">
@@ -239,7 +237,7 @@
         <div class="top_buttons">
 
 
-            <div data-type="help" onclick="show_side_content('help')" class="help_button side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
+            <div data-type="help" onclick="show_side_content('help')" class="hide help_button side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
                 <i class="fa fa-question-circle fa-fw  "></i>
             </div>
 
@@ -248,10 +246,9 @@
                 <i class="fa fa-user-circle fa-fw  "></i>
             </div>
 
-                <div data-type="fire" onclick="change_view('/fire')" title="{t}Attendance{/t}"  class=" right_bookmarks side_content_icon square_button">
-                    <i class="fa fa-chess-clock fa-fw "></i>
-                </div>
-
+            <div data-type="fire" onclick="change_view('/fire')" title="{t}Attendance{/t}" class=" right_bookmarks side_content_icon square_button">
+                <i class="fa fa-chess-clock fa-fw "></i>
+            </div>
 
 
             <div style="clear:both"></div>
@@ -301,42 +298,11 @@
 </div>
 
 {if !$is_devel}
-    <style>
-        #freshwidget-frame, #fc_widget {
-            background-color: initial
-        }
 
-        .d-hotline.h-btn {
-            opacity: .5;
-            transform: scale(.5) !important;
-        }
-
-
-    </style>
-    <script type="text/javascript" src="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.js"></script>
-    <script type="text/javascript">
-        FreshWidget.init("", {
-            "queryString": "{if $user->get('User Password Recovery Email')!=''}helpdesk_ticket[requester]={$user->get('User Password Recovery Email')}&disable[requester]=true{/if}&widgetType=popup&submitTitle=Submit+ticket",
-            "utf8": "✓",
-            "widgetType": "popup",
-            "buttonType": "text",
-            "buttonText": "Support",
-            "buttonColor": "white",
-            "buttonBg": "#006063",
-            "alignment": "3",
-            "offset": "-1000px",
-            "formHeight": "580px",
-            "url": "https://inikoo.freshdesk.com"
-        });
-    </script>
-
-
-
-    {if !empty($firebase)}
+{if !empty($firebase)}
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-messaging.js"></script>
-
     <script>
         var firebaseConfig = {
             apiKey: "{$firebase.apiKey}",
@@ -346,19 +312,34 @@
             storageBucket: "{$firebase.projectId}.appspot.com",
             messagingSenderId: "{$firebase.messagingSenderId}",
             appId: "{$firebase.appId}",
-            measurementId:  "{$firebase.measurementId}"
+            measurementId: "{$firebase.measurementId}"
         };
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
 
         //const messaging = firebase.messaging();
-       // messaging.usePublicVapidKey('<YOUR_PUBLIC_VAPID_KEY_HERE>');
+        // messaging.usePublicVapidKey('<YOUR_PUBLIC_VAPID_KEY_HERE>');
 
 
     </script>
-    {/if}
+
 
 
 {/if}
+{/if}
+
+<script>
+    $(document).ready(function() {
+        $('#jsd-widget').ready(function() {
+
+            $('#jsd-widget')
+                .contents().find("head")
+                .append($('<style>body{ background-color:white !important;}  #button-container{ opacity: .7} #help-button{  height: 30px !important;line-height: 30px!important;font-weight:normal !important;} #help-button.text { font-size: 14px !important;} </style>')
+                );
+        });
+    })
+
+
+</script>
 </body>
 </html>

@@ -10,7 +10,7 @@
 
 <script>
 
-    const _t = (s) => {
+     _t = (s) => {
         if (i18n !== void 0 && i18n[s]) {
             return i18n[s];
         }
@@ -18,14 +18,14 @@
         return s;
     };
 
-    const timezones = [
+     timezones = [
         {foreach from=$timezones item=timezone}
         "{$timezone}",
         {/foreach}
     ]
 
 
-    const i18n = {
+     i18n = {
         "Etc/GMT+12": "International Date Line West",
         "Pacific/Pago_Pago": "(SST) Samoa; Midway Island; Niue",
         "Pacific/Honolulu": "(HST) Hawaii; Cook Islands; Tahiti",
@@ -137,7 +137,7 @@
     //const dateTimeUtc = moment("2017-06-05T19:41:03Z").utc();
     //document.querySelector(".js-TimeUtc").innerHTML = dateTimeUtc.format("ddd, DD MMM YYYY HH:mm:ss");
 
-    const selectorOptions = moment.tz.names()
+     selectorOptions = moment.tz.names()
         .filter(tz => {
             return timezones.includes(tz)
         })
@@ -182,7 +182,7 @@
 
     document.querySelector(".timezone_select").value = "{$field.value}";
 
-    const event = new Event("change");
+     event = new Event("change");
     document.querySelector(".timezone_select").dispatchEvent(event);
 
     $(".timezone_select").select2();
