@@ -66,7 +66,7 @@
 
     <div class="left">
         {if $status_page!=''}
-            <a href="{$status_page}" target="_blank" >{t}Status page{/t}x</a>
+            <a href="{$status_page}" target="_blank" >{t}Status page{/t}</a>
 
         {/if}
     </div>
