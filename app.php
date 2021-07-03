@@ -55,6 +55,20 @@ if (defined('JIRA_WIDGET')) {
 }
 $smarty->assign('jira_portal', $jira_portal);
 
+$status_page = '';
+if (defined('STATUS_PAGE')) {
+    $status_page = STATUS_PAGE;
+}
+$smarty->assign('status_page', $status_page);
+
+$status_page_widget = '';
+if (defined('STATUS_PAGE_WIDGET')) {
+    $status_page_widget = STATUS_PAGE;
+}
+$smarty->assign('status_page_widget', $status_page_widget);
+
+
+
 if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');
 } else {

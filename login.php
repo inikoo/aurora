@@ -110,6 +110,17 @@ if ($account->id and $account->get('Account State') == 'Active') {
     
     $smarty->assign('bg_image', $bg_image);
 
+    $status_page = '';
+    if (defined('STATUS_PAGE')) {
+        $status_page = STATUS_PAGE;
+    }
+    $smarty->assign('status_page', $status_page);
+
+    $status_page_widget = '';
+    if (defined('STATUS_PAGE_WIDGET')) {
+        $status_page_widget = STATUS_PAGE_WIDGET;
+    }
+    $smarty->assign('status_page_widget', $status_page_widget);
 
     if ($display_device_version=='mobile') {
         $smarty->display("login.mobile.tpl");

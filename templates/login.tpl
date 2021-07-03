@@ -6,26 +6,19 @@
 <head>
     <link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon"/>
     <title>{t}Login{/t}</title>
-
     <link href="/assets/login.min.css" rel="stylesheet">
-
-
     {if !empty($sentry_js)}
-
         <script
                 src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
                 integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
                 crossorigin="anonymous"
         ></script>
+        <script>
+            Sentry.init({
+                dsn: '{$sentry_js}', release: "__AURORA_RELEASE__"
 
-    <script>
-        Sentry.init({
-        dsn: '{$sentry_js}',
-        release: "__AURORA_RELEASE__"
-
-        });
+            });
         </script>
-
     {/if}
 
     <script src="/assets/login_libs.min.js"></script>
@@ -44,7 +37,7 @@
                 aurora
             </div>
         </div>
-        <form class="form form--login" name="login_form" id="login_form" method="post"  action="authorization.php">
+        <form class="form form--login" name="login_form" id="login_form" method="post" action="authorization.php">
             <input type="hidden" id="blow_fish" value="{$st}"/>
             <input type="hidden" id="token" name="token" value=""/>
             <input type="hidden" name="url" value="{$url}">
@@ -69,11 +62,26 @@
     </div>
 </div>
 
+<div id="footer">
+
+    <div class="left">
+        {if $status_page!=''}
+            <a href="{$status_page}" target="_blank" >{t}Status page{/t}x</a>
+
+        {/if}
+    </div>
+
+    <div style="text-align: center;"></div>
+    <div style="text-align: right;"></div>
+
+</div>
 
 <script>
     $.backstretch('{$bg_image}');
 </script>
-
+{if $status_page_widget!=''}
+    <script src="https://{$status_page_widget}.statuspage.io/embed/script.js"></script>
+{/if}
 
 </body>
 </html>

@@ -134,11 +134,13 @@ input {
       padding-left: 1.25rem;
       padding-right: 1.25rem;
     }
+
     i {
       position: relative;
       top: 4px;
       color: $form--login__fw_color
     }
+
     input {
 
       &[type="text"],
@@ -153,7 +155,6 @@ input {
         }
 
       }
-
 
 
     }
@@ -172,24 +173,22 @@ input {
 }
 
 
-
-button{
+button {
   width: 100%;
-  border:none;
+  border: none;
 
   border-radius: $form--login__border-radus;
   padding: 1rem;
   cursor: pointer;
-    background-color: $form--login__submit__bgcolor;
-    color: $form--login__submit__color;
-    font-weight: bold;
-    text-transform: uppercase;
+  background-color: $form--login__submit__bgcolor;
+  color: $form--login__submit__color;
+  font-weight: bold;
+  text-transform: uppercase;
 
-    &:focus,
-    &:hover {
-      background-color: $form--login__submit__bgcolor--hover;
-    }
-
+  &:focus,
+  &:hover {
+    background-color: $form--login__submit__bgcolor--hover;
+  }
 
 
 }
@@ -228,6 +227,7 @@ button{
 
   .logo {
     width: 100px;
+
     &.setup {
       width: 50px;
     }
@@ -251,6 +251,28 @@ button{
     margin: 0 auto;
     max-width: $grid__container__max-width;
     width: $grid__container__width;
+  }
+
+}
+
+#footer {
+  position: fixed;
+  display: flex;
+  left: 0px;
+  bottom: 0px;
+  height: 28px;
+  width: 100%;
+  background: #000;
+  padding: 2px 16px;
+
+
+  div {
+    flex-grow: 1;
+
+  }
+
+  a {
+    color: #777;
   }
 
 }

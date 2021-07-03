@@ -161,7 +161,9 @@
 
                 <img src="/art/aurora_log_v2_orange_small.png"/>
                 <div class="aurora">aurora</div>
-
+                {if $status_page!=''}
+                <div class="status"><a href="{$status_page}" target="_blank" >{t}status{/t}</a></div>
+                {/if}
                 <div class=" full"></div>
                 <div class=" small"></div>
 
@@ -327,6 +329,10 @@
 
 {/if}
 {/if}
+{if $status_page_widget!=''}
+    <script src="https://{$status_page_widget}.statuspage.io/embed/script.js"></script>
+{/if}
+{if $jira_widget!=''}
 
 <script>
     $(document).ready(function() {
@@ -339,7 +345,8 @@
         });
     })
 
-
 </script>
+{/if}
+
 </body>
 </html>

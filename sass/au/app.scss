@@ -446,10 +446,6 @@ input {
 }
 
 
-
-
-
-
 #app_main {
 
   margin-left: $left_menu_width;
@@ -1084,7 +1080,7 @@ right connector from last child*/
 
   }
 
-  .progress_bar,.object_download {
+  .progress_bar, .object_download {
     position: absolute;
     top: 1px;
     background: green;
@@ -1098,7 +1094,7 @@ right connector from last child*/
     transition: width 1s;
   }
 
-  .object_download{
+  .object_download {
     text-align: center;
     cursor: pointer;
     width: 100%;
@@ -1340,6 +1336,12 @@ h2.dashboard {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: Ubuntu, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+  }
+
+  .status{
+    padding-top: 5px;
+    font-family: Ubuntu, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+
   }
 
   img {
