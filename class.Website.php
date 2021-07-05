@@ -252,8 +252,80 @@ class Website extends DB_Table {
 
 
             );
-            $this->create_header($header_data);
+            $header=$this->create_header($header_data);
+            if($header){
+                $menu_control_panel_library = [
 
+
+                    'EcomB2B' => [
+
+                        'logout'            => [
+                            'show' => true
+                        ],
+                        'profile'           => [
+                            'show' => true
+                        ],
+                        'custom_design_products' => [
+                            'show' => false
+                        ],
+                        'customer_discounts'   => [
+                            'show' => true
+                        ],
+                        'favourites'        => [
+                            'show' => true
+                        ],
+                        'basket'            => [
+                            'show' => true
+                        ]
+                    ],
+                    'EcomDS'  => [
+
+                        'logout'        => [
+                            'show' => true
+                        ],
+                        'custom_design_products' => [
+                            'show' => true
+                        ],
+                        'profile'       => [
+                            'show' => true
+                        ],
+
+                        'portfolio'     => [
+                            'show' => true
+                        ],
+                        'clients'     => [
+                            'show' => true
+                        ],
+                        'client_orders' => [
+                            'show' => true
+                        ]
+                    ],
+                    'Fulfilment' => [
+
+                        'logout'  => [
+                            'show' => true
+                        ],
+                        'profile' => [
+                            'show' => true
+                        ],
+
+                    ]
+
+                ];
+                $header_data = json_decode($header->get('Website Header Data'), true);
+
+                if(isset($menu_control_panel_library[$this->get('Website Type')])) {
+                    $menu_control_panel = $menu_control_panel_library[$this->get('Website Type')];
+
+                    $header_data['menu']['control_panel'] = $menu_control_panel;
+                    $header->editor                       = $this->editor;
+                    $header->update(
+                        array(
+                            'Website Header Data' => $header_data
+                        )
+                    );
+                }
+            }
 
             include_once 'conf/webpage_types.php';
             $webpage_types = get_webpage_types();
@@ -326,6 +398,9 @@ class Website extends DB_Table {
                     'Website Style' => json_encode(get_default_websites())
                 )
             );
+
+
+
 
 
             return;
@@ -496,12 +571,7 @@ class Website extends DB_Table {
                     } else {
                         return false;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
-                break;
             case 'Header Data':
             case 'Header Published Data':
 
@@ -694,7 +764,7 @@ class Website extends DB_Table {
             $this->error = true;
             $this->msg   = $header->msg;
 
-            return;
+            return false;
         }
 
         if (!$this->get('Website Header Key')) {
@@ -705,6 +775,8 @@ class Website extends DB_Table {
             );
 
         }
+
+        return $header;
 
     }
 

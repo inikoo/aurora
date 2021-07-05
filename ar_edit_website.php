@@ -453,9 +453,7 @@ function save_header($data, $editor) {
     $header_data = json_decode($header->get('Website Header Data'), true);
 
 
-    // print_r($header_data);
 
-    // $header_data=$website->get('Header Data');
 
     $header_data['menu']['columns'] = json_decode($data['menu'], true);
 

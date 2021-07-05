@@ -108,17 +108,41 @@
 
 
             {if $logged_in}
-            {if $store->get('Store Type')=='Dropshipping'}
-                <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-cog"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="clients_orders.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span>{t}Customers{/t}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="portfolio.sys"><i class="icon-bg bg-orange-dark  fa fa-store-alt"></i><span>{if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}</span><i class="ion-record"></i></a>
+                {foreach from=$header_data.menu.control_panel|@array_reverse item=control key=key}
+                    {if $control['show']}
 
-            {else}
-                <a class="default-link" href="basket.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
-                <a class="default-link" href="favourites.sys"><i class="icon-bg bg-orange-dark  fa fa-heart"></i><span>{t}Favourites{/t}</span><i class="ion-record"></i></a>
-            {/if}
+                        {if $key=='basket'}
+                            <a class="default-link" href="basket.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
+                        {elseif $key=='favourites'}
+                            <a class="default-link" href="favourites.sys"><i class="icon-bg bg-orange-dark  fa fa-heart"></i><span>{t}Favourites{/t}</span><i class="ion-record"></i></a>
+
+                        {elseif $key=='profile'}
+                        <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
+
+
+                        {elseif $key=='custom_design_products'}
+                        <a class="default-link" href="custom_design_products.sys"><i class="icon-bg bg-orange-dark  fa fa-user-shield"></i><span>{if empty($labels._Customer_Products)}{t}My products{/t}{else}{$labels._Customer_Products}{/if}</span><i class="ion-record"></i></a>
+
+                        {elseif $key=='customer_discounts'}
+                        <a class="default-link" href="customer_discounts.sys"><i class="icon-bg bg-orange-dark fa fa-user-tag"></i><span>{if empty($labels._Customer_Discounts)}{t}My offers{/t}{else}{$labels._Customer_Discounts}{/if}</span><i class="ion-record"></i></a>
+
+
+                        {elseif $key=='portfolio'}
+                        <a class="default-link" href="portfolio.sys"><i class="icon-bg bg-orange-dark  fa fa-store-alt"></i><span>{if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}</span><i class="ion-record"></i></a>
+
+                        {elseif $key=='customers'}
+                        <a class="default-link" href="clients.sys"><i class="icon-bg bg-orange-dark  fal fa-users"></i><span>{if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}</span><i class="ion-record"></i></a>
+
+
+                        {elseif $key=='client_orders'}
+                        <a class="default-link" href="clients_orders.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}</span><i class="ion-record"></i></a>
+
+                    {/if}
+
+                    {/if}
+                {/foreach}
+
+
             {else}
 
             <a class="default-link" href="login.sys"><i class="icon-bg bg-orange-light fa fa-sign-in"></i><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span><i class="ion-record"></i></a>
@@ -169,11 +193,53 @@
 
 
 
-
-
     {if $logged_in}
 
         <span class="control_panel"  >
+
+             {foreach from=$header_data.menu.control_panel item=control key=key}
+                 {if $control['show']}
+
+                     {if $key=='basket'}
+                         <a id="header_order_totals" class="basket_link" href="basket.sys">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="order_amount" style="padding-right:10px" > <i class="fa fa-spinner fa-spin"></i> </span>
+                        </a>
+                        {elseif $key=='favourites'}
+                            <a href="favourites.sys" ><i   class="fa fa-heart"></i></a>
+
+                        {elseif $key=='profile'}
+                            <a href="profile.sys"  ><i class="fa fa-user"></i></a>
+
+
+                        {elseif $key=='custom_design_products'}
+                         <a href="custom_design_products.sys"  ><i class="fa fa-user-shield"></i></a>
+
+                        {elseif $key=='customer_discounts'}
+                         <a href="customer_discounts.sys"  ><i class="fa fa-user-tag"></i></a>
+
+
+                        {elseif $key=='portfolio'}
+                            <a href="portfolio.sys" ><i   class="fa fa-store-alt"></i></a>
+
+                        {elseif $key=='customers'}
+                            <a href="clients.sys"  ><i class="fa fa-user"></i></a>
+
+
+                        {elseif $key=='client_orders'}
+                            <a href="clients_orders.sys"  ><i class="fa fa-shopping-cart"></i></a>
+
+                     {/if}
+
+                 {/if}
+             {/foreach}
+
+
+
+
+
+            {*
+
         {if $store->get('Store Type')=='Dropshipping'}
             <a href="profile.sys"  ><i class="fa fa-cog"></i></a>
 
@@ -188,6 +254,7 @@
                 <span class="order_amount" style="padding-right:10px" > <i class="fa fa-spinner fa-spin"></i> </span>
             </a>
         {/if}
+        *}
     </span>
 
         <a href="#" class="header-icon header-icon-4 hamburger-animated open-sidebar-right"></a>

@@ -107,6 +107,42 @@
 
 
             {if $logged_in}
+
+                {foreach from=$header_data.menu.control_panel|@array_reverse item=control key=key}
+                    {if $control['show']}
+
+                        {if $key=='basket'}
+                            <a class="default-link" href="basket.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{t}Basket{/t}</span><i class="ion-record"></i></a>
+                        {elseif $key=='favourites'}
+                            <a class="default-link" href="favourites.sys"><i class="icon-bg bg-orange-dark  fa fa-heart"></i><span>{t}Favourites{/t}</span><i class="ion-record"></i></a>
+
+                        {elseif $key=='profile'}
+                            <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
+
+
+                        {elseif $key=='custom_design_products'}
+                            <a class="default-link" href="custom_design_products.sys"><i class="icon-bg bg-orange-dark  fa fa-user-shield"></i><span>{if empty($labels._Customer_Products)}{t}My products{/t}{else}{$labels._Customer_Products}{/if}</span><i class="ion-record"></i></a>
+
+                        {elseif $key=='customer_discounts'}
+                            <a class="default-link" href="customer_discounts.sys"><i class="icon-bg bg-orange-dark fa fa-user-tag"></i><span>{if empty($labels._Customer_Discounts)}{t}My discounts{/t}{else}{$labels._Customer_Discounts}{/if}</span><i class="ion-record"></i></a>
+
+
+                        {elseif $key=='portfolio'}
+                            <a class="default-link" href="portfolio.sys"><i class="icon-bg bg-orange-dark  fa fa-store-alt"></i><span>{if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}</span><i class="ion-record"></i></a>
+
+                        {elseif $key=='customers'}
+                            <a class="default-link" href="clients.sys"><i class="icon-bg bg-orange-dark  fal fa-users"></i><span>{if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}</span><i class="ion-record"></i></a>
+
+
+                        {elseif $key=='client_orders'}
+                            <a class="default-link" href="clients_orders.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}</span><i class="ion-record"></i></a>
+
+                        {/if}
+
+                    {/if}
+                {/foreach}
+
+                {*
             {if $store->get('Store Type')=='Dropshipping'}
                 <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-cog"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
                 <a class="default-link" href="clients_orders.sys"><i class="icon-bg bg-orange-dark  fa fa-shopping-cart"></i><span>{if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}</span><i class="ion-record"></i></a>
@@ -118,6 +154,7 @@
                 <a class="default-link" href="profile.sys"><i class="icon-bg bg-orange-dark  fa fa-user"></i><span>{t}Profile{/t}</span><i class="ion-record"></i></a>
                 <a class="default-link" href="favourites.sys"><i class="icon-bg bg-orange-dark  fa fa-heart"></i><span>{t}Favourites{/t}</span><i class="ion-record"></i></a>
             {/if}
+            *}
             {else}
 
             <a class="default-link" href="login.sys"><i class="icon-bg bg-orange-light fa fa-sign-in"></i><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span><i class="ion-record"></i></a>

@@ -123,3 +123,4 @@ hello world.xlsx
 cron/fix_dn_ups.php
 cron/set_up_intrastad_SK.php
 cron/fix_missing_customers_cat.php
+cron/set_up_web_menu.php

@@ -113,9 +113,54 @@
         </a>
         {/if}
     {/foreach}
+    {if $logged_in}
+    {foreach from=$header_data.menu.control_panel|@array_reverse item=control key=key}
+        {if $control['show']}
+            {if $key=='basket'}
+                <a  id="header_order_totals" href="basket.sys" class="button" style="margin-right:5px">
+                    <span class="ordered_products_number">0</span>
+                    <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}"
+                       aria-hidden="true"></i>
+                    <span class="order_amount" style="padding-right:10px" title="">{$zero_money}</span>
+                </a>
+            {elseif $key=='favourites'}
+                <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px;padding-right: 8px;padding-left: 8px">
+                    <i class=" far fa-heart"  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
+                </a>
+            {elseif $key=='profile'}
+                <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
+                    <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
+            {elseif $key=='logout'}
+                <a href="#" id="logout" class="button" style="margin-left: 0px;">
+                    <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
+                    <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
+                </a>
+            {elseif $key=='custom_design_products'}
+                <a id="customer_products_button" href="custom_design_products.sys" class="button" style="padding:4px 8px 4px 2px  ; margin-left: 0px;margin-right: 0px;">
+                    <i class=" far fa-user-shield  "  title="{if empty($labels._Customer_Products)}{t}My products{/t}{else}{$labels._Customer_Products}{/if}" aria-hidden="true"></i>
+                </a>
+            {elseif $key=='customer_discounts'}
+                <a id="customer_offers_button" href="customer_discounts.sys" class="button" style="padding:4px 8px 4px 2px  ; margin-left: 0px;margin-right: 0px;">
+                    <i class=" far fa-user-tag  "  title="{if empty($labels._Customer_Discounts)}{t}My discounts{/t}{else}{$labels._Customer_Discounts}{/if}" aria-hidden="true"></i>
+                </a>
 
-        {if $logged_in}
+            {elseif $key=='portfolio'}
+                <a id="portfolio_button" href="portfolio.sys" class="button">
+                    <i class=" far fa-store-alt  "  ></i> {if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}
+                </a>
+            {elseif $key=='customers'}
+                <a id="customers_button" href="clients.sys" class="button">
+                    <i class=" fal fa-users  "  ></i> {if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}
+                </a>
+            {elseif $key=='client_orders'}
+                <a id="orders_button" href="clients_orders.sys" class="button">
+                    <i class=" far fa-shopping-cart  "  ></i> {if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}
+                </a>
+            {/if}
+        {/if}
+    {/foreach}
 
+    {*
             {if $store->get('Store Type')=='Dropshipping'}
                 <div class="control_panel">
                     <a id="orders_button" href="clients_orders.sys" class="button">
@@ -143,6 +188,10 @@
                     <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px;padding-right: 8px;padding-left: 8px">
                         <i class=" far fa-heart"  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
                     </a>
+
+
+
+
                     <a id="customer_products_button" href="custom_design_products.sys" class="button" style="padding:4px 8px 4px 2px  ; margin-left: 0px;margin-right: 0px;">
                         <i class=" far fa-user-shield  "  title="{if empty($labels._Customer_Products)}{t}My products{/t}{else}{$labels._Customer_Products}{/if}" aria-hidden="true"></i>
                     </a>
@@ -156,6 +205,7 @@
                     </a>
                 </div>
             {/if}
+*}
         {else}
             <div class="control_panel">
                 <a href="/login.sys" class="button"  id="login_header_button" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
