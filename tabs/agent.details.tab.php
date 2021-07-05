@@ -54,10 +54,7 @@ $smarty->assign('key', $state['key']);
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
-$smarty->assign(
-    'js_code', 'js/injections/agent_details.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 $html = $smarty->fetch('edit_object.tpl');
 
-?>
+

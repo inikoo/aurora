@@ -146,26 +146,35 @@ function get_fulfilment_module() {
                 'icon'      => 'user',
                 'reference' => '',
                 'tabs'      => array(
-
+                    'customer.history' => array(
+                        'label' => _('History, notes'),
+                        'icon'  => 'sticky-note'
+                    ),
+                    'customer.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'customer.deliveries'              => array(
+                        'label' => _('Deliveries'),
+                        'icon'  => 'arrow-square-down'
+                    ),
                     'customer.parts'              => array(
                         'label' => _('Parts'),
                         'icon'  => 'box'
                     ),
+                    'customer.stored_assets'              => array(
+                        'label' => _('Assets'),
+                        'icon'  => 'box-alt'
+                    ),
                     'customer.locations' => array(
                         'label' => _('Locations'),
-                        'icon'  => 'map-sings'
+                        'icon'  => 'pallet'
+                    ),
+                    'customer.invoices' => array(
+                        'label' => _('Invoices'),
+                        'icon'  => 'file-invoice'
                     ),
 
-                    'location.history' => array(
-                        'title'         => _('History'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number History Records'
-                        ),
-                        'icon'          => 'road',
-                        'class'         => 'right icon_only'
-                    ),
 
 
                 )

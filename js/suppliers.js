@@ -1,28 +1,7 @@
 /*Author: Raul Perusquia <raul@inikoo.com>
- Created:  6 February 2016 at 13:19:40 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2015, Inikoo
+ Created: 6 July 2021 1:50, Kuala Lumpur, Malaysia
+ Copyright (c) 2021, Inikoo
  Version 3.0*/
-
-
-
-
-
-function post_create_action(data) {
-
-    var clone = $('#' + data.clone_from + '_display').clone()
-    clone.prop('id', data.field + '_display').removeClass('hide');
-
-    if (data.clone_from == 'Supplier_Other_Email') {
-        value = clone.find('.Supplier_Other_Email_mailto').prop('id', data.field + '_mailto').html('<a href="mailto:' + data.value + '" >' + data.value + '</a>')
-
-    } else if (data.clone_from == 'Supplier_Other_Telephone') {
-        clone.find('span').html(data.formatted_value)
-    }
-
-
-    $('#' + data.clone_from + '_display').before(clone)
-
-}
 
 function unlink_agent(element) {
 

@@ -90,7 +90,7 @@ if ($user->can_supervisor('accounting')) {
         'render' => ($store->get('Store Type') == 'Dropshipping' ? false : true),
 
         'value'           => $object->get('Customer Level Type'),
-        'formatted_value' => '<span class="button" onclick="toggle_subscription(this)"  field="Customer_Level_Type_Partner"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Level Type') == 'Partner' ? 'fa-toggle-on' : 'fa-toggle-off')
+        'formatted_value' => '<span class="button" onclick="toggle_customer_marketing_subscription(this)"  field="Customer_Level_Type_Partner"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Level Type') == 'Partner' ? 'fa-toggle-on' : 'fa-toggle-off')
             .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Level Type') == 'Partner' ? 'discreet' : '').'">'._('Partner').'</span></span>',
         'label'           => _('Type'),
         'required'        => false,
@@ -167,8 +167,10 @@ while ($row = $stmt->fetch()) {
 
 
 }
+if ($object->get('Customer Fulfilment') == 'Yes') {
 
-
+    $customer_fulfilment = get_object('customer_fulfilment', $object->id);
+}
 
 if ($new) {
 
@@ -385,11 +387,11 @@ if ($new) {
                     'id'              => 'Customer_Subscriptions',
                     'edit'            => 'no_icon',
                     'value'           => $object->get('Customer Subscriptions'),
-                    'formatted_value' => '<span id="Customer_Send_Newsletter_field" class="button value valid" onclick="toggle_subscription_from_new(this)" field_type="subscription" field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
+                    'formatted_value' => '<span id="Customer_Send_Newsletter_field" class="button value valid" onclick="toggle_switch(this)" field_type="subscription" field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Newsletter').'</span></span>'
-                        .'<span id="Customer_Send_Email_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Email_Marketing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
+                        .'<span id="Customer_Send_Email_Marketing_field" onclick="toggle_switch(this)"  field_type="subscription"  field="Customer_Send_Email_Marketing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Marketing emails').'</span></span>'
-                        .'<span id="Customer_Send_Postal_Marketing_field" onclick="toggle_subscription_from_new(this)"  field_type="subscription"  field="Customer_Send_Postal_Marketing" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
+                        .'<span id="Customer_Send_Postal_Marketing_field" onclick="toggle_switch(this)"  field_type="subscription"  field="Customer_Send_Postal_Marketing" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Postal marketing').'</span></span>',
                     'label'           => _('Subscriptions'),
                     'required'        => false,
@@ -482,6 +484,39 @@ if ($new) {
 
         );
     }
+
+
+    if ($object->get('Customer Fulfilment') == 'Yes') {
+
+        $customer_fields[] = array(
+            'label'      => _('Fulfilment'),
+            'show_title' => true,
+            'class'      => 'edit_fields',
+            'fields'     => array(
+
+
+                array(
+                    'id'              => 'Customer_Services',
+                    'edit'            => 'no_icon',
+                    'value'           => $customer_fulfilment->get('Customer Services'),
+                    'formatted_value' =>
+                        '<span onclick="save_toggle_switch(this)"  field="Customer_Fulfilment_Allow_Pallet_Storing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($customer_fulfilment->get('Customer Fulfilment Allow Pallet Storing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($customer_fulfilment->get('Customer Fulfilment Allow Pallet Storing') == 'No' ? 'discreet' : '').'">'._('Asset storing').'</span></span>'
+                        .'<span class="button" onclick="save_toggle_switch(this)"  field="Customer_Fulfilment_Allow_Part_Procurement"  style="margin-right:40px"><i class=" fa fa-fw '.($customer_fulfilment->get('Customer Fulfilment Allow Part Procurement') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($customer_fulfilment->get('Customer Fulfilment Allow Part Procurement') == 'No' ? 'discreet' : '').'">'._('Full product procurement').'</span></span>'
+                        ,
+                    'label'           => _('Services'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+
+
+            )
+
+        );
+    }
+
 
 
     $customer_fields[] = array(
@@ -822,11 +857,11 @@ if ($new) {
                 'id'              => 'Customer_Subscriptions',
                 'edit'            => 'no_icon',
                 'value'           => $object->get('Customer Subscriptions'),
-                'formatted_value' => '<span class="button" onclick="toggle_subscription(this)"  field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Newsletter') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                'formatted_value' => '<span class="button" onclick="save_toggle_switch(this)"  field="Customer_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Newsletter') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
                     .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Newsletter') == 'No' ? 'discreet' : '').'">'._('Newsletter').'</span></span>'
-                    .'<span onclick="toggle_subscription(this)"  field="Customer_Send_Email_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Email Marketing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                    .'<span onclick="save_toggle_switch(this)"  field="Customer_Send_Email_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Email Marketing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
                     .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Email Marketing') == 'No' ? 'discreet' : '').'">'._('Marketing emails').'</span></span>'
-                    .'<span onclick="toggle_subscription(this)"  field="Customer_Send_Postal_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Postal Marketing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                    .'<span onclick="save_toggle_switch(this)"  field="Customer_Send_Postal_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Postal Marketing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
                     .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Postal Marketing') == 'No' ? 'discreet' : '').'">'._('Postal marketing').'</span></span>',
                 'label'           => _('Subscriptions'),
                 'required'        => false,
@@ -903,7 +938,7 @@ if ($new) {
                 'id'              => 'Customer_Integration_Shopify',
                 'edit'            => 'no_icon',
                 'value'           => '',
-                'formatted_value' => '<span class="button" onclick="set_up_integration(this,\'Shopify\')"  style="margin-right:40px"> <span>'._('Get access code').' <i class="fa fa-arrow-right"></i></span></span><span class="integration_result"></span>',
+                'formatted_value' => '<span class="button" onclick="set_up_customer_integration(this,\'Shopify\')"  style="margin-right:40px"> <span>'._('Get access code').' <i class="fa fa-arrow-right"></i></span></span><span class="integration_result"></span>',
                 'label'           => _('Shopify'),
                 'required'        => false,
                 'type'            => 'value'

@@ -11,7 +11,7 @@
 */
 include_once 'class.DB_Table.php';
 
-class Fulfilment_Customer extends DB_Table {
+class Customer_Fulfilment extends DB_Table {
 
 
     function __construct($a1, $a2 = false) {
@@ -20,8 +20,8 @@ class Fulfilment_Customer extends DB_Table {
         $this->db         = $db;
         $this->error_code = '';
 
-        $this->table_name    = 'Fulfilment Customer';
-        $this->ignore_fields = array('Fulfilment Customer Key');
+        $this->table_name    = 'Customer Fulfilment';
+        $this->ignore_fields = array('Customer Fulfilment Customer Key');
 
         $this->get_data($a1, $a2);
 
@@ -42,9 +42,7 @@ class Fulfilment_Customer extends DB_Table {
 
     function get($key = '') {
 
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
-        }
+
 
         switch ($key) {
 
@@ -52,8 +50,29 @@ class Fulfilment_Customer extends DB_Table {
 
         }
 
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        }
+
+        if (array_key_exists('Customer Fulfilment '.$key, $this->data)) {
+            return $this->data[$this->table_name.' '.$key];
+        }
+
         return false;
     }
 
+    function get_field_label($field) {
 
+        switch ($field) {
+            case 'Customer Fulfilment Allow Part Procurement':
+                $label = _('Full product procurement service');
+                break;
+            case 'Customer Fulfilment Allow Pallet Storing':
+                $label = _('Asset storing');
+                break;
+            default:
+                $label = $field;
+        }
+        return $label;
+    }
 }

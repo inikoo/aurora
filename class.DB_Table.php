@@ -3,6 +3,7 @@ include_once 'trait.Aiku.php';
 
 abstract class DB_Table extends stdClass {
     use Aiku;
+
     /**
      * @var $db PDO
      */
@@ -106,8 +107,6 @@ abstract class DB_Table extends stdClass {
     }
 
 
-
-
     function base_data($table_name = '') {
 
 
@@ -164,7 +163,6 @@ abstract class DB_Table extends stdClass {
         }
 
 
-
         if ($table_name == 'Page') {
             $extra_data = $this->store_base_data();
 
@@ -174,29 +172,23 @@ abstract class DB_Table extends stdClass {
             }
 
 
-        } else {
-            if ($table_name == 'Part' or $table_full_name == 'Part Data') {
-                $key_field = 'Part SKU';
-            }elseif ($table_name == 'Production Part' ) {
-                $key_field = 'Production Part Supplier Part Key';
-            } else {
-                if ($table_name == 'Product' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
-                    $key_field = 'Product ID';
-                } else {
-                    if ($table_name == 'Supplier Production') {
-                        $key_field = 'Supplier Production Supplier Key';
-                    }
-                }
-            }
+        } elseif ($table_name == 'Part' or $table_full_name == 'Part Data') {
+            $key_field = 'Part SKU';
+        } elseif ($table_name == 'Production Part') {
+            $key_field = 'Production Part Supplier Part Key';
+        } elseif ($table_name == 'Product' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
+            $key_field = 'Product ID';
+        } elseif ($table_name == 'Supplier Production') {
+            $key_field = 'Supplier Production Supplier Key';
+        } elseif ($table_name == 'Customer Fulfilment') {
+            $key_field = 'Customer Fulfilment Customer Key';
         }
 
 
         $old_formatted_value = $this->get($formatted_field);
 
 
-        $sql = sprintf(
-            "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
-        );
+        $sql = sprintf("UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field));
 
         //print "$sql $value $table_key\n";
         //prepare_mysql($value, $null_if_empty)
@@ -238,12 +230,14 @@ abstract class DB_Table extends stdClass {
             }
 
 
-            //print $table_name;
+            if($table_name=='Customer Fulfilment'){
+                $table_name='Customer';
+            }
 
             if (preg_match(
                     '/consignment|product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema|customer client|clocking machine|clocking machine nfc tag|purchase order|supplier delivery|picking band/i',
                     $table_name
-                ) and !$this->new and $save_history) {
+                ) and !$this->new and $save_history   ) {
 
 
                 if ($formatted_field == 'Tax Number') {
@@ -251,7 +245,9 @@ abstract class DB_Table extends stdClass {
                 }
 
 
+
                 $new_formatted_value = $this->get($formatted_field);
+
 
 
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
@@ -389,19 +385,20 @@ abstract class DB_Table extends stdClass {
 
 
                     default:
-                        $formatted_indirect_object = $this->get_field_label(
-                            $data['Indirect Object']
-                        );
+                        $formatted_indirect_object = $this->get_field_label($data['Indirect Object']);
 
                 }
 
 
                 if ($table_name == 'Staff') {
                     $formatted_table = "Employee's";
+                }elseif ($table_name == 'Customer Fulfilment') {
+                    $formatted_table = "Customer";
                 } else {
-                    $formatted_table = $table_name."'s";
+                    $formatted_table = $table_name;
                 }
 
+                $formatted_table.=' &rArr; ';
 
                 if ($data['Action'] == 'added') {
                     $data['History Abstract'] = sprintf(
@@ -490,7 +487,7 @@ abstract class DB_Table extends stdClass {
 				<div class="table">
 				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
                         "%a %e %b %Y %H:%M:%S %Z"
-                    ).'</div></div>xx
+                    ).'</div></div>
 				<div class="field tr"><div>'._('User').':</div><div>'.$this->editor['Author Alias'].'</div></div>
 				<div class="field tr"><div>'._('Action').':</div><div>'._(
                         'Changed'
@@ -647,6 +644,10 @@ abstract class DB_Table extends stdClass {
             case 'Product':
                 $where_field = 'Product ID';
                 break;
+            case 'Customer Fulfilment':
+                $where_field = 'Customer Key';
+                $table       = 'Customer History Bridge';
+                break;
             default:
                 $where_field = $this->get_object_name().' Key';
                 break;
@@ -749,7 +750,7 @@ abstract class DB_Table extends stdClass {
             $this->data[$field] = $value;
 
             $affected = $stmt->rowCount();
-            if ($affected >0) {
+            if ($affected > 0) {
                 $this->update_aiku($table_full_name, $field, $value);
 
             }

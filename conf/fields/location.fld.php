@@ -216,7 +216,7 @@ function get_location_object_fields($object, $user,$account,$db, $options) {
                     'type'      => 'operation'
                 ),
 
-             
+
 
             )
 

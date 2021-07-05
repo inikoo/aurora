@@ -68,7 +68,7 @@ switch ($tipo) {
         remove_product_from_customer($data, $db, $user, $editor);
         break;
 
-    case 'set_up_integration':
+    case 'set_up_customer_integration':
         $data = prepare_values(
             $_REQUEST, array(
                          'customer_key'     => array('type' => 'key'),

@@ -87,10 +87,29 @@ class Customer extends Subject {
             );
         }
 
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id       = $this->data['Customer Key'];
             $this->metadata = json_decode($this->data['Customer Metadata'], true);
+        }
+
+        if ($this->data['Customer Fulfilment'] == 'Yes') {
+
+            $sql   = 'select * from  `Customer Fulfilment Dimension` where `Customer Fulfilment Customer Key`=?';
+            $stmt2 = $this->db->prepare($sql);
+            $stmt2->execute(
+                array(
+                    $this->id
+                )
+            );
+            if ($row2 = $stmt2->fetch()) {
+
+                foreach ($row2 as $key => $value) {
+                    $this->data[$key] = $value;
+
+
+                }
+            }
+
 
         }
     }
@@ -1624,7 +1643,18 @@ class Customer extends Subject {
 
 
                 break;
+            case('Customer Fulfilment Allow Pallet Storing'):
+            case('Customer Fulfilment Allow Part Procurement'):
 
+                $customer_fulfilment         = get_object('customer_fulfilment', $this->id);
+                $customer_fulfilment->editor = $this->editor;
+
+
+                $customer_fulfilment->update_field($field, $value, $options);
+                $this->updated = $customer_fulfilment->updated;
+
+
+                break;
             default:
 
 
@@ -1666,6 +1696,7 @@ class Customer extends Subject {
                     } else {
                         $this->update_metadata['show'] = array('poll_overview_display');
                     }
+
                     return;
                 }
 

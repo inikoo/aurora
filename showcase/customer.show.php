@@ -103,10 +103,10 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
 
     }  elseif ($data['store']->get('Store Type') == 'Fulfilment') {
         $smarty->assign('customer', $customer);
-        $fulfilment_customer=get_object('FulfilmentCustomer',$customer->id);
-        $smarty->assign('fulfilment_customer',$fulfilment_customer);
+        $customer_fulfilment=get_object('Customer_Fulfilment',$customer->id);
+        $smarty->assign('customer_fulfilment',$customer_fulfilment);
 
-        return $smarty->fetch('showcase/fulfilment_customer.tpl');
+        return $smarty->fetch('showcase/customer_fulfilment.tpl');
 
     }else {
 

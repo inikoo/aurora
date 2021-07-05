@@ -4,6 +4,105 @@
  Version 3.0*/
 
 
+
+
+
+
+
+function set_up_customer_integration(element,integration_type){
+
+    const icon = $(element).find('i');
+    const container = $(element).closest('td.container');
+
+
+    if(icon.hasClass('wait')){
+        return;
+    }
+
+    icon.removeClass('fa-arrow-right').addClass(' fa-spinner fa-spin wait' )
+
+
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_up_customer_integration')
+
+    ajaxData.append("customer_key", $('#fields').attr('key'))
+
+    ajaxData.append("integration_type", integration_type)
+
+
+    $.ajax({
+        url: "/ar_edit_customers.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+
+            icon.removeClass('wait')
+
+
+            if (data.state == '200') {
+
+
+                console.log(data)
+
+                container.find('.button').addClass('hide');
+
+                container.find('.integration_result').text(data.result)
+
+
+                if (data.other_fields) {
+                    for (var key in data.other_fields) {
+
+                        //   console.log(data.other_fields[key])
+
+                        update_field(data.other_fields[key])
+                    }
+                }
+
+                if (data.deleted_fields) {
+                    for (var key in data.deleted_fields) {
+                        delete_field(data.deleted_fields[key])
+                    }
+                }
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
+
+            } else if (data.state == '400') {
+
+                icon.addClass('fa-arrow-right').removeClass(' fa-spinner fa-spin')
+
+
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+}
+
 function customer_email_width_hack(email) {
     if (email.text().length > 30) {
         email.css("font-size", "90%");

@@ -407,7 +407,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             include 'fields/barcode.fld.php';
 
             return $barcode_fields;
-            break;
+
         case 'User':
 
 
@@ -429,7 +429,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $customer_fields;
-            break;
+
 
         case 'Customer Client':
 
