@@ -146,13 +146,7 @@
 
 
             </ul>
-            {if $jira_portal!=''}
-                <ul class="help" style="margin-top: 5px">
-                    <li><span onclick="window.open('{$jira_portal}', '_blank')">
-                        <i class="fal fa-question-circle fa-fw"></i><span class="label"> {t}Help center{/t}</span></span></span>
-                    </li>
-                </ul>
-            {/if}
+
 
 
             <div class="aurora_version">
@@ -164,6 +158,11 @@
                 {if $status_page!=''}
                 <div class="status"><a href="{$status_page}" target="_blank" >{t}status{/t}</a></div>
                 {/if}
+
+                {if $jira_portal!=''}
+                    <div class="help_center"><a href="{$jira_portal}" target="_blank" ><span class="label"> {t}help center{/t}</a></div>
+                {/if}
+
                 <div class=" full"></div>
                 <div class=" small"></div>
 

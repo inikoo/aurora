@@ -1336,9 +1336,10 @@ h2.dashboard {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: Ubuntu, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+    padding-bottom: 10px;
   }
 
-  .status{
+  .status,.help_center{
     padding-top: 5px;
     font-family: Ubuntu, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
 
