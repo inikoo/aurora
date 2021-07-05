@@ -357,13 +357,10 @@ class WarehouseArea extends DB_Table {
                 $location->update(array('Location Warehouse Area Key' => ''));
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit();
         }
 
 
-        $sql  = sprintf("DELETE FROM `Warehouse Area Dimension` WHERE `Warehouse Area Key`=?");
+        $sql  = "DELETE FROM `Warehouse Area Dimension` WHERE `Warehouse Area Key`=?";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(1, $this->id);
 
@@ -373,6 +370,9 @@ class WarehouseArea extends DB_Table {
         } else {
             $this->deleted_msg = 'Error area can not be deleted';
         }
+
+        return '/warehouse/'.$this->get('Warehouse Area Warehouse Key').'/areas';
+
 
 
     }

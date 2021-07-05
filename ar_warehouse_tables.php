@@ -163,7 +163,6 @@ function picking_bands($_data, $db, $user, $account) {
 }
 
 
-
 function warehouses($_data, $db, $user) {
 
     $rtext_label = 'warehouse';
@@ -220,14 +219,26 @@ function areas($_data, $db, $user) {
             $type = '';
         }
 
+        $code = $data['Warehouse Area Code'];
+        if ($code == '') {
+            $code = '<span class="very_discreet italic">'._('No code').'</span>';
+
+        }
+
+        $name = $data['Warehouse Area Name'];
+        if ($name == '') {
+            $name = '<span class="very_discreet italic">'._('No name').'</span>';
+
+        }
+
         $adata[] = array(
             'access'    => (in_array($data['Warehouse Area Warehouse Key'], $user->warehouses) ? '' : '<i class="fa fa-lock error"></i>'),
             'id'        => (integer)$data['Warehouse Area Key'],
             'type'      => $type,
             'code'      => sprintf(
-                '<span class="link" onClick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Warehouse Area Warehouse Key'], $data['Warehouse Area Key'], $data['Warehouse Area Code']
+                '<span class="link" onClick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Warehouse Area Warehouse Key'], $data['Warehouse Area Key'], $code
             ),
-            'name'      => $data['Warehouse Area Name'],
+            'name'      => $name,
             'locations' => number($data['Warehouse Area Number Locations']),
             'parts'     => number($data['Warehouse Area Distinct Parts']),
         );

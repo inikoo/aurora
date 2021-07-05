@@ -16,6 +16,13 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
+if ($user->can_supervisor('locations')) {
+    $can_supervisor = true;
+} else {
+    $can_supervisor = false;
+
+}
+
 
 $options_warehouse_place = array(
     'Local'    => _('Local warehouse'),
@@ -89,3 +96,32 @@ $object_fields = array(
 
 
 );
+
+if (!$new) {
+    $operations = array(
+        'label'      => _('Operations'),
+        'show_title' => true,
+        'class'      => 'operations',
+        'fields'     => array(
+
+            array(
+                'id'        => 'delete_warehouse_area',
+                'class'     => 'operation',
+                'value'     => '',
+                'render'    => true,
+                'label'     => '<i class="fa fa-fw fa-'.($can_supervisor ? 'lock-alt' : 'lock').'  button" 
+                 data-labels=\'{ "text":"'._('Please ask an authorised user to delete this area').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
+                onClick="'.($can_supervisor ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'LS\')').'"  
+                style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete area")
+                    .' <i class="far fa-trash-alt new_button link"></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+
+        )
+
+    );
+
+    $object_fields[] = $operations;
+}
