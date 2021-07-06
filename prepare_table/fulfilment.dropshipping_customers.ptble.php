@@ -3,7 +3,7 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 18 Jun 2021 01:16 GMT+8, Kuala Lumpur, Malaysia
+ Created: 7 July 2021 00;50 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2021, Inikoo
 
@@ -12,14 +12,14 @@
 
 
 $currency = '';
-$group_by = ' group by C.`Customer Key` ';
+$group_by = '  ';
 
 
 $table = '`Customer Fulfilment Dimension` CFD  left join `Customer Dimension` C on (CFD.`Customer Fulfilment Customer Key`=C.`Customer Key`) 
     left join `Store Dimension` S on (S.`Store Key`=C.`Customer Store Key`)
     ';
 
-$where = sprintf(' where  `Customer Fulfilment Warehouse Key`=%d ', $parameters['parent_key']);
+$where = sprintf(' where  `Customer Fulfilment Warehouse Key`=%d and `Store Type`="Dropshipping" ', $parameters['parent_key']);
 if(isset($parameters['extra']) and $parameters['extra']=='only_with_stored_parts'){
     $where .= ' where  `Customer Fulfilment Status`="Storing" ';
 

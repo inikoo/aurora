@@ -12,9 +12,9 @@
 if ( $user->can_view('fulfilment')) {
 
 
-        $tab     = 'fulfilment.all_customers';
+        $tab     = 'fulfilment.dropshipping_customers';
         $ar_file = 'ar_fulfilment_tables.php';
-        $tipo    = 'all_customers';
+        $tipo    = 'dropshipping_customers';
 
 
 

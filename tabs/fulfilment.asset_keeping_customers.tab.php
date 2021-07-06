@@ -9,12 +9,14 @@
 
 */
 
-if ($user->can_view('fulfilment')) {
+if ( $user->can_view('fulfilment')) {
 
 
-    $tab     = 'fulfilment.current_customers';
-    $ar_file = 'ar_fulfilment_tables.php';
-    $tipo    = 'current_customers';
+        $tab     = 'fulfilment.asset_keeping_customers';
+        $ar_file = 'ar_fulfilment_tables.php';
+        $tipo    = 'asset_keeping_customers';
+
+
 
 
     $default = $user->get_tab_defaults($tab);
@@ -59,7 +61,6 @@ if ($user->can_view('fulfilment')) {
     $parameters = array(
         'parent'     => 'warehouse',
         'parent_key' => $state['parent_key'],
-        'extra'      => 'only_with_stored_parts'
 
     );
 

@@ -658,15 +658,17 @@ class Customer extends Subject {
             case 'Level Type Icon':
                 switch ($this->get('Customer Level Type')) {
                     case 'Partner':
-
                         return '<i class="fa fa-dove blue margin_right_5" title="'._('Partner').'" ></i>';
-
-                        break;
                     case 'VIP':
-
                         return '<i class="fa fa-badge-check success margin_right_5" title="'._('VIP customer').'" ></i>';
+                    default:
+                        return '';
+                }
+            case 'Fulfilment Icon':
+                switch ($this->get('Customer Fulfilment')) {
+                    case 'Yes':
+                        return '<i class="fa fa-shopping-basket purple padding_left_10" title="'._('Full product procurement').'" ></i>';
 
-                        break;
                     default:
                         return '';
                 }
@@ -1643,8 +1645,43 @@ class Customer extends Subject {
 
 
                 break;
-            case('Customer Fulfilment Allow Pallet Storing'):
-            case('Customer Fulfilment Allow Part Procurement'):
+            case('Customer Fulfilment'):
+
+                $store = get_object('Store', $this->data['Customer Store Key']);
+                if ($store->get('Store Type') == 'Dropshipping') {
+
+                    if ($value == 'Yes') {
+                        $this->update_field($field, $value, $options);
+
+                        if ($this->updated) {
+                            $account = get_object('Account', 1);
+                            $account->load_acc_data();
+                            $sql = "insert into `Customer Fulfilment Dimension` (`Customer Fulfilment Customer Key`,`Customer Fulfilment Metadata`,`Customer Fulfilment Warehouse Key`,`Customer Fulfilment Type`) values (?,'{}',?,'Dropshipping')";
+                            $this->db->prepare($sql)->execute(
+                                array(
+                                    $this->id,
+                                    $account->properties('fulfilment_warehouse_key')
+
+                                )
+                            );
+                        }
+
+                    } elseif ($value == 'No') {
+
+                        $customer_fulfilment = get_object('customer_fulfilment', $this->id);
+                        if ($customer_fulfilment->get('Customer Fulfilment Stored Parts') > 0) {
+                            $this->error = true;
+                            $this->msg   = _('Customer still have stored parts');
+
+                            return;
+                        }
+                        $this->update_field($field, $value, $options);
+                        $customer_fulfilment->fast_update(['Customer Fulfilment Status' => 'StoringEnd']);
+
+                    }
+
+                }
+
 
                 $customer_fulfilment         = get_object('customer_fulfilment', $this->id);
                 $customer_fulfilment->editor = $this->editor;
@@ -1652,6 +1689,13 @@ class Customer extends Subject {
 
                 $customer_fulfilment->update_field($field, $value, $options);
                 $this->updated = $customer_fulfilment->updated;
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Customer_Fulfilment_Icon' => $this->get('Fulfilment Icon'),
+                    )
+                );
+
 
 
                 break;

@@ -1233,6 +1233,10 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         $title .= ' <span class="error padding_left_10"><i class="far fa-times"></i> '._('Rejected').'</span>';
     }
 
+
+    $title .= '<span class="Customer_Fulfilment_Icon">'.$customer->get('Fulfilment Icon').'</span>';
+
+
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,

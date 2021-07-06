@@ -167,10 +167,7 @@ while ($row = $stmt->fetch()) {
 
 
 }
-if ($object->get('Customer Fulfilment') == 'Yes') {
 
-    $customer_fulfilment = get_object('customer_fulfilment', $object->id);
-}
 
 if ($new) {
 
@@ -486,36 +483,6 @@ if ($new) {
     }
 
 
-    if ($object->get('Customer Fulfilment') == 'Yes') {
-
-        $customer_fields[] = array(
-            'label'      => _('Fulfilment'),
-            'show_title' => true,
-            'class'      => 'edit_fields',
-            'fields'     => array(
-
-
-                array(
-                    'id'              => 'Customer_Services',
-                    'edit'            => 'no_icon',
-                    'value'           => $customer_fulfilment->get('Customer Services'),
-                    'formatted_value' =>
-                        '<span onclick="save_toggle_switch(this)"  field="Customer_Fulfilment_Allow_Pallet_Storing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($customer_fulfilment->get('Customer Fulfilment Allow Pallet Storing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
-                        .'" aria-hidden="true"></i> <span class="'.($customer_fulfilment->get('Customer Fulfilment Allow Pallet Storing') == 'No' ? 'discreet' : '').'">'._('Asset storing').'</span></span>'
-                        .'<span class="button" onclick="save_toggle_switch(this)"  field="Customer_Fulfilment_Allow_Part_Procurement"  style="margin-right:40px"><i class=" fa fa-fw '.($customer_fulfilment->get('Customer Fulfilment Allow Part Procurement') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
-                        .'" aria-hidden="true"></i> <span class="'.($customer_fulfilment->get('Customer Fulfilment Allow Part Procurement') == 'No' ? 'discreet' : '').'">'._('Full product procurement').'</span></span>'
-                        ,
-                    'label'           => _('Services'),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-
-
-
-            )
-
-        );
-    }
 
 
 
@@ -947,6 +914,39 @@ if ($new) {
         )
 
     );
+
+
+
+
+    if ($store->get('Store Type') == 'Dropshipping') {
+
+        $customer_fields[] = array(
+            'label'      => _('Fulfilment'),
+            'show_title' => true,
+            'class'      => 'edit_fields',
+            'fields'     => array(
+
+
+                array(
+                    'id'              => 'Customer_Services',
+                    'edit'            => 'no_icon',
+                    'value'           => $object->get('Customer Fulfilment'),
+                    'formatted_value' =>
+                        '<span class="button" onclick="save_toggle_switch(this)"  field="Customer_Fulfilment"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Fulfilment') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Fulfilment') == 'No' ? 'discreet' : '').'">'._('Full product procurement').'</span></span>'
+                    ,
+                    'label'           => '',
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+
+
+            )
+
+        );
+    }
+
 
 
     $customer_fields[] = array(

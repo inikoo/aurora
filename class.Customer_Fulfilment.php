@@ -42,10 +42,12 @@ class Customer_Fulfilment extends DB_Table {
 
     function get($key = '') {
 
+        if (!$this->id) {
+            return;
+        }
 
 
         switch ($key) {
-
 
 
         }
@@ -73,6 +75,7 @@ class Customer_Fulfilment extends DB_Table {
             default:
                 $label = $field;
         }
+
         return $label;
     }
 }

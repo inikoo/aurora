@@ -3052,7 +3052,7 @@ function get_tab_defaults_data() {
             'f_field'         => 'reference',
 
         ),
-        'fulfilment.current_customers'         => array(
+        'fulfilment.asset_keeping_customers'         => array(
             'view'            => 'overview',
             'sort_key'        => 'id',
             'sort_order'      => 1,
@@ -3060,7 +3060,7 @@ function get_tab_defaults_data() {
             'rpp_options'     => $default_rrp_options,
             'f_field'         => 'name',
         ),
-        'fulfilment.all_customers'         => array(
+        'fulfilment.dropshipping_customers'         => array(
             'view'            => 'overview',
             'sort_key'        => 'id',
             'sort_order'      => 1,

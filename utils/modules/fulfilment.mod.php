@@ -125,14 +125,14 @@ function get_fulfilment_module() {
                 'reference' => 'fulfilment/%d/customers',
 
                 'tabs' => array(
-                    'fulfilment.current_customers' => array(
-                        'label' => _('Current customers'),
-                        'icon'  => 'user',
+                    'fulfilment.dropshipping_customers' => array(
+                        'label' => _('Dropshipping cuomers'),
+                        'icon'  => 'shopping-basket',
                         'class' => ''
                     ),
-                    'fulfilment.all_customers' => array(
-                        'label' => _('All customers'),
-                        'icon'  => 'user-friends',
+                    'fulfilment.asset_keeping_customers' => array(
+                        'label' => _('Asset keeping'),
+                        'icon'  => 'pallet',
                         'class' => ''
                     ),
 

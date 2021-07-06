@@ -44,11 +44,11 @@ switch ($tipo) {
     case 'locations':
         locations(get_table_parameters(), $db, $user, $account);
         break;
-    case 'current_customers':
-        current_customers(get_table_parameters(), $db, $user, $account);
+    case 'dropshipping_customers':
+        dropshipping_customers(get_table_parameters(), $db, $user, $account);
         break;
-    case 'all_customers':
-        all_customers(get_table_parameters(), $db, $user, $account);
+    case 'asset_keeping_customers':
+        asset_keeping_customers(get_table_parameters(), $db, $user, $account);
         break;
     case 'parts':
         parts(get_table_parameters(), $db, $user, $account);
@@ -136,7 +136,9 @@ function locations($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function current_customers($_data, $db, $user) {
+
+
+function asset_keeping_customers($_data, $db, $user) {
 
     $rtext_label = 'customer';
 
@@ -144,8 +146,6 @@ function current_customers($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-
-
     $adata = array();
 
     if ($result = $db->query($sql)) {
@@ -153,12 +153,12 @@ function current_customers($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            switch ($data['Customer Type by Activity']) {
+            switch ($data['Customer Fulfilment Status']) {
                 case 'ToApprove':
                     $activity = _('To be approved');
                     break;
                 case 'Inactive':
-                    $activity = _('Lost');
+                    $activity = _('Inactive');
                     break;
                 case 'Active':
                     $activity = _('Active');
@@ -172,7 +172,7 @@ function current_customers($_data, $db, $user) {
             }
 
 
-            $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
+            $link_format = '/fulfilment/%d/customers/%d';
 
             $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
@@ -186,9 +186,9 @@ function current_customers($_data, $db, $user) {
 
                 'location' => $data['Customer Location'],
                 'activity' => $activity,
-                'invoices' => number($data['invoices']),
-                'orders'   => number($data['orders']),
-                'amount'   => money($data['amount'], $data['Store Currency Code'])
+                //'invoices' => number($data['invoices']),
+                //'orders'   => number($data['orders']),
+                //'amount'   => money($data['amount'], $data['Store Currency Code'])
 
 
             );
@@ -211,7 +211,7 @@ function current_customers($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function all_customers($_data, $db, $user) {
+function dropshipping_customers($_data, $db, $user) {
 
     $rtext_label = 'customer';
 
