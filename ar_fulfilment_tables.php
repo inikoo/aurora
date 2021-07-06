@@ -172,7 +172,7 @@ function asset_keeping_customers($_data, $db, $user) {
             }
 
 
-            $link_format = '/fulfilment/%d/customers/%d';
+            $link_format = '/fulfilment/%d/customers/asset_keeping/%d';
 
             $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
@@ -245,7 +245,7 @@ function dropshipping_customers($_data, $db, $user) {
             }
 
 
-            $link_format = '/fulfilment/%d/customers/%d';
+            $link_format = '/fulfilment/%d/customers/dropshipping/%d';
 
             $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 

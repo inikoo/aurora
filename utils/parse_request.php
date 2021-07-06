@@ -5968,31 +5968,58 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $parent_key = $key;
 
                                 if (isset($view_path[2])) {
-                                    if (is_numeric($view_path[2])) {
-                                        $object  = 'customer';
-                                        $extra   = 'all_customers';
-                                        $section = 'customer';
-                                        $key     = $view_path[2];
-                                    }
 
-                                    if (isset($view_path[3])) {
-                                        if ($view_path[3] == 'parts') {
+                                    if ($view_path[2] == 'asset_keeping') {
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+                                                $object  = 'customer';
+                                                $section = 'asset_keeping_customer';
+                                                $key     = $view_path[3];
+                                            }
+
                                             if (isset($view_path[4])) {
-                                                if (is_numeric($view_path[4])) {
-                                                    $parent     = 'customer';
-                                                    $parent_key = $view_path[2];
-                                                    $section    = 'customer_part';
-                                                    $key        = $view_path[4];
-                                                } elseif ($view_path[4] == 'new') {
-
-
-                                                    $key     = '';
-                                                    $section = 'customer_part.new';
-                                                    $object  = 'customer_part';
-
-
+                                                if ($view_path[4] == 'assets') {
+                                                    if (isset($view_path[5])) {
+                                                        if (is_numeric($view_path[5])) {
+                                                            $parent     = 'customer';
+                                                            $parent_key = $view_path[3];
+                                                            $section    = 'asset';
+                                                            $key        = $view_path[5];
+                                                        }
+                                                    }
                                                 }
                                             }
+                                        }
+
+                                    } elseif ($view_path[2] == 'dropshipping') {
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+                                                $object  = 'customer';
+                                                $section = 'dropshipping_customer';
+                                                $key     = $view_path[3];
+                                            }
+
+                                            if (isset($view_path[4])) {
+                                                if ($view_path[4] == 'parts') {
+                                                    if (isset($view_path[5])) {
+                                                        if (is_numeric($view_path[5])) {
+                                                            $parent     = 'customer';
+                                                            $parent_key = $view_path[3];
+                                                            $section    = 'customer_part';
+                                                            $key        = $view_path[5];
+                                                        } elseif ($view_path[4] == 'new') {
+
+
+                                                            $key     = '';
+                                                            $section = 'customer_part.new';
+                                                            $object  = 'customer_part';
+
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+
                                         }
                                     }
 

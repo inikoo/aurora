@@ -966,7 +966,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
             } else {
 
-
                 switch ($state['module']) {
                     case 'products':
                         switch ($state['section']) {
@@ -985,7 +984,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                                 break;
                         }
                         break;
-
                 }
 
 
@@ -1308,6 +1306,19 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     default:
 
                 }
+            case 'fulfilment':
+                switch ($state['section']) {
+                    case 'dashboard':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tachometer-alt"></i> '._('Fulfilment'));
+                        break;
+                    case 'customers':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-user"></i> '._('Fulfilment customers'));
+                        break;
+                    case 'locations':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-pallet"></i> '._('Fulfilment locations'));
+                        break;
+                }
+                break;
             case 'utils':
                 switch ($state['section']) {
                     case 'fire':
@@ -1796,7 +1807,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
                 include_once 'showcase/invoice_category_showcase.show.php';
                 $html = get_invoice_category_showcase($data, $smarty, $user, $db);
 
-            }elseif ($data['_object']->get('Category Scope') == 'Customer') {
+            } elseif ($data['_object']->get('Category Scope') == 'Customer') {
                 include_once 'showcase/customer_category_showcase.show.php';
                 $html = get_customer_category_showcase($data, $smarty, $user, $db);
 
@@ -3738,7 +3749,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_customers_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                case ('customer'):
+                case ('asset_keeping_customer'):
+                case ('dropshipping_customer'):
                     return get_customer_navigation(
                         $data, $smarty, $user, $db, $account
                     );
@@ -9047,8 +9059,57 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             switch ($state['section']) {
                 case 'dashboard':
                     $branch[] = array(
-                        'label'     => _('Warehouse dashboard'),
+                        'label'     => _('Fulfilment dashboard'),
                         'icon'      => 'tachometer',
+                        'reference' => ''
+                    );
+
+                    break;
+                case 'customers':
+                    $branch[] = array(
+                        'label'     => _('Fulfilment'),
+                        'icon'      => 'tachometer',
+                        'reference' => 'fulfilment/'.$state['current_warehouse'].'/dashboard'
+                    );
+                    $branch[] = array(
+                        'label'     => _('Customers'),
+                        'icon'      => 'user',
+                        'reference' => ''
+                    );
+
+                    break;
+                case 'asset_keeping_customer':
+                    $branch[] = array(
+                        'label'     => _('Fulfilment'),
+                        'icon'      => 'tachometer',
+                        'reference' => 'fulfilment/'.$state['current_warehouse'].'/dashboard'
+                    );
+                    $branch[] = array(
+                        'label'     => _('Customers').' ('._('Asset keeping').')',
+                        'icon'      => 'user',
+                        'reference' => 'fulfilment/'.$state['current_warehouse'].'/customers'
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Formatted ID'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+                    break;
+                case 'dropshipping_customer':
+                    $branch[] = array(
+                        'label'     => _('Fulfilment'),
+                        'icon'      => 'tachometer',
+                        'reference' => 'fulfilment/'.$state['current_warehouse'].'/dashboard'
+                    );
+                    $branch[] = array(
+                        'label'     => _('Customers').' ('._('Dropshipping').')',
+                        'icon'      => 'user',
+                        'reference' => 'fulfilment/'.$state['current_warehouse'].'/customers'
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Formatted ID'),
+                        'icon'      => '',
                         'reference' => ''
                     );
 

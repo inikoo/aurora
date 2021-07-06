@@ -35,7 +35,6 @@ function get_fulfilment_module() {
                 'tabs'      => array(
 
 
-
                     'fulfilment.stored_parts' => array(
                         'label' => _('Stored items'),
 
@@ -117,7 +116,7 @@ function get_fulfilment_module() {
                 )
             ),
 
-            'customers' => array(
+            'customers'              => array(
 
                 'type'      => 'navigation',
                 'label'     => _('Customers'),
@@ -125,7 +124,7 @@ function get_fulfilment_module() {
                 'reference' => 'fulfilment/%d/customers',
 
                 'tabs' => array(
-                    'fulfilment.dropshipping_customers' => array(
+                    'fulfilment.dropshipping_customers'  => array(
                         'label' => _('Dropshipping cuomers'),
                         'icon'  => 'shopping-basket',
                         'class' => ''
@@ -139,13 +138,71 @@ function get_fulfilment_module() {
                 )
 
             ),
-            'customer' => array(
+            'asset_keeping_customer' => array(
 
                 'type'      => 'object',
                 'label'     => _('Customer'),
                 'icon'      => 'user',
                 'reference' => '',
                 'tabs'      => array(
+                    'customer.history'       => array(
+                        'label' => _('History, notes'),
+                        'icon'  => 'sticky-note'
+                    ),
+                    'customer.details'       => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'customer.deliveries'    => array(
+                        'label' => _('Deliveries'),
+                        'icon'  => 'arrow-square-down'
+                    ),
+
+                    'customer.stored_assets' => array(
+                        'label' => _('Assets'),
+                        'icon'  => 'box-alt'
+                    ),
+                    'customer.locations'     => array(
+                        'label' => _('Locations'),
+                        'icon'  => 'pallet'
+                    ),
+                    'customer.invoices'      => array(
+                        'label' => _('Invoices'),
+                        'icon'  => 'file-invoice'
+                    ),
+
+
+                )
+
+            ),
+
+            'dropshipping_customer' => array(
+                'type'           => 'object',
+                'label'          => _('Customer'),
+                'title'          => _('Customer'),
+                'icon'           => 'user',
+                'reference'      => 'customer/%d',
+                'subtabs_parent' => array(
+                    'customer.marketing.families'   => 'customer.insights',
+                    'customer.marketing.products'   => 'customer.insights',
+                    'customer.marketing.favourites' => 'customer.insights',
+                    'customer.marketing.search'     => 'customer.insights',
+                    'customer.poll'                 => 'customer.insights',
+
+                    'customer.sales.plot'      => 'customer.sales',
+                    'customer.sales.history'   => 'customer.sales',
+                    'customer.sales.dashboard' => 'customer.sales',
+                    'customer.sales.info'      => 'customer.sales',
+
+                    'customer.orders'   => 'customer.orders_invoices',
+                    'customer.invoices' => 'customer.orders_invoices',
+
+                    'customer.active_portfolio'  => 'customer.portfolio',
+                    'customer.removed_portfolio' => 'customer.portfolio',
+
+
+                ),
+                'tabs'           => array(
                     'customer.history' => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note'
@@ -154,32 +211,146 @@ function get_fulfilment_module() {
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'customer.deliveries'              => array(
-                        'label' => _('Deliveries'),
-                        'icon'  => 'arrow-square-down'
+
+                    'customer.portfolio' => array(
+
+                        'label' => _("Portfolio"),
+
+                        'title'         => _("Customer's store products"),
+                        'icon'          => 'store-alt',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Products in Portfolio'
+                        ),
+                        'subtabs'       => array(
+                            'customer.active_portfolio'  => array(
+                                'icon'  => 'cube',
+                                'label' => _("Customer's store products")
+                            ),
+                            'customer.removed_portfolio' => array(
+                                'class' => 'icon_only right',
+                                'icon'  => 'ghost',
+                                'label' => _('Removed products'),
+                                'title' => _('Removed from portfolio')
+                            ),
+
+                        )
                     ),
-                    'customer.parts'              => array(
-                        'label' => _('Parts'),
-                        'icon'  => 'box'
+
+                    'customer.clients' => array(
+                        'label' => _("Clients"),
+
+                        'title' => _("Customer's clients"),
+                        'icon'  => 'address-book',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Clients'
+                        ),
                     ),
-                    'customer.stored_assets'              => array(
-                        'label' => _('Assets'),
-                        'icon'  => 'box-alt'
+
+                    'customer.products' => array(
+                        'label' => _("Products"),
+
+                        'title' => _("Customer's products"),
+                        'icon'  => 'cube',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Products'
+                        ),
                     ),
-                    'customer.locations' => array(
-                        'label' => _('Locations'),
-                        'icon'  => 'pallet'
-                    ),
-                    'customer.invoices' => array(
-                        'label' => _('Invoices'),
-                        'icon'  => 'file-invoice'
+
+                    'customer.orders_invoices' => array(
+                        'label'   => _('Orders'),
+                        'icon'    => 'shopping-cart',
+                        'subtabs' => array(
+                            'customer.orders'   => array(
+                                'label' => _('Orders'),
+                                'icon'  => 'shopping-cart'
+                            ),
+                            'customer.invoices' => array(
+                                'label' => _('Invoices'),
+                                'icon'  => 'file-invoice-dollar'
+                            ),
+                        )
+
                     ),
 
 
+                    'customer.sales' => array(
+                        'label'   => _('Sales'),
+                        'icon'    => 'money-bill',
+                        'subtabs' => array(
+                            'customer.sales.dashboard' => array(
+                                'label' => _('Dashboard')
+                            ),
+                            'customer.sales.plot'      => array(
+                                'label' => _('Plot')
+                            ),
+                            'customer.sales.history'   => array(
+                                'label' => _('Sales history')
+                            ),
+
+                            'customer.sales.info' => array(
+                                'label'   => '',
+                                'title'   => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
+                                'class'   => 'right icon_only'
+                            ),
+
+
+                        )
+                    ),
+
+
+                    'customer.insights' => array(
+                        'label'   => _('Insights'),
+                        'icon'    => 'graduation-cap',
+                        'subtabs' => array(
+                            'customer.poll'               => array(
+                                'label' => _('Poll'),
+                                'icon'  => 'poll-people'
+                            ),
+                            'customer.marketing.products' => array(
+                                'label' => _('Products invoiced'),
+                                'icon'  => 'cube'
+                            ),
+
+                            'customer.marketing.families' => array(
+                                'label' => _('Categories ordered'),
+                                'icon'  => 'cubes'
+                            ),
+
+                            'customer.marketing.favourites' => array(
+                                'label' => _('Favourite products'),
+                                'icon'  => 'heart'
+                            ),
+
+                        )
+                    ),
+
+
+                    'customer.deals'             => array(
+                        'label' => _('Discounts'),
+                        'icon'  => 'tags'
+                    ),
+                    'customer.credit_blockchain' => array(
+                        'label' => _('Credits blockchain'),
+                        'icon'  => 'code-commit'
+                    ),
+
+                    'customer.sent_emails' => array(
+                        'label' => '',
+                        'title' => _('Sent emails'),
+                        'icon'  => 'paper-plane',
+                        'class' => 'icon_only right'
+
+                    ),
 
                 )
-
             ),
+
 
             'locations' => array(
 
@@ -200,7 +371,6 @@ function get_fulfilment_module() {
                 )
 
             ),
-
 
 
             'location' => array(
@@ -246,7 +416,7 @@ function get_fulfilment_module() {
 
             ),
 
-            'customer_part.new'            => array(
+            'customer_part.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'customer_part.new' => array(
