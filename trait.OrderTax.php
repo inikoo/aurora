@@ -156,23 +156,23 @@ trait OrderTax {
     }
 
 
-    function update_tax($tax_category_code = false, $update_from_invoice_key = false) {
+    function update_tax($tax_category_key = false, $update_from_invoice_key = false) {
 
         $account = get_object('Account', 1);
         $account->load_properties();
 
         if ($account->properties('tax_per_item')) {
-            $this->update_tax_per_item($account, $tax_category_code, $update_from_invoice_key);
+            $this->update_tax_per_item($account, $tax_category_key, $update_from_invoice_key);
 
         }else{
-            $this->update_tax_all_order_same($tax_category_code, $update_from_invoice_key);
+            $this->update_tax_all_order_same($tax_category_key, $update_from_invoice_key);
 
         }
 
 
     }
 
-    function update_tax_per_item($account, $tax_category_code, $update_from_invoice_key) {
+    function update_tax_per_item($account, $tax_category_key, $update_from_invoice_key) {
 
 
         $account_has_re_tax = false;
@@ -209,8 +209,10 @@ trait OrderTax {
         }
 
 
-        if ($tax_category_code) {
-            $tax_category = new TaxCategory('code', $tax_category_code);
+        if ($tax_category_key) {
+            include_once 'class.TaxCategory.php';
+
+            $tax_category = get_object('tax_category-key', $tax_category_key);
             if (!$tax_category->id) {
                 $this->msg   = 'Invalid tax code';
                 $this->error = true;
@@ -395,7 +397,7 @@ trait OrderTax {
     }
 
 
-    function update_tax_all_order_same($tax_category_code = false, $update_from_invoice_key = false) {
+    function update_tax_all_order_same($tax_category_key = false, $update_from_invoice_key = false) {
 
 
         $old_tax_code = $this->data['Order Tax Code'];
@@ -425,8 +427,8 @@ trait OrderTax {
             }
         }
 
-        if ($tax_category_code) {
-            $tax_category = new TaxCategory('code', $tax_category_code);
+        if ($tax_category_key) {
+            $tax_category = get_object('tax_category-key', $tax_category_key);
             if (!$tax_category->id) {
                 $this->msg   = 'Invalid tax code';
                 $this->error = true;
@@ -471,6 +473,8 @@ trait OrderTax {
             $this->db->exec($sql);
 
         }
+
+
 
 
         if ($update_from_invoice_key > 0) {
@@ -978,11 +982,7 @@ trait OrderTax {
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
-
 
                 if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
                         '/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code']
