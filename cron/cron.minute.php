@@ -468,10 +468,10 @@ function real_time_users_operations($db, $redis, $account) {
             if ($customer_key > 0) {
 
 
-                $customer_web_info_log_out = '<span class="italic discreet">'._('Customer not logged in').'</span>';
+               // $customer_web_info_log_out = '<span class="italic discreet">'._('Customer not logged in').'</span>';
 
                 $last_visit                = strftime("%H:%M:%S %Z", $value);
-                $customer_web_info_log_out .= ' <span class="small italic discreet padding_left_5">('.sprintf('Last seen %s', $last_visit).')</span>';
+                //$customer_web_info_log_out .= ' <span class="small italic discreet padding_left_5">('.sprintf('Last seen %s', $last_visit).')</span>';
 
 
                 $objects_data[] = array(
@@ -491,6 +491,7 @@ function real_time_users_operations($db, $redis, $account) {
         //continue;
 
         $deleted_values = $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
+
         if ($deleted_values > 0) {
             $real_time_website_users_data = get_website_users_read_time_data($redis, $account, $row['Website Key']);
 
