@@ -44,7 +44,12 @@
         </a>
         <div class="center-text cat_cats_fam_name" style="height: 40px">
             {$category_data.header_text|strip_tags} <span style="color: purple">{$category_data.allowance}</span>
+            <div style="margin-top:5px;text-align: center;font-size: small">
+                {$category_data.expire}
+            </div>
         </div>
+
+
     </div>
 
     {/foreach}
@@ -83,7 +88,7 @@
 
 
                         <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
-                            <div class="description">{$product_data.code} <span style="color: purple">{$product_data.allowance}</span>
+                            <div class="description">{$product_data.code} <span style="color: purple">{$product_data.allowance}   <span style="font-size: x-small">{$category_data.expire}</span>  </span>
                                 {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
                                     <i class="stock_dot inline stock_level_{$product_data.product_id} fa fa-fw fa-circle" ></i>
                                 {/if}
@@ -127,7 +132,8 @@
 
         </div>
     {/foreach}
-</div>
+
+        <div class="clear"></div>
 
 <script>
     {foreach from=$products item=item  name=analytics_data}

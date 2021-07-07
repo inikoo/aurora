@@ -53,8 +53,13 @@
                             </a>
                         </div>
 
-                    </div>
 
+                     <div style="text-align: center;position: relative;bottom: 7px;font-size: small">
+                            {$category_data.expire}
+                        </div>
+
+
+                    </div>
 
 
             </div>
@@ -90,7 +95,7 @@
 
 
                         <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
-                            <div class="description">{$product_data.code} <span style="padding-left: 5px;color: purple">{$product_data.allowance}</span>
+                            <div class="description">{$product_data.code} <span style="padding-left: 5px;color: purple">{$product_data.allowance} <span style="font-size: small">{$category_data.expire}</span> </span>
                                 {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
                                     <i class="stock_dot inline stock_level_{$product_data.product_id} fa fa-fw fa-circle" ></i>
                                 {/if}
@@ -127,13 +132,13 @@
                         </em>
 
 
-                    </span>
+            </span>
 
 
-                        </div>
+        </div>
 
-                {/foreach}
-            </div>
+    {/foreach}
+
 
 <div class="clear"></div>
 <script>

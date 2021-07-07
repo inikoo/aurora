@@ -112,7 +112,8 @@ function get_customer_discounts_html($data, $customer, $db) {
     $discounted_products = array();
 
     $sql = sprintf(
-        "SELECT `Deal Component Term Allowances Label`,`Deal Component Terms`  FROM `Deal Component Dimension`   WHERE  `Deal Component Trigger Key`=%d  and `Deal Component Trigger`='Customer' and `Deal Component Terms Type`='Product Amount Ordered' ", $customer->id
+        "SELECT `Deal Component Term Allowances Label`,`Deal Component Terms`,`Deal Component Expiration Date`   FROM `Deal Component Dimension`   WHERE  `Deal Component Trigger Key`=%d  and `Deal Component Trigger`='Customer' and `Deal Component Terms Type`='Product Amount Ordered' ",
+        $customer->id
     );
 
 
@@ -131,6 +132,10 @@ function get_customer_discounts_html($data, $customer, $db) {
                                                   ]
             )) {
 
+                $expire = '';
+                if ($row['Deal Component Expiration Date'] != '') {
+                    $expire = sprintf(_('Valid until %s'), strftime("%a %e %B", strtotime($data['Deal Component Expiration Date'].' +0:00')));
+                }
 
                 $product->load_webpage();
                 $discounted_products[] = array(
@@ -152,7 +157,8 @@ function get_customer_discounts_html($data, $customer, $db) {
                     'out_of_stock_label'   => $product->get('Out of Stock Label'),
                     'sort_code'            => $product->get('Code File As'),
                     'sort_name'            => $product->get('Product Name'),
-                    'allowance'   => $row['Deal Component Term Allowances Label'],
+                    'allowance'            => $row['Deal Component Term Allowances Label'],
+                    'expire'               => $expire,
 
 
                 );
@@ -163,7 +169,8 @@ function get_customer_discounts_html($data, $customer, $db) {
 
 
     $sql = sprintf(
-        "SELECT `Deal Component Term Allowances Label`,`Deal Component Terms`  FROM `Deal Component Dimension`   WHERE  `Deal Component Trigger Key`=%d  and `Deal Component Trigger`='Customer' and `Deal Component Terms Type`='Category Amount Ordered' ", $customer->id
+        "SELECT `Deal Component Term Allowances Label`,`Deal Component Terms`,`Deal Component Expiration Date`  FROM `Deal Component Dimension`   WHERE  `Deal Component Trigger Key`=%d  and `Deal Component Trigger`='Customer' and `Deal Component Terms Type`='Category Amount Ordered' ",
+        $customer->id
     );
 
 
@@ -190,7 +197,10 @@ function get_customer_discounts_html($data, $customer, $db) {
                 $image_mobile_website = $image_src;
                 $image_website        = $image_src;
             }
-
+            $expire = '';
+            if ($row['Deal Component Expiration Date'] != '') {
+                $expire = sprintf(_('Valid until %s'), strftime("%a %e %B", strtotime($data['Deal Component Expiration Date'].' +0:00')));
+            }
 
             $discounted_families[] = array(
                 'type' => 'category',
@@ -199,7 +209,7 @@ function get_customer_discounts_html($data, $customer, $db) {
                 'link'        => $category->webpage->get('URL'),
                 'header_text' => $category->get('Label'),
                 'allowance'   => $row['Deal Component Term Allowances Label'],
-
+                'expire'      => $expire,
 
                 'image_src'            => $image_src,
                 'image_mobile_website' => $image_mobile_website,

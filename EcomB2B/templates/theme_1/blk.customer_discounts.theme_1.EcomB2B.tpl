@@ -57,7 +57,9 @@
                                 <img src="{if empty($category_data.image_website)}{$category_data.image_src}{else}{$category_data.image_website}{/if}"  />
                             </a>
                         </div>
-
+                        <div style="text-align: center;position: relative;bottom: 5px;font-size: small">
+                            {$category_data.expire}
+                        </div>
                     </div>
 
 
@@ -83,7 +85,7 @@
         <div class="product_block item product_container" data-product_id="{$item.product_id}">
 
             <div class="product_header_text _au_vw_" style="text-align: center;font-weight: 800;color: purple">
-                {$item.allowance}
+                {$item.allowance} <div style="font-size: x-small;font-weight: normal;opacity: .75">{$item.expire}</div>
             </div>
 
             <div class="wrap_to_center product_image" >
