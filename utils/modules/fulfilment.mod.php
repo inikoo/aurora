@@ -200,6 +200,10 @@ function get_fulfilment_module() {
                     'customer.active_portfolio'  => 'customer.portfolio',
                     'customer.removed_portfolio' => 'customer.portfolio',
 
+                    'customer.parts'   => 'customer.fulfilment',
+                    'customer.deliveries' => 'customer.fulfilment',
+                    'customer.returns' => 'customer.fulfilment',
+
 
                 ),
                 'tabs'           => array(
@@ -210,6 +214,26 @@ function get_fulfilment_module() {
                     'customer.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
+                    ),
+
+                    'customer.fulfilment' => array(
+                        'label'   => _('Fulfilment'),
+                        'icon'    => 'shopping-basket',
+                        'subtabs' => array(
+                            'customer.parts'   => array(
+                                'label' => _('Parts'),
+                                'icon'  => 'box'
+                            ),
+                            'customer.deliveries' => array(
+                                'label' => _('Deliveries'),
+                                'icon'  => 'download'
+                            ),
+                            'customer.returns' => array(
+                                'label' => _('Returns'),
+                                'icon'  => 'external-link-square-alt'
+                            ),
+                        )
+
                     ),
 
                     'customer.portfolio' => array(
@@ -249,18 +273,6 @@ function get_fulfilment_module() {
                         ),
                     ),
 
-                    'customer.products' => array(
-                        'label' => _("Products"),
-
-                        'title' => _("Customer's products"),
-                        'icon'  => 'cube',
-
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Products'
-                        ),
-                    ),
-
                     'customer.orders_invoices' => array(
                         'label'   => _('Orders'),
                         'icon'    => 'shopping-cart',
@@ -276,6 +288,7 @@ function get_fulfilment_module() {
                         )
 
                     ),
+
 
 
                     'customer.sales' => array(
@@ -331,21 +344,24 @@ function get_fulfilment_module() {
                     ),
 
 
-                    'customer.deals'             => array(
-                        'label' => _('Discounts'),
-                        'icon'  => 'tags'
-                    ),
                     'customer.credit_blockchain' => array(
-                        'label' => _('Credits blockchain'),
+                        'label' => _('Credits'),
                         'icon'  => 'code-commit'
                     ),
+
+
 
                     'customer.sent_emails' => array(
                         'label' => '',
                         'title' => _('Sent emails'),
                         'icon'  => 'paper-plane',
                         'class' => 'icon_only right'
-
+                    ),
+                    'customer.deals'             => array(
+                        'label' => '',
+                        'title' => _('Discounts'),
+                        'icon'  => 'tags',
+                        'class' => 'icon_only right'
                     ),
 
                 )
