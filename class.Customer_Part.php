@@ -15,7 +15,7 @@ include_once 'trait.NotesSubject.php';
 
 include_once 'utils/natural_language.php';
 
-class CustomerPart extends DB_Table {
+class Customer_Part extends DB_Table {
     use NotesSubject;
 
     /**

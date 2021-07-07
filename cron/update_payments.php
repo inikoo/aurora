@@ -44,7 +44,7 @@ if ($result = $db->query($sql)) {
 $sql = sprintf("SELECT `Payment Account Key` FROM `Payment Account Dimension`");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $payment_account = get_object('PaymentAccount',$row['Payment Account Key']);
+        $payment_account = get_object('Payment_Account',$row['Payment Account Key']);
 
         $payment_account->update_payments_data();
         $payment_account->update_stores_data();

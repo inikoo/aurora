@@ -467,7 +467,7 @@ $customer_part_fields[] = array(
                     'tipo'       => 'check_for_duplicates',
                     'parent'     => 'account',
                     'parent_key' => 1,
-                    'object'     => 'CustomerPart',
+                    'object'     => 'Customer_Part',
                     'key'        => $object->id
                 )
             ),

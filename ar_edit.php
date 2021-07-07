@@ -4249,7 +4249,7 @@ function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
 
     $store = get_object('Store', $customer->get('Store Key'));
 
-    $payment_account         = get_object('PaymentAccount', $data['payment_account_key']);
+    $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
     $payment_account->editor = $editor;
 
     $date = gmdate('Y-m-d H:i:s');

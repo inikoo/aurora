@@ -195,8 +195,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Payment_Service_Provider($key);
             break;
         case 'payment_account':
-        case 'paymentaccount':
-
+        case 'payment account':
             require_once "class.Payment_Account.php";
             $object = new Payment_Account($key);
             break;
@@ -206,6 +205,13 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Payment_Account.php";
             $object = new Payment_Account($tmp[1]);
             break;
+
+        case 'payment_account-block':
+        case 'payment account-block':
+            require_once "class.Payment_Account.php";
+            $object = new Payment_Account('block', $key);
+            break;
+
         case 'payment':
             require_once "class.Payment.php";
             $object = new Payment($key);
@@ -391,16 +397,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Published_Email_Template.php";
             $object = new Published_Email_Template($key);
             break;
-        case 'payment_account':
-        case 'payment account':
-            require_once "class.Payment_Account.php";
-            $object = new Payment_Account($key);
-            break;
-        case 'payment_account-block':
-        case 'payment account-block':
-            require_once "class.Payment_Account.php";
-            $object = new Payment_Account('block', $key);
-            break;
+
         case 'tax_category':
         case 'tax category':
             require_once "class.TaxCategory.php";
@@ -560,15 +557,18 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'customer_fulfilment':
         case 'customer fulfilment':
-        case 'customerfulfilment':
             include_once 'class.Customer_Fulfilment.php';
             $object = new Customer_Fulfilment('id', $key);
             break;
+
+        case 'fulfilment_delivery':
+            include_once 'class.Fulfilment_Delivery.php';
+            $object = new Fulfilment_Delivery('id', $key);
+            break;
         case 'customer_part':
-        case 'customerpart':
         case 'customer part':
-            require_once "class.CustomerPart.php";
-            $object = new CustomerPart($key);
+            require_once "class.Customer_Part.php";
+            $object = new Customer_Part($key);
             break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
