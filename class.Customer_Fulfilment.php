@@ -78,4 +78,41 @@ class Customer_Fulfilment extends DB_Table {
 
         return $label;
     }
+
+    function create_customer_delivery($_data) {
+
+
+        $warehouse = get_object('Warehouse', $_data['warehouse_key']);
+
+        $customer = get_object('Customer', $this->id);
+        $store    = get_object('Store', $customer->get('Customer Store Key'));
+
+        $delivery_data = array(
+            'Fulfilment Delivery Type'                  => ($store->get('Store Type') == 'Dropshipping' ? 'Part' : 'Asset'),
+            'Fulfilment Delivery Customer Key'          => $this->id,
+            'Fulfilment Delivery Store Key'             => $customer->get('Customer Store Key'),
+            'Fulfilment Delivery Customer Name'         => $customer->get('Name'),
+            'Fulfilment Delivery Customer Contact Name' => $customer->get('Main Contact Name'),
+            'Fulfilment Delivery Customer Email'        => $customer->get('Main Plain Email'),
+            'Fulfilment Delivery Customer Telephone'    => $customer->get('Preferred Contact Number Formatted Number'),
+            'Fulfilment Delivery Customer Address'      => $customer->get('Contact Address Formatted'),
+            'Fulfilment Delivery Customer Country Code' => $customer->get('Contact Address Country 2 Alpha Code'),
+            'Fulfilment Delivery Warehouse Key'         => $warehouse->data['Warehouse Key'],
+            'editor'                                    => $this->editor,
+        );
+
+
+        $delivery = new Fulfilment_Delivery('new', $delivery_data);
+
+
+        if ($delivery->error) {
+            $this->error = true;
+            $this->msg   = $delivery->msg;
+
+        }
+
+
+        return $delivery;
+
+    }
 }

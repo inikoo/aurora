@@ -471,8 +471,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     } else {
         $tab = 'fulfilment.asset_keeping_customers';
         $_link='asset_keeping';
-
-
     }
 
 

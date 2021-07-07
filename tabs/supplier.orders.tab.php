@@ -63,4 +63,4 @@ $smarty->assign('js_code', 'js/injections/supplier.orders.'.(_DEVEL ? '' : 'min.
 
 include 'utils/get_table_html.php';
 
-?>
+

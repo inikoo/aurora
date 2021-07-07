@@ -53,6 +53,9 @@ switch ($tipo) {
     case 'parts':
         parts(get_table_parameters(), $db, $user, $account);
         break;
+    case 'deliveries':
+        deliveries(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -72,7 +75,6 @@ function locations($_data, $db, $user, $account) {
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
-
 
 
     $link = 'fulfilment/locations/'.$_data['parameters']['parent_key'].'/';
@@ -137,7 +139,6 @@ function locations($_data, $db, $user, $account) {
 }
 
 
-
 function asset_keeping_customers($_data, $db, $user) {
 
     $rtext_label = 'customer';
@@ -145,7 +146,7 @@ function asset_keeping_customers($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     if ($result = $db->query($sql)) {
@@ -218,7 +219,7 @@ function dropshipping_customers($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     if ($result = $db->query($sql)) {
@@ -238,6 +239,9 @@ function dropshipping_customers($_data, $db, $user) {
                     break;
                 case 'Prospect':
                     $activity = _('Prospect');
+                    break;
+                case 'deliveries':
+                    deliveries(get_table_parameters(), $db, $user, $account);
                     break;
                 default:
                     $activity = $data['Customer Type by Activity'];
@@ -288,9 +292,6 @@ function parts($_data, $db, $user, $account) {
 
 
     include_once 'utils/currency_functions.php';
-
-
-
 
 
     $rtext_label = 'customer part';
@@ -544,6 +545,92 @@ function parts($_data, $db, $user, $account) {
         'resultset' => array(
             'state'         => 200,
             'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function deliveries($_data, $db, $user) {
+    $rtext_label = 'delivery';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Fulfilment Delivery State']) {
+                case 'InProcess':
+                    $state = sprintf('%s', _('In Process'));
+                    break;
+                case 'Consolidated':
+                    $state = sprintf('%s', _('Consolidated'));
+                    break;
+                case 'Dispatched':
+                    $state = sprintf('%s', _('Dispatched'));
+                    break;
+                case 'Received':
+                    $state = sprintf('%s', _('Received'));
+                    break;
+                case 'Checked':
+                    $state = sprintf('%s', _('Checked'));
+                    break;
+                case 'Placed':
+                    $state = _('Booked in');
+                    break;
+
+
+                case 'Cancelled':
+                    $state = sprintf('%s', _('Cancelled'));
+                    break;
+
+                default:
+                    $state = $data['Fulfilment Delivery State'];
+                    break;
+            }
+
+            if ($data['Store Type'] == 'Dropshipping') {
+                $_link_customer = 'fulfilment/'.$data['Fulfilment Delivery Warehouse Key'].'/customers/dropshipping/'.$data['Fulfilment Delivery Customer Key'];
+            } else {
+                $_link_customer = 'fulfilment/'.$data['Fulfilment Delivery Warehouse Key'].'/customers/asset_keeping/'.$data['Fulfilment Delivery Customer Key'];
+            }
+
+
+            $customer_delivery_reference = $data['Fulfilment Delivery Public ID'];
+            if ($customer_delivery_reference == '') {
+                $customer_delivery_reference = '<span class="discreet italic">'._('No set').'</span>';
+            }
+
+            $table_data[] = array(
+                'id' => (integer)$data['Fulfilment Delivery Key'],
+                'date'      => strftime("%e %b %Y", strtotime($data['Fulfilment Delivery Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Fulfilment Delivery Last Updated Date'].' +0:00')),
+                'customer'     => sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_customer, $data['Fulfilment Delivery Customer Name']),
+                'customer_delivery_reference'    => $customer_delivery_reference,
+                'formatted_id' => sprintf('<span class="link" onclick="change_view(\'%s\')" >%06d</span>  ', $_link_customer.'/delivery/'.$data['Fulfilment Delivery Key'], $data['Fulfilment Delivery Key']),
+                'state' => $state,
+            );
+
+
+        }
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

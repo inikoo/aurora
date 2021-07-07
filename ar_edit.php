@@ -1159,7 +1159,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 [
                     'Delivery Note Shipper Key' => $data['fields_data']['Shipment Shipper'],
                     'Delivery Note Telephone'   => $data['fields_data']['Delivery Note Telephone'],
-                    'Delivery Note Email'   => $data['fields_data']['Delivery Note Email'],
+                    'Delivery Note Email'       => $data['fields_data']['Delivery Note Email'],
                 ]
             );
 
@@ -1175,7 +1175,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             $reference2 = '';
             $service    = '';
-
 
 
             if ($shipper->get('Code') == 'Whistl') {
@@ -2811,6 +2810,33 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $updated_data    = array();
             }
             break;
+        case 'Fulfilment_Delivery':
+
+            include_once 'class.Fulfilment_Delivery.php';
+
+            $data['fields_data']['user'] = $user;
+
+            $fulfilment_customer = get_object('Customer_Fulfilment', $parent->id);
+            $object              = $fulfilment_customer->create_customer_delivery($data['fields_data']);
+
+            $store = get_object('Store', $parent->get('Store Key'));
+            if ($store->get('Store Type') == 'Dropshipping') {
+                $tab   = 'fulfilment.dropshipping_customers';
+                $_link = 'dropshipping';
+
+            } else {
+                $tab   = 'fulfilment.asset_keeping_customers';
+                $_link = 'asset_keeping';
+            }
+
+            if (!$parent->error) {
+                $redirect = 'fulfilment/'.$fulfilment_customer->get('Customer Fulfilment Warehouse Key').'/customers/'.$_link.'/'.$fulfilment_customer->id.'/delivery/'.$object->id;
+
+                $new_object_html = '';
+                $updated_data    = array();
+
+            }
+            break;
         case 'Order':
             include_once 'class.Order.php';
 
@@ -3656,8 +3682,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Associate_Customer_Category':
 
 
-            $object=get_object('Customer',$data['fields_data']['Customer Key']);
-            if($object->id){
+            $object = get_object('Customer', $data['fields_data']['Customer Key']);
+            if ($object->id) {
                 $parent->associate_subject($object->id);
 
             }
