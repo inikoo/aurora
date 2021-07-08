@@ -12,7 +12,6 @@
 
 
 /**
- * @param       $object \DB_Table
  * @param       $db     \PDO
  * @param       $user   \User
  * @param       $smarty \Smarty
@@ -20,7 +19,7 @@
  *
  * @return array|string
  */
-function get_object_fields($object, $db, $user, $smarty, $options = false) {
+function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $options = false) {
 
     /**
      * @var array $object_fields
@@ -62,12 +61,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             return $object_fields;
-            break;
         case 'Charge':
             include 'fields/charge.fld.php';
 
             return $object_fields;
-            break;
+
         case 'Delivery Note':
 
 
@@ -79,31 +77,28 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             return $object_fields;
-            break;
+
         case 'Invoice':
             include 'fields/invoice.fld.php';
 
             return $object_fields;
-            break;
 
         case 'Payment Account':
             include 'fields/payment_account.fld.php';
 
             return $object_fields;
-            break;
         case 'Payment':
             include 'fields/payment.fld.php';
 
             return $object_fields;
-            break;
 
+        case 'Webpage':
         case 'Page':
 
 
             include 'fields/webpage.fld.php';
 
             return $object_fields;
-            break;
         case 'Account':
 
             if ($options['type'] == 'suppliers.settings') {
@@ -116,14 +111,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             return $object_fields;
-            break;
+
         case 'Material':
             include 'fields/material.fld.php';
 
             return $object_fields;
-            break;
-
-
         case 'Attachment':
 
             $object_fields = array();
@@ -170,32 +162,19 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             include 'fields/attachment.fld.php';
 
             return $object_fields;
-            break;
 
         case 'Supplier Delivery':
             include 'fields/supplier.delivery.fld.php';
-
             return $object_fields;
-            break;
-        case 'Webpage':
-            include 'fields/webpage.fld.php';
-
+        case 'Fulfilment Delivery':
+            include 'fields/fulfilment.delivery.fld.php';
             return $object_fields;
-            break;
-
-
         case 'Category':
+            include 'fields/category.fld.php';
 
-            if (isset($options['type']) and $options['type'] == 'webpage_settings') {
-                include 'fields/category.webpage.fld.php';
-            } else {
-
-                include 'fields/category.fld.php';
-            }
-
-
+            /** @var array $category_fields */
             return $category_fields;
-            break;
+
         case 'Purchase Order':
 
             if ($object->get('Purchase Order Type') == 'Production') {
@@ -203,24 +182,20 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             } else {
                 include 'fields/supplier.order.fld.php';
-
             }
 
             return $object_fields;
-            break;
+
         case 'Order':
             include 'fields/order.fld.php';
 
             return $object_fields;
-            break;
+
         case 'Deal Campaign':
 
 
             if ($options['store']->get('Store Order Recursion Campaign Key') == $object->id) {
 
-                $deals = $object->get_deals();
-                $deal  = array_pop($deals);
-                $store = $options['store'];
 
                 include 'fields/campaign_order_recursion.fld.php';
 
@@ -247,7 +222,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             return $object_fields;
-            break;
         case 'Deal':
 
             if (isset($options['new'])) {
@@ -259,7 +233,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                         switch ($options['parent_object']->get('Deal Campaign Code')) {
                             case 'VO':
-                                $store = get_object('Store', $options['store_key']);
                                 include 'fields/new_voucher.fld.php';
                                 break;
                             case 'FO':
@@ -316,7 +289,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                         include 'fields/first_order_offer.fld.php';
                         break;
                     default:
-
                         include 'fields/deal.fld.php';
                 }
 
@@ -324,7 +296,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Deal Component':
 
             if (isset($options['new'])) {
@@ -378,7 +349,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Website':
             if (!empty($options['new'])) {
                 include 'fields/website.new.fld.php';
@@ -391,7 +361,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Agent':
 
             if (isset($options['type']) and $options['type'] == 'user') {
@@ -402,10 +371,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Barcode':
             include 'fields/barcode.fld.php';
 
+            /** @var array $barcode_fields */
             return $barcode_fields;
 
         case 'User':
@@ -418,7 +387,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Customer':
 
 
@@ -428,6 +396,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 include 'fields/customer.fld.php';
             }
 
+            /** @var array $customer_fields */
             return $customer_fields;
 
 
@@ -442,23 +411,16 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             return $object_fields;
-            break;
 
         case 'Product':
         case 'StoreProduct':
 
-
             $object->get_webpage();
-            if (isset($options['type']) and $options['type'] == 'webpage_settings') {
-                include 'fields/product.webpage.fld.php';
-            } else {
+            include 'fields/product.fld.php';
 
-                include 'fields/product.fld.php';
-            }
-
-
+            /** @var array $product_fields */
             return $product_fields;
-            break;
+
 
         case 'Supplier':
 
@@ -483,7 +445,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
 
         case 'Supplier Part':
 
@@ -593,16 +554,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 } elseif ($options['parent'] == 'part') {
                     include 'fields/part.supplier_part.new.fld.php';
 
+                    /** @var array $supplier_part_fields */
                     return $supplier_part_fields;
                 }
             } else {
 
-                $agent = $options['parent_object'];
-
-                $part = get_object('Part', $object->get('Supplier Part Part SKU'));
 
                 include 'fields/agent_part.fld.php';
 
+                /** @var array $supplier_part_fields */
                 return $supplier_part_fields;
 
 
@@ -704,21 +664,19 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
         case 'Part':
-
+            $part_fields = [];
             if (isset($options['new'])) {
                 $object = get_object('Supplier Part', 0);
                 $object->get_supplier_data();
                 include 'fields/supplier_part.fld.php';
-
-                $object = new Part(0);
                 include 'fields/part.fld.php';
+                /** @var array $supplier_part_fields */
                 $part_fields = array_merge($supplier_part_fields, $part_fields);
             } else {
                 include 'fields/part.fld.php';
             }
 
             return $part_fields;
-            break;
         case 'Raw Material':
             include 'fields/raw_material.fld.php';
 
@@ -730,7 +688,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             }
 
-            break;
         case 'Warehouse':
 
 
@@ -744,17 +701,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
             return $object_fields;
-            break;
         case 'Warehouse Area':
             include 'fields/warehouse_area.fld.php';
 
             return $object_fields;
-            break;
         case 'Location':
             include 'fields/location.fld.php';
 
             return get_location_object_fields($object, $user, $account, $db, $options);
-            break;
         case 'Store':
             if (!empty($options['new'])) {
                 include 'fields/store.new.fld.php';
@@ -764,14 +718,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
 
-            break;
         case 'Staff':
 
 
             $stores = array();
-            $sql    = sprintf(
-                'SELECT `Store Code`,`Store Key`,`Store Name` FROM `Store Dimension` order by `Store Code` '
-            );
+            $sql    = 'SELECT `Store Code`,`Store Key`,`Store Name` FROM `Store Dimension` order by `Store Code` ';
             foreach ($db->query($sql) as $row) {
                 $stores[$row['Store Key']] = $row;
             }
@@ -804,17 +755,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Customer Poll Query':
             include 'fields/poll_query.fld.php';
 
             return $object_fields;
-            break;
         case 'Customer Poll Query Option':
             include 'fields/poll_query_option.fld.php';
 
             return $object_fields;
-            break;
         case 'List':
 
 
@@ -829,12 +777,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Prospect':
             include 'fields/prospect.fld.php';
 
+            /** @var array $prospect_fields */
             return $prospect_fields;
-            break;
         case 'Email Template':
 
 
@@ -844,7 +791,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             }
 
             return $object_fields;
-            break;
         case 'Email Campaign Type':
 
             switch ($object->get('Email Campaign Type Code')) {
@@ -879,7 +825,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 default:
                     print 'todo  Email Campaign Type -->> '.$object->get('Email Campaign Type Code');
                     exit;
-                    break;
+
 
             }
 
@@ -896,29 +842,29 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             include 'fields/purge.fld.php';
 
             return $object_fields;
-            break;
         case 'Shipping Zone':
             include 'fields/shipping_zone.fld.php';
 
             return $object_fields;
-            break;
         case 'Clocking Machine':
 
 
             if (!empty($options['new'])) {
                 include 'fields/clocking_machine.new.fld.php';
-            } else {
-                include 'fields/clocking_machine.fld.php';
             }
+            //else {
+            //include 'fields/clocking_machine.fld.php';
+            //}
 
 
             return $object_fields;
         default:
             print 'todo object in object fields'.$object->get_object_name();
 
-            return '';
+
     }
 
+    return '';
 }
 
 

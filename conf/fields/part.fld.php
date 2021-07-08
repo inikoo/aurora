@@ -9,18 +9,26 @@
 
  Version 3.0
 */
+/** @var Part $object */
+/** @var User $user */
+/** @var Account $account */
+/** @var PDO $db */
+/** @var array $options */
 
 include_once 'utils/static_data.php';
+
+if (isset($options['new']) and $options['new']) {
+    $new = true;
+    $object = new Part(0);
+} else {
+    $new = false;
+}
 
 $main_supplier_part = get_object('Supplier_Part', $object->get('Part Main Supplier Part Key'));
 $supplier           = get_object('Supplier', $main_supplier_part->get('Supplier Part Supplier Key'));
 
 
-if (isset($options['new']) and $options['new']) {
-    $new = true;
-} else {
-    $new = false;
-}
+
 
 
 if (isset($options['supplier_part_scope']) and $options['supplier_part_scope']) {
@@ -124,7 +132,7 @@ $part_fields[] = array(
     'show_title' => true,
     'fields'     => array(
         array(
-            'render'     => ($new ? false : true),
+            'render'     => !$new,
             'id'         => 'Part_Status',
             'edit'       => ($super_edit ? 'option' : ''),
             'right_code' => 'BS',
@@ -133,7 +141,7 @@ $part_fields[] = array(
             'value'           => htmlspecialchars($object->get('Part Status')),
             'formatted_value' => $object->get('Status'),
             'label'           => ucfirst($object->get_field_label('Part Status')),
-            'required'        => ($new ? false : true),
+            'required'        => !$new,
             'type'            => 'skip'
         ),
 
@@ -158,7 +166,7 @@ $part_fields[] = array(
         ),
 
         array(
-            'render'          => ($new ? false : true),
+            'render'          => !$new,
             'id'              => 'Part_Symbol',
             'edit'            => ($edit ? 'option' : ''),
             'right_code'      => 'PE',
@@ -568,57 +576,7 @@ if($can_view_picking_bands) {
     );
 }
 
-/*
-if (!$supplier_part_scope) {
 
-    $part_fields[] = array(
-        'label' => _('Cartons').' <small class="padding_left_10" ><i class="fa fa-exclamation-triangle yellow" aria-hidden="true"></i> <span class="warning">'._("This field is independent of Supplier's product ordering SKOs per carton").'</span></small>',
-
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-
-                'id'     => 'Part_SKOs_per_Carton',
-                'edit'   => ($edit ? 'numeric' : ''),
-                'render' => (!($supplier_part_scope or $new) ? true : false),
-
-                'value'           => $object->get('Part SKOs per Carton'),
-                'formatted_value' => $object->get('SKOs per Carton'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Part SKOs per Carton')
-                ),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-            array(
-                'id'     => 'Part_Carton_Barcode',
-                'edit'   => ($edit ? 'string' : ''),
-                'render' => (($new and $supplier_part_scope) ? false : true),
-
-                'value'             => htmlspecialchars($object->get('Part Carton Barcode')),
-                'formatted_value'   => $object->get('Carton Barcode'),
-                'label'             => ucfirst($object->get_field_label('Part Carton Barcode')),
-                'required'          => false,
-                'server_validation' => json_encode(
-                    array(
-                        'tipo'       => 'check_for_duplicates',
-                        'parent'     => 'account',
-                        'parent_key' => 1,
-                        'object'     => 'Part',
-                        'key'        => $object->id
-                    )
-                ),
-                'type'              => 'value'
-            ),
-
-
-        )
-    );
-}
-*/
 
 if ($account->get('Account Add Stock Value Type') == 'Last Price' and false) {
 
@@ -737,7 +695,7 @@ $part_fields[] = array(
             'right_code'      => 'PE',
             'value'           => $object->get('Part HTSUS Code'),
             'formatted_value' => $object->get('HTSUS Code'),
-            'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img src="/art/flags/us.png"/></span>',
+            'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img alt="US" src="/art/flags/us.png"/></span>',
             'invalid_msg'     => get_invalid_message('string'),
             'required'        => false,
             'type'            => 'value'
@@ -841,7 +799,7 @@ if (!$new and (!$object->get('Part Raw Material Key') and $edit_production)) {
             array(
                 'id'     => 'create_raw_material',
                 'class'  => 'operation',
-                'render' => (($object->get('Part Raw Material Key') and $edit_production) > 0 ? false : true),
+                'render' => !(($object->get('Part Raw Material Key') and $edit_production) > 0),
 
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id

@@ -10,14 +10,15 @@
  Version 3.0
 */
 
+/** @var \Deal $object */
+/** @var array $options */
 
+$store = get_object('Store', $options['store_key']);
+
+$edit = true;
 
 
 $object_fields = array();
-
-
-
-
 $object_fields[] = array(
     'label'      => _('Id'),
     'show_title' => true,
@@ -100,7 +101,7 @@ if($object->get('Deal Status')!='Finish') {
             array(
                 'edit' => ($edit ? 'date' : ''),
                 'time' => '00:00:00',
-                'render'=>($object->get('Deal Status')=='Waiting'?true:false),
+                'render'=> $object->get('Deal Status')=='Waiting',
 
                 'id'              => 'Deal_Begin_Date',
                 'value'           => $object->get('Deal Begin Date'),

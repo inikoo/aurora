@@ -547,8 +547,8 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Customer_Fulfilment.php';
             $object = new Customer_Fulfilment('id', $key);
             break;
-
         case 'fulfilment_delivery':
+        case 'fulfilment delivery':
             include_once 'class.Fulfilment_Delivery.php';
             $object = new Fulfilment_Delivery('id', $key);
             break;

@@ -14,6 +14,11 @@ require_once 'utils/ar_common.php';
 require_once 'utils/object_functions.php';
 
 
+/** @var PDO $db */
+/** @var \User $user */
+/** @var \Account $account */
+
+
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,
@@ -109,6 +114,7 @@ switch ($tipo) {
  * @param $user    \User
  * @param $account \Account
  */
+
 function check_for_box_serial_number($data, $db, $user, $account) {
 
 
@@ -204,10 +210,6 @@ function valid_redirection_webpage_code($data, $db, $user, $account) {
             $invalid_msg = _('Webpage not found');
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
     if ($invalid_msg == '') {
@@ -409,9 +411,8 @@ function check_for_duplicates($data, $db, $user, $account) {
         case 'ExStaff':
 
 
-            if ($data['object'] == 'Staff') {
+            if ($data['object'] != 'Staff') {
 
-            } else {
                 $data['object'] = 'Staff';
             }
 
@@ -636,7 +637,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'invalid_msg' => $invalid_msg
                     );
 
-
+                    break;
                 default:
 
                     if (preg_match(
@@ -993,8 +994,8 @@ function check_for_duplicates($data, $db, $user, $account) {
             }
 
             $invalid_msg = _('Delivery number already used');
-            $sql         = sprintf(
-                'SELECT `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s', addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field),
+            $sql         = 'SELECT '.sprintf(
+                ' `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s', addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field),
 
                 addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field), prepare_mysql($data['value']), $parent_where, $options_where
 
@@ -1124,6 +1125,11 @@ function check_for_duplicates($data, $db, $user, $account) {
 
     if (count($validation_sql_queries) == 0) {
         switch (strtolower($data['parent'])) {
+            case 'customer':
+                $parent_where = sprintf(
+                    ' and `%s Customer Key`=%d ', $data['object'], $data['parent_key']
+                );
+                break;
             case 'store':
                 $parent_where = sprintf(
                     ' and `%s Store Key`=%d ', $data['object'], $data['parent_key']
@@ -1157,11 +1163,12 @@ function check_for_duplicates($data, $db, $user, $account) {
         }
 
 
-        $sql = sprintf(
-            'SELECT `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s', addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field), addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field),
+        $sql = 'select '.sprintf(
+            ' `%s Key` AS `key` ,`%s` AS field FROM `%s Dimension` WHERE `%s`=%s %s %s', addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field), addslashes(preg_replace('/_/', ' ', $data['object'])), addslashes($_field),
             prepare_mysql($data['value']), $parent_where, $options_where
 
         );
+
 
 
         if (!isset($invalid_msg)) {
@@ -1188,8 +1195,6 @@ function check_for_duplicates($data, $db, $user, $account) {
                 $validation = 'invalid';
                 $msg        = $invalid_msg;
                 break;
-            } else {
-
             }
         } else {
             print_r($error_info = $db->errorInfo());

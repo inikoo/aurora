@@ -9,6 +9,10 @@
 
  Version 3.0
 */
+/** @var PDO $db */
+/** @var \SupplierDelivery $object */
+
+$edit=true;
 
 $options_supplier_order_type = [
     'Parcel'         => _('Parcel'),
@@ -17,7 +21,7 @@ $options_supplier_order_type = [
 
 $options_Incoterm = array();
 $sql              = "SELECT `Incoterm Code`,`Incoterm Name`,`Incoterm Transport Type` FROM kbase.`Incoterm Dimension`";
-$stmt             = $db->prepare($sql);
+$stmt = $db->prepare($sql);
 $stmt->execute();
 while ($row = $stmt->fetch()) {
     $options_Incoterm[$row['Incoterm Code']] = '<b>'.$row['Incoterm Code'].'</b> '.$row['Incoterm Name'];
@@ -132,7 +136,7 @@ if ($object->get('Supplier Delivery Parent') != 'Order') {
 
                 'id'              => 'Supplier_Delivery_Estimated_Receiving_Date',
                 'edit'            => ($edit ? 'date' : ''),
-                'render'          => ($object->get('State Index') < 40 ? true : false),
+                'render'          => $object->get('State Index') < 40,
                 'time'            => '00:00:00',
                 'value'           => $object->get('Supplier Delivery Estimated Receiving Date'),
                 'formatted_value' => $object->get('Estimated Receiving Date'),

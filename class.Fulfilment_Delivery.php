@@ -163,7 +163,7 @@ class Fulfilment_Delivery extends DB_Table {
 
 
         $i = 1;
-        foreach ($base_data as $key => $value) {
+        foreach ($base_data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -218,202 +218,66 @@ class Fulfilment_Delivery extends DB_Table {
             case ('State'):
                 switch ($this->data['Fulfilment Delivery State']) {
 
-
-                    // //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Cancelled'
-
                     case 'InProcess':
                         return _('In process');
-                        break;
-                    case 'Consolidated':
-                        return _('Consolidated');
-                        break;
-                    case 'Dispatched':
-                        return _('Dispatched');
-                        break;
 
                     case 'Received':
                         return _('Received');
-                        break;
                     case 'Checked':
                         return _('Checked');
-                        break;
                     case 'Placed':
                         return _('Booked in');
-                        break;
-                    case 'Costing':
 
-
-                        return _('Booked in').', '._('checking costing');
-
-
-                        break;
-                    case 'InvoiceChecked':
-                        if ($this->data['Fulfilment Delivery Type'] == 'Production') {
-                            return _('Booked in');
-                        } else {
-
-                            if ($this->data['Fulfilment Delivery Invoice Public ID'] != '' and $this->data['Fulfilment Delivery Invoice Date'] != '') {
-                                return _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
-
-                            } else {
-                                return _('Booked in').', '._('costing done');
-
-                            }
-
-                        }
-
-                        break;
                     case 'Cancelled':
                         return _('Cancelled');
-                        break;
                     default:
                         break;
                 }
 
                 break;
 
-            case ('Agent State'):
-                switch ($this->data['Fulfilment Delivery State']) {
-                    case 'InProcess':
-                        return _('In process');
-                        break;
-                    case 'Consolidated':
-                        return _('Consolidated');
-                        break;
-                    case 'Dispatched':
-                        return _('Dispatched');
-                        break;
-                    case 'Received':
-                        return _('Received by client');
-                        break;
-                    case 'Checked':
-                        return _('Received by client').' ('._('checked').')';
-                        break;
-                    case 'Placed':
-                        return _('Received by client').' ('._('Booked in').')';
-                        break;
-                    case 'Costing':
-                        return _('Received by client').' ('._('Checking costs').')';
-                        break;
-                    case 'InvoiceChecked':
-                        return _('Done');
-
-
-                        break;
-                    case 'Cancelled':
-                        return _('Cancelled');
-                        break;
-                    default:
-                        break;
-                }
-
-                break;
-            case ('Type'):
-                switch ($this->data['Fulfilment Delivery Type']) {
-                    case 'Parcel':
-                        return _('Parcel');
-                    case 'Container':
-                        return _('Container');
-                    case 'Production':
-                        return _('Job order');
-                    default:
-                        return $this->data['Fulfilment Delivery Type'];
-                }
-            case ('Return State'):
-                switch ($this->data['Fulfilment Delivery State']) {
-
-
-                    // //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Cancelled'
-
-                    case 'Dispatched':
-                        return _('Sent by customer');
-                        break;
-
-                    case 'Received':
-                        return _('Received');
-                        break;
-                    case 'Checked':
-                        return _('Checked');
-                        break;
-                    case 'Placed':
-                    case 'Costing':
-                    case 'InvoiceChecked':
-                        return _('Booked in');
-                        break;
-
-                    case 'Cancelled':
-                        return _('Cancelled');
-                        break;
-                    default:
-                        break;
-                }
-
-                break;
             case 'State Index':
 
 
                 switch ($this->data['Fulfilment Delivery State']) {
                     case 'InProcess':
                         return 10;
-                        break;
 
-                    case 'Consolidated':
-                        return 20;
-                        break;
-
-
-                    case 'Dispatched':
-                        return 30;
-                        break;
                     case 'Received':
                         return 40;
-                        break;
                     case 'Checked':
                         return 50;
-                        break;
                     case 'Placed':
-                        return 100;
-                        break;
-                    case 'Costing':
-                        return 105;
-                        break;
-                    case 'InvoiceChecked':
-                        return 110;
-                        break;
+                        return 60;
                     case 'Cancelled':
                         return -10;
-                        break;
                     default:
                         return 0;
-                        break;
                 }
-                break;
+
 
             case 'Progress Date':
 
                 switch ($this->data['Fulfilment Delivery State']) {
                     case 'InProcess':
                         return $this->get('Creation Date');
-                        break;
-                    case 'Dispatched':
-                        return $this->get('Dispatched Date');
-                        break;
+
                     case 'Received':
                     case 'Checked':
                         return $this->get('Received Date');
-                        break;
                     case 'Placed':
                         return $this->get('Placed Date');
-                        break;
+                    default:
+                        return '';
+
                 }
 
-                break;
+
             case 'Progress':
 
                 switch ($this->data['Fulfilment Delivery State']) {
                     case 'Dispatched':
                         return '('._('Dispatched').')';
-                        break;
                     case 'Received':
                         $progress = '('._('Received').')';
 
@@ -427,7 +291,6 @@ class Fulfilment_Delivery extends DB_Table {
                         }
 
                         return $progress;
-                        break;
                     case 'Checked':
                         $progress = '('._('Checked').')';
 
@@ -437,7 +300,6 @@ class Fulfilment_Delivery extends DB_Table {
                         }
 
                         return $progress;
-                        break;
                 }
 
                 break;
@@ -463,7 +325,6 @@ class Fulfilment_Delivery extends DB_Table {
                     );
                 }
 
-                break;
             case 'Placed Percentage or Date':
 
 
@@ -491,95 +352,10 @@ class Fulfilment_Delivery extends DB_Table {
                     );
                 }
 
-                break;
-            case 'Costing Date':
-                if ($this->get('State Index') <= 100) {
-                    return '';
-                } elseif ($this->get('State Index') == 105) {
-                    if ($this->data['Fulfilment Delivery Start Costing Date'] == '') {
-                        $date = '';
-                    } else {
-                        $date = strftime(
-                            "%e %b %Y", strtotime($this->data['Fulfilment Delivery Start Costing Date'].' +0:00')
-                        );
-                    }
 
-                    return sprintf('<span title="%s" class="very_discreet italic">%s</span>', $date, _('In process'));
-
-
-                } else {
-                    if ($this->data['Fulfilment Delivery Invoice Checked Date'] == '') {
-                        return '';
-                    }
-
-                    return strftime(
-                        "%e %b %Y", strtotime($this->data['Fulfilment Delivery Invoice Checked Date'].' +0:00')
-                    );
-                }
-
-                break;
-            case 'Weight':
-                include_once 'utils/natural_language.php';
-
-
-                if ($this->data['Fulfilment Delivery Weight'] == '') {
-                    if ($this->get('Fulfilment Delivery Number Items') > 0) {
-                        return '<i class="fa fa-exclamation-circle error"></i> <span class="italic very_discreet error">'._('Unknown weight').'</span>';
-                    }
-                } else {
-                    return weight($this->get('Fulfilment Delivery Weight'));
-                }
-
-
-                break;
-
-
-            case 'CBM':
-                if ($this->data['Fulfilment Delivery CBM'] == '') {
-                    if ($this->get('Fulfilment Delivery Number Items') > 0) {
-                        return '<i class="fa fa-exclamation-circle error"></i> <span class="italic very_discreet error">'._('Unknown CBM').'</span>';
-                    }
-                } else {
-                    return ($this->get('Fulfilment Delivery Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's products without CBM").'" ></i> ' : '').number($this->data['Fulfilment Delivery CBM']).' m³';
-                }
-                break;
-
-
-            case 'Formatted Invoice Public ID':
-                if ($this->data['Fulfilment Delivery Invoice Public ID'] == '') {
-
-                    if ($this->data['Fulfilment Delivery State'] == 'InvoiceChecked') {
-                        return sprintf('<span class="italic very_discreet" title="%s">%s</span>', _('Fulfilment Delivery invoice number missing'), _('No invoice number'));
-                    } else {
-                        return '';
-
-                    }
-                }
-
-                return $this->data['Fulfilment Delivery Invoice Public ID'];
-
-                break;
-            case 'Formatted Invoice Date':
-                if ($this->data['Fulfilment Delivery Invoice Date'] == '') {
-
-                    if ($this->data['Fulfilment Delivery State'] == 'InvoiceChecked') {
-                        return sprintf('<span class="error discreet" title="%s">%s</span>', _('Fulfilment Delivery invoice date missing'), _('Date missing'));
-                    } else {
-                        return '';
-
-                    }
-                }
-
-                return strftime("%e %b %Y", strtotime($this->data['Fulfilment Delivery Invoice Date'].' +0:00'));
-
-                break;
-
-            case 'Estimated Receiving Date':
             case 'Creation Date':
             case 'Checked Date':
-            case 'Dispatched Date':
-            case 'Invoice Date':
-
+            case 'Received Date':
             case 'Placed Date':
             case 'Cancelled Date':
                 if ($this->data['Fulfilment Delivery '.$key] == '') {
@@ -588,101 +364,13 @@ class Fulfilment_Delivery extends DB_Table {
 
                 return strftime("%e %b %Y", strtotime($this->data['Fulfilment Delivery '.$key].' +0:00'));
 
-                break;
-            case 'Received Date':
-                if ($this->get('State Index') < 0) {
-                    if ($this->get('Fulfilment Delivery Received Date') == '') {
-                        return '';
-                    }
-
-                    return strftime(
-                        "%e %b %Y", strtotime($this->get('Fulfilment Delivery Received Date'))
-                    );
-
-                } elseif ($this->get('State Index') >= 40) {
-
-                    if ($this->get('Fulfilment Delivery Received Date') == '') {
-                        return 'Error';
-                    }
-
-                    return strftime(
-                        "%e %b %Y", strtotime($this->get('Fulfilment Delivery Received Date'))
-                    );
-                } else {
-                    return '';
-
-
-                }
-
-
-            case 'Items Amount':
-            case 'Extra Costs Amount':
-            case 'Total Amount':
-            case 'Purchase Order Amount':
-
-                return money(
-                    $this->data['Fulfilment Delivery '.$key], $this->data['Fulfilment Delivery Currency Code']
-                );
-                break;
-
-            case 'AC Subtotal Amount':
-            case 'AC Extra Costs Amount':
-            case 'AC Total Amount':
-
-
-                return money(
-                    $this->data['Fulfilment Delivery '.$key], $account->get('Account Currency')
-                );
-                break;
-
-            case 'PO Creation Date':
-            case 'PO Submitted Date':
-
-
-                $key = preg_replace('/^PO /', '', $key);
-
-                if ($this->data['Purchase Order '.$key] == '') {
-                    return '';
-                }
-
-                return strftime(
-                    "%e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00')
-                );
-
-                break;
-
 
             case 'Number Items':
             case 'Number Ordered Items':
             case 'Number Items Without PO':
                 return number($this->data ['Fulfilment Delivery '.$key]);
-                break;
 
 
-        }
-
-
-        if (preg_match(
-            '/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/', $key
-        )) {
-            $amount = 'Fulfilment Delivery '.$key;
-
-            // print $amount;
-
-            return money(
-                $this->data[$amount], $this->data['Fulfilment Delivery Currency Code']
-            );
-        }
-
-        if (preg_match(
-            '/^(Total|Items|(Shipping |Charges )?Net).*(Amount Account Currency)$/', $key
-        )) {
-            $key    = preg_replace('/ Account Currency/', '', $key);
-            $amount = 'Fulfilment Delivery '.$key;
-
-            return money(
-                $this->data['Fulfilment Delivery Currency Exchange'] * $this->data[$amount], $account->get('Account Currency')
-            );
         }
 
 
@@ -702,74 +390,21 @@ class Fulfilment_Delivery extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         switch ($field) {
+            case 'Fulfilment Delivery Public ID':
+                $this->update_field($field, $value, $options);
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Fulfilment_Delivery_Formatted_ID' => $this->get('Formatted ID'),
+
+                    ),
+
+                );
+                break;
             case 'Fulfilment Delivery State':
-                $this->update_state($value, $options, $metadata);
-                break;
-            case 'Fulfilment Delivery Estimated Receiving Date':
-                $this->update_field($field, $value, $options);
-
-                $sql = sprintf(
-                    "SELECT `Supplier Part Key`,`Fulfilment Delivery Units` FROM `Purchase Order Transaction Fact` WHERE `Fulfilment Delivery Key`=%d", $this->id
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-                        $supplier_part         = get_object('SupplierPart', $row['Supplier Part Key']);
-                        $supplier_part->editor = $this->editor;
-                        if (isset($supplier_part->part)) {
-                            $supplier_part->part->update_next_deliveries_data();
-                        }
-
-
-                    }
-                }
-
+                $this->update_state($value, $metadata);
                 break;
 
-            case 'Fulfilment Delivery Invoice Public ID':
 
-                $this->update_field($field, $value, $options);
-
-                $this->update_metadata = array(
-                    'class_html' => array(
-                        'Formatted_Invoice_Public_ID' => $this->get('Formatted Invoice Public ID'),
-                        'Formatted_Invoice_Date'      => $this->get('Formatted Invoice Date'),
-                        'Supplier_Delivery_State'     => $this->get('State'),
-
-                    )
-                );
-
-
-                break;
-            case 'Fulfilment Delivery Invoice Date':
-
-                $this->update_field($field, $value, $options);
-
-
-                $sql = 'update `Purchase Order Transaction Fact` set `Purchase Order Transaction Invoice Date`=? where `Fulfilment Delivery Key`=? ';
-
-
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    [
-                        $value,
-                        $this->id
-                    ]
-                );
-
-                $this->update_metadata = array(
-                    'class_html' => array(
-                        'Formatted_Invoice_Public_ID' => $this->get('Formatted Invoice Public ID'),
-                        'Formatted_Invoice_Date'      => $this->get('Formatted Invoice Date'),
-                        'Supplier_Delivery_State'     => $this->get('State'),
-
-                    )
-                );
-
-
-                break;
             case 'History Note':
                 $this->add_note($value, '', '', $metadata['deletable']);
                 break;
@@ -792,7 +427,7 @@ class Fulfilment_Delivery extends DB_Table {
 
     }
 
-    function update_state($value, $options = '', $metadata = array()) {
+    function update_state($value, $metadata = array()) {
 
         $date = gmdate('Y-m-d H:i:s');
 
@@ -800,28 +435,6 @@ class Fulfilment_Delivery extends DB_Table {
         $skip_update_totals = false;
 
         $operations = array();
-
-        if ($value == 'InProcess or Dispatched') {
-
-            if ($this->get('Fulfilment Delivery Placed Items') == 'Yes') {
-                $this->error = true;
-                $this->msg   = "Can't roll back delivery status with placed items";
-
-                return;
-            }
-
-
-            if ($this->get('Fulfilment Delivery Dispatched Date') == '') {
-                $value = 'InProcess';
-            } else {
-                $value    = 'Dispatched';
-                $metadata = array(
-                    'Fulfilment Delivery Dispatched Date' => $this->get(
-                        'Fulfilment Delivery Dispatched Date'
-                    )
-                );
-            }
-        }
 
 
         switch ($value) {
@@ -835,12 +448,16 @@ class Fulfilment_Delivery extends DB_Table {
                 );
 
 
-                $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Fulfilment Delivery Last Updated Date`=%s WHERE `Fulfilment Delivery Key`=%d ', prepare_mysql($date), $this->id
+                $sql = 'UPDATE `Fulfilment Transaction Fact` SET `Fulfilment Transaction Last Updated Date`=? ,`Fulfilment Transaction State`=? WHERE `Fulfilment Transaction Delivery Key`=? ';
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $date,
+                        'InProcess',
+                        $this->id
+                    )
                 );
-                $this->db->exec($sql);
 
-                $this->update_supplier_delivery_items_state();
+                //$this->update_supplier_delivery_items_state();
 
                 $operations = array(
                     'delete_operations',
@@ -857,120 +474,38 @@ class Fulfilment_Delivery extends DB_Table {
                     $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                 );
 
-                break;
-
-
-            case 'Dispatched':
-
-
-                $this->update_field(
-                    'Fulfilment Delivery Dispatched Date', $date, 'no_history'
-                );
-                $this->update_field(
-                    'Fulfilment Delivery State', $value, 'no_history'
-                );
-                foreach ($metadata as $key => $_value) {
-
-                    $this->update_field($key, $_value, 'no_history');
-                }
-
-
-                $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Fulfilment Delivery Last Updated Date`=%s WHERE `Fulfilment Delivery Key`=%d ', prepare_mysql($date), $this->id
-                );
-                $this->db->exec($sql);
-
-
-                $this->update_supplier_delivery_items_state();
-
-
-                $operations = array(
-                    'cancel_operations',
-                    'undo_dispatched_operations',
-                    'received_operations'
-                );
-
-                $history_data = array(
-                    'History Abstract' => _('Fulfilment Delivery set as dispatched'),
-                    'History Details'  => '',
-                    'Action'           => 'edited'
-                );
-                $this->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                );
 
                 break;
             case 'Received':
 
 
-                $this->update_field(
-                    'Fulfilment Delivery Received Date', $date, 'no_history'
+                $this->fast_update(
+                    array(
+                        'Fulfilment Delivery Received Date'     => $date,
+                        'Fulfilment Delivery Last Updated Date' => $date,
+                        'Fulfilment Delivery Date'              => gmdate('Y-m-d'),
+                        'Fulfilment Delivery Date TYpe'         => 'Received',
+                        'Fulfilment Delivery State'             => 'Received',
+                    )
                 );
-                $this->update_field(
-                    'Fulfilment Delivery State', $value, 'no_history'
-                );
-                foreach ($metadata as $key => $_value) {
-                    $this->update_field($key, $_value, 'no_history');
-                }
+
 
                 $operations = array(
                     'cancel_operations',
-
-
                 );
 
-                $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Fulfilment Delivery Last Updated Date`=%s WHERE `Fulfilment Delivery Key`=%d ', prepare_mysql($date), $this->id
-                );
-                $this->db->exec($sql);
-
-
-                $this->update_supplier_delivery_items_state();
-
-
-                $parent = get_object(
-                    $this->data['Fulfilment Delivery Parent'], $this->data['Fulfilment Delivery Parent Key']
+                $sql = 'UPDATE `Fulfilment Transaction Fact` SET `Fulfilment Transaction Last Updated Date`=? ,`Fulfilment Transaction State`=? WHERE `Fulfilment Transaction Delivery Key`=? ';
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $date,
+                        'Received',
+                        $this->id
+                    )
                 );
 
-
-                if ($parent->get('Parent Skip Checking') == 'Yes') {
-
-                    $sql = sprintf(
-                        'SELECT `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Supplier Part Historic Key`,`Fulfilment Delivery Units` FROM `Purchase Order Transaction Fact` WHERE `Fulfilment Delivery Key`=%d  ', $this->id
-                    );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-
-                            $item_data = array(
-                                'field'             => 'Fulfilment Delivery Checked Units',
-                                'item_key'          => $row['Supplier Part Key'],
-                                'item_historic_key' => $row['Supplier Part Historic Key'],
-                                'transaction_key'   => $row['Purchase Order Transaction Fact Key'],
-                                'qty'               => $row['Fulfilment Delivery Units']
-
-                            );
-                            $this->update_item($item_data);
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-
-                    }
-
-
-                    $operations = array(
-                        'cancel_operations',
-                        'undo_send_operations',
-                        'received_operations'
-                    );
-
-                }
 
                 $history_data = array(
-                    'History Abstract' => _('Fulfilment Delivery set as received'),
+                    'History Abstract' => _('Fulfilment delivery set as received'),
                     'History Details'  => '',
                     'Action'           => 'edited'
                 );
@@ -1249,8 +784,8 @@ class Fulfilment_Delivery extends DB_Table {
                 break;
 
             default:
-                exit('unknown state '.$value);
-                break;
+                exit('unknown FD state '.$value);
+
         }
 
         if (!$skip_update_totals) {
@@ -2137,11 +1672,12 @@ class Fulfilment_Delivery extends DB_Table {
 
     }
 
-    function delete() {
+    function delete(): string {
 
         if ($this->data['Fulfilment Delivery State'] == 'InProcess') {
 
 
+            /*
             $items = array();
             $sql   = sprintf(
                 "SELECT POTF.`Supplier Part Historic Key`,`Purchase Order Ordering Units`,`Supplier Part Reference`,POTF.`Supplier Part Key`,`Supplier Part Part SKU` FROM `Purchase Order Transaction Fact` POTF
@@ -2164,58 +1700,56 @@ class Fulfilment_Delivery extends DB_Table {
                     );
                 }
             }
+            */
 
-
-            $sql = sprintf(
-                "DELETE FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Key`=%d", $this->id
+            $sql = "DELETE FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Key`=?";
+            $this->db->prepare($sql)->execute(
+                array(
+                    $this->id
+                )
             );
-            $this->db->exec($sql);
-            $sql = sprintf(
-                "DELETE FROM `Purchase Order Transaction Fact` WHERE `Fulfilment Delivery Key`=%d AND `Purchase Order Key` IS NULL  ", $this->id
-            );
-            $this->db->exec($sql);
-            $sql = sprintf(
-                "UPDATE `Purchase Order Transaction Fact` SET `Fulfilment Delivery Key`=NULL ,`Fulfilment Delivery Units`=0 ,`Fulfilment Delivery Checked Units`=NULL,`Fulfilment Delivery Placed Units`=NULL,`Fulfilment Delivery Net Amount`=0,`Fulfilment Delivery Transaction State`=NULL,`Fulfilment Delivery Transaction Placed`=NULL,`Fulfilment Delivery CBM`=NULL,`Fulfilment Delivery CBM`=NULL  ,`Fulfilment Delivery Last Updated Date`=NULL  WHERE `Fulfilment Delivery Key`=%d  ",
-                $this->id
-            );
-            $this->db->exec($sql);
-
-
-            $sql = sprintf(
-                "SELECT `Attachment Bridge Key`,`Attachment Key` FROM `Attachment Bridge` WHERE `Subject`='Fulfilment Delivery' AND `Subject Key`=%d", $this->id
+            $sql = "DELETE FROM `Fulfilment Transaction Fact` WHERE `Fulfilment Transaction Delivery Key`=?";
+            $this->db->prepare($sql)->execute(
+                array(
+                    $this->id
+                )
             );
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
+            $sql  = "SELECT `Attachment Bridge Key`,`Attachment Key` FROM `Attachment Bridge` WHERE `Subject`='Fulfilment Delivery' AND `Subject Key`=?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
 
-                    include_once 'class.Attachment.php';
-                    $sql = sprintf(
-                        "DELETE FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=%d", $row['Attachment Bridge Key']
-                    );
-                    $this->db->exec($sql);
-                    $attachment = new Attachment($row['Attachment Key']);
-                    $attachment->delete();
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $sql = "DELETE FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $row['Attachment Bridge Key']
+                    )
+                );
 
-                }
+
+                $this->db->exec($sql);
+                $attachment = get_object('Attachment', $row['Attachment Key']);
+                $attachment->delete();
             }
-
-
-            $purchase_order = get_object('PurchaseOrder', $this->get('Fulfilment Delivery Purchase Order Key'));
-            $purchase_order->update_purchase_order_items_state();
 
 
             $this->deleted = true;
 
+            /*
             foreach ($items as $item) {
                 $part = get_object('Part', $item[4]);
                 $part->update_next_deliveries_data();
-
             }
-
+            */
 
             return sprintf(
-                '%s/%d/order/%s', strtolower($purchase_order->get('Purchase Order Parent')), $purchase_order->get('Purchase Order Parent Key'), $purchase_order->id
+                'fulfilment/%d/customers/%s/%d', $this->data['Fulfilment Delivery Warehouse Key'], ($this->data['Fulfilment Delivery Type'] == 'Part' ? 'dropshipping' : 'asset_keeping'), $this->data['Fulfilment Delivery Customer Key']
             );
 
 
@@ -2230,29 +1764,10 @@ class Fulfilment_Delivery extends DB_Table {
         switch ($field) {
 
             case 'Fulfilment Delivery Public ID':
-                $label = _('public Id');
+                $label = _('customer delivery reference');
                 break;
             case 'Fulfilment Delivery Incoterm':
-                $label = _('Incoterm');
-                break;
-            case 'Fulfilment Delivery Port of Export':
-                $label = _('port of export');
-                break;
-            case 'Fulfilment Delivery Port of Import':
-                $label = _('port of import');
-                break;
-            case 'Fulfilment Delivery Estimated Receiving Date':
-                $label = _('estimated receiving date');
-                break;
-            case 'Fulfilment Delivery Dispatched Date':
-                $label = _('dispatched date');
-                break;
-            case 'Fulfilment Delivery Invoice Date':
-                $label = _('invoice date');
-                break;
-            case 'Fulfilment Delivery Invoice Public ID':
-                $label = _('Invoice number');
-                break;
+
             default:
                 $label = $field;
 

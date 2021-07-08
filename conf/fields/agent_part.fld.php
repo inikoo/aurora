@@ -10,7 +10,15 @@
  Version 3.0
 */
 
+/** @var \SupplierPart $object */
+/** @var array $options */
 
+
+$edit=true;
+
+$agent = $options['parent_object'];
+
+$part = get_object('Part', $object->get('Supplier Part Part SKU'));
 
 include_once 'utils/static_data.php';
 

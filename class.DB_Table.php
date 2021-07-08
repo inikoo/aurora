@@ -188,8 +188,7 @@ abstract class DB_Table extends stdClass {
         $old_formatted_value = $this->get($formatted_field);
 
 
-        $sql = sprintf("UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field));
-
+        $sql = 'UPDATE '.sprintf("`%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field));
         //print "$sql $value $table_key\n";
         //prepare_mysql($value, $null_if_empty)
         // $table_key

@@ -175,7 +175,7 @@
             <div id="back_operations">
                 <div id="delete_operations"
                      class="order_operation {if $delivery->get('Fulfilment Delivery State')!='InProcess'}hide{/if}">
-                    <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px"
+                    <div class="square_button left"
                          title="{t}delete{/t}">
                         <i class="far fa-trash-alt very_discreet " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('delete')"></i>
@@ -187,7 +187,7 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('delete')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{ "object": "SupplierDelivery", "key":"{$delivery->id}"}'
+                                            data-data='{ "object": "Fulfilment_Delivery", "key":"{$delivery->id}"}'
                                             id="received_save_buttons" class="error save button"
                                             onClick="delete_object(this)"><span class="label">{t}Delete{/t}</span> <i
                                                 class="fa fa-trash fa-fw  " aria-hidden="true"></i></span></td>
@@ -223,21 +223,21 @@
 
                 <div id="undo_received_operations"
                      class="order_operation {if $delivery->get('Fulfilment Delivery State')!='Received'  or $delivery->get('Fulfilment Delivery Placed Items')=='Yes' }hide{/if}">
-                    <div class="square_button left" title="{t}Unmark as received{/t}">
-						<span class="fa-stack" style="position:relative;top:-1px"
+                    <div class="square_button left" title="{t}Set as not received{/t}">
+						<span class="fa-stack" style="position:relative;top:-1px;left:-5px"
                               onclick="toggle_order_operation_dialog('undo_received')">
 						<i class="fa fa-arrow-circle-down discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
 						</span>
                         <table id="undo_received_dialog" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td colspan="2" class="label">{t}Unmark as received{/t}</td>
+                                <td colspan="2" class="label">{t}Set as not received{/t}</td>
                             </tr>
                             <tr class="buttons changed">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('undo_received')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{ "value": "InProcess or Dispatched","dialog_name":"undo_received", "field": "Fulfilment Delivery State"}'
+                                            data-data='{ "value": "InProcess","dialog_name":"undo_received", "field": "Fulfilment Delivery State"}'
                                             id="undo_received_save_buttons" class="valid save button"
                                             onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
@@ -254,7 +254,7 @@
             <div id="forward_operations">
 
                 <div id="received_operations"
-                     class=" order_operation {if !($delivery->get('Fulfilment Delivery State')=='InProcess' or  $delivery->get('Fulfilment Delivery State')=='Dispatched') }hide{/if}">
+                     class=" order_operation {if $delivery->get('Fulfilment Delivery State')!='InProcess'  }hide{/if}">
                     <div class="square_button right" title="{t}Mark delivery as received{/t}">
                         <i class="fa fa-arrow-circle-down fa-fw" aria-hidden="true"
                            onclick="toggle_order_operation_dialog('received')"></i>
@@ -262,26 +262,7 @@
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Mark delivery as received{/t}</td>
                             </tr>
-                            <tr class="top">
-                                <td class="label">{t}Date{/t}</td>
-                                <td>
-                                    <input id="received_date" type="hidden" value="{$smarty.now|date_format:'%Y-%m-%d'}"
-                                           ovalue="{$smarty.now|date_format:'%Y-%m-%d'}" has_been_valid="0"/>
-                                    <input id="received_date_time" type="hidden"
-                                           value="{$smarty.now|date_format:'%H:%M:%S'}"/>
-                                    <input id="received_date_formatted" class="option_input_field"
-                                           data-settings='{ "type": "datetime","id":"received_date", "field": "Fulfilment Delivery Received Date"}'
-                                           style="width:8em" value="{$smarty.now|date_format:'%d/%m/%Y'}"/>
-                                    <span id="received_date_msg" class="msg"></span>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <div id="received_date_datepicker" class="hide datepicker">
-                                    </div>
-                                </td>
-                            </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('received')"></i></td>
