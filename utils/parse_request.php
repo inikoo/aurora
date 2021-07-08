@@ -5978,9 +5978,20 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                             }
 
                                             if (isset($view_path[4])) {
-                                                if ($view_path[4] == 'assets') {
+                                                if ($view_path[4] == 'delivery') {
                                                     if (isset($view_path[5])) {
                                                         if (is_numeric($view_path[5])) {
+                                                            $object  = 'fulfilment_delivery';
+                                                            $parent     = 'customer';
+                                                            $parent_key = $view_path[3];
+                                                            $section    = 'delivery';
+                                                            $key        = $view_path[5];
+                                                        }
+                                                    }
+                                                }elseif ($view_path[4] == 'assets') {
+                                                    if (isset($view_path[5])) {
+                                                        if (is_numeric($view_path[5])) {
+                                                            $object  = 'asset';
                                                             $parent     = 'customer';
                                                             $parent_key = $view_path[3];
                                                             $section    = 'asset';

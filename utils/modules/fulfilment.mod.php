@@ -441,7 +441,54 @@ function get_fulfilment_module() {
 
                 )
 
-            )
+            ),
+            'delivery' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+                    'customer.delivery.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
+                    ),
+
+                    'customer.delivery.items'          => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+                    'customer.delivery.items_mismatch' => array(
+                        'label' => _('Under/Over delivered items'),
+                        'icon'  => 'box-open'
+                    ),
+                    'customer.delivery.items_done'     => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+
+                    'customer.delivery.history'     => array(
+                        'label'         => '',
+                        'title'         => _('History/Notes'),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                    ),
+                    'customer.delivery.attachments' => array(
+                        'label'         => '',
+                        'title'         => _('Attachments'),
+                        'icon'          => 'paperclip',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
+                    ),
+                )
+
+            ),
 
 
         )
