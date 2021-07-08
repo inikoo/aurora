@@ -286,7 +286,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
                 $up_button = array(
                     'icon'      => 'arrow-up',
                     'title'     => _(
-                        "Parts's families"
+                        "Part's families"
                     ),
                     'reference' => 'inventory/category/'.$data['parent_key']
                 );
@@ -1112,7 +1112,7 @@ function get_parts_new_main_category_navigation($data, $smarty, $user, $db, $acc
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("New main parts's category"),
+        'title'          => _("New main Part's category"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search inventry')
@@ -1164,7 +1164,7 @@ function get_categories_navigation($data, $smarty, $user, $db, $account) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Parts's families"),
+        'title'          => _("Part's families"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search inventory')
@@ -1215,7 +1215,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
             $up_button         = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Parts's families"),
+                'title'     => _("Part's families"),
                 'reference' => 'inventory/categories'
             );
             $tab               = 'part_families';

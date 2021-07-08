@@ -736,7 +736,7 @@ function get_locations_new_main_category_navigation($data, $smarty, $user, $db, 
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("New main locations's category"),
+        'title'          => _("New main Location's category"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search locations')
@@ -847,7 +847,7 @@ function get_categories_navigation($data, $smarty, $user, $db, $account) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Locations's Categories"),
+        'title'          => _("Location's Categories"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search locations')
@@ -898,7 +898,7 @@ function get_locations_category_navigation($data, $smarty, $user, $db, $account)
             $up_button         = array(
                 'icon'      => 'arrow-up',
                 'title'     => _(
-                    "Locations's Categories"
+                    "Location's Categories"
                 ),
                 'reference' => 'warehouses/categories'
             );

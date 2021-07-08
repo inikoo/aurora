@@ -319,7 +319,7 @@ elseif ($category->get('Category Scope') == 'Part') {
             'object'                   => 'Category_Part',
             'parent'                   => $state['object'],
             'parent_key'               => $state['key'],
-            'placeholder'              => _("Parts's reference"),
+            'placeholder'              => _("Part's reference"),
             'dropdown_select_metadata' => base64_encode(
                 json_encode(
                     array(
@@ -359,10 +359,10 @@ elseif ($category->get('Category Scope') == 'Supplier') {
             'label' => _('Contact'),
             'title' => _('Contact details')
         ),
-        'parts'    => array('label' => _("Parts's stock")),
-        'sales'    => array('label' => _("Parts's sales")),
-        'sales_q'  => array('label' => _("Parts's sales (Qs)")),
-        'sales_y'  => array('label' => _("Parts's sales (Yrs)")),
+        'parts'    => array('label' => _("Part's stock")),
+        'sales'    => array('label' => _("Part's sales")),
+        'sales_q'  => array('label' => _("Part's sales (Qs)")),
+        'sales_y'  => array('label' => _("Part's sales (Yrs)")),
         'orders'   => array(
             'label' => _('Orders'),
             'title' => _(

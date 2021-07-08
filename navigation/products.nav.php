@@ -266,7 +266,7 @@ function get_products_categories_navigation($data, $smarty, $user, $db, $account
         );
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
-                $prev_title = _("Products's Categories").' '.$row['Store Code'];
+                $prev_title = _("Product's Categories").' '.$row['Store Code'];
             } else {
                 $prev_title = '';
             }
@@ -282,7 +282,7 @@ function get_products_categories_navigation($data, $smarty, $user, $db, $account
 
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
-                $next_title = _("Products's Categories").' '.$row['Store Code'];
+                $next_title = _("Product's Categories").' '.$row['Store Code'];
             } else {
                 $next_title = '';
             }

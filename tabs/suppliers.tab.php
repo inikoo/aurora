@@ -32,10 +32,10 @@ $table_views = array(
         'label' => _('Contact'),
         'title' => _('Contact details')
     ),
-    'parts'    => array('label' => _("Parts's stock")),
-    'sales'    => array('label' => _("Parts's sales")),
-    'sales_q'  => array('label' => _("Parts's sales (Qs)")),
-    'sales_y'  => array('label' => _("Parts's sales (Yrs)")),
+    'parts'    => array('label' => _("Part's stock")),
+    'sales'    => array('label' => _("Part's sales")),
+    'sales_q'  => array('label' => _("Part's sales (Qs)")),
+    'sales_y'  => array('label' => _("Part's sales (Yrs)")),
     'orders'   => array(
         'label' => _('Orders'),
         'title' => _('Purchase orders, deliveries & invoices')
