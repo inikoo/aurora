@@ -393,7 +393,7 @@ function get_view($data, $db, $modules, $smarty) {
 
     $response = array('state' => array());
 
-    list($state, $response['view_position']) = get_view_position(
+    list($state, $response['view_position']) = get_breadcrumbs(
         $state, $smarty
     );
 
@@ -555,7 +555,7 @@ function get_tabs($data, $modules, $user, $smarty) {
 }
 
 
-function get_view_position($state, $smarty) {
+function get_breadcrumbs($state, $smarty) {
 
 
     $branch = array();

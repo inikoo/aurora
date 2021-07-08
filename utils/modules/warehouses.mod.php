@@ -91,10 +91,10 @@ function get_warehouses_module() {
             ),
 
             /* to add
-            'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
+            'categories'=>array('type'=>'navigation', 'label'=>_("Location's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
 
                 'tabs'=>array(
-                    'locations.categories'=>array('label'=>_("Locations's categories")),
+                    'locations.categories'=>array('label'=>_("Location's categories")),
                 )
             ),
             */

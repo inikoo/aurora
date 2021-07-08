@@ -75,7 +75,7 @@ class Fulfilment_Delivery extends DB_Table {
         }
 
 
-        if($data['Fulfilment Delivery Customer Key']!='') {
+        if ($data['Fulfilment Delivery Customer Key'] != '') {
             $sql = "SELECT `Fulfilment Delivery Key` FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Public ID`=? and   `Fulfilment Delivery Customer Key`=? ";
 
             $stmt = $this->db->prepare($sql);
@@ -139,7 +139,7 @@ class Fulfilment_Delivery extends DB_Table {
 
         $data['Fulfilment Delivery File As'] = get_file_as($data['Fulfilment Delivery Public ID']);
 
-        $data['Fulfilment Delivery Metadata']='{}';
+        $data['Fulfilment Delivery Metadata'] = '{}';
 
         $base_data = $this->base_data();
 
@@ -153,7 +153,6 @@ class Fulfilment_Delivery extends DB_Table {
 
             }
         }
-
 
 
         $sql = sprintf(
@@ -190,8 +189,6 @@ class Fulfilment_Delivery extends DB_Table {
             );
 
 
-
-
         } else {
             print_r($stmt->errorInfo());
             print "Error can not create Fulfilment Delivery\n $sql\n";
@@ -199,7 +196,6 @@ class Fulfilment_Delivery extends DB_Table {
 
 
     }
-
 
 
     function get($key = '') {
@@ -211,6 +207,14 @@ class Fulfilment_Delivery extends DB_Table {
 
 
         switch ($key) {
+            case 'Formatted ID':
+
+                $formatted_id = sprintf('%06d', $this->id);
+                if ($this->data['Fulfilment Delivery Public ID']) {
+                    $formatted_id .= ' ('.$this->data['Fulfilment Delivery Public ID'].')';
+                }
+
+                return $formatted_id;
             case ('State'):
                 switch ($this->data['Fulfilment Delivery State']) {
 
@@ -605,68 +609,11 @@ class Fulfilment_Delivery extends DB_Table {
                         "%e %b %Y", strtotime($this->get('Fulfilment Delivery Received Date'))
                     );
                 } else {
+                    return '';
 
-                    if ($this->data['Fulfilment Delivery Estimated Receiving Date']) {
-                        return '<span class="discreet"><i class="fa fa-thumbtack" aria-hidden="true"></i> '.strftime(
-                                "%e %b %Y", strtotime($this->get('Estimated Receiving Date'))
-                            ).'</span>';
-                    } else {
 
-                        if ($this->data['Fulfilment Delivery State'] == 'InProcess') {
-                            $parent = get_object(
-                                $this->data['Fulfilment Delivery Parent'], $this->data['Fulfilment Delivery Parent Key']
-                            );
-                            if ($parent->get(
-                                    $parent->table_name.' Delivery Days'
-                                ) and is_numeric(
-                                    $parent->get(
-                                        $parent->table_name.' Delivery Days'
-                                    )
-                                )) {
-                                return '<span class="discreet italic">'.strftime(
-                                        "%d-%m-%Y", strtotime(
-                                                      'now +'.$parent->get(
-                                                          $parent->table_name.' Delivery Days'
-                                                      ).' days'
-                                                  )
-                                    ).'</span>';
-
-                            } else {
-                                return '&nbsp;';
-                            }
-                        } else {
-
-                            $parent = get_object(
-                                $this->data['Fulfilment Delivery Parent'], $this->data['Fulfilment Delivery Parent Key']
-                            );
-                            if ($parent->get(
-                                    $parent->table_name.' Delivery Days'
-                                ) and is_numeric(
-                                    $parent->get(
-                                        $parent->table_name.' Delivery Days'
-                                    )
-                                )) {
-                                return '<span class="discreet italic">'.strftime(
-                                        "%d-%m-%Y", strtotime(
-                                                      $this->get(
-                                                          'Fulfilment Delivery Submitted Date'
-                                                      ).' +'.$parent->get(
-                                                          $parent->table_name.' Delivery Days'
-                                                      ).' days'
-                                                  )
-                                    ).'</span>';
-
-                            } else {
-                                return '<span class="super_discreet">'._(
-                                        'Unknown'
-                                    ).'</class>';
-                            }
-                        }
-
-                    }
                 }
 
-                break;
 
             case 'Items Amount':
             case 'Extra Costs Amount':
@@ -1571,8 +1518,8 @@ class Fulfilment_Delivery extends DB_Table {
 
 
             $sql = sprintf(
-                "UPDATE `Purchase Order Transaction Fact` SET  `Fulfilment Delivery Checked Units`=%f,`Fulfilment Delivery Last Updated Date`=%s ,`Fulfilment Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ", $units_qty, prepare_mysql($date),
-                prepare_mysql($placed), $transaction_key
+                "UPDATE `Purchase Order Transaction Fact` SET  `Fulfilment Delivery Checked Units`=%f,`Fulfilment Delivery Last Updated Date`=%s ,`Fulfilment Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ", $units_qty,
+                prepare_mysql($date), prepare_mysql($placed), $transaction_key
             );
             //print "$sql\n";
             $this->db->exec($sql);
@@ -1708,7 +1655,7 @@ class Fulfilment_Delivery extends DB_Table {
     function update_totals() {
 
 
-        $account=get_object('Account',1);
+        $account = get_object('Account', 1);
 
         $sql = sprintf(
             "SELECT  sum(if(`Fulfilment Delivery Transaction Placed`='Yes',1,0)) AS placed_items, 
@@ -1735,18 +1682,15 @@ class Fulfilment_Delivery extends DB_Table {
         );
 
 
-
-
-
         // print $sql;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
 
-                if($account->get('Account Currency')==$this->get('Fulfilment Delivery Currency Code')){
-                    $row['extra_cost_amount']=$row['extra_cost_amount']+$row['ac_extra_cost_amount'];
-                    $row['ac_extra_cost_amount']=0;
+                if ($account->get('Account Currency') == $this->get('Fulfilment Delivery Currency Code')) {
+                    $row['extra_cost_amount']    = $row['extra_cost_amount'] + $row['ac_extra_cost_amount'];
+                    $row['ac_extra_cost_amount'] = 0;
                 }
 
 
@@ -1759,7 +1703,6 @@ class Fulfilment_Delivery extends DB_Table {
                 $items_amount         = ($row['items_amount'] == '' ? 0 : $row['items_amount']);
                 $extra_amount         = ($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
                 $ac_extra_cost_amount = ($row['ac_extra_cost_amount'] == '' ? 0 : $row['ac_extra_cost_amount']);
-
 
 
                 $this->fast_update(
@@ -1824,12 +1767,12 @@ class Fulfilment_Delivery extends DB_Table {
 
         if (in_array(
             $this->get('Fulfilment Delivery State'), array(
-                                                     'InProcess',
-                                                     'Dispatched',
-                                                     'Costing',
-                                                     'InvoiceChecked',
-                                                     'Cancelled'
-                                                 )
+                                                       'InProcess',
+                                                       'Dispatched',
+                                                       'Costing',
+                                                       'InvoiceChecked',
+                                                       'Cancelled'
+                                                   )
         )) {
 
             $state = $this->get('Fulfilment Delivery State');

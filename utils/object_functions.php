@@ -40,11 +40,7 @@ function get_object($object_name, $key, $load_other_data = false) {
 
         case 'customer':
             include_once 'class.Customer.php';
-            /**
-             * @var $object \Customer
-             */
             $object = new Customer('id', $key);
-
             break;
         case 'store':
             include_once 'class.Store.php';
@@ -201,7 +197,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
 
         case 'store_payment_account':
-            $tmp = preg_split('/\_/', $key);
+            $tmp = preg_split('/_/', $key);
             require_once "class.Payment_Account.php";
             $object = new Payment_Account($tmp[1]);
             break;
@@ -256,10 +252,6 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'image.subject':
             require_once "class.Image.php";
             $object = new Image('image_bridge_key', $key);
-            break;
-        case 'upload':
-            require_once "class.Upload.php";
-            $object = new Upload($key);
             break;
         case 'supplier_part':
         case 'supplierpart':
@@ -430,11 +422,6 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Shipping_Zone_Schema($key);
             break;
 
-        case 'shipping_option':
-        case 'shippingoption':
-            require_once "class.Shipping_Option.php";
-            $object = new Shipping_Option($key);
-            break;
         case 'email_campaign':
         case 'emailcampaign':
         case 'email campaign':

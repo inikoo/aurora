@@ -191,7 +191,7 @@ function get_supplier_parts_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Suppliers's parts"),
+        'title'          => _("Supplier's parts"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search suppliers')
@@ -224,7 +224,7 @@ function get_suppliers_categories_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Suppliers's Categories"),
+        'title'          => _("Supplier's Categories"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search suppliers')
@@ -2139,7 +2139,7 @@ function get_suppliers_new_main_category_navigation($data, $smarty, $user, $db, 
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("New main suppliers's category"),
+        'title'          => _("New main Supplier's category"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search suppliers')
