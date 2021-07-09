@@ -44,7 +44,7 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
 
 function logout($db) {

@@ -96,7 +96,7 @@ $(function() {
     });
 
 
-    $('#logout').on("click", function () {
+    $('.logout').on("click", function () {
 
         var ajaxData = new FormData();
 
