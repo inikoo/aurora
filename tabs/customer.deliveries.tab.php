@@ -8,6 +8,9 @@
  Version 3
 
 */
+/** @var array $state */
+/** @var \User $user */
+/** @var \Smarty $smarty */
 
 $tab     = 'customer.deliveries';
 $ar_file = 'ar_fulfilment_tables.php';

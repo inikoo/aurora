@@ -21,16 +21,18 @@ name: "formatted_id",
 label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='formatted_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ })
 },
+
 {
 name: "customer_delivery_reference",
 label: "{t}Reference{/t}",
 editable: false,
 sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({ })
+{if $sort_key=='customer_delivery_reference'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ } ),
 },
-
 
 {
 name: "date",
@@ -41,13 +43,17 @@ sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
+},
+{
 name: "state",
 label: "{t}State{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='state'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "html"
 }
 ]
 
-function change_table_view(view,save_state){}
+function change_table_view(view,save_state){
+
+}

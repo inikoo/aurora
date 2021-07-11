@@ -392,6 +392,14 @@ class Fulfilment_Delivery extends DB_Table {
         switch ($field) {
             case 'Fulfilment Delivery Public ID':
                 $this->update_field($field, $value, $options);
+
+                $this->fast_update(
+                    [
+                        'Fulfilment Delivery File As'=>$value
+                    ]
+                );
+
+
                 $this->update_metadata = array(
                     'class_html' => array(
                         'Fulfilment_Delivery_Formatted_ID' => $this->get('Formatted ID'),

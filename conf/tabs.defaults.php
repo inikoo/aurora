@@ -2315,8 +2315,6 @@ function get_tab_defaults_data() {
             'rpp_options'   => $default_rrp_options,
             'f_field'       => 'code',
             'export_fields' => get_export_fields('supplier.order.items')
-
-
         ),
         'job_order.items_in_process'        => array(
             'view'          => 'batches',
@@ -2326,8 +2324,15 @@ function get_tab_defaults_data() {
             'rpp_options'   => $default_rrp_options,
             'f_field'       => 'code',
             'export_fields' => get_export_fields('supplier.order.items')
-
-
+        ),
+        'customer.delivery.assets_in_process'   => array(
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 1000,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'id',
+            'export_fields' => get_export_fields('customer.delivery.items')
         ),
         'deleted.supplier.order.items'      => array(
             'view'        => 'overview',

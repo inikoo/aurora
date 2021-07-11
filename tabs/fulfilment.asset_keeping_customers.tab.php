@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection DuplicatedCode */
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -9,14 +9,17 @@
 
 */
 
-if ( $user->can_view('fulfilment')) {
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var array $state */
 
 
-        $tab     = 'fulfilment.asset_keeping_customers';
-        $ar_file = 'ar_fulfilment_tables.php';
-        $tipo    = 'asset_keeping_customers';
+if ($user->can_view('fulfilment')) {
 
 
+    $tab     = 'fulfilment.asset_keeping_customers';
+    $ar_file = 'ar_fulfilment_tables.php';
+    $tipo    = 'asset_keeping_customers';
 
 
     $default = $user->get_tab_defaults($tab);
