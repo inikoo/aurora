@@ -14,6 +14,9 @@ require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/new_fork.php';
 
+/** @var PDO $db */
+/** @var \Account $account */
+/** @var \User $user */
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -140,8 +143,8 @@ if ($_data['tipo'] == 'stock.history.day') {
         $_tipo = 'client_order_items';
     } elseif ($_data['tipo'] == 'supplier.order.items_in_process') {
         $_tipo = 'supplier.order.items';
-    }elseif ($_data['tipo'] == 'job_order.items') {
-           $_tipo = 'supplier.order.items';
+    } elseif ($_data['tipo'] == 'job_order.items') {
+        $_tipo = 'supplier.order.items';
     } elseif ($_data['tipo'] == 'sent_emails') {
         //print_r($_data);
         // todo parse request for prospects (ise state to find out)
@@ -191,6 +194,14 @@ if ($fields == '') {
     $fields = '*';
 }
 
+/** @var string $table */
+/** @var string $where */
+/** @var string $wheref */
+/** @var string $order */
+/** @var string $order_direction */
+/** @var string $sql_totals */
+
+
 $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
 
 
@@ -226,6 +237,9 @@ $export_data = array(
     'fetch_type'   => 'simple',
     'fields'       => $_export_data['fields'],
     'field_set'    => $field_set,
+    'sql_table'    => "$table",
+    'sql_where'    => "$where $wheref"
+
 );
 
 

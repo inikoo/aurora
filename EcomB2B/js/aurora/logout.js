@@ -8,7 +8,7 @@
 
 $(function() {
 
-    $('#logout').on("click", function () {
+    $('.logout').on("click", function () {
 
 
 

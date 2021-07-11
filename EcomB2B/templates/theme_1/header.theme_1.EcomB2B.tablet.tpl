@@ -167,7 +167,7 @@
             {/if}
                   <em class="menu-divider"></em>
             {if $logged_in}
-                <a class="default-link" href="#" id="logout"><span style="padding-left: 20px">{t}Log out{/t}</span><i class="ion-record"></i></a>
+                <a class="default-link logout" href="#" ><span style="padding-left: 20px">{t}Log out{/t}</span><i class="ion-record"></i></a>
             {/if}
 
             <em class="menu-divider">{t}Copyright{/t} <u class="copyright-year"></u>.</em>

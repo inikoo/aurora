@@ -1644,7 +1644,7 @@
             {/if}
             getScript("/assets/mobile.logged_in.min.js", function () {
 
-                $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
+                $('.logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
             })
             {else}
             {if $with_product_order_input==1}
@@ -1682,7 +1682,7 @@
 
             {/if}
             getScript("/assets/mobile.logged_in.min.js", function () {
-                $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
+                $('.logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
             })
             {/if}
             {/if}

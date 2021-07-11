@@ -61,7 +61,7 @@
         {if $store->get('Store Type')=='Dropshipping' and $logged_in}
         <div class="DS_top_buttons"  style="float:right;padding-right: 40px;font-weight: 800;font-size: 14px">
 
-            <a href="#" id="logout" class="button">
+            <a href="#" class="logout button">
                 <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
                 <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
             </a>
@@ -131,7 +131,7 @@
                 <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
                     <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
             {elseif $key=='logout'}
-                <a href="#" id="logout" class="button" style="margin-left: 0px;">
+                <a href="#"  class="button logout" style="margin-left: 0px;">
                     <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
                     <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
                 </a>
@@ -199,7 +199,7 @@
                     <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
 
-                    <a href="#" id="logout" class="button" style="margin-left: 0px;">
+                    <a href="#" class="logout button" style="margin-left: 0px;">
                         <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
                     </a>

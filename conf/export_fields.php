@@ -646,8 +646,6 @@ function get_export_fields($element, $account_currency_code = '') {
                 'label'   => _('Insurance net'),
                 'checked' => 1
             ),
-
-
             array(
                 'name'    => '`Invoice Total Net Amount`',
                 'label'   => _('Net'),
@@ -657,7 +655,18 @@ function get_export_fields($element, $account_currency_code = '') {
                 'name'    => '`Invoice Total Tax Amount`',
                 'label'   => _('Tax'),
                 'checked' => 1
-            )
+            ),
+            array(
+                'name'            => '(select group_concat(CONCAT_WS(\'|\',`Tax Code`,`Tax Amount`))  from `Invoice Tax Bridge`  ITB where ITB.`Invoice Key`= I.`Invoice Key`  )',
+                'label'           => _('Tax codes (Separated fields)'),
+                'checked'         => 1,
+                'type'            => 'dynamic_headers',
+                'header_field'    => '`Tax Code`',
+                'header_table'    => 'left join  `Invoice Tax Bridge` B on (I.`Invoice Key`=B.`Invoice Key`)',
+                'header_group_by' => 'group by `Tax Code`',
+
+                'header_prefix' => _('Tax code').": "
+            ),
 
         ),
         'timeserie_records'            => array(
@@ -728,7 +737,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
         ),
 
-        'production_products'    => array(
+        'production_products' => array(
             array(
                 'name'    => '`Supplier Code`',
                 'label'   => _('Supplier'),
