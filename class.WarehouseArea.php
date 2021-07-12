@@ -74,22 +74,19 @@ class WarehouseArea extends DB_Table {
 
 
         if (isset($data['Location Codes'])) {
-            $location_codes=$data['Location Codes'];
+            $location_codes = $data['Location Codes'];
             unset($data['Location Codes']);
-        }else{
-            $location_codes='';
+        } else {
+            $location_codes = '';
         }
 
 
-
-
-
         $sql = sprintf(
-            "INSERT INTO `Warehouse Area Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
+            "INTO `Warehouse Area Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
         );
 
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare("INSERT ".$sql);
 
         $i = 1;
         foreach ($this->data as $key => $value) {
@@ -107,8 +104,8 @@ class WarehouseArea extends DB_Table {
             $this->get_data('id', $this->id);
 
 
-            if($location_codes!=''){
-                $locations_keys=$this->get_location_keys_from_codes($location_codes);
+            if ($location_codes != '') {
+                $locations_keys = $this->get_location_keys_from_codes($location_codes);
                 foreach ($locations_keys as $locations_key) {
                     $location = get_object('Location', $locations_key);
                     $location->update_area_key($this->id);
@@ -137,7 +134,7 @@ class WarehouseArea extends DB_Table {
 
     }
 
-    function get_data($key, $tag, $tag2 = false) {
+    function get_data($key, $tag, $tag2 = false): bool {
 
         if ($key == 'id') {
             $sql = sprintf(
@@ -161,14 +158,15 @@ class WarehouseArea extends DB_Table {
 
         }
 
+        return true;
 
     }
 
-    function get($key, $data = false) {
+    function get($key) {
 
 
         if (!$this->id) {
-            return;
+            return false;
         }
 
         if (preg_match('/^warehouse (code|name)/i', $key)) {
@@ -188,11 +186,11 @@ class WarehouseArea extends DB_Table {
                 $location_codes = $this->get_locations('codes');
 
                 return join(', ', $location_codes);
-                break;
+
             case 'Place':
-                if($this->data['Warehouse Area Place']=='Local'){
+                if ($this->data['Warehouse Area Place'] == 'Local') {
                     return _('Local warehouse');
-                }else{
+                } else {
                     return _('External warehouse');
 
                 }
@@ -211,11 +209,10 @@ class WarehouseArea extends DB_Table {
                 }
         }
 
-        return '';
     }
 
 
-    function get_locations($scope = 'keys') {
+    function get_locations($scope = 'keys'): array {
 
         $locations = array();
         switch ($scope) {
@@ -226,29 +223,27 @@ class WarehouseArea extends DB_Table {
                 $fields = '`Location Key`';
         }
 
-        $sql = sprintf('select %s from `Location Dimension` where `Location Warehouse Area Key`=%d  order by `Location File As`', $fields, $this->id);
+        $sql = "select $fields from `Location Dimension` where `Location Warehouse Area Key`=?  order by `Location File As`";
 
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                switch ($scope) {
-                    case 'codes':
-                        $locations[] = $row['Location Code'];
-                        break;
-                    case 'objects':
-                        $locations[] = get_object('Location', $row['Location Key']);
-                        break;
-                    default:
-                        $locations[] = $row['Location Key'];
-                }
-
-
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            switch ($scope) {
+                case 'codes':
+                    $locations[] = $row['Location Code'];
+                    break;
+                case 'objects':
+                    $locations[] = get_object('Location', $row['Location Key']);
+                    break;
+                default:
+                    $locations[] = $row['Location Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+
 
         return $locations;
 
@@ -308,15 +303,17 @@ class WarehouseArea extends DB_Table {
 
         if ($this->found) {
             $this->get_data('id', $this->found_key);
+
             return;
         }
 
 
         if ($create) {
-            $this->create($data, $options);
+            $this->create($data);
         }
     }
 
+    /*
     function add_location($data) {
         $this->updated                       = false;
         $data['Location Warehouse Key']      = $this->data['Warehouse Key'];
@@ -336,9 +333,9 @@ class WarehouseArea extends DB_Table {
                 $this->new_location_msg = _('Location Code already in the warehouse');
             }
         }
-    }
+    }*/
 
-    function delete() {
+    function delete(): string {
         $this->deleted     = false;
         $this->deleted_msg = '';
 
@@ -374,7 +371,6 @@ class WarehouseArea extends DB_Table {
         return '/warehouse/'.$this->get('Warehouse Area Warehouse Key').'/areas';
 
 
-
     }
 
     function get_field_label($field) {
@@ -388,7 +384,7 @@ class WarehouseArea extends DB_Table {
                 $label = _('name');
                 break;
             case 'Warehouse Area Place':
-                $label=_('Area type');
+                $label = _('Area type');
                 break;
             default:
 
@@ -419,7 +415,7 @@ class WarehouseArea extends DB_Table {
             $this->error_code = 'location_code_missing';
             $this->metadata   = '';
 
-            return;
+            return false;
         }
 
         $sql = sprintf(
@@ -439,11 +435,7 @@ class WarehouseArea extends DB_Table {
                     return false;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
         if (isset($data['Location Flag Color'])) {
 
@@ -464,10 +456,6 @@ class WarehouseArea extends DB_Table {
                         $this->error_code = 'location_flag_color_not_valid';
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
             }
 
@@ -528,6 +516,7 @@ class WarehouseArea extends DB_Table {
             $this->error = true;
             $this->msg   = $location->msg;
 
+            return false;
         }
 
     }
@@ -601,7 +590,7 @@ class WarehouseArea extends DB_Table {
                 case 'Warehouse Area Place':
                     $this->update_field($field, $value, $options);
 
-                    $sql="update `Location Dimension` set `Location Place`=? where `Location Warehouse Area Key`=? ";
+                    $sql = "update `Location Dimension` set `Location Place`=? where `Location Warehouse Area Key`=? ";
                     $this->db->prepare($sql)->execute(
                         array(
                             $value,
@@ -609,12 +598,12 @@ class WarehouseArea extends DB_Table {
                         )
                     );
 
-                    if($value=='Local'){
+                    if ($value == 'Local') {
                         $this->update_metadata['hide'] = array(
                             '_External_Warehouse_icon',
 
                         );
-                    }else{
+                    } else {
                         $this->update_metadata['show'] = array(
                             '_External_Warehouse_icon',
 
@@ -626,20 +615,13 @@ class WarehouseArea extends DB_Table {
                 case 'Warehouse Area Location Codes':
 
 
-
-
-
-                    $locations_keys=$this->get_location_keys_from_codes($value);
-
-                  
-
+                    $locations_keys = $this->get_location_keys_from_codes($value);
 
 
                     $old_locations_keys = $this->get_locations();
 
                     $locations_to_remove = array_diff($old_locations_keys, $locations_keys);
-                    $locations_to_add = array_diff($locations_keys,$old_locations_keys);
-
+                    $locations_to_add    = array_diff($locations_keys, $old_locations_keys);
 
 
                     foreach ($locations_to_remove as $locations_key) {
@@ -652,13 +634,13 @@ class WarehouseArea extends DB_Table {
                         $location->update_area_key($this->id);
                     }
 
-                    if(count($locations_to_remove)>0 or count($locations_to_add)>0){
-                        $this->updated=true;
+                    if (count($locations_to_remove) > 0 or count($locations_to_add) > 0) {
+                        $this->updated = true;
 
                     }
 
 
-                    breaK;
+                    break;
                 default:
                     $base_data = $this->base_data();
                     if (array_key_exists($field, $base_data)) {
@@ -671,12 +653,11 @@ class WarehouseArea extends DB_Table {
             }
         }
     }
-    
-    private function get_location_keys_from_codes($codes){
+
+    private function get_location_keys_from_codes($codes): array {
         $locations_keys = array();
 
-        if (preg_match('/\/(.+)\//',$codes,$matches)) {
-
+        if (preg_match('/\/(.+)\//', $codes, $matches)) {
 
 
             $sql = 'select `Location Key`,`Location Warehouse Area Key` from `Location Dimension` where `Location Code` REGEXP ? and `Location Warehouse Key`= ?';
@@ -692,14 +673,11 @@ class WarehouseArea extends DB_Table {
                 while ($row = $stmt->fetch()) {
                     $locations_keys[$row['Location Key']] = $row['Location Key'];
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit();
             }
 
         } else {
 
-            $location_codes = preg_split('/\s*\,\s*/', $codes);
+            $location_codes = preg_split('/\s*,\s*/', $codes);
             foreach ($location_codes as $code) {
                 $sql = 'select `Location Key`,`Location Warehouse Area Key` from `Location Dimension` where `Location Code` =? and `Location Warehouse Key`= ?';
 
@@ -713,15 +691,12 @@ class WarehouseArea extends DB_Table {
                     while ($row = $stmt->fetch()) {
                         $locations_keys[$row['Location Key']] = $row['Location Key'];
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit();
                 }
 
             }
         }
 
-        return  $locations_keys ;
+        return $locations_keys;
     }
 
 

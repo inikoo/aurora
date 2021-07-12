@@ -16,6 +16,12 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 include_once 'utils/shopify_connect.php';
 
+/** @var PDO $db */
+/** @var \User $user */
+/** @var array $editor */
+
+
+
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,

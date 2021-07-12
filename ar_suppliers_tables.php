@@ -17,6 +17,10 @@ require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
 
 
+/** @var \User $user */
+/** @var PDO $db */
+/** @var \Account $account */
+
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,

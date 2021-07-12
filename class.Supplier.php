@@ -16,11 +16,18 @@ include_once 'class.SubjectSupplier.php';
 
 class Supplier extends SubjectSupplier {
 
-
+    /**
+     * @var \PDO
+     */
+    public $db;
     var $new = false;
     public $locale = 'en_GB';
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
+
+        global $db;
+        $this->db = $db;
+
 
         if (!$_db) {
             global $db;
@@ -173,9 +180,6 @@ class Supplier extends SubjectSupplier {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
         }
@@ -226,37 +230,7 @@ class Supplier extends SubjectSupplier {
 
         $this->data['Supplier Valid From'] = gmdate('Y-m-d H:i:s');
 
-
-        /*
-
-        $keys   = '';
-        $values = '';
-        foreach ($this->data as $key => $value) {
-            $keys .= ",`".$key."`";
-
-            if (in_array(
-                $key, array(
-                        'Supplier Average Delivery Days',
-                        'Supplier Default Incoterm',
-                        'Supplier Default Port of Export',
-                        'Supplier Default Port of Import',
-                        'Supplier Valid To'
-                    )
-            )) {
-                $values .= ','.prepare_mysql($value, true);
-
-            } else {
-                $values .= ','.prepare_mysql($value, false);
-
-            }
-
-        }
-        $values = preg_replace('/^,/', '', $values);
-        $keys   = preg_replace('/^,/', '', $keys);
-
-        $sql = "insert into `Supplier Dimension` ($keys) values ($values)";
-
-*/
+        $base_data=[];
         foreach ($this->data as $key => $value) {
             $base_data[$key] = _trim($value);
 
@@ -326,7 +300,7 @@ class Supplier extends SubjectSupplier {
 
     }
 
-    function get_category_data() {
+    function get_category_data(): array {
         $sql = sprintf(
             "SELECT B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`='Supplier'",
             $this->id
@@ -338,8 +312,9 @@ class Supplier extends SubjectSupplier {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-
-                $sql = sprintf(
+                $root_label = '';
+                $root_code  = '';
+                $sql        = sprintf(
                     "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
                 );
 
@@ -349,9 +324,6 @@ class Supplier extends SubjectSupplier {
                         $root_label = $row2['Category Label'];
                         $root_code  = $row2['Category Code'];
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
 
@@ -364,15 +336,12 @@ class Supplier extends SubjectSupplier {
                     'root_label'   => $root_label,
                     'root_code'    => $root_code,
                     'label'        => $row['Category Label'],
-                    'label'        => $row['Category Code'],
+                    'code'         => $row['Category Code'],
                     'value'        => $value,
                     'category_key' => $row['Category Key']
                 );
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -448,11 +417,7 @@ class Supplier extends SubjectSupplier {
                                 array('Supplier Part On Demand' => 'No'), $options
                             );
                         }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
                     }
-
                 }
 
                 break;
@@ -499,11 +464,7 @@ class Supplier extends SubjectSupplier {
                                 ), $options
                             );
                         }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
                     }
-
 
                 }
 
@@ -856,7 +817,7 @@ class Supplier extends SubjectSupplier {
             $this->error_code = 'supplier_product_reference_missing';
             $this->metadata   = '';
 
-            return;
+            return false;
         }
 
         if (!isset($data['Supplier Part Description']) or $data['Supplier Part Description'] == '') {
@@ -865,7 +826,8 @@ class Supplier extends SubjectSupplier {
             $this->error_code = 'supplier_part_unt_description_missing';
             $this->metadata   = '';
 
-            return;
+            return false;
+
         }
 
         $sql = sprintf(
@@ -884,12 +846,9 @@ class Supplier extends SubjectSupplier {
                     $this->error_code = 'duplicate_supplier_part_reference';
                     $this->metadata   = $data['Supplier Part Reference'];
 
-                    return;
+                    return false;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -899,7 +858,7 @@ class Supplier extends SubjectSupplier {
             $this->error_code = 'part_reference_missing';
             $this->metadata   = '';
 
-            return;
+            return false;
         }
 
         if (empty($data['Part Recommended Product Unit Name'])) {
@@ -908,7 +867,7 @@ class Supplier extends SubjectSupplier {
             $this->error_code = 'part_recommended_unit_name_missing';
             $this->metadata   = '';
 
-            return;
+            return false;
         }
 
         $part_exist = false;
@@ -930,13 +889,10 @@ class Supplier extends SubjectSupplier {
                     $this->error_code = 'duplicate_part_reference';
                     $this->metadata   = $data['Part Reference'];
 
-                    return;
+                    return false;
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -953,11 +909,7 @@ class Supplier extends SubjectSupplier {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
-
         }
 
 
@@ -975,11 +927,9 @@ class Supplier extends SubjectSupplier {
                 } else {
 
 
-
-
-                    $barcode = $data['Part Barcode'];
-                    $error   = '';
-                    $_error_mdg='';
+                    $barcode    = $data['Part Barcode'];
+                    $error      = '';
+                    $_error_mdg = '';
 
                     if (!is_numeric($barcode)) {
                         $error = 'No Numeric';
@@ -987,27 +937,24 @@ class Supplier extends SubjectSupplier {
                         $error = 'Size';
                         if (strlen($barcode) == 12) {
                             $error = 'Checksum_missing';
-                            $sql   = sprintf(
-                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" ', addslashes($barcode)
+
+                            $sql  = "SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE ? ";
+                            $stmt = $this->db->prepare($sql);
+                            $stmt->execute(
+                                array(
+                                    $barcode.'%'
+                                )
                             );
+                            while ($row = $stmt->fetch()) {
+                                $error = 'Short_Duplicated';
 
-                            if ($result = $this->db->query($sql)) {
-                                foreach ($result as $row) {
-
-                                    $error = 'Short_Duplicated';
-                                }
-
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
                             }
+
 
                         }
 
 
-                    }
-                    else {
+                    } else {
                         $digits = substr($barcode, 0, 12);
 
                         $digits         = (string)$digits;
@@ -1026,13 +973,12 @@ class Supplier extends SubjectSupplier {
                             );
 
 
-
                             if ($result = $this->db->query($sql)) {
                                 foreach ($result as $row) {
                                     $part = get_object('Part', $row['Part SKU']);
                                     $part->fast_update(array('Part Barcode Number Error' => 'Duplicated'));
-                                    $error = 'Duplicated';
-                                    $_error_msg=  _('Duplicated').' '.$row['Part Reference'];
+                                    $error      = 'Duplicated';
+                                    $_error_msg = _('Duplicated').' '.$row['Part Reference'];
                                 }
 
                             } else {
@@ -1351,7 +1297,7 @@ class Supplier extends SubjectSupplier {
                                 'Part Materials'          => $materials,
                                 'Part Package Dimensions' => $package_dimensions,
                                 'Part Unit Dimensions'    => $unit_dimensions,
-                                'Part SKOs per Carton'=> $supplier_part->get('Supplier Part Packages Per Carton')
+                                'Part SKOs per Carton'    => $supplier_part->get('Supplier Part Packages Per Carton')
 
                             ), 'no_history'
                         );
@@ -1607,36 +1553,29 @@ class Supplier extends SubjectSupplier {
         $part_skus = '';
 
         if ($type == 'in_use') {
-            $sql = sprintf(
-                'SELECT `Supplier Part Part SKU` FROM `Supplier Part Dimension` SP LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`) WHERE `Supplier Part Supplier Key`=%d AND `Part Status` IN ("In Use","Discontinuing") AND `Supplier Part Status`!="Discontinued" GROUP BY `Supplier Part Part SKU`',
+            $sql =
+                "SELECT `Supplier Part Part SKU` FROM `Supplier Part Dimension` SP LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=SP.`Supplier Part Part SKU`) WHERE `Supplier Part Supplier Key`=? AND `Part Status` IN ('In Use','Discontinuing') AND `Supplier Part Status`!='Discontinued' GROUP BY `Supplier Part Part SKU`";
+
+
+        } else {
+            $sql = "SELECT `Supplier Part Part SKU` FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=?  GROUP BY `Supplier Part Part SKU`";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
                 $this->id
-            );
-        } else {
-            $sql = sprintf(
-                'SELECT `Supplier Part Part SKU` FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d  GROUP BY `Supplier Part Part SKU`', $this->id
-            );
-        }
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if (is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU'] > 0) {
+                $part_skus .= $row['Supplier Part Part SKU'].',';
 
-
-        //  print "$sql\n";
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if (is_numeric($row['Supplier Part Part SKU']) and $row['Supplier Part Part SKU'] > 0) {
-                    $part_skus .= $row['Supplier Part Part SKU'].',';
-
-                }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-        $part_skus = preg_replace('/\,$/', '', $part_skus);
 
 
-        return $part_skus;
+        return preg_replace('/,$/', '', $part_skus);
 
     }
 
@@ -1937,14 +1876,17 @@ class Supplier extends SubjectSupplier {
         $this->load_acc_data();
 
 
-        $sql = sprintf(
-            'INSERT INTO `Supplier Deleted Dimension`  (`Supplier Deleted Key`,`Supplier Deleted Code`,`Supplier Deleted Name`,`Supplier Deleted From`,`Supplier Deleted To`,`Supplier Deleted Metadata`) VALUES (%d,%s,%s,%s,%s,%s) ', $this->id,
-            prepare_mysql($this->get('Supplier Code')), prepare_mysql($this->get('Supplier Name')), prepare_mysql($this->get('Supplier Valid From')), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
+        $sql = 'INSERT INTO `Supplier Deleted Dimension`  (`Supplier Deleted Key`,`Supplier Deleted Code`,`Supplier Deleted Name`,`Supplier Deleted Date`,`Supplier Deleted Metadata`) VALUES (?,?,?,?,?) ';
 
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id,
+                $this->get('Supplier Code'),
+                $this->get('Supplier Name'),
+                gmdate('Y-m-d H:i:s'),
+                gzcompress(json_encode($this->data), 9)
+            )
         );
-        $this->db->exec($sql);
-
-        //print $sql;
 
 
         $sql = sprintf(
