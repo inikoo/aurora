@@ -22,11 +22,11 @@ $table_buttons = [];
 if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
     switch ($state['_object']->get('Fulfilment Delivery State')) {
         case 'InProcess':
-            $tab         = 'customer.delivery.parts_in_process';
+            $tab         = 'fulfilment.delivery.parts_in_process';
             $table_views = array('overview' => array('label' => _('Overview')));
             break;
         default:
-            $tab = 'customer.delivery.parts';
+            $tab = 'fulfilment.delivery.parts';
 
             $table_views = array('overview' => array('label' => _('Overview')),);
             break;
@@ -38,46 +38,40 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
 } else {
     switch ($state['_object']->get('Fulfilment Delivery State')) {
         case 'InProcess':
-            $tab         = 'customer.delivery.assets_in_process';
+        case 'Received':
+            $tab         = 'fulfilment.delivery.assets';
             $table_views = array('overview' => array('label' => _('Overview')));
-            $tipo        = 'customer.delivery.assets_in_process';
-
-
-            $table_buttons[] = array(
-                'icon'     => 'plus',
-                'title'    => _('New item'),
-                'id'       => 'new_item_unit',
-                'class'    => 'items_operation'.($fulfilment_delivery->get('Fulfilment Delivery State') != 'InProcess' ? ' hide' : ''),
-                'add_item' => array(
-                    'field'           => 'Fulfilment Delivery Units',
-                    'field_label'     => _("Supplier's product").':',
-                    'placeholder_qty' => _("Units"),
-                    'metadata'        => base64_encode(
-                        json_encode(
-                            array(
-                                'scope'      => 'supplier_part',
-                                'parent'     => $fulfilment_delivery->get('Fulfilment Delivery Parent'),
-                                'parent_key' => $fulfilment_delivery->get('Fulfilment Delivery Parent Key'),
-                                'options'    => array('for_purchase_order')
-                            )
-                        )
-                    )
-
-                )
-
-            );
+            $tipo        = 'fulfilment.delivery.assets';
 
 
             $table_buttons[] = array(
                 'icon'         => 'upload',
                 'title'        => _('Upload assets'),
                 'id'           => 'upload_order_items',
-                'class'        => 'hide',
+                'class'        => (($fulfilment_delivery->get('Fulfilment Delivery State') == 'InProcess' or $fulfilment_delivery->get('Fulfilment Delivery State') == 'Received') ? ' ' : 'hide'),
                 'upload_items' => array(
                     'tipo'       => 'add_item',
                     'parent'     => 'Fulfilment_Delivery',
                     'parent_key' => $fulfilment_delivery->id,
                     'field'      => 'Fulfilment Delivery Units'
+                )
+
+            );
+
+            $table_buttons[] = array(
+                'icon'                 => 'plus',
+                'title'                => _('New item'),
+                'id'                   => 'add_fulfilment_asset',
+                'class'                => 'items_operation'.(($fulfilment_delivery->get('Fulfilment Delivery State') == 'InProcess' or $fulfilment_delivery->get('Fulfilment Delivery State') == 'Received') ? ' ' : 'hide'),
+                'add_fulfilment_asset' => array(
+                    'metadata' => json_encode(
+                        array(
+                            'parent'     => 'Fulfilment_Delivery',
+                            'parent_key' => $fulfilment_delivery->id,
+                        )
+                    )
+
+
                 )
 
             );
@@ -97,7 +91,7 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
 
             break;
         default:
-            $tab = 'customer.delivery.assets';
+            $tab = 'fulfilment.delivery.assets';
 
             $table_views = array('overview' => array('label' => _('Overview')),);
             break;
@@ -120,7 +114,6 @@ $parameters = array(
 
 );
 
-$table_buttons = array();
-$smarty->assign('table_buttons', $table_buttons);
+
 include 'utils/get_table_html.php';
 

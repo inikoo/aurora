@@ -15,9 +15,9 @@
  * @param      $key
  * @param bool $load_other_data
  *
- * @return \Account|bool|\Customer|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Raw_Material|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
+ * @return \Account|bool|\Customer|\Fulfilment_Delivery|\Fulfilment_Asset|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Raw_Material|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
  */
-function get_object($object_name, $key, $load_other_data = false) {
+function get_object($object_name, $key, bool $load_other_data = false) {
 
     if ($object_name == '') {
         return false;
@@ -30,14 +30,13 @@ function get_object($object_name, $key, $load_other_data = false) {
 
 
     global $db;
-
+    $object = false;
 
     switch (strtolower($object_name.$load_other_data)) {
         case 'account':
             include_once 'class.Account.php';
             $object = new Account();
             break;
-
         case 'customer':
             include_once 'class.Customer.php';
             $object = new Customer('id', $key);
@@ -56,7 +55,6 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'public_product':
             include_once 'class.Public_Product.php';
             $object = new Public_Product($key);
-
             break;
         case 'public_category':
             include_once 'class.Public_Category.php';
@@ -291,7 +289,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'campaign_code-store_key':
             require_once "class.DealCampaign.php";
-            $keys = preg_split('/\|/', $key);
+            $keys   = preg_split('/\|/', $key);
             $object = new DealCampaign('code_store', $keys[0], $keys[1]);
             break;
         case 'deal':
@@ -332,9 +330,6 @@ function get_object($object_name, $key, $load_other_data = false) {
                     require_once "class.SupplierPart.php";
                     $object = new SupplierPart($row['Supplier Part Key']);
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
             break;
         case 'supplierdelivery':
@@ -381,10 +376,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Email_Blueprint.php";
             $object = new Email_Blueprint($key);
             break;
-        case 'email_template':
-            require_once "class.Email_Template.php";
-            $object = new Email_Template($key);
-            break;
+
         case 'published_email_template':
             require_once "class.Published_Email_Template.php";
             $object = new Published_Email_Template($key);
@@ -477,7 +469,6 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'email template':
         case 'email_template':
         case 'emailtemplate':
-
             include_once 'class.Email_Template.php';
             $object = new Email_Template('id', $key);
             break;
@@ -536,7 +527,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.External_Invoicer.php';
             $object = new External_Invoicer('id', $key);
             break;
-        case 'picking_band':
+        case 'picking band':
         case 'picking_band':
         case 'pickingband':
             include_once 'class.PickingBand.php';
@@ -556,6 +547,11 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'customer part':
             require_once "class.Customer_Part.php";
             $object = new Customer_Part($key);
+            break;
+        case 'fulfilment asset':
+        case 'fulfilment_asset':
+            require_once "class.Fulfilment_Asset.php";
+            $object = new Fulfilment_Asset($key);
             break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");

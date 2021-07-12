@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-function get_fulfilment_module() {
+function get_fulfilment_module(): array {
     return array(
         'sections' => array(
 
@@ -79,11 +79,6 @@ function get_fulfilment_module() {
 
                     ),
 
-                    'fulfilment_part.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-
 
                     'fulfilment_part.history' => array(
                         'label' => '',
@@ -125,7 +120,7 @@ function get_fulfilment_module() {
 
                 'tabs' => array(
                     'fulfilment.dropshipping_customers'  => array(
-                        'label' => _('Dropshipping cuomers'),
+                        'label' => _('Dropshipping customers'),
                         'icon'  => 'shopping-basket',
                         'class' => ''
                     ),
@@ -145,15 +140,15 @@ function get_fulfilment_module() {
                 'icon'      => 'user',
                 'reference' => '',
                 'tabs'      => array(
-                    'customer.history'       => array(
+                    'customer.history'    => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note'
                     ),
-                    'customer.details'       => array(
+                    'customer.details'    => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'customer.deliveries'    => array(
+                    'customer.deliveries' => array(
                         'label' => _('Deliveries'),
                         'icon'  => 'arrow-square-down'
                     ),
@@ -200,9 +195,9 @@ function get_fulfilment_module() {
                     'customer.active_portfolio'  => 'customer.portfolio',
                     'customer.removed_portfolio' => 'customer.portfolio',
 
-                    'customer.parts'   => 'customer.fulfilment',
+                    'customer.parts'      => 'customer.fulfilment',
                     'customer.deliveries' => 'customer.fulfilment',
-                    'customer.returns' => 'customer.fulfilment',
+                    'customer.returns'    => 'customer.fulfilment',
 
 
                 ),
@@ -220,7 +215,7 @@ function get_fulfilment_module() {
                         'label'   => _('Fulfilment'),
                         'icon'    => 'shopping-basket',
                         'subtabs' => array(
-                            'customer.parts'   => array(
+                            'customer.parts'      => array(
                                 'label' => _('Parts'),
                                 'icon'  => 'box'
                             ),
@@ -228,7 +223,7 @@ function get_fulfilment_module() {
                                 'label' => _('Deliveries'),
                                 'icon'  => 'download'
                             ),
-                            'customer.returns' => array(
+                            'customer.returns'    => array(
                                 'label' => _('Returns'),
                                 'icon'  => 'external-link-square-alt'
                             ),
@@ -290,7 +285,6 @@ function get_fulfilment_module() {
                     ),
 
 
-
                     'customer.sales' => array(
                         'label'   => _('Sales'),
                         'icon'    => 'money-bill',
@@ -350,14 +344,13 @@ function get_fulfilment_module() {
                     ),
 
 
-
                     'customer.sent_emails' => array(
                         'label' => '',
                         'title' => _('Sent emails'),
                         'icon'  => 'paper-plane',
                         'class' => 'icon_only right'
                     ),
-                    'customer.deals'             => array(
+                    'customer.deals'       => array(
                         'label' => '',
                         'title' => _('Discounts'),
                         'icon'  => 'tags',
@@ -442,31 +435,22 @@ function get_fulfilment_module() {
                 )
 
             ),
-            'delivery' => array(
+            'delivery'          => array(
                 'type' => 'object',
                 'tabs' => array(
 
-                    'customer.delivery.details' => array(
+                    'fulfilment.delivery.details' => array(
                         'label' => _('Settings'),
                         'icon'  => 'sliders-h'
                     ),
 
-                    'customer.delivery.items'          => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-                    'customer.delivery.items_mismatch' => array(
-                        'label' => _('Under/Over delivered items'),
-                        'icon'  => 'box-open'
-                    ),
-                    'customer.delivery.items_done'     => array(
+                    'fulfilment.delivery.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
 
 
-                    'customer.delivery.history'     => array(
+                    'fulfilment.delivery.history'     => array(
                         'label'         => '',
                         'title'         => _('History/Notes'),
                         'icon'          => 'road',
@@ -476,7 +460,7 @@ function get_fulfilment_module() {
                             'field'  => 'Number History Records'
                         ),
                     ),
-                    'customer.delivery.attachments' => array(
+                    'fulfilment.delivery.attachments' => array(
                         'label'         => '',
                         'title'         => _('Attachments'),
                         'icon'          => 'paperclip',

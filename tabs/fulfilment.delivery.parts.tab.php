@@ -18,12 +18,12 @@ $tipo    = 'supplier.order.items';
 if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
     switch ($state['_object']->get('Customer Delivery State')) {
         case 'InProcess':
-            $tab         = 'customer.delivery.parts_in_process';
+            $tab         = 'fulfilment.delivery.parts_in_process';
             $table_views = array('overview' => array('label' => _('Overview')),);
             $table_views = array('overview' => array('label' => _('Overview')),);
             break;
         default:
-            $tab = 'customer.delivery.parts';
+            $tab = 'fulfilment.delivery.parts';
 
             $table_views = array('overview' => array('label' => _('Overview')),);
             break;
@@ -31,11 +31,11 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
 } else {
     switch ($state['_object']->get('Customer Delivery State')) {
         case 'InProcess':
-            $tab         = 'customer.delivery.assets_in_process';
+            $tab         = 'fulfilment.delivery.assets_in_process';
             $table_views = array('overview' => array('label' => _('Overview')),);
             break;
         default:
-            $tab = 'customer.delivery.assets';
+            $tab = 'fulfilment.delivery.assets';
 
             $table_views = array('overview' => array('label' => _('Overview')),);
             break;

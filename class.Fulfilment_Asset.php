@@ -42,6 +42,7 @@ class Fulfilment_Asset extends DB_Table {
 
     function create($data) {
 
+
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $this->data)) {
@@ -77,6 +78,11 @@ class Fulfilment_Asset extends DB_Table {
             $this->new = true;
             $this->get_data('id', $this->id);
 
+            if($this->get('Fulfilment Asset Location Key')){
+                $this->fast_update(
+                    ['Fulfilment Asset State'=>'Stored']
+                );
+            }
 
             $tmp = '<span class="italic">'.$this->get('Formatted ID').'</span>';
             if ($this->get('Reference') != '') {
@@ -95,7 +101,7 @@ class Fulfilment_Asset extends DB_Table {
 
 
         } else {
-
+            print_r($stmt->errorInfo());
             $this->error = true;
             $this->msg   = 'Error inserting fulfilment Asset record';
         }

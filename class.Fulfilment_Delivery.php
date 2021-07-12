@@ -25,6 +25,7 @@ class Fulfilment_Delivery extends DB_Table {
         $this->table_name    = 'Fulfilment Delivery';
         $this->ignore_fields = array('Fulfilment Delivery Key');
 
+        $this->calculate_totals = true;
 
         if (is_string($arg1)) {
             if (preg_match('/new|create/i', $arg1)) {
@@ -49,6 +50,7 @@ class Fulfilment_Delivery extends DB_Table {
     }
 
 
+    /** @noinspection DuplicatedCode */
     function find($raw_data, $options) {
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
@@ -156,10 +158,10 @@ class Fulfilment_Delivery extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Fulfilment Delivery Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+            "INTO `Fulfilment Delivery Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare("INSERT ".$sql);
 
 
         $i = 1;
@@ -200,7 +202,6 @@ class Fulfilment_Delivery extends DB_Table {
 
     function get($key = '') {
 
-        global $account;
         if (!$this->id) {
             return '';
         }
@@ -395,7 +396,7 @@ class Fulfilment_Delivery extends DB_Table {
 
                 $this->fast_update(
                     [
-                        'Fulfilment Delivery File As'=>$value
+                        'Fulfilment Delivery File As' => $value
                     ]
                 );
 
@@ -409,7 +410,7 @@ class Fulfilment_Delivery extends DB_Table {
                 );
                 break;
             case 'Fulfilment Delivery State':
-                $this->update_state($value, $metadata);
+                $this->update_state($value);
                 break;
 
 
@@ -435,14 +436,12 @@ class Fulfilment_Delivery extends DB_Table {
 
     }
 
-    function update_state($value, $metadata = array()) {
+    function update_state($value) {
 
         $date = gmdate('Y-m-d H:i:s');
 
 
         $skip_update_totals = false;
-
-        $operations = array();
 
 
         switch ($value) {
@@ -465,7 +464,7 @@ class Fulfilment_Delivery extends DB_Table {
                     )
                 );
 
-                //$this->update_supplier_delivery_items_state();
+                //$this->update_Fulfilment_Delivery_items_state();
 
                 $operations = array(
                     'delete_operations',
@@ -524,272 +523,7 @@ class Fulfilment_Delivery extends DB_Table {
 
 
                 break;
-            case 'Checked':
 
-                $this->update_field(
-                    'Fulfilment Delivery Checked Date', $date, 'no_history'
-                );
-                $this->update_field(
-                    'Fulfilment Delivery State', $value, 'no_history'
-                );
-                foreach ($metadata as $key => $_value) {
-                    $this->update_field($key, $_value, 'no_history');
-                }
-
-                $operations = array(
-                    'cancel_operations',
-                    'undo_send_operations',
-                    'received_operations'
-                );
-
-                $history_data = array(
-                    'History Abstract' => _('Fulfilment Delivery set as checked'),
-                    'History Details'  => '',
-                    'Action'           => 'edited'
-                );
-                $this->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                );
-
-
-                break;
-            case 'Placed':
-
-
-                if ($this->data['Fulfilment Delivery State'] != 'Placed') {
-
-
-                    $this->fast_update(
-                        array(
-                            'Fulfilment Delivery Placed Date' => $date,
-                            'Fulfilment Delivery State'       => $value,
-                        )
-                    );
-
-
-                    foreach ($metadata as $key => $_value) {
-
-                        $this->fast_update(
-                            array(
-                                $key => $_value
-                            )
-                        );
-
-                    }
-
-
-                    $operations = array('costing_operations');
-
-
-                    $manufacturer_key = 0;
-
-                    $sql = 'SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!=?';
-
-                    $stmt = $this->db->prepare($sql);
-                    $stmt->execute(
-                        array('Archived')
-                    );
-                    if ($row = $stmt->fetch()) {
-                        $manufacturer_key = $row['Supplier Production Supplier Key'];
-
-                    }
-                    if ($this->get('Fulfilment Delivery Parent') == 'Supplier' and $this->get('Fulfilment Delivery Parent Key') == $manufacturer_key) {
-
-
-                        $sql = sprintf(
-                            'select `Supplier Part Part SKU`,`Purchase Order Transaction Fact Key`,`Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) 
-                                        where `Fulfilment Delivery Key`=%d   group by `Supplier Part Part SKU` ', $this->id
-                        );
-                        if ($result = $this->db->query($sql)) {
-
-                            foreach ($result as $row) {
-
-                                if ($row['Metadata'] != '') {
-                                    $metadata = json_decode($row['Metadata'], true);
-
-
-                                    if (isset($metadata['placement_data'])) {
-                                        foreach ($metadata['placement_data'] as $placement_data) {
-                                            $sql = "insert into `ITF POTF Costing Done Bridge` (`ITF POTF Costing Done ITF Key`,`ITF POTF Costing Done POTF Key`)  values (?,?) ";
-                                            $this->db->prepare($sql)->execute(
-                                                array(
-                                                    $placement_data['oif_key'],
-                                                    $row['Purchase Order Transaction Fact Key']
-                                                )
-                                            );
-
-
-                                        }
-
-
-                                    }
-
-                                }
-
-                            }
-
-
-                        }
-
-
-                        $this->fast_update(
-                            array(
-                                'Fulfilment Delivery State'                => 'InvoiceChecked',
-                                'Fulfilment Delivery Invoice Checked Date' => gmdate('Y-m-d H:i:s'),
-                            )
-                        );
-
-                        $this->update_totals();
-
-                        $operations = array();
-
-                    }
-
-                    $history_data = array(
-                        'History Abstract' => _('Fulfilment Delivery set as placed'),
-                        'History Details'  => '',
-                        'Action'           => 'edited'
-                    );
-                    $this->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                    );
-
-
-                }
-
-
-                break;
-
-            case 'Costing':
-
-
-                if ($this->data['Fulfilment Delivery State'] == 'Placed' or $this->data['Fulfilment Delivery State'] == 'InvoiceChecked') {
-
-                    $this->fast_update(
-                        array(
-                            'Fulfilment Delivery Start Costing Date'   => $date,
-                            'Fulfilment Delivery State'                => $value,
-                            'Fulfilment Delivery Invoice Checked Date' => '',
-                        )
-                    );
-
-                    $operations = array('undo_costing_operations');
-
-                    $history_data = array(
-                        'History Abstract' => _('Setting costs'),
-                        'History Details'  => '',
-                        'Action'           => 'edited'
-                    );
-                    $this->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                    );
-
-
-                }
-
-
-                break;
-            case 'RedoCosting':
-
-
-                if ($this->data['Fulfilment Delivery State'] == 'InvoiceChecked') {
-
-                    $this->fast_update(
-                        array(
-                            'Fulfilment Delivery Start Costing Date'   => $date,
-                            'Fulfilment Delivery State'                => 'Costing',
-                            'Fulfilment Delivery Invoice Checked Date' => '',
-                        )
-                    );
-
-                    $operations = array('');
-
-                    $history_data = array(
-                        'History Abstract' => _('Redoing costing'),
-                        'History Details'  => '',
-                        'Action'           => 'edited'
-                    );
-                    $this->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                    );
-
-                }
-
-                $skip_update_totals = true;
-
-                break;
-
-            case 'InvoiceChecked':
-
-
-                if ($this->data['Fulfilment Delivery State'] == 'Costing') {
-
-
-                    $this->fast_update(
-                        array(
-                            'Fulfilment Delivery State'                => $value,
-                            'Fulfilment Delivery Invoice Checked Date' => $date,
-                        )
-                    );
-                    $this->update_supplier_delivery_items_state();
-
-                    $operations = array('');
-
-                    $history_data = array(
-                        'History Abstract' => _('Costing done'),
-                        'History Details'  => '',
-                        'Action'           => 'edited'
-                    );
-                    $this->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                    );
-
-                }
-
-
-                break;
-            case 'Cancelled':
-
-
-                if ($this->get('Fulfilment Delivery Placed Items') == 'Yes') {
-                    $this->error = true;
-                    $this->msg   = "Can't cancel delivery with placed items";
-
-                    return;
-                }
-
-                $this->fast_update(
-                    array(
-                        'Fulfilment Delivery State'          => $value,
-                        'Fulfilment Delivery Cancelled Date' => $date,
-                    )
-                );
-
-
-                $sql = sprintf(
-                    "UPDATE `Purchase Order Transaction Fact` SET `Fulfilment Delivery Key`=NULL ,`Fulfilment Delivery Units`=0 ,`Fulfilment Delivery Checked Units`=NULL,`Fulfilment Delivery Placed Units`=NULL,`Fulfilment Delivery Net Amount`=0,`Fulfilment Delivery Transaction State`=NULL,`Fulfilment Delivery Transaction Placed`=NULL,`Fulfilment Delivery CBM`=NULL,`Fulfilment Delivery CBM`=NULL  ,`Fulfilment Delivery Last Updated Date`=NULL  WHERE `Fulfilment Delivery Key`=%d  ",
-                    $this->id
-                );
-                $this->db->exec($sql);
-
-
-                $history_data = array(
-                    'History Abstract' => _('Fulfilment Delivery cancelled'),
-                    'History Details'  => '',
-                    'Action'           => 'edited'
-                );
-                $this->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-                );
-                $operations = array();
-
-                $this->update_supplier_delivery_items_state();
-
-
-                $purchase_order = get_object('Purchase Order', $this->get('Fulfilment Delivery Purchase Order Key'));
-                $purchase_order->update_purchase_order_items_state();
-
-                break;
 
             default:
                 exit('unknown FD state '.$value);
@@ -802,881 +536,47 @@ class Fulfilment_Delivery extends DB_Table {
         }
 
 
-        require_once 'utils/new_fork.php';
-        $account = get_object('Account', 1);
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'                  => 'supplier_delivery_state_changed',
-            'supplier_delivery_key' => $this->id,
-            'editor'                => $this->editor
-        ), $account->get('Account Code'), $this->db
-        );
-
-
         $this->update_metadata = array(
             'class_html'  => array(
-                'Supplier_Delivery_State'           => $this->get('State'),
-                'Supplier_Delivery_Dispatched_Date' => '&nbsp;'.$this->get('Dispatched Date'),
-                'Supplier_Delivery_Received_Date'   => '&nbsp;'.$this->get('Received Date'),
-                'Supplier_Delivery_Checked_Date'    => '&nbsp;'.$this->get('Checked Date'),
-                'Supplier_Delivery_Costing_Date'    => '&nbsp;'.$this->get('Costing Date'),
+                'Fulfilment_Delivery_State'           => $this->get('State'),
+                'Fulfilment_Delivery_Dispatched_Date' => '&nbsp;'.$this->get('Dispatched Date'),
+                'Fulfilment_Delivery_Received_Date'   => '&nbsp;'.$this->get('Received Date'),
+                'Fulfilment_Delivery_Checked_Date'    => '&nbsp;'.$this->get('Checked Date'),
+                'Fulfilment_Delivery_Costing_Date'    => '&nbsp;'.$this->get('Costing Date'),
 
-                'Supplier_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
-                'Supplier_Delivery_Number_Received_Items'   => $this->get('Number Received Items')
+                'Fulfilment_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
+                'Fulfilment_Delivery_Number_Received_Items'   => $this->get('Number Received Items')
 
             ),
             'operations'  => $operations,
             'state_index' => $this->get('State Index')
         );
 
-    }
-
-    function update_supplier_delivery_items_state() {
-
-
-        $sql  = "select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Fulfilment Delivery Key`=? ";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array($this->id)
-        );
-        while ($row = $stmt->fetch()) {
-            $this->update_supplier_delivery_item_state($row['Purchase Order Transaction Fact Key']);
-
-
-        }
-
-    }
-
-    function update_supplier_delivery_item_state($transaction_key, $update_part_next_deliveries_data = true) {
-
-        $sql  = "select `Purchase Order Transaction Fact Key`,POTF.`Fulfilment Delivery Key` ,`Fulfilment Delivery Units`,`Fulfilment Delivery Checked Units`,`Fulfilment Delivery Placed Units`,
-       `Fulfilment Delivery State`,`Purchase Order Key`,
-                `Fulfilment Delivery Transaction State`,`Purchase Order Transaction Part SKU`
-                from `Purchase Order Transaction Fact`  POTF left join 
-                `Fulfilment Delivery Dimension` SD on (POTF.`Fulfilment Delivery Key`=SD.`Fulfilment Delivery Key`) 
-                where POTF.`Purchase Order Transaction Fact Key`=? ";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array($transaction_key)
-        );
-        if ($row = $stmt->fetch()) {
-
-
-            $old_state = $row['Fulfilment Delivery Transaction State'];
-
-            $sent    = $row['Fulfilment Delivery Units'];
-            $checked = $row['Fulfilment Delivery Checked Units'];
-            $placed  = $row['Fulfilment Delivery Placed Units'];
-
-
-            $state = $this->get_supplier_order_item_state($sent, $checked, $placed);
-
-
-            $sql = "update `Purchase Order Transaction Fact` set `Fulfilment Delivery Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
-
-            $this->db->prepare($sql)->execute(
-                array(
-                    $state,
-                    $row['Purchase Order Transaction Fact Key']
-                )
-            );
-
-            if ($old_state != $state) {
-                /**
-                 * @var $purchase_order \PurchaseOrder
-                 */
-                $purchase_order = get_object('Purchase Order', $row['Purchase Order Key']);
-                $purchase_order->update_purchase_order_item_state($row['Purchase Order Transaction Fact Key'], false);
-
-                if ($update_part_next_deliveries_data) {
-
-                    /**
-                     * @var $part \Part
-                     */
-                    $part = get_object('Part', $row['Purchase Order Transaction Part SKU']);
-                    $part->update_next_deliveries_data();
-                }
-            }
-
-
-        }
-
-    }
-
-    private function get_supplier_order_item_state($sent, $checked, $placed) {
-
-
-        if ($this->data['Fulfilment Delivery State'] == 'Cancelled') {
-            return 'Cancelled';
-
-        }
-
-
-        if ($checked == '' and $placed == '') {
-            //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
-
-
-            if ($this->data['Fulfilment Delivery State'] == 'InProcess' or $this->data['Fulfilment Delivery State'] == 'Consolidated') {
-                $state = 'InProcess';
-            } elseif ($this->data['Fulfilment Delivery State'] == 'Dispatched') {
-
-                if ($sent > 0) {
-                    $state = 'Dispatched';
-                } else {
-                    $state = 'Cancelled';
-                }
-
-            } else {
-
-                if ($sent > 0) {
-                    $state = 'Received';
-                } else {
-                    $state = 'Cancelled';
-                }
-
-            }
-
-
-        } elseif ($placed == '') {
-
-            if ($sent == 0) {
-                $state = 'Cancelled';
-            } elseif ($checked == 0) {
-                $state = 'NoReceived';
-            } else {
-                $state = 'Checked';
-
-            }
-
-
-        } else {
-            if ($placed >= $checked) {
-                $state = 'Placed';
-
-            } else {
-                $state = 'Checked';
-            }
-
-        }
-
-        if ($this->data['Fulfilment Delivery State'] == 'InvoiceChecked' and $state == 'Placed') {
-            $state = 'CostingDone';
-        }
-
-        //print "$sent,$checked,$placed $state\n";
-
-
-        return $state;
-
-
-    }
-
-    function update_item($data) {
-
-        switch ($data['field']) {
-            /*
-            case 'Fulfilment Delivery Units':
-                return $this->update_item_delivery_units($data);
-                break;
-            */ case 'Fulfilment Delivery Checked Units':
-            return $this->update_item_delivery_checked_units($data);
-
-            case 'Fulfilment Delivery Placed SKOs':
-                return $this->update_item_delivery_placed_skos($data);
-
-            default:
-                return false;
-                break;
-        }
-
-
-    }
-
-    function update_item_delivery_checked_units($data) {
-
-
-        $date            = gmdate('Y-m-d H:i:s');
-        $transaction_key = $data['transaction_key'];
-
-
-        $units_qty = $data['qty'];
-
-
-        $sql = "SELECT `Fulfilment Delivery Transaction Placed`,`Part SKU`,POTF.`Purchase Order Transaction Fact Key`,`Fulfilment Delivery Placed Units`,POTF.`Metadata`,`Purchase Order Transaction Part SKU`,POTF.`Supplier Part Key`
-		      FROM `Purchase Order Transaction Fact`  POTF
-              LEFT JOIN  `Part Dimension` P ON (P.`Part SKU`=POTF.`Purchase Order Transaction Part SKU`)
-              WHERE  `Purchase Order Transaction Fact Key`=? ";
-
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array($transaction_key)
-        );
-        if ($row = $stmt->fetch()) {
-            /**
-             * @var $part \Part
-             */
-            $part = get_object('Part', $row['Purchase Order Transaction Part SKU']);
-
-            $sko_qty = $units_qty / $part->get('Part Units Per Package');
-            if ($sko_qty < 0) {
-                $sko_qty   = 0;
-                $units_qty = 0;
-            }
-
-            $placement_sko_qty = $this->get_placement_quantity($transaction_key);
-
-            $placement_units_qty = $placement_sko_qty * $part->get('Part Units Per Package');
-
-
-            // print  $qty.' '.$placement_qty ;
-
-            if (round($units_qty, 2) < round($placement_units_qty, 2)) {
-                $this->error = true;
-                $this->msg   = sprintf(_("%d SKOs have been already placed, checked SKOs can't be set up to %d"), $placement_sko_qty, $sko_qty);
-
-                return false;
-
-
-            }
-
-
-            //$this->db->exec($sql);
-            if ($units_qty == 0) {
-
-                if (round($placement_units_qty, 2) > round($units_qty, 2)) {
-                    $placed = 'Yes';
-                } else {
-                    $placed = 'NA';
-                }
-            } else {
-
-                if (round($placement_units_qty, 2) >= round($units_qty, 2)) {
-                    $placed = 'Yes';
-                } else {
-                    $placed = 'No';
-                }
-
-            }
-
-
-            $sql = sprintf(
-                "UPDATE `Purchase Order Transaction Fact` SET  `Fulfilment Delivery Checked Units`=%f,`Fulfilment Delivery Last Updated Date`=%s ,`Fulfilment Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ", $units_qty,
-                prepare_mysql($date), prepare_mysql($placed), $transaction_key
-            );
-            //print "$sql\n";
-            $this->db->exec($sql);
-
-
-            $this->update_supplier_delivery_item_state($transaction_key, false);
-
-            $quantity = ($sko_qty - $placement_sko_qty);
-
-
-            if ($row['Metadata'] == '') {
-                $metadata = array();
-            } else {
-                $metadata = json_decode($row['Metadata'], true);
-            }
-
-
-            $placement = '<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
-            if (isset($metadata['placement_data'])) {
-
-                foreach ($metadata['placement_data'] as $placement_data) {
-                    $placement .= '<div style="clear:both;">
-                                <div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
-                                <div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._(
-                            'SKO'
-                        ).' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
-                                </div>';
-
-
-                }
-            }
-            $placement .= '<div style="clear:both"></div>';
-
-
-            $placement .= '
-                                <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'.$row['Part SKU'].'" transaction_key="'
-                .$row['Purchase Order Transaction Fact Key'].'"  >
-                                <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.$quantity.'"  >
-                                <input class="location_code"  placeholder="'._('Location code').'"  >
-                                <i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
-                                <div>';
-
-
-            $part->update_next_deliveries_data();
-
-
-            $this->update_totals();
-
-
-            $this->update_state($this->get_state());
-
-
-            if ($this->data['Fulfilment Delivery Placed Items'] == 'Yes') {
-                $operations = array();
-
-            } else {
-                $operations = array('cancel_operations');
-
-            }
-
-
-            $this->update_metadata = array(
-                'class_html'    => array(
-                    'Supplier_Delivery_State'                             => $this->get('State'),
-                    'Supplier_Delivery_Number_Placed_Items'               => $this->get('Number Placed Items'),
-                    'Supplier_Delivery_Number_Received_and_Checked_Items' => $this->get('Number Received and Checked Items'),
-                    'Supplier_Delivery_Checked_Percentage_or_Date'        => '&nbsp;'.$this->get('Checked Percentage or Date'),
-                    'Supplier_Delivery_Placed_Percentage_or_Date'         => '&nbsp;'.$this->get('Placed Percentage or Date'),
-                    'Supplier_Delivery_Number_Under_Delivered_Items'      => $this->get('Number Under Delivered Items'),
-                    'Supplier_Delivery_Number_Over_Delivered_Items'       => $this->get('Number Over Delivered Items'),
-
-                ),
-                'checked_items' => $this->get('Fulfilment Delivery Number Received and Checked Items'),
-
-                'placement'   => $placement,
-                'operations'  => $operations,
-                'state_index' => $this->get('State Index'),
-
-
-            );
-
-
-            if ($this->get('Fulfilment Delivery Number Received and Checked Items') == 0) {
-                $this->update_metadata['hide'] = array('Mismatched_Items');
-            } else {
-                $this->update_metadata['show'] = array('Mismatched_Items');
-            }
-
-
-            return array(
-                'transaction_key' => $transaction_key,
-                'qty'             => $sko_qty + 0
-            );
-
-        } else {
-            return false;
-        }
-
-
-    }
-
-    function get_placement_quantity($transaction_key) {
-
-        $placement_quantity = 0;
-
-        $sql = sprintf(
-            'SELECT POTF.`Metadata` FROM `Purchase Order Transaction Fact` POTF  WHERE  `Purchase Order Transaction Fact Key`=%d ', $transaction_key
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                if ($row['Metadata'] == '') {
-                    $metadata = array();
-                } else {
-                    $metadata = json_decode($row['Metadata'], true);
-                }
-
-                if (isset($metadata['placement_data'])) {
-                    foreach ($metadata['placement_data'] as $item) {
-                        $placement_quantity += $item['qty'];
-                    }
-
-                }
-
-            }
-
-        }
-
-        return $placement_quantity;
     }
 
     function update_totals() {
 
-
-        $account = get_object('Account', 1);
-
-        $sql = sprintf(
-            "SELECT  sum(if(`Fulfilment Delivery Transaction Placed`='Yes',1,0)) AS placed_items, 
-        sum(if(`Fulfilment Delivery Transaction Placed`='No',1,0)) AS no_placed_items,  
-        sum(`Fulfilment Delivery Weight`) AS  weight,sum(`Fulfilment Delivery CBM` )AS cbm ,
-		 sum( if( `Fulfilment Delivery Checked Units` IS NULL,0,1)) AS checked_items,
-		 sum( if( `Fulfilment Delivery Checked Units`>0,1,0)) AS received_checked_items,
-		 sum(if(`Purchase Order Key`>0,1,0)) AS ordered_items,
-		sum(if(`Fulfilment Delivery Units`>0,1,0))  num_items,
-
-		sum(`Fulfilment Delivery Placed Units`) AS placed_qty,
-
-
-
-		sum(`Purchase Order Net Amount`+`Purchase Order Extra Cost Amount`) AS po_items_amount,
-
-
-		sum(`Fulfilment Delivery Net Amount`) AS items_amount,
-		sum(`Fulfilment Delivery Extra Cost Amount`) AS extra_cost_amount,
-		sum(`Fulfilment Delivery Extra Cost Account Currency Amount`) AS ac_extra_cost_amount
-		 
-		 
-		 FROM `Purchase Order Transaction Fact` WHERE `Fulfilment Delivery Key`=%d", $this->id
-        );
-
-
-        // print $sql;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                if ($account->get('Account Currency') == $this->get('Fulfilment Delivery Currency Code')) {
-                    $row['extra_cost_amount']    = $row['extra_cost_amount'] + $row['ac_extra_cost_amount'];
-                    $row['ac_extra_cost_amount'] = 0;
-                }
-
-
-                if ($this->get('State Index') >= 30) {
-                    $dispatched_items = $row['num_items'];
-                } else {
-                    $dispatched_items = 0;
-                }
-
-                $items_amount         = ($row['items_amount'] == '' ? 0 : $row['items_amount']);
-                $extra_amount         = ($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
-                $ac_extra_cost_amount = ($row['ac_extra_cost_amount'] == '' ? 0 : $row['ac_extra_cost_amount']);
-
-
-                $this->fast_update(
-                    array(
-                        'Fulfilment Delivery Purchase Order Amount' => ($row['po_items_amount'] == '' ? 0 : $row['po_items_amount']),
-
-                        'Fulfilment Delivery Items Amount'          => $items_amount,
-                        'Fulfilment Delivery Extra Costs Amount'    => $extra_amount,
-                        'Fulfilment Delivery Total Amount'          => $items_amount + $extra_amount,
-                        'Fulfilment Delivery AC Subtotal Amount'    => ($items_amount + $extra_amount) * $this->get('Fulfilment Delivery Currency Exchange'),
-                        'Fulfilment Delivery AC Extra Costs Amount' => $ac_extra_cost_amount,
-                        'Fulfilment Delivery AC Total Amount'       => $ac_extra_cost_amount + ($items_amount + $extra_amount) * $this->get('Fulfilment Delivery Currency Exchange'),
-
-                        'Fulfilment Delivery Number Items'                      => $row['num_items'],
-                        'Fulfilment Delivery Number Dispatched Items'           => $dispatched_items,
-                        'Fulfilment Delivery Number Checked Items'              => $row['checked_items'],
-                        'Fulfilment Delivery Number Received and Checked Items' => $row['received_checked_items'],
-                        'Fulfilment Delivery Number Placed Items'               => $row['placed_items'],
-                        'Fulfilment Delivery Number Ordered Items'              => $row['ordered_items'],
-                        'Fulfilment Delivery Number Items Without PO'           => $row['num_items'] - $row['ordered_items'],
-                        'Fulfilment Delivery Weight'                            => $row['weight'],
-                        'Fulfilment Delivery CBM'                               => $row['cbm'],
-
-                        'Fulfilment Delivery Placed Items' => ($row['placed_qty'] > 0 ? 'Yes' : 'No')
-                    )
-                );
-
-
+        $number_items = 0;
+        if ($this->get('Fulfilment Delivery Type') == 'Asset') {
+            $sql  = "select count(*) as num from `Fulfilment Asset Dimension` where `Fulfilment Asset Fulfilment Delivery Key`=? ";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $number_items = $row['num'];
             }
-        }
 
 
-        $over  = 0;
-        $under = 0;
-
-        $sql =
-            "SELECT  sum( if(`Fulfilment Delivery Checked Units` > `Fulfilment Delivery Units` ,1,0))  over_qty, sum( if( `Fulfilment Delivery Checked Units` < `Fulfilment Delivery Units` ,1,0))  under_qty FROM `Purchase Order Transaction Fact` WHERE `Fulfilment Delivery Key`=?   and `Fulfilment Delivery Checked Units` is not null  ";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array($this->id)
-        );
-        while ($row = $stmt->fetch()) {
-            $over  = $row['over_qty'];
-            $under = $row['under_qty'];
         }
 
         $this->fast_update(
-            array(
-                'Fulfilment Delivery Number Over Delivered Items'  => $over,
-                'Fulfilment Delivery Number Under Delivered Items' => $under
-
-            )
+            [
+                'Fulfilment Delivery Number Items' => $number_items
+            ]
         );
-
-
-    }
-
-    function get_state() {
-
-        //'InProcess','Dispatched','Received','Checked','Placed','Cancelled'
-
-        if (in_array(
-            $this->get('Fulfilment Delivery State'), array(
-                                                       'InProcess',
-                                                       'Dispatched',
-                                                       'Costing',
-                                                       'InvoiceChecked',
-                                                       'Cancelled'
-                                                   )
-        )) {
-
-            $state = $this->get('Fulfilment Delivery State');
-        } else {
-
-
-            $items = 0;
-
-            $state = 'Placed';
-            $sql   = sprintf(
-                'SELECT `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Purchase Order Transaction State`,`Fulfilment Delivery Units`,`Fulfilment Delivery Checked Units`,`Fulfilment Delivery Placed Units`  FROM  `Purchase Order Transaction Fact`  WHERE `Fulfilment Delivery Key` =%d',
-                $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-
-                $items_no_received = 0;
-
-                foreach ($result as $row) {
-
-                    $items++;
-                    // print_r($row);
-
-                    if ($row['Fulfilment Delivery Checked Units'] == '') {
-                        $state = 'Received';
-                        // print_r($row);
-                        break;
-                    } else {
-                        if ($row['Fulfilment Delivery Checked Units'] == 0) {
-                            $items_no_received++;
-                            if ($items_no_received == $items) {
-
-                                $state = 'Cancelled';
-                            }
-                        } else {
-
-
-                            if (round($row['Fulfilment Delivery Checked Units'], 2) > round($row['Fulfilment Delivery Placed Units'], 2)) {
-                                //exit;
-                                $state = 'Checked';
-
-
-                                break;
-                            } else {
-
-                                $state = 'Placed';
-
-                                //  print "Pla \n";
-                            }
-
-
-                        }
-
-                    }
-                }
-
-                // print $state."\n";
-
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-            //  print $state;exit;
-
-
-        }
-        //  print $state."\n";
-        // exit;
-        return $state;
-
-    }
-
-    function update_item_delivery_placed_skos($data) {
-
-
-        //   print_r($data);
-
-        $date            = gmdate('Y-m-d H:i:s');
-        $transaction_key = $data['transaction_key'];
-
-
-        $sql = sprintf(
-            'SELECT `Purchase Order Transaction Part SKU`,`Purchase Order Key`,POTF.`Purchase Order Transaction Fact Key`,`Part SKU`,`Fulfilment Delivery Placed Units`,POTF.`Supplier Part Key`,`Fulfilment Delivery Checked Units`,`Metadata`
-
-		 FROM `Purchase Order Transaction Fact`  POTF LEFT JOIN  `Part Dimension` P ON (P.`Part SKU`=POTF.`Purchase Order Transaction Part SKU`)
-
-		  WHERE  `Purchase Order Transaction Fact Key`=%d ', $transaction_key
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $placement_sko_qty = $this->get_placement_quantity($transaction_key);
-
-                $part      = get_object('Part', $row['Purchase Order Transaction Part SKU']);
-                $sko_qty   = $data['qty'] + $placement_sko_qty;
-                $units_qty = $sko_qty * $part->get('Part Units Per Package');
-                if ($units_qty < 0) {
-                    $units_qty = 0;
-                }
-
-
-                if (round($row['Fulfilment Delivery Checked Units'], 2) < round($units_qty, 2)) {
-                    $this->error = true;
-                    $this->msg   = 'Placed qty > than delivery qty';
-
-                    return false;
-                } elseif ($row['Fulfilment Delivery Checked Units'] == $units_qty) {
-                    $placed = 'Yes';
-                } else {
-                    $placed = 'No';
-                }
-
-                if ($row['Metadata'] == '') {
-                    $metadata = array('placement_data' => array($data['placement_data']));
-                } else {
-                    $metadata = json_decode($row['Metadata'], true);
-                    if (isset($metadata['placement_data'])) {
-                        $metadata['placement_data'][] = $data['placement_data'];
-                    } else {
-                        $metadata['placement_data'] = array($data['placement_data']);
-                    }
-                }
-
-                $placement_data = $metadata['placement_data'];
-
-                $encoded_metadata = json_encode($metadata);
-
-
-                $sql = sprintf(
-                    "update`Purchase Order Transaction Fact` set  `Fulfilment Delivery Placed Units`=%f,`Fulfilment Delivery Last Updated Date`=%s ,`Fulfilment Delivery Transaction Placed`=%s ,
-                  
-                    `Metadata`=%s 
-                    where  `Purchase Order Transaction Fact Key`=%d ", $units_qty, prepare_mysql($date), prepare_mysql($placed), prepare_mysql($encoded_metadata), $transaction_key
-                );
-
-
-                $this->db->exec($sql);
-
-                $place_qty = ($row['Fulfilment Delivery Checked Units'] - $units_qty) / $part->get('Part Units Per Package');
-
-                if ($placed == 'Yes') {
-                    $sql = sprintf(
-                        'UPDATE `Purchase Order Transaction Fact` SET `Fulfilment Delivery Placed SKOs`=%f  WHERE `Purchase Order Transaction Fact Key`=%d ', $sko_qty, $row['Purchase Order Transaction Fact Key']
-                    );
-
-                } else {
-                    $sql = sprintf(
-                        'UPDATE `Purchase Order Transaction Fact` SET `Fulfilment Delivery Placed SKOs`=null   WHERE `Purchase Order Transaction Fact Key`=%d ', $row['Purchase Order Transaction Fact Key']
-                    );
-                }
-                $this->db->exec($sql);
-
-
-                $this->update_supplier_delivery_item_state($row['Purchase Order Transaction Fact Key'], false);
-
-
-                $placement = '<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
-                if (isset($metadata['placement_data'])) {
-
-                    foreach ($metadata['placement_data'] as $placement_data) {
-                        $placement .= '<div style="clear:both;">
-				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
-				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._(
-                                'SKO'
-                            ).' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
-				</div>';
-
-
-                    }
-                }
-                $placement .= '<div style="clear:both"></div>';
-
-
-                $placement .= '
-			    <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'.$row['Part SKU'].'" transaction_key="'.$row['Purchase Order Transaction Fact Key'].'"  >
-			    <input class="place_qty width_50 changed" value="'.($place_qty + 0).'" ovalue="'.($place_qty + 0).'"  min="1" max="'.$place_qty.'"  >
-				<input class="location_code"  placeholder="'._('Location code').'"  >
-				<i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
-                <div>';
-
-
-                $part->update_next_deliveries_data();
-
-
-                if ($row['Purchase Order Key']) {
-                    $purchase_order = get_object('Purchase Order', $row['Purchase Order Key']);
-                    $purchase_order->update_totals();
-                }
-
-            } else {
-                $this->error = true;
-                $this->msg   = 'po transaction not found';
-
-                return;
-            }
-
-
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->update_totals();
-
-        /*
-                if ($this->get('Fulfilment Delivery State') == 'Checked') {
-                    if ($this->get('Fulfilment Delivery Number Placed Items') == $this->get('Fulfilment Delivery Number Received and Checked Items')) {
-                        $this->update_state('Placed');
-                    }
-
-                }
-
-        */
-        $this->update_state($this->get_state());
-
-
-        $operations = array();
-
-
-        if ($this->get('State Index') == 100) {
-
-
-            if ($this->data['Fulfilment Delivery Parent'] == 'Order') {
-
-                $this->update_state('Costing');
-
-                $sql = sprintf(
-                    'select `Purchase Order Transaction Part SKU`,`Purchase Order Transaction Fact Key`,`Metadata` ,`Fulfilment Delivery Net Amount` from `Purchase Order Transaction Fact`  POTF  where `Fulfilment Delivery Key`=%d group by `Purchase Order Transaction Part SKU` ',
-                    $this->id
-                );
-                if ($result = $this->db->query($sql)) {
-                    $all_parts_min_date = '';
-                    foreach ($result as $row) {
-
-
-                        if ($row['Metadata'] != '') {
-                            $metadata = json_decode($row['Metadata'], true);
-                            //  print_r($metadata);
-
-                            if (isset($metadata['placement_data'])) {
-
-
-                                $min_date     = '';
-                                $total_placed = 0;
-                                foreach ($metadata['placement_data'] as $placement_data) {
-
-
-                                    $sql = sprintf('select `Date` from `Inventory Transaction Fact`    where `Inventory Transaction Key`=%d', $placement_data['oif_key']);
-
-                                    if ($result2 = $this->db->query($sql)) {
-                                        foreach ($result2 as $row2) {
-                                            $date = gmdate('U', strtotime($row2['Date']));
-                                            if ($min_date == '') {
-                                                $min_date = $date;
-
-                                            } elseif ($date < $min_date) {
-                                                $min_date = $date;
-                                            }
-                                            if ($all_parts_min_date == '') {
-                                                $all_parts_min_date = $date;
-
-                                            } elseif ($date < $all_parts_min_date) {
-                                                $all_parts_min_date = $date;
-                                            }
-
-
-                                        }
-                                    } else {
-                                        print_r($error_info = $this->db->errorInfo());
-                                        print "$sql\n";
-                                        exit;
-                                    }
-
-
-                                    $total_placed += $placement_data['qty'];
-
-
-                                }
-
-                                $parts_data[$row['Purchase Order Transaction Part SKU']] = ($min_date != '' ? gmdate('Y-m-d', $min_date) : '');
-
-
-                                if ($total_placed > 0) {
-                                    foreach ($metadata['placement_data'] as $placement_data) {
-                                        $sql = sprintf(
-                                            'update `Inventory Transaction Fact`  set `Inventory Transaction Amount`=%f   where `Inventory Transaction Key`=%d', $row['Fulfilment Delivery Net Amount'] * $placement_data['qty'] / $total_placed, $placement_data['oif_key']
-                                        );
-                                        $this->db->exec($sql);
-
-
-                                    }
-
-
-                                }
-
-                            }
-
-                        }
-
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                $this->update_state('InvoiceChecked');
-
-                $this->update_totals();
-
-                global $account;
-                include_once 'utils/new_fork.php';
-
-
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'               => 'update_parts_stock_run',
-                    'parts_data'         => $parts_data,
-                    'editor'             => $this->editor,
-                    'all_parts_min_date' => ($all_parts_min_date != '' ? gmdate('Y-m-d', $all_parts_min_date) : ''),
-                ), $account->get('Account Code')
-                );
-
-
-            } else {
-                $operations = array('costing_operations');
-            }
-
-
-        }
-
-
-        $this->update_metadata = array(
-            'class_html'  => array(
-                'Supplier_Delivery_State'                      => $this->get('State'),
-                'Supplier_Delivery_Number_Placed_Items'        => $this->get('Number Placed Items'),
-                'Supplier_Delivery_Checked_Percentage_or_Date' => '&nbsp;'.$this->get('Checked Percentage or Date'),
-                'Supplier_Delivery_Placed_Percentage_or_Date'  => '&nbsp;'.$this->get('Placed Percentage or Date')
-
-            ),
-            'placement'   => $placement,
-            'operations'  => $operations,
-            'state_index' => $this->get('State Index')
-        );
-
-
-        return array(
-            'transaction_key' => $transaction_key,
-            'qty'             => $sko_qty + 0,
-            'placement_data'  => $placement_data,
-            'placed'          => $placed,
-            'place_qty'       => $place_qty
-        );
-
 
     }
 
@@ -1684,31 +584,6 @@ class Fulfilment_Delivery extends DB_Table {
 
         if ($this->data['Fulfilment Delivery State'] == 'InProcess') {
 
-
-            /*
-            $items = array();
-            $sql   = sprintf(
-                "SELECT POTF.`Supplier Part Historic Key`,`Purchase Order Ordering Units`,`Supplier Part Reference`,POTF.`Supplier Part Key`,`Supplier Part Part SKU` FROM `Purchase Order Transaction Fact` POTF
-			LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
-            LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
-
-			WHERE `Fulfilment Delivery Key`=%d", $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-
-                foreach ($result as $row) {
-                    $items[] = array(
-                        $row['Supplier Part Historic Key'],
-                        $row['Supplier Part Reference'],
-                        $row['Purchase Order Ordering Units'],
-                        $row['Supplier Part Key'],
-                        $row['Supplier Part Part SKU'],
-                    );
-                }
-            }
-            */
 
             $sql = "DELETE FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Key`=?";
             $this->db->prepare($sql)->execute(
@@ -1764,6 +639,8 @@ class Fulfilment_Delivery extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = 'Can not deleted submitted Fulfilment Delivery';
+
+            return false;
         }
     }
 
@@ -1782,6 +659,90 @@ class Fulfilment_Delivery extends DB_Table {
         }
 
         return $label;
+
+    }
+
+    function create_multiple_fulfilment_asset($number, $data) {
+
+        $this->calculate_totals = false;
+
+        if (!is_numeric($number) or $number < 1) {
+            $this->msg = _('Invalid number of assets')." $number";
+
+            return [
+                'assets_added' => 0
+            ];
+
+        }
+
+        if ($number > 500) {
+            $this->msg = _('Max number (500) of new bulk assets exceeded');
+
+            return [
+                'assets_added' => 0
+            ];
+
+        }
+
+        for ($i = 0; $i < $number; $i++) {
+            $this->create_fulfilment_asset(
+                [
+                    'Fulfilment Asset Type' => $data['Fulfilment Asset Type']
+                ]
+            );
+        }
+
+        return [
+            'assets_added' => $number
+        ];
+
+    }
+
+    function create_fulfilment_asset($data) {
+
+        $data['Fulfilment Asset Fulfilment Delivery Key'] = $this->id;
+        $data['Fulfilment Asset Warehouse Key']           = $this->get('Fulfilment Delivery Warehouse Key');
+        $data['Fulfilment Asset Customer Key']            = $this->get('Fulfilment Delivery Customer Key');
+        $data['Fulfilment Asset Metadata']                = '{}';
+
+
+        if (!empty($data['Fulfilment Asset Reference'])) {
+            $sql  = 'SELECT count(*) AS num FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Reference`=? AND `Fulfilment Asset Customer Key`=?';
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $data['Fulfilment Asset Reference'],
+                    $this->get('Fulfilment Delivery Customer Key')
+                )
+            );
+            if ($row = $stmt->fetch() and $row['num'] > 0) {
+
+                $this->error      = true;
+                $this->msg        = sprintf(_('Duplicated reference (%s)'), $data['Fulfilment Asset Reference']);
+                $this->error_code = 'duplicate_fulfilment_asset_reference';
+                $this->metadata   = $data['Fulfilment Asset Reference'];
+
+                return false;
+            }
+        }
+
+        include_once 'class.Fulfilment_Asset.php';
+        $fulfilment_asset = new Fulfilment_Asset('create', $data);
+
+        if ($fulfilment_asset->id) {
+            $this->new_object_msg = $fulfilment_asset->msg;
+            $this->new_object     = true;
+            if ($this->calculate_totals = true) {
+                $this->update_totals();
+            }
+
+            return $fulfilment_asset;
+        } else {
+            $this->error = true;
+            $this->msg   = $fulfilment_asset->msg;
+
+            return false;
+        }
 
     }
 

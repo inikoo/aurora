@@ -34,7 +34,7 @@
 
     {if $button.icon=='edit_add'}
     <span id="show_edit_table_dialog_button" class="fa-stack" onclick="show_edit_table_dialog()"><i class="fa fa-plus fa-stack-1x " style="font-size:70%; margin-right:-50%;margin-left:-25%;margin-top:-10%"></i><i
-                class="fa fa-pencil fa-stack-1x " style="margin-right:0%;margin-left:0%;"></i></span>
+                class="fa fa-pencil fa-stack-1x " style="margin-right:0;margin-left:0;"></i></span>
     {elseif $button.icon=='edit'}
     <span id="show_edit_table_dialog_button" onclick="show_edit_table_dialog()">
 
@@ -52,6 +52,7 @@
 
     </div>
 {/if}
+{if isset($button.add_fulfilment_asset)}{include file="add_fulfilment_asset.tpl" data=$button.add_fulfilment_asset trigger={$button.id}}{/if}
 
 {if isset($button.add_item)}{include file="add_item.tpl" data=$button.add_item trigger={$button.id}}{/if}
 {if isset($button.add_item_to_portfolio)}{include file="add_item_to_portfolio.tpl" data=$button.add_item_to_portfolio trigger=$button.id}{/if}
@@ -79,6 +80,7 @@
     <span id="file_upload_msg" style="float:right;padding-right:10px"></span>
     <script>
         var droppedFiles = false;
+
 
         $('#file_upload').on('change', function (e) {
             upload_file()
