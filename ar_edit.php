@@ -966,7 +966,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'delete':
 
-
+            //TODO this note can be also metadata in form of a string change note to metadata
             if (!empty($data['metadata']['note'])) {
                 $request = $object->delete($data['metadata']['note']);
             } else {
@@ -1038,7 +1038,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
     if (!$object->error) {
         $response = array('state' => 200);
-
+        $response['update_metadata']=$object->get_update_metadata();
         if ($object->get_object_name() == 'Category') {
 
             if ($object->get('Category Scope') == 'Product') {

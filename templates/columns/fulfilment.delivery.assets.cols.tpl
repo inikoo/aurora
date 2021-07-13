@@ -70,7 +70,18 @@ className: "width_250"
 } )
 
 },
+{
+name: "delete",
+label: "",
+renderable:false,
+sortable:false,
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
 
+} )
+
+},
 
 ]
 

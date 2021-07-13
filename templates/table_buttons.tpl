@@ -1,18 +1,16 @@
 <div id="table_buttons" class="hide">
     {if isset($table_buttons)   }
     {foreach from=$table_buttons item=button }
-
-
-    {if !empty($button.id) and $button.id=='upload_order_items'}
-    <div id="upload_order_items" class="table_button square_button right {if isset($button.class)}{$button.class}{/if}">
-        <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
-            <input style="display:none" type="file" name="upload" id="upload_order_items_upload" class="table_input_file"
+        {if !empty($button.id) and $button.id=='upload_order_items'}
+            <div id="upload_order_items" class="table_button square_button right {if isset($button.class)}{$button.class}{/if}">
+                <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+                    <input style="display:none" type="file" name="upload" id="upload_order_items_upload" class="table_input_file"
                    data-field="{$button.upload_items.field}"
                    data-data='{ "tipo":"add_items_to_order","parent":"{$button.upload_items.parent}","parent_key":"{$button.upload_items.parent_key}","upload_type":"Add_Items"  }'
-            />
-            <label for="upload_order_items_upload"> <i class="fa fa-upload button"></i></label>
-        </form>
-    </div>
+                    />
+                <label for="upload_order_items_upload"> <i class="fa fa-upload button"></i></label>
+                </form>
+            </div>
     {else}
 
 
@@ -69,7 +67,7 @@
 {/if}
 {/foreach}
 {/if}
-{if isset($upload_file)}
+    {if isset($upload_file)}
     <div class="square_button right ">
         <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
 
@@ -82,7 +80,7 @@
         var droppedFiles = false;
 
 
-        $('#file_upload').on('change', function (e) {
+        $('#file_upload').on('change', function () {
             upload_file()
         });
 
@@ -103,13 +101,13 @@
             });
 
 
-            ajaxData.append("tipo", '{$upload_file.tipo}')
-            ajaxData.append("parent", '{$upload_file.parent}')
-            ajaxData.append("parent_key", '{$upload_file.parent_key}')
-            ajaxData.append("objects", '{$upload_file.object}')
+            ajaxData.append("tipo", '{$upload_file.tipo}');
+            ajaxData.append("parent", '{$upload_file.parent}');
+            ajaxData.append("parent_key", '{$upload_file.parent_key}');
+            ajaxData.append("objects", '{$upload_file.object}');
 
             {if !empty($upload_file.scope)}
-            ajaxData.append("parent_object_scope", '{$upload_file.scope}')
+            ajaxData.append("parent_object_scope", '{$upload_file.scope}');
             {/if}
 
 
@@ -124,35 +122,35 @@
 
                     if (data.state == '200') {
 
-                        if (data.tipo == 'upload_images') {
+                        if (data.tipo === 'upload_images') {
 
-                            $('.Number_Images').html('(' + data.number_images + ')')
+                            $('.Number_Images').html('(' + data.number_images + ')');
 
-                            rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
+                            rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters;
                             rows.fetch({
                                 reset: true
                             });
 
-                            if (data.number_images == 0) {
+                            if (data["number_images"] === 0) {
 
-                                $('div.main_image').addClass('hide')
-                                $('form.main_image').removeClass('hide')
+                                $('div.main_image').addClass('hide');
+                                $('form.main_image').removeClass('hide');
                                 $('div.main_image img').attr('src', '/art/nopic.png')
 
 
                             } else {
-                                $('div.main_image').removeClass('hide')
-                                $('form.main_image').addClass('hide')
-                                $('div.main_image img').attr('src', '/image.php?id=' + data.main_image_key + '&s=270x270')
+                                $('div.main_image').removeClass('hide');
+                                $('form.main_image').addClass('hide');
+                                $('div.main_image img').attr('src', '/image.php?id=' + data["main_image_key"] + '&s=270x270')
 
 
                             }
 
                         } else if (data.tipo == 'upload_objects') {
-                            change_view(state.request + '/upload/' + data.upload_key);
+                            change_view(state.request + '/upload/' + data["upload_key"]);
                         }
 
-                    } else if (data.state == '400') {
+                    } else{
                         $('#file_upload_msg').html(data.msg).addClass('error')
                     }
 

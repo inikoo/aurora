@@ -43,6 +43,14 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
             $table_views = array('overview' => array('label' => _('Overview')));
             $tipo        = 'fulfilment.delivery.assets';
 
+            $table_buttons[] = array(
+                'icon_classes' => 'fa fa-trash-alt very_discreet_on_hover',
+                'icon'         => 'trash-alt',
+                'title'        => _('Delete assets'),
+                'id'           => 'show_delete_asset_column',
+
+
+            );
 
             $table_buttons[] = array(
                 'icon'         => 'upload',

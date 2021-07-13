@@ -208,7 +208,9 @@ class prepare_table_fulfilment_assets extends prepare_table {
                 'state'        => $state,
                 'type'         => $type,
                 'notes'        => $data['Fulfilment Asset Note'],
-                'location'     => $location
+                'location'     => $location,
+                'delete'     => '<i class="button fal fa-trash-alt" title="'._('Delete').'" data-asset_key="'.$data['Fulfilment Asset Key'].'" onclick="delete_fulfilment_asset_from_table(this)"></i>'
+
             );
 
 

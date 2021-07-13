@@ -4,6 +4,12 @@
  Version 3.0*/
 
 
+$(document).on('click', "#show_delete_asset_column", function () {
+    $(this).find('i').removeClass('very_discreet_on_hover');
+    grid.columns.findWhere({name: 'delete'}).set("renderable", true)
+
+});
+
 $(document).on('click', "#new_customer_delivery", function () {
 
     const icon = $('#new_customer_delivery i');
@@ -361,10 +367,10 @@ function select_asset_location_option(element) {
     $('#asset_location_results_container').addClass('hide').removeClass('show')
 }
 
-function edit_asset_location(tipo,element){
+function edit_asset_location(tipo, element) {
 
     const icon = $(element);
-    if (!icon.hasClass('valid') || icon.hasClass('wait') ) {
+    if (!icon.hasClass('valid') || icon.hasClass('wait')) {
         return;
     }
     icon.addClass('fa-spinner fa-spin wait');
@@ -372,13 +378,12 @@ function edit_asset_location(tipo,element){
     let form_data = new FormData();
     form_data.append("tipo", 'edit_field');
     form_data.append("object", 'Fulfilment_Asset');
-    form_data.append("key",  icon.closest('.asset_location_container').data('asset_key') );
+    form_data.append("key", icon.closest('.asset_location_container').data('asset_key'));
 
 
-
-    if(tipo==='edit'){
+    if (tipo === 'edit') {
         form_data.append("value", icon.data('location_key'));
-    }else{
+    } else {
         form_data.append("value", '');
     }
     form_data.append("field", 'Fulfilment Asset Location Key');
@@ -392,16 +397,16 @@ function edit_asset_location(tipo,element){
         icon.removeClass('fa-spinner fa-spin wait');
 
         if (data.state === 200) {
-            let asset_location_container= icon.closest('.asset_location_container');
+            let asset_location_container = icon.closest('.asset_location_container');
             asset_location_container.find('.location_code').html(data["formatted_value"]);
-            icon.removeClass('changed valid').data('location_key','');
+            icon.removeClass('changed valid').data('location_key', '');
 
-            if(data['value']){
+            if (data['value']) {
                 asset_location_container.find('.asset_location').removeClass('hide');
                 asset_location_container.find('.select_container').addClass('hide');
                 asset_location_container.find('.fa-unlink').removeClass('invisible')
 
-            }else{
+            } else {
                 asset_location_container.find('.fulfilment_asset_location_code').val('');
                 asset_location_container.find('.fa-unlink').addClass('invisible')
 
@@ -423,10 +428,62 @@ function edit_asset_location(tipo,element){
 
 }
 
-function show_asset_location_edit(element){
+function show_asset_location_edit(element) {
     $(element).closest('.asset_location').addClass('hide');
     $(element).closest('.asset_location').find('.show_asset_location_edit').removeClass('invisible');
     $(element).closest('.asset_location_container').find('.select_container').removeClass('hide')
+}
+
+function delete_fulfilment_asset_from_table(element) {
+
+    let icon = $(element);
+    let asset_key = icon.data('asset_key');
+
+
+    icon.addClass('fa-spinner fa-spin');
+
+
+    let metadata={note:'from_delivery'};
+
+    let form_data = new FormData();
+    form_data.append("tipo", 'object_operation');
+    form_data.append("operation", 'delete');
+    form_data.append("object", 'Fulfilment_Asset');
+    form_data.append("key", asset_key);
+    form_data.append("metadata", JSON.stringify(metadata));
+
+
+    let request = $.ajax({
+        url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+    });
+
+    request.done(function (data) {
+        icon.removeClass('fa-spinner fa-spin wait');
+
+        if (data.state === 200) {
+            icon.closest('tr').remove();
+
+
+            for (let key in data["update_metadata"]["class_html"]) {
+                $('.' + key).html(data["update_metadata"]["class_html"][key])
+            }
+
+
+        } else {
+
+            swal(data.msg);
+
+
+        }
+    });
+
+    request.fail(function () {
+        swal('Server error please contact Aurora support');
+
+    });
+
+
+
 }
 
 

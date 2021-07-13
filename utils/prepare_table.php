@@ -199,24 +199,31 @@ class prepare_table {
 
     }
 
+    function initialize_from_session($tab) {
+
+
+
+        //print_r($_SESSION['table_state'][$tab]);
+        //exit;
+        $this->parameters=$_SESSION['table_state'][$tab];
+        $this->f_value=$_SESSION['table_state'][$tab]['f_value'];
+        //$this->parameters['f_field']
+
+    }
+
     function update_session() {
 
 
         foreach ($this->parameters as $parameter => $parameter_value) {
             $_SESSION['table_state'][$this->parameters['tab']][$parameter] = $parameter_value;
-
         }
 
-        if (!isset($dont_save_table_state)) {
 
+        $_SESSION['table_state'][$this->parameters['tab']]['o']       = $this->sort_key;
+        $_SESSION['table_state'][$this->parameters['tab']]['od']      = ($this->sort_direction == '' ? -1 : 1);
+        $_SESSION['table_state'][$this->parameters['tab']]['nr']      = $this->number_results;
+        $_SESSION['table_state'][$this->parameters['tab']]['f_value'] = $this->f_value;
 
-            $_SESSION['table_state'][$this->parameters['tab']]['o']       = $this->sort_key;
-            $_SESSION['table_state'][$this->parameters['tab']]['od']      = ($this->sort_direction == '' ? -1 : 1);
-            $_SESSION['table_state'][$this->parameters['tab']]['nr']      = $this->number_results;
-            $_SESSION['table_state'][$this->parameters['tab']]['f_value'] = $this->f_value;
-
-
-        }
 
         if (isset($this->parameters['invoices_vat'])) {
             $_SESSION['table_state'][$this->parameters['tab']]['invoices_vat'] = $this->parameters['invoices_vat'];
@@ -336,7 +343,7 @@ class prepare_table {
         }
     }
 
-    function get_navigation($object,$tab,$data): array {
+    function get_navigation($object, $tab, $data): array {
 
         $args = [
             'nr'   => 0,
@@ -362,31 +369,23 @@ class prepare_table {
         $args['parameters']       = $parameters;
 
 
-
         $this->initialize($args);
 
         $this->prepare_table();
+
         return $this->process_navigation($object);
 
     }
 
 
-
     private function process_navigation($object): array {
 
 
-
-
-
-
-
-        $order              = preg_replace('/^.*\.`/', '', $this->order);
-        $order              = preg_replace('/^`/', '', $order);
-        $order              = preg_replace('/`$/', '', $order);
+        $order = preg_replace('/^.*\.`/', '', $this->order);
+        $order = preg_replace('/^`/', '', $order);
+        $order = preg_replace('/`$/', '', $order);
 
         $_order_field_value = $object->get($order);
-
-
 
 
         $prev_title = '';
@@ -395,8 +394,7 @@ class prepare_table {
         $next_key   = 0;
 
 
-        $sql =
-            " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
+        $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
             from $this->table   $this->where $this->wheref 
             and ( $this->order < ? OR ($this->order = ? AND {$this->navigation_sql['key']} < ? ))  
             order by $this->order desc , {$this->navigation_sql['key']} desc limit 1";
@@ -417,12 +415,10 @@ class prepare_table {
         }
 
 
-        $sql =
-            " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
+        $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
             from $this->table  $this->where $this->wheref 
             and ( $this->order > ? OR ($this->order = ? AND {$this->navigation_sql['key']} > ? ))  
             order by $this->order  , {$this->navigation_sql['key']}  limit 1";
-
 
 
         $stmt = $this->db->prepare('select '.$sql);
@@ -438,7 +434,6 @@ class prepare_table {
             $next_key   = $row['object_key'];
             $next_title = $row['object_name'];
         }
-
 
 
         if ($this->sort_direction == 'desc') {

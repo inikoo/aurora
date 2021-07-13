@@ -67,7 +67,7 @@ class Fulfilment_Asset extends DB_Table {
         $stmt = $this->db->prepare("INSERT ".$sql);
 
         $i = 1;
-        foreach ($this->data as  $value) {
+        foreach ($this->data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -78,15 +78,15 @@ class Fulfilment_Asset extends DB_Table {
             $this->new = true;
             $this->get_data('id', $this->id);
 
-            if($this->get('Fulfilment Asset Location Key')){
+            if ($this->get('Fulfilment Asset Location Key')) {
                 $this->fast_update(
-                    ['Fulfilment Asset State'=>'Stored']
+                    ['Fulfilment Asset State' => 'Stored']
                 );
             }
 
             $tmp = '<span class="italic">'.$this->get('Formatted ID').'</span>';
             if ($this->get('Reference') != '') {
-                $tmp.=' (<span title="'._('Customer reference').'">'.$this->get('Reference').'</span>)';
+                $tmp .= ' (<span title="'._('Customer reference').'">'.$this->get('Reference').'</span>)';
             }
 
             $history_data = array(
@@ -114,7 +114,7 @@ class Fulfilment_Asset extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Key`=%d", $tag
             );
-        } else{
+        } else {
             return false;
         }
 
@@ -136,15 +136,15 @@ class Fulfilment_Asset extends DB_Table {
         }
 
 
-
         switch ($key) {
             case 'Formatted ID':
-                return sprintf('%12d',$this->id);
+                return sprintf('%12d', $this->id);
             case 'Location Key':
-                if($this->data['Fulfilment Asset Location Key']!=''){
-                    $location=get_object('Location',$this->data['Fulfilment Asset Location Key']);
+                if ($this->data['Fulfilment Asset Location Key'] != '') {
+                    $location = get_object('Location', $this->data['Fulfilment Asset Location Key']);
+
                     return $location->get('Code');
-                }else{
+                } else {
                     return '';
                 }
             case 'Type':
@@ -171,11 +171,14 @@ class Fulfilment_Asset extends DB_Table {
     }
 
 
-    function delete(): string {
+    function delete($metadata=''): string {
+
+
+        $fulfilment_delivery=get_object('fulfilment_delivery', $this->get('Fulfilment Asset Fulfilment Delivery Key'));
+
+
         $this->deleted     = false;
         $this->deleted_msg = '';
-
-
 
 
         $sql  = "DELETE FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Key`=?";
@@ -189,7 +192,44 @@ class Fulfilment_Asset extends DB_Table {
             $this->deleted_msg = 'Error area can not be deleted';
         }
 
-        return '/warehouse/'.$this->get('Fulfilment Asset Warehouse Key').'/areas';
+        if($metadata=='from_delivery') {
+            $account = get_object('Account', 1);
+            $user    = get_object('User', $this->editor['User Key']);
+
+            include_once 'prepare_table/fulfilment.assets.ptc.php';
+            $table = new prepare_table_fulfilment_assets($this->db, $account, $user);
+            $table->initialize_from_session('fulfilment.delivery.assets');
+            $table->prepare_table();
+            $table->calculate_table_totals();
+            $table->totals_formatted_text();
+            $fulfilment_delivery->update_totals();
+            $this->update_metadata = array(
+                'class_html' => array(
+                    'rtext_info' => $table->rtext,
+                    'Fulfilment_Delivery_Number_Items'=>$fulfilment_delivery->get('Number Items')
+                ),
+
+            );
+
+        }
+
+
+        $tmp = '<span class="italic">'.$this->get('Formatted ID').'</span>';
+        if ($this->get('Reference') != '') {
+            $tmp .= ' (<span title="'._('Customer reference').'">'.$this->get('Reference').'</span>)';
+        }
+
+        $history_data = array(
+            'History Abstract' => sprintf(_('Fulfilment asset %s deleted'), $tmp),
+            'History Details'  => '',
+            'Action'           => 'deleted'
+        );
+
+        $fulfilment_delivery->add_subject_history(
+            $history_data, true, 'No', 'Changes', $fulfilment_delivery->get_object_name(), $fulfilment_delivery->id
+        );
+
+        return '/fulfilment/'.$fulfilment_delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($fulfilment_delivery->get('Fulfilment Delivery Type')=='Part'?'dropshipping':'asset_keeping').'/'.$fulfilment_delivery->get('Fulfilment Delivery Customer Key').'/delivery/'.$fulfilment_delivery->id;
 
 
     }
