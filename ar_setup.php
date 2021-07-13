@@ -375,7 +375,7 @@ function get_view($data, $db, $modules, $smarty) {
 
     //todo use it own parse_request, this one will not work
 
-    $state = parse_request($data, $db, $modules, $account , $user ,true);
+    $state = parse_request($data, $db, $modules , $user ,true);
 
 
     $_object = get_object($state['object'], $state['key']);

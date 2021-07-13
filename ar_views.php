@@ -144,7 +144,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         $requested_tab = '';
     }
 
-    $state = parse_request($data, $db, $modules, $account, $user);
+    $state = parse_request($data, $db, $modules, $user);
 
 
     $state['current_website']    = (!empty($_SESSION['current_website']) ? $_SESSION['current_website'] : '');

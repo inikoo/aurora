@@ -101,7 +101,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
-    $state = parse_request($data, $db, $modules, $account, $user);
+    $state = parse_request($data, $db, $modules, $user);
 
 
 

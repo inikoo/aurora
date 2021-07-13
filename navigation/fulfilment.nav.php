@@ -432,3 +432,76 @@ function get_fulfilment_delivery_navigation($data, $smarty, $user, $db, $account
     );
 
 }
+
+function get_fulfilment_asset_navigation($data, $smarty, $user, $db, $account): array {
+
+
+    $object        = $data['_object'];
+    $right_buttons = array();
+
+    $_section = 'fulfilment';
+
+    $delivery=$data['_parent'];
+
+    $tab = 'fulfilment.delivery.assets';
+    include_once 'prepare_table/fulfilment.assets.ptc.php';
+    $table = new prepare_table_fulfilment_assets($db, $account, $user);
+
+
+    $sections           = get_sections('fulfilment', $object->get('Fulfilment Delivery Warehouse Key'));
+    $search_placeholder = _('Search fulfilment');
+
+
+
+    $link = 'fulfilment/'.$delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($delivery->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$delivery->get('Fulfilment Delivery Customer Key').'/delivery/'.$delivery->id;
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Delivery").' '.$data['_parent']->get('Formatted ID'),
+        'reference' => $link
+    );
+
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($object, $tab, $data), $up_button, $link.'/asset/%d'
+
+    );
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $title='<span class="Type_Icon padding_right_10">'.$object->get('Type Icon').'</span> ';
+    $title .= '<span class="id Fulfilment_Asset_Formatted_ID_Reference">'.$object->get('Formatted ID Reference').'</span> ';
+
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Notes'),
+        'class' => 'open_sticky_note  square_button right object_sticky_note yellow_note object_sticky_note '.($data['_object']->get('Note') == '' ? '' : 'hide')
+
+    );
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $search_placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}

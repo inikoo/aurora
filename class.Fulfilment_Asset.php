@@ -84,13 +84,10 @@ class Fulfilment_Asset extends DB_Table {
                 );
             }
 
-            $tmp = '<span class="italic">'.$this->get('Formatted ID').'</span>';
-            if ($this->get('Reference') != '') {
-                $tmp .= ' (<span title="'._('Customer reference').'">'.$this->get('Reference').'</span>)';
-            }
+
 
             $history_data = array(
-                'History Abstract' => sprintf(_('Fulfilment asset %s created'), $tmp),
+                'History Abstract' => sprintf(_('Fulfilment asset %s created'), $this->get('Formatted ID Reference')),
                 'History Details'  => '',
                 'Action'           => 'created'
             );
@@ -137,8 +134,23 @@ class Fulfilment_Asset extends DB_Table {
 
 
         switch ($key) {
+            case 'Type Icon':
+                if($this->get('Fulfilment Asset Type')=='Pallet'){
+                    return '<i class="fal fa-fw fa-pallet-alt" title="'._('Pallet').'"></i>';
+                }else{
+                    return '<i class="fal fa-fw  fa-box-alt" title="'._('Box').'"></i>';
+
+                }
+
+
             case 'Formatted ID':
-                return sprintf('%12d', $this->id);
+                return sprintf('%05d', $this->id);
+            case 'Formatted ID Reference':
+                $tmp = '<span >'.$this->get('Formatted ID').'</span>';
+                if ($this->get('Reference') != '') {
+                    $tmp .= ' <span class=" small"><span  title="'._('Customer reference').'">'.$this->get('Reference').'</span></span>';
+                }
+                return $tmp;
             case 'Location Key':
                 if ($this->data['Fulfilment Asset Location Key'] != '') {
                     $location = get_object('Location', $this->data['Fulfilment Asset Location Key']);
@@ -214,13 +226,9 @@ class Fulfilment_Asset extends DB_Table {
         }
 
 
-        $tmp = '<span class="italic">'.$this->get('Formatted ID').'</span>';
-        if ($this->get('Reference') != '') {
-            $tmp .= ' (<span title="'._('Customer reference').'">'.$this->get('Reference').'</span>)';
-        }
 
         $history_data = array(
-            'History Abstract' => sprintf(_('Fulfilment asset %s deleted'), $tmp),
+            'History Abstract' => sprintf(_('Fulfilment asset %s deleted'), $this->get('Formatted ID Reference')),
             'History Details'  => '',
             'Action'           => 'deleted'
         );

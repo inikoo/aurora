@@ -1772,7 +1772,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_production_deliveries_navigation($data, $smarty);
                 case 'delivery':
                     return get_fulfilment_delivery_navigation($data, $smarty, $user, $db,$account);
-
+                case 'asset':
+                    return get_fulfilment_asset_navigation($data, $smarty, $user, $db,$account);
 
             }
 

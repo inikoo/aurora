@@ -1,10 +1,11 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 08 Jul 2021 17:53:38 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021., Inikoo
+ *  Created: Wed, 14 Jul 2021 03:34:54 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
  *  Version 3.0
  */
+
 
 
 /**
@@ -14,21 +15,23 @@
  * @return string
  * @throws \SmartyException
  */
-function get_fulfilment_delivery_showcase($data, Smarty $smarty): string {
+function get_fulfilment_asset_showcase($data, Smarty $smarty): string {
 
 
     /**
-     * @var $delivery \Fulfilment_Delivery
+     * @var $asset \Fulfilment_Asset
      */
-    $delivery = $data['_object'];
-    if (!$delivery->id) {
+    $asset = $data['_object'];
+    if (!$asset->id) {
         return "";
     }
 
-    $customer = get_object('Customer', $delivery->get('Customer Key'));
-    $store    = get_object('Store', $customer->get('Store Key'));
+    $customer = get_object('Customer', $asset->get('Customer Key'));
+    $store = get_object('Store', $customer->get('Store Key'));
+    $delivery = get_object('Store', $asset->get('Fulfilment Asset Fulfilment Delivery Key'));
 
     $smarty->assign('customer', $customer);
+    $smarty->assign('asset', $asset);
     $smarty->assign('delivery', $delivery);
     $smarty->assign('store', $store);
 
@@ -43,7 +46,7 @@ function get_fulfilment_delivery_showcase($data, Smarty $smarty): string {
 
     );
 
-    return $smarty->fetch('showcase/fulfilment.delivery.tpl');
+    return $smarty->fetch('showcase/fulfilment.asset.tpl');
 
 
 }

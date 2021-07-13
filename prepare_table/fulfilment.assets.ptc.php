@@ -112,7 +112,7 @@ class prepare_table_fulfilment_assets extends prepare_table {
         }
 
         $this->fields = '`Fulfilment Asset Key`,`Fulfilment Asset State`,`Location Key`,`Location Code`,`Fulfilment Asset Customer Key`,`Customer Name`,`Store Type`,`Fulfilment Asset Warehouse Key`,
-        `Fulfilment Asset Reference`,`Fulfilment Asset Note`,`Fulfilment Asset Type`';
+        `Fulfilment Asset Reference`,`Fulfilment Asset Note`,`Fulfilment Asset Type`,`Fulfilment Asset Fulfilment Delivery Key`';
 
         $this->sql_totals = "select "."count(`Fulfilment Asset Key`) as num from $this->table $this->where ";
 
@@ -204,7 +204,7 @@ class prepare_table_fulfilment_assets extends prepare_table {
                 'id'           => (integer)$data['Fulfilment Asset Key'],
                 'customer'     => sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_customer, $data['Customer Name']),
                 'reference'    => $asset_reference,
-                'formatted_id' => sprintf('<span class="link" onclick="change_view(\'%s\')" >%05d</span>  ', $_link_customer.'/delivery/'.$data['Fulfilment Asset Key'], $data['Fulfilment Asset Key']),
+                'formatted_id' => sprintf('<span class="link" onclick="change_view(\'%s\')" >%05d</span>  ', $_link_customer.'/delivery/'.$data['Fulfilment Asset Fulfilment Delivery Key'].'/asset/'.$data['Fulfilment Asset Key'], $data['Fulfilment Asset Key']),
                 'state'        => $state,
                 'type'         => $type,
                 'notes'        => $data['Fulfilment Asset Note'],

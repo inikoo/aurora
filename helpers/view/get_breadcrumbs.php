@@ -4143,6 +4143,38 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                         );
                     }
                     break;
+                case 'asset':
+
+                    if ($state['parent'] == 'fulfilment_delivery') {
+
+
+                        $branch[] = array(
+                            'label'     => _('Fulfilment'),
+                            'icon'      => 'tachometer',
+                            'reference' => 'fulfilment/'.$state['current_warehouse'].'/dashboard'
+                        );
+                        $branch[] = array(
+                            'label'     => _('Customers').' ('.($state['_parent']->get('Fulfilment Delivery Type') == 'Part' ? _('Dropshipping') : _('Asset keeping')).')',
+                            'icon'      => '',
+                            'reference' => 'fulfilment/'.$state['current_warehouse'].'/customers'
+                        );
+                        $branch[] = array(
+                            'label'     => $state['_parent']->get('Customer Name').' '.$state['_parent']->get('Customer Key'),
+                            'icon'      => 'user',
+                            'reference' => 'fulfilment/'.$state['current_warehouse'].'/customers/'.($state['_object']->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$state['_parent']->get('Customer Key')
+                        );
+                        $branch[] = array(
+                            'label'     => $state['_parent']->get('Formatted ID'),
+                            'icon'      => 'arrow-square-down',
+                            'reference' => 'fulfilment/'.$state['current_warehouse'].'/customers/'.($state['_object']->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$state['_parent']->get('Customer Key').'/delivery/'.$state['_parent']->id
+                        );
+                        $branch[] = array(
+                            'label'     => $state['_object']->get('Formatted ID'),
+                            'html_icon'      => $state['_object']->get('Type Icon'),
+                            'reference' => ''
+                        );
+                    }
+                    break;
 
             }
             break;

@@ -475,6 +475,34 @@ function get_fulfilment_module(): array {
                 )
 
             ),
+            'asset'          => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+
+                    'fulfilment.asset.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
+                    ),
+
+
+
+
+                    'fulfilment.asset.history'     => array(
+                        'label'         => '',
+                        'title'         => _('History/Notes'),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                    ),
+
+                )
+
+            ),
 
 
         )
