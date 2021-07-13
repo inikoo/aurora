@@ -125,11 +125,7 @@ module.exports = function (grunt) {
 
             }, aurora_libs: {
                 options: {
-                    sourceMap: {
-                        filename: "aurora_libs.min.js.map",
-                        url: "aurora_libs.min.js.map"
-                    },
-
+                    sourceMap: true,
                 }, src: ['bower_components/jquery/dist/jquery.js', 'js_libs/jquery-migrate-3.0.1.js', 'js_libs/jquery-ui.1.12.1.js', 'js_libs/jquery.nice-select.js','js_libs/jquery-barcodeListener.js',
 
 
@@ -160,10 +156,7 @@ module.exports = function (grunt) {
             }, aurora: {
                 options: {
 
-                    sourceMap: {
-                        filename: "aurora.min.js.map",
-                        url: "assets/aurora.min.js.map"
-                    },
+                    sourceMap: true,
 
                 }, src: [
                     'js/common.js', 'js/help.js', 'js/keyboard_shortcuts.js', 'js/barcode_scanner.js', 'js/edit.js',
@@ -198,7 +191,10 @@ module.exports = function (grunt) {
             }, login: {
                 options: {
 
-                    sourceMap: true,
+                    sourceMap: {
+                        url: "login.min.js.map"
+
+                    },
                 }, src: [
 
                     'js/login/login.js'
