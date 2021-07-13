@@ -98,7 +98,7 @@
 
     </ul>
 </div>
-<div class="order" style="display: flex;" data-object='{$object_data}'>
+<div class="order object_data" style="display: flex;" data-object='{$object_data}'>
 
 
     <div class="block" style=" align-items: stretch;flex: 1">
@@ -164,7 +164,7 @@
         </div>
         <div style="clear:both"></div>
     </div>
-    
+
 
 
 
@@ -197,7 +197,7 @@
                 </div>
                 <div id="cancel_operations"
                      class="order_operation {if $delivery->get('Fulfilment Delivery State')=='InProcess' or $delivery->get('Fulfilment Delivery State')=='Cancelled' or $delivery->get('Fulfilment Delivery Placed Items')=='Yes'   }hide{/if}">
-                    <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px"
+                    <div class="square_button left"
                          title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('cancel')"></i>
@@ -246,8 +246,8 @@
                     </div>
                 </div>
 
-                
-                
+
+
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px"
                   class="Fulfilment_Delivery_State"> {$delivery->get('State')} </span>
@@ -309,7 +309,7 @@
                         </table>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 
@@ -349,9 +349,9 @@
 
         <div class="node  Invoice_Info {if $delivery->get('State Index')!=110}hide{/if} " >
                     <span class="node_label">
-                        <i class="fal fa-file-invoice-dollar fa-fw  aria-hidden="true"></i>
+                        <i class="fal fa-file-invoice-dollar fa-fw" ></i>
                         <span class="Formatted_Invoice_Public_ID margin_right_10">{$delivery->get('Formatted Invoice Public ID')}</span>
-                                                <span class="italic Formatted_Invoice_Date">{$delivery->get('Formatted Invoice Date')}</span>
+                        <span class="italic Formatted_Invoice_Date">{$delivery->get('Formatted Invoice Date')}</span>
 
                     </span>
 
@@ -362,7 +362,7 @@
 
         </div>
     </div>
-    <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px ">
+    <div class="block " style="align-items: stretch;flex: 1;padding-top: 0 ">
 
 
 
@@ -375,44 +375,11 @@
 </div>
 
 
-<div id="new_delivery" class="table_new_fields hide">
-    <div style="align-items: stretch;flex: 1;padding:20px 5px;border-right:1px solid #eee">
-        <i key="" class="far fa-square fa-fw button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
-    </div>
-    <div style="align-items: stretch;flex: 1;padding:10px 20px;">
-        <table style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
-            <tr>
-                <td class="label ">{t}Delivery Number{/t}</td>
-                <td>
-                    <input class="new_delivery_field" id="delivery_number" placeholder="{t}Delivery number{/t}"></td>
-            </tr>
-            <tr>
-                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
-                       onclick="close_create_delivery()"></i></td>
-                <td class="buttons save" onclick="save_create_delivery()"><span>{t}Save{/t}</span>
-                    <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i>
 
-                </td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-<div id="location_results_container" class="search_results_container" style="width:220px;">
-    <table id="location_results" style="background:white;">
-        <tr class="hide" style=";" id="location_search_result_template" field="" value="" formatted_value=""
-            onclick="select_location_option(this)">
-            <td class="label" style="padding-left:5px;"></td>
-        </tr>
-    </table>
-</div>
-
-
-<div id="assign_barcode_to_part_results_container" class="search_results_container" style="width:420px;">
-    <table id="assign_barcode_to_part_results" style="background:white;">
-        <tr class="hide" style=";" id="assign_barcode_to_part_search_result_template" field="" value="" formatted_value=""
-            onclick="select_assign_barcode_to_part_option(this)">
-            <td class="code" style="padding-left:5px;"></td>
+<div id="asset_location_results_container" class="search_results_container" style="width:220px;">
+    <table class="location_results" style="background:white;">
+        <tr class="hide asset_location_search_result_template" data-field="" data-value="" data-formatted_value=""
+            onclick="select_asset_location_option(this)">
             <td class="label" style="padding-left:5px;"></td>
         </tr>
     </table>

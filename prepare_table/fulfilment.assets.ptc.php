@@ -173,16 +173,27 @@ class prepare_table_fulfilment_assets extends prepare_table {
             }
 
 
-            $edit_location = '
-			    <div style="clear:both"  id="place_item_'.$data['Fulfilment Asset Key'].'" class="place_item  '.($data['Fulfilment Asset State'] != 'Received' ? '' : 'hide')
-                .' " data-asset_key="'.$data['Fulfilment Asset Key'].'"   >
+            $edit_location = ' 
+            
+            
+            <div class="asset_location_container" data-asset_key="'.$data['Fulfilment Asset Key'].'" >
+            <div style="position:relative" class="asset_location '.(($data['Fulfilment Asset State'] != 'Received' and $data['Location Key']==''  ) ? 'hide' : '').'">
+			    <i style="position:absolute;right:16px" class="show_asset_location_edit fa fa-pencil very_discreet_on_hover button " onclick="show_asset_location_edit(this)"></i> 
+			     <span class="location_code" style="padding-left: 25px">'.$data['Location Code'].'</span>
+			    
+			    
+			    </div>
+			    
+			    <div style="clear:both"  id="fulfilment_delivery_edit_location_'.$data['Fulfilment Asset Key'].'" class="select_container  '.(($data['Fulfilment Asset State'] != 'Received' and $data['Location Key']==''  ) ? '' : 'hide')
+                .' "   >
 
-			  
+			  <i class="fa fa-unlink button valid '.($data['Location Key']==''?'invisible':'').'" onclick="edit_asset_location(\'delete\',this)"></i> 
 
-				<input class="location_code"  placeholder="'._('Location code').'"  >
-				<i  class="place_item_button  fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  data-location_key="" onClick="edit_asset_location(this)"  ></i>
+				<input class="fulfilment_asset_location_code margin_left_5 "  placeholder="'._('Location code').'" value="'.$data['Location Code'].'" >
+				<i  class="place_item_button  fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Save location').'"  data-location_key="" onClick="edit_asset_location(\'edit\',this)"  ></i>
+                
                 </div>
-                </div>
+               </div>
 			';
 
 

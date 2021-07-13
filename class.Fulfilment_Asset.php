@@ -140,7 +140,13 @@ class Fulfilment_Asset extends DB_Table {
         switch ($key) {
             case 'Formatted ID':
                 return sprintf('%12d',$this->id);
-
+            case 'Location Key':
+                if($this->data['Fulfilment Asset Location Key']!=''){
+                    $location=get_object('Location',$this->data['Fulfilment Asset Location Key']);
+                    return $location->get('Code');
+                }else{
+                    return '';
+                }
             case 'Type':
                 if ($this->data['Fulfilment Asset Type'] == 'Pallet') {
                     return _('Pallet');

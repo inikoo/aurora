@@ -439,15 +439,17 @@ function get_fulfilment_module(): array {
                 'type' => 'object',
                 'tabs' => array(
 
+                    'fulfilment.delivery.items' => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
                     'fulfilment.delivery.details' => array(
                         'label' => _('Settings'),
                         'icon'  => 'sliders-h'
                     ),
 
-                    'fulfilment.delivery.items' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
+
 
 
                     'fulfilment.delivery.history'     => array(
