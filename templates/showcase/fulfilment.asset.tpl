@@ -22,7 +22,7 @@
             <div class="data_field  ">
 
               <span class="button"
-                    onclick="change_view('fulfilment/{$asset->get('Fulfilment Delivery Warehouse Key')}/customers/{if $asset->get('Fulfilment Delivery Type')=='Part'}dropshipping{else}asset_keeping{/if}/{$asset->get('Fulfilment Delivery Customer Key')}')">
+                    onclick="change_view('fulfilment/{$delivery->get('Fulfilment Delivery Warehouse Key')}/customers/{if $delivery->get('Fulfilment Delivery Type')=='Part'}dropshipping{else}asset_keeping{/if}/{$delivery->get('Fulfilment Delivery Customer Key')}')">
                 <i class="fa fa-user fa-fw" aria-hidden="true" title="{t}Customer{/t}"></i> <span
 
                           class="button Order_Customer_Name">{$customer->get('Name')}</span> <span

@@ -28,7 +28,7 @@ function get_fulfilment_asset_showcase($data, Smarty $smarty): string {
 
     $customer = get_object('Customer', $asset->get('Customer Key'));
     $store = get_object('Store', $customer->get('Store Key'));
-    $delivery = get_object('Store', $asset->get('Fulfilment Asset Fulfilment Delivery Key'));
+    $delivery = get_object('Fulfilment_Delivery', $asset->get('Fulfilment Asset Fulfilment Delivery Key'));
 
     $smarty->assign('customer', $customer);
     $smarty->assign('asset', $asset);
