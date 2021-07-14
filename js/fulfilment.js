@@ -369,7 +369,14 @@ function select_asset_location_option(element) {
 
 function edit_asset_location(tipo, element) {
 
-    const icon = $(element);
+
+    let icon;
+    if (tipo === 'delete_from_fld') {
+        icon = $(element).find('i');
+    } else {
+        icon = $(element);
+
+    }
     if (!icon.hasClass('valid') || icon.hasClass('wait')) {
         return;
     }
@@ -397,21 +404,26 @@ function edit_asset_location(tipo, element) {
         icon.removeClass('fa-spinner fa-spin wait');
 
         if (data.state === 200) {
-            let asset_location_container = icon.closest('.asset_location_container');
-            asset_location_container.find('.location_code').html(data["formatted_value"]);
-            icon.removeClass('changed valid').data('location_key', '');
-
-            if (data['value']) {
-                asset_location_container.find('.asset_location').removeClass('hide');
-                asset_location_container.find('.select_container').addClass('hide');
-                asset_location_container.find('.fa-unlink').removeClass('invisible')
+            if (tipo === 'delete_from_fld') {
+                $('#unlink_asset_location_field').addClass('hide');
+                update_field({field: 'Fulfilment_Asset_Location_Key', value: '', formatted_value: '',render:'true'})
 
             } else {
-                asset_location_container.find('.fulfilment_asset_location_code').val('');
-                asset_location_container.find('.fa-unlink').addClass('invisible')
+                let asset_location_container = icon.closest('.asset_location_container');
+                asset_location_container.find('.location_code').html(data["formatted_value"]);
+                icon.removeClass('changed valid').data('location_key', '');
 
+                if (data['value']) {
+                    asset_location_container.find('.asset_location').removeClass('hide');
+                    asset_location_container.find('.select_container').addClass('hide');
+                    asset_location_container.find('.fa-unlink').removeClass('invisible')
+
+                } else {
+                    asset_location_container.find('.fulfilment_asset_location_code').val('');
+                    asset_location_container.find('.fa-unlink').addClass('invisible')
+
+                }
             }
-
 
         } else {
 
@@ -428,6 +440,7 @@ function edit_asset_location(tipo, element) {
 
 }
 
+
 function show_asset_location_edit(element) {
     $(element).closest('.asset_location').addClass('hide');
     $(element).closest('.asset_location').find('.show_asset_location_edit').removeClass('invisible');
@@ -443,7 +456,7 @@ function delete_fulfilment_asset_from_table(element) {
     icon.addClass('fa-spinner fa-spin');
 
 
-    let metadata={note:'from_delivery'};
+    let metadata = {note: 'from_delivery'};
 
     let form_data = new FormData();
     form_data.append("tipo", 'object_operation');
@@ -481,7 +494,6 @@ function delete_fulfilment_asset_from_table(element) {
         swal('Server error please contact Aurora support');
 
     });
-
 
 
 }

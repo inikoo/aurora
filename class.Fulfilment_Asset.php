@@ -85,7 +85,6 @@ class Fulfilment_Asset extends DB_Table {
             }
 
 
-
             $history_data = array(
                 'History Abstract' => sprintf(_('Fulfilment asset %s created'), $this->get('Formatted ID Reference')),
                 'History Details'  => '',
@@ -135,9 +134,9 @@ class Fulfilment_Asset extends DB_Table {
 
         switch ($key) {
             case 'Type Icon':
-                if($this->get('Fulfilment Asset Type')=='Pallet'){
+                if ($this->get('Fulfilment Asset Type') == 'Pallet') {
                     return '<i class="fal fa-fw fa-pallet-alt" title="'._('Pallet').'"></i>';
-                }else{
+                } else {
                     return '<i class="fal fa-fw  fa-box-alt" title="'._('Box').'"></i>';
 
                 }
@@ -150,6 +149,7 @@ class Fulfilment_Asset extends DB_Table {
                 if ($this->get('Reference') != '') {
                     $tmp .= ' <span class=" small"><span  title="'._('Customer reference').'">'.$this->get('Reference').'</span></span>';
                 }
+
                 return $tmp;
             case 'Location Key':
                 if ($this->data['Fulfilment Asset Location Key'] != '') {
@@ -165,6 +165,31 @@ class Fulfilment_Asset extends DB_Table {
                 } else {
                     return _('Box');
                 }
+            case 'Formatted Location':
+                if ($this->data['Fulfilment Asset Location Key'] != '') {
+                    return sprintf(
+                        '<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $this->data['Fulfilment Asset Warehouse Key'], $this->data['Fulfilment Asset Location Key'], $this->get('Location Key')
+                    );
+                } else {
+                    return '';
+                }
+            case 'Location State Formatted':
+
+                switch ($this->get('Fulfilment Asset State')) {
+                    case 'InProcess':
+                        if ($this->data['Fulfilment Asset Location Key'] != '') {
+                            return $this->get('Formatted Location');
+                        } else {
+                            return _('In process');
+                        }
+
+
+                    default:
+                        return '';
+                }
+
+
+
 
             default:
 
@@ -183,10 +208,10 @@ class Fulfilment_Asset extends DB_Table {
     }
 
 
-    function delete($metadata=''): string {
+    function delete($metadata = ''): string {
 
 
-        $fulfilment_delivery=get_object('fulfilment_delivery', $this->get('Fulfilment Asset Fulfilment Delivery Key'));
+        $fulfilment_delivery = get_object('fulfilment_delivery', $this->get('Fulfilment Asset Fulfilment Delivery Key'));
 
 
         $this->deleted     = false;
@@ -204,7 +229,7 @@ class Fulfilment_Asset extends DB_Table {
             $this->deleted_msg = 'Error area can not be deleted';
         }
 
-        if($metadata=='from_delivery') {
+        if ($metadata == 'from_delivery') {
             $account = get_object('Account', 1);
             $user    = get_object('User', $this->editor['User Key']);
 
@@ -217,14 +242,13 @@ class Fulfilment_Asset extends DB_Table {
             $fulfilment_delivery->update_totals();
             $this->update_metadata = array(
                 'class_html' => array(
-                    'rtext_info' => $table->rtext,
-                    'Fulfilment_Delivery_Number_Items'=>$fulfilment_delivery->get('Number Items')
+                    'rtext_info'                       => $table->rtext,
+                    'Fulfilment_Delivery_Number_Items' => $fulfilment_delivery->get('Number Items')
                 ),
 
             );
 
         }
-
 
 
         $history_data = array(
@@ -237,7 +261,9 @@ class Fulfilment_Asset extends DB_Table {
             $history_data, true, 'No', 'Changes', $fulfilment_delivery->get_object_name(), $fulfilment_delivery->id
         );
 
-        return '/fulfilment/'.$fulfilment_delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($fulfilment_delivery->get('Fulfilment Delivery Type')=='Part'?'dropshipping':'asset_keeping').'/'.$fulfilment_delivery->get('Fulfilment Delivery Customer Key').'/delivery/'.$fulfilment_delivery->id;
+        return '/fulfilment/'.$fulfilment_delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($fulfilment_delivery->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$fulfilment_delivery->get(
+                'Fulfilment Delivery Customer Key'
+            ).'/delivery/'.$fulfilment_delivery->id;
 
 
     }
@@ -246,15 +272,13 @@ class Fulfilment_Asset extends DB_Table {
 
         switch ($field) {
 
-            case 'Fulfilment Asset Code':
-                $label = _('code');
+            case 'Fulfilment Asset Reference':
+                $label = _('reference');
                 break;
-            case 'Fulfilment Asset Name':
-                $label = _('name');
+            case 'Fulfilment Asset Note':
+                $label = _('note');
                 break;
-            case 'Fulfilment Asset Place':
-                $label = _('Area type');
-                break;
+
             default:
 
 
@@ -267,14 +291,45 @@ class Fulfilment_Asset extends DB_Table {
     }
 
 
+    /**
+     * @throws \Exception
+     */
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
         if (!$this->deleted and $this->id) {
 
             switch ($field) {
+                case 'Fulfilment Asset Location Key':
+                    $old_value = $this->data['Fulfilment Asset Location Key'];
+                    $this->update_field($field, $value, $options);
+                    if ($value != '') {
 
+                        $this->other_fields_updated = array(
+                            'unlink_asset_location' => array(
+                                'field'           => 'unlink_asset_location',
+                                'render'          => true,
 
+                            )
+                        );
+                        $new_location                  = get_object('Location', $value);
+                        $new_location->fast_update(
+                            [
+                                'Location Fulfilment' => 'Yes'
+                            ]
+                        );
+                    }
+
+                    $this->update_metadata['class_html'] = array(
+                        'Location_State_Formatted' => $this->get('Location State Formatted'),
+                    );
+
+                    if ($old_value) {
+                        $old_location = get_object('Location', $old_value);
+                        $old_location->update_fulfilment_status();
+                    }
+
+                    break;
                 default:
                     $base_data = $this->base_data();
                     if (array_key_exists($field, $base_data)) {

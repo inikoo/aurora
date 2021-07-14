@@ -76,7 +76,7 @@
     <div class="block " style="align-items: stretch;flex: 1;">
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
 
-            <span class="Fulfilment_Asset_State"> {$asset->get('State')} </span>
+            <span class="Location_State_Formatted"> {$asset->get('Location State Formatted')} </span>
 
         </div>
         <table class="info_block acenter">
