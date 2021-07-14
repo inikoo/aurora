@@ -29,7 +29,6 @@ function get_part_showcase($data, $smarty, $account) {
     //       $pl->update_stock();
     //   }
 
-
     //$part->update_stock_run();
     //$part->update_stock();
     //  $part->validate_barcode();
@@ -304,7 +303,7 @@ function get_part_showcase($data, $smarty, $account) {
                            'invoiced_amount_delta_title' => delta(
                                $part->get('Part 3 Year Ago Invoiced Amount'), $part->get('Part 4 Year Ago Invoiced Amount')
                            ),
-                           'invoiced_amount_delta'       => ($part->get('Part 3 Year Ago Invoiced Amoun') > $part->get(
+                           'invoiced_amount_delta'       => ($part->get('Part 3 Year Ago Invoiced Amount') > $part->get(
                                'Part 4 Year Ago Invoiced Amount'
                            )
                                ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($part->get('Part 3 Year Ago Invoiced Amount') < $part->get('Part 4 Year Ago Invoiced Amount')
@@ -312,7 +311,7 @@ function get_part_showcase($data, $smarty, $account) {
                            'dispatched_delta_title'      => delta(
                                $part->get('Part 3 Year Ago Dispatched'), $part->get('Part 4 Year Ago Dispatched')
                            ),
-                           'dispatched_delta'            => ($part->get('Part 3 Year Ago Invoiced Amoun') > $part->get(
+                           'dispatched_delta'            => ($part->get('Part 3 Year Ago Invoiced Amount') > $part->get(
                                'Part 4 Year Ago Dispatched'
                            )
                                ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($part->get('Part 3 Year Ago Dispatched') < $part->get('Part 4 Year Ago Dispatched') ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>'
