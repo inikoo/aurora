@@ -10,7 +10,7 @@
 
 */
 
-trait OrderCalculateTotals {
+trait Order_Calculate_Totals {
 
     /**
      * @var \PDO
