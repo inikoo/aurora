@@ -32,4 +32,6 @@ cell: Backgrid.HtmlCell.extend({
 ]
 
 
-function change_table_view(view, save_state) {}
+function change_table_view(view, save_state) {
+
+}
