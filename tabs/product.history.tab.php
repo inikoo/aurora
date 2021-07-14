@@ -8,56 +8,15 @@
  Version 3
 
 */
+/** @var \User $user */
+/** @var \Smarty $smarty */
+/** @var array $state */
+include_once 'helpers/history/history_tab_snippet.php';
 
 $tab     = 'product.history';
 $ar_file = 'ar_history_tables.php';
 $tipo    = 'object_history';
 
 $default = $user->get_tab_defaults($tab);
-
-$table_views = array();
-
-$table_filters = array(
-    'note' => array(
-        'label' => _('Notes'),
-        'title' => _('Notes')
-    ),
-);
-
-$parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
-
-);
-
-
-
-$table_buttons   = array();
-$table_buttons[] = array(
-    'icon'  => 'sticky-note',
-    'title' => _('New note'),
-    'id'    => "show_history_note_dialog"
-);
-$smarty->assign('table_buttons', $table_buttons);
-
-
-
-$smarty->assign('history_notes_data',
-                array(
-
-                    'object'=>'product',
-                    'key'=>$state['_object']->id
-                )
-);
-
-
-
-
-
-
-$smarty->assign('aux_templates', array('history_notes.tpl'));
-
-
+list($table_views,$table_filters,$parameters,$smarty)=prepare_history_tab_with_notes($state,$smarty);
 include('utils/get_table_html.php');
-
-?>

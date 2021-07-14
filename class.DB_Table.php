@@ -491,7 +491,7 @@ abstract class DB_Table extends stdClass {
                     ).'</div></div>
 				<div class="field tr"><div>'._('Old value').':</div><div>'.$raw_data['old_value'].'</div></div>
 				<div class="field tr"><div>'._('New value').':</div><div>'.$raw_data['new_value'].'</div></div>
-				<div class="field tr"><div>'.$label.':</div><div>'.$this->get_name().'</div></div>
+				<div class="field tr"><div>'.$label.':</div><div></div></div>
                 </div>';
 
 
@@ -507,7 +507,7 @@ abstract class DB_Table extends stdClass {
                         'Associated'
                     ).'</div></div>
 				<div class="field tr"><div>'._('New value').':</div><div>'.$raw_data['new_value'].'</div></div>
-				<div class="field tr"><div>'.$label.':</div><div>'.$this->get_name().'</div></div>
+				<div class="field tr"><div>'.$label.':</div><div></div></div>
 				</div>';
 
             }
@@ -604,10 +604,6 @@ abstract class DB_Table extends stdClass {
         return $field;
     }
 
-    function get_name() {
-        return '';
-
-    }
 
     function post_add_history($history_key, $type = false) {
         return false;

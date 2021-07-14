@@ -42,6 +42,7 @@ class Fulfilment_Asset extends DB_Table {
 
     function create($data) {
 
+        $this->editor=$data['editor'];
 
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
@@ -189,8 +190,6 @@ class Fulfilment_Asset extends DB_Table {
                 }
 
 
-
-
             default:
 
 
@@ -211,8 +210,8 @@ class Fulfilment_Asset extends DB_Table {
     function delete($metadata = ''): string {
 
 
-        $fulfilment_delivery = get_object('fulfilment_delivery', $this->get('Fulfilment Asset Fulfilment Delivery Key'));
-
+        $fulfilment_delivery         = get_object('fulfilment_delivery', $this->get('Fulfilment Asset Fulfilment Delivery Key'));
+        $fulfilment_delivery->editor = $this->editor;
 
         $this->deleted     = false;
         $this->deleted_msg = '';
@@ -307,12 +306,12 @@ class Fulfilment_Asset extends DB_Table {
 
                         $this->other_fields_updated = array(
                             'unlink_asset_location' => array(
-                                'field'           => 'unlink_asset_location',
-                                'render'          => true,
+                                'field'  => 'unlink_asset_location',
+                                'render' => true,
 
                             )
                         );
-                        $new_location                  = get_object('Location', $value);
+                        $new_location               = get_object('Location', $value);
                         $new_location->fast_update(
                             [
                                 'Location Fulfilment' => 'Yes'

@@ -26,7 +26,7 @@ function get_tab_defaults_data() {
     return array(
 
 
-        'customers' => array(
+        'customers'                   => array(
             'view'          => 'overview',
             'sort_key'      => 'formatted_id',
             'sort_order'    => 1,
@@ -51,7 +51,7 @@ function get_tab_defaults_data() {
 
         ),
 
-        'customers_dropshipping' => array(
+        'customers_dropshipping'   => array(
             'view'          => 'overview',
             'sort_key'      => 'formatted_id',
             'sort_order'    => 1,
@@ -63,7 +63,7 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('customers')
 
         ),
-        'customers.list'         => array(
+        'customers.list'           => array(
             'view'          => 'overview',
             'sort_key'      => 'formatted_id',
             'sort_order'    => 1,
@@ -73,7 +73,7 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('customers')
 
         ),
-        'customers.sub_categories'                => array(
+        'customers.sub_categories' => array(
             'view'        => 'overview',
             'sort_key'    => 'code',
             'sort_order'  => 1,
@@ -402,7 +402,7 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('invoices')
 
         ),
-        'customer.products'                              => array(
+        'customer.products'             => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -651,7 +651,6 @@ function get_tab_defaults_data() {
         ),
 
 
-
         'orders.approved' => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
@@ -886,28 +885,28 @@ function get_tab_defaults_data() {
             'rpp'         => 1000,
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'reference',
-         //   'export_fields' => get_export_fields('delivery_note.parts')
+            //   'export_fields' => get_export_fields('delivery_note.parts')
 
 
         ),
         'delivery_note.units'              => array(
-            'view'        => 'overview',
-            'sort_key'    => 'id',
-            'sort_order'  => 1,
-            'rpp'         => 1000,
-            'rpp_options' => $default_rrp_options,
-            'f_field'     => 'reference',
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 1000,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'reference',
             'export_fields' => get_export_fields('delivery_note.units')
 
 
         ),
-        'delivery_note.tariff_codes'              => array(
-            'view'        => 'overview',
-            'sort_key'    => 'id',
-            'sort_order'  => 1,
-            'rpp'         => 1000,
-            'rpp_options' => $default_rrp_options,
-            'f_field'     => 'tariff_code',
+        'delivery_note.tariff_codes'       => array(
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 1000,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'tariff_code',
             'export_fields' => get_export_fields('delivery_note.tariff_codes')
 
 
@@ -1168,7 +1167,7 @@ function get_tab_defaults_data() {
             'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
             'elements'      => get_elements_option('delivery_notes')
         ),
-        'consignments'      => array(
+        'consignments'               => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -1194,29 +1193,29 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('delivery_notes')
 
         ),
-        'consignment.parts' => array(
-            'view'          => 'overview',
-            'sort_key'      => 'part',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'reference',
+        'consignment.parts'          => array(
+            'view'        => 'overview',
+            'sort_key'    => 'part',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'reference',
             //'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
             //'export_fields' => get_export_fields('delivery_notes')
 
         ),
-        'consignment.tariff_codes' => array(
-            'view'          => 'overview',
-            'sort_key'      => 'tariff_code',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'tariff_code',
-          //  'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
-          //  'export_fields' => get_export_fields('delivery_notes')
+        'consignment.tariff_codes'   => array(
+            'view'        => 'overview',
+            'sort_key'    => 'tariff_code',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'tariff_code',
+            //  'elements_type' => array_keys(get_elements_option('delivery_notes'))[0],
+            //  'export_fields' => get_export_fields('delivery_notes')
 
         ),
-        'returns_server' => array(
+        'returns_server'             => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
             'sort_order'  => 1,
@@ -1381,7 +1380,7 @@ function get_tab_defaults_data() {
             'f_field'     => ''
         ),
 
-        'store.products'                              => array(
+        'store.products' => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -2242,7 +2241,7 @@ function get_tab_defaults_data() {
             'period'      => 'all',
 
         ),
-        'picking_bands' => array(
+        'picking_bands'                             => array(
             'view'        => 'overview',
             'sort_key'    => 'amount',
             'sort_order'  => 0,
@@ -2250,7 +2249,7 @@ function get_tab_defaults_data() {
             'rpp_options' => $default_rrp_options,
             'f_field'     => ''
         ),
-        'packing_bands' => array(
+        'packing_bands'                             => array(
             'view'        => 'overview',
             'sort_key'    => 'amount',
             'sort_order'  => 0,
@@ -2325,7 +2324,7 @@ function get_tab_defaults_data() {
             'f_field'       => 'code',
             'export_fields' => get_export_fields('supplier.order.items')
         ),
-        'fulfilment.delivery.assets'   => array(
+        'fulfilment.delivery.assets'        => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -2333,6 +2332,24 @@ function get_tab_defaults_data() {
             'rpp_options'   => $default_rrp_options,
             'f_field'       => 'id',
             'export_fields' => get_export_fields('fulfilment.delivery.items')
+        ),
+        'fulfilment.asset.history'          => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'note'
+        ),
+        'fulfilment.delivery.history'       => array(
+            'view'          => 'overview',
+            'sort_key'      => 'date',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'note',
+            'elements_type' => 'type',
+            'elements'      => get_elements_option('history_notes'),
         ),
         'deleted.supplier.order.items'      => array(
             'view'        => 'overview',
@@ -2906,7 +2923,7 @@ function get_tab_defaults_data() {
             'elements'      => get_elements_option('locations'),
             'export_fields' => get_export_fields('locations')
         ),
-        'warehouse.deleted_locations'         => array(
+        'warehouse.deleted_locations' => array(
             'view'          => 'overview',
             'sort_key'      => 'code',
             'sort_order'    => 1,
@@ -2916,7 +2933,7 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('deleted_locations')
         ),
 
-        'warehouse.replenishments'                  => array(
+        'warehouse.replenishments'                             => array(
             'view'        => 'overview',
             'sort_key'    => 'location',
             'sort_order'  => 1,
@@ -2924,7 +2941,7 @@ function get_tab_defaults_data() {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'location'
         ),
-        'warehouse.parts'                           => array(
+        'warehouse.parts'                                      => array(
             'view'          => 'overview',
             'sort_key'      => 'reference',
             'sort_order'    => 1,
@@ -2934,7 +2951,7 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('part_locations')
 
         ),
-        'warehouse.part_locations_with_errors.wget' => array(
+        'warehouse.part_locations_with_errors.wget'            => array(
             'view'        => 'overview',
             'sort_key'    => 'reference',
             'sort_order'  => 1,
@@ -2952,7 +2969,7 @@ function get_tab_defaults_data() {
             'f_field'     => 'reference',
 
         ),
-        'warehouse_area.locations'                  => array(
+        'warehouse_area.locations'                             => array(
             'view'          => 'overview',
             'sort_key'      => 'code',
             'sort_order'    => 1,
@@ -2963,7 +2980,7 @@ function get_tab_defaults_data() {
             'elements'      => get_elements_option('locations'),
             'export_fields' => get_export_fields('locations')
         ),
-        'warehouse_area.parts'                      => array(
+        'warehouse_area.parts'                                 => array(
             'view'          => 'overview',
             'sort_key'      => 'reference',
             'sort_order'    => 1,
@@ -2973,7 +2990,7 @@ function get_tab_defaults_data() {
             'export_fields' => get_export_fields('part_locations')
 
         ),
-        'warehouse_area.history'                    => array(
+        'warehouse_area.history'                               => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => 1,
@@ -2981,7 +2998,7 @@ function get_tab_defaults_data() {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'note'
         ),
-        'parts_with_unknown_location.wget'          => array(
+        'parts_with_unknown_location.wget'                     => array(
             'view'        => 'overview',
             'sort_key'    => 'reference',
             'sort_order'  => 1,
@@ -2991,7 +3008,7 @@ function get_tab_defaults_data() {
 
         ),
 
-        'warehouse.history'           => array(
+        'warehouse.history'                  => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => 1,
@@ -2999,7 +3016,7 @@ function get_tab_defaults_data() {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'note'
         ),
-        'location.history'            => array(
+        'location.history'                   => array(
             'view'          => 'overview',
             'sort_key'      => 'date',
             'sort_order'    => 1,
@@ -3009,7 +3026,7 @@ function get_tab_defaults_data() {
             'elements_type' => array_keys(get_elements_option('location_history'))[0],
             'elements'      => get_elements_option('location_history')
         ),
-        'location.parts'              => array(
+        'location.parts'                     => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
             'sort_order'  => 1,
@@ -3018,7 +3035,7 @@ function get_tab_defaults_data() {
             'f_field'     => 'reference',
 
         ),
-        'location.stock.transactions' => array(
+        'location.stock.transactions'        => array(
             'view'          => 'overview',
             'sort_key'      => 'date',
             'sort_order'    => 1,
@@ -3028,65 +3045,65 @@ function get_tab_defaults_data() {
             'elements_type' => array_keys(get_elements_option('part_stock_transactions'))[0],
             'elements'      => get_elements_option('part_stock_transactions'),
         ),
-        'fulfilment.locations'         => array(
-            'view'          => 'overview',
-            'sort_key'      => 'code',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'code',
+        'fulfilment.locations'               => array(
+            'view'        => 'overview',
+            'sort_key'    => 'code',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'code',
         ),
-        'customer.parts' => array(
-            'view'          => 'overview',
-            'sort_key'      => 'reference',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'reference',
-           // 'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
-           // 'elements'      => get_elements_option('customer_parts'),
-           // 'export_fields' => get_export_fields('customer_parts')
+        'customer.parts'                     => array(
+            'view'        => 'overview',
+            'sort_key'    => 'reference',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'reference',
+            // 'elements_type' => array_keys(get_elements_option('supplier_parts'))[0],
+            // 'elements'      => get_elements_option('customer_parts'),
+            // 'export_fields' => get_export_fields('customer_parts')
 
         ),
-        'fulfilment.stored_parts'         => array(
-            'view'            => 'overview',
-            'sort_key'        => 'id',
-            'sort_order'      => 1,
-            'rpp'             => 100,
-            'rpp_options'     => $default_rrp_options,
-            'f_field'         => 'reference',
+        'fulfilment.stored_parts'            => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'reference',
 
         ),
-        'fulfilment.asset_keeping_customers'         => array(
-            'view'            => 'overview',
-            'sort_key'        => 'id',
-            'sort_order'      => 1,
-            'rpp'             => 100,
-            'rpp_options'     => $default_rrp_options,
-            'f_field'         => 'name',
+        'fulfilment.asset_keeping_customers' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'name',
         ),
-        'fulfilment.dropshipping_customers'         => array(
-            'view'            => 'overview',
-            'sort_key'        => 'id',
-            'sort_order'      => 1,
-            'rpp'             => 100,
-            'rpp_options'     => $default_rrp_options,
-            'f_field'         => 'name',
+        'fulfilment.dropshipping_customers'  => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'name',
         ),
-        'customer.deliveries'                       => array(
-            'view'          => 'overview',
-            'sort_key'      => 'id',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'number',
-            'from'          => '',
-            'to'            => '',
-            'period'        => 'all',
+        'customer.deliveries'                => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'number',
+            'from'        => '',
+            'to'          => '',
+            'period'      => 'all',
             //'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
             //'elements'      => get_elements_option('supplier_deliveries')
         ),
-        'inventory.parts'         => array(
+        'inventory.parts'                    => array(
             'view'            => 'overview',
             'sort_key'        => 'id',
             'sort_order'      => 1,
@@ -3100,7 +3117,7 @@ function get_tab_defaults_data() {
             'export_fields'   => get_export_fields('parts')
 
         ),
-        'production.active_parts' => array(
+        'production.active_parts'            => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -3171,27 +3188,27 @@ function get_tab_defaults_data() {
 
 
         'inventory.discontinued_parts'       => array(
-            'view'          => 'overview',
-            'sort_key'      => 'valid_to',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'f_period'      => 'all',
+            'view'            => 'overview',
+            'sort_key'        => 'valid_to',
+            'sort_order'      => 1,
+            'rpp'             => 100,
+            'f_period'        => 'all',
             'show_production' => 'No',
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'reference',
-            'export_fields' => get_export_fields('parts')
+            'rpp_options'     => $default_rrp_options,
+            'f_field'         => 'reference',
+            'export_fields'   => get_export_fields('parts')
 
         ),
         'inventory.discontinuing_parts'      => array(
-            'view'          => 'overview',
-            'sort_key'      => 'stock_value',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'f_period'      => 'all',
+            'view'            => 'overview',
+            'sort_key'        => 'stock_value',
+            'sort_order'      => 1,
+            'rpp'             => 100,
+            'f_period'        => 'all',
             'show_production' => 'No',
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'reference',
-            'export_fields' => get_export_fields('parts')
+            'rpp_options'     => $default_rrp_options,
+            'f_field'         => 'reference',
+            'export_fields'   => get_export_fields('parts')
 
         ),
         'production.discontinued_parts'      => array(
@@ -3217,14 +3234,14 @@ function get_tab_defaults_data() {
 
         ),
         'inventory.in_process_parts'         => array(
-            'view'          => 'overview',
-            'sort_key'      => 'valid_from',
-            'sort_order'    => 1,
-            'rpp'           => 100,
+            'view'            => 'overview',
+            'sort_key'        => 'valid_from',
+            'sort_order'      => 1,
+            'rpp'             => 100,
             'show_production' => 'No',
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'reference',
-            'export_fields' => get_export_fields('parts')
+            'rpp_options'     => $default_rrp_options,
+            'f_field'         => 'reference',
+            'export_fields'   => get_export_fields('parts')
 
         ),
         'production.in_process_parts'        => array(
@@ -4403,7 +4420,7 @@ function get_tab_defaults_data() {
         ),
 
 
-        'report_orders'            => array(
+        'report_orders'                      => array(
             'view'        => 'overview',
             'sort_key'    => 'store',
             'sort_order'  => 1,
@@ -4415,7 +4432,7 @@ function get_tab_defaults_data() {
             'period'      => 'mtd'
 
         ),
-        'report_orders_components' => array(
+        'report_orders_components'           => array(
             'view'        => 'overview',
             'sort_key'    => 'store',
             'sort_order'  => 1,
@@ -4427,7 +4444,7 @@ function get_tab_defaults_data() {
             'period'      => 'mtd'
 
         ),
-        'report_delivery_notes'    => array(
+        'report_delivery_notes'              => array(
             'view'        => 'overview',
             'sort_key'    => 'store',
             'sort_order'  => 1,
@@ -4439,7 +4456,7 @@ function get_tab_defaults_data() {
             'period'      => 'mtd'
 
         ),
-        'warehouse_bonus_report'                  => array(
+        'warehouse_bonus_report'             => array(
             'view'        => 'overview',
             'sort_key'    => 'name',
             'sort_order'  => -1,
@@ -4451,7 +4468,7 @@ function get_tab_defaults_data() {
             'period'      => 'last_w'
 
         ),
-        'staff_warehouse_kpi.delivery_notes'    => array(
+        'staff_warehouse_kpi.delivery_notes' => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -4464,7 +4481,7 @@ function get_tab_defaults_data() {
             'to'            => '',
 
         ),
-        'pickers'                  => array(
+        'pickers'                            => array(
             'view'        => 'overview',
             'sort_key'    => 'name',
             'sort_order'  => -1,
@@ -4476,7 +4493,7 @@ function get_tab_defaults_data() {
             'period'      => 'last_w'
 
         ),
-        'picker.delivery_notes'    => array(
+        'picker.delivery_notes'              => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -4489,7 +4506,7 @@ function get_tab_defaults_data() {
             'to'            => '',
 
         ),
-        'picker.feedback'          => array(
+        'picker.feedback'                    => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => -1,
@@ -4500,7 +4517,7 @@ function get_tab_defaults_data() {
             'from'        => '',
             'to'          => '',
         ),
-        'packers'                  => array(
+        'packers'                            => array(
             'view'        => 'overview',
             'sort_key'    => 'name',
             'sort_order'  => -1,
@@ -4512,7 +4529,7 @@ function get_tab_defaults_data() {
             'to'          => '',
 
         ),
-        'packer.delivery_notes'    => array(
+        'packer.delivery_notes'              => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -4526,7 +4543,7 @@ function get_tab_defaults_data() {
 
 
         ),
-        'packer.feedback'          => array(
+        'packer.feedback'                    => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => -1,
@@ -4538,7 +4555,7 @@ function get_tab_defaults_data() {
             'to'          => '',
 
         ),
-        'sales_representatives'    => array(
+        'sales_representatives'              => array(
             'view'        => 'overview',
             'sort_key'    => 'name',
             'sort_order'  => -1,
@@ -4550,7 +4567,7 @@ function get_tab_defaults_data() {
             'period'      => 'last_w'
 
         ),
-        'prospect_agents'          => array(
+        'prospect_agents'                    => array(
             'view'        => 'overview',
             'sort_key'    => 'name',
             'sort_order'  => -1,
@@ -4562,7 +4579,7 @@ function get_tab_defaults_data() {
             'period'      => 'last_w'
 
         ),
-        'lost_stock'               => array(
+        'lost_stock'                         => array(
             'view'          => 'overview',
             'sort_key'      => 'date',
             'sort_order'    => -1,
@@ -4576,7 +4593,7 @@ function get_tab_defaults_data() {
             'elements'      => get_elements_option('lost_stock'),
 
         ),
-        'stock_given_free'         => array(
+        'stock_given_free'                   => array(
             'view'          => 'overview',
             'sort_key'      => 'date',
             'sort_order'    => -1,
@@ -5374,7 +5391,6 @@ function get_tab_defaults_data() {
 
 
     );
-
 
 
 }

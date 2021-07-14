@@ -326,7 +326,10 @@ switch ($tab) {
     case 'poll_query_option.history':
     case 'poll_query.history':
     case 'purge.history':
-        $data = prepare_values(
+    case 'fulfilment.delivery.history':
+    case 'fulfilment.asset.history':
+
+    $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
                      )
@@ -500,6 +503,7 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         warehouse_production_deliveries($db, $data['parameters'], $user);
         break;
+
     default:
         $response = array(
             'state' => 405,
@@ -1964,8 +1968,8 @@ function get_history_elements($db, $data) {
             "SELECT count(*) AS num ,`Type` FROM  `Customer Poll Query History Bridge` WHERE  `Customer Poll Query Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } elseif ($data['parent'] == 'none') {
-        $sql = sprintf(
-            "SELECT count(*) AS num ,`Type` FROM  `%s Category History Bridge`  GROUP BY  `Type`", $data['subject']
+        $sql = 'SELECT '.sprintf(
+            "count(*) AS num ,`Type` FROM  `%s Category History Bridge`  GROUP BY  `Type`", $data['subject']
         );
     } elseif ($data['parent'] == 'prospect') {
         $sql = sprintf(
@@ -1974,6 +1978,10 @@ function get_history_elements($db, $data) {
     } elseif ($data['parent'] == 'purge') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Order Basket Purge History Bridge` WHERE  `Order Basket Purge Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    }elseif ($data['parent'] == 'fulfilment_delivery') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Fulfilment Delivery History Bridge` WHERE  `Fulfilment Delivery Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } else {
         $response = array(

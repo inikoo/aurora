@@ -1,20 +1,17 @@
 <?php
 /*
- About:
- Author: Raul Perusquia <raul@inikoo.com>
- Created: 6 October 2015 at 09:25:45 BST, Sheffield UK
- Copyright (c) 2015, Inikoo
-
- Version 3
-
-*/
-
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Wed, 14 Jul 2021 21:29:39 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 3.0
+ */
 /** @var \User $user */
 /** @var \Smarty $smarty */
 /** @var array $state */
-include_once 'helpers/history/history_tab_snippet.php';
 
-$tab     = 'customer.history';
+$tab     = 'fulfilment.delivery.history';
+
+include_once 'helpers/history/history_tab_snippet.php';
 $ar_file = 'ar_history_tables.php';
 $tipo    = 'object_history';
 $default = $user->get_tab_defaults($tab);

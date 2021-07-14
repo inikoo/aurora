@@ -1037,8 +1037,8 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
     if (!$object->error) {
-        $response = array('state' => 200);
-        $response['update_metadata']=$object->get_update_metadata();
+        $response                    = array('state' => 200);
+        $response['update_metadata'] = $object->get_update_metadata();
         if ($object->get_object_name() == 'Category') {
 
             if ($object->get('Category Scope') == 'Product') {
@@ -2816,8 +2816,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             $data['fields_data']['user'] = $user;
 
-            $fulfilment_customer = get_object('Customer_Fulfilment', $parent->id);
-            $object              = $fulfilment_customer->create_customer_delivery($data['fields_data']);
+            $fulfilment_customer         = get_object('Customer_Fulfilment', $parent->id);
+            $fulfilment_customer->editor = $editor;
+            $object                      = $fulfilment_customer->create_customer_delivery($data['fields_data']);
 
             $store = get_object('Store', $parent->get('Store Key'));
             if ($store->get('Store Type') == 'Dropshipping') {

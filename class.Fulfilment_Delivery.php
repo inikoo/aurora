@@ -29,15 +29,11 @@ class Fulfilment_Delivery extends DB_Table {
 
         if (is_string($arg1)) {
             if (preg_match('/new|create/i', $arg1)) {
-                $this->find($arg2, 'create');
+                $this->create($arg2);
 
                 return;
             }
-            if (preg_match('/find/i', $arg1)) {
-                $this->find($arg2, $arg3);
 
-                return;
-            }
         }
 
         if (is_numeric($arg1)) {
@@ -49,68 +45,6 @@ class Fulfilment_Delivery extends DB_Table {
 
     }
 
-
-    /** @noinspection DuplicatedCode */
-    function find($raw_data, $options) {
-        if (isset($raw_data['editor'])) {
-            foreach ($raw_data['editor'] as $key => $value) {
-                if (array_key_exists($key, $this->editor)) {
-                    $this->editor[$key] = $value;
-                }
-            }
-        }
-
-        $this->found     = false;
-        $this->found_key = false;
-        $create          = '';
-
-        if (preg_match('/create/i', $options)) {
-            $create = 'create';
-        }
-
-
-        $data = $this->base_data();
-        foreach ($raw_data as $key => $value) {
-            if (array_key_exists($key, $data)) {
-                $data[$key] = _trim($value);
-            }
-        }
-
-
-        if ($data['Fulfilment Delivery Customer Key'] != '') {
-            $sql = "SELECT `Fulfilment Delivery Key` FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Public ID`=? and   `Fulfilment Delivery Customer Key`=? ";
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $data['Fulfilment Delivery Public ID'],
-                    $data['Fulfilment Delivery Customer Key']
-
-                )
-            );
-            if ($row = $stmt->fetch()) {
-                $this->found     = true;
-                $this->found_key = $row['Fulfilment Delivery Key'];
-
-                $this->found     = true;
-                $this->found_key = $row['Fulfilment Delivery Key'];
-                $this->get_data('id', $this->found_key);
-                $this->duplicated_field = 'Fulfilment Delivery Public ID';
-            }
-        }
-
-        if ($this->found_key) {
-            $this->get_data('id', $this->found_key);
-        }
-
-        if ($create and !$this->found_key) {
-
-            $this->create($data);
-
-        }
-
-
-    }
 
     function get_data($key, $id) {
 
@@ -133,13 +67,14 @@ class Fulfilment_Delivery extends DB_Table {
 
     function create($data) {
 
+        $this->editor=$data['editor'];
+
 
         $data['Fulfilment Delivery Date']              = gmdate('Y-m-d H:i:s');
         $data['Fulfilment Delivery Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Fulfilment Delivery Last Updated Date'] = gmdate('Y-m-d H:i:s');
         $data['Fulfilment Delivery Date Type']         = 'Creation';
 
-        $data['Fulfilment Delivery File As'] = get_file_as($data['Fulfilment Delivery Public ID']);
 
         $data['Fulfilment Delivery Metadata'] = '{}';
 
@@ -181,7 +116,7 @@ class Fulfilment_Delivery extends DB_Table {
 
 
             $history_data = array(
-                'History Abstract' => _('Fulfilment Delivery created'),
+                'History Abstract' => _('Fulfilment delivery created'),
                 'History Details'  => '',
                 'Action'           => 'created'
             );
@@ -631,6 +566,21 @@ class Fulfilment_Delivery extends DB_Table {
             }
             */
 
+
+            $customer=get_object('Customer',$this->data['Fulfilment Delivery Customer Key']);
+            $customer->editor=$this->editor;
+
+            $history_data = array(
+                'History Abstract' => sprintf(_('Fulfilment delivery %s deleted'), $this->get('Formatted ID')),
+                'History Details'  => '',
+                'Action'           => 'deleted'
+            );
+
+            $customer->add_subject_history(
+                $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+            );
+
+
             return sprintf(
                 'fulfilment/%d/customers/%s/%d', $this->data['Fulfilment Delivery Warehouse Key'], ($this->data['Fulfilment Delivery Type'] == 'Part' ? 'dropshipping' : 'asset_keeping'), $this->data['Fulfilment Delivery Customer Key']
             );
@@ -687,7 +637,8 @@ class Fulfilment_Delivery extends DB_Table {
         for ($i = 0; $i < $number; $i++) {
             $this->create_fulfilment_asset(
                 [
-                    'Fulfilment Asset Type' => $data['Fulfilment Asset Type']
+                    'Fulfilment Asset Type' => $data['Fulfilment Asset Type'],
+                    'editor'=>$this->editor
                 ]
             );
         }

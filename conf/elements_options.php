@@ -1833,6 +1833,23 @@ function get_elements_option($option) {
 
             )
         ),
+
+        'history_notes' => array(
+            'type' => array(
+                'label' => _('Type'),
+                'items' => array(
+                    'Notes'   => array(
+                        'label'    => _('Notes'),
+                        'selected' => true
+                    ),
+                    'Changes' => array(
+                        'label'    => _('Changes'),
+                        'selected' => true
+                    ),
+                ),
+
+            )
+        ),
         //'Ready','Sent to SES','Rejected by SES','Sent','Soft Bounce','Hard Bounce','Delivered','Spam','Opened','Clicked','Error'
 
 

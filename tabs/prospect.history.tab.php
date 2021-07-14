@@ -8,6 +8,9 @@
  Version 3
 
 */
+/** @var \User $user */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 $tab     = 'prospect.history';
 $ar_file = 'ar_history_tables.php';
@@ -18,7 +21,7 @@ $default = $user->get_tab_defaults($tab);
 /**
  * @var $prospect \Prospect
  */
-$prospect=$state['_object'];
+$prospect = $state['_object'];
 
 
 $table_views = array();
@@ -47,14 +50,10 @@ $table_buttons[] = array(
 
 if (in_array(
     $prospect->get('Prospect Status'), array(
-                                                 'Contacted',
-                                                 'NoContacted'
-                                             )
+                                         'Contacted',
+                                         'NoContacted'
+                                     )
 )) {
-
-
-
-
 
 
     if ($prospect->has_address()) {
@@ -90,19 +89,18 @@ if (in_array(
 $smarty->assign('table_buttons', $table_buttons);
 $smarty->assign('prospect', $prospect);
 
-$templates=$prospect->get_templates('objects','Active');
+$templates = $prospect->get_templates('objects', 'Active');
 
 $smarty->assign('templates', $templates);
 $smarty->assign('number_templates', count($templates));
 
-foreach($templates as $template){
+foreach ($templates as $template) {
     $smarty->assign('template_key', $template->id);
     $smarty->assign('template_name', $template->get('Email Template Name'));
 
     break;
 
 }
-
 
 
 $smarty->assign(

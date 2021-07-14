@@ -21,7 +21,7 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
                     'id'                => 'Fulfilment_Asset_Reference',
                     'edit'              => ($edit ? 'string' : ''),
                     'value'             => htmlspecialchars($fulfilment_asset->get('Fulfilment Asset Reference')),
-                    'formatted_value'   => $fulfilment_asset->get('Public ID'),
+                    'formatted_value'   => $fulfilment_asset->get('Reference'),
                     'label'             => ucfirst($fulfilment_asset->get_field_label('Fulfilment Asset Reference')),
                     'required'          => true,
                     'server_validation' => json_encode(
