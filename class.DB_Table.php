@@ -229,14 +229,14 @@ abstract class DB_Table extends stdClass {
             }
 
 
-            if($table_name=='Customer Fulfilment'){
-                $table_name='Customer';
+            if ($table_name == 'Customer Fulfilment') {
+                $table_name = 'Customer';
             }
 
             if (preg_match(
-                    '/consignment|product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema|customer client|clocking machine|clocking machine nfc tag|purchase order|supplier delivery|picking band/i',
+                    '/fulfilment delivery|fulfilment asset|consignment|product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema|customer client|clocking machine|clocking machine nfc tag|purchase order|supplier delivery|picking band/i',
                     $table_name
-                ) and !$this->new and $save_history   ) {
+                ) and !$this->new and $save_history) {
 
 
                 if ($formatted_field == 'Tax Number') {
@@ -244,9 +244,7 @@ abstract class DB_Table extends stdClass {
                 }
 
 
-
                 $new_formatted_value = $this->get($formatted_field);
-
 
 
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
@@ -282,10 +280,10 @@ abstract class DB_Table extends stdClass {
             $this->post_add_history($history_key);
         } else {
             $sql = sprintf(
-                "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
+                "INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
             );
 
-            $this->db->exec($sql);
+            $this->db->exec('INSERT '.$sql);
 
             $this->update_history_records_data();
         }
@@ -391,13 +389,13 @@ abstract class DB_Table extends stdClass {
 
                 if ($table_name == 'Staff') {
                     $formatted_table = "Employee's";
-                }elseif ($table_name == 'Customer Fulfilment') {
+                } elseif ($table_name == 'Customer Fulfilment') {
                     $formatted_table = "Customer";
                 } else {
                     $formatted_table = $table_name;
                 }
 
-                $formatted_table.=' &rArr; ';
+                $formatted_table .= ' &rArr; ';
 
                 if ($data['Action'] == 'added') {
                     $data['History Abstract'] = sprintf(
@@ -552,10 +550,6 @@ abstract class DB_Table extends stdClass {
             }
 
             return $history_key;
-        } else {
-            print_r($data);
-            print_r($error_info = $stmt->errorInfo());
-
         }
 
 
@@ -628,6 +622,7 @@ abstract class DB_Table extends stdClass {
 
         switch ($this->get_object_name()) {
 
+            /*
             case 'Page':
 
                 return;
@@ -635,10 +630,9 @@ abstract class DB_Table extends stdClass {
                 $where_field = 'Webpage Key';
                 $table       = 'Webpage History Bridge';
                 break;
-
-            case 'Part':
-                $where_field = 'Part SKU';
-                break;
+            */ case 'Part':
+            $where_field = 'Part SKU';
+            break;
 
             case 'Product':
                 $where_field = 'Product ID';
@@ -652,23 +646,20 @@ abstract class DB_Table extends stdClass {
                 break;
         }
 
-
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `%s` WHERE  `%s`=%d ', $table, $where_field, $this->id
-        );
-
-
         $number = 0;
+        $sql    = "count(*) AS num FROM `$table` WHERE  `$where_field`=? ";
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        $stmt = $this->db->prepare('SELECT '.$sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $number = $row['num'];
         }
+
+
 
         $this->fast_update(
             array($this->get_object_name().' Number History Records' => $number)
@@ -727,11 +718,11 @@ abstract class DB_Table extends stdClass {
         foreach ($data as $field => $value) {
 
             $sql = sprintf(
-                "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
+                "`%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
             );
 
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->db->prepare('UPDATE '.$sql);
 
 
             if ($value === '' and $null_if_empty) {
@@ -808,9 +799,9 @@ abstract class DB_Table extends stdClass {
 
 
         $sql  = sprintf(
-            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+            " `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare('UPDATE '.$sql);
         $stmt->bindParam(1, $value);
         $stmt->bindParam(2, $this->id);
         $stmt->execute();
@@ -861,11 +852,11 @@ abstract class DB_Table extends stdClass {
 
 
         $sql = sprintf(
-            "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+            "`%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
 
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare('UPDATE '.$sql);
         $stmt->bindParam(1, $this->id);
         $stmt->execute();
 
@@ -895,7 +886,7 @@ abstract class DB_Table extends stdClass {
 
     }
 
-    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name = '', $table_key = '', $update_history_records_data = true) {
+    function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name = '', $table_key = '') {
 
 
         if ($table_name == '') {
@@ -915,10 +906,10 @@ abstract class DB_Table extends stdClass {
 
 
         $sql = sprintf(
-            "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
+            "INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
         );
 
-        $this->db->exec($sql);
+        $this->db->exec('INSERT '.$sql);
 
         $this->update_history_records_data();
 
