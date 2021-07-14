@@ -957,15 +957,9 @@ class Part extends Asset {
                 }
 
 
-
-
-
             case 'Units Per Carton':
 
                 return $this->data['Part Units Per Package'] * $this->data['Part SKOs per Carton'];
-
-
-
 
 
             case 'SKOs per Carton':
@@ -1439,8 +1433,6 @@ class Part extends Asset {
                 }
 
 
-
-
             case 'Next Shipment':
                 if ($this->data['Part Next Shipment Date'] == '') {
                     return '';
@@ -1564,7 +1556,6 @@ class Part extends Asset {
 
 
                 return '<i class="fa fa-exclamation-circle error" ></i> '.$error;
-
 
 
             case 'Barcode Number Error with Duplicates Links':
@@ -2001,14 +1992,15 @@ class Part extends Asset {
                     if ($row = $stmt->fetch()) {
 
                         $this->update_field_switcher('Part Picking Band Key', $row['Picking Band Key'], $options);
+
                         return;
-                    }else{
+                    } else {
                         $this->error = true;
                         $this->msg   = _('Picking Band not found').' ('.$value.')';
 
                         return;
                     }
-                }else{
+                } else {
                     $this->update_field_switcher('Part Picking Band Key', '', $options);
 
                 }
@@ -2024,14 +2016,15 @@ class Part extends Asset {
                     );
                     if ($row = $stmt->fetch()) {
                         $this->update_field_switcher('Part Packing Band Key', $row['Picking Band Key'], $options);
+
                         return;
-                    }else{
+                    } else {
                         $this->error = true;
                         $this->msg   = _('Packing Band not found').' ('.$value.')';
 
                         return;
                     }
-                }else{
+                } else {
                     $this->update_field_switcher('Part Packing Band Key', '', $options);
 
                 }
@@ -2039,9 +2032,9 @@ class Part extends Asset {
             case 'Part Picking Band Key':
 
 
-                $old_value=$this->get('Part Picking Band Key');
+                $old_value = $this->get('Part Picking Band Key');
 
-                if($old_value==$value){
+                if ($old_value == $value) {
                     return;
                 }
 
@@ -2078,7 +2071,7 @@ class Part extends Asset {
 
                 }
 
-                if($old_value){
+                if ($old_value) {
                     $old_band = get_object('PickingBand', $old_value);
                     $old_band->update_parts();
 
@@ -2086,9 +2079,9 @@ class Part extends Asset {
 
                 break;
             case 'Part Packing Band Key':
-                $old_value=$this->get('Part Picking Band Key');
+                $old_value = $this->get('Part Picking Band Key');
 
-                if($old_value==$value){
+                if ($old_value == $value) {
                     return;
                 }
 
@@ -2127,7 +2120,7 @@ class Part extends Asset {
                     );
 
                 }
-                if($old_value){
+                if ($old_value) {
                     $old_band = get_object('PickingBand', $old_value);
                     $old_band->update_parts();
 
@@ -3826,15 +3819,18 @@ class Part extends Asset {
 
     function update_stock_run() {
 
-        // todo experimental stuff
+
         $account = get_object('Account', 1);
 
+
+        $running_stock        = 0;
         if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
 
 
-            $running_stock        = 0;
             $running_stock_value  = 0;
-            $running_cost_per_sko = '';
+            $current_cost_per_sko = 0;
+            $booked_in            = false;
+
 
             $sql = "SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO`
                 FROM `Inventory Transaction Fact` WHERE `Part SKU`=?    ORDER BY `Date`   ";
@@ -3848,51 +3844,64 @@ class Part extends Asset {
             while ($row = $stmt->fetch()) {
 
 
-
-                if (
-
-                (  !($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Quantity'] > 0) and $running_cost_per_sko != '') or
-                (  $row['Inventory Transaction Section']=='In' and   $row['Inventory Transaction Type']!='In'  )
+                //print_r($row);
 
 
-                ) {
-
-
-                    $sql = sprintf(
-                        'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ', $row['Inventory Transaction Quantity'] * $running_cost_per_sko,
-
-                        $row['Inventory Transaction Key']
-                    );
-
-
-                    $this->db->exec($sql);
-
-                    $amount = $row['Inventory Transaction Quantity'] * $running_cost_per_sko;
-
+                if ($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Type'] == 'In') {
+                    $booked_in = true;
+                    $amount    = $row['Inventory Transaction Amount'];
 
                 } else {
-                    $amount = $row['Inventory Transaction Amount'];
+                    $amount = 0;
+                    if ($row['Inventory Transaction Quantity'] != 0) {
+
+                        if (!$booked_in) {
+
+                            $sql   =
+                                "select `Inventory Transaction Amount`/`Inventory Transaction Quantity` as cost_per_sko  FROM `Inventory Transaction Fact` WHERE `Part SKU`=? and `Inventory Transaction Section`='In' and `Inventory Transaction Type`='In' order by `Date` limit 1 ";
+                            $stmt2 = $this->db->prepare($sql);
+                            $stmt2->execute(
+                                array($this->id)
+                            );
+                            if ($row2 = $stmt2->fetch()) {
+                                $current_cost_per_sko = $row2['cost_per_sko'];
+                                $booked_in            = true;
+                            }
+                        }
+
+
+                        $amount = $row['Inventory Transaction Quantity'] * $current_cost_per_sko;
+                        $sql    = "UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=?  WHERE `Inventory Transaction Key`=? ";
+                        $this->db->prepare($sql)->execute(
+                            array(
+                                $amount,
+                                $row['Inventory Transaction Key']
+                            )
+                        );
+                        $this->db->exec($sql);
+
+
+                    }
                 }
 
-                $amount = round($amount, 6);
+                $old_running_stock = $running_stock;
 
-               // print "$running_stock_value  $amount --->";
+                $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
+                $running_stock_value = $running_stock_value + $amount;
 
+                if ($old_running_stock > 0 and $running_stock > 0) {
+                    $current_cost_per_sko = $running_stock_value / $running_stock;
 
-                $running_stock       = round($running_stock + $row['Inventory Transaction Quantity'], 5);
-                $running_stock_value = round($running_stock_value + $amount, 6);
-                if ($running_stock != 0) {
-                    $running_cost_per_sko = $running_stock_value / $running_stock;
                 }
 
 
-               // print "$running_stock_value  \n";
+                //print "Qty $running_stock  | $ $running_stock_value  ( $current_cost_per_sko )  \n";
 
 
                 $data_to_update[] = array(
                     $running_stock,
                     $running_stock_value,
-                    $running_cost_per_sko,
+                    $current_cost_per_sko,
                     $row['Inventory Transaction Key']
                 );
 
@@ -3911,11 +3920,9 @@ class Part extends Asset {
             }
 
 
-            $this->update_field_switcher('Part Cost in Warehouse', $running_cost_per_sko, 'no_history');
+            $this->update_field_switcher('Part Cost in Warehouse', $current_cost_per_sko, 'no_history');
 
         } else {
-
-            $running_stock = 0;
 
 
             $sql = sprintf(

@@ -12,6 +12,7 @@
 
 require_once 'common.php';
 require_once 'utils/object_functions.php';
+/** @var PDO $db */
 
 $where='';
 $print_est = true;
