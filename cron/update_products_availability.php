@@ -30,7 +30,7 @@ $editor = array(
 
 $where='';
 $total=0;
-$sql = sprintf("SELECT count(*) AS num FROM `Product Dimension` %s", $where);
+$sql = "SELECT count(*) AS num FROM `Product Dimension` $where ";
 /** @var PDO $db */
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
@@ -43,7 +43,7 @@ $contador  = 0;
 
 
 
-$sql = "SELECT `Product ID` FROM `Product Dimension` order by `Product ID`  desc ";
+$sql = "SELECT `Product ID` FROM `Product Dimension` $where order by `Product ID`  desc ";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
