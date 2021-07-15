@@ -15,9 +15,9 @@
  * @param      $key
  * @param bool $load_other_data
  *
- * @return \Account|bool|\Customer|\Fulfilment_Delivery|\Fulfilment_Asset|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Raw_Material|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
+ * @return \Account|bool|\Customer|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Raw_Material|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
  */
-function get_object($object_name, $key, bool $load_other_data = false) {
+function get_object($object_name, $key, $load_other_data = false) {
 
     if ($object_name == '') {
         return false;
@@ -30,16 +30,21 @@ function get_object($object_name, $key, bool $load_other_data = false) {
 
 
     global $db;
-    $object = false;
+
 
     switch (strtolower($object_name.$load_other_data)) {
         case 'account':
             include_once 'class.Account.php';
             $object = new Account();
             break;
+
         case 'customer':
             include_once 'class.Customer.php';
+            /**
+             * @var $object \Customer
+             */
             $object = new Customer('id', $key);
+
             break;
         case 'store':
             include_once 'class.Store.php';
@@ -55,6 +60,7 @@ function get_object($object_name, $key, bool $load_other_data = false) {
         case 'public_product':
             include_once 'class.Public_Product.php';
             $object = new Public_Product($key);
+
             break;
         case 'public_category':
             include_once 'class.Public_Category.php';
@@ -195,7 +201,7 @@ function get_object($object_name, $key, bool $load_other_data = false) {
             break;
 
         case 'store_payment_account':
-            $tmp = preg_split('/_/', $key);
+            $tmp = preg_split('/\_/', $key);
             require_once "class.Payment_Account.php";
             $object = new Payment_Account($tmp[1]);
             break;
@@ -251,6 +257,10 @@ function get_object($object_name, $key, bool $load_other_data = false) {
             require_once "class.Image.php";
             $object = new Image('image_bridge_key', $key);
             break;
+        case 'upload':
+            require_once "class.Upload.php";
+            $object = new Upload($key);
+            break;
         case 'supplier_part':
         case 'supplierpart':
         case 'supplier part':
@@ -289,7 +299,7 @@ function get_object($object_name, $key, bool $load_other_data = false) {
             break;
         case 'campaign_code-store_key':
             require_once "class.DealCampaign.php";
-            $keys   = preg_split('/\|/', $key);
+            $keys = preg_split('/\|/', $key);
             $object = new DealCampaign('code_store', $keys[0], $keys[1]);
             break;
         case 'deal':
@@ -330,6 +340,9 @@ function get_object($object_name, $key, bool $load_other_data = false) {
                     require_once "class.SupplierPart.php";
                     $object = new SupplierPart($row['Supplier Part Key']);
                 }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
             }
             break;
         case 'supplierdelivery':
@@ -376,7 +389,10 @@ function get_object($object_name, $key, bool $load_other_data = false) {
             require_once "class.Email_Blueprint.php";
             $object = new Email_Blueprint($key);
             break;
-
+        case 'email_template':
+            require_once "class.Email_Template.php";
+            $object = new Email_Template($key);
+            break;
         case 'published_email_template':
             require_once "class.Published_Email_Template.php";
             $object = new Published_Email_Template($key);
@@ -414,6 +430,11 @@ function get_object($object_name, $key, bool $load_other_data = false) {
             $object = new Shipping_Zone_Schema($key);
             break;
 
+        case 'shipping_option':
+        case 'shippingoption':
+            require_once "class.Shipping_Option.php";
+            $object = new Shipping_Option($key);
+            break;
         case 'email_campaign':
         case 'emailcampaign':
         case 'email campaign':
@@ -469,6 +490,7 @@ function get_object($object_name, $key, bool $load_other_data = false) {
         case 'email template':
         case 'email_template':
         case 'emailtemplate':
+
             include_once 'class.Email_Template.php';
             $object = new Email_Template('id', $key);
             break;
@@ -527,7 +549,7 @@ function get_object($object_name, $key, bool $load_other_data = false) {
             include_once 'class.External_Invoicer.php';
             $object = new External_Invoicer('id', $key);
             break;
-        case 'picking band':
+        case 'picking_band':
         case 'picking_band':
         case 'pickingband':
             include_once 'class.PickingBand.php';
@@ -538,6 +560,7 @@ function get_object($object_name, $key, bool $load_other_data = false) {
             include_once 'class.Customer_Fulfilment.php';
             $object = new Customer_Fulfilment('id', $key);
             break;
+
         case 'fulfilment_delivery':
         case 'fulfilment delivery':
             include_once 'class.Fulfilment_Delivery.php';
@@ -562,6 +585,5 @@ function get_object($object_name, $key, bool $load_other_data = false) {
 
 
 }
-
 
 
