@@ -455,7 +455,7 @@ class PartLocation extends DB_Table {
                 $this->db->exec($sql);
 
 
-                $part_unk_location->update_stock($dont_update_part_stock = true);
+                $part_unk_location->update_stock(true);
                 $this->part->update_unknown_location();
 
 
@@ -674,7 +674,6 @@ class PartLocation extends DB_Table {
                     $this->get('Minimum Quantity'),
                     $this->get('Maximum Quantity')
                 );
-                break;
             case 'min max':
                 return array(
                     ($this->get('Minimum Quantity') != '' ? number(
@@ -684,15 +683,12 @@ class PartLocation extends DB_Table {
                         $this->get('Maximum Quantity')
                     ) : '?')
                 );
-                break;
             case 'Part Location Moving Quantity':
                 return $this->data['Moving Quantity'];
-                break;
             case 'Moving Quantity':
                 return $this->data['Moving Quantity'] != '' ? number(
                     $this->data['Moving Quantity']
                 ) : '?';
-                break;
 
             default:
                 if (array_key_exists($key, $this->data)) {
@@ -766,9 +762,6 @@ class PartLocation extends DB_Table {
                     }
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 

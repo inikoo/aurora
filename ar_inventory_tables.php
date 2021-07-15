@@ -800,7 +800,6 @@ function stock_transactions($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-            //MossRB-04 227330 Taken from: 11A1
 
             $note   = $data['Note'];
             $change = $data['Inventory Transaction Quantity'];

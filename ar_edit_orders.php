@@ -865,7 +865,7 @@ function update_po_item_note($data, $db) {
  * @param $editor
  * @param $data
  */
-function edit_item_in_order($db, $editor, $data) {
+function edit_item_in_order(PDO $db, $editor, $data) {
 
 
     $parent         = get_object($data['parent'], $data['parent_key']);
