@@ -3841,18 +3841,18 @@ class Product extends Asset {
 
     function updating_packing_data() {
 
-        $sko              = '';
-        $carton           = '';
-        $batch            = '';
+        $sko    = '';
+        $carton = '';
+        $batch  = '';
 
 
         if ($this->get('Product Number of Parts') == 1) {
             foreach ($this->get_parts_data('Objects') as $part_data) {
 
 
-                $sko    = $part_data['Ratio'];
-                if($part_data['Part']->get('Part SKOs per Carton')>0) {
-                    $carton           = $part_data['Ratio'] / $part_data['Part']->get('Part SKOs per Carton');
+                $sko = $part_data['Ratio'];
+                if ($part_data['Part']->get('Part SKOs per Carton') > 0) {
+                    $carton = $part_data['Ratio'] / $part_data['Part']->get('Part SKOs per Carton');
                 }
             }
         }
@@ -4004,8 +4004,6 @@ class Product extends Asset {
 
         foreach ($this->get_parts_data($with_objects = true) as $part_data) {
             if ($part_data['Part']->get('Part Cost in Warehouse') != '') {
-
-
                 $part_cost = $part_data['Part']->get('Part Cost in Warehouse');
             } else {
                 $part_cost = $part_data['Part']->get('Part Cost');
@@ -4015,8 +4013,12 @@ class Product extends Asset {
 
         }
 
+        $this->fast_update(
+            [
+                'Product Cost' => $cost
+            ]
+        );
 
-        $this->update(array('Product Cost' => $cost), 'no_history');
     }
 
     function get_deal_components($scope = 'keys', $options = 'Active') {

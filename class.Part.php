@@ -3832,6 +3832,12 @@ class Part extends Asset {
             $booked_in            = false;
 
 
+            $units_factor=$this->get('Part Units Per Package');
+
+            $unit_decimals=3;
+            $threshold=0.1;
+
+
             $sql = "SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO`
                 FROM `Inventory Transaction Fact` WHERE `Part SKU`=?    ORDER BY `Date`   ";
 
@@ -3844,15 +3850,18 @@ class Part extends Asset {
             while ($row = $stmt->fetch()) {
 
 
-                //print_r($row);
+              //  print_r($row);
 
 
                 if ($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Type'] == 'In') {
+                    $type='in';
                     $booked_in = true;
                     $amount    = $row['Inventory Transaction Amount'];
 
                 } else {
                     $amount = 0;
+                    $type='other';
+
                     if ($row['Inventory Transaction Quantity'] != 0) {
 
                         if (!$booked_in) {
@@ -3889,13 +3898,21 @@ class Part extends Asset {
                 $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
                 $running_stock_value = $running_stock_value + $amount;
 
-                if ($old_running_stock > 0 and $running_stock > 0) {
+                if ($old_running_stock > 0 and $running_stock > $threshold     ) {
                     $current_cost_per_sko = $running_stock_value / $running_stock;
 
+                }elseif($type=='in' and $row['Inventory Transaction Quantity']>0        ){
+                    $current_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
                 }
 
 
-                //print "Qty $running_stock  | $ $running_stock_value  ( $current_cost_per_sko )  \n";
+                $running_stock_units=round($units_factor*$running_stock,$unit_decimals);
+
+                $running_stock= $running_stock_units/$units_factor;
+
+
+
+               // print "Qty $running_stock  ($running_stock_units)u | $ $running_stock_value  ( $current_cost_per_sko )  \n";
 
 
                 $data_to_update[] = array(

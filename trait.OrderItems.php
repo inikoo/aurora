@@ -17,7 +17,7 @@ trait OrderItems {
      */
     public $db;
 
-    function update_item($data) {
+    function update_item($data): array {
 
 
         $product = get_object('Product', $data['item_historic_key'], 'historic_key');
@@ -94,9 +94,9 @@ trait OrderItems {
 
             //todo this is too bad!!!!! you need to choose the proper DN
 
-            $_deliveries=$this->get_deliveries('keys');
-            $dn_key = array_pop($_deliveries);
-            $dn     = get_object('DeliveryNote', $dn_key);
+            $_deliveries = $this->get_deliveries();
+            $dn_key      = array_pop($_deliveries);
+            $dn          = get_object('DeliveryNote', $dn_key);
 
 
         } else {
@@ -139,9 +139,6 @@ trait OrderItems {
             $total_quantity = $quantity + $bonus_quantity;
 
 
-           
-
-
             if ($total_quantity == 0) {
 
 
@@ -155,14 +152,15 @@ trait OrderItems {
             } else {
 
 
-                $gross            = round($quantity * $product->data['Product History Price'], 2);
+                $gross = round($quantity * $product->data['Product History Price'], 2);
 
                 $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
-                $cost         = round($quantity * $product_cost, 4);
+                $cost         = round($total_quantity * $product_cost, 4);
+
 
 
                 $sql = "update `Order Transaction Fact` set 
-                                    `Order Quantity`=?,`Order Bonus Quantity`=?,`Order Last Updated Date`=?,`Order Transaction Gross Amount`=?,`Order Transaction Total Discount Amount`=?,`Order Transaction Amount`=?,`Current Dispatching State`=?  ,`Cost Supplier`=? 
+                                    `Order Quantity`=?,`Order Bonus Quantity`=?,`Order Last Updated Date`=?,`Order Transaction Gross Amount`=?,`Order Transaction Total Discount Amount`=?,`Order Transaction Amount`=?,`Current Dispatching State`=? ,`Cost Supplier`=?
                                     where `Order Transaction Fact Key`=? ";
 
 
@@ -185,6 +183,9 @@ trait OrderItems {
                 }
 
 
+
+
+
                 if ($dn_key) {
 
                     $sql = "UPDATE `Order Transaction Fact` SET `Delivery Note Key`=? WHERE `Order Transaction Fact Key`=?";
@@ -199,12 +200,8 @@ trait OrderItems {
                 }
 
 
-
-
-
             }
-        }
-        else{
+        } else {
             $old_quantity   = 0;
             $old_net_amount = 0;
             $total_quantity = $quantity + $bonus_quantity;
@@ -212,7 +209,7 @@ trait OrderItems {
 
             if ($total_quantity > 0) {
 
-                $gross            = round($quantity * $product->data['Product History Price'], 2);
+                $gross = round($quantity * $product->data['Product History Price'], 2);
 
                 $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
                 $cost         = round($total_quantity * $product_cost, 4);
@@ -263,7 +260,7 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
                 $otf_key = $this->db->lastInsertId();
-                if(!$otf_key){
+                if (!$otf_key) {
                     throw new Exception('Error inserting OTF');
                 }
 
@@ -284,8 +281,6 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             }
         }
 
-
-       
 
         $this->update_field('Order Last Updated Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
@@ -574,7 +569,6 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             );
 
 
-
             if (in_array(
                 $this->get('Order State'), array(
                                              'Cancelled',
@@ -588,8 +582,7 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                 $discounts_class = 'button';
                 $discounts_input = sprintf(
                     '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                    $otf_key,
-                    percentage($gross_discounts, $gross)
+                    $otf_key, percentage($gross_discounts, $gross)
                 );
             }
             $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
@@ -620,8 +613,7 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                 'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
             );
 
-        }
-        else {
+        } else {
 
             $net_amount = $gross;
             if (in_array(
@@ -697,7 +689,7 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
     }
 
-    function get_items() {
+    function get_items(): array {
 
 
         $sql = sprintf(

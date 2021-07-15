@@ -46,7 +46,7 @@ class data_entry_picking_aid {
     }
 
 
-    function parse_input_data() {
+    function parse_input_data(): array {
 
 
         if ($this->dn->get('State Index') < 70) {
@@ -211,43 +211,42 @@ class data_entry_picking_aid {
 
                     if ($dim[0] == 0 or $dim[1] == 0 or $dim[2] == 0 or $dim[0] == '' or $dim[1] == '' or $dim[2] == '') {
 
-                            $response = array(
-                                'state' => 400,
-                                'msg'   => 'Dimensions can not be zero'
-                            );
+                        $response = array(
+                            'state' => 400,
+                            'msg'   => 'Dimensions can not be zero'
+                        );
 
-                            return array(
-                                'valid'    => false,
-                                'response' => $response
-                            );
+                        return array(
+                            'valid'    => false,
+                            'response' => $response
+                        );
 
                     }
 
 
-                    $service = [
+                    $service    = [
                         'ServiceId'          => '78109',
                         'ServiceProviderId'  => '77',
                         'ServiceCustomerUID' => '21753',
                         //'21753',
                     ];
-                    $reference2='packet';
+                    $reference2 = 'packet';
                     if ($this->data['parcels'][0]['weight'] < .75 and $dim[0] <= 35 and $dim[1] <= 25 and $dim[1] <= 2.5) {
-                        $service = [
+                        $service    = [
                             'ServiceId'          => '78108',
                             'ServiceProviderId'  => '77',
                             'ServiceCustomerUID' => '21751',
                             //'21751',
                         ];
-                        $reference2='envelop';
+                        $reference2 = 'envelop';
                     }
 
 
-                    $this->data['service'] = json_encode($service);
+                    $this->data['service']    = json_encode($service);
                     $this->data['reference2'] = $reference2;
 
 
                 }
-
 
 
                 /*
@@ -288,11 +287,7 @@ class data_entry_picking_aid {
                 while ($row = $stmt->fetch()) {
                     $itf_keys[$row['Inventory Transaction Key']] = $row['Inventory Transaction Key'];
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit();
             }
-
 
             $missing_itf_keys = $itf_keys;
             $extra_itf_keys   = array();
@@ -378,6 +373,9 @@ class data_entry_picking_aid {
     }
 
 
+    /**
+     * @throws \Exception
+     */
     function update_delivery_note() {
 
         if ($this->dn->get('State Index') < 70) {
@@ -550,7 +548,7 @@ class data_entry_picking_aid {
 
 
             $this->clean_transactions();
-            $this->recreate_itfs();
+            $this->recreate_itf_records();
 
             $this->pack_transactions($date);
         }
@@ -569,7 +567,7 @@ class data_entry_picking_aid {
 
     }
 
-    function recreate_itfs() {
+    function recreate_itf_records() {
 
 
         foreach ($this->data['items'] as $part_sku => $_transaction) {
@@ -594,9 +592,9 @@ class data_entry_picking_aid {
             }
 
 
-            $total_required    = 0;
-            $part_transactions = array();
-            $otf_maps          = array();
+            $total_required = 0;
+            //$part_transactions = array();
+            $otf_maps = array();
 
             $sql = 'SELECT `Required`,`Given`,`Map To Order Transaction Fact Key`,`Location Key`,`Inventory Transaction Key`, `Map To Order Transaction Fact Metadata` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=? and `Part SKU`=? ';
 
@@ -611,8 +609,8 @@ class data_entry_picking_aid {
                     $_required      = $row['Required'] + $row['Given'];
                     $total_required += $_required;
 
-                    $part_transactions[$row['Inventory Transaction Key']]              = $row;
-                    $part_transactions[$row['Inventory Transaction Key']]['_required'] = $_required;
+                    //$part_transactions[$row['Inventory Transaction Key']]              = $row;
+                    //$part_transactions[$row['Inventory Transaction Key']]['_required'] = $_required;
 
                     if (isset($itf_indexed_data[$row['Inventory Transaction Key']]['qty']) and is_numeric($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])) {
                         $_diff = $itf_indexed_data[$row['Inventory Transaction Key']]['qty'] - $_required;
@@ -620,7 +618,7 @@ class data_entry_picking_aid {
                         $_diff = -$_required;
                     }
 
-                    $part_transactions[$row['Inventory Transaction Key']]['_diff'] = $_diff;
+                    //$part_transactions[$row['Inventory Transaction Key']]['_diff'] = $_diff;
 
                     if ($_diff != 0) {
                         $transactions_with_diff++;
@@ -834,8 +832,11 @@ class data_entry_picking_aid {
 
     }
 
-    function create_itf($part_sku, $location_key, $required, $given, $map_to_otf_key, $map_to_otf_metadata) {
+    function create_itf($part_sku, $location_key, $required, $given, $map_to_otf_key, $map_to_otf_metadata): string {
 
+        /**
+         * @var Part $part
+         */
         $part = get_object('Part', $part_sku);
         list($supplier_key, $supplier_part_key, $supplier_part_historic_key) = $part->get_stock_supplier_data();
 
@@ -891,7 +892,7 @@ class data_entry_picking_aid {
         include_once 'utils/new_fork.php';
 
 
-        foreach ($this->data['items'] as $part_sku => $_transaction) {
+        foreach ($this->data['items'] as $_transaction) {
 
             foreach ($_transaction as $transaction) {
 
@@ -963,24 +964,32 @@ class data_entry_picking_aid {
 
                             $cost = 0;
 
-                            $sql = sprintf('SELECT sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Map To Order Transaction Fact Key`=%d ', $row['Map To Order Transaction Fact Key']);
-                            if ($result2 = $this->dn->db->query($sql)) {
-                                if ($row2 = $result2->fetch()) {
-                                    if ($row2['amount'] == '') {
-                                        $row2['amount'] = 0;
-                                    }
+                            $sql = 'SELECT sum(`Inventory Transaction Amount`) AS amount FROM `Inventory Transaction Fact` WHERE `Map To Order Transaction Fact Key`=?';
 
-                                    $cost = -1 * $row2['amount'];
+                            $stmt2 = $this->dn->db->prepare($sql);
+                            $stmt2->execute(
+                                array(
+                                    $row['Map To Order Transaction Fact Key']
+                                )
+                            );
+                            while ($row2 = $stmt2->fetch()) {
+                                if ($row2['amount'] == '') {
+                                    $row2['amount'] = 0;
                                 }
-                            } else {
-                                print_r($error_info = $this->dn->db->errorInfo());
-                                print "$sql\n";
-                                exit;
+
+                                $cost = -1 * $row2['amount'];
                             }
 
-                            $sql = sprintf('UPDATE `Order Transaction Fact` SET `Cost Supplier`=%f  WHERE  `Order Transaction Fact Key`=%d', $cost, $row['Map To Order Transaction Fact Key']);
-                            //print "$sql\n";
-                            $this->dn->db->exec($sql);
+
+                            $sql = 'UPDATE `Order Transaction Fact` SET `Cost Supplier`=?  WHERE  `Order Transaction Fact Key`=?';
+
+
+                            $this->dn->db->prepare($sql)->execute(
+                                array(
+                                    $cost,
+                                    $row['Map To Order Transaction Fact Key']
+                                )
+                            );
 
 
                             new_housekeeping_fork(
@@ -993,10 +1002,6 @@ class data_entry_picking_aid {
 
 
                         }
-                    } else {
-                        print_r($error_info = $this->dn->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
                 }
 
@@ -1007,6 +1012,9 @@ class data_entry_picking_aid {
 
     }
 
+    /**
+     * @throws \Exception
+     */
     function finish_packing($options = '{}') {
 
         $state_index = $this->dn->get('State Index');
@@ -1035,7 +1043,7 @@ class data_entry_picking_aid {
 
         if ($state_index < 70) {
 
-            if (  isset($this->shipper) and    $this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
+            if (isset($this->shipper) and $this->shipper->id and $this->shipper->get('Shipper API Key') != '') {
                 $service = '';
                 if (isset($this->data['service'])) {
                     $service = $this->data['service'];
@@ -1046,7 +1054,7 @@ class data_entry_picking_aid {
                 }
 
 
-                $this->dn->get_label($service,$reference2);
+                $this->dn->get_label($service, $reference2);
             }
         }
 

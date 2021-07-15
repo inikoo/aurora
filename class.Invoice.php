@@ -724,27 +724,7 @@ class Invoice extends DB_Table {
             $customer->update_invoices();
 
 
-            $profit = 0;
-            $sql    = sprintf(
-                "SELECT sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Refund' ", $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-
-                    $profit = $row['net'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-            $this->fast_update(
-                array(
-
-                    'Invoice Total Profit' => $profit
-                )
-            );
+            $this->update_profit();
 
 
             $this->update_billing_region();
@@ -1574,7 +1554,7 @@ class Invoice extends DB_Table {
                     $dn = get_object('DeliveryNote', $extra_data['dn_key']);
                     $dn->fast_update_json_field('Delivery Note Properties', 'ups', true);
                     if ($account->properties('ups_tax_number') != '') {
-                        $dn->fast_update_json_field('Delivery Note Properties', 'store_vat_number',$account->properties('ups_tax_number'));
+                        $dn->fast_update_json_field('Delivery Note Properties', 'store_vat_number', $account->properties('ups_tax_number'));
                     }
                 }
 
@@ -1733,28 +1713,7 @@ class Invoice extends DB_Table {
 
             $this->update_payments_totals();
 
-
-            $profit = 0;
-            $sql    = sprintf(
-                "SELECT sum(`Cost Supplier`) AS cost, sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Order' ", $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-
-                    $profit = $row['net'] - $row['cost'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-            $this->fast_update(
-                array(
-
-                    'Invoice Total Profit' => $profit
-                )
-            );
+            $this->update_profit();
 
 
             $this->update_billing_region();
@@ -2931,6 +2890,48 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
             $this->fast_update_json_field('Invoice Metadata', 'google_drive_file_key', $file_key);
         }
+    }
+
+    function update_profit() {
+
+        $profit = 0;
+        if ($this->data['Invoice Type'] == 'Invoice') {
+
+
+            $sql    = sprintf(
+                "SELECT sum(`Cost Supplier`) AS cost, sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Order' ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $profit = $row['net'] - $row['cost'];
+                }
+            }
+
+        } else {
+
+            $sql    = sprintf(
+                "SELECT sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Refund' ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $profit = $row['net'];
+                }
+            }
+
+        }
+        $this->fast_update(
+            array(
+
+                'Invoice Total Profit' => $profit
+            )
+        );
+
     }
 }
 
