@@ -11,6 +11,7 @@ CREATE TABLE `Fulfilment Delivery Dimension`
     `Fulfilment Delivery Customer Telephone`                varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci                                  DEFAULT NULL,
     `Fulfilment Delivery Store Key`                         smallint unsigned                                                                              DEFAULT NULL,
     `Fulfilment Delivery Warehouse Key`                     smallint unsigned                                                                              DEFAULT NULL,
+    `Fulfilment Delivery Order Key`                         mediumint unsigned                                                                             DEFAULT NULL,
     `Fulfilment Delivery State`                             enum ('InProcess','Received','Checked','ReadyToPlace','Placed','InOrder','Cancelled') NOT NULL DEFAULT 'InProcess',
     `Fulfilment Delivery Date`                              date                                                                                           DEFAULT NULL,
     `Fulfilment Delivery Date Type`                         enum ('Creation','Received','Placed','InOrder','Cancelled')                                    DEFAULT NULL,
@@ -19,6 +20,7 @@ CREATE TABLE `Fulfilment Delivery Dimension`
     `Fulfilment Delivery Received Date`                     datetime                                                                                       DEFAULT NULL,
     `Fulfilment Delivery Checked Date`                      datetime                                                                                       DEFAULT NULL,
     `Fulfilment Delivery Placed Date`                       datetime                                                                                       DEFAULT NULL,
+    `Fulfilment Delivery In Order  Date`                    datetime                                                                                       DEFAULT NULL,
     `Fulfilment Delivery Cancelled Date`                    datetime                                                                                       DEFAULT NULL,
     `Fulfilment Delivery Last Updated Date`                 datetime                                                                                       DEFAULT NULL COMMENT 'Latest Date when Adding/Modify Fulfilment Delivery Transaction or Data',
     `Fulfilment Delivery Public ID`                         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci                                  DEFAULT NULL,
@@ -111,7 +113,7 @@ CREATE TABLE `Fulfilment Asset Dimension`
     `Fulfilment Asset Warehouse Key`           mediumint unsigned                                                                             NOT NULL,
     `Fulfilment Asset Customer Key`            mediumint unsigned                                                                             NOT NULL,
     `Fulfilment Asset Fulfilment Delivery Key` mediumint unsigned                                                                             NOT NULL,
-    `Fulfilment Asset Fulfilment Order Key`    mediumint unsigned                                                                                      DEFAULT NULL,
+    `Fulfilment Asset Order Key`               mediumint unsigned                                                                                      DEFAULT NULL,
     `Fulfilment Asset Location Key`            mediumint unsigned                                                                                      DEFAULT NULL,
     `Fulfilment Asset Reference`               varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci                                            DEFAULT NULL,
     `Fulfilment Asset Note`                    text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -124,7 +126,7 @@ CREATE TABLE `Fulfilment Asset Dimension`
     KEY `Fulfilment Asset Reference` (`Fulfilment Asset Reference`),
     KEY `Fulfilment Asset Status` (`Fulfilment Asset State`),
     KEY `Fulfilment Asset Fulfilment Delivery Key` (`Fulfilment Asset Fulfilment Delivery Key`),
-    KEY `Fulfilment Asset Fulfilment Order Key` (`Fulfilment Asset Fulfilment Order Key`)
+    KEY `Fulfilment Asset Fulfilment Order Key` (`Fulfilment Asset Order Key`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
