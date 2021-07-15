@@ -164,13 +164,13 @@ class Location extends DB_Table {
         //  print_r($this->data);
 
         $sql = sprintf(
-            "INSERT INTO `Location Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
+            " INTO `Location Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
         );
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare('INSERT '.$sql);
 
         $i = 1;
-        foreach ($this->data as $key => $value) {
+        foreach ($this->data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -214,11 +214,6 @@ class Location extends DB_Table {
             return $this;
 
 
-        } else {
-
-            print_r($error_info = $stmt->errorInfo());
-
-            exit('XXXxxXXX');
         }
 
 
@@ -1027,6 +1022,31 @@ class Location extends DB_Table {
         }
 
         return $label;
+
+    }
+
+    function update_fulfilment_status() {
+
+        $number_assets = 0;
+        $sql  = "select count(*) as num from `Fulfilment Asset Dimension` where `Fulfilment Asset Location Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $number_assets = $row['num'];
+        }
+
+        $this->fast_update(
+            [
+                'Location Fulfilment'=>($number_assets>0?'Yes':'No')
+            ]
+        );
+
+
+
 
     }
 

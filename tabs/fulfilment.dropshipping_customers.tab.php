@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection DuplicatedCode */
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -8,6 +8,9 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var array $state */
 
 if ( $user->can_view('fulfilment')) {
 

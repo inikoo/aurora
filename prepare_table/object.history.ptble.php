@@ -233,6 +233,16 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Order Basket Purge Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Order Basket Purge';
+}elseif ($parameters['parent'] == 'fulfilment_delivery') {
+    $where   = sprintf(
+        ' where   B.`Fulfilment Delivery Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Fulfilment Delivery';
+}elseif ($parameters['parent'] == 'fulfilment_asset') {
+    $where   = sprintf(
+        ' where   B.`Fulfilment Asset Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Fulfilment Asset';
 }else {
     print_r($parameters);
     exit('parent not set up '.$parameters['parent']);

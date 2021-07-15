@@ -807,6 +807,7 @@ CREATE TABLE `Account Dimension` (
   `Account Company Key` mediumint unsigned DEFAULT NULL,
   `SR Category Key` mediumint DEFAULT NULL,
   `Account Invoice Public ID Format` varchar(32) NOT NULL DEFAULT '%05d',
+  `Account Invoice Last Invoice Alt Public ID` int unsigned NOT NULL DEFAULT '0',
   `Account Invoice Last Invoice Public ID` int unsigned NOT NULL DEFAULT '0',
   `Account Invoice Last Refund Public ID` int unsigned NOT NULL DEFAULT '0',
   `Account Refund Public ID Format` varchar(32) NOT NULL DEFAULT '%05d',
@@ -1583,7 +1584,7 @@ DROP TABLE IF EXISTS `Attachment Bridge`;
 CREATE TABLE `Attachment Bridge` (
   `Attachment Bridge Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `Attachment Key` mediumint unsigned NOT NULL,
-  `Subject` enum('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier','Supplier Delivery') NOT NULL,
+  `Subject` enum('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier','Supplier Delivery','Fulfilment Delivery') NOT NULL,
   `Subject Key` int unsigned NOT NULL,
   `Attachment Subject Type` enum('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS','Image','Contact Card','Delivery Paperwork') NOT NULL DEFAULT 'Other',
   `Attachment Caption` text,
@@ -1818,8 +1819,6 @@ CREATE TABLE `Category Deleted Dimension` (
   `Category Deleted Branch Type` enum('Root','Head','Node') NOT NULL DEFAULT 'Node',
   `Category Deleted Store Key` mediumint unsigned NOT NULL DEFAULT '0',
   `Category Deleted Warehouse Key` smallint unsigned NOT NULL DEFAULT '0',
-  `Category Deleted XHTML Branch Tree` varchar(1024) DEFAULT NULL,
-  `Category Deleted Plain Branch Tree` varchar(1024) DEFAULT NULL,
   `Category Deleted Deep` smallint unsigned NOT NULL DEFAULT '0',
   `Category Deleted Children` mediumint NOT NULL DEFAULT '0',
   `Category Deleted Code` varchar(64) NOT NULL,
@@ -1859,8 +1858,6 @@ CREATE TABLE `Category Dimension` (
   `Category Root Key` mediumint unsigned NOT NULL DEFAULT '0',
   `Category Parent Key` mediumint unsigned NOT NULL DEFAULT '0',
   `Category Position` varchar(255) NOT NULL,
-  `Category XHTML Branch Tree` text,
-  `Category Plain Branch Tree` text,
   `Category Deep` smallint unsigned NOT NULL DEFAULT '0',
   `Category Children` mediumint NOT NULL DEFAULT '0',
   `Category Children Deep` mediumint NOT NULL DEFAULT '0',
@@ -2520,7 +2517,6 @@ CREATE TABLE `Customer Dimension` (
   `Customer Tax Balance` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Customer Type by Activity` enum('Rejected','ToApprove','Active','Losing','Lost') NOT NULL DEFAULT 'Active',
   `Customer Location Type` enum('Domestic','Export') NOT NULL DEFAULT 'Domestic',
-  `Customer Type` enum('Company','Person','Unknown') NOT NULL DEFAULT 'Unknown',
   `Customer Company Name` varchar(255) DEFAULT '',
   `Identified Customer` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Customer Orders Top Percentage` float DEFAULT NULL,
@@ -2625,9 +2621,11 @@ DROP TABLE IF EXISTS `Customer Fulfilment Dimension`;
 CREATE TABLE `Customer Fulfilment Dimension` (
   `Customer Fulfilment Customer Key` mediumint NOT NULL,
   `Customer Fulfilment Warehouse Key` mediumint unsigned NOT NULL,
+  `Customer Fulfilment Type` enum('Dropshipping','Asset_Keeping') NOT NULL DEFAULT 'Asset_Keeping',
   `Customer Fulfilment Status` enum('ToApprove','Rejected','Approved','InProcess','Storing','StoringEnd','Lost') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Approved',
   `Customer Fulfilment Parts` mediumint unsigned NOT NULL DEFAULT '0',
   `Customer Fulfilment Stored Parts` mediumint unsigned NOT NULL DEFAULT '0',
+  `Customer Fulfilment Stored Assets` mediumint unsigned NOT NULL DEFAULT '0',
   `Customer Fulfilment Locations` mediumint unsigned NOT NULL DEFAULT '0',
   `Customer Fulfilment Metadata` json DEFAULT NULL,
   PRIMARY KEY (`Customer Fulfilment Customer Key`),
@@ -2796,6 +2794,74 @@ CREATE TABLE `Customer Part Category Bridge` (
   PRIMARY KEY (`Customer Part Category Customer Key`,`Customer Part Category Category Key`),
   KEY `Customer Part Category Customer Key` (`Customer Part Category Customer Key`),
   KEY `Customer Part Category Category Key` (`Customer Part Category Category Key`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Part Deleted Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Part Deleted Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Customer Part Deleted Dimension` (
+  `Customer Part Deleted Key` mediumint NOT NULL,
+  `Customer Part Deleted Reference` varchar(255) DEFAULT NULL,
+  `Customer Part Deleted Date` datetime DEFAULT NULL,
+  `Customer Part Deleted Metadata` blob,
+  PRIMARY KEY (`Customer Part Deleted Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Part Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Part Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Customer Part Dimension` (
+  `Customer Part Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Part Customer Key` mediumint unsigned NOT NULL,
+  `Customer Part Part SKU` mediumint unsigned DEFAULT NULL,
+  `Customer Part Reference` varchar(255) DEFAULT NULL,
+  `Customer Part Description` varchar(255) DEFAULT NULL,
+  `Customer Part Status` enum('Available','NoAvailable','Discontinued') NOT NULL DEFAULT 'Available',
+  `Customer Part From` datetime NOT NULL,
+  `Customer Part To` datetime DEFAULT NULL,
+  `Customer Part Unit Cost` decimal(16,4) unsigned DEFAULT NULL,
+  `Customer Part Currency Code` varchar(3) DEFAULT NULL,
+  `Customer Part Packages Per Carton` smallint NOT NULL DEFAULT '1',
+  `Customer Part Carton CBM` float unsigned DEFAULT NULL COMMENT 'cubic meters',
+  `Customer Part Carton Barcode` varchar(64) DEFAULT NULL,
+  `Customer Part Note to Customer` text,
+  `Customer Part Sticky Note` text,
+  `Customer Part Properties` json DEFAULT NULL,
+  `Customer Part Number History Records` smallint unsigned DEFAULT '0',
+  PRIMARY KEY (`Customer Part Key`),
+  KEY `Customer Part Customer Key` (`Customer Part Customer Key`),
+  KEY `Customer Part Description` (`Customer Part Description`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Part History Bridge`
+--
+
+DROP TABLE IF EXISTS `Customer Part History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Customer Part History Bridge` (
+  `Customer Part Key` mediumint unsigned NOT NULL,
+  `History Key` int unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Part') NOT NULL,
+  PRIMARY KEY (`Customer Part Key`,`History Key`),
+  KEY `Customer Part Key` (`Customer Part Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `History Key` (`History Key`),
+  KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4060,6 +4126,163 @@ CREATE TABLE `Fork Dimension` (
   PRIMARY KEY (`Fork Key`),
   KEY `Fork Token` (`Fork Token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Fulfilment Asset Dimension`
+--
+
+DROP TABLE IF EXISTS `Fulfilment Asset Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Fulfilment Asset Dimension` (
+  `Fulfilment Asset Key` int unsigned NOT NULL AUTO_INCREMENT,
+  `Fulfilment Asset State` enum('InProcess','Stored','Returned','Lost') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'InProcess',
+  `Fulfilment Asset Type` enum('Pallet','Box') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pallet',
+  `Fulfilment Asset Warehouse Key` mediumint unsigned NOT NULL,
+  `Fulfilment Asset Customer Key` mediumint unsigned NOT NULL,
+  `Fulfilment Asset Fulfilment Delivery Key` mediumint unsigned NOT NULL,
+  `Fulfilment Asset Fulfilment Order Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Asset Location Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Asset Reference` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Asset Note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Fulfilment Asset From` datetime DEFAULT NULL,
+  `Fulfilment Asset To` datetime DEFAULT NULL,
+  `Fulfilment Asset Metadata` json DEFAULT NULL,
+  `Fulfilment Asset Number History Records` mediumint unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Fulfilment Asset Key`),
+  KEY `Fulfilment Asset Customer Key` (`Fulfilment Asset Customer Key`),
+  KEY `Fulfilment Asset Reference` (`Fulfilment Asset Reference`),
+  KEY `Fulfilment Asset Status` (`Fulfilment Asset State`),
+  KEY `Fulfilment Asset Fulfilment Delivery Key` (`Fulfilment Asset Fulfilment Delivery Key`),
+  KEY `Fulfilment Asset Fulfilment Order Key` (`Fulfilment Asset Fulfilment Order Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Fulfilment Asset History Bridge`
+--
+
+DROP TABLE IF EXISTS `Fulfilment Asset History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Fulfilment Asset History Bridge` (
+  `Fulfilment Asset Key` mediumint unsigned NOT NULL,
+  `History Key` int unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Fulfilment Asset Key`,`History Key`),
+  KEY `Account Key` (`Fulfilment Asset Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Fulfilment Delivery Dimension`
+--
+
+DROP TABLE IF EXISTS `Fulfilment Delivery Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Fulfilment Delivery Dimension` (
+  `Fulfilment Delivery Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Fulfilment Delivery Type` enum('Part','Asset') DEFAULT 'Asset',
+  `Fulfilment Delivery Customer Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Delivery Customer Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Delivery Customer Contact Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Delivery Customer Email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Delivery Customer Telephone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Delivery Store Key` smallint unsigned DEFAULT NULL,
+  `Fulfilment Delivery Warehouse Key` smallint unsigned DEFAULT NULL,
+  `Fulfilment Delivery State` enum('InProcess','Received','Checked','ReadyToPlace','Placed','InOrder','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Fulfilment Delivery Date` date DEFAULT NULL,
+  `Fulfilment Delivery Date Type` enum('Creation','Received','Placed','InOrder','Cancelled') DEFAULT NULL,
+  `Fulfilment Delivery Creation Date` datetime NOT NULL,
+  `Fulfilment Delivery Estimated Receiving Date` datetime DEFAULT NULL,
+  `Fulfilment Delivery Received Date` datetime DEFAULT NULL,
+  `Fulfilment Delivery Checked Date` datetime DEFAULT NULL,
+  `Fulfilment Delivery Placed Date` datetime DEFAULT NULL,
+  `Fulfilment Delivery Cancelled Date` datetime DEFAULT NULL,
+  `Fulfilment Delivery Last Updated Date` datetime DEFAULT NULL COMMENT 'Latest Date when Adding/Modify Fulfilment Delivery Transaction or Data',
+  `Fulfilment Delivery Public ID` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Delivery File As` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Delivery Number Items` smallint unsigned NOT NULL DEFAULT '0',
+  `Fulfilment Delivery Number Checked Items` smallint unsigned NOT NULL DEFAULT '0',
+  `Fulfilment Delivery Number Over Delivered Items` smallint unsigned NOT NULL DEFAULT '0',
+  `Fulfilment Delivery Number Under Delivered Items` smallint unsigned NOT NULL DEFAULT '0',
+  `Fulfilment Delivery Number Received and Checked Items` mediumint unsigned NOT NULL DEFAULT '0',
+  `Fulfilment Delivery Number Placed Items` smallint unsigned NOT NULL DEFAULT '0',
+  `Fulfilment Delivery Placed Items` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Fulfilment Delivery Sticky Note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `Fulfilment Delivery Metadata` json DEFAULT NULL,
+  `Fulfilment Delivery Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
+  `Fulfilment Delivery Number History Records` smallint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Fulfilment Delivery Key`),
+  KEY `Fulfilment Delivery Date` (`Fulfilment Delivery Date`),
+  KEY `Fulfilment Delivery Type` (`Fulfilment Delivery Type`),
+  KEY `Fulfilment Delivery State` (`Fulfilment Delivery State`),
+  KEY `Fulfilment Delivery Store Key` (`Fulfilment Delivery Store Key`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Fulfilment Delivery History Bridge`
+--
+
+DROP TABLE IF EXISTS `Fulfilment Delivery History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Fulfilment Delivery History Bridge` (
+  `Fulfilment Delivery Key` mediumint unsigned NOT NULL,
+  `History Key` int unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Fulfilment Delivery Key`,`History Key`),
+  KEY `Account Key` (`Fulfilment Delivery Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Fulfilment Transaction Fact`
+--
+
+DROP TABLE IF EXISTS `Fulfilment Transaction Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Fulfilment Transaction Fact` (
+  `Fulfilment Transaction Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `Fulfilment Transaction Customer Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Transaction Store Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Transaction Delivery Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Transaction Order Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Transaction State` enum('Cancelled','InProcess','Received','Checked','Placed','InOrder') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'InProcess',
+  `Fulfilment Transaction Type` enum('Part','Asset','Service','Location') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Fulfilment Transaction Last Updated Date` datetime DEFAULT NULL COMMENT 'Latest Date when Adding/Modify Fulfilment Delivery Transaction or Data',
+  `Fulfilment Transaction Type Key` int unsigned DEFAULT NULL,
+  `Fulfilment Transaction Delivery Units` float unsigned DEFAULT NULL,
+  `Fulfilment Transaction Delivery Checked Units` float unsigned DEFAULT NULL,
+  `Fulfilment Transaction Delivery Placed Units` float unsigned DEFAULT NULL,
+  `Fulfilment Transaction Order Units` float unsigned DEFAULT NULL,
+  `Fulfilment Transaction Order Net Unit Gross Amount` decimal(16,4) DEFAULT NULL,
+  `Fulfilment Transaction Order Net Unit Discounted Amount` decimal(16,4) DEFAULT NULL,
+  `Fulfilment Transaction Order Net Unit Amount` decimal(16,4) DEFAULT NULL,
+  `Fulfilment Transaction Order Net Amount` decimal(16,4) DEFAULT NULL,
+  `Fulfilment Transaction Exchange Rate` float DEFAULT NULL,
+  `Fulfilment Transaction Tax Code` varchar(16) DEFAULT NULL,
+  `Fulfilment Transaction Metadata` json DEFAULT NULL,
+  PRIMARY KEY (`Fulfilment Transaction Key`),
+  KEY `Fulfilment Transaction Customer Key` (`Fulfilment Transaction Customer Key`),
+  KEY `Fulfilment Transaction Store Key` (`Fulfilment Transaction Store Key`),
+  KEY `Fulfilment Transaction Delivery Key` (`Fulfilment Transaction Delivery Key`),
+  KEY `Fulfilment Transaction Order Key` (`Fulfilment Transaction Order Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7736,6 +7959,7 @@ CREATE TABLE `Part Dimension` (
   `Part Packing Band Key` mediumint unsigned DEFAULT NULL,
   `Part Picking Band Name` varchar(16) DEFAULT NULL,
   `Part Packing Band Name` varchar(26) DEFAULT NULL,
+  `Part Customer Key` mediumint unsigned DEFAULT NULL COMMENT 'Only applicable to fulfilment',
   PRIMARY KEY (`Part SKU`),
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
@@ -7757,7 +7981,8 @@ CREATE TABLE `Part Dimension` (
   KEY `Part SKO Type` (`Part SKO Type`),
   KEY `Part Raw Material Key` (`Part Raw Material Key`),
   KEY `Part Picking Band Key` (`Part Picking Band Key`),
-  KEY `Part Packing Band Key` (`Part Packing Band Key`)
+  KEY `Part Packing Band Key` (`Part Packing Band Key`),
+  KEY `Part Dimension_Part_Customer_Key_idx` (`Part Customer Key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -16430,4 +16655,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-26  9:03:17
+-- Dump completed on 2021-07-14 14:31:43

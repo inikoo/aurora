@@ -251,15 +251,6 @@ $(document).on('input propertychange', '.new_delivery_field', function (evt) {
             $.getJSON(request, function (data) {
 
 
-
-                console.log(data)
-
-               // $('#' + field_id).removeClass('waiting invalid valid')
-               // $('#' + field_id).closest('table').find('td.buttons').removeClass('waiting invalid valid')
-
-                //$('#' + field_id).closest('table').find('td.buttons i').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
-
-
                 if (data.state == 200) {
 
                     if(data.validation!='valid'){
@@ -269,17 +260,12 @@ $(document).on('input propertychange', '.new_delivery_field', function (evt) {
 
                     }
 
-                    //var validation = data.validation
-                   // var msg = data.msg
 
                 } else {
-                    //var validation = 'invalid'
-                    //var msg = "Error, can't verify value on server"
+
                     $('#delivery_number').addClass('error')
 
                 }
-                //$('#' + field_id).closest('table').find('td.buttons').addClass(validation)
-
 
                 validate_new_supplier_delivery();
 

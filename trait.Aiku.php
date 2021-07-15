@@ -22,7 +22,7 @@ trait Aiku {
         $this->update_aiku($this->get_table_name(), 'Object');
     }
 
-    function update_aiku($table_full_name, $field, $value = '') {
+    function update_aiku($table_full_name, $field, $value = ''): int {
 
 
         if (!defined('AIKU_TOKEN')) {

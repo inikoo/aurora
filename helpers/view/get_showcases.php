@@ -31,7 +31,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         );
     }
 
-
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -375,12 +374,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             }
             break;
         case 'fulfilment_delivery':
-
             include_once 'showcase/fulfilment.delivery.show.php';
             $html  = get_fulfilment_delivery_showcase($data, $smarty);
-            //$title = $data['_object']->get('Public ID');
             $web_location = '<i class="fal fa-fw fa-arrow-square-down"></i> '.$data['_object']->get('Formatted ID');
-
+            break;
+        case 'fulfilment_asset':
+            include_once 'showcase/fulfilment.asset.show.php';
+            $html  = get_fulfilment_asset_showcase($data, $smarty);
+            $web_location = $data['_object']->get('Type Icon').' '.$data['_object']->get('Formatted ID Reference');
             break;
         case 'position':
             include_once 'showcase/job_position.show.php';

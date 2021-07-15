@@ -122,20 +122,17 @@ class Public_Category {
             case 'Category Subject':
             case 'Product Category Department Category Key':
                 return $this->data[$key];
-                break;
+
             case 'Subject':
             case 'Code':
             case 'Scope':
             case 'Label':
             case 'Store Key':
                 return $this->data['Category '.$key];
-                break;
+
             case 'Description':
                 return $this->data['Product Category '.$key];
-                break;
             case 'Image':
-
-
                 $image_key = $this->data['Category Main Image Key'];
 
                 if ($image_key) {
@@ -154,13 +151,13 @@ class Public_Category {
     }
 
 
-    function get_object_name() {
+    function get_object_name(): string {
         return $this->table_name;
 
     }
 
 
-    function get_deal_components($scope = 'keys', $options = 'Active') {
+    function get_deal_components($scope = 'keys', $options = 'Active'): array {
 
         switch ($options) {
             case 'Active':
@@ -200,7 +197,7 @@ class Public_Category {
 
     }
 
-    function get_images_slideshow() {
+    function get_images_slideshow(): array {
 
         include_once __DIR__.'/utils/natural_language.php';
 

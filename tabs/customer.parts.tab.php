@@ -8,6 +8,11 @@
  Version 3
 
 */
+/** @var array $state */
+/** @var \User $user */
+/** @var \Smarty $smarty */
+include_once 'utils/get_export_edit_template_fields.php';
+
 
 $tab = 'customer.parts';
 
@@ -25,11 +30,10 @@ $table_views = array(
 );
 
 
-
 $customer = $state['_object'];
 
 $ar_file = 'ar_fulfilment_tables.php';
-$tipo    = 'parts';
+$tipo    = 'fulfilment_parts';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -47,7 +51,6 @@ $parameters = array(
 
 );
 
-include_once 'conf/export_edit_template_fields.php';
 
 $edit_table_dialog = array(
     'new_item'         => array(
@@ -78,10 +81,8 @@ $edit_table_dialog = array(
 );
 $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
-$objects = 'part';
 
-
-$edit_fields = $export_edit_template_fields[$objects];
+$edit_fields = get_export_edit_template_fields('parts');
 
 
 $smarty->assign('edit_fields', $edit_fields);

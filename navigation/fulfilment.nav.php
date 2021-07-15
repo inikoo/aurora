@@ -10,8 +10,9 @@
  Version 3.0
 */
 
+include_once 'utils/navigation_functions.php';
 
-function get_dashboard_navigation($data, $smarty, $user, $db) {
+function get_dashboard_navigation($data, $smarty): array {
 
 
     $left_buttons  = array();
@@ -47,16 +48,10 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_locations_navigation($data, $smarty, $user, $db, $account) {
+function get_locations_navigation($data, $smarty): array {
 
 
-    switch ($data['parent']) {
-        case 'warehouse':
-            $warehouse = new Warehouse($data['parent_key']);
-            break;
-        default:
-            break;
-    }
+    $warehouse = new Warehouse($data['parent_key']);
 
 
     $left_buttons = array();
@@ -95,210 +90,55 @@ function get_locations_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_location_navigation($data, $smarty, $user, $db, $account) {
+/** @noinspection DuplicatedCode */
+function get_location_navigation($data, $smarty, $user, $db, $account): array {
 
 
     $warehouse = $data['warehouse'];
     $object    = $data['_object'];
 
-    $left_buttons = array();
+
+    include_once 'prepare_table/fulfilment.locations.ptc.php';
+    $table = new prepare_table_fulfilment_locations($db, $account, $user);
+
+    $sections = get_sections($data['module'], $warehouse->id);
+    $_section = 'locations';
 
 
     switch ($data['parent']) {
         case 'warehouse':
-            $tab      = 'warehouse.locations';
-            $_section = 'locations';
+            $tab = 'warehouse.locations';
+
+            $link = 'fulfilment/'.$data['parent_key'].'/locations';
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Locations'),
+                'reference' => $link,
+                'parent'    => ''
+            );
+
             break;
-        case 'warehouse_area':
-            $tab      = 'warehouse_area.locations';
-            $_section = 'locations';
+        case 'customer':
+            $tab = 'customer.locations';
+            //$link='fulfilment/'.$object->get('Location Warehouse Key').'/locations';
+
+            //TODO
+            $up_button = [];
+            $link      = '';
             break;
         default:
 
             exit('location navigation no parent');
     }
 
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($object, $tab, $data), $up_button, $link.'/location/%d'
 
-    if (isset($_SESSION['table_state'][$tab])) {
-
-
-        $number_results  = $_SESSION['table_state'][$tab]['nr'];
-        $start_from      = 0;
-        $order           = $_SESSION['table_state'][$tab]['o'];
-        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
-        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
-        $parameters      = $_SESSION['table_state'][$tab];
-    } else {
-
-        $default         = $user->get_tab_defaults($tab);
-        $number_results  = $default['rpp'];
-        $start_from      = 0;
-        $order           = $default['sort_key'];
-        $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
-        $f_value         = '';
-        $parameters      = $default;
-
-    }
-    $parameters['parent']     = $data['parent'];
-    $parameters['parent_key'] = $data['parent_key'];
-
-
-    include_once 'prepare_table/'.$tab.'.ptble.php';
-
-    $_order_field       = $order;
-    $order              = preg_replace('/^.*\.`/', '', $order);
-    $order              = preg_replace('/^`/', '', $order);
-    $order              = preg_replace('/`$/', '', $order);
-    $_order_field_value = $object->get($order);
-
-
-    $prev_title = '';
-    $next_title = '';
-    $prev_key   = 0;
-    $next_key   = 0;
-    $sql        = trim($sql_totals." $wheref");
-
-
-    if ($result2 = $db->query($sql)) {
-        if ($row2 = $result2->fetch()) {
-
-
-            if ($row2['num'] > 1) {
-
-
-                $sql = sprintf(
-                    "select `Location Code` object_name,L.`Location Key` as object_key from %s %s %s
-	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                );
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_key   = $row['object_key'];
-                        $prev_title = _("Location").' '.$row['object_name'].' ('.$row['object_key'].')';
-                    }
-                }
-
-
-                $sql = sprintf(
-                    "select `Location Code` object_name,L.`Location Key` as object_key from  %s %s %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                );
-
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_key   = $row['object_key'];
-                        $next_title = _("Location").' '.$row['object_name'].' ('.$row['object_key'].')';
-                    }
-                }
-
-
-                if ($order_direction == 'desc') {
-                    $_tmp1      = $prev_key;
-                    $_tmp2      = $prev_title;
-                    $prev_key   = $next_key;
-                    $prev_title = $next_title;
-                    $next_key   = $_tmp1;
-                    $next_title = $_tmp2;
-                }
-
-
-                switch ($data['parent']) {
-                    case 'warehouse':
-
-                        $up_button = array(
-                            'icon'      => 'arrow-up',
-                            'title'     => _('Locations'),
-                            'reference' => 'warehouse/'.$data['parent_key'].'/locations',
-                            'parent'    => ''
-                        );
-
-
-                        if ($prev_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-left',
-                                'title'     => $prev_title,
-                                'reference' => 'locations/'.$data['parent_key'].'/'.$prev_key
-                            );
-
-                        } else {
-                            $left_buttons[] = array(
-                                'icon'  => 'arrow-left disabled',
-                                'title' => ''
-                            );
-
-                        }
-                        $left_buttons[] = $up_button;
-
-
-                        if ($next_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-right',
-                                'title'     => $next_title,
-                                'reference' => 'locations/'.$data['parent_key'].'/'.$next_key
-                            );
-
-                        } else {
-                            $left_buttons[] = array(
-                                'icon'  => 'arrow-right disabled',
-                                'title' => '',
-                                'url'   => ''
-                            );
-
-                        }
-
-                        break;
-                    case 'warehouse_area':
-
-                        $up_button = array(
-                            'icon'      => 'arrow-up',
-                            'title'     => _('Warehouse area').' '.$data['_parent']->get('Code'),
-                            'reference' => 'warehouse/'.$data['_parent']->get('Warehouse Key').'/areas/'.$data['_parent']->id,
-                            'parent'    => ''
-                        );
-
-
-                        if ($prev_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-left',
-                                'title'     => $prev_title,
-                                'reference' => 'warehouse/'.$data['_parent']->get('Warehouse Key').'/areas/'.$data['_parent']->id.'/location/'.$prev_key,
-                            );
-
-                        } else {
-                            $left_buttons[] = array(
-                                'icon'  => 'arrow-left disabled',
-                                'title' => ''
-                            );
-
-                        }
-                        $left_buttons[] = $up_button;
-
-
-                        if ($next_key) {
-                            $left_buttons[] = array(
-                                'icon'      => 'arrow-right',
-                                'title'     => $next_title,
-                                'reference' => 'warehouse/'.$data['_parent']->get('Warehouse Key').'/areas/'.$data['_parent']->id.'/location/'.$next_key,
-                            );
-
-                        } else {
-                            $left_buttons[] = array(
-                                'icon'  => 'arrow-right disabled',
-                                'title' => '',
-                                'url'   => ''
-                            );
-
-                        }
-
-                        break;
-                }
-            }
-        }
-
-    }
+    );
 
 
     $right_buttons = array();
-    $sections      = get_sections($data['module'], $warehouse->id);
 
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
@@ -353,16 +193,10 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_customers_navigation($data, $smarty, $user, $db, $account) {
+function get_customers_navigation($data, $smarty): array {
 
 
-    switch ($data['parent']) {
-        case 'warehouse':
-            $warehouse = new Warehouse($data['parent_key']);
-            break;
-        default:
-            break;
-    }
+    $warehouse = new Warehouse($data['parent_key']);
 
 
     $left_buttons = array();
@@ -377,18 +211,15 @@ function get_customers_navigation($data, $smarty, $user, $db, $account) {
 
 
     $_content = array(
-
         'sections_class' => '',
         'sections'       => $sections,
-
-        'left_buttons'  => $left_buttons,
-        'right_buttons' => $right_buttons,
-        'title'         => _('Fulfilment customers').' <span class="id small hide">('.$warehouse->get('Warehouse Code').')</span>',
-        'search'        => array(
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Fulfilment customers').' <span class="id small hide">('.$warehouse->get('Warehouse Code').')</span>',
+        'search'         => array(
             'show'        => true,
             'placeholder' => _('Search fulfilment')
         )
-
     );
     $smarty->assign('_content', $_content);
 
@@ -400,16 +231,10 @@ function get_customers_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
-function get_stored_parts_navigation($data, $smarty, $user, $db, $account) {
+function get_stored_parts_navigation($data, $smarty): array {
 
 
-    switch ($data['parent']) {
-        case 'warehouse':
-            $warehouse = new Warehouse($data['parent_key']);
-            break;
-        default:
-            break;
-    }
+    $warehouse = new Warehouse($data['parent_key']);
 
 
     $left_buttons = array();
@@ -448,121 +273,35 @@ function get_stored_parts_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_customer_navigation($data, $smarty, $user, $db) {
+function get_fulfilment_customer_navigation($data, $smarty, $user, $db, $account): array {
 
 
     $customer = $data['_object'];
     $store    = $data['store'];
 
 
-    if (!$customer->id) {
-        return;
-    }
-
-
-    $left_buttons  = array();
     $right_buttons = array();
 
 
     if ($store->get('Store Type') == 'Dropshipping') {
-        $tab = 'fulfilment.dropshipping_customers';
-        $_link='dropshipping';
-
+        $tab   = 'fulfilment.dropshipping_customers';
+        $_link = 'dropshipping';
+        include_once 'prepare_table/fulfilment.dropshipping_customers.ptc.php';
+        $table = new prepare_table_fulfilment_dropshipping_customers($db, $account, $user);
     } else {
-        $tab = 'fulfilment.asset_keeping_customers';
-        $_link='asset_keeping';
+        $tab   = 'fulfilment.asset_keeping_customers';
+        $_link = 'asset_keeping';
+        include_once 'prepare_table/fulfilment.asset_keeping_customers.ptc.php';
+        $table = new prepare_table_fulfilment_asset_keeping_customers($db, $account, $user);
+
     }
 
 
     $_section = 'customers';
 
 
-    if (isset($_SESSION['table_state'][$tab])) {
-        $number_results  = $_SESSION['table_state'][$tab]['nr'];
-        $start_from      = 0;
-        $order           = $_SESSION['table_state'][$tab]['o'];
-        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
-        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
-        $parameters      = $_SESSION['table_state'][$tab];
-    } else {
-
-        $default         = $user->get_tab_defaults($tab);
-        $number_results  = $default['rpp'];
-        $start_from      = 0;
-        $order           = $default['sort_key'];
-        $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
-        $f_value         = '';
-        $parameters      = $default;
-
-    }
-    $parameters['parent']     = $data['parent'];
-    $parameters['parent_key'] = $data['parent_key'];
-    include_once 'prepare_table/'.$tab.'.ptble.php';
-
-
-    $_order_field       = $order;
-    $order              = preg_replace('/^.*\.`/', '', $order);
-    $order              = preg_replace('/^`/', '', $order);
-    $order              = preg_replace('/`$/', '', $order);
-    $_order_field_value = $customer->get($order);
-
-
-    $prev_title = '';
-    $next_title = '';
-    $prev_key   = 0;
-    $next_key   = 0;
-    $sql        = trim($sql_totals." $wheref");
-
-    if ($result2 = $db->query($sql)) {
-        if ($row2 = $result2->fetch() and $row2['num'] > 1) {
-
-
-            $sql = sprintf(
-                "select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND C.`Customer Key` < %d))  order by $_order_field desc , C.`Customer Key` desc limit 1",
-
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $customer->id
-            );
-
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $prev_key   = $row['object_key'];
-                    $prev_title = _("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-                }
-            }
-
-            $sql = sprintf(
-                "select `Customer Name` object_name,C.`Customer Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Customer Key` > %d))  order by $_order_field   , C.`Customer Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $customer->id
-            );
-
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $next_key   = $row['object_key'];
-                    $next_title = _("Customer").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-                }
-            }
-
-
-            if ($order_direction == 'desc') {
-                $_tmp1      = $prev_key;
-                $_tmp2      = $prev_title;
-                $prev_key   = $next_key;
-                $prev_title = $next_title;
-                $next_key   = $_tmp1;
-                $next_title = $_tmp2;
-            }
-
-
-        }
-    }
-
-
     $placeholder = _('Search customers');
     $sections    = get_sections('fulfilment', $customer->get('Customer Fulfilment Warehouse Key'));
-
 
     $up_button = array(
         'icon'      => 'arrow-up',
@@ -570,53 +309,16 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         'reference' => 'fulfilment/'.$data['parent_key'].'/customers/'
     );
 
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($customer, $tab, $data), $up_button, 'fulfilment/'.$data['parent_key'].'/customers/'.$_link.'/%d'
 
-    if ($prev_key) {
-        $left_buttons[] = array(
-            'icon'      => 'arrow-left',
-            'title'     => $prev_title,
-            'reference' => 'fulfilment/'.$data['parent_key'].'/customers/'.$_link.'/'.$prev_key
-        );
-
-    } else {
-        $left_buttons[] = array(
-            'icon'  => 'arrow-left disabled',
-            'title' => '',
-            'url'   => ''
-        );
-
-    }
-    $left_buttons[] = $up_button;
-
-
-    if ($next_key) {
-        $left_buttons[] = array(
-            'icon'      => 'arrow-right',
-            'title'     => $next_title,
-            'reference' => 'fulfilment/'.$data['parent_key'].'/customers/'.$_link.'/'.$next_key
-        );
-
-    } else {
-        $left_buttons[] = array(
-            'icon'  => 'arrow-right disabled',
-            'title' => '',
-            'url'   => ''
-        );
-
-    }
+    );
 
 
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Note for warehouse'),
         'class' => 'open_sticky_note square_button right delivery_note_sticky_note '.($customer->get('Customer Delivery Sticky Note') == '' ? '' : 'hide')
-    );
-
-
-    $right_buttons[] = array(
-        'icon'  => 'sticky-note',
-        'title' => _('Note for orders'),
-        'class' => 'open_sticky_note square_button right order_sticky_note '.($customer->get('Customer Order Sticky Note') == '' ? '' : 'hide')
     );
 
 
@@ -668,187 +370,44 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 }
 
-function get_delivery_navigation($data, $smarty, $user, $db) {
+function get_fulfilment_delivery_navigation($data, $smarty, $user, $db, $account): array {
 
 
     $object        = $data['_object'];
-    $left_buttons  = array();
     $right_buttons = array();
 
-    if ($data['parent']) {
-
-        switch ($data['parent']) {
-            case 'customer':
-                $tab      = 'customer.deliveries';
-                $_section = 'fulfilment';
-                break;
-   
-
-        }
+    $_section = 'fulfilment';
 
 
-        if (isset($_SESSION['table_state'][$tab])) {
-            $number_results  = $_SESSION['table_state'][$tab]['nr'];
-            $start_from      = 0;
-            $order           = $_SESSION['table_state'][$tab]['o'];
-            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
-            $f_value         = $_SESSION['table_state'][$tab]['f_value'];
-            $parameters      = $_SESSION['table_state'][$tab];
+    $tab = 'customer.deliveries';
+    include_once 'prepare_table/fulfilment.deliveries.ptc.php';
+    $table = new prepare_table_fulfilment_deliveries($db, $account, $user);
 
-        } else {
-
-            $default         = $user->get_tab_defaults($tab);
-            $number_results  = $default['rpp'];
-            $start_from      = 0;
-            $order           = $default['sort_key'];
-            $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
-            $f_value         = '';
-            $parameters      = $default;
-
-        }
-
-        $parameters['parent']     = $data['parent'];
-        $parameters['parent_key'] = $data['parent_key'];
-
-
-        include_once 'prepare_table/'.$tab.'.ptble.php';
-
-        $_order_field       = $order;
-        $order              = preg_replace('/^.*\.`/', '', $order);
-        $order              = preg_replace('/^`/', '', $order);
-        $order              = preg_replace('/`$/', '', $order);
-        $_order_field_value = $object->get($order);
-
-
-        $prev_title = '';
-        $next_title = '';
-        $prev_key   = 0;
-        $next_key   = 0;
-        $sql        = trim($sql_totals." $wheref");
-
-        if ($result2 = $db->query($sql)) {
-            if ($row2 = $result2->fetch()) {
-                if ($row2['num'] > 1) {
-
-
-                    $sql = sprintf(
-                        "select `Fulfilment Delivery Key` object_name,D.`Fulfilment Delivery Key` as object_key from %s
-	                and ($_order_field < %s OR ($_order_field = %s AND D.`Fulfilment Delivery Key` < %d))  order by $_order_field desc , D.`Fulfilment Delivery Key` desc limit 1",
-
-
-                        "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                    );
-
-                    if ($result = $db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $prev_key   = $row['object_key'];
-                            $prev_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
-                    }
-
-
-                    $sql = sprintf(
-                        "select `Fulfilment Delivery Key` object_name,D.`Fulfilment Delivery Key` as object_key from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Fulfilment Delivery Key` > %d))  order by $_order_field   , D.`Fulfilment Delivery Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
-                        $object->id
-                    );
-
-                    if ($result = $db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $next_key   = $row['object_key'];
-                            $next_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
-                    }
-
-
-                    if ($order_direction == 'desc') {
-                        $_tmp1      = $prev_key;
-                        $_tmp2      = $prev_title;
-                        $prev_key   = $next_key;
-                        $prev_title = $next_title;
-                        $next_key   = $_tmp1;
-                        $next_title = $_tmp2;
-                    }
-
-
-                }
-
-
-            }
-        }
-
-
-        if ($data['parent'] == 'customer') {
-
-
-            $up_button = array(
-                'icon'      => 'arrow-up',
-                'title'     => _("Customer").' '.$data['_parent']->get('Formatted ID'),
-                'reference' => 'fulfilment/'.$object->get('Fulfilment Delivery Warehouse Key').'/customers/'.($object->get('Fulfilment Delivery Type')=='Part'?'dropshipping':'asset_keeping').'/'.$data['parent_key']
-            );
-
-            if ($prev_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'fulfilment/'.$object->get('Fulfilment Delivery Warehouse Key').'/customers/'.($object->get('Fulfilment Delivery Type')=='Part'?'dropshipping':'asset_keeping').'/'.$data['parent_key'].'/delivery/'.$prev_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-left disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-            $left_buttons[] = $up_button;
-
-
-            if ($next_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => 'fulfilment/'.$object->get('Fulfilment Delivery Warehouse Key').'/customers/'.($object->get('Fulfilment Delivery Type')=='Part'?'dropshipping':'asset_keeping').'/'.$data['parent_key'].'/delivery/'.$next_key
-                );
-
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-right disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-
-            $_section='customers';
-        }
-
-    } else {
-        exit;
-
-    }
 
     $sections           = get_sections('fulfilment', $object->get('Fulfilment Delivery Warehouse Key'));
     $search_placeholder = _('Search fulfilment');
+
+    $link = 'fulfilment/'.$object->get('Fulfilment Delivery Warehouse Key').'/customers/'.($object->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$data['parent_key'];
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Customer").' '.$data['_parent']->get('Formatted ID'),
+        'reference' => $link
+    );
+
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($object, $tab, $data), $up_button, $link.'/delivery/%d'
+
+    );
+
 
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
 
 
-
-
     $title = _('Delivery').' <span class="id Fulfilment_Delivery_Formatted_ID">'.$object->get('Formatted ID').'</span> ';
-
-
 
 
     $_content = array(
@@ -866,6 +425,83 @@ function get_delivery_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}
+
+function get_fulfilment_asset_navigation($data, $smarty, $user, $db, $account): array {
+
+
+    $object        = $data['_object'];
+    $right_buttons = array();
+
+    $_section = 'fulfilment';
+
+    $delivery=$data['_parent'];
+
+    $tab = 'fulfilment.delivery.assets';
+    include_once 'prepare_table/fulfilment.assets.ptc.php';
+    $table = new prepare_table_fulfilment_assets($db, $account, $user);
+
+
+    $sections           = get_sections('fulfilment', $object->get('Fulfilment Delivery Warehouse Key'));
+    $search_placeholder = _('Search fulfilment');
+
+
+
+    $link = 'fulfilment/'.$delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($delivery->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$delivery->get('Fulfilment Delivery Customer Key').'/delivery/'.$delivery->id;
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Delivery").' '.$data['_parent']->get('Formatted ID'),
+        'reference' => $link
+    );
+
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($object, $tab, $data), $up_button, $link.'/asset/%d'
+
+    );
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $title='<span class="Type_Icon padding_right_10">'.$object->get('Type Icon').'</span> ';
+    $title .= '<span class="id Fulfilment_Asset_Formatted_ID_Reference">'.$object->get('Formatted ID Reference').'</span> ';
+
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Notes'),
+        'class' => 'open_sticky_note  square_button right object_sticky_note yellow_note object_sticky_note '.($data['_object']->get('Note') == '' ? '' : 'hide')
+
+    );
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $search_placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }

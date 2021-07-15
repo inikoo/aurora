@@ -3,9 +3,9 @@
 .open_sticky_note {
     &.order_sticky_note{color:#ff7dbd}
     &.delivery_note_sticky_note{color:#94db84}
-  &.customer_sticky_note{color:#7da7f4}
-  &.order_customer_sticky_note{color:#ffd300}
-
+    &.customer_sticky_note{color:#7da7f4}
+    &.order_customer_sticky_note{color:#ffd300}
+    &.yellow_note{color:#ffd300}
 
 }
 
@@ -14,7 +14,7 @@
   &.delivery_note_sticky_note:hover{color:#94db84}
   &.customer_sticky_note:hover{color:#7da7f4}
   &.order_customer_sticky_note:hover{color:#fcf4a3}
-
+  &.yellow_note:hover{color:#ffd300}
 
 }
 
@@ -41,6 +41,12 @@
   }
 
   &.order_customer_sticky_note  {
+    color: #7d7b19;
+    background-color:#EDEB82;
+    border-bottom:1px solid #BAB84E;
+  }
+
+  &.yellow_note  {
     color: #7d7b19;
     background-color:#EDEB82;
     border-bottom:1px solid #BAB84E;

@@ -1765,14 +1765,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_customers_navigation($data, $smarty, $user, $db, $account);
                 case ('asset_keeping_customer'):
                 case ('dropshipping_customer'):
-                    return get_customer_navigation($data, $smarty, $user, $db);
+                    return get_fulfilment_customer_navigation($data, $smarty,$user, $db,$account);
                 case ('fulfilment_parts'):
                     return get_stored_parts_navigation($data, $smarty, $user, $db, $account);
                 case 'production_deliveries':
                     return get_production_deliveries_navigation($data, $smarty);
                 case 'delivery':
-                    return get_delivery_navigation($data, $smarty, $user, $db);
-
+                    return get_fulfilment_delivery_navigation($data, $smarty, $user, $db,$account);
+                case 'asset':
+                    return get_fulfilment_asset_navigation($data, $smarty, $user, $db,$account);
 
             }
 

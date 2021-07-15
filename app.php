@@ -63,7 +63,7 @@ $smarty->assign('status_page', $status_page);
 
 $status_page_widget = '';
 if (defined('STATUS_PAGE_WIDGET')) {
-    $status_page_widget = STATUS_PAGE;
+    $status_page_widget = STATUS_PAGE_WIDGET;
 }
 $smarty->assign('status_page_widget', $status_page_widget);
 

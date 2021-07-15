@@ -9,6 +9,12 @@
 
  Version 3.0
 */
+/** @var \Customer $object */
+/** @var \User $user */
+/** @var \PDO $db */
+/** @var \Account $account */
+
+/** @var \Smarty $smarty */
 
 include_once 'utils/static_data.php';
 
@@ -229,7 +235,7 @@ if ($new) {
 
                 ),
                 array(
-                    'render'          => ($object->get('Customer Tax Number') == '' ? false : true),
+                    'render'          => !($object->get('Customer Tax Number') == ''),
                     'id'              => 'Customer_Tax_Number_Valid',
                     'edit'            => ($edit ? 'option' : ''),
                     'options'         => $options_valid_tax_number,
@@ -242,7 +248,7 @@ if ($new) {
                 array(
                     'id'              => 'Customer_Recargo_Equivalencia',
                     'edit'            => ($edit ? 'option' : ''),
-                    'render'          => ($account->get('Account Country Code') == 'ESP' ? true : false),
+                    'render'          => $account->get('Account Country Code') == 'ESP',
                     'options'         => $options_yes_no,
                     'value'           => 'No',
                     'formatted_value' => _('No'),

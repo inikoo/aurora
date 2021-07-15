@@ -26,11 +26,11 @@ function get_fulfilment_delivery_showcase($data, Smarty $smarty): string {
     }
 
     $customer = get_object('Customer', $delivery->get('Customer Key'));
-    $store = get_object('Store', $customer->get('Store Key'));
+    $store    = get_object('Store', $customer->get('Store Key'));
 
     $smarty->assign('customer', $customer);
     $smarty->assign('delivery', $delivery);
-    $smarty->assign('store', $delivery);
+    $smarty->assign('store', $store);
 
     $smarty->assign(
         'object_data', json_encode(

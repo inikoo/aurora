@@ -43,14 +43,15 @@ class Customer_Fulfilment extends DB_Table {
     function get($key = '') {
 
         if (!$this->id) {
-            return;
+            return false;
         }
 
-
+        /*
         switch ($key) {
 
 
         }
+        */
 
         if (isset($this->data[$key])) {
             return $this->data[$key];
@@ -79,7 +80,7 @@ class Customer_Fulfilment extends DB_Table {
         return $label;
     }
 
-    function create_customer_delivery($_data) {
+    function create_customer_delivery($_data): Fulfilment_Delivery {
 
 
         $warehouse = get_object('Warehouse', $_data['warehouse_key']);

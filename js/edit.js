@@ -2353,7 +2353,6 @@ function save_object_operation(type, element, metadata) {
     $.getJSON(request, function (data) {
         if (data.state == 200) {
 
-            console.log(data)
 
             if (data.request != undefined) {
                 change_view(data.request)

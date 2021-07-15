@@ -317,7 +317,7 @@
             <span class="{$table_operation_msg}" style="float:right;margin-right: 10px"></span>
         {/if}
 
-        <span class="padding_left_10" id="rtext"></span>
+        <span class="padding_left_10 rtext_info" id="rtext"></span>
     </div>
 
     <div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">
