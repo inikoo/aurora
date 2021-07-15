@@ -18,7 +18,6 @@ require_once 'class.Category.php';
 
 
 $editor = array(
-    'Author Name'  => '',
     'Author Alias' => '',
     'Author Type'  => '',
     'Author Key'   => '',
@@ -29,9 +28,22 @@ $editor = array(
     'Author Name'  => 'Script (product availability)'
 );
 
-$sql = sprintf(
-    "SELECT `Product ID` FROM `Product Dimension` order by `Product ID`  desc "
-);
+$where='';
+$total=0;
+$sql = sprintf("SELECT count(*) AS num FROM `Product Dimension` %s", $where);
+/** @var PDO $db */
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
+    }
+}
+$print_est=true;
+$lap_time0 = date('U');
+$contador  = 0;
+
+
+
+$sql = "SELECT `Product ID` FROM `Product Dimension` order by `Product ID`  desc ";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
@@ -44,10 +56,10 @@ if ($result = $db->query($sql)) {
 
         
 
-        print "$product->id\r";
+        //print "$product->id\r";
 
         if ($web_state_old != $web_state_new) {
-            print $product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
+            print "\n".$product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
         }
 
 
@@ -58,15 +70,15 @@ if ($result = $db->query($sql)) {
         );
 
 
-        if ($result = $product->db->query($sql)) {
-            foreach ($result as $row) {
+        if ($result2 = $product->db->query($sql)) {
+            foreach ($result2 as $row2) {
 
                 $web_availability = ($product->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                 if ($web_availability == 'No') {
                     /**
                      * @var $order \Order
                      */
-                    $order = get_object('Order', $row['Order Key']);
+                    $order = get_object('Order', $row2['Order Key']);
 
 
                     $order->remove_out_of_stocks_from_basket($product->id);
@@ -80,17 +92,29 @@ if ($result = $db->query($sql)) {
 
         );
 
-        if ($result = $product->db->query($sql)) {
-            foreach ($result as $row) {
+        if ($result2 = $product->db->query($sql)) {
+            foreach ($result2 as $row2) {
                 $web_availability = ($product->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                 if ($web_availability == 'Yes') {
-                    $order = get_object('Order', $row['Order Key']);
+                    /**
+                     * @var Order $order
+                     */
+                    $order = get_object('Order', $row2['Order Key']);
                     $order->restore_back_to_stock_to_basket($product->id);
                 }
             }
         }
-        
-        
+
+
+
+        $contador++;
+        $lap_time1 = date('U');
+
+        if ($print_est) {
+            print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
+        }
 
     }
 
