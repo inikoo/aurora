@@ -170,13 +170,6 @@
 
     }
 
-    function select_location_option(element) {
-        var container = $('#place_item_' + $(element).attr('transaction_key'))
-        container.find('.location_code').val($(element).attr('formatted_value'))
-        container.find('i.save').attr('location_key', $(element).attr('value'))
-        $('#location_results_container').addClass('hide').removeClass('show')
-        validate_place_item(container)
-    }
 
 
     var out_of_stock_dialog_open = false;

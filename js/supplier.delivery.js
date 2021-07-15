@@ -4,8 +4,23 @@
  Version 3.0*/
 
 
+
+$(document).on('input propertychange','.place_item .location_code',function () {
+    let delay = 100;
+    delayed_on_change_location_code_field($(this), delay)
+});
+
+
+$(document).on('input propertychange','.place_item .place_qty',function () {
+    let delay = 100;
+    delayed_on_change_place_qty_field($(this), delay)
+});
+
+
+
+
 function set_placement_location(element) {
-    $(element).closest('tr').find('.location_code').val($(element).find('.code').html())
+    $(element).closest('tr').find('.location_code').removeClass('invalid').val($(element).find('.code').html())
     $(element).closest('tr').find('i.save').attr('location_key', $(element).attr('location_key'))
     validate_place_item($(element).closest('tr').find('.place_item'))
 }
@@ -23,23 +38,21 @@ function delayed_on_change_place_qty_field(object, timeout) {
 
 function on_change_place_qty_field(element) {
 
-    var max = element.attr('max')
+    let max = element.attr('max')
 
-    error = validate_number(element.val(), 0, max);
+    let error = validate_number(element.val(), 0, max);
 
     if (!error) {
 
         if (element.val() == '' || element.val() == 0) {
 
             error = {
-                class: 'invalid',
-                type: 'empty'
+                class: 'invalid', type: 'empty'
             }
 
         }
     }
 
-    console.log(error)
 
     if (error) {
         element.addClass(error.class)
@@ -64,10 +77,10 @@ function delayed_on_change_location_code_field(object, timeout) {
 
 function get_placement_locations_select(object) {
 
-    object.removeClass('invalid')
+    // object.removeClass('invalid')
 
-    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(object.val()) + '&scope=locations&state=' + JSON.stringify(state)
-    console.log(request)
+    let request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(object.val()) + '&scope=locations&state=' + JSON.stringify(state)
+
     $.getJSON(request, function (data) {
 
 
@@ -77,8 +90,7 @@ function get_placement_locations_select(object) {
         if (data.number_results > 0) {
             $('#location_results_container').removeClass('hide').addClass('show')
             $('#location_results_container').offset({
-                top: (offset.top + object.outerHeight() - 1),
-                left: offset.left
+                top: (offset.top + object.outerHeight() - 1), left: offset.left
             })
 
         } else {
@@ -87,6 +99,9 @@ function get_placement_locations_select(object) {
             $('#location_results_container').addClass('hide').removeClass('show')
             if (object.val() != '') {
                 object.addClass('invalid')
+               // object.closest('.place_item').removeClass('valid').addClass('invalid')
+            } else {
+                object.removeClass('invalid')
             }
 
 
@@ -95,7 +110,7 @@ function get_placement_locations_select(object) {
 
         $("#location_results .result").remove();
 
-        var first = true;
+        let first = true;
 
         for (var result_key in data.results) {
 
@@ -120,21 +135,32 @@ function get_placement_locations_select(object) {
 
         }
 
+
+        let container=object.closest('.place_item');
+        container.find('i.save').attr('location_key',0)
+
+        validate_place_item(container)
     })
 
 
 }
 
+
+
+
 function select_location_option(element) {
-    var container = $('#place_item_' + $(element).attr('transaction_key'))
-    container.find('.location_code').val($(element).attr('formatted_value'))
+    let container = $('#place_item_' + $(element).attr('transaction_key'))
+    let location_code_input = container.find('.location_code');
+
+    location_code_input.val($(element).attr('formatted_value'));
+    location_code_input.removeClass('invalid')
+
     container.find('i.save').attr('location_key', $(element).attr('value'))
     $('#location_results_container').addClass('hide').removeClass('show')
     validate_place_item(container)
 }
 
 function validate_place_item(element) {
-
 
     if ($(element).find('.place_qty').hasClass('invalid') || $(element).find('.location_code').hasClass('invalid')) {
 
@@ -143,7 +169,7 @@ function validate_place_item(element) {
     } else {
 
 
-        $(element).removeClass('invalid changed')
+        $(element).removeClass('invalid changed valid')
 
         if ($(element).find('i.save').attr('location_key') > 0) {
             $(element).addClass('changed valid')
@@ -157,54 +183,63 @@ function validate_place_item(element) {
 function place_item(element) {
 
 
-    $(element).removeClass('fa-cloud').addClass('fa-spinner fa-spin')
+    let save_container = $(element).closest('.place_item');
 
 
-    var object_data = $('#object_showcase div.order').data("object")
+    if (save_container.hasClass('wait') || !save_container.hasClass('valid') || !save_container.hasClass('changed')   ) {
+        return;
+    }
 
-    var object = object_data.object
-    var key = object_data.key
+    $('#placement_note').addClass('hide');
 
+    save_container.addClass('wait');
 
-    var part_sku = $(element).closest('.place_item').attr('part_sku')
-    var transaction_key = $(element).closest('.place_item').attr('transaction_key')
-    var location_key = $(element).attr('location_key')
-    var qty = $(element).closest('.place_item').find('.place_qty').val()
-
-    var note = $(element).closest('tr').find('.note').val()
+    $(element).removeClass('fa-cloud').addClass('fa-spinner fa-spin ');
 
 
-    var request = '/ar_edit_stock.php?tipo=place_part&object=' + object + '&key=' + key + '&transaction_key=' + transaction_key + '&part_sku=' + part_sku + '&location_key=' + location_key + '&qty=' + qty + '&note=' + note
-    console.log(request)
-    //return;
-    //=====
+    let object_data = $('#object_showcase div.order').data("object");
+
+    let object = object_data.object;
+    let key = object_data.key;
+
+
+    let part_sku = $(element).closest('.place_item').attr('part_sku');
+    let transaction_key = $(element).closest('.place_item').attr('transaction_key');
+    let location_key = $(element).attr('location_key');
+    let qty = $(element).closest('.place_item').find('.place_qty').val();
+
+    let note = $(element).closest('tr').find('.note').val();
+
+
+    if (note === undefined) {
+        note = '';
+    }
+
+
     var form_data = new FormData();
-    form_data.append("tipo", 'place_part')
-    form_data.append("object", object)
-    form_data.append("key", key)
-    form_data.append("transaction_key", transaction_key)
-    form_data.append("part_sku", part_sku)
-    form_data.append("location_key", location_key)
-    form_data.append("qty", qty)
-    form_data.append("note", note)
+    form_data.append("tipo", 'place_part');
+    form_data.append("object", object);
+    form_data.append("key", key);
+    form_data.append("transaction_key", transaction_key);
+    form_data.append("part_sku", part_sku);
+    form_data.append("location_key", location_key);
+    form_data.append("qty", qty);
+    form_data.append("note", note);
 
-    var request = $.ajax({
+    let request = $.ajax({
 
-        url: "/ar_edit_stock.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit_stock.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
     request.done(function (data) {
 
+        save_container.removeClass('wait');
+
+        $(element).addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+
         var table_metadata = $('#table').data("metadata")
-
-
-        console.log(data)
 
 
         $(element).addClass('fa-cloud').removeClass('fa-spinner fa-spin')
@@ -224,8 +259,6 @@ function place_item(element) {
         $('.items_operation').addClass('hide')
 
         for (var key in data.update_metadata.operations) {
-
-            console.log( data.update_metadata.operations[key])
             $('#' + data.update_metadata.operations[key]).removeClass('hide')
         }
 
@@ -254,9 +287,7 @@ function place_item(element) {
         }
 
 
-        console.log(table_metadata.type)
-        console.log(data.update_metadata.state_index)
-        if(table_metadata.type=='return'){
+        if (table_metadata.type == 'return') {
 
             if (data.update_metadata.state_index >= 100) {
 
@@ -267,11 +298,9 @@ function place_item(element) {
                 change_tab('return.items_done')
 
 
-
-
             }
 
-        }else{
+        } else {
             if (data.update_metadata.state_index == 100) {
 
 
@@ -287,9 +316,7 @@ function place_item(element) {
         }
 
 
-
-
-        if (data.placed == 'Yes') {
+        if (data.placed === 'Yes') {
             place_item.addClass('hide')
         } else {
             place_item.removeClass('hide')

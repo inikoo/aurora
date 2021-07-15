@@ -791,16 +791,6 @@
     }
 
 
-    $('#tab').on('input propertychange', '.location_code', function (evt) {
-        var delay = 100;
-        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-        delayed_on_change_location_code_field($(this), delay)
-    });
-    $('#tab').on('input propertychange', '.place_qty', function (evt) {
-        var delay = 100;
-        if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-        delayed_on_change_place_qty_field($(this), delay)
-    });
 
 
 </script>

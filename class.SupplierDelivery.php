@@ -1646,10 +1646,13 @@ class SupplierDelivery extends DB_Table {
             }
             $placement .= '<div style="clear:both"></div>';
 
+            $placement_note = '<input type="hidden" class="note" /><i class="far add_note fa-sticky-note padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
 
             $placement .= '
                                 <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'.$row['Part SKU'].'" transaction_key="'
                 .$row['Purchase Order Transaction Fact Key'].'"  >
+                    '.$placement_note.'
+                
                                 <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.$quantity.'"  >
                                 <input class="location_code"  placeholder="'._('Location code').'"  >
                                 <i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
