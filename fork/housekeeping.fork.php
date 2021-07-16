@@ -1364,6 +1364,7 @@ function fork_housekeeping($job) {
             break;
 
         case 'update_part_products_availability':
+            return;
 
             /**
              * @var $part \Part
