@@ -369,6 +369,17 @@ function get_customers_module() {
 
                     ),
 
+                    'customer.attachments' => array(
+                        'title'         => _('Attachments'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
+                        'icon'          => 'paperclip',
+                        'class'         => 'right icon_only'
+                    ),
+
                 )
             ),
 
@@ -438,6 +449,31 @@ function get_customers_module() {
                 )
             ),
 
+            'customer.attachment.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'customer.attachment.new' => array(
+                        'label' => _('New attachment')
+                    ),
+
+                )
+
+            ),
+            'customer.attachment'     => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'customer.attachment.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'customer.attachment.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+                )
+
+            ),
 
             'poll_query' => array(
                 'type'  => 'object',

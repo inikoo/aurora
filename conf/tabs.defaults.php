@@ -2519,66 +2519,7 @@ function get_tab_defaults_data() {
             'elements'      => get_elements_option('supplier_parts')
 
         ),
-        'supplier.attachments'             => array(
-            'view'        => 'overview',
-            'sort_key'    => 'date',
-            'sort_order'  => 1,
-            'rpp'         => 100,
-            'rpp_options' => $default_rrp_options,
-            'f_field'     => 'caption'
-        ),
 
-        'supplier.attachment.history' => array(
-            'view'        => 'overview',
-            'sort_key'    => 'date',
-            'sort_order'  => 1,
-            'rpp'         => 100,
-            'rpp_options' => $default_rrp_options,
-            'f_field'     => 'note'
-        ),
-
-
-        'supplier.delivery.attachments' => array(
-            'view'        => 'overview',
-            'sort_key'    => 'date',
-            'sort_order'  => 1,
-            'rpp'         => 100,
-            'rpp_options' => $default_rrp_options,
-            'f_field'     => 'caption'
-        ),
-
-        'supplier_delivery.attachment.history' => array(
-            'view'        => 'overview',
-            'sort_key'    => 'date',
-            'sort_order'  => 1,
-            'rpp'         => 100,
-            'rpp_options' => $default_rrp_options,
-            'f_field'     => 'note'
-        ),
-
-
-        'supplier.sales.history' => array(
-            'view'        => 'overview',
-            'sort_key'    => 'id',
-            'sort_order'  => 1,
-            'rpp'         => 100,
-            'rpp_options' => $default_rrp_options,
-            'frequency'   => 'monthly',
-            'f_field'     => '',
-            //  'export_fields'=>get_export_fields('timeserie_records')
-
-        ),
-
-        'supplier_part.history' => array(
-            'view'          => 'overview',
-            'sort_key'      => 'date',
-            'sort_order'    => 1,
-            'rpp'           => 100,
-            'rpp_options'   => $default_rrp_options,
-            'f_field'       => 'note',
-            'elements_type' => array_keys(get_elements_option('supplier_part_history'))[0],
-            'elements'      => get_elements_option('supplier_part_history')
-        ),
 
         'supplier_part.supplier.orders'     => array(
             'view'          => 'overview',
@@ -2838,14 +2779,7 @@ function get_tab_defaults_data() {
 
         ),
 
-        'part.attachments' => array(
-            'view'        => 'overview',
-            'sort_key'    => 'date',
-            'sort_order'  => 1,
-            'rpp'         => 100,
-            'rpp_options' => $default_rrp_options,
-            'f_field'     => 'caption'
-        ),
+
 
         'part.attachment.history' => array(
             'view'        => 'overview',
@@ -5388,7 +5322,106 @@ function get_tab_defaults_data() {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'code'
         ),
+        'part.attachments' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'caption'
+        ),
+        'customer.attachments' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'caption'
+        ),
+        'customer.attachment.history' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'note'
+        ),
+        'order.attachments' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'caption'
+        ),
+        'order.attachment.history' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'note'
+        ),
+        'supplier.attachments'             => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'caption'
+        ),
 
+        'supplier.attachment.history' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'note'
+        ),
+
+
+        'supplier.delivery.attachments' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'caption'
+        ),
+
+        'supplier_delivery.attachment.history' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'note'
+        ),
+
+
+        'supplier.sales.history' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'frequency'   => 'monthly',
+            'f_field'     => '',
+            //  'export_fields'=>get_export_fields('timeserie_records')
+
+        ),
+
+        'supplier_part.history' => array(
+            'view'          => 'overview',
+            'sort_key'      => 'date',
+            'sort_order'    => 1,
+            'rpp'           => 100,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'note',
+            'elements_type' => array_keys(get_elements_option('supplier_part_history'))[0],
+            'elements'      => get_elements_option('supplier_part_history')
+        ),
 
     );
 

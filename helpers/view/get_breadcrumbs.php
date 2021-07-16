@@ -739,6 +739,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
             }
 
 
+
             switch ($state['section']) {
                 case 'list':
 
@@ -1201,6 +1202,48 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                         'label'     => $state['_object']->get('Code'),
                         'icon'      => 'cube',
                         'reference' => 'customer/'.$state['_parent']->id.'/product/'.$state['_object']->id
+                    );
+
+
+                    break;
+                case 'customer.attachment':
+
+
+                    $branch[] = array(
+                        'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                        'icon'      => 'users',
+                        'reference' => 'customers/'.$state['store']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get_formatted_id(),
+                        'icon'      => 'user',
+                        'reference' => 'customers/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Attachment File Original Name'),
+                        'icon'      => 'paperclip',
+                        'reference' => 'customers/'.$state['_parent']->get('Store Key').'//'.$state['_parent']->id.'/attachment/'.$state['_object']->id
+                    );
+
+
+                    break;
+                case 'customer.attachment.new':
+
+
+                    $branch[] = array(
+                        'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                        'icon'      => 'users',
+                        'reference' => 'customers/'.$state['store']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get_formatted_id(),
+                        'icon'      => 'user',
+                        'reference' => 'customers/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => _('New attachment'),
+                        'icon'      => 'paperclip',
+                        'reference' => ''
                     );
 
 
@@ -2160,7 +2203,8 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                         }
 
 
-                    } else {
+                    }
+                    else {
 
 
                         if ($user->get_number_stores() > 1) {
@@ -2493,6 +2537,63 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
 
 
                     break;
+
+                case 'order.attachment':
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'orders/all'
+                        );
+                    }
+                    $branch[] = array(
+                        'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                        'icon'      => '',
+                        'reference' => 'orders/'.$state['store']->id
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get('Order Public ID'),
+                        'icon'      => 'shopping-cart',
+                        'reference' => sprintf('orders/%d/%d', $state['_parent']->get('Order Store Key'), $state['_parent']->id)
+                    );
+
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Attachment File Original Name'),
+                        'icon'      => 'paperclip',
+                        'reference' =>''
+                    );
+
+
+                    break;
+                case 'order.attachment.new':
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'orders/all'
+                        );
+                    }
+                    $branch[] = array(
+                        'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                        'icon'      => '',
+                        'reference' => 'orders/'.$state['store']->id
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get('Order Public ID'),
+                        'icon'      => 'shopping-cart',
+                        'reference' => sprintf('orders/%d/%d', $state['_parent']->get('Order Store Key'), $state['_parent']->id)
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('New attachment'),
+                        'icon'      => 'paperclip',
+                        'reference' =>''
+                    );
+
             }
 
             break;

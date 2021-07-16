@@ -34,7 +34,7 @@
         </div>
     </div>
     <div style="margin-top:3px;max-width:370px;float:right;margin-right:60px">
-        <a href="/attachment.php?id={$attachment->get('Attachment Bridge Key')}"><img style="max-width:350px"
+        <a href="/attachment.php?id={$attachment->get('Attachment Bridge Key')}"><img alt="" style="max-width:350px"
                                                                                       src="{$attachment->get('Preview')}&size=original"></a>
     </div>
     <div style="clear:both">

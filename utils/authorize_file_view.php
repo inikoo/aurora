@@ -19,18 +19,30 @@
  *
  * @return bool
  */
-function authorize_file_view($db, $user, $public, $subject, $subject_key) {
-
+function authorize_file_view(PDO $db, User $user, string $public, string $subject, int $subject_key): bool {
     if ($public == 'Yes') {
         return true;
     }
 
 
     switch ($subject) {
+        case 'Customer':
 
+            if ($user->can_view('customers')) {
+                return true;
+            }
+
+            break;
+        case 'Order':
+
+            if ($user->can_view('orders')) {
+                return true;
+            }
+
+            break;
         case 'Part':
 
-            if ($user->can_view('inventory')) {
+            if ($user->can_view('parts')) {
                 return true;
             }
 
@@ -79,7 +91,7 @@ function authorize_file_view($db, $user, $public, $subject, $subject_key) {
             break;
         default:
             return false;
-            break;
+
     }
 
 

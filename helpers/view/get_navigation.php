@@ -367,6 +367,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_deleted_customer_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+                case ('customer.attachment'):
+                    return get_customer_attachment_navigation($data, $smarty,$user, $db, $account);
+                case ('customer.attachment.new'):
+                    return get_new_customer_attachment_navigation($data, $smarty);
 
 
             }
@@ -473,16 +477,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('order'):
                     return get_order_navigation($data, $smarty, $user, $db, $account);
 
+                case ('refund'):
                 case ('invoice'):
                     include_once 'navigation/accounting.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
 
-
-                case ('refund'):
-                    include_once 'navigation/accounting.nav.php';
-
-                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
 
                 case ('delivery_note'):
                     return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
@@ -523,7 +523,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     include_once 'navigation/accounting.nav.php';
 
                     return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
-
+                case ('order.attachment'):
+                    return get_order_attachment_navigation($data, $smarty,$user, $db, $account);
+                case ('order.attachment.new'):
+                    return get_new_order_attachment_navigation($data, $smarty);
                 default:
                     return 'View not found x2'.$data['section'];
 

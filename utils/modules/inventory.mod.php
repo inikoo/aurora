@@ -432,9 +432,7 @@ function get_inventory_module() {
                 'type' => 'new_object',
                 'tabs' => array(
                     'part.attachment.new' => array(
-                        'label' => _(
-                            'new attachment'
-                        )
+                        'label' => _('New attachment')
                     ),
 
                 )
@@ -444,16 +442,12 @@ function get_inventory_module() {
                 'type' => 'object',
                 'tabs' => array(
                     'part.attachment.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
                     'part.attachment.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'clock'
+                        'label' => _('History'),
+                        'icon'  => 'road'
                     ),
 
                 )

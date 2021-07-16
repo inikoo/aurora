@@ -8,15 +8,6 @@
 
 
 /**
- * @param $showcase
- * @param $data
- * @param $smarty  \Smarty
- * @param $user    \User
- * @param $db      \PDO
- * @param $account \Account
- * @param $redis   \Redis
- *
- * @return mixed|string
  * @throws \SmartyException
  */
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $redis) {
@@ -263,14 +254,12 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         case 'attachment':
             include_once 'showcase/attachment.show.php';
             $html = get_attachment_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Attachment File Original Name');
+            $web_location = '<i class="fal fa-fw fa-paperclip"></i> '.$title;
             break;
         case 'manufacture_task':
             include_once 'showcase/manufacture_task.show.php';
             $html = get_manufacture_task_showcase($data, $smarty, $user, $db);
-            break;
-        case 'upload':
-            include_once 'showcase/upload.show.php';
-            $html = get_upload_showcase($data, $smarty, $user, $db);
             break;
         case 'barcode':
             include_once 'showcase/barcode.show.php';

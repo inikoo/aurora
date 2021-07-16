@@ -372,9 +372,6 @@ class Agent extends SubjectSupplier {
             case('Note'):
                 $this->add_note($value);
                 break;
-            case('Attach'):
-                $this->add_attach($value);
-                break;
             case('Agent Average Delivery Days'):
                 $this->update_field($field, $value, $options);
                 $this->update_metadata = array(

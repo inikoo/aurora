@@ -10,6 +10,8 @@
  Version 3.0
 */
 
+include_once 'utils/navigation_functions.php';
+
 /**
  * @param $data
  * @param $smarty \Smarty
@@ -3679,6 +3681,121 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     }
 
     $left_buttons[] = $up_button;
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search customers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}
+
+function get_new_customer_attachment_navigation($data, $smarty): array {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections($data['module'], $data['_parent']->get('Store Key'));
+
+
+    $link = 'customers/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id;
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _('Customer').' '.$data['_parent']->get('Name'),
+        'reference' => $link,
+        'parent'    => ''
+    );
+
+    $left_buttons[] = $up_button;
+
+
+    $title = '<span>'.sprintf(
+            _('New attachment for %s'), '<span onClick="change_view(\''.$link.'\')" class="button id">'.$data['_parent']->get('Name').'</span>'
+        ).'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search customers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}
+
+function get_customer_attachment_navigation($data, $smarty,$user, $db, $account): array {
+
+
+
+
+    $sections = get_sections($data['module'], $data['_parent']->get('Store Key'));
+
+    $tab = 'customer.attachments';
+
+    $link = 'customers/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id;
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _('Customer').' '.$data['_parent']->get('Name'),
+        'reference' => $link,
+        'parent'    => ''
+    );
+
+
+
+    include_once 'prepare_table/attachments.ptc.php';
+    $table = new prepare_table_attachments($db, $account, $user);
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($data['_object'], $tab, $data), $up_button, $link.'/attachment/%d'
+
+    );
+
+
+
+
+    $right_buttons = array();
+
+    $right_buttons[] = array(
+        'icon'  => 'download',
+        'title' => _('Download'),
+        'id'    => 'download_button'
+    );
+
+    $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
+
 
     $_content = array(
         'sections_class' => '',

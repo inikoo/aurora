@@ -116,58 +116,14 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
             include 'fields/material.fld.php';
 
             return $object_fields;
-        case 'Attachment':
-
-            $object_fields = array();
-            if ($options['type'] == 'employee') {
-
-                $options_Attachment_Subject_Type               = array(
-                    'CV'       => _('Curriculum vitae'),
-                    'Contract' => _('Employment contract'),
-                    'Other'    => _('Other'),
-
-                );
-                $options_Attachment_Subject_Type_default_value = 'Contract';
-            } elseif ($options['type'] == 'supplier') {
-                $options_Attachment_Subject_Type               = array(
-                    'Invoice'       => _('Invoice'),
-                    'PurchaseOrder' => _('Purchase order'),
-                    'Catalogue'     => _('Catalogue'),
-                    'Image'         => _('Image'),
-                    'Contact Card'  => _('Contact card'),
-                    'Other'         => _('Other'),
-                );
-                $options_Attachment_Subject_Type_default_value = 'Contact Card';
-
-            } elseif ($options['type'] == 'part') {
-                $options_Attachment_Subject_Type               = array(
-                    'Other' => _('Other'),
-                    'MSDS'  => _('MSDS'),
-
-
-                );
-                $options_Attachment_Subject_Type_default_value = 'MSDS';
-            } elseif ($options['type'] == 'supplier_delivery') {
-                $options_Attachment_Subject_Type = array(
-                    'Delivery Paperwork' => _('Delivery paperwork'),
-                    'Invoice'            => _('Invoice'),
-                    'Other'              => _('Other'),
-
-                );
-
-                $options_Attachment_Subject_Type_default_value = 'Delivery Paperwork';
-
-            }
-
-            include 'fields/attachment.fld.php';
-
-            return $object_fields;
 
         case 'Supplier Delivery':
             include 'fields/supplier.delivery.fld.php';
+
             return $object_fields;
         case 'Fulfilment Delivery':
             include 'fields/fulfilment.delivery.fld.php';
+
             return $object_fields;
         case 'Category':
             include 'fields/category.fld.php';

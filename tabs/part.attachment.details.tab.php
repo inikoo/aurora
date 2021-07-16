@@ -9,22 +9,32 @@
 
 */
 
-
 include_once 'utils/invalid_messages.php';
-include_once 'conf/object_fields.php';
+include_once 'conf/fields/attachment.fld.php';
 
-$attachment = $state['_object'];
 
-$object_fields = get_object_fields(
-    $attachment, $db, $user, $smarty, array('type' => 'part')
-);
 
-$smarty->assign('state', $state);
-$smarty->assign('object', $attachment);
-$smarty->assign('object_name', $attachment->get_object_name());
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
-$smarty->assign('object_fields', $object_fields);
 
-$html = $smarty->fetch('edit_object.tpl');
+if (!(in_array($state['store']->id, $user->stores) and $user->can_view('orders'))) {
+    $html = '';
+} else {
+    include_once 'utils/invalid_messages.php';
+    $object_fields = get_attachment_fields($state['_object'], $user,array(
+        'type' => 'part'
+    ));
+    $smarty->assign('object', $state['_object']);
+    $smarty->assign('key', $state['key']);
+    $smarty->assign('object_fields', $object_fields);
+    $smarty->assign('state', $state);
 
-?>
+    try {
+        $html = $smarty->fetch('edit_object.tpl');
+    } catch (Exception $e) {
+        $html = '';
+    }
+}

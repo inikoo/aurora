@@ -9,7 +9,7 @@
 
  Version 3.0
 */
-
+include_once 'utils/navigation_functions.php';
 
 function get_orders_server_group_by_store_navigation($data, $smarty, $user, $db, $account) {
 
@@ -3220,6 +3220,124 @@ function get_return_new_navigation($data, $smarty, $user, $db, $account) {
     return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
+
+function get_new_order_attachment_navigation($data, $smarty): array {
+
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections($data['module'], $data['_parent']->get('Store Key'));
+
+
+    $link = preg_replace('/\/attachment\/new.*/','',$data['request']);
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _('Order').' '.$data['_parent']->get('Public ID'),
+        'reference' => $link,
+        'parent'    => ''
+    );
+
+    $left_buttons[] = $up_button;
+
+
+    $title = '<span>'.sprintf(
+            _('New attachment for %s'), '<span onClick="change_view(\''.$link.'\')" class="button id">'.$data['_parent']->get('Public ID').'</span>'
+        ).'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}
+
+function get_order_attachment_navigation($data, $smarty,$user, $db, $account): array {
+
+
+
+
+    $sections = get_sections($data['module'], $data['_parent']->get('Store Key'));
+
+    $tab = 'order.attachments';
+
+    $link = preg_replace('/\/attachment\/(\d)+.*/','',$data['request']);
+
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _('Order').' '.$data['_parent']->get('Public ID'),
+        'reference' => $link,
+        'parent'    => ''
+    );
+
+
+
+    include_once 'prepare_table/attachments.ptc.php';
+    $table = new prepare_table_attachments($db, $account, $user);
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($data['_object'], $tab, $data), $up_button, $link.'/attachment/%d'
+
+    );
+
+
+    $right_buttons = array();
+
+    $right_buttons[] = array(
+        'icon'  => 'download',
+        'title' => _('Download'),
+        'id'    => 'download_button'
+    );
+
+    $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}
+
+
 
 
 

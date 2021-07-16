@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-function get_orders_module() {
+function get_orders_module(): array {
     return array(
         'section'     => 'orders',
         'parent'      => 'store',
@@ -70,11 +70,27 @@ function get_orders_module() {
                     ),
 
 
+
                     'order.history'        => array(
                         'label' => '',
                         'title' => _('History'),
                         'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                    ),
+
+                    'order.attachments' => array(
+                        'title'         => _('Attachments'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
+                        'icon'          => 'paperclip',
+                        'class'         => 'right icon_only'
                     ),
                     'order.delivery_notes' => array(
                         'label' => '',
@@ -427,6 +443,32 @@ function get_orders_module() {
                     ),
 
                 )
+            ),
+
+            'order.attachment.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'order.attachment.new' => array(
+                        'label' => _('New attachment')
+                    ),
+
+                )
+
+            ),
+            'order.attachment'     => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'order.attachment.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'order.attachment.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+                )
+
             ),
 
         )

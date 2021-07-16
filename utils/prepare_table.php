@@ -109,6 +109,10 @@ class prepare_table {
      * @var array
      */
     public $navigation_sql;
+    /**
+     * @var mixed
+     */
+    public $object;
 
 
     function __construct(PDO $db, Account $account, User $user) {
@@ -117,6 +121,7 @@ class prepare_table {
         $this->account = $account;
         $this->user    = $user;
 
+        $this->object = false;
 
         $this->group_by   = '';
         $this->where      = '';
@@ -202,11 +207,10 @@ class prepare_table {
     function initialize_from_session($tab) {
 
 
-
         //print_r($_SESSION['table_state'][$tab]);
         //exit;
-        $this->parameters=$_SESSION['table_state'][$tab];
-        $this->f_value=$_SESSION['table_state'][$tab]['f_value'];
+        $this->parameters = $_SESSION['table_state'][$tab];
+        $this->f_value    = $_SESSION['table_state'][$tab]['f_value'];
         //$this->parameters['f_field']
 
     }
@@ -379,6 +383,12 @@ class prepare_table {
 
 
     private function process_navigation($object): array {
+        $order_by_key = false;
+
+
+        if ($this->order == $this->navigation_sql['key']) {
+            $order_by_key = true;
+        }
 
 
         $order = preg_replace('/^.*\.`/', '', $this->order);
@@ -394,49 +404,60 @@ class prepare_table {
         $next_key   = 0;
 
 
-        $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
+        if($order_by_key){
+            $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
+            from $this->table   $this->where $this->wheref and  $this->order < ?
+            order by $this->order  desc limit 1";
+
+            $args=[
+                $_order_field_value
+            ];
+
+        }else{
+            $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
             from $this->table   $this->where $this->wheref 
             and ( $this->order < ? OR ($this->order = ? AND {$this->navigation_sql['key']} < ? ))  
             order by $this->order desc , {$this->navigation_sql['key']} desc limit 1";
 
-
-        $stmt = $this->db->prepare('select '.$sql);
-        $stmt->execute(
-            [
+            $args=[
                 $_order_field_value,
                 $_order_field_value,
                 $object->id
-            ]
-        );
-        while ($row = $stmt->fetch()) {
+            ];
+        }
 
+
+
+
+        $stmt = $this->db->prepare('select '.$sql);
+        $stmt->execute($args);
+        while ($row = $stmt->fetch()) {
             $prev_key   = $row['object_key'];
             $prev_title = $row['object_name'];
         }
 
-
-        $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
+        if($order_by_key){
+            $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
+            from $this->table   $this->where $this->wheref and  $this->order > ?
+            order by $this->order   limit 1";
+        }else{
+            $sql = " {$this->navigation_sql['name']} as object_name, {$this->navigation_sql['key']} as object_key 
             from $this->table  $this->where $this->wheref 
             and ( $this->order > ? OR ($this->order = ? AND {$this->navigation_sql['key']} > ? ))  
             order by $this->order  , {$this->navigation_sql['key']}  limit 1";
+        }
+
 
 
         $stmt = $this->db->prepare('select '.$sql);
-        $stmt->execute(
-            [
-                $_order_field_value,
-                $_order_field_value,
-                $object->id
-            ]
-        );
+        $stmt->execute($args);
         while ($row = $stmt->fetch()) {
-
+            //print_r($row);
             $next_key   = $row['object_key'];
             $next_title = $row['object_name'];
         }
 
-
-        if ($this->sort_direction == 'desc') {
+        if ($this->sort_direction == 'desc' and !$order_by_key ) {
             $_tmp1      = $prev_key;
             $_tmp2      = $prev_title;
             $prev_key   = $next_key;
@@ -444,6 +465,7 @@ class prepare_table {
             $next_key   = $_tmp1;
             $next_title = $_tmp2;
         }
+
 
         return [
             $prev_key,

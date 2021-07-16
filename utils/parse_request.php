@@ -1594,6 +1594,21 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
 
                                 }
                             }
+                        } elseif ($view_path[1] == 'attachment') {
+                            $section    = 'customer.attachment';
+                            $object     = 'attachment';
+                            $parent     = 'customer';
+                            $parent_key = $key;
+                            if (isset($view_path[2])) {
+                                if (is_numeric($view_path[2])) {
+                                    $key = $view_path[2];
+
+                                } elseif ($view_path[2] == 'new') {
+                                    $section = 'customer.attachment.new';
+
+                                    $key = 0;
+                                }
+                            }
                         }
 
 
@@ -2202,6 +2217,22 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
 
                                         }
                                     }
+                                } elseif ($view_path[1] == 'attachment') {
+
+                                    $section    = 'customer.attachment';
+                                    $object     = 'attachment';
+                                    $parent     = 'customer';
+                                    $parent_key = $key;
+                                    if (isset($view_path[2])) {
+                                        if (is_numeric($view_path[2])) {
+                                            $key = $view_path[2];
+
+                                        } elseif ($view_path[2] == 'new') {
+                                            $section = 'customer.attachment.new';
+
+                                            $key = 0;
+                                        }
+                                    }
                                 }
                             }
 
@@ -2362,7 +2393,6 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
             case 'orders':
                 if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
 
-
                     if (!$user->can_view('orders')) {
                         $module  = 'utils';
                         $section = 'forbidden';
@@ -2472,6 +2502,28 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                             $section = 'order';
                                             $object  = 'order';
                                             $key     = $view_path[2];
+
+                                            if (isset($view_path[3])) {
+                                                if ($view_path[3] == 'attachment') {
+
+                                                    $section    = 'order.attachment';
+                                                    $object     = 'attachment';
+                                                    $parent     = 'order';
+                                                    $parent_key = $key;
+                                                    if (isset($view_path[4])) {
+                                                        if (is_numeric($view_path[4])) {
+                                                            $key = $view_path[4];
+
+                                                        } elseif ($view_path[4] == 'new') {
+                                                            $section = 'order.attachment.new';
+
+                                                            $key = 0;
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+
                                         }
 
                                     }
@@ -2520,7 +2572,8 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                 }
 
 
-                            } elseif (is_numeric($view_path[0])) {
+                            }
+                            elseif (is_numeric($view_path[0])) {
                                 $section = 'order';
                                 $object  = 'order';
 
@@ -2626,6 +2679,22 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                         if (isset($view_path[2])) {
                                             if (is_numeric($view_path[2])) {
                                                 $key = $view_path[2];
+                                            }
+                                        }
+                                    }elseif ($view_path[1] == 'attachment') {
+
+                                        $section    = 'order.attachment';
+                                        $object     = 'attachment';
+                                        $parent     = 'order';
+                                        $parent_key = $key;
+                                        if (isset($view_path[2])) {
+                                            if (is_numeric($view_path[2])) {
+                                                $key = $view_path[2];
+
+                                            } elseif ($view_path[2] == 'new') {
+                                                $section = 'order.attachment.new';
+
+                                                $key = 0;
                                             }
                                         }
                                     }
@@ -2952,6 +3021,22 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                 }
 
 
+                            } elseif ($view_path[1] == 'attachment') {
+
+                                $section    = 'order.attachment';
+                                $object     = 'attachment';
+                                $parent     = 'order';
+                                $parent_key = $key;
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $key = $view_path[2];
+
+                                    } elseif ($view_path[2] == 'new') {
+                                        $section = 'order.attachment.new';
+
+                                        $key = 0;
+                                    }
+                                }
                             }
 
 
@@ -5968,8 +6053,6 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                                                     }
                                                                 }
                                                             }
-
-
 
 
                                                         }

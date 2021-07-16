@@ -15,7 +15,6 @@
 */
 include_once 'class.Subject.php';
 include_once 'class.Order.php';
-include_once 'class.Attachment.php';
 include_once 'trait.CustomerAiku.php';
 
 class Customer extends Subject {
@@ -542,7 +541,7 @@ class Customer extends Subject {
 
             case('Orders'):
                 return number($this->data['Customer Orders']);
-                break;
+
             case('Notes'):
                 $sql   = sprintf(
                     "SELECT count(*) AS total FROM  `Customer History Bridge` WHERE `Customer Key`=%d AND `Type`='Notes'  ", $this->id
@@ -561,7 +560,7 @@ class Customer extends Subject {
 
 
                 return number($notes);
-                break;
+
             case('Send Newsletter'):
             case('Send Email Marketing'):
             case('Send Postal Marketing'):
@@ -739,6 +738,7 @@ class Customer extends Subject {
                 }
 
                 return preg_replace('/^ \<span>\&\#183;\<\/span>/', '', $categories_overview);
+
             default:
 
 
@@ -1423,10 +1423,6 @@ class Customer extends Subject {
                 $this->add_note($value);
                 //$this->fork_subject_index_elastic_search();
                 break;
-            case('Attach'):
-                $this->add_attach($value);
-                break;
-
             case 'Customer Level Type Partner':
 
                 $old_value = $this->data['Customer Level Type'];

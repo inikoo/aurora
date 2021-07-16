@@ -9,6 +9,8 @@
 
 */
 
+/** @var PDO $db */
+/** @var \User $user */
 
 require_once 'common.php';
 require_once 'utils/authorize_file_view.php';
@@ -30,6 +32,7 @@ $stmt->execute(
     )
 );
 if ($row = $stmt->fetch()) {
+
     if (authorize_file_view($db, $user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])) {
         header('Content-Type: '.$row['Attachment MIME Type']);
         header('Content-Transfer-Encoding: binary');

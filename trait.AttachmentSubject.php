@@ -28,7 +28,7 @@ trait AttachmentSubject {
     public $db;
 
 
-    function add_attachment($raw_data) {
+    function add_attachment($raw_data): Attachment {
         $data = array(
             'file' => $raw_data['Filename']
         );
@@ -39,16 +39,20 @@ trait AttachmentSubject {
         if ($attach->id) {
 
 
-            $sql = sprintf(
-                "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`,`Attachment Public`) VALUES (%d,%s,%d,%s,%s,%s,%s)", $attach->id,
-                prepare_mysql($this->get_object_name()), $this->id, prepare_mysql($raw_data['Attachment File Original Name']), prepare_mysql($raw_data['Attachment Caption'], false), prepare_mysql($raw_data['Attachment Subject Type']),
-                prepare_mysql((isset($raw_data['Attachment Public']) ? $raw_data['Attachment Public'] : 'No'))
-
-
+            $sql = "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`,`Attachment Public`) VALUES (?,?,?,?,?,?,?)";
+            $this->db->prepare($sql)->execute(
+                array(
+                    $attach->id,
+                    $this->get_object_name(),
+                    $this->id,
+                    $raw_data['Attachment File Original Name'],
+                    $raw_data['Attachment Caption'],
+                    (empty($raw_data['Attachment Subject Type'])?'Other':''),
+                    ($raw_data['Attachment Public'] ?? 'No')
+                )
             );
 
 
-            //print $sql;
             $this->db->exec($sql);
 
             $subject_bridge_key = $this->db->lastInsertId();
@@ -75,8 +79,8 @@ trait AttachmentSubject {
             $this->update_attachments_data();
 
         } else {
-            $this->error;
-            $this->msg = $attach->msg;
+            $this->error = true;
+            $this->msg   = $attach->msg;
         }
 
 
@@ -125,8 +129,8 @@ trait AttachmentSubject {
 
             $attachment->delete();
         } else {
-            $this->error;
-            $this->msg = _('Attachment not found');
+            $this->error = true;
+            $this->msg   = _('Attachment not found');
         }
 
 

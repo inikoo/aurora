@@ -558,9 +558,6 @@ class Prospect extends Subject {
             case('Note'):
                 $this->add_note($value);
                 break;
-            case('Attach'):
-                $this->add_attach($value);
-                break;
             case 'Prospect Customer Key':
 
                 $customer = get_object('Customer', $value);

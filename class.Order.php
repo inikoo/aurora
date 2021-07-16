@@ -13,7 +13,7 @@ include_once 'class.DB_Table.php';
 
 require_once 'utils/order_functions.php';
 require_once 'utils/natural_language.php';
-
+include_once 'trait.AttachmentSubject.php';
 include_once 'trait.OrderShippingOperations.php';
 include_once 'trait.OrderChargesOperations.php';
 include_once 'trait.OrderDiscountOperations.php';
@@ -28,7 +28,7 @@ include_once 'trait.OrderAiku.php';
 
 class Order extends DB_Table {
 
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax, OrderGet, OrderAiku;
+    use AttachmentSubject,OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax, OrderGet, OrderAiku;
 
 
     var $amount_off_allowance_data = false;
@@ -3265,10 +3265,6 @@ class Order extends DB_Table {
 
 
                             }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
 
                         break;

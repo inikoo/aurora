@@ -81,14 +81,14 @@ class Attachment extends DB_Table {
         $values  = join(',', array_fill(0, count($this->data), '?'));
 
 
-        $sql = "INSERT INTO `Attachment Dimension` ($columns) values ($values)";
+        $sql = " INTO `Attachment Dimension` ($columns) values ($values)";
 
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare('INSERT '.$sql);
 
 
         $i = 1;
-        foreach ($this->data as $key => $value) {
+        foreach ($this->data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -218,7 +218,7 @@ class Attachment extends DB_Table {
 
 
             unlink($tmp_file_name);
-            unlink($tmp_file.'.jpg');
+           
         } catch (Exception $e) {
             // echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
@@ -314,7 +314,7 @@ class Attachment extends DB_Table {
         }
     }
 
-    function get_subjects() {
+    function get_subjects(): array {
         $subjects = array();
         $sql      = sprintf(
             'SELECT * FROM `Attachment Bridge` WHERE `Attachment Key`=%d', $this->id

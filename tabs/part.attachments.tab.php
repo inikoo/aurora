@@ -9,32 +9,14 @@
 
 */
 
+/** @var \User $user */
+/** @var \Smarty $smarty */
+/** @var array $state */
+include_once 'helpers/attachments/attachments_tab_snippet.php';
 $tab     = 'part.attachments';
 $ar_file = 'ar_attachments_tables.php';
 $tipo    = 'attachments';
-
 $default = $user->get_tab_defaults($tab);
-
-$table_views = array();
-
-$table_filters = array(
-    'caption' => array('label' => _('Caption')),
-);
-
-$parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
-
-);
-
-$table_buttons   = array();
-$table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New attachment'),
-    'reference' => $state['object']."/".$state['key']."/attachment/new"
-);
-$smarty->assign('table_buttons', $table_buttons);
-
+list($table_views,$table_filters,$parameters,$smarty)=prepare_attachments_tab($state,$smarty,'part/'.$state['key']);
 include('utils/get_table_html.php');
 
-?>
