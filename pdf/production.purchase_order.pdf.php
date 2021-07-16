@@ -9,6 +9,8 @@
  Version 3.0
 */
 
+use Mpdf\Mpdf;
+
 chdir('../');
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -18,6 +20,9 @@ include_once 'common.php';
 include_once 'utils/natural_language.php';
 include_once 'utils/object_functions.php';
 require_once 'utils/table_functions.php';
+/** @var \Smarty $smarty */
+/** @var \Account $account */
+
 
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
@@ -30,7 +35,7 @@ if (!$purchase_order->id or $purchase_order->get('Purchase Order Warehouse')=='N
 }
 
 
-$mpdf = new \Mpdf\Mpdf(
+$mpdf = new Mpdf(
     [
         'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
         'mode'          => 'utf-8',
@@ -214,13 +219,11 @@ if ($result = $db->query($sql)) {
 
 
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 
-
 $smarty->assign('transactions', $adata);
+$smarty->assign('printed_time',strftime("%a %e %b %l:%M%p %Z"));
+
 
 $html = $smarty->fetch('production.purchase_order.pdf.tpl');
 

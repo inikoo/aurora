@@ -86,7 +86,7 @@
 
         .warning {
             color: #ED9121;
-        }%e %b %Y %H:
+        }
 
         .error {
             color: tomato;
@@ -123,15 +123,9 @@
                     </div>
                 {else}
                     </div>
-                    {t}Submitted{/t}:
-                    <b>{$purchase_order->get('Submitted Formatted Date')}</b>
+                    {t}Sent to queue{/t}:
+                    <b>{$purchase_order->get('Production Submitted Formatted Date')}</b>
                     </div>
-                    {if $purchase_order->get('Estimated Production Date')!=''}
-                        </div>
-                        {t}Expected dispatch{/t}:
-                        <b>{$purchase_order->get('Estimated Production Date')}</b>
-                        </div>
-                    {/if}
 
 
 
@@ -149,11 +143,13 @@
     <div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
     </div>
     <table width="100%">
-        <tr>
+
         <tr>
 
             <td width="33%" style="color:#000;text-align: left;">
-                {$purchase_order->get('Warehouse Company Name')}
+                <small>
+                {t}Printed{/t}: {$printed_time}
+                </small>
             </td>
             <td width="33%"
                 style="color:#000;text-align: center">{t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}</td>
@@ -161,7 +157,6 @@
                 <small>
                     {if $purchase_order->get('Purchase Order Main Buyer Name')!=''}
                     {t}Submitted by{/t} {$purchase_order->get('Purchase Order Main Buyer Name')}
-                        <br>
                     {/if}
 
                 </small>

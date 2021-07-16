@@ -117,14 +117,14 @@ class PurchaseOrder extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Purchase Order Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+            " INTO `Purchase Order Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare('INSERT '.$sql);
 
 
         $i = 1;
-        foreach ($base_data as $key => $value) {
+        foreach ($base_data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -153,18 +153,15 @@ class PurchaseOrder extends DB_Table {
             $parent->update_purchase_orders();
 
 
-        } else {
-            // print_r($stmt->errorInfo());
-
         }
 
 
     }
 
 
-    function get_unique_public_id_suffix($code, $parent, $parent_key) {
+    function get_unique_public_id_suffix($code, $parent, $parent_key): string {
 
-
+        $suffix='';
         for ($i = 1; $i <= 200; $i++) {
 
             if ($i == 1) {
@@ -175,7 +172,7 @@ class PurchaseOrder extends DB_Table {
                 $suffix = '.'.uniqid('', true);
             }
 
-            $sql = "SELECT `Purchase Order Public ID` FROM `Purchase Order Dimension`  WHERE  `Purchase Order Parent`=? AND `Purchase Order Parent Key`=? AND `Purchase Order Public ID`=?";
+            $sql = "SELECT count(*) as num FROM `Purchase Order Dimension`  WHERE  `Purchase Order Parent`=? AND `Purchase Order Parent Key`=? AND `Purchase Order Public ID`=?";
 
 
             $stmt = $this->db->prepare($sql);
@@ -188,9 +185,9 @@ class PurchaseOrder extends DB_Table {
                 )
             );
             if ($row = $stmt->fetch()) {
-
-            } else {
-                return $code.$suffix;
+                if($row['num']==0){
+                    return $code.$suffix;
+                }
             }
 
 
@@ -264,6 +261,9 @@ class PurchaseOrder extends DB_Table {
         }
     }
 
+    /**
+     * @throws \ErrorException
+     */
     function create_supplier_delivery($data) {
 
         include_once 'utils/currency_functions.php';
@@ -555,7 +555,6 @@ class PurchaseOrder extends DB_Table {
                 }
 
 
-                break;
 
 
             case 'Estimated Receiving Datetime':
@@ -612,7 +611,6 @@ class PurchaseOrder extends DB_Table {
 
                 }
 
-                break;
 
             case 'Estimated Production Formatted Date':
 
@@ -642,7 +640,6 @@ class PurchaseOrder extends DB_Table {
                 }
 
 
-                break;
             case 'Estimated Receiving Formatted Date':
 
                 if ($this->get('State Index') < 40 and $this->get('State Index') > 0) {
@@ -668,7 +665,6 @@ class PurchaseOrder extends DB_Table {
                     }
                 }
 
-                break;
             case 'State Index':
             case 'Max State Index':
             case 'Max Supplier Delivery State':
@@ -715,7 +711,6 @@ class PurchaseOrder extends DB_Table {
                         return 0;
 
                 }
-                break;
 
 
             case 'Weight':
@@ -754,7 +749,6 @@ class PurchaseOrder extends DB_Table {
                     "%a %e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00')
                 );
 
-                break;
             case 'Production Creation Formatted Date':
                 if ($this->data['Purchase Order Creation Date'] == '') {
                     return '&nbsp;';
@@ -764,6 +758,12 @@ class PurchaseOrder extends DB_Table {
                     "%a %e %b %y (%Z) %l:%M%p", strtotime($this->data['Purchase Order Creation Date'].' +0:00')
                 );
             case 'Production Submitted Formatted Date':
+                if ($this->data['Purchase Order Submitted Date'] == '') {
+                    return '';
+                }
+                return strftime("%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Submitted Date'].' +0:00'));
+
+            case 'Production Submitted Formatted Smart Date':
                 if ($this->data['Purchase Order Submitted Date'] == '') {
                     return '&nbsp;';
                 }
@@ -794,7 +794,6 @@ class PurchaseOrder extends DB_Table {
                         "%a %e %b %l:%M%p", strtotime($this->data['Purchase Order Cancelled Date'].' +0:00')
                     );
                 }
-                break;
             case 'Production Confirmed Formatted Date':
 
                 if ($this->data['Purchase Order Confirmed Date'] == '') {
@@ -945,7 +944,6 @@ class PurchaseOrder extends DB_Table {
                     }
                 }
 
-                break;
             case ('Main Source Type'):
                 switch ($this->data['Purchase Order Main Source Type']) {
                     case 'Post':
@@ -1032,7 +1030,6 @@ class PurchaseOrder extends DB_Table {
 
                         case 'Dispatched':
                             return _('Delivery dispatched');
-                            break;
                         case 'Received':
                             return _('Received');
 
@@ -1059,7 +1056,6 @@ class PurchaseOrder extends DB_Table {
                 }
 
 
-                break;
 
             case ('Agent State'):
                 switch ($this->data['Purchase Order State']) {
@@ -1092,52 +1088,45 @@ class PurchaseOrder extends DB_Table {
                 switch ($this->data['Purchase Order State']) {
                     case 'InProcess':
                         return _('In process by client');
-                        break;
 
                     case 'Submitted':
                         return _('CO received');
-                        break;
                     case 'Confirmed':
                         return _("Suppliers orders");
-                        break;
+
                     case 'Checking':
                         return _('Checking');
-                        break;
+
                     case 'In Warehouse':
                     case 'Done':
                         return _('Dispatched');
-                        break;
+
                     case 'Cancelled':
                         return _('Cancelled');
-                        break;
 
 
                     default:
                         return $this->data['Purchase Order State'];
-                        break;
                 }
 
-                break;
 
             case 'Total Amount':
             case 'Extra Cost Amount':
                 return money(
                     $this->data['Purchase Order '.$key], $this->data['Purchase Order Currency Code']
                 );
-                break;
+
 
             case 'AC Subtotal Amount':
 
                 return money(
                     ($this->data['Purchase Order Items Net Amount'] + $this->data['Purchase Order Extra Cost Amount']) * $this->get('Purchase Order Currency Exchange'), $account->get('Currency Code')
                 );
-                break;
             case 'AC Extra Costs Amount':
                 //todo add this field to DB and use it the real value (May be need when more then one delivery per PO)
                 return money(
                     0, $account->get('Currency Code')
                 );
-                break;
 
             case 'AC Total Amount':
                 //todo add AC Extra Costs Amount (May be need when more then one delivery per PO)
@@ -1160,7 +1149,6 @@ class PurchaseOrder extends DB_Table {
                     );
                 }
 
-                break;
             case 'Number Placed Items':
 
                 if ($this->get('State Index') < 80) {
@@ -1171,7 +1159,6 @@ class PurchaseOrder extends DB_Table {
                     );
                 }
 
-                break;
 
 
             case 'payment terms':
@@ -1235,7 +1222,7 @@ class PurchaseOrder extends DB_Table {
     }
 
     function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+        return ($this->metadata[$key] ?? '');
     }
 
     function update_totals() {
@@ -1314,7 +1301,7 @@ class PurchaseOrder extends DB_Table {
     }
 
 
-    private function get_purchase_order_state($mode = 'min') {
+    private function get_purchase_order_state($mode = 'min'): string {
 
 
         $index = 0;
@@ -1405,7 +1392,7 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    private function get_purchase_order_item_state_index($state) {
+    private function get_purchase_order_item_state_index($state): int {
 
         switch ($state) {
             case 'Cancelled';
@@ -1470,7 +1457,7 @@ class PurchaseOrder extends DB_Table {
     }
 
 
-    private function get_purchase_order_max_delivery_state() {
+    private function get_purchase_order_max_delivery_state(): string {
 
         $index = 0;
 
@@ -1558,7 +1545,7 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    function update_item_quantity($data) {
+    function update_item_quantity($data): array {
 
 
         $account = get_object('account', 1);
@@ -1762,7 +1749,7 @@ class PurchaseOrder extends DB_Table {
 
         }
 
-        $this->update_purchase_order_item_state($transaction_key, $update_part_next_deliveries_data = false);
+        $this->update_purchase_order_item_state($transaction_key, false);
         $supplier_part->part->update_next_deliveries_data();
         $this->update_totals();
         $operations = array();
@@ -2043,7 +2030,7 @@ class PurchaseOrder extends DB_Table {
      * @param integer $purchase_order_transaction_fact_key
      * @param bool    $update_part_next_deliveries_data
      */
-    function update_purchase_order_item_state($purchase_order_transaction_fact_key, $update_part_next_deliveries_data = true) {
+    function update_purchase_order_item_state(int $purchase_order_transaction_fact_key, bool $update_part_next_deliveries_data = true) {
 
         $sql  = "select PO.`Purchase Order State`,`Purchase Order Submitted Cancelled Units`,`Purchase Order Transaction Fact Key`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,POTF.`Supplier Delivery Key` ,`Supplier Delivery Units`,
                 `Supplier Delivery Transaction State`,`Purchase Order Transaction State`,`Purchase Order Transaction Part SKU`
@@ -2353,9 +2340,6 @@ class PurchaseOrder extends DB_Table {
                                 );
                                 $attachment->delete();
                             }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
                         }
 
 
@@ -2363,9 +2347,6 @@ class PurchaseOrder extends DB_Table {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -2383,9 +2364,6 @@ class PurchaseOrder extends DB_Table {
                     $attachment = new Attachment($row['Attachment Key']);
                     $attachment->delete();
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -3356,7 +3334,7 @@ class PurchaseOrder extends DB_Table {
                     break;
                 default:
                     exit('unknown state:'.$value);
-                    break;
+
             }
 
 
@@ -3415,7 +3393,7 @@ class PurchaseOrder extends DB_Table {
 
         if ($this->get('Purchase Order Type') == 'Production') {
             $this->update_metadata['class_html']['Production_Confirmed_Formatted_Date']    = '&nbsp;'.$this->get('Production Confirmed Formatted Date');
-            $this->update_metadata['class_html']['Production_Submitted_Formatted_Date']    = '&nbsp;'.$this->get('Production Submitted Formatted Date');
+            $this->update_metadata['class_html']['Production_Submitted_Formatted_Date']    = '&nbsp;'.$this->get('Production Submitted Formatted Smart Date');
             $this->update_metadata['class_html']['Production_Manufactured_Formatted_Date'] = '&nbsp;'.$this->get('Production Manufactured Formatted Date');
             $this->update_metadata['class_html']['Production_QC_Pass_Formatted_Date']      = '&nbsp;'.$this->get('Production QC Pass Formatted Date');
 
@@ -3594,7 +3572,7 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    function get_supplier_delivery_public_id($dn_id, $suffix_counter = '') {
+    function get_supplier_delivery_public_id($dn_id, $suffix_counter = ''): string {
 
         $sql = "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE  `Supplier Delivery Parent`=? AND `Supplier Delivery Parent Key`=? AND `Supplier Delivery Public ID`=? ";
 

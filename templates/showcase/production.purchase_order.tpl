@@ -8,7 +8,6 @@
  Version 3
 -->
 *}
-
 <input id="purchase_order_key_value" type="hidden" value="{$order->id}">
 {assign deliveries $order->get_deliveries('objects')}
 <div class="showcase_purchase_order" >
@@ -21,7 +20,7 @@
                 <span class="state ">{t}Sent to queue{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Production_Submitted_Formatted_Date"> {$order->get('Production Submitted Formatted Date')}</span>
+                <span class="Production_Submitted_Formatted_Date"> {$order->get('Production Submitted Formatted Smart Date')}</span>
                 <span style="left: -155%"  class="Production_Creation_Formatted_Date start_date">{$order->get('Production Creation Formatted Date')}</span>
             </div>
             <div class="dot">
@@ -117,7 +116,7 @@
                 <span class="state ">{t}Submitted{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Production_Submitted_Formatted_Date"> {$order->get('Production Submitted Formatted Date')}</span>
+                <span class="Production_Submitted_Formatted_Date"> {$order->get('Production Submitted Formatted Smart Date')}</span>
                 <span style="left: -155%"  class="Production_Creation_Formatted_Date start_date">{$order->get('Production Creation Formatted Date')}</span>
             </div>
             <div class="dot">
