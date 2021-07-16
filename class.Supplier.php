@@ -402,20 +402,26 @@ class Supplier extends SubjectSupplier {
 
                 $this->update_field($field, $value, $options);
                 if ($this->updated and $value == 'No') {
+                    include_once 'utils/new_fork.php';
 
                     $sql = sprintf(
                         "SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d  AND  `Supplier Part On Demand`='Yes' ", $this->id
                     );
                     if ($result = $this->db->query($sql)) {
-                        include_once 'class.SupplierPart.php';
                         foreach ($result as $row) {
-                            $supplier_part = new SupplierPart(
-                                $row['Supplier Part Key']
+
+
+
+                            new_housekeeping_fork(
+                                'au_housekeeping', array(
+                                'type'          => 'update_supplier_part_on_demand',
+                                'supplier_part_key' => $row['Supplier Part Key'],
+                                'value'=>'No',
+                                'editor'      => $this->editor,
+                            ), DNS_ACCOUNT_CODE,'Low'
                             );
 
-                            $supplier_part->update(
-                                array('Supplier Part On Demand' => 'No'), $options
-                            );
+
                         }
                     }
                 }

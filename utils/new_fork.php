@@ -12,7 +12,7 @@
 */
 
 
-function new_fork($type, $data, $account_code, $db, $priority = 'Normal') {
+function new_fork($type, $data, $account_code, $db, $priority = 'Normal'): array {
 
 
     if (class_exists('GearmanClient')) {
@@ -84,7 +84,7 @@ function new_fork($type, $data, $account_code, $db, $priority = 'Normal') {
 }
 
 
-function new_housekeeping_fork($type, $data, $account_code, $priority = 'Normal') {
+function new_housekeeping_fork($type, $data, $account_code, $priority = 'Normal'): string {
 
 
 

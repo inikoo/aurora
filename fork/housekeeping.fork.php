@@ -1479,7 +1479,6 @@ function fork_housekeeping($job) {
             $account->update_sitting_time_in_warehouse();
 
 
-            
             $store->update_dispatching_time_data('1m');
             $store->update_sitting_time_in_warehouse();
 
@@ -3096,7 +3095,16 @@ function fork_housekeeping($job) {
 
 
             break;
+        case 'update_supplier_part_on_demand':
 
+            $supplier_part         = get_object('Supplier_Part', $data['supplier_part_key']);
+            $supplier_part->editor = $data['editor'];
+            $supplier_part->update(
+                array('Supplier Part On Demand' => $data['value'])
+            );
+
+
+            break;
         default:
             break;
 

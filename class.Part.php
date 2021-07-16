@@ -4421,6 +4421,11 @@ class Part extends Asset {
         );
 
 
+        $this->update_sales_from_invoices('1 Quarter',true,false);
+        $this->update_stock();
+        $this->update_available_forecast();
+
+
         foreach ($this->get_products('objects') as $product) {
             $product->editor = $this->editor;
             $product->update_availability();
