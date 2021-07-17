@@ -9,6 +9,7 @@
 
  Version 3.0
 */
+include_once 'utils/navigation_functions.php';
 
 function get_employees_navigation($data, $smarty, $user, $db) {
 
@@ -18,12 +19,11 @@ function get_employees_navigation($data, $smarty, $user, $db) {
     $sections      = get_sections('hr', '');
 
 
-    if(!$user->can_edit('Staff')){
+    if (!$user->can_edit('Staff')) {
         unset($sections['clocking_machines']);
         unset($sections['contractors']);
         unset($sections['hr.history']);
     }
-
 
 
     if (isset($sections[$data['section']])) {
@@ -46,7 +46,11 @@ function get_employees_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -78,7 +82,11 @@ function get_overtimes_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -110,7 +118,11 @@ function get_history_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -142,7 +154,11 @@ function get_contractors_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -174,7 +190,11 @@ function get_organization_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -191,8 +211,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
     if ($_user and is_object($_user) and $_user->id and $user->can_view('Users')) {
 
-        $right_buttons[]
-            = array(
+        $right_buttons[] = array(
             'icon'     => 'terminal',
             'title'    => '',
             'click'    => "change_view('/users/".$_user->id."')",
@@ -263,8 +282,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
                 $sql = sprintf(
                     "select `Staff Name` object_name,SD.`Staff Key` as object_key from  %s  
-	                and ($_order_field < %s OR ($_order_field = %s AND SD.`Staff Key` < %d))  order by $_order_field desc , SD.`Staff Key` desc limit 1", "$table   $where $wheref",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND SD.`Staff Key` < %d))  order by $_order_field desc , SD.`Staff Key` desc limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -280,8 +298,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
                 $sql = sprintf(
                     "select `Staff Name` object_name,SD.`Staff Key` as object_key from %s  
-	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Key` > %d))  order by $_order_field   , SD.`Staff Key`  limit 1", "$table   $where $wheref",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Key` > %d))  order by $_order_field   , SD.`Staff Key`  limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
 
@@ -361,12 +378,11 @@ function get_employee_navigation($data, $smarty, $user, $db) {
     }
 
     $sections = get_sections('hr', '');
-    if(!$user->can_edit('Staff')){
+    if (!$user->can_edit('Staff')) {
         unset($sections['clocking_machines']);
         unset($sections['contractors']);
         unset($sections['hr.history']);
     }
-
 
 
     if (isset($sections[$_section])) {
@@ -392,7 +408,11 @@ function get_employee_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -439,7 +459,11 @@ function get_new_employee_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -531,8 +555,7 @@ function get_contractor_navigation($data, $smarty, $user, $db) {
 
                 $sql = sprintf(
                     "select `Staff Name` object_name,SD.`Staff Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Key` > %d))  order by $_order_field   , SD.`Staff Key`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Key` > %d))  order by $_order_field   , SD.`Staff Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
 
@@ -640,7 +663,11 @@ function get_contractor_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -687,7 +714,11 @@ function get_new_contractor_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -788,8 +819,7 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
 
             $sql = sprintf(
                 "select concat(`Staff Alias`,`Timesheet Date`) object_name,TD.`Timesheet Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND TD.`Timesheet Key` > %d))  order by $_order_field   , TD.`Timesheet Key`  limit 1", prepare_mysql($_order_field_value),
-                prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND TD.`Timesheet Key` > %d))  order by $_order_field   , TD.`Timesheet Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
             );
 
 
@@ -928,7 +958,7 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
 
 
     $sections = get_sections('hr', '');
-    if(!$user->can_edit('Staff')){
+    if (!$user->can_edit('Staff')) {
         unset($sections['clocking_machines']);
         unset($sections['contractors']);
         unset($sections['hr.history']);
@@ -962,34 +992,32 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-function get_new_employee_attachment_navigation($data, $smarty, $user, $db) {
+function get_new_employee_attachment_navigation($data, $smarty): array {
 
 
     $left_buttons  = array();
     $right_buttons = array();
 
 
-    $sections = get_sections('hr', '');
+    $sections                          = get_sections('hr', '');
+    $sections['employees']['selected'] = true;
 
-    $_section = 'employees';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
+    $link = 'employee/'.$data['_parent']->id;
 
-    include_once 'class.Staff.php';
-    $employee = new Staff($data['parent_key']);
 
     $up_button = array(
         'icon'      => 'arrow-up',
-        'title'     => sprintf(
-            _('Employee: %s'), $employee->get('Name')
-        ),
-        'reference' => 'employee/'.$data['parent_key']
+        'title'     => sprintf(_('Employee: %s'), $data['_parent']->get('Name')),
+        'reference' => $link,
     );
 
 
@@ -997,7 +1025,7 @@ function get_new_employee_attachment_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span>'.sprintf(
-            _('New attachment for %s'), '<span onClick="change_view(\'employee/'.$employee->id.'\')" class="button id">'.$employee->get('Name').'</span>'
+            _('New attachment for %s'), '<span onClick="change_view(\''.$link.'\')" class="button id">'.$data['_parent']->get('Name').'</span>'
         ).'</span>';
 
 
@@ -1016,12 +1044,73 @@ function get_new_employee_attachment_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}
+
+function get_employee_attachment_navigation($data, $smarty, $user, $db, $account): array {
+
+
+    $sections                          = get_sections('hr', '');
+    $sections['employees']['selected'] = true;
+
+    $tab  = 'employee.attachments';
+    $link = 'employee/'.$data['_parent']->id;
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => sprintf(_('Employee: %s'), $data['_parent']->get('Name')),
+        'reference' => $link,
+    );
+
+    include_once 'prepare_table/attachments.ptc.php';
+    $table = new prepare_table_attachments($db, $account, $user);
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($data['_object'], $tab, $data), $up_button, $link.'/attachment/%d'
+
+    );
+
+    $right_buttons = array();
+
+    $right_buttons[] = array(
+        'icon'  => 'download',
+        'title' => _('Download'),
+        'id'    => 'download_button'
+    );
+
+    $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search staff')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-function get_new_employee_user_navigation($data, $smarty, $user, $db) {
+function get_new_employee_user_navigation($data, $smarty, $user, $db): array {
 
 
     $left_buttons  = array();
@@ -1070,7 +1159,11 @@ function get_new_employee_user_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1121,62 +1214,11 @@ function get_new_contractor_user_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
-
-}
-
-
-function get_employee_attachment_navigation($data, $smarty, $user, $db) {
-
-
-    $left_buttons  = array();
-    $right_buttons = array();
-
-
-    $sections = get_sections('hr', '');
-
-    $_section = 'employees';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
-
-    include_once 'class.Staff.php';
-    $employee = new Staff($data['parent_key']);
-
-    $up_button = array(
-        'icon'      => 'arrow-up',
-        'title'     => sprintf(
-            _('Employee: %s'), $employee->get('Name')
-        ),
-        'reference' => 'employee/'.$data['parent_key']
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
     );
-
-    $right_buttons[] = array(
-        'icon'  => 'download',
-        'title' => _('Download'),
-        'id'    => 'download_button'
-    );
-    $left_buttons[]  = $up_button;
-
-    $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
-
-
-    $_content = array(
-        'sections_class' => '',
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search staff')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
 
 }
 
@@ -1365,7 +1407,7 @@ function get_timesheets_navigation($data, $smarty, $user, $db) {
     $left_buttons[] = $next_button;
 
     $sections = get_sections('hr', '');
-    if(!$user->can_edit('Staff')){
+    if (!$user->can_edit('Staff')) {
         unset($sections['clocking_machines']);
         unset($sections['contractors']);
         unset($sections['hr.history']);
@@ -1409,7 +1451,11 @@ function get_timesheets_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1496,8 +1542,7 @@ function get_upload_navigation($data, $smarty, $user, $db) {
 
                     $sql = sprintf(
                         "select concat(`Upload Key`,`Upload Created`) object_name,TD.`Upload Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND TD.`Upload Key` > %d))  order by $_order_field   , TD.`Upload Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND TD.`Upload Key` > %d))  order by $_order_field   , TD.`Upload Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
 
@@ -1628,7 +1673,11 @@ function get_upload_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1711,8 +1760,7 @@ function get_deleted_employee_navigation($data, $smarty, $user, $db) {
 
                 $sql = sprintf(
                     "select `Staff Deleted Name` object_name,SD.`Staff Deleted Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Deleted Key` > %d))  order by $_order_field   , SD.`Staff Deleted Key`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Deleted Key` > %d))  order by $_order_field   , SD.`Staff Deleted Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
 
@@ -1802,8 +1850,7 @@ function get_deleted_employee_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title = '<span class="id Staff_Name">'.$object->get('Alias').'</span> (<span class="id Staff_ID ">'.$object->get('ID')
-        .'</span>) <span class="error"><i class="fa fa-trash" aria-hidden="true"></i> '._('Deleted').'</span> ';
+    $title = '<span class="id Staff_Name">'.$object->get('Alias').'</span> (<span class="id Staff_ID ">'.$object->get('ID').'</span>) <span class="error"><i class="fa fa-trash" aria-hidden="true"></i> '._('Deleted').'</span> ';
 
 
     $_content = array(
@@ -1821,7 +1868,11 @@ function get_deleted_employee_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1904,8 +1955,7 @@ function get_deleted_contractor_navigation($data, $smarty, $user, $db) {
 
                 $sql = sprintf(
                     "select `Staff Deleted Name` object_name,SD.`Staff Deleted Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Deleted Key` > %d))  order by $_order_field   , SD.`Staff Deleted Key`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND SD.`Staff Deleted Key` > %d))  order by $_order_field   , SD.`Staff Deleted Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
 
@@ -1995,8 +2045,7 @@ function get_deleted_contractor_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title = '<span class="id Staff_Name">'.$object->get('Alias').'</span> (<span class="id Staff_ID ">'.$object->get('ID')
-        .'</span>) <span class="error"><i class="fa fa-trash" aria-hidden="true"></i> '._('Deleted').'</span> ';
+    $title = '<span class="id Staff_Name">'.$object->get('Alias').'</span> (<span class="id Staff_ID ">'.$object->get('ID').'</span>) <span class="error"><i class="fa fa-trash" aria-hidden="true"></i> '._('Deleted').'</span> ';
 
 
     $_content = array(
@@ -2014,7 +2063,11 @@ function get_deleted_contractor_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2075,7 +2128,7 @@ function get_position_navigation($data, $smarty, $user, $db) {
 
 
         include_once 'conf/roles.php';
-        $roles=get_roles();
+        $roles = get_roles();
 
         $sql = "select $fields from $table $where $wheref $group_by ";
 
@@ -2221,7 +2274,11 @@ function get_position_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2253,7 +2310,11 @@ function get_clocking_machines_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2300,7 +2361,11 @@ function get_new_clocking_machine_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2311,10 +2376,6 @@ function get_clocking_machine_navigation($data, $smarty, $user, $db) {
     $object        = $data['_object'];
     $left_buttons  = array();
     $right_buttons = array();
-
-
-
-  
 
 
     if ($data['parent']) {
@@ -2372,8 +2433,8 @@ function get_clocking_machine_navigation($data, $smarty, $user, $db) {
 
                 $sql = sprintf(
                     "select `Clocking Machine Code` object_name,CM.`Clocking Machine Key` as object_key from  %s  
-	                and ($_order_field < %s OR ($_order_field = %s AND CM.`Clocking Machine Key` < %d))  order by $_order_field desc , CM.`Clocking Machine Key` desc limit 1", "$table   $where $wheref",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND CM.`Clocking Machine Key` < %d))  order by $_order_field desc , CM.`Clocking Machine Key` desc limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value),
+                    prepare_mysql($_order_field_value), $object->id
                 );
 
 
@@ -2390,10 +2451,9 @@ function get_clocking_machine_navigation($data, $smarty, $user, $db) {
 
                 $sql = sprintf(
                     "select `Clocking Machine Code` object_name,CM.`Clocking Machine Key` as object_key from %s  
-	                and ($_order_field  > %s OR ($_order_field  = %s AND CM.`Clocking Machine Key` > %d))  order by $_order_field   , CM.`Clocking Machine Key`  limit 1", "$table   $where $wheref",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND CM.`Clocking Machine Key` > %d))  order by $_order_field   , CM.`Clocking Machine Key`  limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                    $object->id
                 );
-
 
 
                 if ($result = $db->query($sql)) {
@@ -2496,7 +2556,11 @@ function get_clocking_machine_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 

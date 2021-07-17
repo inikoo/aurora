@@ -16,9 +16,8 @@ include_once 'conf/fields/attachment.fld.php';
 /** @var \Smarty $smarty */
 /** @var array $state */
 
-if (!(in_array($state['store']->id, $user->stores) and $user->can_view('customers'))) {
-    $html = '';
-} else {
+if (in_array($state['store']->id, $user->stores) and $user->can_view('customers')) {
+
     include_once 'utils/invalid_messages.php';
     $object_fields = get_attachment_fields($state['_object'], $user,array(
         'new' => true,
@@ -36,6 +35,11 @@ if (!(in_array($state['store']->id, $user->stores) and $user->can_view('customer
         $html = $smarty->fetch('new_object.tpl');
     } catch (Exception $e) {
         $html = '';
+    }
+} else {
+    try {
+        $html = $smarty->fetch('access_denied');
+    } catch (Exception $e) {
     }
 }
 

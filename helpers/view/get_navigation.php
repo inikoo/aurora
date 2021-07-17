@@ -1003,7 +1003,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
 
                 case ('supplier_delivery.attachment.new'):
-                    return get_supplier_delivery_attachment_new_navigation($data, $smarty, $user, $db, $account);
+                    return get_supplier_delivery_attachment_new_navigation($data, $smarty);
 
                 case ('supplier_delivery.attachment'):
                     return get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db, $account);
@@ -1309,14 +1309,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
                 case ('employee.attachment'):
-                    return get_employee_attachment_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_employee_attachment_navigation($data, $smarty, $user, $db, $account);
 
                 case ('employee.attachment.new'):
-                    return get_new_employee_attachment_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_new_employee_attachment_navigation($data, $smarty);
 
                 case ('employee.user.new'):
                     return get_new_employee_user_navigation(

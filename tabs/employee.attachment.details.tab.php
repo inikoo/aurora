@@ -8,34 +8,34 @@
  Version 3
 
 */
+include_once 'utils/invalid_messages.php';
+include_once 'conf/fields/attachment.fld.php';
+
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
+
 
 if ($user->can_edit('Staff')) {
-
     include_once 'utils/invalid_messages.php';
-    include_once 'conf/object_fields.php';
-
-    /**
-     * @var $attachment \Attachment
-     */
-    $attachment = $state['_object'];
-
-    $object_fields = get_object_fields(
-        $attachment, $db, $user, $smarty, array('type' => 'employee')
-    );
-
-    $smarty->assign('state', $state);
-    $smarty->assign('object', $attachment);
-    $smarty->assign('object_name', $attachment->get_object_name());
-
+    $object_fields = get_attachment_fields($state['_object'], $user,array(
+        'type' => 'employee'
+    ));
+    $smarty->assign('object', $state['_object']);
+    $smarty->assign('key', $state['key']);
     $smarty->assign('object_fields', $object_fields);
+    $smarty->assign('state', $state);
 
-    $html = $smarty->fetch('edit_object.tpl');
-
-
+    try {
+        $html = $smarty->fetch('edit_object.tpl');
+    } catch (Exception $e) {
+        $html = '';
+    }
 } else {
     try {
         $html = $smarty->fetch('access_denied');
     } catch (Exception $e) {
     }
-
 }
+

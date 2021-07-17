@@ -18,7 +18,7 @@ if ($user->can_edit('parts')) {
     $ar_file = 'ar_attachments_tables.php';
     $tipo    = 'attachments';
     $default = $user->get_tab_defaults($tab);
-    list($table_views, $table_filters, $parameters, $smarty) = prepare_attachments_tab($state, $smarty, 'part/'.$state['key']);
+    list($table_views, $table_filters, $parameters, $smarty) = prepare_attachments_tab($state, $smarty, $state['request']);
     include('utils/get_table_html.php');
 } else {
     try {

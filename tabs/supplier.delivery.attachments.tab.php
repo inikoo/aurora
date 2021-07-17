@@ -2,39 +2,30 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 327 August 2018 at 16:54:49 GMT+8, Kuala Lumpur, Malysia
+ Created: 327 August 2018 at 16:54:49 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
-
 */
 
-$tab     = 'supplier.delivery.attachments';
-$ar_file = 'ar_attachments_tables.php';
-$tipo    = 'attachments';
 
-$default = $user->get_tab_defaults($tab);
+/** @var \User $user */
+/** @var \Smarty $smarty */
+/** @var array $state */
+if ($user->can_edit('suppliers')) {
+    include_once 'helpers/attachments/attachments_tab_snippet.php';
+    $tab     = 'supplier.delivery.attachments';
+    $ar_file = 'ar_attachments_tables.php';
+    $tipo    = 'attachments';
+    $default = $user->get_tab_defaults($tab);
+    list($table_views, $table_filters, $parameters, $smarty) = prepare_attachments_tab($state, $smarty, $state['request']);
+    include('utils/get_table_html.php');
+} else {
+    try {
+        $html = $smarty->fetch('access_denied');
+    } catch (Exception $e) {
+    }
+}
 
-$table_views = array();
-
-$table_filters = array(
-    'caption' => array('label' => _('Caption')),
-);
-
-$parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
-
-);
-
-$table_buttons   = array();
-$table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New attachment'),
-    'reference' => strtolower($state['_object']->get('Supplier Delivery Parent'))."/".$state['_object']->get('Supplier Delivery Parent Key')."/delivery/".$state['key']."/attachment/new"
-);
-$smarty->assign('table_buttons', $table_buttons);
-
-include('utils/get_table_html.php');
 
 

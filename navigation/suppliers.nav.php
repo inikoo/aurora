@@ -9,8 +9,7 @@
 
  Version 3.0
 */
-
-
+include_once 'utils/navigation_functions.php';
 
 function get_dashboard_navigation($data, $smarty, $user, $db) {
 
@@ -39,10 +38,13 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
-
 
 
 function get_suppliers_navigation($data, $smarty, $user, $db, $account) {
@@ -75,7 +77,11 @@ function get_suppliers_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -104,7 +110,12 @@ function get_purchase_orders_navigation($data, $smarty, $user, $db, $account) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -133,7 +144,12 @@ function get_deliveries_navigation($data, $smarty, $user, $db, $account) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -167,7 +183,11 @@ function get_agents_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -175,15 +195,13 @@ function get_agents_navigation($data, $smarty, $user, $db, $account) {
 function get_supplier_parts_navigation($data, $smarty, $user, $db) {
 
 
-
-
     $left_buttons = array();
 
     $right_buttons = array();
 
 
-    $sections = get_sections('suppliers', '');
-        $sections['supplier_parts']['selected'] = true;
+    $sections                               = get_sections('suppliers', '');
+    $sections['supplier_parts']['selected'] = true;
 
 
     $_content = array(
@@ -199,14 +217,17 @@ function get_supplier_parts_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
 function get_suppliers_categories_navigation($data, $smarty, $user, $db) {
-
-
 
 
     $left_buttons = array();
@@ -215,7 +236,7 @@ function get_suppliers_categories_navigation($data, $smarty, $user, $db) {
 
     // $right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
 
-    $sections = get_sections('suppliers', '');
+    $sections                               = get_sections('suppliers', '');
     $sections['supplier_parts']['selected'] = true;
 
 
@@ -232,7 +253,12 @@ function get_suppliers_categories_navigation($data, $smarty, $user, $db) {
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -460,7 +486,12 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
 
     );
     $smarty->assign('_content', $_content);
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -498,7 +529,11 @@ function get_suppliers_dashboard_navigation($data, $smarty, $user, $db, $account
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -784,7 +819,11 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -837,7 +876,11 @@ function get_new_supplier_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1040,7 +1083,11 @@ function get_agent_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1086,7 +1133,11 @@ function get_new_agent_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1320,10 +1371,10 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    if($data['_object']->part->get('Part Main Supplier Part Key')==$data['_object']->id){
-        $supplier_part_type_icon='<i class="fa fa-trophy" title="'._('Preferred supplier').'"></i>';
-    }else{
-        $supplier_part_type_icon='<i class="far fa-snooze" title="'._('Backup supplier').'"></i>';
+    if ($data['_object']->part->get('Part Main Supplier Part Key') == $data['_object']->id) {
+        $supplier_part_type_icon = '<i class="fa fa-trophy" title="'._('Preferred supplier').'"></i>';
+    } else {
+        $supplier_part_type_icon = '<i class="far fa-snooze" title="'._('Backup supplier').'"></i>';
 
     }
 
@@ -1333,8 +1384,6 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
         .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'
         ).'</small>';
-
-
 
 
     $right_buttons[] = array(
@@ -1360,7 +1409,11 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1408,7 +1461,11 @@ function get_new_supplier_part_navigation($data, $smarty, $user, $db, $account) 
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -1588,7 +1645,6 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-
     } elseif ($data['parent'] == 'agent') {
 
 
@@ -1635,7 +1691,6 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-
     } elseif ($data['parent'] == 'account') {
         $up_button = array(
             'icon'      => 'arrow-up',
@@ -1676,8 +1731,6 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
             );
 
         }
-
-
 
 
     } elseif ($data['parent'] == 'supplier_part') {
@@ -1737,18 +1790,15 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
     //             class="delivery_node {if   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
 
 
-    $items_not_in_delivery=$object->get('Purchase Order Ordered Number Items')-$object->get('Purchase Order Number Supplier Delivery Items');
+    $items_not_in_delivery = $object->get('Purchase Order Ordered Number Items') - $object->get('Purchase Order Number Supplier Delivery Items');
 
 
-
-
-
-    $right_buttons[]=array(
-        'icon'  => 'plus',
-        'title' => _('Set delivery'),
-        'click'=>"show_create_delivery()",
-        'pre_text'=> _('New Delivery'),
-        'class'=>'text width_auto setting_delivery_button '.(  ($items_not_in_delivery<=0 or $object->get('State Index')<40 ) ?'hide':''  )
+    $right_buttons[] = array(
+        'icon'     => 'plus',
+        'title'    => _('Set delivery'),
+        'click'    => "show_create_delivery()",
+        'pre_text' => _('New Delivery'),
+        'class'    => 'text width_auto setting_delivery_button '.(($items_not_in_delivery <= 0 or $object->get('State Index') < 40) ? 'hide' : '')
     );
 
     /*
@@ -1761,15 +1811,13 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
     );
     */
 
-    $right_buttons[]=array(
-        'icon'  => 'hand-paper error',
-        'title' => _('Cancel setting up delivery'),
-        'click'=>"close_create_delivery()",
-        'pre_text'=> _('Cancel setting up delivery'),
-        'class'=>'text hide width_auto close_setting_delivery_button'
+    $right_buttons[] = array(
+        'icon'     => 'hand-paper error',
+        'title'    => _('Cancel setting up delivery'),
+        'click'    => "close_create_delivery()",
+        'pre_text' => _('Cancel setting up delivery'),
+        'class'    => 'text hide width_auto close_setting_delivery_button'
     );
-
-
 
 
     $sections           = get_sections('suppliers', '');
@@ -1778,7 +1826,6 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
-
 
 
     $title = _('Purchase Order').' <span class="Purchase_Order_Public_ID id">'.$object->get('Public ID').'</span>';
@@ -1799,7 +1846,11 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2076,7 +2127,11 @@ function get_delivery_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2112,7 +2167,11 @@ function get_deleted_supplier_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2148,7 +2207,11 @@ function get_suppliers_new_main_category_navigation($data, $smarty, $user, $db, 
     );
     $smarty->assign('_content', $_content);
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 
 }
@@ -2201,7 +2264,11 @@ function get_new_supplier_user_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2253,7 +2320,11 @@ function get_new_agent_user_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2458,7 +2529,11 @@ function get_order_item_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2497,7 +2572,11 @@ function get_deleted_purchase_order_navigation($data, $smarty, $user, $db, $acco
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2535,12 +2614,16 @@ function get_settings_navigation($data, $smarty, $user, $db, $account) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-function get_new_supplier_attachment_navigation($data, $smarty, $user, $db) {
+function get_new_supplier_attachment_navigation($data, $smarty): array {
 
 
     $left_buttons  = array();
@@ -2549,19 +2632,15 @@ function get_new_supplier_attachment_navigation($data, $smarty, $user, $db) {
 
     $sections = get_sections('suppliers', '');
 
-    $_section = 'suppliers';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
+    $sections['suppliers']['selected'] = true;
 
-    $supplier = $data['_parent'];
+
+    $link = 'supplier/'.$data['parent_key'];
 
     $up_button = array(
         'icon'      => 'arrow-up',
-        'title'     => sprintf(
-            _('Supplier: %s'), $supplier->get('Code')
-        ),
-        'reference' => 'supplier/'.$data['parent_key']
+        'title'     => sprintf(_('Supplier: %s'), $data['_parent']->get('Code')),
+        'reference' => $link
     );
 
 
@@ -2569,9 +2648,8 @@ function get_new_supplier_attachment_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span>'.sprintf(
-            _('New attachment for %s'), '<span onClick="change_view(\'supplier/'.$supplier->id.'\')" class="button id">'.$supplier->get('Name').'</span>'
+            _('New attachment for %s'), '<span onClick="change_view(\''.$link.'\')" class="button id">'.$data['_parent']->get('Name').'</span>'
         ).'</span>';
-
 
     $_content = array(
         'sections_class' => '',
@@ -2588,34 +2666,37 @@ function get_new_supplier_attachment_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
+function get_supplier_attachment_navigation($data, $smarty, $user, $db,$account): array {
 
 
-    $left_buttons  = array();
-    $right_buttons = array();
+    $sections                          = get_sections('suppliers', '');
+    $sections['suppliers']['selected'] = true;
 
-
-    $sections = get_sections('suppliers', '');
-
-    $_section = 'suppliers';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
-
-    $supplier = $data['_parent'];
-
+    $tab = 'supplier.attachments';
+    $link = 'supplier/'.$data['parent_key'];
 
     $up_button = array(
         'icon'      => 'arrow-up',
-        'title'     => sprintf(
-            _('Supplier: %s'), $supplier->get('Code')
-        ),
-        'reference' => 'supplier/'.$data['parent_key']
+        'title'     => sprintf(_('Supplier: %s'), $data['_parent']->get('Code')),
+        'reference' => $link
+    );
+
+
+    include_once 'prepare_table/attachments.ptc.php';
+    $table = new prepare_table_attachments($db, $account, $user);
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($data['_object'], $tab, $data), $up_button, $link.'/attachment/%d'
+
     );
 
     $right_buttons[] = array(
@@ -2623,7 +2704,6 @@ function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
         'title' => _('Download'),
         'id'    => 'download_button'
     );
-    $left_buttons[]  = $up_button;
 
     $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
 
@@ -2643,7 +2723,11 @@ function get_supplier_attachment_navigation($data, $smarty, $user, $db) {
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
@@ -2656,8 +2740,7 @@ function get_timeseries_record_navigation($data, $smarty, $user, $db, $account) 
 
     $timeseries = $data['_object'];
 
-   // print_r($timeseries);
-
+    // print_r($timeseries);
 
 
     $left_buttons  = array();
@@ -2846,35 +2929,35 @@ function get_timeseries_record_navigation($data, $smarty, $user, $db, $account) 
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-
-function get_supplier_delivery_attachment_new_navigation($data, $smarty, $user, $db) {
+function get_supplier_delivery_attachment_new_navigation($data, $smarty): array {
 
 
     $left_buttons  = array();
     $right_buttons = array();
 
 
-    $sections = get_sections('suppliers', '');
-
-    $_section = 'suppliers';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
-
-
-   // print_r($data['_object']);
+    $sections                          = get_sections('suppliers', '');
+    $sections['suppliers']['selected'] = true;
 
     $supplier_delivery = $data['_parent'];
+
+
+    $link = strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id;
+
 
     $up_button = array(
         'icon'      => 'arrow-up',
         'title'     => _("Supplier's delivery").' '.$supplier_delivery->get('Public ID'),
-        'reference' => strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id
+        'reference' => $link
     );
 
 
@@ -2882,7 +2965,7 @@ function get_supplier_delivery_attachment_new_navigation($data, $smarty, $user, 
 
 
     $title = '<span>'.sprintf(
-            _('New attachment for supplier delivery %s'), '<span onClick="change_view(\''.strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id.'\')" class="button id">'.$supplier_delivery->get('Public ID').'</span>'
+            _('New attachment for supplier delivery %s'), '<span onClick="change_view(\''.$link.'\')" class="button id">'.$data['_parent']->get('Public ID').'</span>'
         ).'</span>';
 
 
@@ -2901,33 +2984,40 @@ function get_supplier_delivery_attachment_new_navigation($data, $smarty, $user, 
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
 
-function get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db) {
+function get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db, $account): array {
 
 
-    $left_buttons  = array();
-    $right_buttons = array();
-
-
-    $sections = get_sections('suppliers', '');
-
-    $_section = 'suppliers';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
+    $sections                          = get_sections('suppliers', '');
+    $sections['suppliers']['selected'] = true;
 
     $supplier_delivery = $data['_parent'];
+
+    $tab = 'supplier.delivery.attachments';
+
+    $link = strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id;
 
 
     $up_button = array(
         'icon'      => 'arrow-up',
         'title'     => _("Supplier's delivery").' '.$supplier_delivery->get('Public ID'),
+        'reference' => $link
+    );
 
-        'reference' => strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id
+    include_once 'prepare_table/attachments.ptc.php';
+    $table = new prepare_table_attachments($db, $account, $user);
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($data['_object'], $tab, $data), $up_button, $link.'/attachment/%d'
+
     );
 
     $right_buttons[] = array(
@@ -2935,7 +3025,6 @@ function get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db)
         'title' => _('Download'),
         'id'    => 'download_button'
     );
-    $left_buttons[]  = $up_button;
 
     $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
 
@@ -2955,9 +3044,11 @@ function get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db)
     $smarty->assign('_content', $_content);
 
 
-    return array($_content['search'],$smarty->fetch('top_menu.tpl'),$smarty->fetch('au_header.tpl'));
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
 
 }
 
-
-?>
