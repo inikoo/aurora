@@ -467,10 +467,6 @@ class Invoice extends DB_Table {
                     $data[$row['Transaction Tax Code']] = $row['net'];
                     $item_net                           += $row['net'];
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
             //'Credit','Unknown','Refund','Shipping','Charges','Adjust','Other','Deal','Insurance','Discount'
 
@@ -495,10 +491,6 @@ class Invoice extends DB_Table {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -519,21 +511,7 @@ class Invoice extends DB_Table {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
-
-            // print_r($data);
-
-            $sql = sprintf(
-                "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
-            );
-
-            //print "$sql\n";
-
-            $this->db->exec($sql);
 
 
             if ($this->get('Invoice Tax Type') == 'Tax_Only') {
@@ -571,10 +549,6 @@ class Invoice extends DB_Table {
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -608,27 +582,12 @@ class Invoice extends DB_Table {
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
                 foreach ($tax_total_data as $tax_code => $tax) {
 
                     $tax_total += $tax;
-
-
-
-                    $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
-
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            round($tax, 2),
-                            $this->id
-                        )
-                    );
 
 
                     $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
@@ -654,16 +613,6 @@ class Invoice extends DB_Table {
                     $tax_category = get_object('Tax_Category', $tax_code);
                     $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
                     $tax_total    += $tax;
-
-
-                    $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
-
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            round($tax, 2),
-                            $this->id
-                        )
-                    );
 
 
                     $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
@@ -714,6 +663,9 @@ class Invoice extends DB_Table {
             //$this->distribute_insurance_over_the_otf();
 
 
+            /**
+             * @var $customer \Customer
+             */
             $customer = get_object('Customer', $this->get('Invoice Customer Key'));
             $customer->update_invoices();
 
@@ -733,7 +685,7 @@ class Invoice extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
-            $this->categorize(false);
+            $this->categorize();
 
             new_housekeeping_fork(
                 'au_housekeeping', array(
@@ -760,17 +712,13 @@ class Invoice extends DB_Table {
 
             return $this;
 
-        } else {
-
-            print "\n".$sql."\n";
-
-            print_r($this->db->errorInfo());
         }
 
+        return false;
 
     }
 
-    private function get_exchange_data($currency, $account_currency, $account_country, $date) {
+    private function get_exchange_data($currency, $account_currency, $account_country, $date): array {
         if ($currency != $account_currency) {
 
 
@@ -952,24 +900,19 @@ class Invoice extends DB_Table {
                         case 'Unknown':
                         case 'API_Down':
                             return _('Not validated').$validation_data;
-                            break;
                         case 'Yes':
                             return _('Validated').$validation_data;
-                            break;
                         case 'No':
                             return _('Not valid').$validation_data;
-                            break;
                         default:
                             return $this->data['Invoice Tax Number Valid'].$validation_data;
 
-                            break;
                     }
                 }
                 break;
             case 'Address':
 
                 return $this->get('Invoice Address Formatted');
-                break;
 
             case 'Invoice Address':
 
@@ -991,11 +934,10 @@ class Invoice extends DB_Table {
                 );
 
                 return json_encode($address_fields);
-                break;
+
             case 'Currency Code':
 
                 return $this->data['Invoice Currency'];
-                break;
 
             case('Items Gross Amount'):
             case('Items Discount Amount'):
@@ -1045,13 +987,11 @@ class Invoice extends DB_Table {
                 }
 
 
-                break;
             case ('Net Amount Off'):
                 return money(
                     -1 * $this->data['Invoice '.$key], $this->data['Invoice Currency']
                 );
 
-                break;
 
             case('Corporate Currency Total Amount'):
 
@@ -1062,47 +1002,35 @@ class Invoice extends DB_Table {
                 return money(
                     $this->data['Invoice '.$_key] * $this->data['Invoice Currency Exchange'], $account->get('Account Currency Code')
                 );
-                break;
             case('Date'):
             case('Tax Liability Date'):
                 return strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($this->data['Invoice '.$key].' +0:00')
                 );
-                break;
             case('Deleted Date'):
                 return strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($this->data['Invoice Deleted Date'].' +0:00')
                 );
-                break;
             case('Payment Method'):
 
                 switch ($this->data['Invoice Main Payment Method']) {
                     case 'Credit Card':
                         return _('Credit Card');
-                        break;
                     case 'Cash':
                         return _('Cash');
-                        break;
                     case 'Paypal':
                         return _('Paypal');
-                        break;
                     case 'Check':
                         return _('Check');
-                        break;
                     case 'Bank Transfer':
                         return _('Bank Transfer');
-                        break;
                     case 'Other':
                         return _('Other');
-                        break;
                     case 'Unknown':
                         return _('Unknown');
-                        break;
                     default:
                         return $this->data['Invoice Main Payment Method'];
-                        break;
                 }
-                break;
             case('Payment State'):
                 return $this->get_formatted_payment_state();
 
@@ -1111,16 +1039,12 @@ class Invoice extends DB_Table {
                 switch ($this->data['Invoice Paid']) {
                     case 'Yes':
                         return _('Paid');
-                        break;
                     case 'No':
                         return _('Not paid');
-                        break;
                     case 'Partially':
                         return _('Partially paid');
-                        break;
                     default:
                         return $this->data['Invoice Paid'];
-                        break;
                 }
             case 'Margin':
 
@@ -1131,12 +1055,9 @@ class Invoice extends DB_Table {
                 }
 
 
-                break;
-
             case 'Category Object':
 
                 return get_object('Category', $this->data['Invoice Category Key']);
-                break;
 
             case 'number_otfs':
 
@@ -1150,7 +1071,6 @@ class Invoice extends DB_Table {
                 }
 
                 return $number_otfs;
-                break;
             case 'number_onptf':
 
                 $number_onptf = 0;
@@ -1160,10 +1080,6 @@ class Invoice extends DB_Table {
                     if ($row = $result->fetch()) {
                         $number_onptf = $row['num'];
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 return $number_onptf;
@@ -1225,9 +1141,6 @@ class Invoice extends DB_Table {
                 }
 
 
-                break;
-
-
         }
 
 
@@ -1250,13 +1163,10 @@ class Invoice extends DB_Table {
             switch ($this->data['Invoice Paid']) {
                 case 'Yes':
                     return _('Paid back in full');
-                    break;
                 case 'No':
                     return _('Not paid back');
-                    break;
                 case 'Partially':
                     return _('Partially paid back');
-                    break;
                 default:
                     return _('Unknown');
 
@@ -1265,13 +1175,10 @@ class Invoice extends DB_Table {
             switch ($this->data['Invoice Paid']) {
                 case 'Yes':
                     return _('Paid in full');
-                    break;
                 case 'No':
                     return _('Not paid');
-                    break;
                 case 'Partially':
                     return _('Partially Paid');
-                    break;
                 default:
                     return _('Unknown');
 
@@ -1282,7 +1189,7 @@ class Invoice extends DB_Table {
     }
 
     function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+        return ($this->metadata[$key] ?? '');
     }
 
     function update_payments_totals() {
@@ -1303,12 +1210,7 @@ class Invoice extends DB_Table {
 
                 $payments = round($row['amount'], 2);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-
 
         $to_pay = round($this->data['Invoice Total Amount'] - $payments, 2);
 
@@ -1643,31 +1545,11 @@ class Invoice extends DB_Table {
             }
 
 
-            $sql = sprintf(
-                "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
-            );
-
-            //  print "$sql\n";
-
-            $this->db->exec($sql);
-
-
             foreach ($data as $tax_code => $amount) {
 
 
                 $tax_category = get_object('Tax_Category', $tax_code);
                 $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
-
-
-
-                $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
-
-                $this->db->prepare($sql)->execute(
-                    array(
-                        $tax,
-                        $this->id
-                    )
-                );
 
 
                 $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
@@ -1754,9 +1636,8 @@ class Invoice extends DB_Table {
         $store                      = get_object('Store', $this->get('Invoice Store Key'));
         $invoice_data               = $this->data;
         $invoice_data['Store Type'] = $store->get('Store Type');
-        $sql                        = sprintf(
-            "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc "
-        );
+        $sql                        =
+            "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc ";
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -1799,6 +1680,9 @@ class Invoice extends DB_Table {
 
     }
 
+    /**
+     * @throws \Exception
+     */
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -1875,7 +1759,9 @@ class Invoice extends DB_Table {
 
                 $this->fast_update_json_field('Invoice Metadata', 'RE', $value);
 
-
+                /**
+                 * @var $order Order
+                 */
                 $order         = get_object('Order', $this->data['Invoice Order Key']);
                 $order->editor = $this->editor;
 
@@ -1893,11 +1779,14 @@ class Invoice extends DB_Table {
                 break;
             case('Invoice Tax Number'):
                 $this->update_tax_number($value);
+                /**
+                 * @var $order \Order
+                 */
                 $order         = get_object('Order', $this->data['Invoice Order Key']);
                 $order->editor = $this->editor;
 
                 $order_old_formatted_value = $order->get('Tax Number Formatted');
-                $order->update_tax_number($value, 'no_history', $updated_from_invoice = true);
+                $order->update_tax_number($value, 'no_history', true);
 
                 $order->fast_update(
                     array(
@@ -1930,6 +1819,9 @@ class Invoice extends DB_Table {
                 break;
             case('Invoice Tax Number Valid'):
                 $this->update_tax_number_valid($value);
+                /**
+                 * @var $order Order
+                 */
                 $order                     = get_object('Order', $this->data['Invoice Order Key']);
                 $order->editor             = $this->editor;
                 $order_old_formatted_value = $order->get('Tax Number Valid');
@@ -1963,7 +1855,9 @@ class Invoice extends DB_Table {
             case 'Invoice Address':
 
                 $this->update_address(json_decode($value, true));
-
+                /**
+                 * @var $order Order
+                 */
                 $order         = get_object('Order', $this->data['Invoice Order Key']);
                 $order->editor = $this->editor;
 
@@ -2010,7 +1904,6 @@ class Invoice extends DB_Table {
     function update_tax_data() {
 
 
-
         $old_invoice_total = $this->get('Invoice Total Amount');
 
         $data = array();
@@ -2052,12 +1945,6 @@ class Invoice extends DB_Table {
         $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Tax Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
-        $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
-        $this->db->exec($sql);
-
-        $sql = sprintf("INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id);
-        $this->db->exec($sql);
-
 
         $total_tax = 0;
 
@@ -2068,18 +1955,7 @@ class Invoice extends DB_Table {
             $total_tax    += $tax;
 
 
-            $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
-
-            $this->db->prepare($sql)->execute(
-                array(
-                    $tax,
-                    $this->id
-                )
-            );
-
-
             $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES   (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
-
 
 
             $this->db->prepare($sql)->execute(
@@ -2304,11 +2180,13 @@ class Invoice extends DB_Table {
 
         if ($this->updated) {
 
-
+            /**
+             * @var $order Order
+             */
             $order         = get_object('Order', $this->data['Invoice Order Key']);
             $order->editor = $this->editor;
 
-            $order->update_address('Invoice', $fields, '', $updated_from_invoice = true);
+            $order->update_address('Invoice', $fields, '', true);
 
 
             $this->update_address_formatted_fields();
@@ -2410,6 +2288,9 @@ class Invoice extends DB_Table {
         $is_refund = ($this->data['Invoice Type'] == 'Refund' ? true : false);
 
 
+        /**
+         * @var $order \Order
+         */
         $order   = get_object('Order', $this->data['Invoice Order Key']);
         $account = get_object('Account', '');
 
@@ -2428,7 +2309,7 @@ class Invoice extends DB_Table {
 
 
         $sql = "SELECT `Invoice Date`,
-O.`Order Transaction Fact Key`,`Order Currency Code`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`
+O.`Order Transaction Fact Key`,`Order Currency Code`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,
 `Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
 
 
@@ -2498,9 +2379,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                     'net'         => money($factor * $row['Order Transaction Amount'], $row['Order Currency Code'])
                 );
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit();
         }
 
 
@@ -2509,10 +2387,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
         $sql = sprintf("DELETE FROM `Invoice Sales Representative Bridge`  WHERE   `Invoice Key`=%d", $this->id);
-        $this->db->exec($sql);
-
-
-        $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
         $sql = sprintf("DELETE FROM `Invoice Delivery Note Bridge` WHERE `Invoice Key`=%d   ", $this->id);
@@ -2531,10 +2405,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             foreach ($result as $row) {
                 $payments[] = get_object('Payment', $row['Payment Key']);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2679,7 +2549,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
                 }
                 if ($order->id) {
-                    $order->update_state('Invoice Deleted', $options = '', $metadata = array('note' => $note));
+                    $order->update_state('Invoice Deleted', '', array('note' => $note));
                 }
             } else {
 
@@ -2773,9 +2643,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                     $payments[$row['Payment Key']] = $row['Payment Key'];
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2887,7 +2754,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         if ($this->data['Invoice Type'] == 'Invoice') {
 
 
-            $sql    = sprintf(
+            $sql = sprintf(
                 "SELECT sum(`Cost Supplier`) AS cost, sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Order' ", $this->id
             );
 
@@ -2901,7 +2768,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
         } else {
 
-            $sql    = sprintf(
+            $sql = sprintf(
                 "SELECT sum(`Order Transaction Amount`) AS net  FROM `Order Transaction Fact` WHERE `Invoice Key`=%d AND `Order Transaction Type`='Refund' ", $this->id
             );
 
