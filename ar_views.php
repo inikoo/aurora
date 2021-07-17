@@ -1001,7 +1001,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
         $response['object_showcase'] = '_';
-
         switch ($state['module']) {
 
             case 'inventory':
@@ -1018,6 +1017,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         break;
                     case 'stock_history':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-scanner"></i> '._("Stock history"));
+                        break;
+                    case 'part.attachment.new':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-paperclip"></i> '._("Upload attachment for part"));
                         break;
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-boxes"></i> '._("Inventory (Parts)"));

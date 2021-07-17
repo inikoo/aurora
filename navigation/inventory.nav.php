@@ -9,7 +9,7 @@
 
  Version 3.0
 */
-
+include_once 'utils/navigation_functions.php';
 
 function get_dashboard_navigation($data, $smarty, $user, $db) {
 
@@ -1676,7 +1676,7 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_new_part_attachment_navigation($data, $smarty, $user, $db) {
+function get_new_part_attachment_navigation($data, $smarty): array {
 
 
     $left_buttons  = array();
@@ -1684,11 +1684,8 @@ function get_new_part_attachment_navigation($data, $smarty, $user, $db) {
 
 
     $sections = get_sections('inventory', '');
+    $sections['inventory']['selected'] = true;
 
-    $_section = 'parts';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
 
     $part = $data['_parent'];
 
@@ -1733,21 +1730,16 @@ function get_new_part_attachment_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_part_attachment_navigation($data, $smarty, $user, $db) {
+function get_part_attachment_navigation($data, $smarty, $user, $db,$account): array {
 
-
-    $left_buttons  = array();
-    $right_buttons = array();
 
 
     $sections = get_sections('inventory', '');
-
-    $_section = 'parts';
-    if (isset($sections[$_section])) {
-        $sections[$_section]['selected'] = true;
-    }
+    $sections['inventory']['selected'] = true;
 
     $part = $data['_parent'];
+    $tab = 'customer.attachments';
+    $link = 'part/'.$data['_parent']->id;
 
 
     $up_button = array(
@@ -1755,15 +1747,25 @@ function get_part_attachment_navigation($data, $smarty, $user, $db) {
         'title'     => sprintf(
             _('Part: %s'), $part->get('Reference')
         ),
-        'reference' => 'part/'.$data['parent_key']
+        'reference' => $link
     );
+
+    include_once 'prepare_table/attachments.ptc.php';
+    $table = new prepare_table_attachments($db, $account, $user);
+
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($data['_object'], $tab, $data), $up_button, $link.'/attachment/%d'
+
+    );
+
+    $right_buttons = array();
 
     $right_buttons[] = array(
         'icon'  => 'download',
         'title' => _('Download'),
         'id'    => 'download_button'
     );
-    $left_buttons[]  = $up_button;
+
 
     $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
 

@@ -1241,7 +1241,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                         'reference' => 'customers/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
                     );
                     $branch[] = array(
-                        'label'     => _('New attachment'),
+                        'label'     => _('Upload attachment'),
                         'icon'      => 'paperclip',
                         'reference' => ''
                     );
@@ -2589,7 +2589,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                     );
 
                     $branch[] = array(
-                        'label'     => _('New attachment'),
+                        'label'     => _('Upload attachment'),
                         'icon'      => 'paperclip',
                         'reference' =>''
                     );
@@ -2870,7 +2870,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                         'reference' => 'employee/'.$state['_parent']->id
                     );
                     $branch[] = array(
-                        'label' => _('New attachment'),
+                        'label' => _('Upload attachment'),
                         'icon'  => 'paperclip'
                     );
 

@@ -12,11 +12,14 @@
 /** @var \User $user */
 /** @var \Smarty $smarty */
 /** @var array $state */
-include_once 'helpers/attachments/attachments_tab_snippet.php';
-$tab     = 'part.attachments';
-$ar_file = 'ar_attachments_tables.php';
-$tipo    = 'attachments';
-$default = $user->get_tab_defaults($tab);
-list($table_views,$table_filters,$parameters,$smarty)=prepare_attachments_tab($state,$smarty,'part/'.$state['key']);
-include('utils/get_table_html.php');
-
+if ($user->can_edit('parts')) {
+    include_once 'helpers/attachments/attachments_tab_snippet.php';
+    $tab     = 'part.attachments';
+    $ar_file = 'ar_attachments_tables.php';
+    $tipo    = 'attachments';
+    $default = $user->get_tab_defaults($tab);
+    list($table_views, $table_filters, $parameters, $smarty) = prepare_attachments_tab($state, $smarty, 'part/'.$state['key']);
+    include('utils/get_table_html.php');
+}else {
+    $html = '<div style="padding: 20px"><i class="fa error fa-octagon " ></i>  '._('Access denied').'</div>';
+}

@@ -33,10 +33,10 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-//$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part SKU`=2705 ');
-$sql = sprintf(
-    'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU` DESC  '
-);
+$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part SKU`=1309 ');
+//$sql = sprintf(
+//    'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU` DESC  '
+//);
 
 
 

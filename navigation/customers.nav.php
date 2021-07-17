@@ -3763,7 +3763,6 @@ function get_customer_attachment_navigation($data, $smarty,$user, $db, $account)
     $sections = get_sections($data['module'], $data['_parent']->get('Store Key'));
 
     $tab = 'customer.attachments';
-
     $link = 'customers/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id;
 
     $up_button = array(
@@ -3782,9 +3781,6 @@ function get_customer_attachment_navigation($data, $smarty,$user, $db, $account)
         $table->get_navigation($data['_object'], $tab, $data), $up_button, $link.'/attachment/%d'
 
     );
-
-
-
 
     $right_buttons = array();
 

@@ -28,6 +28,7 @@ $editor = array(
     'Author Name'  => 'Script (product availability)'
 );
 
+$where=' where `Product Store Key`=19 ';
 $where='';
 $total=0;
 $sql = "SELECT count(*) AS num FROM `Product Dimension` $where ";
@@ -44,6 +45,7 @@ $contador  = 0;
 
 
 $sql = "SELECT `Product ID` FROM `Product Dimension` $where order by `Product ID`  desc ";
+print $sql;
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
@@ -56,13 +58,22 @@ if ($result = $db->query($sql)) {
 
         
 
-        //print "$product->id\r";
+        print "$product->id\r";
 
         if ($web_state_old != $web_state_new) {
             print "\n".$product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
         }
 
+        $contador++;
+        $lap_time1 = date('U');
 
+        if ($print_est) {
+            print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
+        }
+
+        continue;
 
 
         $sql = sprintf(
@@ -107,14 +118,7 @@ if ($result = $db->query($sql)) {
 
 
 
-        $contador++;
-        $lap_time1 = date('U');
 
-        if ($print_est) {
-            print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
-                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
-                )."h  ($contador/$total) \r";
-        }
 
     }
 

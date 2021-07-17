@@ -1114,15 +1114,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
                 case ('part.attachment'):
-                    return get_part_attachment_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_part_attachment_navigation($data, $smarty, $user, $db, $account);
 
                 case ('part.attachment.new'):
-                    return get_new_part_attachment_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-
+                    return get_new_part_attachment_navigation($data, $smarty);
                 case ('feedback'):
                     return get_feedback_navigation(
                         $data, $smarty, $user, $db, $account

@@ -39,6 +39,7 @@ trait AttachmentSubject {
         if ($attach->id) {
 
 
+
             $sql = "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`,`Attachment Public`) VALUES (?,?,?,?,?,?,?)";
             $this->db->prepare($sql)->execute(
                 array(
@@ -47,7 +48,7 @@ trait AttachmentSubject {
                     $this->id,
                     $raw_data['Attachment File Original Name'],
                     $raw_data['Attachment Caption'],
-                    (empty($raw_data['Attachment Subject Type'])?'Other':''),
+                    (empty($raw_data['Attachment Subject Type'])?'Other':$raw_data['Attachment Subject Type']),
                     ($raw_data['Attachment Public'] ?? 'No')
                 )
             );

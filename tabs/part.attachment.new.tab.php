@@ -9,27 +9,40 @@
 
 */
 
-
 include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
-include_once 'class.Part.php';
+include_once 'conf/fields/attachment.fld.php';
 
-$attachment = $state['_object'];
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
-$object_fields = get_object_fields(
-    $attachment, $db, $user, $smarty, array(
-        'new' => true,
+if ($user->can_edit('parts')) {
+    include_once 'utils/invalid_messages.php';
+    $object_fields = get_attachment_fields(
+        $state['_object'], $user, array(
+        'new'  => true,
         'type' => 'part'
     )
-);
+    );
 
-$smarty->assign('state', $state);
-$smarty->assign('object', $attachment);
-$smarty->assign('object_name', $attachment->get_object_name());
-
-$smarty->assign('object_fields', $object_fields);
-
-$html = $smarty->fetch('new_object.tpl');
+    $smarty->assign('object_name', 'Attachment');
+    $smarty->assign('object', $state['_object']);
+    $smarty->assign('key', $state['key']);
+    $smarty->assign('object_fields', $object_fields);
+    $smarty->assign('state', $state);
 
 
-?>
+    try {
+        $html = $smarty->fetch('new_object.tpl');
+    } catch (Exception $e) {
+        $html = '';
+    }
+} else {
+    try {
+        $html = $smarty->fetch('access_denied.tpl');
+    } catch (Exception $e) {
+    }
+
+}
