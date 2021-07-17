@@ -200,17 +200,17 @@ function get_elements_option($option) {
                         'label'    => _('Changes'),
                         'selected' => true
                     ),
-                    'Attachments' => array(
-                        'label'    => _('Attachments'),
-                        'selected' => true
+                    'ChangesT2' => array(
+                        'label'    => _('Changes').' (T2)',
+                        'selected' => false
                     ),
                     'WebLog'      => array(
                         'label'    => _('WebLog'),
-                        'selected' => true
+                        'selected' => false
                     ),
                     'Emails'      => array(
                         'label'    => _('Emails'),
-                        'selected' => true
+                        'selected' => false
                     )
                 ),
 

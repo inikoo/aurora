@@ -1220,7 +1220,8 @@ class Customer extends Subject {
 
             case 'Customer Order Sticky Note':
 
-                $this->update_field($field, $value);
+                $this->update_field($field, $value, 'no_history');
+
                 $sql = "update `Order Dimension` set `Order Sticky Note`=?   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=?";
                 $this->db->prepare($sql)->execute(
                     array(
@@ -1228,9 +1229,31 @@ class Customer extends Subject {
                         $this->id
                     )
                 );
+
+
+                if ($this->updated) {
+
+                    $abstract = '<i class="fa fa-sticky-note pink"></i> ';
+                    if ($value == '') {
+                        $abstract .= _('Order sticky note deleted');
+
+                    } else {
+                        $abstract .= _('Order sticky note').' &rArr; <small>'.$value.'</small>';
+                    }
+
+                    $history_data = array(
+                        'History Abstract' => $abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'ChangesT2', $this->get_object_name(), $this->id
+                    );
+                }
                 break;
             case 'Customer Delivery Sticky Note':
-                $this->update_field($field, $value);
+                $this->update_field($field, $value, 'no_history');
                 $sql = "update `Order Dimension` set `Order Delivery Sticky Note`=?   WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=?";
                 $this->db->prepare($sql)->execute(
                     array(
@@ -1238,9 +1261,59 @@ class Customer extends Subject {
                         $this->id
                     )
                 );
+                if ($this->updated) {
+                    $abstract = '<i class="fa fa-sticky-note " style="color:#94db84"></i> ';
+
+
+                    if ($value == '') {
+                        $abstract .= _('Delivery sticky note deleted');
+
+                    } else {
+                        $abstract .= _('Delivery sticky note').' &rArr; <small>'.$value.'</small>';
+                    }
+
+                    $history_data = array(
+                        'History Abstract' => $abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'ChangesT2', $this->get_object_name(), $this->id
+                    );
+                }
+
+                break;
+            case('Customer Sticky Note'):
+                $this->update_field($field, $value, 'no_history');
+
+                if ($this->updated) {
+
+                    $abstract = '<i class="fa fa-sticky-note " style="color:#7da7f4"></i> ';
+
+                    if ($value == '') {
+                        $abstract .= _('Sticky note deleted');
+
+                    } else {
+                        $abstract .= _('Sticky note').' &rArr; <small>'.$value.'</small>';
+                    }
+
+                    $history_data = array(
+                        'History Abstract' => $abstract,
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'ChangesT2', $this->get_object_name(), $this->id
+                    );
+                }
 
 
                 break;
+
             case 'Customer Web Login Password':
 
 
@@ -1410,18 +1483,9 @@ class Customer extends Subject {
 
                 break;
 
-            case('Customer Sticky Note'):
-                $this->update_field_switcher('Sticky Note', $value);
-                //$this->fork_subject_index_elastic_search();
-                break;
-            case('Sticky Note'):
-                $this->update_field('Customer '.$field, $value, 'no_null');
-                $this->new_value = html_entity_decode($this->new_value);
-                //$this->fork_subject_index_elastic_search();
-                break;
+
             case('Note'):
                 $this->add_note($value);
-                //$this->fork_subject_index_elastic_search();
                 break;
             case 'Customer Level Type Partner':
 
@@ -1691,7 +1755,6 @@ class Customer extends Subject {
                         'Customer_Fulfilment_Icon' => $this->get('Fulfilment Icon'),
                     )
                 );
-
 
 
                 break;
