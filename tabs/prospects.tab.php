@@ -89,5 +89,8 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
 
 
 } else {
-    $html = '<div style="padding: 20px"><i class="fa error fa-octagon " ></i>  '._('Access denied').'</div>';
+    try {
+        $html = $smarty->fetch('access_denied');
+    } catch (Exception $e) {
+    }
 }
