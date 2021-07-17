@@ -619,7 +619,6 @@ class Invoice extends DB_Table {
 
                     $tax_total += $tax;
 
-                    $is_base = 'Yes';
 
 
                     $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
@@ -632,7 +631,7 @@ class Invoice extends DB_Table {
                     );
 
 
-                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
 
 
                     $this->db->prepare($sql)->execute(
@@ -640,9 +639,7 @@ class Invoice extends DB_Table {
                             $this->id,
                             $tax_code,
                             round($tax, 2),
-                            $is_base,
                             round($tax, 2),
-                            $is_base
                         )
                     );
 
@@ -657,7 +654,6 @@ class Invoice extends DB_Table {
                     $tax_category = get_object('Tax_Category', $tax_code);
                     $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
                     $tax_total    += $tax;
-                    $is_base      = 'Yes';
 
 
                     $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
@@ -670,7 +666,7 @@ class Invoice extends DB_Table {
                     );
 
 
-                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
 
 
                     $this->db->prepare($sql)->execute(
@@ -678,9 +674,7 @@ class Invoice extends DB_Table {
                             $this->id,
                             $tax_code,
                             round($tax, 2),
-                            $is_base,
                             round($tax, 2),
-                            $is_base
                         )
                     );
 
@@ -1664,7 +1658,6 @@ class Invoice extends DB_Table {
                 $tax_category = get_object('Tax_Category', $tax_code);
                 $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
 
-                $is_base = 'Yes';
 
 
                 $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
@@ -1677,7 +1670,7 @@ class Invoice extends DB_Table {
                 );
 
 
-                $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+                $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
 
 
                 $this->db->prepare($sql)->execute(
@@ -1685,9 +1678,7 @@ class Invoice extends DB_Table {
                         $this->id,
                         $tax_code,
                         $tax,
-                        $is_base,
                         $tax,
-                        $is_base
                     )
                 );
 
@@ -2019,6 +2010,7 @@ class Invoice extends DB_Table {
     function update_tax_data() {
 
 
+
         $old_invoice_total = $this->get('Invoice Total Amount');
 
         $data = array();
@@ -2057,7 +2049,7 @@ class Invoice extends DB_Table {
             }
         }
 
-        $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
+        $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Tax Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
         $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
@@ -2069,13 +2061,11 @@ class Invoice extends DB_Table {
 
         $total_tax = 0;
 
-
         foreach ($data as $tax_code => $amount) {
 
             $tax_category = get_object('Tax_Category', $tax_code);
             $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
             $total_tax    += $tax;
-            $is_base      = 'Yes';
 
 
             $sql = sprintf("UPDATE `Invoice Tax Dimension` SET %s=? WHERE `Invoice Key`=?", '`'.addslashes($tax_code).'`');
@@ -2088,7 +2078,8 @@ class Invoice extends DB_Table {
             );
 
 
-            $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (?,?,?,?) ON DUPLICATE KEY UPDATE `Tax Amount`=?, `Tax Base`=?";
+            $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES   (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
+
 
 
             $this->db->prepare($sql)->execute(
@@ -2096,9 +2087,7 @@ class Invoice extends DB_Table {
                     $this->id,
                     $tax_code,
                     $tax,
-                    $is_base,
                     $tax,
-                    $is_base
                 )
             );
 
@@ -2515,7 +2504,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         }
 
 
-        $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
+        $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Tax Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
 

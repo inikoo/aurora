@@ -9,6 +9,11 @@
  Version 2.0
 */
 
+/** @var \Smarty $smarty */
+/** @var \Account $account */
+/** @var PDO $db */
+
+
 use CommerceGuys\Addressing\Country\CountryRepository;
 use Mpdf\Mpdf;
 
@@ -622,7 +627,7 @@ $exempt_tax = false;
 
 $tax_data = array();
 $sql      = sprintf(
-    "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount`,`Tax Category Type` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  and `Tax Category Country Code`=%s ",
+    "SELECT `Tax Category Name`,`Tax Category Rate`,`Invoice Tax Amount`,`Tax Category Type` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Invoice Tax Code`)  WHERE B.`Invoice Tax Invoice Key`=%d  and `Tax Category Country Code`=%s ",
     $invoice->id, prepare_mysql($account->get('Account Country Code'))
 );
 
@@ -639,7 +644,7 @@ if ($result = $db->query($sql)) {
 
         }
 
-        if ($row['Tax Amount'] == 0) {
+        if ($row['Invoice Tax Amount'] == 0) {
             continue;
         }
 
@@ -678,7 +683,7 @@ if ($result = $db->query($sql)) {
         $tax_data[] = array(
             'name'   => $tax_category_name,
             'amount' => money(
-                $row['Tax Amount'], $invoice->data['Invoice Currency']
+                $row['Invoice Tax Amount'], $invoice->data['Invoice Currency']
             )
         );
     }

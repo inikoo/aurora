@@ -10,16 +10,8 @@
  Version 3.0
 */
 
-/**
- * @param $data
- * @param $smarty  \Smarty
- * @param $user    \User
- * @param $db      \PDO
- * @param $account \Account
- *
- * @return string
- */
-function get_invoice_showcase($data, $smarty, $user, $db, $account) {
+
+function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
     require_once 'utils/geography_functions.php';
 
 
@@ -50,31 +42,23 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account) {
     $invoice = $data['_object'];
 
 
-    $export_omega=false;
+    $export_omega = false;
 
     if ($account->get('Account Country 2 Alpha Code') == 'SK') {
-        $export_omega=true;
+        $export_omega = true;
 
     }
 
 
-    if($invoice->get('Invoice External Invoicer Key')){
-        $external_invoicer=get_object('External_Invoicer',$invoice->get('Invoice External Invoicer Key'));
-        if($external_invoicer->metadata('country')=='SK'){
-            $export_omega=true;
+    if ($invoice->get('Invoice External Invoicer Key')) {
+        $external_invoicer = get_object('External_Invoicer', $invoice->get('Invoice External Invoicer Key'));
+        if ($external_invoicer->metadata('country') == 'SK') {
+            $export_omega = true;
 
         }
     }
 
     $smarty->assign('export_omega', $export_omega);
-
-
-
-    $tax_data = array();
-    $sql      = sprintf(
-        "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Tax Amount`  FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  AND `Tax Category Country Code`=%s  ",
-        $invoice->id, prepare_mysql($account->get('Account Country Code'))
-    );
 
     if (($data['_object']->get('Invoice Type') == 'Refund')) {
         $factor = -1;
@@ -82,33 +66,41 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account) {
         $factor = 1;
     }
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
+    $tax_data = array();
+    $sql      = "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Invoice Tax Amount`  FROM  
+        `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Invoice Tax Code`)  WHERE B.`Invoice Tax Invoice Key`=?  AND `Tax Category Country Code`=?";
 
-            switch ($row['Tax Category Code']) {
-                case 'OUT':
-                    $tax_description = _('Outside the scope od VAT');
-                    break;
-                case 'EU':
-                    $tax_description = sprintf(_('EC with %s'), $invoice->get('Tax Number Formatted'));
-                    break;
-                default:
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $invoice->id,
+            $account->get('Account Country Code')
+        )
+    );
+    while ($row = $stmt->fetch()) {
+        switch ($row['Tax Category Code']) {
+            case 'OUT':
+                $tax_description = _('Outside the scope od VAT');
+                break;
+            case 'EU':
+                $tax_description = sprintf(_('EC with %s'), $invoice->get('Tax Number Formatted'));
+                break;
+            default:
 
 
-                    $tax_description = $row['Tax Category Name'];
+                $tax_description = $row['Tax Category Name'];
 
 
-            }
-
-
-            $tax_data[] = array(
-                'name' => $tax_description,
-
-                'amount' => money(
-                    $factor * $row['Tax Amount'], $invoice->data['Invoice Currency']
-                )
-            );
         }
+
+
+        $tax_data[] = array(
+            'name' => $tax_description,
+
+            'amount' => money(
+                $factor * $row['Invoice Tax Amount'], $invoice->data['Invoice Currency']
+            )
+        );
     }
 
 
