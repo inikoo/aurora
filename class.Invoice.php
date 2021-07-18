@@ -31,6 +31,9 @@ class Invoice extends DB_Table {
      */
     public $metadata;
 
+    /**
+     * @throws \ErrorException
+     */
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         $this->table_name      = 'Invoice';
@@ -64,10 +67,7 @@ class Invoice extends DB_Table {
 
             return;
         }
-        //   if(preg_match('/find/i',$arg1)){
-        //  $this->find($arg2,$arg1);
-        //  return;
-        // }
+
         $this->get_data($arg1, $arg2);
     }
 
@@ -127,6 +127,9 @@ class Invoice extends DB_Table {
         }
     }
 
+    /**
+     * @throws \ErrorException
+     */
     function create_refund($invoice_data, $transactions) {
 
         include_once 'utils/new_fork.php';
@@ -181,24 +184,7 @@ class Invoice extends DB_Table {
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
 
-
-            $this->get_data('id', $this->id);
-
-            $store = get_object('Store', $this->get('Store Key'));
-
-            $this->fast_update_json_field('Invoice Metadata', 'store_name', $store->get('Store Name'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_address', $store->get('Store Address'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_url', $store->get('Store URL'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
-
-            $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
-
-
-            $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $store->get('Store VAT Number'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_company_number', $store->get('Store Company Number'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_telephone', $store->get('Store Telephone'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_email', $store->get('Store Email'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_message', $store->get('Store Invoice Message'));
+            $this->post_create_set_invoice_data();
 
 
             if (isset($recargo_equivalencia)) {
@@ -447,9 +433,6 @@ class Invoice extends DB_Table {
             }
 
 
-            //exit;
-            $data = array();
-
             $shipping_net  = 0;
             $charges_net   = 0;
             $insurance_net = 0;
@@ -457,18 +440,6 @@ class Invoice extends DB_Table {
             $item_net      = 0;
             $tax_total     = 0;
 
-            $sql = sprintf(
-                "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $data[$row['Transaction Tax Code']] = $row['net'];
-                    $item_net                           += $row['net'];
-                }
-            }
-            //'Credit','Unknown','Refund','Shipping','Charges','Adjust','Other','Deal','Insurance','Discount'
 
             $sql = sprintf(
                 "SELECT   sum(`Transaction Net Amount`) AS net ,`Transaction Type` FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Type`  ", $this->id
@@ -493,23 +464,14 @@ class Invoice extends DB_Table {
                 }
             }
 
-
             $sql = sprintf(
-                "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
+                "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
             );
 
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
-
-                    if (isset($data[$row['Tax Category Code']])) {
-                        $data[$row['Tax Category Code']] += $row['net'];
-                    } else {
-                        $data[$row['Tax Category Code']] = $row['net'];
-                    }
-
-
+                    $item_net += $row['net'];
                 }
             }
 
@@ -589,25 +551,16 @@ class Invoice extends DB_Table {
 
                     $tax_total += $tax;
 
-
-                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
-
-
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            $this->id,
-                            $tax_code,
-                            round($tax, 2),
-                            round($tax, 2),
-                        )
-                    );
+                    $this->save_tax_bridge($tax_code, $tax, 0);
 
 
                 }
 
 
             } else {
-                foreach ($data as $tax_code => $amount) {
+                $transactions_tax_data = $this->group_transactions_per_tax_code(false);
+
+                foreach ($transactions_tax_data as $tax_code => $amount) {
 
 
                     $tax_category = get_object('Tax_Category', $tax_code);
@@ -615,17 +568,7 @@ class Invoice extends DB_Table {
                     $tax_total    += $tax;
 
 
-                    $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
-
-
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            $this->id,
-                            $tax_code,
-                            round($tax, 2),
-                            round($tax, 2),
-                        )
-                    );
+                    $this->save_tax_bridge($tax_code, $tax, $amount);
 
 
                 }
@@ -718,6 +661,9 @@ class Invoice extends DB_Table {
 
     }
 
+    /**
+     * @throws \ErrorException
+     */
     private function get_exchange_data($currency, $account_currency, $account_country, $date): array {
         if ($currency != $account_currency) {
 
@@ -796,28 +742,7 @@ class Invoice extends DB_Table {
 
                 }
 
-                if ($this->data['Invoice Tax Number Validation Date'] != '') {
-                    $_tmp = gmdate("U") - gmdate(
-                            "U", strtotime(
-                                   $this->data['Invoice Tax Number Validation Date'].' +0:00'
-                               )
-                        );
-                    if ($_tmp < 3600) {
-                        $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00'));
-
-                    } elseif ($_tmp < 86400) {
-                        $date = strftime(
-                            "%e %b %Y %H:%M %Z", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
-                        );
-
-                    } else {
-                        $date = strftime(
-                            "%e %b %Y", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
-                        );
-                    }
-                } else {
-                    $date = '';
-                }
+                $date = $this->get_formatted_tax_validation_date();
 
                 $msg = $this->data['Invoice Tax Number Validation Message'];
 
@@ -848,36 +773,8 @@ class Invoice extends DB_Table {
             case('Tax Number Valid'):
                 if ($this->data['Invoice Tax Number'] != '') {
 
-                    if ($this->data['Invoice Tax Number Validation Date'] != '') {
-                        $_tmp = gmdate("U") - gmdate(
-                                "U", strtotime(
-                                       $this->data['Invoice Tax Number Validation Date'].' +0:00'
-                                   )
-                            );
-                        if ($_tmp < 3600) {
-                            $date = strftime(
-                                "%e %b %Y %H:%M:%S %Z", strtotime(
-                                                          $this->data['Invoice Tax Number Validation Date'].' +0:00'
-                                                      )
-                            );
+                    $date = $this->get_formatted_tax_validation_date();
 
-                        } elseif ($_tmp < 86400) {
-                            $date = strftime(
-                                "%e %b %Y %H:%M %Z", strtotime(
-                                                       $this->data['Invoice Tax Number Validation Date'].' +0:00'
-                                                   )
-                            );
-
-                        } else {
-                            $date = strftime(
-                                "%e %b %Y", strtotime(
-                                              $this->data['Invoice Tax Number Validation Date'].' +0:00'
-                                          )
-                            );
-                        }
-                    } else {
-                        $date = '';
-                    }
 
                     $msg = $this->data['Invoice Tax Number Validation Message'];
 
@@ -985,7 +882,6 @@ class Invoice extends DB_Table {
                         -1 * $this->data['Invoice '.$key], $this->data['Invoice Currency']
                     );
                 }
-
 
             case ('Net Amount Off'):
                 return money(
@@ -1101,7 +997,7 @@ class Invoice extends DB_Table {
                     return 'No';
                 }
             case 'Icon':
-                if ($this->get('Invoice Type') == 'Invoice') {
+                if ($this->data['Invoice Type'] == 'Invoice') {
                     return 'fal fa-file-invoice';
                 } else {
                     return 'fal error fa-file-invoice';
@@ -1359,6 +1255,10 @@ class Invoice extends DB_Table {
         $this->update(array('Invoice Billing Region' => $billing_region), 'no_history');
     }
 
+    /**
+     * @throws \ErrorException
+     * @throws \Exception
+     */
     function create($invoice_data) {
 
         include_once 'utils/currency_functions.php';
@@ -1419,24 +1319,10 @@ class Invoice extends DB_Table {
             $this->id = $this->db->lastInsertId();
 
             if (!$this->id) {
-                throw new Exception('Error inserting '.$this->table_name);
+                throw new Exception('Error inserting invoice');
             }
-            $this->get_data('id', $this->id);
 
-            $store = get_object('Store', $this->get('Store Key'));
-
-            $this->fast_update_json_field('Invoice Metadata', 'store_name', $store->get('Store Name'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_address', $store->get('Store Address'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_url', $store->get('Store URL'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
-
-            $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_company_number', $store->get('Store Company Number'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_telephone', $store->get('Store Telephone'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_email', $store->get('Store Email'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_message', $store->get('Store Invoice Message'));
-            $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $store->get('Store VAT Number'));
-
+            $this->post_create_set_invoice_data();
 
             if (isset($extra_data['ups']) and $extra_data['ups']) {
                 if ($account->properties('ups_tax_number') != '') {
@@ -1497,73 +1383,13 @@ class Invoice extends DB_Table {
             }
 
 
-            $data = array();
-
-            $sql = sprintf(
-                "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $data[$row['Transaction Tax Code']] = $row['net'];
-
-                }
-            }
-
-
-            $sql = sprintf(
-                "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    if (isset($data[$row['Tax Category Code']])) {
-                        $data[$row['Tax Category Code']] += $row['net'];
-                    } else {
-                        $data[$row['Tax Category Code']] = $row['net'];
-                    }
-
-
-                }
-            }
-
-
-            if ($this->data['Invoice Net Amount Off'] != 0) {
-
-
-                if (isset($data[$this->data['Invoice Tax Code']])) {
-                    $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
-                } else {
-                    $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
-                }
-
-
-            }
-
+            $data = $this->group_transactions_per_tax_code();
 
             foreach ($data as $tax_code => $amount) {
 
-
                 $tax_category = get_object('Tax_Category', $tax_code);
                 $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
-
-
-                $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
-
-
-                $this->db->prepare($sql)->execute(
-                    array(
-                        $this->id,
-                        $tax_code,
-                        $tax,
-                        $tax,
-                    )
-                );
-
+                $this->save_tax_bridge($tax_code, $tax, $amount);
 
             }
 
@@ -1768,6 +1594,14 @@ class Invoice extends DB_Table {
                 $order_old_formatted_value = $order->get('Recargo Equivalencia');
                 $order->fast_update_json_field('Order Metadata', 'RE', $value);
                 $order->update_tax(false, $this->id);
+
+
+                $this->fast_update(
+                    [
+                        'Invoice Tax Code' => $order->get('Order Tax Code')
+                    ]
+                );
+
                 $this->update_tax_data();
 
                 if ($order_old_formatted_value != $order->get('Recargo Equivalencia')) {
@@ -1906,41 +1740,8 @@ class Invoice extends DB_Table {
 
         $old_invoice_total = $this->get('Invoice Total Amount');
 
-        $data = array();
+        $tax_transactions_data = $this->group_transactions_per_tax_code();
 
-        $sql = sprintf(
-            "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $data[$row['Transaction Tax Code']] = $row['net'];
-            }
-        }
-
-        $sql = sprintf(
-            "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if (isset($data[$row['Tax Category Code']])) {
-                    $data[$row['Tax Category Code']] += $row['net'];
-                } else {
-                    $data[$row['Tax Category Code']] = $row['net'];
-                }
-            }
-        }
-
-        if ($this->data['Invoice Net Amount Off'] != 0) {
-            if (isset($data[$this->data['Invoice Tax Code']])) {
-                $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
-            } else {
-                $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
-            }
-        }
 
         $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Tax Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
@@ -1948,25 +1749,13 @@ class Invoice extends DB_Table {
 
         $total_tax = 0;
 
-        foreach ($data as $tax_code => $amount) {
+        foreach ($tax_transactions_data as $tax_code => $amount) {
 
             $tax_category = get_object('Tax_Category', $tax_code);
             $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
             $total_tax    += $tax;
 
-
-            $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`) VALUES   (?,?,?) ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=?";
-
-
-            $this->db->prepare($sql)->execute(
-                array(
-                    $this->id,
-                    $tax_code,
-                    $tax,
-                    $tax,
-                )
-            );
-
+            $this->save_tax_bridge($tax_code, $tax, $amount);
 
         }
 
@@ -1990,6 +1779,23 @@ class Invoice extends DB_Table {
         }
 
 
+    }
+
+
+    private function save_tax_bridge($tax_code, $tax, $net) {
+        $sql = "INSERT INTO `Invoice Tax Bridge` (`Invoice Tax Invoice Key`,`Invoice Tax Code`,`Invoice Tax Amount`,`Invoice Tax Net`,`Invoice Tax Metadata`) VALUES (?,?,?,?,'{}') ON DUPLICATE KEY UPDATE `Invoice Tax Amount`=? , `Invoice Tax Net`=?";
+
+
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id,
+                $tax_code,
+                $tax,
+                $net,
+                $tax,
+                $net
+            )
+        );
     }
 
     function post_operation_invoice_totals_changed() {
@@ -2067,7 +1873,7 @@ class Invoice extends DB_Table {
         $this->other_fields_updated = array(
             'Invoice_Tax_Number_Valid' => array(
                 'field'           => 'Invoice_Tax_Number_Valid',
-                'render'          => ($this->get('Invoice Tax Number') == '' ? false : true),
+                'render'          => !($this->get('Invoice Tax Number') == ''),
                 'value'           => $this->get('Invoice Tax Number Valid'),
                 'formatted_value' => $this->get('Tax Number Valid'),
 
@@ -2128,9 +1934,6 @@ class Invoice extends DB_Table {
             $this->update_field('Invoice Tax Number Valid', $value);
         }
 
-
-        // print_r($this->data);
-
         $this->other_fields_updated = array(
             'Invoice_Tax_Number' => array(
                 'field'           => 'Invoice_Tax_Number',
@@ -2148,9 +1951,7 @@ class Invoice extends DB_Table {
     function update_address($fields, $options = '') {
 
 
-        $old_value = $this->get("Address");
-
-
+        $old_value             = $this->get("Address");
         $updated_fields_number = 0;
 
 
@@ -2283,9 +2084,12 @@ class Invoice extends DB_Table {
         return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
 
-    function delete($note = '', $fix_mode = false) {
+    /**
+     * @throws \Exception
+     */
+    function delete($note = '', $fix_mode = false): string {
 
-        $is_refund = ($this->data['Invoice Type'] == 'Refund' ? true : false);
+        $is_refund = $this->data['Invoice Type'] == 'Refund';
 
 
         /**
@@ -2480,14 +2284,17 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
         } else {
 
-            $sql = sprintf(
-                "DELETE FROM `Order Transaction Fact`  WHERE   `Invoice Key`=%d   ", $this->id
+
+            $this->db->prepare("DELETE FROM `Order Transaction Fact`  WHERE   `Invoice Key`=?")->execute(
+                array(
+                    $this->id
+                )
             );
-            $this->db->exec($sql);
-            $sql = sprintf(
-                "DELETE FROM `Order No Product Transaction Fact`  WHERE    `Invoice Key`=%d  ", $this->id
+            $this->db->prepare("DELETE FROM `Order No Product Transaction Fact`  WHERE `Invoice Key`=?")->execute(
+                array(
+                    $this->id
+                )
             );
-            $this->db->exec($sql);
 
 
         }
@@ -2606,13 +2413,8 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
-    /**
-     * @param string $scope
-     * @param string $filter
-     *
-     * @return array
-     */
-    public function get_payments($scope = 'keys', $filter = '') {
+
+    public function get_payments($scope = 'keys', $filter = ''): array {
 
 
         if ($filter == 'Completed') {
@@ -2650,10 +2452,8 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
-    /**
-     * @param $payment \Payment
-     */
-    function add_payment($payment) {
+
+    function add_payment(Payment $payment) {
 
         $payment->update(array('Payment Invoice Key' => $this->id), 'no_history');
 
@@ -2789,6 +2589,110 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         );
 
     }
+
+    private function post_create_set_invoice_data() {
+
+        $this->get_data('id', $this->id);
+
+        $store = get_object('Store', $this->get('Store Key'));
+
+        $this->fast_update_json_field('Invoice Metadata', 'store_name', $store->get('Store Name'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_address', $store->get('Store Address'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_url', $store->get('Store URL'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_company_name', $store->get('Store Company Name'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_vat_number', $store->get('Store VAT Number'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_company_number', $store->get('Store Company Number'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_telephone', $store->get('Store Telephone'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_email', $store->get('Store Email'));
+        $this->fast_update_json_field('Invoice Metadata', 'store_message', $store->get('Store Invoice Message'));
+
+    }
+
+    private function get_formatted_tax_validation_date() {
+        if ($this->data['Invoice Tax Number Validation Date'] != '') {
+            $_tmp = gmdate("U") - gmdate(
+                    "U", strtotime(
+                           $this->data['Invoice Tax Number Validation Date'].' +0:00'
+                       )
+                );
+
+            if ($_tmp < 3600) {
+                $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00'));
+
+            } elseif ($_tmp < 86400) {
+                $date = strftime(
+                    "%e %b %Y %H:%M %Z", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
+                );
+
+            } else {
+                $date = strftime(
+                    "%e %b %Y", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
+                );
+            }
+        } else {
+            $date = '';
+        }
+
+
+        return $date;
+    }
+
+    private function group_transactions_per_tax_code($include_amount_off = true): array {
+
+
+        $data = [];
+
+        $sql = sprintf(
+            "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data[$row['Transaction Tax Code']] = $row['net'];
+
+            }
+        }
+
+
+        $sql = sprintf(
+            "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if (isset($data[$row['Tax Category Code']])) {
+                    $data[$row['Tax Category Code']] += $row['net'];
+                } else {
+                    $data[$row['Tax Category Code']] = $row['net'];
+                }
+
+
+            }
+        }
+
+
+        if ($include_amount_off and $this->data['Invoice Net Amount Off'] != 0) {
+
+
+            if (isset($data[$this->data['Invoice Tax Code']])) {
+                $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
+            } else {
+                $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
+            }
+
+
+        }
+
+        return $data;
+
+    }
+
+
 }
 
 

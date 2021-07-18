@@ -14,7 +14,6 @@ img/cache/*
 
 
 
-
 cron/tmp/
 
 ecom/keyring/*
@@ -125,3 +124,8 @@ cron/set_up_intrastad_SK.php
 cron/fix_missing_customers_cat.php
 cron/set_up_web_menu.php
 /cron/fix_on_demand_aromatics.php
+/fixes/*
+/cron/fix_invoice_tax_bridge_add_net.php
+/cron/fix_invoice_tax_bridge_add_net_es.php
+/cron/fix_invoice_tax_bridge_add_net_sk.php
+/cron/fix_orphan_invoice_tax_bridge.php

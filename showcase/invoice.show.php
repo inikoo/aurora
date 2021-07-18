@@ -18,10 +18,9 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
     if (!$data['_object']->id) {
         return "";
     }
-
+    //$data['_object']->update_tax_data();
 
     $order = get_object('order', $data['_object']->get('Invoice Order Key'));
-
 
     $smarty->assign('invoice', $data['_object']);
 
@@ -67,7 +66,7 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
     }
 
     $tax_data = array();
-    $sql      = "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Invoice Tax Amount`  FROM  
+    $sql      = "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Invoice Tax Amount`,`Invoice Tax Net`  FROM  
         `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Invoice Tax Code`)  WHERE B.`Invoice Tax Invoice Key`=?  AND `Tax Category Country Code`=?";
 
     $stmt = $db->prepare($sql);
@@ -77,6 +76,7 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
             $account->get('Account Country Code')
         )
     );
+    $number_tax_lines=0;
     while ($row = $stmt->fetch()) {
         switch ($row['Tax Category Code']) {
             case 'OUT':
@@ -96,13 +96,16 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
 
         $tax_data[] = array(
             'name' => $tax_description,
-
+            'base' => money(
+                $factor * $row['Invoice Tax Net'], $invoice->data['Invoice Currency']
+            ),
             'amount' => money(
                 $factor * $row['Invoice Tax Amount'], $invoice->data['Invoice Currency']
             )
         );
+        $number_tax_lines++;
     }
-
+    $smarty->assign('number_tax_lines', $number_tax_lines);
 
     $smarty->assign('tax_data', $tax_data);
 

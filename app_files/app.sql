@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.23-14, for Linux (x86_64)
 --
--- Host: localhost    Database: _aurora
+-- Host: localhost    Database: sk
 -- ------------------------------------------------------
 -- Server version	8.0.23-14
 
@@ -1584,7 +1584,7 @@ DROP TABLE IF EXISTS `Attachment Bridge`;
 CREATE TABLE `Attachment Bridge` (
   `Attachment Bridge Key` mediumint unsigned NOT NULL AUTO_INCREMENT,
   `Attachment Key` mediumint unsigned NOT NULL,
-  `Subject` enum('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier','Supplier Delivery','Fulfilment Delivery') NOT NULL,
+  `Subject` enum('Customer','Order','Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier','Supplier Delivery','Fulfilment Delivery') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `Subject Key` int unsigned NOT NULL,
   `Attachment Subject Type` enum('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS','Image','Contact Card','Delivery Paperwork') NOT NULL DEFAULT 'Other',
   `Attachment Caption` text,
@@ -2574,6 +2574,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Number Credit Transactions` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Shopify Key` int unsigned DEFAULT NULL,
   `Customer Number Products` mediumint unsigned NOT NULL DEFAULT '0',
+  `Customer Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Customer Key`) USING BTREE,
   KEY `Customer Store Key` (`Customer Store Key`),
   KEY `Customer Name` (`Customer Name`),
@@ -2645,7 +2646,7 @@ CREATE TABLE `Customer History Bridge` (
   `History Key` int unsigned NOT NULL,
   `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Orders','Changes','Attachments','WebLog','Emails') NOT NULL DEFAULT 'Notes',
+  `Type` enum('Notes','Orders','Changes','ChangesT2','WebLog','Emails') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Notes',
   PRIMARY KEY (`Customer Key`,`History Key`),
   KEY `Customer Key` (`Customer Key`),
   KEY `History Key` (`History Key`),
@@ -4142,7 +4143,7 @@ CREATE TABLE `Fulfilment Asset Dimension` (
   `Fulfilment Asset Warehouse Key` mediumint unsigned NOT NULL,
   `Fulfilment Asset Customer Key` mediumint unsigned NOT NULL,
   `Fulfilment Asset Fulfilment Delivery Key` mediumint unsigned NOT NULL,
-  `Fulfilment Asset Fulfilment Order Key` mediumint unsigned DEFAULT NULL,
+  `Fulfilment Asset Order Key` mediumint unsigned DEFAULT NULL,
   `Fulfilment Asset Location Key` mediumint unsigned DEFAULT NULL,
   `Fulfilment Asset Reference` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Fulfilment Asset Note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
@@ -4155,7 +4156,7 @@ CREATE TABLE `Fulfilment Asset Dimension` (
   KEY `Fulfilment Asset Reference` (`Fulfilment Asset Reference`),
   KEY `Fulfilment Asset Status` (`Fulfilment Asset State`),
   KEY `Fulfilment Asset Fulfilment Delivery Key` (`Fulfilment Asset Fulfilment Delivery Key`),
-  KEY `Fulfilment Asset Fulfilment Order Key` (`Fulfilment Asset Fulfilment Order Key`)
+  KEY `Fulfilment Asset Fulfilment Order Key` (`Fulfilment Asset Order Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4197,6 +4198,7 @@ CREATE TABLE `Fulfilment Delivery Dimension` (
   `Fulfilment Delivery Customer Telephone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Fulfilment Delivery Store Key` smallint unsigned DEFAULT NULL,
   `Fulfilment Delivery Warehouse Key` smallint unsigned DEFAULT NULL,
+  `Fulfilment Delivery Order Key` mediumint unsigned DEFAULT NULL,
   `Fulfilment Delivery State` enum('InProcess','Received','Checked','ReadyToPlace','Placed','InOrder','Cancelled') NOT NULL DEFAULT 'InProcess',
   `Fulfilment Delivery Date` date DEFAULT NULL,
   `Fulfilment Delivery Date Type` enum('Creation','Received','Placed','InOrder','Cancelled') DEFAULT NULL,
@@ -4205,6 +4207,7 @@ CREATE TABLE `Fulfilment Delivery Dimension` (
   `Fulfilment Delivery Received Date` datetime DEFAULT NULL,
   `Fulfilment Delivery Checked Date` datetime DEFAULT NULL,
   `Fulfilment Delivery Placed Date` datetime DEFAULT NULL,
+  `Fulfilment Delivery In Order  Date` datetime DEFAULT NULL,
   `Fulfilment Delivery Cancelled Date` datetime DEFAULT NULL,
   `Fulfilment Delivery Last Updated Date` datetime DEFAULT NULL COMMENT 'Latest Date when Adding/Modify Fulfilment Delivery Transaction or Data',
   `Fulfilment Delivery Public ID` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -5321,14 +5324,15 @@ DROP TABLE IF EXISTS `Invoice Tax Bridge`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Invoice Tax Bridge` (
   `Invoice Tax Bridge Key` int unsigned NOT NULL AUTO_INCREMENT,
-  `Invoice Key` mediumint unsigned NOT NULL,
-  `Tax Code` varchar(16) NOT NULL,
-  `Tax Amount` decimal(12,2) NOT NULL,
-  `Tax Base` enum('Yes','No') NOT NULL,
+  `Invoice Tax Category Key` mediumint unsigned DEFAULT NULL,
+  `Invoice Tax Invoice Key` mediumint unsigned NOT NULL,
+  `Invoice Tax Code` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Invoice Tax Amount` decimal(12,2) NOT NULL,
   PRIMARY KEY (`Invoice Tax Bridge Key`),
-  UNIQUE KEY `Invoice Key_2` (`Invoice Key`,`Tax Code`),
-  KEY `Invoice Key` (`Invoice Key`),
-  KEY `Tax Code` (`Tax Code`)
+  UNIQUE KEY `Invoice Key_2` (`Invoice Tax Invoice Key`,`Invoice Tax Code`),
+  KEY `Invoice Key` (`Invoice Tax Invoice Key`),
+  KEY `Tax Code` (`Invoice Tax Code`),
+  KEY `Invoice Tax Category Key` (`Invoice Tax Category Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6038,6 +6042,7 @@ CREATE TABLE `Order Dimension` (
   `Order Number History Records` smallint unsigned NOT NULL DEFAULT '0',
   `Order Delivery Data` json DEFAULT NULL,
   `Order Attention` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Order Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Order Key`,`Order Store Key`,`Order Date`) USING BTREE,
   KEY `Order Original Data Source` (`Order Original Data Source`),
   KEY `Order Public ID` (`Order Public ID`),
@@ -16655,4 +16660,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-14 14:31:43
+-- Dump completed on 2021-07-18  9:49:48

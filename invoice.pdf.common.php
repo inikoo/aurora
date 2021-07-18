@@ -11,6 +11,7 @@
 
 /** @var \Smarty $smarty */
 /** @var \Account $account */
+
 /** @var PDO $db */
 
 
@@ -625,9 +626,22 @@ $smarty->assign('transactions', $transactions);
 
 $exempt_tax = false;
 
+$number_tax_lines=0;
+$sql  = "select count(*) as num from `Invoice Tax Bridge` B  WHERE B.`Invoice Tax Invoice Key`=?";
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array(
+        $invoice->id
+    )
+);
+while ($row = $stmt->fetch()) {
+    $number_tax_lines = $row['num'];
+}
+
+
 $tax_data = array();
 $sql      = sprintf(
-    "SELECT `Tax Category Name`,`Tax Category Rate`,`Invoice Tax Amount`,`Tax Category Type` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Invoice Tax Code`)  WHERE B.`Invoice Tax Invoice Key`=%d  and `Tax Category Country Code`=%s ",
+    "SELECT `Tax Category Name`,`Tax Category Rate`,`Invoice Tax Amount`,`Tax Category Type`,`Invoice Tax Net` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Invoice Tax Code`)  WHERE B.`Invoice Tax Invoice Key`=%d  and `Tax Category Country Code`=%s ",
     $invoice->id, prepare_mysql($account->get('Account Country Code'))
 );
 
@@ -644,11 +658,15 @@ if ($result = $db->query($sql)) {
 
         }
 
-        if ($row['Invoice Tax Amount'] == 0) {
-            continue;
+        //    if ($row['Invoice Tax Amount'] == 0) {
+        //        continue;
+        //   }
+        if($number_tax_lines<=1) {
+            $base = '';
+        }else{
+            $base=money($row['Invoice Tax Net'],$invoice->get('Invoice Currency')).' @';
+
         }
-
-
         switch ($row['Tax Category Name']) {
             case 'Outside the scope of VAT':
                 $tax_category_name = _('Outside the scope of VAT');
@@ -682,6 +700,7 @@ if ($result = $db->query($sql)) {
 
         $tax_data[] = array(
             'name'   => $tax_category_name,
+            'base'   => $base,
             'amount' => money(
                 $row['Invoice Tax Amount'], $invoice->data['Invoice Currency']
             )

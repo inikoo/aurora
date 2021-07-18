@@ -100,7 +100,7 @@
             </tr>
             {foreach from=$tax_data item=tax }
                 <tr>
-                    <td class="aright">{t}Tax{/t} <span class="small discreet">({$tax.name})</span></td>
+                    <td class="aright">{if $number_tax_lines>1}<span class="small discreet">{$tax.base}</span> @{else}{t}Tax{/t}{/if} <span class="small discreet">({$tax.name})</span></td>
                     <td class="aright">{$tax.amount}</td>
                 </tr>
             {/foreach}

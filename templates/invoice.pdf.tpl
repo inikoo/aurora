@@ -335,8 +335,8 @@
     </tr>
     {foreach from=$tax_data item=tax }
         <tr>
-            <td style="border:none" colspan="2"></td>
-            <td class="totals" colspan="2">{t}Tax{/t} ({$tax.name})</td>
+            <td style="border:none" colspan="2">{$tax.base}</td>
+            <td class="totals" colspan="2">{$tax.name}</td>
             <td class="totals">{$tax.amount}</td>
         </tr>
     {/foreach}
