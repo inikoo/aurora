@@ -667,6 +667,17 @@ function get_export_fields($element, $account_currency_code = '') {
 
                 'header_prefix' => _('Tax code').": "
             ),
+            array(
+                'name'            => '(select group_concat(CONCAT_WS(\'|\',`Invoice Tax Code`,`Invoice Tax Net`))  from `Invoice Tax Bridge` ITB where ITB.`Invoice Tax Invoice Key`= I.`Invoice Key`  )',
+                'label'           => _('Tax base (Separated fields)'),
+                'checked'         => 1,
+                'type'            => 'dynamic_headers',
+                'header_field'    => '`Invoice Tax Code`',
+                'header_table'    => 'left join  `Invoice Tax Bridge` B on (I.`Invoice Key`=B.`Invoice Tax Invoice Key`)',
+                'header_group_by' => 'group by `Invoice Tax Code`',
+
+                'header_prefix' => _('Tax base').": "
+            ),
 
         ),
         'timeserie_records'            => array(
