@@ -177,17 +177,16 @@ class prepare_table_fulfilment_assets extends prepare_table {
             
             
             <div class="asset_location_container" data-asset_key="'.$data['Fulfilment Asset Key'].'" >
-            <div style="position:relative" class="asset_location '.(($data['Fulfilment Asset State'] != 'Received' and $data['Location Key']==''  ) ? 'hide' : '').'">
+            <div style="position:relative" class="asset_location '.(($data['Fulfilment Asset State'] != 'Received' and $data['Location Key'] == '') ? 'hide' : '').'">
 			    <i style="position:absolute;right:16px" class="show_asset_location_edit fa fa-pencil very_discreet_on_hover button " onclick="show_asset_location_edit(this)"></i> 
 			     <span class="location_code" style="padding-left: 25px">'.$data['Location Code'].'</span>
 			    
 			    
 			    </div>
 			    
-			    <div style="clear:both"  id="fulfilment_delivery_edit_location_'.$data['Fulfilment Asset Key'].'" class="select_container  '.(($data['Fulfilment Asset State'] != 'Received' and $data['Location Key']==''  ) ? '' : 'hide')
-                .' "   >
+			    <div style="clear:both"  id="fulfilment_delivery_edit_location_'.$data['Fulfilment Asset Key'].'" class="select_container  '.(($data['Fulfilment Asset State'] != 'Received' and $data['Location Key'] == '') ? '' : 'hide').' "   >
 
-			  <i class="fa fa-unlink button valid '.($data['Location Key']==''?'invisible':'').'" onclick="edit_asset_location(\'delete\',this)"></i> 
+			  <i class="fa fa-unlink button valid '.($data['Location Key'] == '' ? 'invisible' : '').'" onclick="edit_asset_location(\'delete\',this)"></i> 
 
 				<input class="fulfilment_asset_location_code margin_left_5 "  placeholder="'._('Location code').'" value="'.$data['Location Code'].'" >
 				<i  class="place_item_button  fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Save location').'"  data-location_key="" onClick="edit_asset_location(\'edit\',this)"  ></i>
@@ -199,9 +198,14 @@ class prepare_table_fulfilment_assets extends prepare_table {
 
             $location = $edit_location;
 
+$label='<a href="/asset_label.pdf.php?object=fulfilment_asset&key='.$data['Fulfilment Asset Key'].'&type=pallet" target="_blank"><img class="button pdf_link  left_pdf_label_mark top_pdf_label_mark"
+                         style="width: 50px;height:16px;position: relative;top:2px"
+                         src="/art/pdf.gif"></a>';
+
 
             $this->table_data[] = array(
                 'id'           => (integer)$data['Fulfilment Asset Key'],
+                'label'        => $label,
                 'customer'     => sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_customer, $data['Customer Name']),
                 'reference'    => $asset_reference,
                 'formatted_id' => sprintf('<span class="link" onclick="change_view(\'%s\')" >%05d</span>  ', $_link_customer.'/delivery/'.$data['Fulfilment Asset Fulfilment Delivery Key'].'/asset/'.$data['Fulfilment Asset Key'], $data['Fulfilment Asset Key']),
@@ -209,7 +213,7 @@ class prepare_table_fulfilment_assets extends prepare_table {
                 'type'         => $type,
                 'notes'        => $data['Fulfilment Asset Note'],
                 'location'     => $location,
-                'delete'     => '<i class="button fal fa-trash-alt" title="'._('Delete').'" data-asset_key="'.$data['Fulfilment Asset Key'].'" onclick="delete_fulfilment_asset_from_table(this)"></i>'
+                'delete'       => '<i class="button fal fa-trash-alt" title="'._('Delete').'" data-asset_key="'.$data['Fulfilment Asset Key'].'" onclick="delete_fulfilment_asset_from_table(this)"></i>'
 
             );
 
