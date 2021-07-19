@@ -130,7 +130,7 @@
                         {elseif $key=='portfolio'}
                         <a class="default-link" href="portfolio.sys"><i class="icon-bg bg-orange-dark  fa fa-store-alt"></i><span>{if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}</span><i class="ion-record"></i></a>
 
-                        {elseif $key=='customers'}
+                        {elseif $key=='clients'}
                         <a class="default-link" href="clients.sys"><i class="icon-bg bg-orange-dark  fal fa-users"></i><span>{if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}</span><i class="ion-record"></i></a>
 
 

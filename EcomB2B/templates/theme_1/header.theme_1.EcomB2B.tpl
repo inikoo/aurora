@@ -148,7 +148,7 @@
                 <a id="portfolio_button" href="portfolio.sys" class="button">
                     <i class=" far fa-store-alt  "  ></i> {if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}
                 </a>
-            {elseif $key=='customers'}
+            {elseif $key=='clients'}
                 <a id="customers_button" href="clients.sys" class="button">
                     <i class=" fal fa-users  "  ></i> {if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}
                 </a>
