@@ -17,7 +17,7 @@ include_once 'trait.NotesSubject.php';
 class Fulfilment_Delivery extends DB_Table {
     use  NotesSubject, AttachmentSubject;
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db = $db;
@@ -67,7 +67,7 @@ class Fulfilment_Delivery extends DB_Table {
 
     function create($data) {
 
-        $this->editor=$data['editor'];
+        $this->editor = $data['editor'];
 
 
         $data['Fulfilment Delivery Date']              = gmdate('Y-m-d H:i:s');
@@ -515,6 +515,9 @@ class Fulfilment_Delivery extends DB_Table {
 
     }
 
+    /**
+     * @throws \Exception
+     */
     function delete(): string {
 
         if ($this->data['Fulfilment Delivery State'] == 'InProcess') {
@@ -550,7 +553,6 @@ class Fulfilment_Delivery extends DB_Table {
                     )
                 );
 
-
                 $this->db->exec($sql);
                 $attachment = get_object('Attachment', $row['Attachment Key']);
                 $attachment->delete();
@@ -567,8 +569,8 @@ class Fulfilment_Delivery extends DB_Table {
             */
 
 
-            $customer=get_object('Customer',$this->data['Fulfilment Delivery Customer Key']);
-            $customer->editor=$this->editor;
+            $customer         = get_object('Customer', $this->data['Fulfilment Delivery Customer Key']);
+            $customer->editor = $this->editor;
 
             $history_data = array(
                 'History Abstract' => sprintf(_('Fulfilment delivery %s deleted'), $this->get('Formatted ID')),
@@ -638,7 +640,7 @@ class Fulfilment_Delivery extends DB_Table {
             $this->create_fulfilment_asset(
                 [
                     'Fulfilment Asset Type' => $data['Fulfilment Asset Type'],
-                    'editor'=>$this->editor
+                    'editor'                => $this->editor
                 ]
             );
         }
@@ -655,7 +657,7 @@ class Fulfilment_Delivery extends DB_Table {
         $data['Fulfilment Asset Warehouse Key']           = $this->get('Fulfilment Delivery Warehouse Key');
         $data['Fulfilment Asset Customer Key']            = $this->get('Fulfilment Delivery Customer Key');
         $data['Fulfilment Asset Metadata']                = '{}';
-
+        $data['editor']                                   = $this->editor;
 
         if (!empty($data['Fulfilment Asset Reference'])) {
             $sql  = 'SELECT count(*) AS num FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Reference`=? AND `Fulfilment Asset Customer Key`=?';
