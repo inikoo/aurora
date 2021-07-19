@@ -13,6 +13,20 @@
 function get_label_data($code){
 
     $labels_data=[
+        'A4'=>[
+            'margin_top'=>0,
+            'margin_bottom'=>0,
+            'margin_left'=>0,
+            'margin_right'=>0,
+            'width'=>297,
+            'height'=>210,
+            'h_spacing'=>0,
+            'v_spacing'=>0,
+            'cols'=>1,
+            'rows'=>1,
+            'sheet_width'=>297,
+            'sheet_height'=>210,
+        ],
         'EU30090'=>[
             'margin_top'=>6,
             'margin_bottom'=>0,

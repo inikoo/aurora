@@ -8,10 +8,16 @@
  Version 3
 
 */
+
+use Mpdf\Mpdf;
+use Mpdf\MpdfException;
+
 require_once __DIR__.'/vendor/autoload.php';
 
 include_once 'common.php';
 include_once 'utils/object_functions.php';
+/** @var \Smarty $smarty */
+/** @var \Account $account */
 
 if (!isset($_REQUEST['object']) or !isset($_REQUEST['key']) or !isset($_REQUEST['type'])) {
     exit;
@@ -24,7 +30,7 @@ $key         = $_REQUEST['key'];
 $type        = $_REQUEST['type'];
 
 
-if (!in_array($object_name, array('part','supplier_part','product'))) {
+if (!in_array($object_name, array('part','supplier_part','product','fulfilment_asset'))) {
     exit('error 1');
 }
 
@@ -68,7 +74,7 @@ if($type=='carton'  or  $type=='carton_with_image'){
 
 $smarty->assign('account', $account);
 
-
+$title='';
 if ($object_name == 'product') {
     $store=get_object('Store',$object->get('Store Key'));
 
@@ -166,33 +172,38 @@ if ($object_name == 'product') {
 //============
 
 
-
-$mpdf = new \Mpdf\Mpdf(
-    [
-        'tempDir'       => __DIR__.'/server_files/pdf_tmp',
-        'mode'          => 'utf-8',
-        'format'        => [
-            $w,
-            $h
-        ],
-        'margin_left'   => 0,
-        'margin_right'  => 0,
-        'margin_top'    => 0,
-        'margin_bottom' => 0,
-        'margin_header' => 0,
-        'margin_footer' => 0
-    ]
-);
-
-$mpdf->repackageTTF = false;
-$mpdf->SetTitle($title);
-$mpdf->SetAuthor('Aurora Systems');
-$smarty->assign('account', $account);
-
-
-$html = $smarty->fetch($template);
+try {
+    $mpdf = new Mpdf(
+        [
+            'tempDir'       => __DIR__.'/server_files/pdf_tmp',
+            'mode'          => 'utf-8',
+            'format'        => [
+                $w,
+                $h
+            ],
+            'margin_left'   => 0,
+            'margin_right'  => 0,
+            'margin_top'    => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0
+        ]
+    );
+    $mpdf->repackageTTF = false;
+    $mpdf->SetTitle($title);
+    $mpdf->SetAuthor('Aurora Systems');
+    $smarty->assign('account', $account);
 
 
-$mpdf->WriteHTML($html);
-$mpdf->Output($filename.'.pdf', 'I');
+    $html = $smarty->fetch($template);
+
+
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($filename.'.pdf', 'I');
+
+
+
+} catch (MpdfException $e) {
+}
+
 

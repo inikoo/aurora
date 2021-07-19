@@ -13,13 +13,14 @@
 
 
 use Mpdf\Mpdf;
+use Mpdf\MpdfException;
 
 require_once 'vendor/autoload.php';
 include_once 'common.php';
 include_once 'utils/object_functions.php';
 include_once 'utils/labels_data.php';
-
-//print_r($_REQUEST);
+/** @var \Smarty $smarty */
+/** @var \Account $account */
 
 if (!isset($_REQUEST['object']) or !isset($_REQUEST['key']) or !isset($_REQUEST['type'])) {
     exit('missing basic args');
@@ -29,15 +30,29 @@ if (!isset($_REQUEST['object']) or !isset($_REQUEST['key']) or !isset($_REQUEST[
 
 $object_name = $_REQUEST['object'];
 $key         = $_REQUEST['key'];
-$type        = $_REQUEST['type'];
-$size        = $_REQUEST['size'];
+
+$type = '';
+if (isset($_REQUEST['type'])) {
+    $type = $_REQUEST['type'];
+}
+$size = '';
+if (isset($_REQUEST['size'])) {
+    $size = $_REQUEST['size'];
+}
+
+$set_up = '';
+if (isset($_REQUEST['set_up'])) {
+    $set_up = $_REQUEST['set_up'];
+}
+
 
 
 if (!in_array(
     $object_name, array(
                     'part',
                     'supplier_part',
-                    'product'
+                    'product',
+                    'fulfilment_asset'
                 )
 )) {
     exit('error 1');
@@ -49,14 +64,51 @@ if (!in_array(
              'sko',
              'unit',
              'carton',
+             'pallet',
+             'box'
 
 
          )
 )) {
     exit('error 2');
 }
-$smarty->assign('type', $type);
 
+
+
+if (isset($_REQUEST['set_up']) and $_REQUEST['set_up'] == 'single') {
+    $set_up = 'single';
+} else {
+    $set_up = 'sheet';
+}
+
+$object = get_object($object_name, $key);
+
+
+
+if ( $size == '' or $set_up=='') {
+    if ($object_name == 'fulfilment_asset') {
+
+
+
+        if(isset($object->get_labels_data()[$type])){
+            $label_data =$object->get_labels_data()[$type];
+            $size=$label_data['size'];
+            $set_up=$label_data['set_up'];
+        }else{
+            exit('error 4');
+        }
+
+
+
+    }
+
+
+    if($set_up==''){
+        $set_up = 'sheet';
+    }
+
+
+}
 
 if (!in_array(
     $size, array(
@@ -66,7 +118,8 @@ if (!in_array(
              'EU30036',
              'EU30137',
              'EU30140',
-             'EU30129'
+             'EU30129',
+             'A4'
 
 
          )
@@ -78,11 +131,7 @@ $smarty->assign('size', $size);
 $label_data = get_label_data($size);
 
 
-if (isset($_REQUEST['set_up']) and $_REQUEST['set_up'] == 'single') {
-    $set_up = 'single';
-} else {
-    $set_up = 'sheet';
-}
+
 
 $smarty->assign('set_up', $set_up);
 
@@ -135,7 +184,6 @@ $smarty->assign('custom_text', $custom_text);
 $smarty->assign('label_data', $label_data);
 
 
-$object = get_object($object_name, $key);
 
 /*
 
@@ -209,16 +257,14 @@ if ($type == 'carton' or $type == 'carton_with_image') {
 $smarty->assign('account', $account);
 
 
-
-
-$_locale=$account->get('Account Locale');
+$_locale = $account->get('Account Locale');
 putenv('LC_ALL='.$_locale.'.UTF-8');
 setlocale(LC_ALL, $_locale.'.UTF-8');
 bindtextdomain("inikoo", "./locales");
 textdomain("inikoo");
 
-
-
+$title    = '';
+$filename = '';
 if ($object_name == 'product') {
     $store = get_object('Store', $object->get('Store Key'));
 
@@ -255,10 +301,6 @@ if ($object_name == 'product') {
 
 
 } elseif ($object_name == 'part') {
-
-
-
-
 
 
     $smarty->assign('part', $object);
@@ -319,34 +361,61 @@ if ($object_name == 'product') {
     $title    = sprintf(_('%s carton'), $object->get('Code'));
 
 
+} elseif ($object_name == 'fulfilment_asset') {
+
+    $account = get_object('Account', 1);
+    $smarty->assign('account', $account);
+    $customer = get_object('Customer', $object->get('Customer Key'));
+    $store    = get_object('Store', $customer->get('Store Key'));
+    $smarty->assign('store', $store);
+    $smarty->assign('customer', $customer);
+
+
+    $smarty->assign('asset', $object);
+
+
+    $filename = $object->id.'_asset';
+    $title    = sprintf(_('Fulfilment asset %s'), $object->get('Formatted ID'));
+
+    $type = $object_name;
+    if ($size == 'A4') {
+        $type .= '_A4';
+    }
+
+}
+$smarty->assign('type', $type);
+
+
+try {
+    $mpdf               = new Mpdf(
+        [
+            'tempDir'       => __DIR__.'/server_files/pdf_tmp',
+            'mode'          => 'utf-8',
+            'format'        => [
+                ($set_up == 'single' ? $label_data['width'] : $label_data['sheet_width']),
+                ($set_up == 'single' ? $label_data['height'] : $label_data['sheet_height'])
+            ],
+            'margin_left'   => ($set_up == 'single' ? 0 : $label_data['margin_left']),
+            'margin_right'  => ($set_up == 'single' ? 0 : $label_data['margin_right']),
+            'margin_top'    => ($set_up == 'single' ? 0 : $label_data['margin_top']),
+            'margin_bottom' => ($set_up == 'single' ? 0 : $label_data['margin_bottom']),
+            'margin_header' => 0,
+            'margin_footer' => 0
+        ]
+    );
+    $mpdf->repackageTTF = false;
+    $mpdf->SetTitle($title);
+    $mpdf->SetAuthor('Aurora Systems');
+    $smarty->assign('account', $account);
+
+
+    $html = $smarty->fetch('labels/label.tpl');
+
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($filename.'.pdf', 'I');
+} catch (MpdfException | SmartyException $e) {
+    print $e->getMessage();
 }
 
 
-$mpdf = new Mpdf(
-    [
-        'tempDir'       => __DIR__.'/server_files/pdf_tmp',
-        'mode'          => 'utf-8',
-        'format'        => [
-            ($set_up == 'single' ? $label_data['width'] : $label_data['sheet_width']),
-            ($set_up == 'single' ? $label_data['height'] : $label_data['sheet_height'])
-        ],
-        'margin_left'   => ($set_up == 'single' ? 0 : $label_data['margin_left']),
-        'margin_right'  => ($set_up == 'single' ? 0 : $label_data['margin_right']),
-        'margin_top'    => ($set_up == 'single' ? 0 : $label_data['margin_top']),
-        'margin_bottom' => ($set_up == 'single' ? 0 : $label_data['margin_bottom']),
-        'margin_header' => 0,
-        'margin_footer' => 0
-    ]
-);
-
-$mpdf->repackageTTF = false;
-$mpdf->SetTitle($title);
-$mpdf->SetAuthor('Aurora Systems');
-$smarty->assign('account', $account);
-
-
-$html = $smarty->fetch('labels/label.tpl');
-
-$mpdf->WriteHTML($html);
-$mpdf->Output($filename.'.pdf', 'I');
 

@@ -9,8 +9,13 @@
 
 function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $user): array {
 
-    $edit = $user->can_edit('fulfilment');
-    $super_edit =$user->can_supervisor('fulfilment');
+    $edit       = $user->can_edit('fulfilment');
+    $super_edit = $user->can_supervisor('fulfilment');
+
+    $options_Type = array(
+        'Pallet' => _('Pallet'),
+        'Box'    => _('Box')
+    );
 
     $fulfilment_asset_fields = array(
         array(
@@ -23,7 +28,7 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
                     'value'             => htmlspecialchars($fulfilment_asset->get('Fulfilment Asset Reference')),
                     'formatted_value'   => $fulfilment_asset->get('Reference'),
                     'label'             => ucfirst($fulfilment_asset->get_field_label('Fulfilment Asset Reference')),
-                    'required'          => true,
+                    'required'          => false,
                     'server_validation' => json_encode(
                         array(
                             'tipo'       => 'check_for_duplicates',
@@ -62,13 +67,33 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
 
             )
         ),
+        array(
+            'label'      => _('Properties'),
+            'show_title' => true,
+            'fields'     => array(
+                array(
+                    'id'              => 'Fulfilment_Asset_Type',
+                    'edit'            => ($edit ? 'option' : ''),
+                    'value'           => htmlspecialchars($fulfilment_asset->get('Fulfilment Asset Type')),
+                    'formatted_value' => $fulfilment_asset->get('Type'),
+                    'label'           => ucfirst($fulfilment_asset->get_field_label('Fulfilment Asset Type')),
+                    'options'         => $options_Type,
+
+                    'required' => false,
+                    'type'     => 'value'
+                ),
+
+
+            )
+        ),
 
     );
 
-    $operations = array(
+
+    $operations                = array(
         'label'      => _('Operations'),
         'show_title' => true,
-        'class'      => 'operations '.($fulfilment_asset->get('Fulfilment Asset State')=='InProcess'?'':'hide'),
+        'class'      => 'operations '.($fulfilment_asset->get('Fulfilment Asset State') == 'InProcess' ? '' : 'hide'),
         'fields'     => array(
 
             array(
@@ -89,7 +114,7 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
                 'id'        => 'delete_part',
                 'class'     => 'operation',
                 'value'     => '',
-                'render'    => $fulfilment_asset->get('Fulfilment Asset State')=='InProcess',
+                'render'    => $fulfilment_asset->get('Fulfilment Asset State') == 'InProcess',
                 'label'     => '<i class="fa fa-fw fa-'.($super_edit ? 'lock-alt' : 'lock').'  button" 
                  data-labels=\'{ "text":"'._('Please ask an authorised user to delete this part').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
                 onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'BS\')').'"  

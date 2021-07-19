@@ -60,6 +60,7 @@ function download_pdf(element) {
 
     })
 
+    console.log(dialog.data('type'))
 
     switch (dialog.data('type')) {
         case 'proforma':
@@ -73,9 +74,9 @@ function download_pdf(element) {
         case 'unit':
         case 'sko':
         case 'carton':
-
+        case 'pallet':
+        case 'box':
             const settings=get_pdf_label_options(dialog);
-
             let url='/asset_label.pdf.php?object=' + dialog.data('asset') +'&key=' + dialog.data('asset_key')+ '&type=' +dialog.data('type');
 
 

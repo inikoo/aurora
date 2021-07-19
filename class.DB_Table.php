@@ -656,7 +656,6 @@ abstract class DB_Table extends stdClass {
         }
 
 
-
         $this->fast_update(
             array($this->get_object_name().' Number History Records' => $number)
         );
@@ -756,7 +755,13 @@ abstract class DB_Table extends stdClass {
         return true;
     }
 
-    public function fast_update_json_field($field, $key, $value, $table_full_name = '') {
+    /**
+     * @param string $field Database field
+     * @param string $key   json property name
+     * @param string $value value
+     * @param string $table_full_name
+     */
+    public function fast_update_json_field(string $field, string $key, string $value, string $table_full_name = '') {
 
 
         if ($table_full_name == '') {

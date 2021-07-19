@@ -42,7 +42,7 @@ class Fulfilment_Asset extends DB_Table {
 
     function create($data) {
 
-        $this->editor=$data['editor'];
+        $this->editor = $data['editor'];
 
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
@@ -117,12 +117,17 @@ class Fulfilment_Asset extends DB_Table {
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['Fulfilment Asset Key'];
+            $this->id       = $this->data['Fulfilment Asset Key'];
+            $this->metadata = json_decode($this->data['Fulfilment Asset Metadata'], true);
 
         }
 
         return true;
 
+    }
+
+    function metadata($key) {
+        return ($this->metadata[$key] ?? '');
     }
 
     function get($key) {
@@ -277,6 +282,9 @@ class Fulfilment_Asset extends DB_Table {
             case 'Fulfilment Asset Note':
                 $label = _('note');
                 break;
+            case 'Fulfilment Asset Type':
+                $label = _('type');
+                break;
 
             default:
 
@@ -297,8 +305,26 @@ class Fulfilment_Asset extends DB_Table {
 
 
         if (!$this->deleted and $this->id) {
-
             switch ($field) {
+                case 'label box':
+                case 'label pallet':
+                    $this->fast_update_json_field('Fulfilment Asset Metadata', preg_replace('/ /','_',$field), $value);
+                    break;
+                case 'Fulfilment Asset Type':
+                    $this->update_field($field, $value, $options);
+                    $this->update_metadata['class_html'] = array(
+                        'Type_Icon' => $this->get('Type Icon'),
+                    );
+                    if($value=='Pallet'){
+                        $this->update_metadata['hide'] = array('pdf_label_container_box');
+                        $this->update_metadata['show'] = array('pdf_label_container_pallet');
+
+                    }else{
+                        $this->update_metadata['hide'] = array('pdf_label_container_pallet');
+                        $this->update_metadata['show'] = array('pdf_label_container_box');
+                    }
+
+                    break;
                 case 'Fulfilment Asset Location Key':
                     $old_value = $this->data['Fulfilment Asset Location Key'];
                     $this->update_field($field, $value, $options);
@@ -342,6 +368,47 @@ class Fulfilment_Asset extends DB_Table {
         }
     }
 
+    function get_labels_data(): array {
+        $labels_data = [];
+
+
+        $label_box    = json_decode($this->metadata('label_box'),true);
+        $label_pallet = json_decode($this->metadata('label_pallet'),true);
+
+        if ($label_box == '' or $label_pallet == '') {
+            $warehouse = get_object('Warehouse', $this->data['Fulfilment Asset Warehouse Key']);
+            if ($label_box == '') {
+                $label_box = json_decode($warehouse->settings('label_fulfilment_asset_box'), true);
+                if ($label_box == '') {
+                    $label_box = [
+                        'size'   => 'EU30036',
+                        'set_up' => 'single'
+                    ];
+                    $warehouse->fast_update_json_field('Warehouse Settings', 'label_fulfilment_asset_box', json_encode($label_box));
+                }
+            }
+
+
+            if ($label_pallet == '') {
+                $label_pallet= json_decode($warehouse->settings('label_fulfilment_asset_pallet'), true);
+                if ($label_pallet == '') {
+                    $label_pallet= [
+                        'size'   => 'A4',
+                        'set_up' => 'single'
+                    ];
+                    $warehouse->fast_update_json_field('Warehouse Settings', 'label_fulfilment_asset_pallet', json_encode($label_pallet));
+                }
+            }
+
+        }
+
+
+        $labels_data['box']    = $label_box;
+        $labels_data['pallet'] = $label_pallet;
+
+        return $labels_data;
+
+    }
 
 }
 

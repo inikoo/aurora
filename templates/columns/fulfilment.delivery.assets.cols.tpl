@@ -29,7 +29,15 @@ className: "width_30 align_center"
 } ),
 headerCell: integerHeaderCell
 },
+{
+name: "label",
+label: "",
+editable: false,
+sortable:false,
 
+cell: Backgrid.HtmlCell.extend({
+})
+},
 {
 name: "formatted_id",
 label: "{t}Id{/t}",

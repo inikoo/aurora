@@ -79,8 +79,25 @@
             <span class="Location_State_Formatted"> {$asset->get('Location State Formatted')} </span>
 
         </div>
-        <table class="info_block acenter">
-        </table>
+        <div  style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
+            <span class="pdf_label_container pdf_label_container_pallet {if $asset->get('Fulfilment Asset Type')!='Pallet'}hide{/if} ">
+                    <img alt="{t}Download{/t}" class="button pdf_link  left_pdf_label_mark top_pdf_label_mark"
+                         onclick="download_pdf_from_ui($('.pdf_asset_dialog.pallet'),'fulfilment_asset',{$asset->id},'pallet')" style="width: 50px;height:16px;position: relative;top:2px"
+                         src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'fulfilment_asset',{$asset->id},'pallet')" title="{t}PDF pallet label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+            </span>
+            <span class="pdf_label_container  pdf_label_container_box {if $asset->get('Fulfilment Asset Type')=='Pallet'}hide{/if} ">
+                    <img alt="{t}Download{/t}" class="button pdf_link left_pdf_label_mark top_pdf_label_mark"
+                         onclick="download_pdf_from_ui($('.pdf_asset_dialog.box'),'fulfilment_asset',{$asset->id},'box')" style="width: 50px;height:16px;position: relative;top:2px"
+                         src="/art/pdf.gif">
+                    <i onclick="show_pdf_settings_dialog(this,'fulfilment_asset',{$asset->id},'box')" title="{t}PDF box label settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+            </span>
+
+        </div>
+        {include file="pdf_asset_dialog.tpl" asset='fulfilment_asset' type='pallet'}
+        {include file="pdf_asset_dialog.tpl" asset='fulfilment_asset' type='box'}
+
+
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
         <div class="node  Invoice_Info {if $asset->get('State Index')!=110}hide{/if} ">

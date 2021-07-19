@@ -7,7 +7,6 @@
  */
 
 
-
 /**
  * @param $data
  * @param $smarty \Smarty
@@ -26,9 +25,10 @@ function get_fulfilment_asset_showcase($data, Smarty $smarty): string {
         return "";
     }
 
-    $customer = get_object('Customer', $asset->get('Customer Key'));
-    $store = get_object('Store', $customer->get('Store Key'));
-    $delivery = get_object('Fulfilment_Delivery', $asset->get('Fulfilment Asset Fulfilment Delivery Key'));
+    $customer  = get_object('Customer', $asset->get('Customer Key'));
+    $store     = get_object('Store', $customer->get('Store Key'));
+    $delivery  = get_object('Fulfilment_Delivery', $asset->get('Fulfilment Asset Fulfilment Delivery Key'));
+
 
     $smarty->assign('customer', $customer);
     $smarty->assign('asset', $asset);
@@ -45,6 +45,11 @@ function get_fulfilment_asset_showcase($data, Smarty $smarty): string {
                      )
 
     );
+
+
+
+    $smarty->assign('labels_data', $asset->get_labels_data());
+
 
     return $smarty->fetch('showcase/fulfilment.asset.tpl');
 

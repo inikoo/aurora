@@ -15,7 +15,7 @@
  * @param      $key
  * @param bool $load_other_data
  *
- * @return \Account|bool|\Customer|\Part|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Raw_Material|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
+ * @return \Fulfilment_Asset|\Account|\Agent|\AgentSupplierPurchaseOrder|\Attachment|\Category|\Customer|\Customer_Client|\Customer_Fulfilment|\Data_Sets|\DealCampaign|\DealComponent|\Email_Blueprint|\Email_Template|\Email_Tracking|\EmailCampaign|\EmailCampaignType|\External_Invoicer|false|\Fulfilment_Delivery|\Image|\Invoice|\Job_Position|\Manufacture_Task|\Material|\Overtime|\PageDeleted|\Payment_Account|\PickingBand|\ProductionPart|\Public_Category|\Public_Product|\Public_Store|\Public_Webpage|\Public_Website|\Published_Email_Template|\PurchaseOrder|\Shipping_Zone|\Shipping_Zone_Schema|\Staff|\SubjectList|\Supplier|\Supplier_Production|\SupplierPart|\TaxCategory|\Timeseries|\TimeseriesRecord|\Upload|\User|\Voucher|Warehouse|\WarehouseArea|\Website_User|\WebsiteFooter
  */
 function get_object($object_name, $key, $load_other_data = false) {
 
@@ -40,9 +40,6 @@ function get_object($object_name, $key, $load_other_data = false) {
 
         case 'customer':
             include_once 'class.Customer.php';
-            /**
-             * @var $object \Customer
-             */
             $object = new Customer('id', $key);
 
             break;

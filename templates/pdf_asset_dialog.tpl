@@ -10,7 +10,7 @@
 *}
 
 
-<div class="pdf_asset_dialog {$type} options_dialog hide " data-type="{$type}" style="{if $type=='unit' or  $type=='sko' or  $type=='carton'}min-width: 250px{else}}min-width: 150px{/if}">
+<div class="pdf_asset_dialog {$type} options_dialog hide " data-type="{$type}" style="{if $type=='unit' or  $type=='sko' or  $type=='carton' or $type=='pallet' or  $type=='box'}min-width: 250px{else}}min-width: 150px{/if}">
     <i onclick="$('.pdf_asset_dialog').addClass('hide')" style="float: right;margin-left: 10px" class="fa fa-window-close button"></i>
     {if $type=='invoice'}
         <h2 class="unselectable">{t}PDF invoice{/t}</h2>
@@ -22,9 +22,13 @@
         <h2 class="unselectable">{t}SKO label{/t}</h2>
     {elseif $type=='carton'}
         <h2 class="unselectable">{t}Carton label{/t}</h2>
+    {elseif $type=='fulfilment_asset_pallet'}
+        <h2 class="unselectable">{t}Pallet label{/t}</h2>
+    {elseif $type=='fulfilment_asset_box'}
+        <h2 class="unselectable">{t}Box label{/t}</h2>
     {/if}
 
-    <table border="0" style="width: 100%">
+    <table style="width: 100%">
         {if $type=='invoice'}
             <tbody>
             <tr data-field='pro_mode' class="button pdf_option" onclick="check_field_value(this)">
@@ -165,7 +169,7 @@
                     {t}Layout{/t}
                 </td>
             </tr>
-            <tr colspan="2">
+            <tr>
                 <td class="options set_ups" data-type="set_up">
                     <span onclick="select_option_from_asset_labels(this)" data-value="single" class="option single {if $labels_data.unit.set_up=='single'}selected{/if} ">{t}Single{/t}</span>
 
@@ -238,7 +242,7 @@
                     {t}Layout{/t}
                 </td>
             </tr>
-            <tr colspan="2">
+            <tr>
                 <td class="options set_ups" data-type="set_up">
                     <span onclick="select_option_from_asset_labels(this)" data-value="single" class="option single {if $labels_data.sko.set_up=='single'}selected{/if} ">{t}Single{/t}</span>
 
@@ -297,7 +301,7 @@
                     {t}Layout{/t}
                 </td>
             </tr>
-            <tr colspan="2">
+            <tr>
                 <td class="options set_ups" data-type="set_up">
                     <span onclick="select_option_from_asset_labels(this)" data-value="single" class="option single {if $labels_data.carton.set_up=='single'}selected{/if} ">{t}Single{/t}</span>
 
@@ -310,13 +314,77 @@
 
             </tr>
             </tbody>
-        {/if}
-        <tr class="download_button">
-            <td>
-                <img class="button" onclick="download_pdf(this.closest('.pdf_asset_dialog'))" style="" src="/art/pdf.gif">
+
+        {elseif $type=='pallet'}
+            <tbody>
+        <tr>
+            <td colspan=2 style="border-bottom: 1px solid #ccc;padding-top:10px">
+                <i class="fal fa-pallet-alt"></i> {t}Size{/t} (mm)
+            </td>
+        </tr>
+        <tr>
+            <td class="options sizes " data-type="size" colspan="2">
+                <span onclick="select_option_from_asset_labels(this)" data-value="EU30036" class="option {if $labels_data.pallet.size=='EU30036'}selected{/if}">105 x 74</span>
+                <span onclick="select_option_from_asset_labels(this)" data-value="A4" class="option {if $labels_data.pallet.size=='A4'}selected{/if}">A4</span>
 
             </td>
-            {if $type=='unit' or $type=='sko' or $type=='carton' }
+        </tr>
+        <tr>
+            <td colspan=2 style="border-bottom: 1px solid #ccc;padding-top:10px">
+                {t}Layout{/t}
+            </td>
+        </tr>
+        <tr>
+            <td class="options set_ups" data-type="set_up">
+                <span onclick="select_option_from_asset_labels(this)" data-value="single" class="option single {if $labels_data.pallet.set_up=='single'}selected{/if} ">{t}Single{/t}</span>
+
+
+                <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
+                      class="option {if $labels_data.pallet.size!='EU30036'}hide{/if}  {if $labels_data.pallet.set_up!='single'}selected{/if} option sheet EU30036">A4 <b>8</b> {t}labels{/t} (EU30036)</span>
+
+            </td>
+
+        </tr>
+        </tbody>
+        {elseif $type=='box'}
+            <tbody>
+            <tr>
+                <td colspan=2 style="border-bottom: 1px solid #ccc;padding-top:10px">
+                    <i class="fal fa-box-alt"></i> {t}Size{/t} (mm)
+                </td>
+            </tr>
+            <tr>
+                <td class="options sizes " data-type="size" colspan="2">
+                    <span onclick="select_option_from_asset_labels(this)" data-value="EU30036" class="option {if $labels_data.box.size=='EU30036'}selected{/if}">105 x 74</span>
+                    <span onclick="select_option_from_asset_labels(this)" data-value="A4" class="option {if $labels_data.box.size=='A4'}selected{/if}">A4</span>
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 style="border-bottom: 1px solid #ccc;padding-top:10px">
+                    {t}Layout{/t}
+                </td>
+            </tr>
+            <tr>
+                <td class="options set_ups" data-type="set_up">
+                    <span onclick="select_option_from_asset_labels(this)" data-value="single" class="option single {if $labels_data.box.set_up=='single'}selected{/if} ">{t}Single{/t}</span>
+
+
+                    <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
+                          class="option {if $labels_data.box.size!='EU30036'}hide{/if}  {if $labels_data.box.set_up!='single'}selected{/if} option sheet EU30036">A4 <b>8</b> {t}labels{/t} (EU30036)</span>
+
+                </td>
+
+            </tr>
+            </tbody>
+        {/if}
+        <tr style="height: 5px"><td colspan="2"></td></tr>
+        <tr class="download_button">
+            <td>
+                <img alt="{t}Download{/t}" class="button" onclick="download_pdf(this.closest('.pdf_asset_dialog'))" style="" src="/art/pdf.gif">
+
+            </td>
+            {if $type=='unit' or $type=='sko' or $type=='carton' or $type=='pallet'  or $type=='box' }
                 <td class="save  " style="padding-top: 20px;padding-right: 5px">
                     <i onclick="save_pdf_asset_label_options(this)" class="fa fa-cloud">
                 </td>
