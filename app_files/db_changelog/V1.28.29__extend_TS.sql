@@ -1,0 +1,4 @@
+ALTER TABLE `Timeseries Record Dimension` ADD `Timeseries Record Integer D` MEDIUMINT NULL DEFAULT NULL AFTER `Timeseries Record Integer C`, ADD `Timeseries Record Integer E` MEDIUMINT NULL DEFAULT NULL AFTER `Timeseries Record Integer D`, ADD `Timeseries Record Integer F` MEDIUMINT NULL DEFAULT NULL AFTER `Timeseries Record Integer E`, ADD `Timeseries Record Integer G` MEDIUMINT NULL DEFAULT NULL AFTER `Timeseries Record Integer F`, ADD `Timeseries Record Integer DH` MEDIUMINT NULL DEFAULT NULL AFTER `Timeseries Record Integer G`;
+ALTER TABLE `Timeseries Record Dimension` ADD `Timeseries Record Float E` FLOAT NULL DEFAULT NULL AFTER `Timeseries Record Float D`, ADD `Timeseries Record Float F` FLOAT NULL DEFAULT NULL AFTER `Timeseries Record Float E`, ADD `Timeseries Record Float G` FLOAT NULL DEFAULT NULL AFTER `Timeseries Record Float F`, ADD `Timeseries Record Float H` FLOAT NULL DEFAULT NULL AFTER `Timeseries Record Float G`;
+
+

@@ -2272,6 +2272,40 @@ class Account extends DB_Table {
 
     }
 
+    function get_customers_data($from_date, $to_date): array {
+
+        $customers_data = array(
+            'new_customers' => 0,
+        );
+
+
+        $parameters=[];
+        $sql          = "SELECT count(*)  AS new_customers from `Customer Dimension`  ";
+        if ($from_date) {
+            $sql          .= " and `Customer First Contacted Date`>? ";
+            $parameters[] = $from_date;
+        }
+        if ($to_date) {
+            $sql          .= " and `Customer First Contacted Date`<? ";
+            $parameters[] = $to_date;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+
+            $parameters
+
+        );
+        if ($row = $stmt->fetch()) {
+            $customers_data['new_customers'] = $row['new_customers'];
+        }
+
+
+        return $customers_data;
+
+
+    }
+
     function update_previous_years_data() {
 
         foreach (range(1, 5) as $i) {
@@ -2431,33 +2465,50 @@ class Account extends DB_Table {
             foreach ($dates as $date_frequency_period) {
                 $index++;
                 $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+                $customers_data = $this->get_customers_data($date_frequency_period['from'], $date_frequency_period['to']);
+
+
                 $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-                if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit'] != 0 or $sales_data['dc_profit'] != 0) {
+                if ($customers_data['new_customers'] > 0  or $sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit'] != 0 or $sales_data['dc_profit'] != 0) {
 
                     list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
 
-                    $sql = sprintf(
-                        'UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Integer C`=%d ,`Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,`Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
-                        $sales_data['invoices'], $sales_data['refunds'], $sales_data['customers'], $sales_data['amount'], $sales_data['dc_amount'], $sales_data['profit'], $sales_data['dc_profit'], prepare_mysql('Data'), $timeseries_record_key
+                    $sql = "UPDATE `Timeseries Record Dimension` SET
+                    `Timeseries Record Integer A`=? ,`Timeseries Record Integer B`=? ,`Timeseries Record Integer C`=? ,`Timeseries Record Integer D`=? ,`Timeseries Record Float A`=? ,  `Timeseries Record Float B`=? ,`Timeseries Record Float C`=? ,`Timeseries Record Float D`=? ,`Timeseries Record Type`=?
+                    WHERE `Timeseries Record Key`=?
+                    ";
 
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $sales_data['invoices'],
+                            $sales_data['refunds'],
+                            $sales_data['customers'],
+                            $customers_data['new_customers'],
+                            $sales_data['amount'],
+                            $sales_data['dc_amount'],
+                            $sales_data['profit'],
+                            $sales_data['dc_profit'],
+                            'Data',
+                            $timeseries_record_key
+
+                        )
                     );
 
 
-                    //  print "$sql\n";
-
-                    $update_sql = $this->db->prepare($sql);
-                    $update_sql->execute();
-                    if ($update_sql->rowCount() or $date == date('Y-m-d')) {
-                        $timeseries->update(
-                            array(
-                                'Timeseries Updated' => gmdate(
-                                    'Y-m-d H:i:s'
-                                )
-                            ), 'no_history'
+                    if ($stmt->rowCount() or $date == gmdate('Y-m-d')) {
+                        $timeseries->fast_update(
+                            [
+                                'Timeseries Updated' => gmdate('Y-m-d H:i:s')
+                            ]
                         );
                     }
+
+
+
 
 
                 } else {

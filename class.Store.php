@@ -283,7 +283,7 @@ class Store extends DB_Table {
             $account->editor = $this->editor;
 
 
-            $customer_root_category=$account->create_category(
+            $customer_root_category = $account->create_category(
                 [
                     'Category Code'      => 'Cust_.'.$this->get('Store Code'),
                     'Category Label'     => 'Cust_.'.$this->get('Store Code'),
@@ -1214,30 +1214,47 @@ class Store extends DB_Table {
             $index = 0;
             foreach ($dates as $date_frequency_period) {
                 $index++;
-                $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
-                $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
+                $sales_data     = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+                $customers_data = $this->get_customers_data($date_frequency_period['from'], $date_frequency_period['to']);
+
+                $_date = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-                if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit'] != 0 or $sales_data['dc_profit'] != 0) {
+                if ($customers_data['new_customers'] > 0 or $sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 or $sales_data['customers'] > 0 or $sales_data['amount'] != 0 or $sales_data['dc_amount'] != 0 or $sales_data['profit'] != 0 or $sales_data['dc_profit']
+                    != 0) {
 
                     list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
 
-                    $sql = sprintf(
-                        'UPDATE `Timeseries Record Dimension` SET `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,`Timeseries Record Integer C`=%d ,`Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,`Timeseries Record Float D`=%f ,`Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d',
-                        $sales_data['invoices'], $sales_data['refunds'], $sales_data['customers'], $sales_data['amount'], $sales_data['dc_amount'], $sales_data['profit'], $sales_data['dc_profit'], prepare_mysql('Data'), $timeseries_record_key
 
+                    $sql = "UPDATE `Timeseries Record Dimension` SET
+                    `Timeseries Record Integer A`=? ,`Timeseries Record Integer B`=? ,`Timeseries Record Integer C`=? ,`Timeseries Record Integer D`=? ,`Timeseries Record Float A`=? ,  `Timeseries Record Float B`=? ,`Timeseries Record Float C`=? ,`Timeseries Record Float D`=? ,`Timeseries Record Type`=?
+                    WHERE `Timeseries Record Key`=?
+                    ";
+
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $sales_data['invoices'],
+                            $sales_data['refunds'],
+                            $sales_data['customers'],
+                            $customers_data['new_customers'],
+                            $sales_data['amount'],
+                            $sales_data['dc_amount'],
+                            $sales_data['profit'],
+                            $sales_data['dc_profit'],
+                            'Data',
+                            $timeseries_record_key
+
+                        )
                     );
 
 
-                    $update_sql = $this->db->prepare($sql);
-                    $update_sql->execute();
-                    if ($update_sql->rowCount() or $date == date('Y-m-d')) {
-                        $timeseries->update(
-                            array(
-                                'Timeseries Updated' => gmdate(
-                                    'Y-m-d H:i:s'
-                                )
-                            ), 'no_history'
+                    if ($stmt->rowCount() or $date == gmdate('Y-m-d')) {
+                        $timeseries->fast_update(
+                            [
+                                'Timeseries Updated' => gmdate('Y-m-d H:i:s')
+                            ]
                         );
                     }
 
@@ -1304,7 +1321,7 @@ class Store extends DB_Table {
 
     }
 
-    function get_sales_data($from_date, $to_date) {
+    function get_sales_data($from_date, $to_date): array {
 
         $sales_data = array(
             'discount_amount'    => 0,
@@ -1324,8 +1341,8 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(DISTINCT `Invoice Customer Key`)  AS customers,sum(if(`Invoice Type`='Invoice',1,0))  AS invoices, sum(if(`Invoice Type`='Refund',1,0))  AS refunds,sum(`Invoice Items Discount Amount`) AS discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) AS profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) AS dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) AS dc_profit FROM `Invoice Dimension` WHERE `Invoice Store Key`=%d %s %s",
-            $this->id, ($from_date ? sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+            "SELECT count(DISTINCT `Invoice Customer Key`)  AS customers,sum(if(`Invoice Type`='Invoice',1,0))  AS invoices, sum(if(`Invoice Type`='Refund',1,0))  AS refunds,sum(`Invoice Items Discount Amount`) AS discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) AS profit ,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) AS dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) AS dc_profit 
+            FROM `Invoice Dimension` WHERE `Invoice Store Key`=%d %s %s", $this->id, ($from_date ? sprintf('and `Invoice Date`>%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
         );
 
@@ -1342,9 +1359,6 @@ class Store extends DB_Table {
                 $sales_data['customers']          = $row['customers'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -1385,9 +1399,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -1402,13 +1413,44 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
         return $sales_data;
+
+
+    }
+
+    function get_customers_data($from_date, $to_date): array {
+
+        $customers_data = array(
+            'new_customers' => 0,
+        );
+
+
+        $parameters[] = $this->id;
+        $sql          = "SELECT count(*)  AS new_customers from `Customer Dimension` where `Customer Store Key`=? ";
+        if ($from_date) {
+            $sql          .= " and `Customer First Contacted Date`>? ";
+            $parameters[] = $from_date;
+        }
+        if ($to_date) {
+            $sql          .= " and `Customer First Contacted Date`<? ";
+            $parameters[] = $to_date;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+
+            $parameters
+
+        );
+        if ($row = $stmt->fetch()) {
+            $customers_data['new_customers'] = $row['new_customers'];
+        }
+
+
+        return $customers_data;
 
 
     }

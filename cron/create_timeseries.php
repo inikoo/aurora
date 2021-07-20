@@ -31,14 +31,15 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$timeseries=get_time_series_config();
+$timeseries = get_time_series_config();
 
 //families();
 //part_families();
 //suppliers();
-//stores();
+account();
+stores();
 
-warehouses();
+//warehouses();
 
 function warehouses() {
 
@@ -56,7 +57,7 @@ function warehouses() {
 
             foreach ($timeseries_data as $time_series_data) {
 
-                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $editor['Date']             = gmdate('Y-m-d H:i:s');
                 $time_series_data['editor'] = $editor;
                 $warehouse->create_timeseries($time_series_data);
 
@@ -87,7 +88,7 @@ function suppliers() {
 
             foreach ($timeseries_data as $time_series_data) {
 
-                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $editor['Date']             = gmdate('Y-m-d H:i:s');
                 $time_series_data['editor'] = $editor;
                 $supplier->create_timeseries($time_series_data);
 
@@ -121,8 +122,7 @@ function families() {
 
             if (!array_key_exists(
                 $category->get('Category Scope').'Category', $timeseries
-            )
-            ) {
+            )) {
                 continue;
             }
 
@@ -131,17 +131,13 @@ function families() {
 
             foreach ($timeseries_data as $time_series_data) {
 
-                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $editor['Date']             = gmdate('Y-m-d H:i:s');
                 $time_series_data['editor'] = $editor;
                 $category->create_timeseries($time_series_data);
 
             }
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
     }
 }
 
@@ -149,7 +145,7 @@ function families() {
 function stores() {
 
     global $db, $editor, $timeseries;
-    $sql = sprintf('SELECT `Store Key` FROM `Store Dimension` ');
+    $sql = 'SELECT `Store Key` FROM `Store Dimension`  ';
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -160,17 +156,42 @@ function stores() {
 
             foreach ($timeseries_data as $time_series_data) {
 
-                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $editor['Date']             = gmdate('Y-m-d H:i:s');
                 $time_series_data['editor'] = $editor;
+
+
+                print "Store ".$store->get('Code').' '.$time_series_data['Timeseries Frequency']."\n";
+
+
                 $store->create_timeseries($time_series_data);
 
             }
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
+
+}
+
+function account() {
+
+    global  $editor, $timeseries;
+    $account = get_object('Account', 1);
+
+    $timeseries_data = $timeseries['Account'];
+
+    foreach ($timeseries_data as $time_series_data) {
+
+        $editor['Date']             = gmdate('Y-m-d H:i:s');
+        $time_series_data['editor'] = $editor;
+
+
+        print "Account ".$time_series_data['Timeseries Frequency']."\n";
+
+
+        $account->create_timeseries($time_series_data);
+
+    }
+
 
 }
 
@@ -182,7 +203,7 @@ function part_families() {
     $sql = sprintf(
         'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" AND `Category Key`=27832  '
     );
-     $sql=sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
+    $sql = sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -192,8 +213,7 @@ function part_families() {
 
             if (!array_key_exists(
                 $category->get('Category Scope').'Category', $timeseries
-            )
-            ) {
+            )) {
                 continue;
             }
 
@@ -201,7 +221,7 @@ function part_families() {
             print "creating ".$category->id." ".$category->get('Code')." category \n";
             foreach ($timeseries_data as $time_series_data) {
 
-                $editor['Date']           = gmdate('Y-m-d H:i:s');
+                $editor['Date']             = gmdate('Y-m-d H:i:s');
                 $time_series_data['editor'] = $editor;
 
 
@@ -219,5 +239,3 @@ function part_families() {
 
 }
 
-
-?>

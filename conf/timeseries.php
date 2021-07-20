@@ -9,9 +9,9 @@
 
 */
 
-function get_time_series_config() {
+function get_time_series_config(): array {
 
-    $time_series = array(
+    return array(
         'Account' => array(
             array(
                 'Timeseries Type'      => 'AccountSales',
@@ -49,6 +49,7 @@ function get_time_series_config() {
 
         ),
         'Store' => array(
+
             array(
                 'Timeseries Type'      => 'StoreSales',
                 'Timeseries Frequency' => 'Daily',
@@ -73,6 +74,7 @@ function get_time_series_config() {
                 'Timeseries Scope'     => 'Sales',
                 'Timeseries Parent'    => 'Store',
             ),
+
             array(
                 'Timeseries Type'      => 'StoreSales',
                 'Timeseries Frequency' => 'Yearly',
@@ -275,8 +277,6 @@ function get_time_series_config() {
         ),
 
     );
-
-    return $time_series;
 
 }
 
