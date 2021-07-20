@@ -684,7 +684,13 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                     'icon'      => '',
                     'reference' => ''
                 );
-            } elseif ($state['section'] == 'email_communications') {
+            } elseif ($state['section'] == 'insights') {
+                $branch[] = array(
+                    'label'     => _('Customer insights (All stores)'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+            }elseif ($state['section'] == 'email_communications') {
                 $branch[] = array(
                     'label'     => _('Customer notifications (All stores)'),
                     'icon'      => '',

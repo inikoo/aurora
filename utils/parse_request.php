@@ -2087,6 +2087,8 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                     if (isset($view_path[0])) {
                         if ($view_path[0] == 'email_communications') {
                             $section = 'email_communications';
+                        }if ($view_path[0] == 'insights') {
+                            $section = 'insights';
                         }
                     }
 

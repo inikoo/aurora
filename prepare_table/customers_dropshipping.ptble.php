@@ -173,7 +173,7 @@ if ($order == 'name') {
 }elseif ($order == 'total_payments') {
     $order = '`Customer Payments Amount`';
 } elseif ($order == 'total_invoiced_amount') {
-    $order = '`Customer Invoiced Amount`';
+    $order = '`Customer Sales Amount`';
 } elseif ($order == 'total_invoiced_net_amount') {
     $order = '`Customer Invoiced Net Amount`';
 
@@ -217,7 +217,7 @@ $sql_totals = "select count(Distinct `Customer Key`) as num from $table  $where 
 
 $fields = ' `Customer Key`,`Customer Name`,`Customer Orders`,`Customer Number Invoices`,`Customer First Contacted Date`,`Customer Billing Address Link`,`Customer Invoice Address Formatted`,
 `Customer Type by Activity`,`Customer Store Key`,`Customer Company Name`,`Customer Main Contact Name`,`Customer Location`,`Customer Main Plain Email`,`Customer Main XHTML Telephone`,
-`Customer Main XHTML Mobile`,`Customer Payments Amount`,`Customer Invoiced Amount`,`Customer Last Invoiced Order Date`,`Customer Invoiced Net Amount`,`Customer Number Clients`,
+`Customer Main XHTML Mobile`,`Customer Payments Amount`,`Customer Sales Amount`,`Customer Last Invoiced Order Date`,`Customer Invoiced Net Amount`,`Customer Number Clients`,
 `Customer Contact Address Formatted`,`Customer Number Products in Portfolio`,`Customer Last Order Date`
 
 

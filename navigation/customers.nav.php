@@ -433,9 +433,8 @@ function get_customers_category_navigation($data, $smarty, $user, $db) {
     }
 
 
-
     $title = ' <span class="Category_Label">'.$data['_object']->get('Label').'</span>';
-    $title .= '<span class="Category_Code_Container '.($data['_object']->get('Label')==$data['_object']->get('Code')?'hide':'').' ">(<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)</span>';
+    $title .= '<span class="Category_Code_Container '.($data['_object']->get('Label') == $data['_object']->get('Code') ? 'hide' : '').' ">(<span class="Category_Code id">'.$data['_object']->get('Code').'</span>)</span>';
 
 
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
@@ -765,7 +764,7 @@ function get_customers_insights_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_customers_server_navigation($data, $smarty, $user, $db) {
+function get_customers_server_navigation($data, $smarty): array {
 
 
     require_once 'class.Store.php';
@@ -782,10 +781,14 @@ function get_customers_server_navigation($data, $smarty, $user, $db) {
     $left_buttons = array();
 
     if ($data['section'] == 'customers') {
-        $title = _('Customers (All stores)');
+        $title = _('Customers');
+    } elseif ($data['section'] == 'insights') {
+        $title = _('Customers insights');
     } else {
-        $title = _('Pending orders (All stores)');
+        $title = _('Pending orders');
     }
+
+    $title.=" <small class='padding_left_10'>"._('All stores')."</small>";
 
     $right_buttons = array();
     $sections      = get_sections('customers_server');
@@ -1182,7 +1185,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
         $_section = 'customers';
 
     }
-
 
 
     if (!($store->get('Store Type') == 'External' or $store->get('Store Type') == 'Dropshipping')) {
@@ -3755,14 +3757,12 @@ function get_new_customer_attachment_navigation($data, $smarty): array {
 
 }
 
-function get_customer_attachment_navigation($data, $smarty,$user, $db, $account): array {
-
-
+function get_customer_attachment_navigation($data, $smarty, $user, $db, $account): array {
 
 
     $sections = get_sections($data['module'], $data['_parent']->get('Store Key'));
 
-    $tab = 'customer.attachments';
+    $tab  = 'customer.attachments';
     $link = 'customers/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id;
 
     $up_button = array(
@@ -3771,7 +3771,6 @@ function get_customer_attachment_navigation($data, $smarty,$user, $db, $account)
         'reference' => $link,
         'parent'    => ''
     );
-
 
 
     include_once 'prepare_table/attachments.ptc.php';

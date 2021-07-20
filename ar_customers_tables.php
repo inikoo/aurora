@@ -15,6 +15,9 @@ require_once 'class.Store.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/object_functions.php';
+/** @var \User $user */
+/** @var \PDO $db */
+/** @var \Account $account */
 
 
 if (!$user->can_view('customers')) {
@@ -67,7 +70,7 @@ switch ($tipo) {
         sub_categories(get_table_parameters(), $db, $user);
         break;
     case 'customers_geographic_distribution':
-        customers_geographic_distribution(get_table_parameters(), $db, $user);
+        customers_geographic_distribution(get_table_parameters(), $db, $user,$account);
         break;
     case 'poll_queries':
         poll_queries(get_table_parameters(), $db, $user);
@@ -273,8 +276,8 @@ function customers($_data, $db, $user) {
                 'other_value' => $category_other_value,
 
                 'total_payments'            => money($data['Customer Payments Amount'], $currency),
-                'total_invoiced_amount'     => money($data['Customer Invoiced Amount'], $currency),
-                'total_invoiced_net_amount' => money($data['Customer Invoiced Net Amount'], $currency),
+                'total_invoiced_amount'     => money($data['Customer Sales Amount'], $currency),
+                'total_sales' => money($data['Customer Sales Amount'], $currency),
 
 
                 'top_orders'       => percentage(
@@ -448,8 +451,7 @@ function customers_dropshipping($_data, $db, $user) {
                 'other_value' => $category_other_value,
 
                 'total_payments'            => money($data['Customer Payments Amount'], $currency),
-                'total_invoiced_amount'     => money($data['Customer Invoiced Amount'], $currency),
-                'total_invoiced_net_amount' => money($data['Customer Invoiced Net Amount'], $currency),
+                'total_sales' => money($data['Customer Sales Amount'], $currency),
 
 
                 'address'         => $data['Customer Contact Address Formatted'],
@@ -872,85 +874,12 @@ function customers_server($_data, $db, $user) {
 }
 
 
-function customers_geographic_distribution($_data, $db, $user) {
-
-
-    $rtext_label = 'country';
-
-
-    if ($_data['parameters']['parent'] == 'store') {
-        $store           = get_object('Store', $_data['parameters']['parent_key']);
-        $total_customers = $store->get('Store Contacts');
-        $total_sales     = $store->get('Store Total Acc Invoiced Amount');
-
-        $currency = $store->get('Store Currency Code');
-    } else {
-        exit('ar_customers_tables, todo E:1234a');
-    }
-
-
-    include_once 'prepare_table/init.php';
-    /**
-     * @var string $fields
-     * @var string $table
-     * @var string $where
-     * @var string $wheref
-     * @var string $group_by
-     * @var string $order
-     * @var string $order_direction
-     * @var string $start_from
-     * @var string $number_results
-     * @var string $rtext
-     * @var string $_order
-     * @var string $_dir
-     * @var string $total
-     */
-
-    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-
-
-    $table_data = array();
-
-    if ($result = $db->query($sql)) {
-
-        foreach ($result as $data) {
-
-
-            $table_data[] = array(
-                'id'      => (integer)$data['Country Key'],
-                'country' => $data['Country Name'],
-                'flag'    => sprintf('<img alt="%s" title="%s" src="/art/flags/%s.png"/>', $data['Country 2 Alpha Code'], $data['Country 2 Alpha Code'].' '.$data['Country Name'], strtolower($data['Country 2 Alpha Code'])),
-
-                'customers'            => number($data['customers']),
-                'customers_percentage' => percentage($data['customers'], $total_customers),
-                'invoices'             => number($data['invoices']),
-                'sales'                => money($data['sales'], $currency),
-                'sales_percentage'     => percentage($data['sales'], $total_sales),
-                'sales_per_customer'   => money($data['sales_per_registration'], $currency),
-
-
-            );
-        }
-
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $table_data,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
+function customers_geographic_distribution($_data, $db, $user, $account) {
+    include_once 'prepare_table/customers_geographic_distribution.ptc.php';
+    $table=new prepare_table_customers_geographic_distribution($db,$account,$user);
+    echo $table->fetch($_data);
 }
+
 
 
 function abandoned_cart_mail_list($_data, $db, $user) {

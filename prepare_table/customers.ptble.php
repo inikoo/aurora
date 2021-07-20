@@ -329,9 +329,9 @@ if ($order == 'name') {
 }elseif ($order == 'total_payments') {
     $order = '`Customer Payments Amount`';
 } elseif ($order == 'total_invoiced_amount') {
-    $order = '`Customer Invoiced Amount`';
-} elseif ($order == 'total_invoiced_net_amount') {
-    $order = '`Customer Invoiced Net Amount`';
+    $order = '`Customer Sales Amount`';
+} elseif ($order == 'total_sales') {
+    $order = '`Customer Sales Amount`';
 
 } elseif ($order == 'customer_balance') {
     $order = '`Customer Account Balance`';

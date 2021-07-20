@@ -381,9 +381,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             switch ($data['section']) {
                 case ('customers'):
                 case('pending_orders'):
-                    return get_customers_server_navigation(
-                        $data, $smarty, $user, $db
-                    );
+                case('insights'):
+                    return get_customers_server_navigation($data, $smarty);
+
 
 
             }

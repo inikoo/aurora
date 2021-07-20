@@ -179,23 +179,14 @@ events: {
 "dblclick": "enterEditMode"
 }
 })
-}, {
-name: "total_invoiced_amount",
-label: "{t}Invoiced{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='total_invoiced_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
 },
 {
-name: "total_invoiced_net_amount",
-label: "{t}Invoiced Net{/t}",
+name: "total_sales",
+label: "{t}Sales{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='total_invoiced_net_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='total_sales'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
@@ -235,8 +226,7 @@ grid.columns.findWhere({ name: 'email'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'mobile'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'telephone'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'total_payments'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'total_invoiced_amount'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'total_sales'} ).set("renderable", false)
 
 
 
@@ -251,7 +241,7 @@ grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'total_sales'} ).set("renderable", true)
 {if !empty($show_customer_clients)}
     grid.columns.findWhere({ name: 'clients'} ).set("renderable", true)
 {/if}
@@ -271,8 +261,7 @@ grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'total_payments'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'total_invoiced_amount'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'total_sales'} ).set("renderable", true)
 
 }
 

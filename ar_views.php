@@ -999,7 +999,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     } else {
 
-
         $response['object_showcase'] = '_';
         switch ($state['module']) {
 
@@ -1111,9 +1110,12 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 }
 
                 break;
-            case 'customers_server ':
-                switch ($state['section']) {
+            case 'customers_server':
 
+                switch ($state['section']) {
+                    case 'insights':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-graduation-cap"></i> '._('Customers insights (All stores)'));
+                        break;
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> '._('Customers (All stores)'));
 
@@ -1482,7 +1484,6 @@ function get_tab($redis, $db, $smarty, $user, $account, $tab, $subtab, $state = 
 }
 
 
-
 function get_menu($data, $user, $smarty, $db, $account) {
 
     include_once 'navigation/menu.php';
@@ -1492,9 +1493,6 @@ function get_menu($data, $user, $smarty, $db, $account) {
 
 
 }
-
-
-
 
 
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {

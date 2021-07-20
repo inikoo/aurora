@@ -2768,7 +2768,7 @@ class Customer extends Subject {
             'Customer Order Interval STD' => $order_interval_std,
             'Customer With Orders'        => $customer_with_orders,
             'Customer Payments Amount'    => $payments,
-            //'Customer Sales Amount'              => $invoiced_amount,
+            //'Customer Sales Amount'              => $sales_amount,
             //'Customer Total Sales Amount'        => $invoiced_net_amount,
 
 
@@ -2779,16 +2779,16 @@ class Customer extends Subject {
 
     }
 
+
     public function update_invoices() {
 
 
-        $first_invoiced_date  = '';
-        $last_invoiced_date   = '';
-        $invoice_interval     = '';
-        $invoice_interval_std = '';
+        $first_invoiced_date = '';
+        $last_invoiced_date  = '';
 
 
-        $invoiced_amount     = 0;
+        $sales_amount     = 0;
+        $sales_dc_amount=0;
         $invoiced_net_amount = 0;
         $refunded_net_amount = 0;
 
@@ -2796,27 +2796,23 @@ class Customer extends Subject {
         $customer_refunds  = 0;
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num ,
+        $sql = "SELECT count(*) AS num ,
 		min(`Invoice Date`) AS first_invoiced_date ,
 		max(`Invoice Date`) AS last_invoiced_date,
         sum(`Invoice Total Net Amount`) AS net 
-		
-		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
+		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $customer_invoices   = $row['num'];
-                $invoiced_net_amount = $row['net'];
-                $first_invoiced_date = $row['first_invoiced_date'];
-                $last_invoiced_date  = $row['last_invoiced_date'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        while ($row = $stmt->fetch()) {
+            $customer_invoices   = $row['num'];
+            $invoiced_net_amount = $row['net'];
+            $first_invoiced_date = $row['first_invoiced_date'];
+            $last_invoiced_date  = $row['last_invoiced_date'];
         }
 
 
@@ -2827,72 +2823,35 @@ class Customer extends Subject {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                // $invoiced_amount     = $row['total'];
                 $customer_refunds    = $row['num'];
                 $refunded_net_amount = $row['net'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
         $sql = sprintf(
-            "SELECT sum(`Invoice Total Amount`) AS amount FROM `Invoice Dimension` WHERE  `Invoice Customer Key`=%d  ", $this->id
+            "SELECT sum(`Invoice Total Net Amount`) AS amount , sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) AS dc_amount
+ FROM `Invoice Dimension` WHERE  `Invoice Customer Key`=%d  ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $invoiced_amount = $row['amount'];
+                $sales_amount = $row['amount'];
+                $sales_dc_amount = $row['dc_amount'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
-        /*
-                if ($customer_invoices > 1) {
-                    $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
-                    $last_order = false;
-                    $last_date  = false;
-                    $intervals  = array();
 
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-                            $this_date = gmdate('U', strtotime($row['date']));
-                            if ($last_order) {
-                                $intervals[] = ($this_date - $last_date);
-                            }
-
-                            $last_date  = $this_date;
-                            $last_order = true;
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                    $invoice_interval     = average($intervals);
-                    $invoice_interval_std = deviation($intervals);
-
-                }
-
-        */
         $update_data = array(
-            //'Customer Number Invoices'           => $orders_invoiced,
             'Customer First Invoiced Order Date' => $first_invoiced_date,
             'Customer Last Invoiced Order Date'  => $last_invoiced_date,
-            // 'Customer Order Interval'            => $invoice_interval,
-            // 'Customer Order Interval STD'        => $invoice_interval_std,
-            'Customer Invoiced Amount'           => $invoiced_amount,
+
+            'Customer Sales Amount' => $sales_amount,
+            'Customer Sales DC Amount' => $sales_dc_amount,
+
 
             'Customer Invoiced Net Amount' => $invoiced_net_amount,
             'Customer Refunded Net Amount' => $refunded_net_amount,
@@ -2921,20 +2880,12 @@ class Customer extends Subject {
                             $prospect->update_status('Invoiced', $first_invoice);
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
                 }
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 

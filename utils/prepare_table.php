@@ -247,11 +247,10 @@ class prepare_table {
         $this->filtered      = 0;
         $this->total_records = 0;
         $this->total         = 0;
-
         if ($this->sql_totals) {
             $this->total = 0;
-            $sql         = trim($this->sql_totals." $this->wheref");
 
+            $sql         = trim($this->sql_totals." $this->wheref");
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $this->total = $row['num'];

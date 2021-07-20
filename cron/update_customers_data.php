@@ -13,6 +13,7 @@
 require_once 'common.php';
 
 require_once 'class.Customer.php';
+/** @var PDO $db */
 
 
 $editor = array(
@@ -37,18 +38,13 @@ if ($result = $db->query($sql)) {
     } else {
         $total = 0;
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 
 $lap_time0 = date('U');
 $contador  = 0;
 
 
-$sql = sprintf(
-    "select `Customer Key` from `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  $where order by `Customer Key` desc "
-);
+$sql = "select `Customer Key` from `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  $where order by `Customer Key` desc ";
 
 
 if ($result = $db->query($sql)) {
@@ -60,7 +56,7 @@ if ($result = $db->query($sql)) {
         $customer->update_activity();
 
         $customer->update_portfolio();
-
+        $customer->update_invoices();
        // $customer->update_last_dispatched_order_key();
         //$customer->update_invoices();
         //$customer->update_payments();
@@ -79,13 +75,10 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 
 
-$sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+$sql = "SELECT `Store Key` FROM `Store Dimension`";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $store = get_object('Store', $row['Store Key']);

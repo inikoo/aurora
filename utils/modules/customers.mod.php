@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-function get_customers_module() {
+function get_customers_module(): array {
     return array(
         'section'     => 'customers',
         'parent'      => 'store',

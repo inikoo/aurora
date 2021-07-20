@@ -1,0 +1,1 @@
+ALTER TABLE `Customer Dimension` CHANGE `Customer Invoiced Amount` `Customer Sales Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00', CHANGE `Customer Invoiced DC Amount` `Customer Sales DC Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00';
