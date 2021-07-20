@@ -38,9 +38,9 @@ function get_customers_server_module(): array {
                     'customers.geo' => array(
                         'label' => _('Geographic Distribution')
                     ),
-                  //  'customers.registrations' => array(
-                  //      'label' => _('Registrations')
-                  //  ),
+                   'customers.registrations' => array(
+                       'label' => _('Registrations / Active customers')
+                    ),
 
 
                 )

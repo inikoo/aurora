@@ -2234,9 +2234,6 @@ class Account extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2280,7 +2277,7 @@ class Account extends DB_Table {
 
 
         $parameters=[];
-        $sql          = "SELECT count(*)  AS new_customers from `Customer Dimension`  ";
+        $sql          = "SELECT count(*)  AS new_customers from `Customer Dimension` where true  ";
         if ($from_date) {
             $sql          .= " and `Customer First Contacted Date`>? ";
             $parameters[] = $from_date;
@@ -2479,6 +2476,7 @@ class Account extends DB_Table {
                     `Timeseries Record Integer A`=? ,`Timeseries Record Integer B`=? ,`Timeseries Record Integer C`=? ,`Timeseries Record Integer D`=? ,`Timeseries Record Float A`=? ,  `Timeseries Record Float B`=? ,`Timeseries Record Float C`=? ,`Timeseries Record Float D`=? ,`Timeseries Record Type`=?
                     WHERE `Timeseries Record Key`=?
                     ";
+
 
 
                     $stmt = $this->db->prepare($sql);

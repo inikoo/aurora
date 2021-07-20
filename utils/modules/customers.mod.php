@@ -132,24 +132,10 @@ function get_customers_module(): array {
                     'customers.geo'          => array(
                         'label' => _('Geographic Distribution')
                     ),
-                    /*
-                    'contacts'       => array(
-                        'label' => _('Contacts')
-                    ),
-                    'customers'      => array(
-                        'label' => _('Customers')
-                    ),
-                    'orders'         => array(
-                        'label' => _('Orders')
-                    ),
-                    'data_integrity' => array(
-                        'label' => _('Data Integrity')
+                    'customers.registrations' => array(
+                        'label' => _('Registrations / Active customers')
                     ),
 
-                    'correlations'   => array(
-                        'label' => _('Correlations')
-                    ),
-                    */
 
                 )
 

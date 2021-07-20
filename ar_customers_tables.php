@@ -70,7 +70,7 @@ switch ($tipo) {
         sub_categories(get_table_parameters(), $db, $user);
         break;
     case 'customers_geographic_distribution':
-        customers_geographic_distribution(get_table_parameters(), $db, $user,$account);
+        customers_geographic_distribution(get_table_parameters(), $db, $user, $account);
         break;
     case 'poll_queries':
         poll_queries(get_table_parameters(), $db, $user);
@@ -108,14 +108,16 @@ switch ($tipo) {
     case 'customer_portfolio':
         customer_portfolio(get_table_parameters(), $db, $user);
         break;
+    case 'customers_registrations':
+        customers_registrations(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
             'resp'  => 'Tipo not found '.$tipo
         );
         echo json_encode($response);
-        exit;
-        break;
+
 }
 
 
@@ -223,7 +225,6 @@ function customers($_data, $db, $user) {
             }
 
 
-
             if ($parameters['parent'] == 'store') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
@@ -240,9 +241,9 @@ function customers($_data, $db, $user) {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $campaign->get('Deal Campaign Store Key'), $data['Customer Key'], $data['Customer Key']);
 
-            }elseif ($parameters['parent'] == 'category') {
+            } elseif ($parameters['parent'] == 'category') {
                 $link_format  = '/customers/%d/category/%d/%d/customer/%s';
-                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>',$parameters['store_key'],$parameters['grandparent_key'],$parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['store_key'], $parameters['grandparent_key'], $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
             } else {
                 $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
@@ -275,9 +276,9 @@ function customers($_data, $db, $user) {
 
                 'other_value' => $category_other_value,
 
-                'total_payments'            => money($data['Customer Payments Amount'], $currency),
-                'total_invoiced_amount'     => money($data['Customer Sales Amount'], $currency),
-                'total_sales' => money($data['Customer Sales Amount'], $currency),
+                'total_payments'        => money($data['Customer Payments Amount'], $currency),
+                'total_invoiced_amount' => money($data['Customer Sales Amount'], $currency),
+                'total_sales'           => money($data['Customer Sales Amount'], $currency),
 
 
                 'top_orders'       => percentage(
@@ -292,13 +293,12 @@ function customers($_data, $db, $user) {
                 'billing_address'  => $billing_address,
                 'delivery_address' => $delivery_address,
 
-                'activity'      => $activity,
-                'logins'        => number($data['Customer Number Web Logins']),
-                'failed_logins' => number($data['Customer Number Web Failed Logins']),
-                'requests'      => number($data['Customer Number Web Requests']),
-                'clients'       => number($data['Customer Number Clients']),
-                'disassociate_from_category' => sprintf('<i class="fa button fa-unlink" onclick="disassociate_category_from_table(this,%d,%d)" ></i>',$_data['parameters']['parent_key'], $data['Customer Key'])
-
+                'activity'                   => $activity,
+                'logins'                     => number($data['Customer Number Web Logins']),
+                'failed_logins'              => number($data['Customer Number Web Failed Logins']),
+                'requests'                   => number($data['Customer Number Web Requests']),
+                'clients'                    => number($data['Customer Number Clients']),
+                'disassociate_from_category' => sprintf('<i class="fa button fa-unlink" onclick="disassociate_category_from_table(this,%d,%d)" ></i>', $_data['parameters']['parent_key'], $data['Customer Key'])
 
 
             );
@@ -450,8 +450,8 @@ function customers_dropshipping($_data, $db, $user) {
 
                 'other_value' => $category_other_value,
 
-                'total_payments'            => money($data['Customer Payments Amount'], $currency),
-                'total_sales' => money($data['Customer Sales Amount'], $currency),
+                'total_payments' => money($data['Customer Payments Amount'], $currency),
+                'total_sales'    => money($data['Customer Sales Amount'], $currency),
 
 
                 'address'         => $data['Customer Contact Address Formatted'],
@@ -876,10 +876,9 @@ function customers_server($_data, $db, $user) {
 
 function customers_geographic_distribution($_data, $db, $user, $account) {
     include_once 'prepare_table/customers_geographic_distribution.ptc.php';
-    $table=new prepare_table_customers_geographic_distribution($db,$account,$user);
+    $table = new prepare_table_customers_geographic_distribution($db, $account, $user);
     echo $table->fetch($_data);
 }
-
 
 
 function abandoned_cart_mail_list($_data, $db, $user) {
@@ -2465,6 +2464,264 @@ function customer_portfolio($_data, $db, $user) {
         'resultset' => array(
             'state'         => 200,
             'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function customers_registrations($_data, $db, $user, $account) {
+
+
+    $skip_get_table_totals = true;
+
+    include_once 'prepare_table/init.php';
+    include_once 'utils/natural_language.php';
+
+
+    if ($_data['parameters']['frequency'] == 'annually') {
+        $rtext_label       = 'year';
+        $_group_by         = ' group by Year(`Date`) ';
+        $sql_totals_fields = 'Year(`Date`)';
+    } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+        $rtext_label       = 'quarter';
+        $_group_by         = '  group by YEAR(`Date`), QUARTER(`Date`) ';
+        $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y %q")';
+    } elseif ($_data['parameters']['frequency'] == 'monthly') {
+        $rtext_label       = 'month';
+        $_group_by         = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
+        $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
+    } elseif ($_data['parameters']['frequency'] == 'weekly') {
+        $rtext_label       = 'week';
+        $_group_by         = ' group by Yearweek(`Date`,3) ';
+        $sql_totals_fields = 'Yearweek(`Date`,3)';
+    } elseif ($_data['parameters']['frequency'] == 'daily') {
+        $rtext_label = 'day';
+
+        $_group_by         = ' group by Date(`Date`) ';
+        $sql_totals_fields = '`Date`';
+    }
+
+
+    switch ($_data['parameters']['parent']) {
+
+        case 'store':
+            $store = get_object('Store', $_data['parameters']['parent_key']);
+
+            $currency   = $store->get('Store Currency Code');
+            $from       = $store->get('Store Valid From');
+            $to         = ($store->get('Product State') == 'Closed' ? $store->get('Store Valid To') : gmdate('Y-m-d'));
+            $date_field = '`Timeseries Record Date`';
+
+
+            break;
+        case 'account':
+
+            $currency   = $account->get('Account Currency');
+            $from       = $account->get('Account Valid From');
+            $to         = gmdate('Y-m-d');
+            $date_field = '`Timeseries Record Date`';
+
+            break;
+        default:
+            print_r($_data);
+            exit('parent not configured');
+
+    }
+
+
+    $sql_totals = sprintf(
+        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
+
+    );
+    list($rtext, $total, $filtered) = get_table_totals($db, $sql_totals, '', $rtext_label, false);
+
+
+    $sql = sprintf(
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
+    );
+
+
+    $record_data = array();
+
+    $from_date = '';
+    $to_date   = '';
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $data) {
+
+
+            if ($to_date == '') {
+                $to_date = $data['Date'];
+            }
+            $from_date = $data['Date'];
+
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $date  = strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date = $date;
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date = $date;
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+
+
+                $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $date  = strftime(
+                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
+                );
+                $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $date  = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+                $_date = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+            }
+
+            $record_data[$_date] = array(
+                'customers'    => '<span class="very_discreet">'.number(0).'</span>',
+                'new_invoices' => '<span class="very_discreet">'.number(0).'</span>',
+
+                'date' => $date
+
+
+            );
+
+
+        }
+
+    }
+
+
+    switch ($_data['parameters']['parent']) {
+        case 'product':
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $from_date = gmdate("Y-01-01 00:00:00", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-12-31 23:59:59", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $from_date = gmdate("Y-m-01 00:00:00", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-m-01 00:00:00", strtotime($to_date.' + 1 month +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $from_date = gmdate("Y-m-d 00:00:00", strtotime($from_date.'  -1 week  +0:00'));
+                $to_date   = gmdate("Y-m-d 00:00:00", strtotime($to_date.' + 1 week +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $from_date = $from_date.' 00:00:00';
+                $to_date   = $to_date.' 23:59:59';
+            }
+            break;
+        case 'category':
+        case 'store':
+        case 'account':
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
+                $to_date   = gmdate("Y-12-31", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' + 3 month +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 year  +0:00'));
+                $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
+                $to_date   = $to_date;
+            }
+            $group_by = '';
+            break;
+        default:
+            print_r($_data);
+            exit('parent not configured');
+            break;
+    }
+
+
+    $sql = sprintf(
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+    );
+
+
+    $last_year_data = array();
+
+
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $data) {
+
+            if ($_data['parameters']['frequency'] == 'annually') {
+                $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
+            } elseif ($_data['parameters']['frequency'] == 'quarterly') {
+                $_date           = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
+            } elseif ($_data['parameters']['frequency'] == 'monthly') {
+                $_date           = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year'));
+                $date            = $_date;
+            } elseif ($_data['parameters']['frequency'] == 'weekly') {
+                $_date           = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
+                $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year'));
+                $date            = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
+            } elseif ($_data['parameters']['frequency'] == 'daily') {
+                $_date           = date('Y-m-d', strtotime($data['Date'].' +0:00'));
+                $_date_last_year = date('Y-m-d', strtotime($data['Date'].'  -1 year'));
+                $date            = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
+            }
+
+            $last_year_data[$_date] =
+                array(
+                    '_new_customers' => $data['new_customers'],
+                    '_customers_with_orders' => $data['customers_with_orders']
+
+                );
+
+
+            if (array_key_exists($_date, $record_data)) {
+
+
+                $record_data[$_date] = array(
+                    //   'sales'     => money($data['sales'], $currency),
+                    'new_customers'         => number($data['new_customers']),
+                    'customers_with_orders' => number($data['customers_with_orders']),
+
+                    // 'invoices'  => number($data['invoices']),
+                    // 'outers'    => (isset($data['outers']) ? number($data['outers']) : ''),
+                    'date'                  => $record_data[$_date]['date']
+                );
+
+
+                if (isset($last_year_data[$_date_last_year])) {
+                    $record_data[$_date]['delta_new_customers_1yb']         = '<span title="'.number($last_year_data[$_date_last_year]['_new_customers']).'">'.delta($data['new_customers'], $last_year_data[$_date_last_year]['_new_customers']).' '.delta_icon(
+                            $data['new_customers'], $last_year_data[$_date_last_year]['_new_customers']
+                        ).'</span>';
+                    $record_data[$_date]['delta_customers_with_orders_1yb'] =
+                        '<span title="'.number($last_year_data[$_date_last_year]['_customers_with_orders']).'">'.delta($data['customers_with_orders'], $last_year_data[$_date_last_year]['_customers_with_orders']).' '.delta_icon(
+                            $data['customers_with_orders'], $last_year_data[$_date_last_year]['_customers_with_orders']
+                        ).'</span>';
+                }
+
+            }
+        }
+
+    }
+
+
+    // print_r($record_data);
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => array_values($record_data),
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

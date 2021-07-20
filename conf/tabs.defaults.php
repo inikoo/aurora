@@ -114,7 +114,16 @@ function get_tab_defaults_data() {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'query'
         ),
+        'customers.registrations' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'frequency'   => 'monthly',
+            'f_field'     => '',
 
+        ),
         'poll_query.history'        => array(
             'view'          => 'overview',
             'sort_key'      => 'date',

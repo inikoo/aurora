@@ -8,6 +8,8 @@
  Version 3
 
 */
+/** @var array $state */
+/** @var \User $user */
 
 
 $tab     = 'customers.geo';
@@ -43,5 +45,3 @@ $parameters = array(
 
 include 'utils/get_table_html.php';
 
-
-?>

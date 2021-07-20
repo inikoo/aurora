@@ -679,6 +679,11 @@ function get_customers_insights_navigation($data, $smarty, $user, $db) {
             break;
     }
 
+
+
+
+    $title=_("Customer's insights").' <span class="id">'.$store->get('Store Code').'</span>';
+
     $block_view = $data['section'];
 
 
@@ -697,9 +702,6 @@ function get_customers_insights_navigation($data, $smarty, $user, $db) {
             } else {
                 $prev_title = '';
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
         $sql = sprintf(
@@ -740,12 +742,15 @@ function get_customers_insights_navigation($data, $smarty, $user, $db) {
         $sections[$data['section']]['selected'] = true;
     }
 
+
+
+
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Customer's insights").' <span class="id">'.$store->get('Store Code').'</span>',
+        'title'          => $title,
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search customers')
