@@ -10,18 +10,14 @@
  Version 3.0
 */
 
+
 /**
- * @param      $object_name
- * @param      $key
- * @param bool $load_other_data
  *
- * @return \Fulfilment_Asset|\Account|\Agent|\AgentSupplierPurchaseOrder|\Attachment|\Category|\Customer|\Customer_Client|\Customer_Fulfilment|\Data_Sets|\DealCampaign|\DealComponent|\Email_Blueprint|\Email_Template|\Email_Tracking|\EmailCampaign|\EmailCampaignType|\External_Invoicer|false|\Fulfilment_Delivery|\Image|\Invoice|\Job_Position|\Manufacture_Task|\Material|\Overtime|\PageDeleted|\Payment_Account|\PickingBand|\ProductionPart|\Public_Category|\Public_Product|\Public_Store|\Public_Webpage|\Public_Website|\Published_Email_Template|\PurchaseOrder|\Shipping_Zone|\Shipping_Zone_Schema|\Staff|\SubjectList|\Supplier|\Supplier_Production|\SupplierPart|\TaxCategory|\Timeseries|\TimeseriesRecord|\Upload|\User|\Voucher|Warehouse|\WarehouseArea|\Website_User|\WebsiteFooter
+ * @return \Account|\Agent|\AgentSupplierPurchaseOrder|\API_Key|\Attachment|\Barcode|\Category|\Charge|\Clocking_Machine|\Clocking_Machine_NFC_Tag|\Consignment|\Customer|\Customer_Client|\Customer_Fulfilment|\Customer_Part|\Customer_Poll_Query|\Customer_Poll_Query_Option|\Data_Sets|\Deal|\DealCampaign|\DealComponent|\DeliveryNote|\Email_Blueprint|\Email_Template|\Email_Tracking|\EmailCampaign|\EmailCampaignType|\External_Invoicer|false|\Fulfilment_Asset|\Fulfilment_Delivery|\Image|\Invoice|\Job_Position|\Location|\Manufacture_Task|\Material|\Operative|\Order|\Order_Basket_Purge|\Overtime|\Page|\PageDeleted|\Part|\PartLocation|\Payment|\Payment_Account|\Payment_Service_Provider|\PickingBand|\Product|\ProductionPart|\Prospect|\Public_Category|\Public_Product|\Public_Store|\Public_Webpage|\Public_Website|\Published_Email_Template|\PurchaseOrder|\Raw_Material|\Sales_Representative|\Shipper|\Shipping_Zone|\Shipping_Zone_Schema|\Staff|\Store|\SubjectList|\Supplier|\Supplier_Production|\SupplierDelivery|\SupplierPart|\TaxCategory|\Timeseries|\TimeseriesRecord|\Timesheet|\Timesheet_Record|\Upload|\User|\Voucher|\Warehouse|\WarehouseArea|\Webpage_Type|\Website|\Website_User|\WebsiteFooter|\WebsiteHeader
  */
 function get_object($object_name, $key, $load_other_data = false) {
 
-    if ($object_name == '') {
-        return false;
-    }
+
 
     if ($load_other_data != '') {
         $load_other_data = '-'.$load_other_data;
@@ -31,7 +27,7 @@ function get_object($object_name, $key, $load_other_data = false) {
 
     global $db;
 
-
+    $object= false;
     switch (strtolower($object_name.$load_other_data)) {
         case 'account':
             include_once 'class.Account.php';
@@ -198,7 +194,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
 
         case 'store_payment_account':
-            $tmp = preg_split('/\_/', $key);
+            $tmp = preg_split('/_/', $key);
             require_once "class.Payment_Account.php";
             $object = new Payment_Account($tmp[1]);
             break;
@@ -281,6 +277,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Location.php";
             $object = new Location($key);
             break;
+        case 'location-code':
+            require_once "class.Location.php";
+            $object = new Location('code',$key);
+            break;
         case 'part_location':
         case 'partlocation':
             require_once "class.PartLocation.php";
@@ -322,10 +322,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Agent_Supplier_Purchase_Order.php";
             $object = new AgentSupplierPurchaseOrder($key);
             break;
-        case 'upload':
-            require_once "class.Upload.php";
-            $object = new Upload($key);
-            break;
+
 
         case 'purchaseorderitem':
 
@@ -337,9 +334,6 @@ function get_object($object_name, $key, $load_other_data = false) {
                     require_once "class.SupplierPart.php";
                     $object = new SupplierPart($row['Supplier Part Key']);
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
             break;
         case 'supplierdelivery':
@@ -386,9 +380,13 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Email_Blueprint.php";
             $object = new Email_Blueprint($key);
             break;
+
+        case 'email template':
         case 'email_template':
-            require_once "class.Email_Template.php";
-            $object = new Email_Template($key);
+        case 'emailtemplate':
+
+            include_once 'class.Email_Template.php';
+            $object = new Email_Template('id', $key);
             break;
         case 'published_email_template':
             require_once "class.Published_Email_Template.php";
@@ -427,11 +425,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Shipping_Zone_Schema($key);
             break;
 
-        case 'shipping_option':
-        case 'shippingoption':
-            require_once "class.Shipping_Option.php";
-            $object = new Shipping_Option($key);
-            break;
+
         case 'email_campaign':
         case 'emailcampaign':
         case 'email campaign':
@@ -484,13 +478,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Email_Tracking.php';
             $object = new Email_Tracking('id', $key);
             break;
-        case 'email template':
-        case 'email_template':
-        case 'emailtemplate':
 
-            include_once 'class.Email_Template.php';
-            $object = new Email_Template('id', $key);
-            break;
         case 'shipper':
             include_once 'class.Shipper.php';
             $object = new Shipper('id', $key);
@@ -547,7 +535,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new External_Invoicer('id', $key);
             break;
         case 'picking_band':
-        case 'picking_band':
+        case 'picking band':
         case 'pickingband':
             include_once 'class.PickingBand.php';
             $object = new PickingBand('id', $key);
@@ -572,6 +560,8 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'fulfilment_asset':
             require_once "class.Fulfilment_Asset.php";
             $object = new Fulfilment_Asset($key);
+            break;
+        case '':
             break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");

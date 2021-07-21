@@ -11,30 +11,31 @@
 */
 
 
-
+/**
+ * @throws \SmartyException
+ */
 function fork_upload_edit($job) {
 
-    global $account,$db;
+    global $account, $db;
 
 
     include_once 'class.User.php';
     include_once 'class.Upload.php';
-    include_once 'conf/export_edit_template_fields.php';
+    include_once 'utils/get_export_edit_template_fields.php';
     include_once 'utils/invalid_messages.php';
     include_once 'utils/object_functions.php';
-
 
 
     if (!$_data = get_fork_data($job)) {
         print "error reading fork data\n";
 
-        return;
+        return false;
 
     }
 
-    $fork_data           = $_data['fork_data'];
-    $fork_key            = $_data['fork_key'];
-    $db                  = $_data['db'];
+    $fork_data = $_data['fork_data'];
+    $fork_key  = $_data['fork_key'];
+    $db        = $_data['db'];
 
 
     $account = new Account($db);
@@ -64,7 +65,7 @@ function fork_upload_edit($job) {
     $db->exec($sql);
 
 
-   // print_r($upload);
+    // print_r($upload);
 
     //exit($upload->get('Upload Object'));
 
@@ -72,53 +73,58 @@ function fork_upload_edit($job) {
         case 'supplier_part':
             include_once 'class.SupplierPart.php';
             $valid_keys   = array('Supplier Part Key');
-            $valid_fields = $export_edit_template_fields['supplier_part'];
+            $valid_fields = get_export_edit_template_fields('supplier_part');
             $object_name  = 'supplier_part';
             break;
         case 'production_part':
             include_once 'class.ProductionPart.php';
             $valid_keys   = array('Supplier Part Key');
-            $valid_fields = $export_edit_template_fields['supplier_part'];
+            $valid_fields = get_export_edit_template_fields('supplier_part');
             $object_name  = 'supplier_part';
             break;
         case 'part':
             include_once 'class.Part.php';
             $valid_keys   = array('Part SKU');
-            $valid_fields = $export_edit_template_fields['part'];
+            $valid_fields = get_export_edit_template_fields('part');
             $object_name  = 'part';
             break;
         case 'location':
             include_once 'class.Location.php';
             $valid_keys   = array('Location Key');
-            $valid_fields = $export_edit_template_fields['location'];
+            $valid_fields = get_export_edit_template_fields('location');
             $object_name  = 'location';
             break;
         case 'product':
             include_once 'class.Product.php';
             $valid_keys   = array('Product ID');
-            $valid_fields = $export_edit_template_fields['product'];
+            $valid_fields = get_export_edit_template_fields('product');
             $object_name  = 'product';
             break;
         case 'supplier':
             include_once 'class.Supplier.php';
             $valid_keys   = array('Supplier Key');
-            $valid_fields = $export_edit_template_fields['supplier'];
+            $valid_fields = get_export_edit_template_fields('supplier');
             $object_name  = 'supplier';
             break;
 
         case 'warehouse_area':
             include_once 'class.WarehouseArea.php';
             $valid_keys   = array('Warehouse Area Key');
-            $valid_fields = $export_edit_template_fields['warehouse_area'];
+            $valid_fields = get_export_edit_template_fields('warehouse_area');
             $object_name  = 'warehouse_area';
             break;
         case 'prospect':
             include_once 'class.Prospect.php';
             $valid_keys   = array('Prospect Key');
-            $valid_fields = $export_edit_template_fields['prospect'];
+            $valid_fields = get_export_edit_template_fields('prospect');
             $object_name  = 'prospect';
             break;
-
+        case 'fulfilment_asset':
+            include_once 'class.Fulfilment_Asset.php';
+            $valid_keys   = array('Fulfilment Asset Key');
+            $valid_fields = get_export_edit_template_fields('fulfilment_asset');
+            $object_name  = 'fulfilment_asset';
+            break;
         default:
             print 'error, Upload Object not set up, check: upload.edit.fork.php';
 
@@ -128,8 +134,6 @@ function fork_upload_edit($job) {
 
 
     $upload_metadata = $upload->get('Metadata');
-
-
     $fields = $upload_metadata['fields'];
 
     $key_index     = -1;
@@ -156,7 +160,6 @@ function fork_upload_edit($job) {
 
         }
     }
-
 
 
     if ($key_index < 0) {
@@ -236,7 +239,6 @@ function fork_upload_edit($job) {
             $record_data = json_decode($row['data'], true);
 
 
-
             if (strtolower($record_data[$key_index]) == 'new') {
 
 
@@ -252,8 +254,7 @@ function fork_upload_edit($job) {
                 }
 
 
-
-                if($upload->get('Upload Parent')=='supplier_product'){
+                if ($upload->get('Upload Parent') == 'supplier_product') {
 
                     $sql = sprintf(
                         "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Result`=%s WHERE `Fork Key`=%d ", prepare_mysql('imported'), $fork_key
@@ -266,7 +267,7 @@ function fork_upload_edit($job) {
                     );
                     $db->exec($sql);
 
-                   return true;
+                    return true;
                 }
 
 
@@ -291,13 +292,10 @@ function fork_upload_edit($job) {
                 }
 
 
-                $object_key = new_object(
-                    $account, $db, $user, $editor, $_data, $upload, $fork_key
-                );
+                new_object($db, $editor, $_data, $upload, $fork_key);
 
 
-            }
-            else {
+            } else {
                 if ($record_data[$key_index] == '') {
 
                     $sql = sprintf(
@@ -353,14 +351,14 @@ function fork_upload_edit($job) {
 
                             $msg .= '<span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true" title="'.$field.'"></i> '.$object->msg.'</span>, ';
                             $errors++;
-                            $message_code.=$object->msg;
+                            $message_code .= $object->msg;
 
 
-                           // print_r($object);
+                            // print_r($object);
 
                         } else {
                             //print "$field ".$record_data[$index]." ";
-                            //print "nochange \n";
+                            //print "no_change \n";
                             $msg .= '<i class="fa fa-minus very_discreet fa-fw" aria-hidden="true" title="'.$field.'"></i>, ';
                         }
 
@@ -379,7 +377,6 @@ function fork_upload_edit($job) {
                         } else {
                             $record_state = 'Warning';
                         }
-
 
 
                     } else {
@@ -414,9 +411,6 @@ function fork_upload_edit($job) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
@@ -433,6 +427,8 @@ function fork_upload_edit($job) {
         "UPDATE `Upload Dimension` SET  `Upload State`='Finished'  WHERE `Upload Key`=%d ", $upload->id
     );
     $db->exec($sql);
+
+    return true;
 
 
 }
@@ -473,10 +469,11 @@ function update_upload_edit_stats($fork_key, $upload_key, $db) {
 }
 
 
-function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
+function new_object($db, $editor, $data, $upload, $fork_key) {
 
     $error = false;
-
+    $error_code='';
+    $error_metadata='';
 
     $parent = get_object($data['parent'], $data['parent_key']);
 
@@ -492,7 +489,6 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
 
             if ($parent->get_object_name() != 'Store') {
-
 
 
                 $sql = sprintf(
@@ -518,15 +514,20 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
 
             }
-            $parent->fork=true;
+            /**
+             * @var $store \Store
+             */
+            $store = $parent;
 
-            $object = $parent->create_product($data['fields_data']);
+            $store->fork = true;
+
+            $object = $store->create_product($data['fields_data']);
 
 
-            if ($parent->error) {
-                $error          = $parent->error;
-                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
-                $error_code     = $parent->error_code;
+            if ($store->error) {
+                $error          = $store->error;
+                $error_metadata = ($store->error_metadata ?? '');
+                $error_code     = $store->error_code;
                 // print_r($parent);
 
             }
@@ -537,15 +538,15 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
             include_once 'class.SupplierPart.php';
 
-        /**
-         * @var $parent \Supplier
-         */
+            /**
+             * @var $parent \Supplier
+             */
             $object = $parent->create_supplier_part_record(
                 $data['fields_data'], $data['allow_duplicate_part_reference']
             );
             if ($parent->error) {
                 $error          = $parent->error;
-                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
+                $error_metadata = ($parent->error_metadata ?? '');
                 $error_code     = $parent->error_code;
             }
 
@@ -555,11 +556,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             include_once 'class.Manufacture_Task.php';
             $object = $parent->create_manufacture_task($data['fields_data']);
 
-            if ($parent->new_manufacture_task) {
-
-
-            } else {
-
+            if (!$parent->new_manufacture_task) {
 
                 $response = array(
                     'state' => 400,
@@ -587,7 +584,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             );
             if ($parent->error) {
                 $error          = $parent->error;
-                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
+                $error_metadata = ($parent->error_metadata ?? '');
                 $error_code     = $parent->error_code;
             }
 
@@ -595,9 +592,11 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             break;
         case 'Customer':
             include_once 'class.Customer.php';
-
-            $_result  = $parent->create_customer($data['fields_data']);
-            $object = $_result['Customer'];
+            /**
+             * @var $parent \Store
+             */
+            $_result = $parent->create_customer($data['fields_data']);
+            $object  = $_result['Customer'];
 
             break;
         case 'Supplier':
@@ -625,18 +624,19 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             include_once 'class.API_Key.php';
 
             $object = $parent->create_api_key($data['fields_data']);
-            if (!$parent->error) {
 
-            }
             break;
         case 'Timesheet_Record':
             include_once 'class.Timesheet_Record.php';
+            /**
+             * @var $parent \Staff|\Timesheet
+             */
             $object = $parent->create_timesheet_record($data['fields_data']);
-            if (!$parent->error) {
-                $updated_data = array(
-                    'Timesheet_Clocked_Hours' => $parent->get('Clocked Hours')
-                );
-            }
+            // if (!$parent->error) {
+            //$updated_data = array(
+            //    'Timesheet_Clocked_Hours' => $parent->get('Clocked Hours')
+            //);
+            //}
             break;
         case 'warehouse_area':
             include_once 'class.WarehouseArea.php';
@@ -645,18 +645,37 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             );
             if ($parent->error) {
                 $error          = $parent->error;
-                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
+                $error_metadata = ($parent->error_metadata ?? '');
                 $error_code     = $parent->error_code;
             }
             break;
         case 'prospect':
             include_once 'class.Prospect.php';
+            /**
+             * @var $parent \Store
+             */
             $object = $parent->create_prospect(
                 $data['fields_data']
             );
             if ($parent->error) {
                 $error          = $parent->error;
-                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
+                $error_metadata = ($parent->error_metadata ?? '');
+                $error_code     = $parent->error_code;
+            }
+            break;
+        case 'fulfilment_asset':
+            /**
+             * @var $parent \Fulfilment_Delivery
+             */
+
+
+
+            $object = $parent->create_fulfilment_asset(
+                $data['fields_data']
+            );
+            if ($parent->error) {
+                $error          = $parent->error;
+                $error_metadata = ($parent->error_metadata ?? '');
                 $error_code     = $parent->error_code;
             }
             break;
@@ -666,7 +685,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
             return false;
 
-            break;
+
     }
 
     //print $object->get('Code')."\n";
@@ -680,6 +699,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
 
         $db->exec($sql);
+
         return false;
 
 

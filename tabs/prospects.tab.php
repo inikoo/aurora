@@ -8,6 +8,9 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 if (in_array($state['store']->id, $user->stores) and $user->can_view('customers')) {
 
@@ -51,7 +54,6 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
     );
 
 
-    include_once 'conf/export_edit_template_fields.php';
     $edit_table_dialog = array(
         'new_item'         => array(
             'icon'      => 'plus',

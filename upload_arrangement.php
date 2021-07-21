@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection DuplicatedCode */
+
 /*
 
  About:
@@ -18,8 +19,8 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 require_once 'common.php';
 require_once 'utils/object_functions.php';
+include_once 'utils/get_export_edit_template_fields.php';
 
-require_once 'conf/export_edit_template_fields.php';
 
 
 $creator     = 'Aurora.systems';
@@ -36,6 +37,8 @@ if (!isset($_REQUEST['object'])) {
 }
 $object = get_object($_REQUEST['object'], 0);
 
+$key_field='';
+$valid_fields='';
 
 switch ($object->get_object_name()) {
     case 'Staff':
@@ -52,17 +55,17 @@ switch ($object->get_object_name()) {
     case 'Prospect':
         $filename = 'new_prospects';
         $options  = array();
-        $valid_fields = $export_edit_template_fields['prospect'];
+        $valid_fields = get_export_edit_template_fields('prospect');
         $key_field    = 'Id: Prospect Key';
         break;
     case 'Supplier Part':
         $filename = 'new_supplier_parts';
-        $valid_fields = $export_edit_template_fields['supplier_part'];
+        $valid_fields = get_export_edit_template_fields('supplier_part');
         $key_field    = 'Id: Supplier Part Key';
         break;
     case 'Location':
         $filename     = 'new_locations';
-        $valid_fields = $export_edit_template_fields['location'];
+        $valid_fields = get_export_edit_template_fields('location');
         if (isset($_REQUEST['parent']) and $_REQUEST['parent'] == 'warehouse_area') {
             unset($valid_fields[1]);
         }
@@ -70,12 +73,17 @@ switch ($object->get_object_name()) {
         break;
     case 'Warehouse Area':
         $filename     = 'new_warehouse_area';
-        $valid_fields = $export_edit_template_fields['warehouse_area'];
+        $valid_fields = get_export_edit_template_fields('warehouse_area');
         $key_field    = 'Id: Warehouse Area Key';
+        break;
+    case 'Fulfilment Asset':
+        $filename     = 'fulfilment_delivery';
+        $valid_fields = get_export_edit_template_fields('fulfilment_asset');
+        $key_field    = 'Id: Fulfilment Asset Key';
         break;
     default:
         exit('Object not defined '.$object->get_object_name());
-        break;
+
 }
 
 
@@ -178,26 +186,32 @@ $cellIterator->setIterateOnlyExistingCells(true);
 foreach ($cellIterator as $cell) {
     $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 }
-
-$objPHPExcel->getActiveSheet()->freezePane('A2');
-
 $download_path = 'server_files/tmp/';
 
+try {
+    $objPHPExcel->getActiveSheet()->freezePane('A2');
 
-switch ($output_type) {
-
-
-
-    case('xls'):
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
-        header('Cache-Control: max-age=0');
-
-        $objWriter = IOFactory::createWriter($objPHPExcel, 'Xls')->save('php://output');
-        break;
+    switch ($output_type) {
 
 
+
+        case('xls'):
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
+            header('Cache-Control: max-age=0');
+
+            $objWriter = IOFactory::createWriter($objPHPExcel, 'Xls')->save('php://output');
+            break;
+
+
+    }
+
+
+} catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
 }
+
+
+
 
 
 

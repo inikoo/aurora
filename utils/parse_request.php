@@ -6053,6 +6053,17 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
 
                                                                         }
                                                                     }
+                                                                }elseif ($view_path[6] == 'upload') {
+                                                                    $section    = 'upload';
+                                                                    $parent     = 'fulfilment_delivery';
+                                                                    $parent_key = $key;
+                                                                    $object     = 'upload';
+                                                                    if (isset($view_path[7])) {
+                                                                        if (is_numeric($view_path[7])) {
+                                                                            $key = $view_path[7];
+                                                                        }
+                                                                    }
+
                                                                 }
                                                             }
 

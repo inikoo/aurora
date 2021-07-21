@@ -25,7 +25,6 @@ include 'utils/natural_language.php';
 include 'asset_sales.fork.php';
 
 
-include 'upload_edit.fork.php';
 include 'housekeeping.fork.php';
 include 'time_series.fork.php';
 include 'calculate_sales.fork.php';
@@ -38,7 +37,6 @@ $servers = implode(",", $servers);
 $worker = new GearmanWorker();
 $worker->addServers($servers);
 
-$worker->addFunction("au_upload_edit", "fork_upload_edit");
 $worker->addFunction("au_housekeeping", "fork_housekeeping");
 $worker->addFunction("au_time_series", "fork_time_series");
 $worker->addFunction("au_calculate_sales", "fork_calculate_sales");

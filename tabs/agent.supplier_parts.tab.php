@@ -8,7 +8,11 @@
  Version 3
 
 */
-
+include_once 'utils/get_export_edit_template_fields.php';
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 $tab     = 'agent.supplier_parts';
 $ar_file = 'ar_suppliers_tables.php';
@@ -48,7 +52,6 @@ $parameters = array(
 $smarty->assign('table_top_template', 'supplier_parts.edit.tpl');
 
 
-include_once 'conf/export_edit_template_fields.php';
 
 
 $edit_table_dialog = array(
@@ -65,7 +68,8 @@ $edit_table_dialog = array(
 $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
 $objects = 'supplier_part';
-$edit_fields = $export_edit_template_fields[$objects];
+$edit_fields = get_export_edit_template_fields($objects);
+
 $smarty->assign('edit_fields', $edit_fields);
 
 $table_buttons = array();

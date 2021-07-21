@@ -25,6 +25,7 @@ include 'utils/natural_language.php';
 
 include 'export.fork.php';
 include 'export_from_elastic_search.fork.php';
+include 'upload_edit.fork.php';
 
 include 'export_edit_template.fork.php';
 include 'reindex_webpages.fork.php';
@@ -42,6 +43,7 @@ $worker->addServers($servers);
 
 $worker->addFunction("au_export", "fork_export");
 $worker->addFunction("au_export_from_elastic_search", "fork_export_from_elastic_search");
+$worker->addFunction("au_upload_edit", "fork_upload_edit");
 
 $worker->addFunction("au_orders_control_panel", "fork_orders_control_panel");
 $worker->addFunction("au_export_edit_template", "fork_export_edit_template");

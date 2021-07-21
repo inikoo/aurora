@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-function get_warehouses_module() {
+function get_warehouses_module(): array {
     return array(
         'sections' => array(
 
@@ -184,7 +184,7 @@ function get_warehouses_module() {
                             'Data'
                         ),
                         'title' => _(
-                            'Location detais'
+                            'Location details'
                         ),
                         'icon'  => 'database'
                     ),

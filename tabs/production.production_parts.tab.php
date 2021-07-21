@@ -8,7 +8,11 @@
  Version 3
 
 */
-
+include_once 'utils/get_export_edit_template_fields.php';
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 $tab     = 'production.production_parts';
 $ar_file = 'ar_production_tables.php';
@@ -43,7 +47,6 @@ $parameters = array(
 );
 
 
-include_once 'conf/export_edit_template_fields.php';
 
 
 $edit_table_dialog = array(
@@ -80,7 +83,7 @@ $smarty->assign('edit_table_dialog', $edit_table_dialog);
 $objects = 'supplier_part';
 
 
-$edit_fields = $export_edit_template_fields['production_part'];
+$edit_fields = get_export_edit_template_fields('production_part');
 
 
 

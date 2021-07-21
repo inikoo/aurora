@@ -8,6 +8,10 @@
  Version 3
 
 */
+include_once 'utils/get_export_edit_template_fields.php';
+/** @var User $user */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 if (!$user->can_view('locations') or !in_array(
         $state['key'], $user->warehouses
@@ -40,18 +44,6 @@ if (!$user->can_view('locations') or !in_array(
 
     $table_buttons=array();
 
-
-    /*
-    $table_buttons[] = array(
-        'icon'      => 'plus',
-        'title'     => _('New warehouse area'),
-       'reference' => "warehouse/".  $state['parent_key']."/areas/new"
-    );
-    */
-
-
-
-    include_once 'conf/export_edit_template_fields.php';
 
 
     $edit_table_dialog = array(
@@ -88,9 +80,7 @@ if (!$user->can_view('locations') or !in_array(
     $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
     $objects = 'warehouse_area';
-
-
-    $edit_fields = $export_edit_template_fields[$objects];
+    $edit_fields = get_export_edit_template_fields($objects);
 
 
     $smarty->assign('edit_fields', $edit_fields);
@@ -114,4 +104,4 @@ if (!$user->can_view('locations') or !in_array(
     include 'utils/get_table_html.php';
 }
 
-?>
+

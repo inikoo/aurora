@@ -8,7 +8,10 @@
  Version 3
 
 */
-
+include_once 'utils/get_export_edit_template_fields.php';
+/** @var array $state */
+/** @var \User $user */
+/** @var \Smarty $smarty */
 if ($user->get('User Type') == 'Agent') {
 
     $tab = 'agent_parts';
@@ -64,8 +67,6 @@ $parameters = array(
 
 );
 
-include_once 'conf/export_edit_template_fields.php';
-
 $edit_table_dialog = array(
     'new_item'         => array(
         'icon'      => 'plus',
@@ -97,8 +98,7 @@ $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
 $objects = 'supplier_part';
 
-
-$edit_fields = $export_edit_template_fields[$objects];
+$edit_fields = get_export_edit_template_fields($objects);
 
 
 if ($supplier->data['Supplier On Demand'] == 'No') {

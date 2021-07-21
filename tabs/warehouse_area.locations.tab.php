@@ -8,6 +8,10 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->warehouses)) {
     $html = '';
@@ -48,7 +52,6 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     $table_buttons = array();
 
 
-    include_once 'conf/export_edit_template_fields.php';
 
 
     $edit_table_dialog = array(
@@ -85,9 +88,7 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
     $objects = 'location';
-
-
-    $edit_fields = $export_edit_template_fields[$objects];
+    $edit_fields = get_export_edit_template_fields($objects);
 
 
     $smarty->assign('edit_fields', $edit_fields);

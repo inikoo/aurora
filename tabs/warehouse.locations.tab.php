@@ -8,6 +8,11 @@
  Version 3
 
 */
+include_once 'utils/get_export_edit_template_fields.php';
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 if (!$user->can_view('locations') or !in_array(
         $state['key'], $user->warehouses
@@ -47,12 +52,6 @@ if (!$user->can_view('locations') or !in_array(
         'js_code', 'js/injections/warehouse_locations.'.(_DEVEL ? '' : 'min.').'js'
     );
 
-
-
-
-    include_once 'conf/export_edit_template_fields.php';
-
-
     $edit_table_dialog = array(
         'labels'=>array(
             'add_items'=>_("Add location(s)").":",
@@ -89,7 +88,7 @@ if (!$user->can_view('locations') or !in_array(
     $objects = 'location';
 
 
-    $edit_fields = $export_edit_template_fields[$objects];
+    $edit_fields = get_export_edit_template_fields($objects);
 
 
     $smarty->assign('edit_fields', $edit_fields);
@@ -123,28 +122,15 @@ if (!$user->can_view('locations') or !in_array(
                 'label' => $row['Warehouse Flag Label']
             );
         }
-    } else {
-        print_r($error_info = $this->db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
     $smarty->assign('flags', $flags);
-
-
     $smarty->assign('aux_templates', array('edit_locations.tpl'));
-
-
-
-
     $smarty->assign('title', _('Locations'));
-
-
     $smarty->assign('view_position','<span onclick=\"change_view(\'warehouse/'.$warehouse->id.'\')\"><i class=\"fal  fa-warehouse-alt\"></i> <span class=\"id Warehouse_Code\">'.$warehouse->get('Code').'</span></span><i class=\"fa fa-angle-double-right separator\"></i>  '._('Locations').' </span>');
 
 
     include 'utils/get_table_html.php';
 }
 
-?>

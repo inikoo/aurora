@@ -8,15 +8,17 @@
  Version 3
 
 */
+include_once 'utils/get_export_edit_template_fields.php';
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 
 $category = $state['_object'];
 
 
 if ($category->get('Category Scope') == 'Product') {
-
-
-
 
     if ($category->get('Category Subject') == 'Product') {
 
@@ -61,7 +63,6 @@ if ($category->get('Category Scope') == 'Product') {
         );
 
 
-        include_once 'conf/export_edit_template_fields.php';
 
 
         $edit_table_dialog = array(
@@ -79,9 +80,7 @@ if ($category->get('Category Scope') == 'Product') {
         $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
         $objects = 'product';
-
-
-        $edit_fields = $export_edit_template_fields[$objects];
+        $edit_fields = get_export_edit_template_fields($objects);
 
 
 
@@ -131,7 +130,6 @@ if ($category->get('Category Scope') == 'Product') {
             )
 
         );
-        $smarty->assign('table_buttons', $table_buttons);
 
 
     }
@@ -217,15 +215,10 @@ if ($category->get('Category Scope') == 'Product') {
             )
 
         );
-        $smarty->assign('table_buttons', $table_buttons);
-
-
-
-
 
 
     }
-
+    $smarty->assign('table_buttons', $table_buttons);
 
 }
 elseif ($category->get('Category Scope') == 'Part') {
@@ -271,7 +264,6 @@ elseif ($category->get('Category Scope') == 'Part') {
 
 
 
-    include_once 'conf/export_edit_template_fields.php';
 
 
     $edit_table_dialog = array(
@@ -289,9 +281,7 @@ elseif ($category->get('Category Scope') == 'Part') {
     $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
     $objects = 'part';
-
-
-    $edit_fields = $export_edit_template_fields[$objects];
+    $edit_fields = get_export_edit_template_fields($objects);
 
 
 

@@ -10,6 +10,7 @@
 */
 
 include_once 'utils/send_zqm_message.class.php';
+include_once 'utils/get_export_edit_template_fields.php';
 
 
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
@@ -24,11 +25,10 @@ function fork_export_edit_template($job) {
 
     global $account, $db;// remove the global $db and $account is removed
 
-    include_once 'conf/export_edit_template_fields.php';
 
 
     if (!$_data = get_fork_metadata($job)) {
-        return;
+        return false;
     }
 
     list($account, $db, $fork_data, $editor, $ES_hosts) = $_data;
@@ -173,7 +173,7 @@ function fork_export_edit_template($job) {
 
             break;
 
-            break;
+
         case 'product':
             include_once 'class.Product.php';
             include_once 'class.Store.php';
@@ -282,14 +282,12 @@ function fork_export_edit_template($job) {
 
     $_objects = $objects;
 
-    //print $object_id_name;
-    //print_r($export_edit_template_fields);
-    //print_r($field_keys);
+
 
     $fields = array();
     foreach ($field_keys as $field_key) {
         if ($field_key != '') {
-            $fields[] = $export_edit_template_fields[$_objects][$field_key];
+            $fields[] = get_export_edit_template_fields($_objects)[$field_key];
 
         }
     }

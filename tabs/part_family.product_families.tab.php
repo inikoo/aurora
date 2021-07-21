@@ -8,6 +8,11 @@
  Version 3
 
 */
+include_once 'utils/get_export_edit_template_fields.php';
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 $tab     = 'part_family.product_families';
 $ar_file = 'ar_inventory_tables.php';
@@ -37,7 +42,6 @@ $parameters = array(
 );
 
 
-include_once 'conf/export_edit_template_fields.php';
 
 $edit_table_dialog = array(
 
@@ -55,9 +59,7 @@ $edit_table_dialog = array(
 $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
 $objects = 'product';
-
-
-$edit_fields = $export_edit_template_fields[$objects];
+$edit_fields = get_export_edit_template_fields($objects);
 
 foreach($edit_fields as $key=>$value){
     $edit_fields[$key]['checked']=1;
@@ -86,4 +88,4 @@ $smarty->assign(
 include('utils/get_table_html.php');
 
 
-?>
+
