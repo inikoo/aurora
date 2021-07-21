@@ -152,12 +152,7 @@ function records($_data, $db, $user) {
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
     }
-
 
     $response = array(
         'resultset' => array(
@@ -216,7 +211,7 @@ function uploads($_data, $db, $user) {
 
             $adata[] = array(
                 'id'          => (integer)$data['Upload Key'],
-                'formated_id' => sprintf('%04d', $data['Upload Key']),
+                'formatted_id' => sprintf('%04d', $data['Upload Key']),
                 'date'        => (($data['Upload Created'] == '')
                     ? ''
                     : strftime(
@@ -230,10 +225,6 @@ function uploads($_data, $db, $user) {
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
     }
 
 
@@ -251,5 +242,3 @@ function uploads($_data, $db, $user) {
     echo json_encode($response);
 }
 
-
-?>

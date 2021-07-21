@@ -50,6 +50,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         case 'upload':
             include_once 'showcase/upload.show.php';
             $html = get_upload_showcase($data, $smarty, $user, $db);
+            $title=_('Upload');
+            $web_location = '<i class="fal fa-fw fa-upload"></i> '.$title;
+
             break;
         case 'purchase_order':
             include_once 'showcase/supplier.order.show.php';

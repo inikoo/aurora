@@ -4166,6 +4166,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
             break;
 
         case 'fulfilment':
+            
             switch ($state['section']) {
                 case 'dashboard':
                     $branch[] = array(
@@ -4251,7 +4252,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                     }
                     break;
                 case 'asset':
-
+                case 'upload':
                     if ($state['parent'] == 'fulfilment_delivery') {
 
 
@@ -4275,13 +4276,25 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                             'icon'      => 'arrow-square-down',
                             'reference' => 'fulfilment/'.$state['current_warehouse'].'/customers/'.($state['_object']->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$state['_parent']->get('Customer Key').'/delivery/'.$state['_parent']->id
                         );
-                        $branch[] = array(
-                            'label'     => $state['_object']->get('Formatted ID'),
-                            'html_icon'      => $state['_object']->get('Type Icon'),
-                            'reference' => ''
-                        );
+
+                        if($state['section']=='asset'){
+                            $branch[] = array(
+                                'label'     => $state['_object']->get('Formatted ID'),
+                                'html_icon'      => $state['_object']->get('Type Icon'),
+                                'reference' => ''
+                            );
+                        }else{
+                            $branch[] = array(
+                                'label'     => _('Upload'),
+                                'icon'      => 'upload',
+                                'reference' => ''
+                            );
+                        }
+
+
                     }
                     break;
+
 
             }
             break;

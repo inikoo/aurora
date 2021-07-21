@@ -659,6 +659,13 @@ class Fulfilment_Delivery extends DB_Table {
         $data['Fulfilment Asset Metadata']                = '{}';
         $data['editor']                                   = $this->editor;
 
+        $location_code = '';
+        if (isset($data['Fulfilment Asset Location Code'])) {
+            $location_code = $data['Fulfilment Asset Location Code'];
+            unset($data['Fulfilment Asset Location Code']);
+        }
+
+
         if (!empty($data['Fulfilment Asset Reference'])) {
             $sql  = 'SELECT count(*) AS num FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Reference`=? AND `Fulfilment Asset Customer Key`=?';
             $stmt = $this->db->prepare($sql);
@@ -670,10 +677,10 @@ class Fulfilment_Delivery extends DB_Table {
             );
             if ($row = $stmt->fetch() and $row['num'] > 0) {
 
-                $this->error      = true;
-                $this->msg        = sprintf(_('Duplicated reference (%s)'), $data['Fulfilment Asset Reference']);
-                $this->error_code = 'duplicate_fulfilment_asset_reference';
-                $this->metadata   = $data['Fulfilment Asset Reference'];
+                $this->error          = true;
+                $this->msg            = sprintf(_('Duplicated reference (%s)'), $data['Fulfilment Asset Reference']);
+                $this->error_code     = 'duplicate_fulfilment_asset_reference';
+                $this->error_metadata = $data['Fulfilment Asset Reference'];
 
                 return false;
             }
@@ -685,14 +692,35 @@ class Fulfilment_Delivery extends DB_Table {
         if ($fulfilment_asset->id) {
             $this->new_object_msg = $fulfilment_asset->msg;
             $this->new_object     = true;
+
+            if ($location_code != '') {
+                $location = get_object('Location-code', $location_code);
+                if ($location->id) {
+                    $fulfilment_asset->update(
+                        [
+                            'Fulfilment Asset Location Key' => $location->id
+                        ]
+                    );
+                } else {
+
+                    $this->warning          = true;
+                    $this->msg              = sprintf(_('Location not found (%s)'), $location_code);
+                    $this->warning_code     = 'warning_asset_location_not_found';
+                    $this->warning_metadata = $location_code;
+                }
+            }
+
+
             if ($this->calculate_totals = true) {
                 $this->update_totals();
             }
 
             return $fulfilment_asset;
         } else {
-            $this->error = true;
-            $this->msg   = $fulfilment_asset->msg;
+            $this->error          = true;
+            $this->msg            = $fulfilment_asset->msg;
+            $this->error_code     = $fulfilment_asset->error_code;
+            $this->error_metadata = $fulfilment_asset->error_metadata;
 
             return false;
         }

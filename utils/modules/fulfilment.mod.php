@@ -504,6 +504,19 @@ function get_fulfilment_module(): array {
 
             ),
 
+            'upload' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'upload.records' => array(
+                        'label' => _('Records')
+                    ),
+
+
+                )
+
+            ),
+
+
 
         )
     );

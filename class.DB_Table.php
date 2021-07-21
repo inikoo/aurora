@@ -25,6 +25,9 @@ abstract class DB_Table extends stdClass {
     public $warning = false;
     public $deleted = false;
     public $error = false;
+    public $error_code = '';
+    public $error_metadata = '';
+
     public $msg = '';
     public $new = false;
     public $updated = false;

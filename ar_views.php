@@ -1324,6 +1324,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     case 'locations':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-pallet"></i> '._('Fulfilment locations'));
                         break;
+
                 }
                 break;
             case 'utils':

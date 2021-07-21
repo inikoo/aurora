@@ -134,7 +134,7 @@ function fork_upload_edit($job) {
 
 
     $upload_metadata = $upload->get('Metadata');
-    $fields = $upload_metadata['fields'];
+    $fields          = $upload_metadata['fields'];
 
     $key_index     = -1;
     $valid_indexes = array();
@@ -471,9 +471,11 @@ function update_upload_edit_stats($fork_key, $upload_key, $db) {
 
 function new_object($db, $editor, $data, $upload, $fork_key) {
 
-    $error = false;
-    $error_code='';
-    $error_metadata='';
+    $error          = false;
+    $error_code     = '';
+    $error_metadata = '';
+
+    $warning = false;
 
     $parent = get_object($data['parent'], $data['parent_key']);
 
@@ -669,7 +671,6 @@ function new_object($db, $editor, $data, $upload, $fork_key) {
              */
 
 
-
             $object = $parent->create_fulfilment_asset(
                 $data['fields_data']
             );
@@ -677,6 +678,12 @@ function new_object($db, $editor, $data, $upload, $fork_key) {
                 $error          = $parent->error;
                 $error_metadata = ($parent->error_metadata ?? '');
                 $error_code     = $parent->error_code;
+            }elseif ($parent->warning) {
+                $warning        = $parent->warning;
+                $error_metadata = ($parent->warning_metadata ?? '');
+                $error_code     = $parent->warning_code;
+            }else{
+
             }
             break;
         default:
@@ -691,25 +698,39 @@ function new_object($db, $editor, $data, $upload, $fork_key) {
     //print $object->get('Code')."\n";
     if ($error) {
 
-        $sql = sprintf(
-            "UPDATE `Upload Record Dimension` SET `Upload Record Date`=%s , `Upload Record Message Code`=%s , `Upload Record Message Metadata`=%s ,`Upload Record Status`='Done' ,`Upload Record State`='Error' WHERE `Upload Record Key`=%d ",
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($error_code), prepare_mysql($error_metadata), $data['upload_record_key']
+        $sql = "UPDATE `Upload Record Dimension` SET `Upload Record Date`=? , `Upload Record Message Code`=? , `Upload Record Message Metadata`=? ,`Upload Record Status`='Done' ,`Upload Record State`='Error' WHERE `Upload Record Key`=? ";
 
+
+
+        $db->prepare($sql)->execute(
+            array(
+                gmdate('Y-m-d H:i:s'),
+                $error_code,
+                $error_metadata,
+                $data['upload_record_key']
+            )
         );
 
-
-        $db->exec($sql);
 
         return false;
 
 
     } else {
 
-        $sql = sprintf(
-            "UPDATE `Upload Record Dimension` SET `Upload Record Date`=%s ,`Upload Record Message Code`='created' ,`Upload Record Status`='Done' ,`Upload Record State`='OK',`Upload Record Object Key`=%d WHERE `Upload Record Key`=%d ",
-            prepare_mysql(gmdate('Y-m-d H:i:s')), $object->id, $data['upload_record_key']
+        $sql = "UPDATE `Upload Record Dimension` SET `Upload Record Date`=? ,`Upload Record Status`='Done' ,`Upload Record State`=?,`Upload Record Object Key`=? ,`Upload Record Message Code`=? , `Upload Record Message Metadata`=? WHERE `Upload Record Key`=?";
+
+
+
+        $db->prepare($sql)->execute(
+            array(
+                gmdate('Y-m-d H:i:s'),
+                ($warning ? 'Warning' : 'Ok'),
+                $object->id,
+                ($error_code==''?'created':$error_code),
+                $error_metadata,
+                $data['upload_record_key']
+            )
         );
-        $db->exec($sql);
 
 
         return $object->id;

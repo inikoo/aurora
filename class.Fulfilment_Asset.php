@@ -55,7 +55,17 @@ class Fulfilment_Asset extends DB_Table {
             $this->msg   = _('Field required');
             $this->new   = false;
             $this->error = true;
+            $this->error_code = 'fulfilment_asset_type_missing';
 
+            return;
+        }
+
+        if (!in_array($this->data['Fulfilment Asset Type'] ,['Pallet','Box'])) {
+            $this->msg   = _('Invalid value');
+            $this->new   = false;
+            $this->error = true;
+            $this->error_code = 'invalid_fulfilment_asset_type';
+            $this->error_metadata   = $this->data['Fulfilment Asset Type'];
             return;
         }
 
@@ -301,7 +311,8 @@ class Fulfilment_Asset extends DB_Table {
     /**
      * @throws \Exception
      */
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+    function
+    update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
         if (!$this->deleted and $this->id) {
@@ -350,6 +361,9 @@ class Fulfilment_Asset extends DB_Table {
                     );
 
                     if ($old_value) {
+                        /**
+                         * @var $old_location \Location
+                         */
                         $old_location = get_object('Location', $old_value);
                         $old_location->update_fulfilment_status();
                     }

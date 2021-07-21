@@ -52,6 +52,7 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
 
             );
 
+            /*
             $table_buttons[] = array(
                 'icon'         => 'upload',
                 'title'        => _('Upload assets'),
@@ -64,6 +65,13 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
                     'field'      => 'Fulfilment Delivery Units'
                 )
 
+            );
+            */
+
+            $table_buttons[] = array(
+                'icon'  => 'edit_add',
+                'title' => _("Edit items"),
+                'id'    => 'edit_dialog'
             );
 
             $table_buttons[] = array(
@@ -83,6 +91,36 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
                 )
 
             );
+
+            $edit_table_dialog = array(
+                'labels' => array(
+                    'add_items'  => _("Upload items").":",
+                    'edit_items' => _("Edit items").":"
+                ),
+
+                'upload_items' => array(
+                    'icon'         => 'plus',
+                    'label'        => _("Upload items"),
+                    'template_url' => '/upload_arrangement.php?object=fulfilment_asset&parent=fulfilment_delivery&parent_key='.$fulfilment_delivery->id,
+
+                    'tipo'       => 'edit_objects',
+                    'parent'     => 'fulfilment_delivery',
+                    'parent_key' => $fulfilment_delivery->id,
+
+                    'object' => 'fulfilment_asset',
+                ),
+
+                'spreadsheet_edit' => array(
+                    'tipo' => 'edit_objects',
+
+                    'parent'      => 'fulfilment_delivery',
+                    'parent_key'  => $fulfilment_delivery->id,
+                    'object'      => 'fulfilment_asset',
+                    'parent_code' => $fulfilment_delivery->id,
+                ),
+
+            );
+            $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
 
             $smarty->assign(

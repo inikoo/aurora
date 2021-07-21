@@ -9,7 +9,7 @@ cell: "string",
 },
 
 {
-name: "formated_id",
+name: "formatted_id",
 label: "{t}Id{/t}",
 renderable: true,
 editable: false,

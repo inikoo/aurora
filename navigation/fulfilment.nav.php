@@ -441,7 +441,7 @@ function get_fulfilment_asset_navigation($data, $smarty, $user, $db, $account): 
 
     $_section = 'fulfilment';
 
-    $delivery=$data['_parent'];
+    $delivery = $data['_parent'];
 
     $tab = 'fulfilment.delivery.assets';
     include_once 'prepare_table/fulfilment.assets.ptc.php';
@@ -452,8 +452,7 @@ function get_fulfilment_asset_navigation($data, $smarty, $user, $db, $account): 
     $search_placeholder = _('Search fulfilment');
 
 
-
-    $link = 'fulfilment/'.$delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($delivery->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$delivery->get('Fulfilment Delivery Customer Key').'/delivery/'.$delivery->id;
+    $link = get_delivery_link($delivery);
 
     $up_button = array(
         'icon'      => 'arrow-up',
@@ -472,7 +471,7 @@ function get_fulfilment_asset_navigation($data, $smarty, $user, $db, $account): 
         $sections[$_section]['selected'] = true;
     }
 
-    $title='<span class="Type_Icon padding_right_10">'.$object->get('Type Icon').'</span> ';
+    $title = '<span class="Type_Icon padding_right_10">'.$object->get('Type Icon').'</span> ';
     $title .= '<span class="id Fulfilment_Asset_Formatted_ID_Reference">'.$object->get('Formatted ID Reference').'</span> ';
 
 
@@ -503,5 +502,46 @@ function get_fulfilment_asset_navigation($data, $smarty, $user, $db, $account): 
         $smarty->fetch('top_menu.tpl'),
         $smarty->fetch('au_header.tpl')
     );
+
+}
+
+function get_upload_navigation($data, $smarty): array {
+
+    $sections = get_sections('fulfilment', $data['current_warehouse']);
+    $sections['customers']['selected'] = true;
+    $delivery = $data['_parent'];
+
+    $delivery_link = get_delivery_link($delivery);
+    $up_button     = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Delivery").' '.$data['_parent']->get('Formatted ID'),
+        'reference' => $delivery_link
+    );
+
+    $title = _('Uploading items to delivery').' <span onclick="change_view(\''.$delivery_link.'\')" class="id link">'.$delivery->get('Formatted ID').'</span> ';
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => array($up_button),
+        'right_buttons'  => array(),
+        'title'          => $title,
+        'search'         => array(
+            'show'        => false,
+            'placeholder' => _('Search fulfilment')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+}
+
+function get_delivery_link($delivery): string {
+    return 'fulfilment/'.$delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($delivery->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$delivery->get('Fulfilment Delivery Customer Key').'/delivery/'.$delivery->id;
 
 }

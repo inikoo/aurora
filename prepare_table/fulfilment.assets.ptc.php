@@ -26,7 +26,7 @@ class prepare_table_fulfilment_assets extends prepare_table {
         ];
 
         $this->navigation_sql = [
-            'name' => 'CONCAT(LPAD(`Fulfilment Asset Key`,12,0),\' \',`Fulfilment Asset Reference`)',
+            'name' => 'CONCAT(LPAD(`Fulfilment Asset Key`,6,0),\' \',`Fulfilment Asset Reference`)',
             'key'  => '`Fulfilment Asset Key`'
         ];
     }

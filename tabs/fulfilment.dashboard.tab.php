@@ -8,7 +8,10 @@
 
  Version 3.0
 */
-
+/** @var User $user */
+/** @var \Smarty $smarty */
+/** @var array $state */
+/** @var \Account $account */
 
 $account->load_acc_data();
 

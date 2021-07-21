@@ -13,6 +13,9 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/object_functions.php';
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Account $account */
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -714,8 +717,7 @@ function upload_records($_data, $db, $user, $account) {
 
 
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     if ($result = $db->query($sql)) {
@@ -723,7 +725,7 @@ function upload_records($_data, $db, $user, $account) {
         foreach ($result as $data) {
             $object = '';
 
-
+            $state='';
             switch ($data['Upload Record Status']) {
                 case 'Done':
 
@@ -825,11 +827,20 @@ function upload_records($_data, $db, $user, $account) {
                         case 'Barcode Checksum':
                             $error_msg = _('Invalid barcode check digit');
                             $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '.$error_msg.'</span>';
-
                             break;
-
-
-
+                        case 'duplicate_fulfilment_asset_reference':
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._("Duplicate reference").' <b>'.$data['Upload Record Message Metadata'].'</b></span>';
+                            break;
+                        case 'warning_asset_location_not_found':
+                            $state = '<i class="fa fa-check success" aria-hidden="true"></i>  <span class="success">'._('Created').'</span>';
+                            $state .=  ' <span class="warning padding_left_10"><i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i> '._("Location not found").' <b>'.$data['Upload Record Message Metadata'].'</b></span>';
+                            break;
+                        case 'invalid_fulfilment_asset_type':
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._("Invalid asset type").' <b>'.$data['Upload Record Message Metadata'].'</b></span> <span class="very_discreet italic">'._('valid values').': Pallet,Box</span> ';
+                            break;
+                        case 'fulfilment_asset_type_missing':
+                            $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._("Asset type required").'</span> <span class="very_discreet italic">'._('valid values').': Pallet,Box</span>';
+                            break;
                         default:
                             $state .=$data['Upload Record Message Code'];
 
