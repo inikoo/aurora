@@ -761,11 +761,12 @@ abstract class DB_Table extends stdClass {
     /**
      * @param string $field Database field
      * @param string $key   json property name
-     * @param string $value value
+     * @param string|null $value value
      * @param string $table_full_name
      */
-    public function fast_update_json_field(string $field, string $key, string $value, string $table_full_name = '') {
+    public function fast_update_json_field(string $field, string $key, ?string $value, string $table_full_name = '') {
 
+        $value=$value??'';
 
         if ($table_full_name == '') {
             $table_full_name = $this->table_name.' Dimension';

@@ -11,6 +11,7 @@
 */
 
 require_once 'common.php';
+/** @var PDO $db */
 
 
 $print_est=true;
@@ -33,7 +34,7 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part SKU`=1309 ');
+$sql= 'select `Part SKU` from `Part Dimension`';
 //$sql = sprintf(
 //    'SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU` DESC  '
 //);
@@ -42,6 +43,9 @@ $sql=sprintf('select `Part SKU` from `Part Dimension` where `Part SKU`=1309 ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+        /**
+         * @var $part \Part
+         */
         $part = get_object('Part', $row['Part SKU']);
 
         //foreach($part->get_locations('part_location_object') as $part_location){
