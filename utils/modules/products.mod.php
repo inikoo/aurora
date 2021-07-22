@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-function get_products_module() {
+function get_products_module(): array {
 
     include_once 'utils/modules/product.sec.php';
     include_once 'utils/modules/service.sec.php';
@@ -94,12 +94,12 @@ function get_products_module() {
                 )
 
             ),
-            'category'          => array(
+            'category'   => array(
                 'type'           => 'object',
                 'subtabs_parent' => array(
-                    'category.product.sales.plot'     => 'category.sales',
-                    'category.product.sales.history'  => 'category.sales',
-                    'category.product.sales.info'     => 'category.sales',
+                    'category.product.sales.plot'    => 'category.sales',
+                    'category.product.sales.history' => 'category.sales',
+                    'category.product.sales.info'    => 'category.sales',
 
                     'category.customers'         => 'category.customers',
                     'category.customers.favored' => 'category.customers',
@@ -120,18 +120,18 @@ function get_products_module() {
                         'label'   => _('Sales'),
                         'icon'    => 'money-bill-alt',
                         'subtabs' => array(
-                            'category.product.sales.plot'     => array(
+                            'category.product.sales.plot'    => array(
                                 'label' => _(
                                     'Plot'
                                 )
                             ),
-                            'category.product.sales.history'  => array(
+                            'category.product.sales.history' => array(
                                 'label' => _(
                                     'Sales history'
                                 )
                             ),
 
-                            'category.product.sales.info'     => array(
+                            'category.product.sales.info' => array(
                                 'label' => _('Info'),
                                 'icon'  => 'info',
                                 'class' => 'right icon_only'
@@ -204,7 +204,7 @@ function get_products_module() {
 
 
             'no_website' => array(
-                'type'  => 'object',
+                'type' => 'object',
                 'tabs' => array(
                     'no_website' => array(
                         'label' => _('No website')
@@ -213,7 +213,6 @@ function get_products_module() {
                 )
 
             ),
-
 
 
             'settings' => array(
@@ -225,8 +224,8 @@ function get_products_module() {
                 'subtabs_parent' => array(
 
 
-                    'store.current_shipping_zones'   => 'store.shipping_zones',
-                    'store.shipping_zones_schemas'   => 'store.shipping_zones',
+                    'store.current_shipping_zones' => 'store.shipping_zones',
+                    'store.shipping_zones_schemas' => 'store.shipping_zones',
 
                     'store.notifications_recipients' => 'store.notifications',
 
@@ -283,153 +282,7 @@ function get_products_module() {
 
             ),
 
-/*
-            'email_campaign_type' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'email_campaign_type.details' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h',
-                    ),
 
-                    'email_campaign_type.next_recipients' => array(
-                        'label' => _('Notifications to be send next shot'),
-                        'title' => _('Next mailshot recipients'),
-                        'icon'  => 'user-clock'
-                    ),
-                    'email_campaign_type.workshop'        => array(
-                        'label' => _('Workshop'),
-                        'icon'  => 'wrench'
-                    ),
-
-                    'email_campaign_type.mailshots'   => array(
-                        'label' => _('Mailshots'),
-                        'icon'  => 'container-storage'
-                    ),
-                    'email_campaign_type.sent_emails' => array(
-                        'label' => _('Sent emails'),
-                        'icon'  => 'paper-plane'
-                    ),
-
-                    'email_campaign_type.history' => array(
-                        'title' => _('History'),
-                        'label' => '',
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-            ),
-            'mailshot' => array(
-                'type'           => 'object',
-                'title'          => _("Mailshot"),
-                'subtabs_parent' => array(
-                    'mailshot.workshop.templates'              => 'mailshot.workshop',
-                    'mailshot.workshop.previous_mailshots'     => 'mailshot.workshop',
-                    'mailshot.workshop.other_stores_mailshots' => 'mailshot.workshop',
-                    'mailshot.workshop.composer'               => 'mailshot.workshop',
-                    'mailshot.workshop.composer_text'          => 'mailshot.workshop',
-
-                ),
-                'tabs'           => array(
-                    'mailshot.details'       => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h',
-                        'title' => _('Settings')
-                    ),
-                    'mailshot.set_mail_list' => array(
-                        'label' => _('Set recipients'),
-                        'icon'  => 'users',
-                    ),
-
-                    'mailshot.mail_list' => array(
-                        'label' => _('Recipients'),
-                        'icon'  => 'users',
-                    ),
-
-                    'mailshot.workshop' => array(
-                        'label'   => _('Workshop'),
-                        'icon'    => 'wrench',
-                        'subtabs' => array(
-
-                            'mailshot.workshop.composer'      => array(
-                                'label'   => _('HTML email composer'),
-                                'icon_v2' => 'fab fa-html5'
-                            ),
-                            'mailshot.workshop.composer_text' => array(
-                                'label' => _('Plain text version'),
-                                'icon'  => 'align-left'
-                            ),
-
-                            'mailshot.workshop.templates' => array(
-                                'label' => _('Templates'),
-                                'icon'  => 'clone'
-                            ),
-
-                            'mailshot.workshop.previous_mailshots'     => array(
-                                'label' => _('Previous mailshots'),
-                                'icon'  => 'history'
-                            ),
-                            'mailshot.workshop.other_stores_mailshots' => array(
-                                'label' => _('Other stores mailshots'),
-                                'icon'  => 'repeat-1'
-                            ),
-
-
-                        )
-
-                    ),
-
-                    'mailshot.published_email' => array(
-                        'label' => _('Email'),
-                        'icon'  => 'envelope'
-                    ),
-
-
-                    'mailshot.sent_emails' => array(
-                        'label' => _('Sent emails'),
-                        'icon'  => 'paper-plane'
-                    ),
-
-                    'mailshot.history' => array(
-                        'title' => _('History'),
-                        'label' => '',
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-            ),
-            'mailshot.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'mailshot.new' => array(
-                        'label' => 'new mailshot'
-                    ),
-
-                )
-
-            ),
-
-
-            'email_tracking' => array(
-                'type'  => 'object',
-                'title' => _("Email tracking"),
-
-                'tabs' => array(
-                    'email_tracking.email' => array(
-                        'label' => _('Email'),
-                        'icon'  => 'envelope',
-                    ),
-
-                    'email_tracking.events' => array(
-                        'label' => _('Tracking'),
-                        'icon'  => 'stopwatch'
-                    ),
-
-                )
-            ),
-*/
             'vouchers' => array(
                 'type'  => 'object',
                 'title' => _("Vouchers"),
@@ -722,7 +575,6 @@ function get_products_module() {
                 )
 
             ),
-
 
 
             'main_category.new' => array(
@@ -1022,6 +874,35 @@ function get_products_module() {
 
                 )
 
+            ),
+
+            'picking_pipeline' => array(
+                'type'      => 'left_button',
+                'title'     => _('Picking Pipeline'),
+                'icon'      => 'project-diagram',
+                'showcase'  => 'picking_pipeline',
+                'reference' => 'store/%d/pipeline',
+                'class'=>'icon_only',
+
+
+                'tabs' => array(
+
+                    'picking_pipeline.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h',
+                        'title' => _('Pipeline settings')
+                    ),
+
+
+
+                    'picking_pipeline.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+
+                )
             ),
 
         )

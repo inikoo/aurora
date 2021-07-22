@@ -201,6 +201,17 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                     $section = 'shipping_zone.new';
                                 }
 
+                            }elseif ($view_path[1] == 'pipeline') {
+                                $section = 'picking_pipeline';
+                                $parent     = 'store';
+                                $parent_key = $key;
+                                $object  = 'picking_pipeline';
+                                /**
+                                 * @var $store Store
+                                 */
+                                $store    = get_object('store', $key);
+                                $key=$store->properties('picking_pipeline');
+
                             }
 
                         }
