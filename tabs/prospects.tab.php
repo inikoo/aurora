@@ -92,7 +92,7 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
 
 } else {
     try {
-        $html = $smarty->fetch('access_denied');
+        $html = $smarty->fetch('access_denied.tpl');
     } catch (Exception $e) {
     }
 }

@@ -38,7 +38,7 @@ if ($user->can_view('parts')) {
     }
 } else {
     try {
-        $html = $smarty->fetch('access_denied');
+        $html = $smarty->fetch('access_denied.tpl');
     } catch (Exception $e) {
     }
 

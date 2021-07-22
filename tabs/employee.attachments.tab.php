@@ -22,7 +22,7 @@ if ($user->can_edit('Staff')) {
     include('utils/get_table_html.php');
 } else {
     try {
-        $html = $smarty->fetch('access_denied');
+        $html = $smarty->fetch('access_denied.tpl');
     } catch (Exception $e) {
     }
 }

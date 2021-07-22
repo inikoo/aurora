@@ -9,26 +9,46 @@
 
 */
 include_once 'utils/invalid_messages.php';
-
-
-include_once 'conf/object_fields.php';
+include_once 'conf/fields/store.new.fld.php';
 include_once 'class.Store.php';
 
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
+
+
+if ($user->can_supervisor('stores')) {
+
+
+    $store = new Store(0);
+
+    $object_fields = get_new_store_fields($store, $user, $db, $smarty);
+
+    $smarty->assign('state', $state);
+    $smarty->assign('object', $store);
+
+    $smarty->assign('object_name', $store->get_object_name());
+    $smarty->assign('object_fields', $object_fields);
+
+
+
+    try {
+        $html = $smarty->fetch('new_object.tpl');
+    } catch (Exception $e) {
+        $html='';
+    }
+} else {
+    try {
+        $html = $smarty->fetch('access_denied.tpl');
+    } catch (Exception $e) {
+        $html='';
+    }
+}
 
 
 
 
-$store = new Store(0);
 
-$object_fields = get_object_fields($store, $db, $user, $smarty,array('new'=>true));
-
-$smarty->assign('state', $state);
-$smarty->assign('object', $store);
-
-$smarty->assign('object_name', $store->get_object_name());
-$smarty->assign('object_fields', $object_fields);
-//$smarty->assign('js_code', 'js/injections/employee.'.(_DEVEL ? '' : 'min.').'js');
-
-$html = $smarty->fetch('new_object.tpl');
 
 

@@ -35,7 +35,7 @@ if ($user->can_edit('Staff')) {
 
 } else {
     try {
-        $html = $smarty->fetch('access_denied');
+        $html = $smarty->fetch('access_denied.tpl');
     } catch (Exception $e) {
     }
 

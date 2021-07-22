@@ -35,7 +35,7 @@ if ( $user->can_view('suppliers')) {
     }
 } else {
     try {
-        $html = $smarty->fetch('access_denied');
+        $html = $smarty->fetch('access_denied.tpl');
     } catch (Exception $e) {
     }
 }

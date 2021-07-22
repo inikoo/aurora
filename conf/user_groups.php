@@ -279,11 +279,14 @@ $user_groups = array(
         'Rights'           => array(
             'CV',
             'SV',
+            'SE',
+            'SS',
+
             'MV',
             'ME',
             'WE',
             'WV',
-            'SS',
+
             'MS',
             'WS',
             'MRV'
@@ -304,6 +307,7 @@ $user_groups = array(
         'Rights'       => array(
             'CV',
             'SV',
+            'SE',
             'MV',
             'ME',
             'WE',

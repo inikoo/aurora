@@ -11,32 +11,46 @@
 
 include_once 'utils/country_functions.php';
 include_once 'utils/invalid_messages.php';
-include_once 'conf/object_fields.php';
+include_once 'conf/fields/store.fld.php';
 
-$store = $state['_object'];
+/** @var User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
+if ($user->can_edit('stores') and in_array($state['_object']->id, $user->stores)) {
 
-
-
-
-$smarty->assign(
-    'default_country', $store->get('Store Home Country Code 2 Alpha')
-);
-$smarty->assign(
-    'preferred_countries', '"'.join(
-                             '", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))
-                         ).'"'
-);
-
-
-$object_fields = get_object_fields($store, $db, $user, $smarty, array());
-$smarty->assign('object_fields', $object_fields);
-$smarty->assign('state', $state);
-$smarty->assign('object', $store);
-
-$smarty->assign('js_code', 'js/injections/store_settings.'.(_DEVEL ? '' : 'min.').'js');
+    $store = $state['_object'];
+    $smarty->assign(
+        'default_country', $store->get('Store Home Country Code 2 Alpha')
+    );
+    $smarty->assign(
+        'preferred_countries', '"'.join(
+                                 '", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))
+                             ).'"'
+    );
 
 
-$html = $smarty->fetch('edit_object.tpl');
+    $object_fields = get_store_fields($store, $user, $db, $smarty);
+    $smarty->assign('object_fields', $object_fields);
+    $smarty->assign('state', $state);
+    $smarty->assign('object', $store);
 
-?>
+    $smarty->assign('js_code', 'js/injections/store_settings.'.(_DEVEL ? '' : 'min.').'js');
+
+
+    try {
+        $html = $smarty->fetch('edit_object.tpl');
+    } catch (Exception $e) {
+        $html='';
+    }
+} else {
+    try {
+        $html = $smarty->fetch('access_denied.tpl');
+    } catch (Exception $e) {
+        $html='';
+    }
+}
+
+
+

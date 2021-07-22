@@ -42,7 +42,7 @@ if ($user->can_edit('suppliers')) {
     }
 } else {
     try {
-        $html = $smarty->fetch('access_denied');
+        $html = $smarty->fetch('access_denied.tpl');
     } catch (Exception $e) {
     }
 }
