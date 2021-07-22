@@ -24,6 +24,8 @@ if ($state['parent'] == 'store') {
         $smarty->assign('object_fields', $object_fields);
         $smarty->assign('state', $state);
         $smarty->assign('object', $state['_object']);
+        $smarty->assign('object_name', $state['_object']->get_object_name());
+        $smarty->assign('object_fields', $object_fields);
 
         if ($state['_object']->id) {
             $template = 'edit_object.tpl';
@@ -32,7 +34,7 @@ if ($state['parent'] == 'store') {
         }
 
         try {
-            $html = $smarty->fetch();
+            $html = $smarty->fetch($template);
         } catch (Exception $e) {
             $html = '';
         }

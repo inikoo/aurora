@@ -49,8 +49,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
 
         case 'upload':
             include_once 'showcase/upload.show.php';
-            $html = get_upload_showcase($data, $smarty, $user, $db);
-            $title=_('Upload');
+            $html         = get_upload_showcase($data, $smarty, $user, $db);
+            $title        = _('Upload');
             $web_location = '<i class="fal fa-fw fa-upload"></i> '.$title;
 
             break;
@@ -256,7 +256,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'attachment':
             include_once 'showcase/attachment.show.php';
-            $html = get_attachment_showcase($data, $smarty, $user, $db);
+            $html         = get_attachment_showcase($data, $smarty, $user, $db);
             $title        = $data['_object']->get('Attachment File Original Name');
             $web_location = '<i class="fal fa-fw fa-paperclip"></i> '.$title;
             break;
@@ -367,12 +367,12 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'fulfilment_delivery':
             include_once 'showcase/fulfilment.delivery.show.php';
-            $html  = get_fulfilment_delivery_showcase($data, $smarty);
+            $html         = get_fulfilment_delivery_showcase($data, $smarty);
             $web_location = '<i class="fal fa-fw fa-arrow-square-down"></i> '.$data['_object']->get('Formatted ID');
             break;
         case 'fulfilment_asset':
             include_once 'showcase/fulfilment.asset.show.php';
-            $html  = get_fulfilment_asset_showcase($data, $smarty);
+            $html         = get_fulfilment_asset_showcase($data, $smarty);
             $web_location = $data['_object']->get('Type Icon').' '.$data['_object']->get('Formatted ID Reference');
             break;
         case 'position':
@@ -487,6 +487,11 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
         case 'consignment':
             include_once 'showcase/consignment.show.php';
             $html = get_consignment_showcase($data, $smarty, $user, $db);
+            break;
+        case 'picking_pipeline':
+            include_once 'showcase/picking_pipeline.show.php';
+            $html = get_picking_pipeline_showcase($data, $smarty);
+
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
