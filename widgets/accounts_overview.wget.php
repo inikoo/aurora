@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_accounts_overview($db, $redis,$account, $user, $smarty, $type, $sub_type, $period, $currency, $orders_view_type, $display_device_version = 'desktop') {
+function get_dashboard_accounts_overview($db, $redis, $account, $user, $smarty, $type, $sub_type, $period, $currency, $orders_view_type) {
 
     include_once 'utils/date_functions.php';
 
@@ -62,12 +62,14 @@ function get_dashboard_accounts_overview($db, $redis,$account, $user, $smarty, $
 
             //print "$key $db_interval ";
 
-            $sales_data=json_decode($redis->hGet(
-                $key, preg_replace('/\s/','_',$db_interval)
-            ),true);
+            $sales_data = json_decode(
+                $redis->hGet(
+                    $key, preg_replace('/\s/', '_', $db_interval)
+                ), true
+            );
 
-           // print_r($account_code);
-           // print_r($sales_data);
+            // print_r($account_code);
+            // print_r($sales_data);
 
             $sales_overview[] = array(
                 'id'               => 'totals',
@@ -318,13 +320,8 @@ function get_dashboard_accounts_overview($db, $redis,$account, $user, $smarty, $
     $smarty->assign('report_title', $report_title);
 
 
-    if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/sales_overview.mobile.dbard.tpl');
-    } else {
+    return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
 
-
-        return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
-    }
 }
 
 

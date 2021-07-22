@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub_type, $period, $currency, $orders_view_type, $display_device_version = 'desktop') {
+function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, $period, $currency, $orders_view_type) {
 
     include_once 'utils/date_functions.php';
 
@@ -239,7 +239,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub
                 ),
 
                 'refunds_1yb'   => number($row['refunds_1yb']),
-                'refunds_delta' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb'], $inverse = true),
+                'refunds_delta' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb'], true),
 
                 'replacements'                => number($row['replacements']),
                 'replacements_percentage'     => percentage(
@@ -276,10 +276,6 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub
 
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
     }
 
 
@@ -374,11 +370,11 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub
                 ),
 
                 'refunds_1yb'   => number($row['refunds_1yb']),
-                'refunds_delta' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb'], $inverse = true),
+                'refunds_delta' => delta($row['refunds'], $row['refunds_1yb']).' '.delta_icon($row['refunds'], $row['refunds_1yb'], true),
 
                 'replacements'                => number($row['replacements']),
                 'replacements_percentage'     => percentage($row['replacements'], $row['delivery_notes']),
-                'replacements_delta'          => delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb'], $inverse = true),
+                'replacements_delta'          => delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb'], true),
                 'replacements_percentage_1yb' => percentage(
                     $row['replacements_1yb'], $row['delivery_notes_1yb']
                 ),
@@ -404,12 +400,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub
 
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
     }
-
 
     /*---------*/
 
@@ -491,7 +482,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub
         'refunds' => array('value' => number($sum_refunds)),
 
         'refunds_1yb'   => number($sum_refunds_1yb),
-        'refunds_delta' => delta($sum_refunds, $sum_refunds_1yb).' '.delta_icon($sum_refunds, $sum_refunds_1yb, $inverse = true),
+        'refunds_delta' => delta($sum_refunds, $sum_refunds_1yb).' '.delta_icon($sum_refunds, $sum_refunds_1yb, true),
 
         'replacements'                => number($sum_replacements),
         'replacements_percentage'     => percentage(
@@ -499,7 +490,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub
         ),
         'replacements_delta'          => delta(
                 $sum_replacements, $sum_replacements_1yb
-            ).' '.delta_icon($sum_replacements, $sum_replacements_1yb, $inverse = true),
+            ).' '.delta_icon($sum_replacements, $sum_replacements_1yb, true),
         'replacements_percentage_1yb' => percentage(
             $sum_replacements_1yb, $sum_delivery_notes_1yb
         ),
@@ -545,14 +536,8 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub
 
     $smarty->assign('report_title', $report_title);
 
-
-    if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/sales_overview.mobile.dbard.tpl');
-    } else {
-
-
         return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
-    }
+
 }
 
 

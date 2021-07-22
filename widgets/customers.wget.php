@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_customers($db, $account, $user, $smarty, $parent = '', $currency, $display_device_version = 'desktop') {
+function get_dashboard_customers($db, $user, $smarty, $parent, $currency) {
 
 
     include_once 'utils/date_functions.php';
@@ -20,23 +20,16 @@ function get_dashboard_customers($db, $account, $user, $smarty, $parent = '', $c
 
 
     if ($parent != '') {
-        include_once 'class.Store.php';
-
-        $object = new Store($parent);
-        $object->load_acc_data();
-
-        //  print_r($_object);
-        $title = $object->get('Code');
-
+        $object =  get_object('Store',$parent);
     } else {
-        $object = new Account();
-        $object->load_acc_data();
-        $title = $object->get('Code');
+        $object = get_object('Account',1);
     }
+    $object->load_acc_data();
+    $title = $object->get('Code');
 
 
     $stores = array();
-    $sql    = sprintf('SELECT `Store Key`,`Store Code` FROM `Store Dimension` WHERE `Store Status`="Normal" or  `Store Status`="ClosingDown" ');
+    $sql    = "SELECT `Store Key`,`Store Code` FROM `Store Dimension` WHERE `Store Status`='Normal' or  `Store Status`='ClosingDown'";
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $stores[] = array(
@@ -45,12 +38,7 @@ function get_dashboard_customers($db, $account, $user, $smarty, $parent = '', $c
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
-
 
     $smarty->assign('store_title', $title);
     $smarty->assign('object', $object);
@@ -58,13 +46,7 @@ function get_dashboard_customers($db, $account, $user, $smarty, $parent = '', $c
     $smarty->assign('currency', $currency);
     $smarty->assign('stores', $stores);
 
+    return $smarty->fetch('dashboard/customers.dbard.tpl');
 
-    if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/customers.mobile.dbard.tpl');
-    } else {
-        return $smarty->fetch('dashboard/customers.dbard.tpl');
-    }
 }
 
-
-?>

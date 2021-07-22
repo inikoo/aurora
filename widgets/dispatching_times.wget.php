@@ -10,29 +10,16 @@
  Version 3.0
 */
 
-/**
- * @param        $db      \PDO
- * @param        $account \Account
- * @param        $user    \User
- * @param        $smarty  \Smarty
- * @param string $parent
- * @param        $currency
- * @param string $display_device_version
- *
- * @return mixed
- */
-function get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, $display_device_version = 'desktop') {
+
+function get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent) {
 
     include_once 'utils/date_functions.php';
     include_once 'utils/prepare_smarty_for_dashboard.php';
 
     $smarty=prepare_smarty_for_dashboard($db, $account, $user, $smarty, $parent, '');
 
-    if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/dispatching_times.mobile.dbard.tpl');
-    } else {
-        return $smarty->fetch('dashboard/dispatching_times.dbard.tpl');
-    }
+    return $smarty->fetch('dashboard/dispatching_times.dbard.tpl');
+
 }
 
 

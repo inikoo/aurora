@@ -10,16 +10,8 @@
  Version 3.0
 */
 
-/**
- * @param        $user   \User
- * @param        $smarty \Smarty
- * @param string $parent
- * @param string $display_device_version
- *
- * @return mixed
- * @throws \SmartyException
- */
-function get_dashboard_inventory($type ,$user, $smarty, $parent = '', $display_device_version = 'desktop') {
+
+function get_dashboard_inventory($type ,$user, $smarty, $parent = '') {
 
 
     $account = get_object('Account',1);
@@ -46,11 +38,9 @@ function get_dashboard_inventory($type ,$user, $smarty, $parent = '', $display_d
     
 
     if($type=='inventory_excluding_production'){
-        if ($display_device_version == 'mobile') {
-            return $smarty->fetch('dashboard/inventory.mobile.dbard.tpl');
-        } else {
-            return $smarty->fetch('dashboard/inventory.dbard.tpl');
-        }
+
+        return $smarty->fetch('dashboard/inventory.dbard.tpl');
+
     }else if($type=='production'){
 
         $production_job_orders_elements=json_decode($object->properties('production_job_orders_elements'),true);
@@ -61,13 +51,10 @@ function get_dashboard_inventory($type ,$user, $smarty, $parent = '', $display_d
 
         $smarty->assign('production_supplier_key', $account->properties('production_supplier_key'));
 
+        return $smarty->fetch('dashboard/production_inventory.dbard.tpl');
 
-
-        if ($display_device_version == 'mobile') {
-            return $smarty->fetch('dashboard/production_inventory.mobile.dbard.tpl');
-        } else {
-            return $smarty->fetch('dashboard/production_inventory.dbard.tpl');
-        }
+    }else{
+        return '';
     }
 }
 

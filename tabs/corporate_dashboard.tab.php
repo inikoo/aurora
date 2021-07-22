@@ -9,6 +9,11 @@
 
  Version 3.0
 */
+/** @var \Account $account */
+/** @var \User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var \Redis $redis */
 
 $account->load_acc_data();
 $html = '';
@@ -56,7 +61,7 @@ foreach ($user->get_corporate_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashboard_accounts_overview($db, $redis,$account, $user, $smarty, $type, $sub_type, $period, $currency, $orders_view_type, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
+        $html .= get_dashboard_accounts_overview($db, $redis,$account, $user, $smarty, $type, $sub_type, $period, $currency, $orders_view_type);
 
     }
 

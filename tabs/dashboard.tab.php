@@ -10,6 +10,11 @@
  Version 3.0
 */
 
+/** @var \Account $account */
+/** @var \User $user */
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+
 $account->load_acc_data();
 $html = '';
 foreach ($user->get_dashboard_items() as $item) {
@@ -56,7 +61,7 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub_type, $period, $currency, $orders_view_type, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
+        $html .= get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, $period, $currency, $orders_view_type);
 
     } elseif ($item == 'pending_orders_and_customers') {
 
@@ -78,8 +83,8 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent, $currency, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
-        $html .= get_dashboard_customers($db, $account, $user, $smarty, $parent, $currency, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
+        $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent, $currency);
+        $html .= get_dashboard_customers($db, $user, $smarty, $parent, $currency);
 
     } elseif ($item == 'inventory_warehouse') {
 
@@ -101,13 +106,13 @@ foreach ($user->get_dashboard_items() as $item) {
 
 
 
-        $html .= get_dashboard_parts_stock_status($db,'inventory_excluding_production', $user, $smarty, $parent, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
-        $html .= get_dashboard_inventory('inventory_excluding_production', $user, $smarty, $parent, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
+        $html .= get_dashboard_parts_stock_status($db,'inventory_excluding_production', $user, $smarty, $parent);
+        $html .= get_dashboard_inventory('inventory_excluding_production', $user, $smarty, $parent);
 
         if ($account->get('Account Manufacturers') > 0) {
             $html.= '<div style="margin-top: 10px">';
-            $html .= get_dashboard_parts_stock_status($db,'production', $user, $smarty, $parent, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
-            $html .= get_dashboard_inventory('production', $user, $smarty, $parent, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
+            $html .= get_dashboard_parts_stock_status($db,'production', $user, $smarty, $parent);
+            $html .= get_dashboard_inventory('production', $user, $smarty, $parent);
             $html .='</div>';
         }
 
@@ -125,7 +130,7 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashboard_kpis($db, $account, $user, $smarty, $period, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
+        $html .= get_dashboard_kpis($db, $user, $smarty, $period);
 
     } elseif ($item == 'dispatching_times') {
 
@@ -141,7 +146,7 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent, (!empty($_SESSION['display_device_version']) ? $_SESSION['display_device_version'] : 'desktop'));
+        $html .= get_dashboard_dispatching_times($db, $account, $user, $smarty, $parent);
 
 
     }

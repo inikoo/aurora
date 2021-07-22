@@ -14,7 +14,11 @@
 */
 
 require_once 'vendor/autoload.php';
-
+/** @var string $dns_host */
+/** @var string $dns_port */
+/** @var string $dns_db */
+/** @var string $dns_user */
+/** @var string $dns_pwd */
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 
@@ -34,8 +38,6 @@ include_once 'utils/i18n.php';
 include_once 'class.Account.php';
 
 
-
-
 $smarty               = new Smarty();
 $smarty->caching_type = 'redis';
 $smarty->setTemplateDir('templates');
@@ -47,21 +49,19 @@ $smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
 
+$smarty->registerFilter("output", "minify_html_output");
 
-$smarty->registerFilter("output","minify_html_output");
 
-
-$smarty->assign('is_devel', (ENVIRONMENT=='DEVEL'?true:false));
+$smarty->assign('is_devel', ENVIRONMENT == 'DEVEL');
 
 if (defined('SENTRY_DNS_AUJS')) {
-    $smarty->assign('sentry_js',SENTRY_DNS_AUJS);
+    $smarty->assign('sentry_js', SENTRY_DNS_AUJS);
 
 }
 
 
 $db = new PDO("mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd);
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
 
 
 $account = new Account();
@@ -79,35 +79,20 @@ if ($account->id and $account->get('Account State') == 'Active') {
     $Sk = "skstart|".(gmdate('U') + 30)."|".ip_from_cloudfare()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St = AESEncryptCtr($Sk, SKEY, 256);
     $smarty->assign('st', $St);
-
-    $smarty->assign('error', (isset($_REQUEST['e']) ? true : false));
-
-    $smarty->assign('url', (isset($_REQUEST['ref']) ? $_REQUEST['ref'] : ''));
-
+    $smarty->assign('error', isset($_REQUEST['e']));
+    $smarty->assign('url', ($_REQUEST['ref'] ?? ''));
     $smarty->assign('account_code', strtolower($account->get('Code')));
 
-    require_once 'external_libs/mobile_detect/Mobile_Detect.php';
-    $detect = new Mobile_Detect;
 
-    if ($detect->isMobile() and false ) {
-        $display_device_version = 'mobile';
-        $detected_device = 'mobile';
+    if (file_exists("art/bg/".strtolower($account->get('Code')).".jpg")) {
+        $bg_image = "/art/bg/".strtolower($account->get('Code')).".jpg";
+
     } else {
-        $display_device_version = 'desktop';
-        $detected_device = 'desktop';
-
-    }
-
-    if(file_exists("art/bg/".strtolower($account->get('Code')).".jpg")){
-        $bg_image="/art/bg/".strtolower($account->get('Code')).".jpg";
-
-    }else{
-        $bg_image="/art/bg/".strtolower($account->get('Account Country Code')).".jpg";
+        $bg_image = "/art/bg/".strtolower($account->get('Account Country Code')).".jpg";
 
     }
 
 
-    
     $smarty->assign('bg_image', $bg_image);
 
     $status_page = '';
@@ -122,15 +107,12 @@ if ($account->id and $account->get('Account State') == 'Active') {
     }
     $smarty->assign('status_page_widget', $status_page_widget);
 
-    if ($display_device_version=='mobile') {
-        $smarty->display("login.mobile.tpl");
-    } else {
-        $smarty->display("login.tpl");
-    }
+
+    $smarty->display("login.tpl");
 
 
 } else {
-    $smarty->assign('error', (isset($_REQUEST['e']) ? true : false));
+    $smarty->assign('error', isset($_REQUEST['e']));
     $smarty->display("login.setup.tpl");
 }
 

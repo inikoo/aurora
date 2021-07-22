@@ -16,6 +16,12 @@ require_once 'utils/object_functions.php';
 require_once 'helpers/view/get_showcases.php';
 require_once 'helpers/view/get_navigation.php';
 require_once 'helpers/view/get_breadcrumbs.php';
+/** @var \PDO $db */
+/** @var \Smarty $smarty */
+/** @var \User $user */
+/** @var \Account $account */
+/** @var array $modules */
+/** @var \Redis $redis */
 
 
 $tipo = $_REQUEST['tipo'];
@@ -26,7 +32,7 @@ switch ($tipo) {
         get_view($db, $smarty, $user, $account, $modules, $redis);
         break;
     case 'widget_details':
-        get_widget_details($redis, $db, $smarty, $user, $account, $modules);
+        get_widget_details($redis, $db, $smarty, $user, $account);
         break;
     case 'tab':
         $data     = prepare_values(
@@ -55,7 +61,7 @@ switch ($tipo) {
 
 }
 
-function get_widget_details($redis, $db, $smarty, $user, $account, $modules) {
+function get_widget_details($redis, $db, $smarty, $user, $account) {
 
     $data = prepare_values(
         $_REQUEST, array(
@@ -72,9 +78,7 @@ function get_widget_details($redis, $db, $smarty, $user, $account, $modules) {
     $state = $data['metadata'];
 
 
-    $html     = get_tab(
-        $redis, $db, $smarty, $user, $account, $data['widget'], '', $state, $metadata = false
-    );
+    $html     = get_tab($redis, $db, $smarty, $user, $account, $data['widget'], '', $state, false);
     $response = array(
         'state'          => 200,
         'widget_details' => $html,
@@ -83,15 +87,7 @@ function get_widget_details($redis, $db, $smarty, $user, $account, $modules) {
 
 }
 
-/**
- * @param $db      \PDO
- * @param $smarty  \Smarty
- * @param $user    \User
- * @param $account \Account
- * @param $modules
- * @param $redis   \Redis
- *
- */
+
 function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
@@ -122,7 +118,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     );
 
 
-    $old_weblocation = (isset($data['old_state']['module']) ? $data['old_state']['module'] : '').'|'.(isset($data['old_state']['section']) ? $data['old_state']['section'] : '');
+    $old_web_location = ($data['old_state']['module'] ?? '').'|'.($data['old_state']['section'] ?? '');
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
 
     //if (isset($data['metadata']['help']) and $data['metadata']['help']) {
@@ -170,22 +166,20 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             if ($state['parent_key'] != '') {
                 $_parent = get_object('Store', $state['parent_key']);
-            } else {
-                if ($state['object'] == 'product') {
-                    $_object             = get_object($state['object'], $state['key']);
-                    $_parent             = get_object('Store', $_object->get('Product Store Key'));
-                    $state['parent_key'] = $_parent->id;
-                } elseif ($state['object'] == 'customer') {
-                    $_object             = get_object($state['object'], $state['key']);
-                    $_parent             = get_object('Store', $_object->get('Customer Store Key'));
-                    $state['parent_key'] = $_parent->id;
+            } elseif ($state['object'] == 'product') {
+                $_object             = get_object($state['object'], $state['key']);
+                $_parent             = get_object('Store', $_object->get('Product Store Key'));
+                $state['parent_key'] = $_parent->id;
+            } elseif ($state['object'] == 'customer') {
+                $_object             = get_object($state['object'], $state['key']);
+                $_parent             = get_object('Store', $_object->get('Customer Store Key'));
+                $state['parent_key'] = $_parent->id;
 
-                } else {
-                    print $state['object'];
+            } else{
 
-                }
-
+                exit('error store key not found E180');
             }
+
 
             $state['current_store'] = $_parent->id;
             $store                  = $_parent;
@@ -514,82 +508,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
         }
 
-        /*
-
-                if ($state['module'] != 'production') {
-
-                    if ($state['object'] == 'supplier' and $_object->get('Supplier Production') == 'Yes') {
-
-
-                        $state['request'] = 'production/'.$_object->id;
-                        $state['module']  = 'production';
-                        $state['section'] = 'dashboard';
-                        $state['tab']     = 'production.dashboard';
-                        $state['subtab']  = '';
-                        $state['object']  = 'supplier_production';
-                        $_object          = get_object($state['object'], $state['key']);
-
-
-                    }
-
-
-                    //print_r($state);
-
-                    if ($state['object'] == 'purchase_order' and $_object->get('Purchase Order Type') == 'Production') {
-
-
-                        $state['request'] = 'production/'.$_object->get('Purchase Order Parent Key').'/order/'.$_object->id;
-
-                        $state['module']     = 'production';
-                        $state['section']    = 'order';
-                        $state['tab']        = 'supplier.order.items';
-                        $state['subtab']     = '';
-                        $state['parent']     = 'supplier_production';
-                        $state['parent_key'] = $_object->get('Purchase Order Parent Key');
-                        $_parent             = get_object($state['parent'], $state['parent_key']);
-                        $state['_parent']    = $_parent;
-                        $state['section']    = 'order';
-
-
-                    }
-
-
-                    if ($state['object'] == 'supplierdelivery' and $_object->get('Supplier Delivery Type') == 'Production') {
-
-
-                        $state['request']    = 'production/'.$_object->get('Supplier Delivery Parent Key').'/delivery/'.$_object->id;
-                        $state['module']     = 'production';
-                        $state['parent']     = 'supplier_production';
-                        $state['parent_key'] = $_object->get('Supplier Delivery Parent Key');
-                        $_parent             = get_object($state['parent'], $state['parent_key']);
-                        $state['_parent']    = $_parent;
-                        $state['section']    = 'delivery';
-
-
-                    }
-
-
-                    if ($state['object'] == 'supplier_part' and $_object->get('Supplier Part Production') == 'Yes') {
-
-                        $state['request'] = 'production/'.$_object->get('Supplier Part Supplier Key').'/part/'.$_object->id;
-                        $state['module']  = 'production';
-                        $state['parent']  = 'supplier_production';
-
-                        $state['parent_key'] = $_object->get('Supplier Part Supplier Key');
-                        $_parent             = get_object($state['parent'], $state['parent_key']);
-                        $state['_parent']    = $_parent;
-                        $state['section']    = 'production_part';
-
-
-                    }
-                }
-
-                */
-
-
-        //  print_r($state);
-
-        // $state['current_store'];
 
         if (empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))) {
             $store = get_object('Store', $state['_parent']->get('Store Key'));
@@ -1100,10 +1018,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     case 'categories':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._("Customer's categories").' '.$store->get('Code'));
                         break;
-                    case 'sub_category':
-                        exit;
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> <i class="fal fa-fw fa-sitemap"></i> '._("Customer's category"));
-                        break;
+
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> '._('Customers').' '.$store->get('Code'));
 
@@ -1136,18 +1051,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 }
 
                 break;
-            case 'customers_server':
-                switch ($state['section']) {
-                    case 'email_communications':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-paper-plane"></i> '._('Notifications.').' ('._('All stores').')');
-                        break;
-
-                    default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> '._('Customers (All stores)'));
-
-                }
-
-                break;
             case 'accounting':
                 switch ($state['section']) {
 
@@ -1165,6 +1068,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         break;
 
                 }
+                break;
             case 'accounting_server':
                 switch ($state['section']) {
 
@@ -1219,6 +1123,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
                 }
+                break;
             case 'hr':
                 switch ($state['section']) {
                     case 'employees':
@@ -1313,6 +1218,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     default:
 
                 }
+                break;
             case 'fulfilment':
                 switch ($state['section']) {
                     case 'dashboard':
@@ -1351,7 +1257,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $response['tab'] = get_tab($redis, $db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
-    if ($old_weblocation != (isset($state['module']) ? $state['module'] : '').'|'.(isset($state['section']) ? $state['section'] : '')) {
+    if ($old_web_location != (isset($state['module']) ? $state['module'] : '').'|'.(isset($state['section']) ? $state['section'] : '')) {
 
 
         require_once 'utils/real_time_functions.php';
@@ -1416,7 +1322,7 @@ function utf8ize($mixed) {
 }
 
 
-function get_tab($redis, $db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
+function get_tab($redis, $db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false): string {
 
 
     //cleaning mess can removed later
@@ -1496,14 +1402,13 @@ function get_menu($data, $user, $smarty, $db, $account) {
 }
 
 
-function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
+function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = ''): array {
 
 
     //cleaning mess can removed later
     if (empty($data['subtab']) or !is_string($data['subtab'])) {
         $data['subtab'] = '';
     }
-    //=================
 
 
     if (preg_match('/\_edit$/', $data['tab']) or $data['section'] == 'refund.new') {
@@ -1692,8 +1597,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                         }
                     }
 
-                    $_content['subtabs'][$data['subtab']]['selected'] = true;
-
                 } else {
 
 
@@ -1722,10 +1625,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                         }
                     }
 
-                    $_content['subtabs'][$data['subtab']]['selected'] = true;
-
 
                 }
+                $_content['subtabs'][$data['subtab']]['selected'] = true;
 
                 if ($data['_object']->get('Email Campaign State') == 'Stopped') {
                     $_content['tabs']['mailshot.published_email']['class'] = 'hide';
@@ -1733,17 +1635,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }
 
 
-                /*
-
-                $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-                $_content['tabs']['mailshot.published_email']['class']  = 'hide';
-
-
-                if ($data['tab'] == 'mailshot.published_email') {
-                    $data['tab'] = 'mailshot.workshop';
-                }
-
-                */
                 break;
 
             case 'Ready':
@@ -1779,175 +1670,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
         }
 
-
-        /*
-
-        switch ($data['_object']->get('Email Campaign Type')) {
-            case 'Newsletter':
-
-
-
-                break;
-
-            case 'AbandonedCart':
-                $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-
-                $_content['tabs']['mailshot.set_mail_list']['class'] = 'hide';
-                $_content['tabs']['mailshot.mail_list']['class']     = 'hide';
-
-
-                switch ($data['_object']->get('Email Campaign State')) {
-
-                    case 'InProcess':
-                        $_content['tabs']['mailshot.workshop']['class']        = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']     = 'hide';
-                        $_content['tabs']['mailshot.published_email']['class'] = 'hide';
-
-                        //$_content['tabs']['mailshot.details']['selected'] = true;
-                        //$_content['tabs']['mailshot.details']['selected'] = true;
-
-
-                        break;
-                    case 'SetRecipients':
-                        $_content['tabs']['mailshot.workshop']['class']        = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']     = 'hide';
-                        $_content['tabs']['mailshot.published_email']['class'] = 'hide';
-                        $_content['tabs']['mailshot.set_mail_list']['class']   = '';
-                        $_content['tabs']['mailshot.mail_list']['class']       = 'hide';
-
-                        //$_content['tabs']['mailshot.details']['selected'] = true;
-                        //$_content['tabs']['mailshot.details']['selected'] = true;
-
-                        if ($data['tab'] == 'mailshot.mail_list') {
-                            $data['tab'] = 'mailshot.set_mail_list';
-                        }
-
-
-                        break;
-
-                    case 'ComposingEmail':
-                        $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-                        $_content['tabs']['mailshot.published_email']['class']  = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']      = 'hide';
-
-                        if ($data['tab'] == 'mailshot.published_email') {
-                            $data['tab'] = 'mailshot.workshop';
-                        }
-                        break;
-
-                    case 'Ready':
-                        $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-                        $_content['tabs']['mailshot.workshop']['class']         = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']      = 'hide';
-
-
-                        if ($data['tab'] == 'mailshot.workshop') {
-                            $data['tab'] = 'mailshot.published_email';
-                        }
-                        break;
-                    case 'Sent':
-                    case 'Sending':
-                    case 'Stopped':
-                        $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-                        $_content['tabs']['mailshot.workshop']['class']         = 'hide';
-                        $_content['tabs']['mailshot.mail_list']['class']        = 'hide';
-
-                        $_content['tabs']['mailshot.sent_emails']['class'] = '';
-
-
-                        if ($data['tab'] == 'mailshot.workshop') {
-                            $data['tab'] = 'mailshot.sent_emails';
-                        }
-
-                        break;
-
-                }
-
-                break;
-
-            case 'Marketing':
-
-                $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-
-                $_content['tabs']['mailshot.set_mail_list']['class'] = 'hide';
-                $_content['tabs']['mailshot.mail_list']['class']     = 'hide';
-
-
-                switch ($data['_object']->get('Email Campaign State')) {
-
-                    case 'InProcess':
-                        $_content['tabs']['mailshot.workshop']['class']        = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']     = 'hide';
-                        $_content['tabs']['mailshot.published_email']['class'] = 'hide';
-                        $_content['tabs']['mailshot.set_mail_list']['class']   = '';
-
-                        //$_content['tabs']['mailshot.details']['selected'] = true;
-                        if ($data['tab'] != 'mailshot.details') {
-                            $_content['tabs']['mailshot.set_mail_list']['selected'] = true;
-
-                            $data['tab'] = 'mailshot.set_mail_list';
-                        }
-
-                        break;
-                    case 'SetRecipients':
-                        $_content['tabs']['mailshot.workshop']['class']        = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']     = 'hide';
-                        $_content['tabs']['mailshot.published_email']['class'] = 'hide';
-                        $_content['tabs']['mailshot.set_mail_list']['class']   = '';
-                        $_content['tabs']['mailshot.mail_list']['class']       = 'hide';
-
-                        //$_content['tabs']['mailshot.details']['selected'] = true;
-                        //$_content['tabs']['mailshot.details']['selected'] = true;
-
-                        if ($data['tab'] == 'mailshot.mail_list') {
-                            $data['tab'] = 'mailshot.set_mail_list';
-                        }
-
-
-                        break;
-
-                    case 'ComposingEmail':
-                        $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-                        $_content['tabs']['mailshot.published_email']['class']  = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']      = 'hide';
-
-                        if ($data['tab'] == 'mailshot.published_email') {
-                            $data['tab'] = 'mailshot.workshop';
-                        }
-                        break;
-
-                    case 'Ready':
-                        $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-                        $_content['tabs']['mailshot.workshop']['class']         = 'hide';
-                        $_content['tabs']['mailshot.sent_emails']['class']      = 'hide';
-
-
-                        if ($data['tab'] == 'mailshot.workshop') {
-                            $data['tab'] = 'mailshot.published_email';
-                        }
-                        break;
-                    case 'Sent':
-                    case 'Sending':
-                    case 'Stopped':
-                        $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
-                        $_content['tabs']['mailshot.workshop']['class']         = 'hide';
-                        $_content['tabs']['mailshot.mail_list']['class']        = 'hide';
-
-                        $_content['tabs']['mailshot.sent_emails']['class'] = '';
-
-
-                        if ($data['tab'] == 'mailshot.workshop') {
-                            $data['tab'] = 'mailshot.sent_emails';
-                        }
-
-                        break;
-
-                }
-
-                break;
-
-        }
-*/
 
     } elseif ($data['section'] == 'category') {
 
@@ -2525,8 +2247,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             ) {
                 $_content['subtabs'] = '';
 
-            } else {
-
             }
 
         }
@@ -2668,6 +2388,17 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         if ($data['tab'] == 'deleted_invoice.items') {
             $data['tab']                                   = 'invoice.items';
             $_content['tabs']['invoice.items']['selected'] = true;
+        }
+
+
+    } elseif ($data['section'] == 'picking_pipeline') {
+
+
+        if (!$data['_object']->id) {
+            return array(
+                $data,
+                ''
+            );
         }
 
 

@@ -220,8 +220,6 @@ module.exports = function (grunt) {
             aurora: {
                 files: {
                     'css/staging/app.css': 'sass/au/app.scss',
-                    'css/staging/app.mobile.css': 'sass/au/app.mobile.scss',
-
                 }
             }, ecom_css: {
                 files: {

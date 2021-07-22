@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_kpis($db, $account, $user, $smarty, $period, $display_device_version = 'desktop') {
+function get_dashboard_kpis($db, $user, $smarty, $period) {
 
 
     include_once 'utils/date_functions.php';
@@ -32,25 +32,16 @@ function get_dashboard_kpis($db, $account, $user, $smarty, $period, $display_dev
 
 
 
-    $sql=sprintf('select `Supplier Production Supplier Key`  from `Supplier Production Dimension`');
+    $sql= 'select `Supplier Production Supplier Key`  from `Supplier Production Dimension`';
     if ($result=$db->query($sql)) {
         if ($row = $result->fetch()) {
             $supplier_production=new Supplier_Production($row['Supplier Production Supplier Key']);
             $smarty->assign('supplier_production', $supplier_production);
 
         }
-    }else {
-        print_r($error_info=$db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
-    if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/kpis.mobile.dbard.tpl');
-    } else {
-        return $smarty->fetch('dashboard/kpis.dbard.tpl');
-    }
+    return $smarty->fetch('dashboard/kpis.dbard.tpl');
+
 }
 
-
-?>

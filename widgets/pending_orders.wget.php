@@ -10,18 +10,8 @@
  Version 3.0
 */
 
-/**
- * @param        $db      \PDO
- * @param        $account \Account
- * @param        $user    \User
- * @param        $smarty  \Smarty
- * @param string $parent
- * @param        $currency
- * @param string $display_device_version
- *
- * @return mixed
- */
-function get_dashboard_pending_orders($db, $account, $user, $smarty, $parent, $currency, $display_device_version = 'desktop') {
+
+function get_dashboard_pending_orders($db, $account, $user, $smarty, $parent, $currency) {
 
     include_once 'utils/date_functions.php';
 
@@ -29,11 +19,8 @@ function get_dashboard_pending_orders($db, $account, $user, $smarty, $parent, $c
 
     $smarty=prepare_smarty_for_dashboard($db, $account, $user, $smarty, $parent, $currency);
 
-    if ($display_device_version == 'mobile') {
-        return $smarty->fetch('dashboard/pending_orders.mobile.dbard.tpl');
-    } else {
-        return $smarty->fetch('dashboard/pending_orders.dbard.tpl');
-    }
+    return $smarty->fetch('dashboard/pending_orders.dbard.tpl');
+
 }
 
 
