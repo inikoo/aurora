@@ -890,6 +890,7 @@ abstract class DB_Table extends stdClass {
 
     }
 
+
     function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name = '', $table_key = '') {
 
 
@@ -909,9 +910,21 @@ abstract class DB_Table extends stdClass {
         }
 
 
-        $sql = sprintf(
-            "INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
+        return $this->create_subject_history_bridge($history_key, $deletable, $type, $table_name, $table_key);
+    }
+
+    function create_subject_history_bridge($history_key, $deletable = 'No', $type = 'Changes', $table_name = '', $table_key = '') {
+        $sql = "INTO `$table_name History Bridge` VALUES (?,?,?,'No',?)";
+
+        $this->db->prepare("INSERT ".$sql)->execute(
+            array(
+                $table_key,
+                $history_key,
+                $deletable,
+                $type
+            )
         );
+
 
         $this->db->exec('INSERT '.$sql);
 
@@ -920,9 +933,8 @@ abstract class DB_Table extends stdClass {
         return $history_key;
     }
 
-    function get_formatted_id($prefix = '', $zero_fill = 4) {
 
-
+    function get_formatted_id($prefix = '', $zero_fill = 4): string {
         return sprintf("%s%0".$zero_fill."d", $prefix, $this->id);
     }
 

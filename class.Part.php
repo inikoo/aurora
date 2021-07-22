@@ -3823,7 +3823,7 @@ class Part extends Asset {
         $account = get_object('Account', 1);
 
 
-        $running_stock        = 0;
+        $running_stock = 0;
         if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
 
 
@@ -3832,10 +3832,10 @@ class Part extends Asset {
             $booked_in            = false;
 
 
-            $units_factor=$this->get('Part Units Per Package');
+            $units_factor = $this->get('Part Units Per Package');
 
-            $unit_decimals=3;
-            $threshold=0.1;
+            $unit_decimals = 3;
+            $threshold     = 0.1;
 
 
             $sql = "SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO`
@@ -3850,17 +3850,17 @@ class Part extends Asset {
             while ($row = $stmt->fetch()) {
 
 
-              //  print_r($row);
+                //  print_r($row);
 
 
                 if ($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Type'] == 'In') {
-                    $type='in';
+                    $type      = 'in';
                     $booked_in = true;
                     $amount    = $row['Inventory Transaction Amount'];
 
                 } else {
                     $amount = 0;
-                    $type='other';
+                    $type   = 'other';
 
                     if ($row['Inventory Transaction Quantity'] != 0) {
 
@@ -3898,21 +3898,20 @@ class Part extends Asset {
                 $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
                 $running_stock_value = $running_stock_value + $amount;
 
-                if ($old_running_stock > 0 and $running_stock > $threshold     ) {
+                if ($old_running_stock > 0 and $running_stock > $threshold) {
                     $current_cost_per_sko = $running_stock_value / $running_stock;
 
-                }elseif($type=='in' and $row['Inventory Transaction Quantity']>0        ){
-                    $current_cost_per_sko=$row['Inventory Transaction Amount']/$row['Inventory Transaction Quantity'];
+                } elseif ($type == 'in' and $row['Inventory Transaction Quantity'] > 0) {
+                    $current_cost_per_sko = $row['Inventory Transaction Amount'] / $row['Inventory Transaction Quantity'];
                 }
 
 
-                $running_stock_units=round($units_factor*$running_stock,$unit_decimals);
+                $running_stock_units = round($units_factor * $running_stock, $unit_decimals);
 
-                $running_stock= $running_stock_units/$units_factor;
+                $running_stock = $running_stock_units / $units_factor;
 
 
-
-               // print "Qty $running_stock  ($running_stock_units)u | $ $running_stock_value  ( $current_cost_per_sko )  \n";
+                // print "Qty $running_stock  ($running_stock_units)u | $ $running_stock_value  ( $current_cost_per_sko )  \n";
 
 
                 $data_to_update[] = array(
@@ -4421,7 +4420,7 @@ class Part extends Asset {
         );
 
 
-        $this->update_sales_from_invoices('1 Quarter',true,false);
+        $this->update_sales_from_invoices('1 Quarter', true, false);
         $this->update_stock();
         $this->update_available_forecast();
 
@@ -5104,15 +5103,32 @@ class Part extends Asset {
 
     function get_picking_location_key() {
 
-        $sql = sprintf("SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=%d AND `Can Pick`='Yes' ;", $this->sku);
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return $row['Location Key'];
-            } else {
-                return false;
-            }
+        $sql="select `Location Key`  FROM `Part Location Dimension` PL  left join `Location Picking Pipeline Bridge` B on (PL.`Location Key`=B.`Location Picking Pipeline Location Key`)  WHERE `Part SKU`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->sku
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            return $row['Location Key'];
         }
+
+        $sql = "SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=? AND `Can Pick`='Yes'";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->sku
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            return $row['Location Key'];
+        } else {
+            return false;
+        }
+
 
     }
 

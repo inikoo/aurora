@@ -561,6 +561,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Fulfilment_Asset.php";
             $object = new Fulfilment_Asset($key);
             break;
+        case 'picking pipeline':
+        case 'picking_pipeline':
+            require_once "class.Picking_Pipeline.php";
+            $object = new Picking_Pipeline($key);
+            break;
         case '':
             break;
         default:
