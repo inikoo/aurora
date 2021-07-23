@@ -45,6 +45,8 @@ function get_navigation_products($data, $smarty, $user, $db, $account) {
             return get_settings_navigation($data, $smarty);
         case 'website.new':
             return get_website_new_navigation($data, $smarty);
+        case 'picking_pipeline':
+            return get_picking_pipeline_navigation($data, $smarty);
 
     }
     return array([],'','');
