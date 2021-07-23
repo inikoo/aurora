@@ -411,6 +411,7 @@ class Category extends DB_Table {
 
 
             $this->update_number_of_subjects();
+            /** @var $parent_category \Category */
             $parent_category = get_object('Category', $data['Category Parent Key']);
             if ($parent_category->id) {
                 $parent_category->editor = $this->editor;
@@ -1626,6 +1627,7 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
         foreach ($parent_keys as $parent_key) {
+            /** @var $parent_category \Category */
             $parent_category         = get_object('Category', $parent_key);
             $parent_category->editor = $this->editor;
             if ($parent_category->id) {

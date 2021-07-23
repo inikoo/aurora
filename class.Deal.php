@@ -176,7 +176,7 @@ class Deal extends DB_Table {
 
             $this->update_deal_term_allowances();
 
-
+            /** @var $store \Store */
             $store = get_object('Store', $this->data['Deal Store Key']);
             $store->update_deals_data();
 

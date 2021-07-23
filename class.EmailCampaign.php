@@ -146,7 +146,7 @@ class EmailCampaign extends DB_Table {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
             $this->new = true;
-
+            /** @var $store \Store */
             $store = get_object('Store', $this->data['Email Campaign Store Key']);
             $store->update_email_campaign_data();
 
@@ -826,7 +826,7 @@ class EmailCampaign extends DB_Table {
                                                )
         )) {
 
-
+            /** @var $store \Store */
             $store               = get_object('Store', $this->data['Email Campaign Store Key']);
             $email_template_type = get_object('Email_Template_Type', $this->data['Email Campaign Email Template Type Key']);
 

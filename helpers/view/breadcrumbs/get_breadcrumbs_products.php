@@ -39,6 +39,14 @@ function get_breadcrumbs_products( $state, $user): array {
         );
 
 
+    }  elseif ($state['section'] == 'picking_pipeline') {
+        $branch[] = array(
+            'label'     => _('Picking pipeline').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>',
+            'icon'      => 'project-diagram ',
+            'reference' => ''
+        );
+
+
     } elseif ($state['section'] == 'store.new') {
         $branch[] = array(
             'label'     => _('New store'),

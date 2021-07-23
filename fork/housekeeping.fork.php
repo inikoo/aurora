@@ -1493,6 +1493,7 @@ function fork_housekeeping($job) {
             $order    = get_object('Order', $data['order_key']);
             $website  = get_object('Website', $data['website_key']);
             $customer = get_object('Customer', $data['customer_key']);
+            /** @var $store \Store */
             $store    = get_object('Store', $customer->get('Customer Store Key'));
 
             $customer->editor = $editor;
@@ -2481,7 +2482,7 @@ function fork_housekeeping($job) {
         case 'invoice_deleted':
 
             $invoice = get_object('Invoice_deleted', $data['invoice_key']);
-
+            /** @var $store \Store */
 
             $store = get_object('Store', $data['store_key']);
             $store->update_invoices();
@@ -2556,7 +2557,7 @@ function fork_housekeeping($job) {
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
 
-
+            /** @var $store \Store */
             $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
             $store->load_acc_data();
 
@@ -3042,8 +3043,9 @@ function fork_housekeeping($job) {
         case 'website_created':
 
             include_once 'class.Page.php';
-
+            /** @var $website \Website */
             $website = get_object('Website', $data['website_key']);
+            /** @var $store \Store */
             $store   = get_object('Store', $website->get('Website Store Key'));
 
 

@@ -135,9 +135,6 @@ class Store extends DB_Table {
 
                 return;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
         $sql = sprintf(
             "SELECT `Store Key` FROM `Store Dimension` WHERE `Store Name`=%s  ", prepare_mysql($data['Store Name'])
@@ -160,7 +157,7 @@ class Store extends DB_Table {
         if ($create and !$this->found) {
             $this->create($data);
 
-            return;
+
         }
 
 
@@ -184,14 +181,14 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Store Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+            "INTO `Store Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare('INSERT '.$sql);
 
 
         $i = 1;
-        foreach ($base_data as $key => $value) {
+        foreach ($base_data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -464,7 +461,6 @@ class Store extends DB_Table {
             $account->add_account_history($history_key);
 
 
-            return;
         } else {
 
 
@@ -546,7 +542,6 @@ class Store extends DB_Table {
             return false;
         }
 
-        return false;
     }
 
     function get($key = '', $args = '') {
@@ -562,7 +557,6 @@ class Store extends DB_Table {
 
             case 'Send Email Address':
                 return $this->data['Store Email'];
-                break;
             case $this->table_name.' Collect Address':
 
                 $type = 'Collect';
@@ -599,7 +593,7 @@ class Store extends DB_Table {
             case('Google Map URL'):
 
 
-                return '<iframe src="'.$this->data['Store Google Map URL'].'" width="1000" height="300" framestyle="border:0" allowfullscreen></iframe>';
+                return '<iframe src="'.$this->data['Store Google Map URL'].'" width="1000" height="300"  allowfullscreen></iframe>';
 
 
             case 'State':
@@ -711,10 +705,7 @@ class Store extends DB_Table {
 
                 $diff = $end - $start;
 
-                $delta = ($diff > 0 ? '+' : '').number($diff).delta_icon($end, $start, $inverse = true);
-
-
-                return $delta;
+                return ($diff > 0 ? '+' : '').number($diff).delta_icon($end, $start, true);
 
             case 'Today Orders Dispatched':
 
@@ -800,7 +791,6 @@ class Store extends DB_Table {
                     return '';
                 }
 
-                break;
 
             case 'Store Notification New Order Recipients':
             case 'Store Notification New Customer Recipients':
@@ -827,7 +817,6 @@ class Store extends DB_Table {
                     );
                 }
 
-                break;
 
             case 'Notification New Order Recipients':
             case 'Notification New Customer Recipients':
@@ -838,7 +827,11 @@ class Store extends DB_Table {
                 $this->smarty->assign('mode', 'formatted_value');
                 $this->smarty->assign('field_id', '');
 
-                return $this->smarty->fetch('mixed_recipients.edit.tpl');
+                try {
+                    return $this->smarty->fetch('mixed_recipients.edit.tpl');
+                } catch (Exception $e) {
+                    return '';
+                }
 
 
             case 'Next Invoice Public ID Method':
@@ -888,7 +881,6 @@ class Store extends DB_Table {
 
 
                 return $this->properties($key);
-                break;
             case 'formatted_dispatch_time_avg':
             case 'formatted_sitting_time_avg':
 
@@ -969,9 +961,7 @@ class Store extends DB_Table {
             $_amount         = $this->data[$field];
 
 
-            $amount = money($_amount, $account->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
-            return $amount;
+            return money($_amount, $account->get('Account Currency'), false, $fraction_digits).$suffix;
         }
 
 
@@ -1004,9 +994,7 @@ class Store extends DB_Table {
                 $_amount = $this->data[$field];
             }
 
-            $amount = money($_amount, $account->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
-
-            return $amount;
+            return money($_amount, $account->get('Account Currency'), false, $fraction_digits).$suffix;
 
 
         }
@@ -1032,9 +1020,7 @@ class Store extends DB_Table {
                 $_amount = $this->data[$field];
             }
 
-            $amount = money($_amount, $this->get('Store Currency Code'), $locale = false, $fraction_digits).$suffix;
-
-            return $amount;
+            return money($_amount, $this->get('Store Currency Code'), false, $fraction_digits).$suffix;
         }
 
         if (array_key_exists($key, $this->data)) {
@@ -1051,9 +1037,7 @@ class Store extends DB_Table {
             $_amount         = $this->data[$field];
 
 
-            $amount = money($_amount, $this->get('Store Currency Code'), $locale = false, $fraction_digits).$suffix;
-
-            return $amount;
+            return money($_amount, $this->get('Store Currency Code'), false, $fraction_digits).$suffix;
         }
         if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Minify$/', $key)) {
 
@@ -1124,14 +1108,16 @@ class Store extends DB_Table {
             return $this->data['Store '.$key];
         }
 
+        return '';
+
     }
 
     function settings($key) {
-        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+        return ($this->settings[$key] ?? '');
     }
 
     function properties($key) {
-        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+        return ($this->properties[$key] ?? '');
     }
 
     function create_timeseries($data, $fork_key = 0) {
@@ -1306,18 +1292,19 @@ class Store extends DB_Table {
 
             }
 
+
+            if ($fork_key) {
+
+                $sql = sprintf(
+                    "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
+                );
+
+                $this->db->exec($sql);
+
+            }
+
         }
 
-
-        if ($fork_key) {
-
-            $sql = sprintf(
-                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
-            );
-
-            $this->db->exec($sql);
-
-        }
 
     }
 
@@ -1378,11 +1365,7 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
         $sql = sprintf(
             "SELECT count(*)  AS delivery_notes FROM `Delivery Note Dimension` WHERE `Delivery Note Type` IN ('Order') AND `Delivery Note Store Key`=%d %s %s", $this->id, ($from_date ? sprintf(
@@ -1464,14 +1447,14 @@ class Store extends DB_Table {
             $this->error = true;
             $this->msg   = 'error, no campaign name';
 
-            return;
+            return false;
         }
 
         if (!array_key_exists('Deal Campaign Valid From', $data)) {
             $this->error = true;
             $this->msg   = 'error, no campaign start date';
 
-            return;
+            return false;
         }
 
         if ($data['Deal Campaign Valid From'] == '') {
@@ -1521,6 +1504,8 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $campaign->msg;
+
+            return false;
         }
 
     }
@@ -1537,10 +1522,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $campaigns = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1548,7 +1529,7 @@ class Store extends DB_Table {
 
     }
 
-    function get_notification_recipients($type) {
+    function get_notification_recipients($type): array {
 
         $recipients      = array();
         $recipients_data = $this->get('Store Notification '.$type.' Recipients');
@@ -1570,7 +1551,7 @@ class Store extends DB_Table {
 
     }
 
-    function get_notification_recipients_objects($type) {
+    function get_notification_recipients_objects($type): array {
 
         include_once 'utils/email_recipient.class.php';
 
@@ -1611,165 +1592,7 @@ class Store extends DB_Table {
 
     }
 
-    /*
-    function create_deal($data, $component_data) {
 
-
-        include_once 'class.Deal.php';
-
-        if (!array_key_exists('Deal Name', $data) or $data['Deal Name'] == '') {
-            $this->error = true;
-            $this->msg   = 'error, no deal name';
-
-            return;
-        }
-
-        if (!array_key_exists('Deal Begin Date', $data)) {
-            $this->error = true;
-            $this->msg   = 'error, no deal start date';
-
-            return;
-        }
-
-
-        $data['Deal Store Key'] = $this->id;
-
-        $data['editor'] = $this->editor;
-
-
-        $deal = new Deal('find create', $data);
-
-
-        if ($deal->id) {
-            $this->new_object_msg = $deal->msg;
-
-            if ($deal->new) {
-                $this->new_object = true;
-                $deal->add_component($component_data);
-
-                if ($data['Voucher']) {
-                    include_once 'class.Voucher.php';
-
-                    $voucher_data = array(
-                        'Voucher Store Key'                => $this->id,
-                        'Voucher Deal Key'                 => $deal->id,
-                        'Voucher Code'                     => ($data['Voucher Auto Code'] ? '' : $data['Voucher Code']),
-                        'Voucher Usage Limit per Customer' => 1
-
-                    );
-
-                    $voucher_ok = false;
-
-                    if (!$data['Voucher Auto Code'] and $data['Voucher Code'] != '') {
-                        $voucher_data['Voucher Code'] = $data['Voucher Code'];
-                        $voucher                      = new Voucher('find create', $voucher_data);
-
-                        if (!$voucher->error) {
-                            $voucher_ok = true;
-                        }
-
-
-                    }
-
-                    if (!$voucher_ok) {
-
-
-                        for ($j = 0; $j < 1000; $j++) {
-
-                            $voucher_length = 6;
-
-                            if ($j > 50) {
-                                $voucher_length = 7;
-                            } elseif ($j > 100) {
-                                $voucher_length = 8;
-                            } elseif ($j > 200) {
-                                $voucher_length = 9;
-                            } elseif ($j > 300) {
-                                $voucher_length = 10;
-                            } elseif ($j > 500) {
-                                $voucher_length = 12;
-                            }
-
-                            $chars        = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZABCDEFGHJKLMNPQRSTUVWXYZ";
-                            $voucher_code = "";
-                            for ($i = 0; $i < $voucher_length; $i++) {
-                                $voucher_code .= $chars[mt_rand(0, strlen($chars) - 1)];
-                            }
-                            $voucher_data['Voucher Code'] = $data['Voucher Code'];
-                            $voucher                      = new Voucher('find create', $voucher_data);
-
-                            if (!$voucher->error) {
-
-
-                                break;
-                            }
-
-
-                        }
-
-
-                    }
-
-
-                    $deal->fast_update(array('Deal Voucher Key' => $voucher->id));
-
-
-                }
-
-                if ($data['Voucher']) {
-                    $history_abstract = sprintf(_('Offer %s, voucher: %s (%s) created'), $deal->get('Deal Name'), $voucher->get('Voucher Code'), $deal->get('Deal Term Allowances Label'));
-
-                } else {
-                    $history_abstract = sprintf(_('Offer %s (%s) created'), $deal->get('Deal Name'), $deal->get('Deal Term Allowances Label'));
-
-                }
-
-
-                $history_data = array(
-                    'History Abstract' => $history_abstract,
-                    'History Details'  => '',
-                    'Action'           => 'created'
-                );
-
-                $deal->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $deal->get_object_name(), $deal->id
-                );
-
-                $account = get_object('Account', 1);
-                require_once 'utils/new_fork.php';
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'     => 'deal_created',
-                    'deal_key' => $deal->id
-                ), $account->get('Account Code'), $this->db
-                );
-
-
-            } else {
-                $this->error = true;
-                if ($deal->found) {
-
-                    $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(array($deal->duplicated_field));
-
-                    if ($deal->duplicated_field == 'Deal Name') {
-                        $this->msg = sprintf(_('Duplicated name %s'), $data['Deal Name']);
-                    }
-
-
-                } else {
-                    $this->msg = $deal->msg;
-                }
-            }
-
-            return $deal;
-        } else {
-            $this->error = true;
-            $this->msg   = $deal->msg;
-        }
-
-    }
-*/
     function create_customers_list($data) {
 
         $this->new_list = false;
@@ -1780,25 +1603,26 @@ class Store extends DB_Table {
             $this->error = true;
             $this->msg   = 'error, no list name';
 
-            return;
+            return false;
         }
 
 
-        $sql = sprintf(
-            "SELECT `List Key`AS `key` ,`List Name` AS field FROM `List Dimension` WHERE `List Parent Key`=%d  AND `List Name`=%s", $this->id, prepare_mysql($data['List Name'])
-        );
+        $sql = "SELECT count(*) as num  FROM `List Dimension` WHERE `List Parent Key`=?  AND `List Name`=?";
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id,
+                $data['List Name']
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['num'] > 0) {
                 $this->error = true;
                 $this->msg   = 'error, duplicated list name';
 
-                return;
+                return false;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1850,6 +1674,8 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $list->msg;
+
+            return false;
         }
 
     }
@@ -1868,9 +1694,6 @@ class Store extends DB_Table {
                     $category = new Category($row['Category Key']);
                     $category->delete();
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -1890,13 +1713,9 @@ class Store extends DB_Table {
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-                    $sql = sprintf("DELETE FROM FROM `Category Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d", $row['Timeseries Key']);
+                    $sql = sprintf("DELETE  FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d", $row['Timeseries Key']);
                     $this->db->exec($sql);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
             $sql = sprintf("DELETE FROM `Timeseries Dimension` WHERE `Timeseries Parent`='Store' AND `Timeseries Parent Key`=%d ", $this->id);
             $this->db->exec($sql);
@@ -1917,10 +1736,6 @@ class Store extends DB_Table {
 
 
             $this->deleted = true;
-        } else {
-
-            $this->update();
-
         }
     }
 
@@ -2107,10 +1922,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->data['Store New Contacts'] = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2123,10 +1934,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->data['Store New Contacts With Orders'] = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2139,10 +1946,7 @@ class Store extends DB_Table {
 
         $account_new_customers             = 0;
         $account_new_customers_with_orders = 0;
-        $sql                               = sprintf(
-            "SELECT  
-                sum(`Store New Contacts`) as new_contacts from  `Store Dimension` "
-        );
+        $sql                               = "SELECT   sum(`Store New Contacts`) as new_contacts from  `Store Dimension` ";
 
 
         if ($result = $this->db->query($sql)) {
@@ -2152,9 +1956,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2167,10 +1968,6 @@ class Store extends DB_Table {
 
     }
 
-    function update_children_data() {
-        $this->update_product_data();
-
-    }
 
     function update_product_data() {
 
@@ -2188,15 +1985,12 @@ class Store extends DB_Table {
         );
 
 
-        //'InProcess','Active','Suspended','Discontinuing','Discontinued'
-
         $sql = sprintf(
             'SELECT count(*) AS num, `Product Status` FROM `Product Dimension` WHERE `Product Store Key`=%d GROUP BY `Product Status`',
 
             $this->id
         );
 
-        //print $sql;
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -2210,10 +2004,6 @@ class Store extends DB_Table {
                     $discontinued_products = $row['num'];
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2233,9 +2023,6 @@ class Store extends DB_Table {
                 }
                 $elements_active_web_status_numbers[$row['web_state']] += $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2251,37 +2038,6 @@ class Store extends DB_Table {
 
             ), 'no_history'
         );
-
-
-    }
-
-    function create_sr_category($parent_category_key, $suffix = '') {
-
-
-        $parent_category = new Category($parent_category_key);
-        if (!$parent_category->id) {
-            return;
-        }
-
-        $data     = array(
-            'Category Store Key' => $this->id,
-            'Category Code'      => $this->data['Store Code'].($suffix != '' ? '.'.$suffix : ''),
-            'Category Subject'   => 'Invoice',
-            'Category Function'  => 'if(true)'
-        );
-        $category = $parent_category->create_children($data);
-        if (!$category->new) {
-            if ($suffix == '') {
-                $this->sr_category_suffix = 2;
-            } else {
-                $this->sr_category_suffix++;
-            }
-            $this->create_sr_category(
-                $parent_category_key, $this->sr_category_suffix
-            );
-
-
-        }
 
 
     }
@@ -2359,9 +2115,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2393,9 +2146,6 @@ class Store extends DB_Table {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         $sql = sprintf("SELECT * FROM `Store DC Data`  WHERE `Store Key`=%d", $this->id);
@@ -2406,9 +2156,6 @@ class Store extends DB_Table {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2431,47 +2178,35 @@ class Store extends DB_Table {
                 'dc_amount' => 0
             )
         );
-        $sql  = sprintf(
-            'SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ="InProcess"  AND !`Order To Pay Amount`>0 ',
-            $this->id
+        $sql  =
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ='InProcess'  AND !`Order To Pay Amount`>0 ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $data['in_process_paid']['number']    += $row['num'];
-                $data['in_process_paid']['amount']    += $row['amount'];
-                $data['in_process_paid']['dc_amount'] += $row['dc_amount'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+        while ($row = $stmt->fetch()) {
+            $data['in_process_paid']['number']    += $row['num'];
+            $data['in_process_paid']['amount']    += $row['amount'];
+            $data['in_process_paid']['dc_amount'] += $row['dc_amount'];
         }
 
 
-        $sql = sprintf(
-            'SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`) ,0)AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State`="InProcess"  AND `Order To Pay Amount`>0  ',
-            $this->id
+        $sql  =
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`) ,0)AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State`='InProcess'  AND `Order To Pay Amount`>0";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
+        while ($row = $stmt->fetch()) {
 
+            $data['in_process_not_paid']['number']    += $row['num'];
+            $data['in_process_not_paid']['amount']    += $row['amount'];
+            $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $data['in_process_not_paid']['number']    += $row['num'];
-                $data['in_process_not_paid']['amount']    += $row['amount'];
-                $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2618,9 +2353,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2669,9 +2401,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2731,9 +2460,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2796,9 +2522,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2906,9 +2629,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2957,9 +2677,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2976,9 +2693,6 @@ class Store extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -3213,10 +2927,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $email_campaigns = $row['email_campaign'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -3225,13 +2935,6 @@ class Store extends DB_Table {
 
     }
 
-    function update_newsletter_data() {
-
-    }
-
-    function update_email_reminder_data() {
-
-    }
 
     function update_deals_data() {
 
@@ -3243,10 +2946,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $deals = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -3255,23 +2954,6 @@ class Store extends DB_Table {
 
     }
 
-    function get_formatted_email_credentials($type) {
-
-        $credentials = $this->get_email_credentials_data($type);
-
-        $formatted_credentials = '';
-        foreach ($credentials as $credential) {
-            $formatted_credentials .= ','.$credential['Email Address'];
-        }
-
-        $formatted_credentials = preg_replace(
-            '/^,/', '', $formatted_credentials
-        );
-
-        return $formatted_credentials;
-
-
-    }
 
     function post_add_history($history_key, $type = false) {
 
@@ -3288,7 +2970,7 @@ class Store extends DB_Table {
 
     }
 
-    function get_payment_accounts($type = 'objects', $filter = '') {
+    function get_payment_accounts($type = 'objects', $filter = ''): array {
 
 
         if ($filter == 'Active') {
@@ -3311,10 +2993,6 @@ class Store extends DB_Table {
                     $payment_accounts[] = $row['Payment Account Key'];
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -3406,15 +3084,8 @@ class Store extends DB_Table {
 
     }
 
-    /**
-     * @param $data
-     *
-     * @return array[
-     *  'Customer' => \Customer,
-     *  'Website_User' => \Website_User
-     * ]
-     */
-    public function create_customer($data) {
+
+    public function create_customer($data): array {
 
         $this->new_customer     = false;
         $this->new_website_user = false;
@@ -3478,10 +3149,6 @@ class Store extends DB_Table {
             $data['Customer Fulfilment'] = 'Yes';
         }
 
-        //print_r($address_fields);
-        // print_r($data);
-
-        //exit;
 
         $customer         = new Customer('new', $data, $address_fields);
         $website_user     = false;
@@ -3558,6 +3225,11 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $customer->msg;
+
+            return array(
+                'Customer'     => false,
+                'Website_User' => false
+            );
         }
 
 
@@ -3661,16 +3333,14 @@ class Store extends DB_Table {
             $this->error      = true;
             $this->msg        = $prospect->msg;
             $this->error_code = $prospect->error_code;
+
+            return false;
         }
 
 
     }
 
-    /**
-     * @param $data
-     *
-     * @return bool|\Product
-     */
+
     function create_product($data) {
 
 
@@ -3678,8 +3348,6 @@ class Store extends DB_Table {
 
         $data['editor'] = $this->editor;
 
-
-        //print_r($data);
 
         if (!isset($data['Product Code']) or $data['Product Code'] == '') {
             $this->error      = true;
@@ -4084,11 +3752,13 @@ class Store extends DB_Table {
             $this->error_code = 'cant create product'.$product->msg;
             $this->metadata   = '';
 
+            return false;
+
         }
 
     }
 
-    function get_websites($scope = 'keys') {
+    function get_websites($scope = 'keys'): array {
 
 
         $websites = array();
@@ -4120,7 +3790,7 @@ class Store extends DB_Table {
         return $websites;
     }
 
-    function get_shipping_zones_schemas($type = 'Current', $scope = 'keys') {
+    function get_shipping_zones_schemas($type = 'Current', $scope = 'keys'): array {
 
         $shipping_zones_schemas = array();
 
@@ -4223,6 +3893,8 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $poll_query->msg;
+
+            return false;
         }
 
 
@@ -4255,6 +3927,8 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $purge->msg;
+
+            return false;
         }
 
 
@@ -4277,6 +3951,7 @@ class Store extends DB_Table {
             } else {
                 $this->error = true;
                 $this->msg   = $email_template_type->msg;
+
             }
 
 
@@ -4285,6 +3960,7 @@ class Store extends DB_Table {
             $this->msg   = 'invalid email campaign type';
         }
 
+        return false;
 
     }
 
@@ -4328,12 +4004,10 @@ class Store extends DB_Table {
             $this->msg   = $category->msg;
         }
 
+        return false;
     }
 
     function create_website($data) {
-
-        include_once 'class.Account.php';
-        $account = new Account($this->db);
 
 
         $this->new_object = false;
@@ -4428,6 +4102,8 @@ class Store extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $website->msg;
+
+            return false;
         }
     }
 
@@ -4443,9 +4119,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $number_sites = $row['number_sites'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         $this->update(array('Store Websites' => $number_sites), 'no_history');
@@ -4495,7 +4168,7 @@ class Store extends DB_Table {
                 $this->other_fields_updated = array(
                     'Store_Collect_Address' => array(
                         'field'  => 'Store_Collect_Address',
-                        'render' => ($this->get('Store Can Collect') == 'Yes' ? true : false),
+                        'render' => $this->get('Store Can Collect') == 'Yes',
 
 
                     )
@@ -4586,23 +4259,23 @@ class Store extends DB_Table {
                 $this->other_fields_updated = array(
                     'Store_Invoice_Public_ID_Format'       => array(
                         'field'  => 'Store_Invoice_Public_ID_Format',
-                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
+                        'render' => $this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID',
 
                     ),
                     'Store_Invoice_Last_Invoice_Public_ID' => array(
                         'field'  => 'Store_Invoice_Last_Invoice_Public_ID',
-                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
+                        'render' => $this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID',
                     ),
 
 
                     'Store_Refund_Public_ID_Format'       => array(
                         'field'  => 'Store_Refund_Public_ID_Format',
-                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' ? false : true),
+                        'render' => !($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID'),
 
                     ),
                     'Store_Invoice_Last_Refund_Public_ID' => array(
                         'field'  => 'Store_Invoice_Last_Refund_Public_ID',
-                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' ? false : true),
+                        'render' => !($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID'),
                     ),
 
                 );
@@ -4620,12 +4293,12 @@ class Store extends DB_Table {
 
                     'Store_Refund_Public_ID_Format'       => array(
                         'field'  => 'Store_Refund_Public_ID_Format',
-                        'render' => (($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
+                        'render' => !(($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index')),
 
                     ),
                     'Store_Invoice_Last_Refund_Public_ID' => array(
                         'field'  => 'Store_Invoice_Last_Refund_Public_ID',
-                        'render' => (($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
+                        'render' => !(($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index')),
                     ),
 
                 );
@@ -4767,7 +4440,7 @@ class Store extends DB_Table {
             $this->update_address_formatted_fields($type);
 
 
-            if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
+            if (!preg_match('/no(\s|_)history|nohistory/i', $options)) {
 
                 $this->add_changelog_record(
                     $this->table_name." $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id
@@ -4940,7 +4613,7 @@ class Store extends DB_Table {
 
     }
 
-    function get_aiku_params($field, $value = '') {
+    function get_aiku_params($field, $value = ''): array {
 
         $url = AIKU_URL.'stores/'.$this->id;
 

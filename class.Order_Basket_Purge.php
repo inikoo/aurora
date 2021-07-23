@@ -116,7 +116,7 @@ class Order_Basket_Purge extends DB_Table {
 
 
             $this->new = true;
-
+            /** @var $store \Store */
             $store = get_object('Store', $this->data['Order Basket Purge Store Key']);
             $store->update_email_campaign_data();
 
@@ -350,7 +350,7 @@ class Order_Basket_Purge extends DB_Table {
                                                    )
         )) {
 
-
+            /** @var $store \Store */
             $store = get_object('Store', $this->data['Order Basket Purge Store Key']);
 
             $sql = "SELECT `History Key` FROM `Order Basket Purge History Bridge` WHERE `Order Basket Purge Key`=?";

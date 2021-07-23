@@ -33,6 +33,7 @@
     "mpdf/mpdf": "^8.0",
     "mpdf/qrcode": "^1.0",
     "ext-curl": "*",
-    "spatie/array-to-xml": "^2.16"
+    "spatie/array-to-xml": "^2.16",
+    "ext-dom": "*"
   }
 }

@@ -817,6 +817,9 @@ class EmailCampaignType extends DB_Table {
     function update_number_subscribers() {
 
         if ($this->data['Email Campaign Type Scope'] == 'User Notification') {
+            /**
+             * @var $store \Store
+             */
             $store      = get_object('Store', $this->data['Email Campaign Type Store Key']);
             $recipients = $store->get_notification_recipients($this->data['Email Campaign Type Code']);
 

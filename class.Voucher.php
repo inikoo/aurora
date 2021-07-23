@@ -295,7 +295,7 @@ class Voucher extends DB_Table {
         );
        $this->db->exec($sql);
 
-
+        /** @var $store \Store */
         $store = get_object('Store',$this->data['Voucher Store Key']);
         $store->update_campaings_data();
         $store->update_deals_data();

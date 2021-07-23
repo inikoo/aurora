@@ -2244,6 +2244,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
         foreach ($_category_keys as $_category_key) {
+            /** @var $_category \Category */
             $_category = new Category($_category_key);
             $_category->update_children_data();
             $_category->update_subjects_data();
