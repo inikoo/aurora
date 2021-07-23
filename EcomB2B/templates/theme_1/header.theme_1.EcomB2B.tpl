@@ -226,7 +226,7 @@
                         {foreach from=$sub_column.items item=item}
                             {if !empty($item.url) and !empty($item.label) }
                                 <a href="{$item.url}">
-                                        {if !empty($column.icon)}<i class="item_icon fa-fw {$item.icon}"></i> {/if}
+                                        {if !empty($item.icon)}<i class="item_icon fa-fw {$item.icon}"></i> {/if}
                                     <span class="_item_label">{$item.label}</span>
                                 </a>
                             {/if}
