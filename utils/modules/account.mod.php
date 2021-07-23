@@ -223,9 +223,7 @@ function get_account_module() {
                         'icon'  => 'database'
                     ),
                     'material.parts'   => array(
-                        'label' => _(
-                            'Parts'
-                        )
+                        'label' => _('Parts')
                     ),
                     'material.history' => array(
                         'label' => _(

@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-function get_warehouses_server_module() {
+function get_warehouses_server_module(): array {
     return array(
         'sections' => array(
 
@@ -26,65 +26,6 @@ function get_warehouses_server_module() {
                 )
             ),
 
-            'returns' => array(
-                'type'      => 'navigation',
-                'label'     => _('Returns'),
-                'icon'      => 'backspace',
-                'reference' => 'returns/all',
-                'tabs'      => array(
-                    'returns_server' => array(
-                        'icon'  => 'backspace',
-                        'label' => _('Returns'),
-
-                    ),
-
-                    'returns_group_by_warehouse' => array(
-                        'label' => _('Group by warehouse'),
-                        'icon'  => 'layer-group',
-
-                    )
-                )
-            ),
-
-            'return' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-                    'return.details' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-                    'return.items' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-                    'return.items_done' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-
-                    'return.history'     => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'return.attachments' => array(
-                        'label'         => '',
-                        'title'         => _('Attachments'),
-                        'icon'          => 'paperclip',
-                        'class'         => 'right icon_only',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Attachments'
-                        ),
-                    ),
-                )
-
-            ),
 
         )
     );

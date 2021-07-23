@@ -91,7 +91,7 @@ function get_widget_details($redis, $db, $smarty, $user, $account) {
 function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
-    require_once 'utils/parse_request.php';
+    require_once 'helpers/view/parse_request.php';
 
     $data = prepare_values(
         $_REQUEST, array(

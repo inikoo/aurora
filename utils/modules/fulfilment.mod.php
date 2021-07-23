@@ -390,24 +390,11 @@ function get_fulfilment_module(): array {
                 'reference' => '',
                 'tabs'      => array(
                     'location.details'            => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'title' => _('Location details'),
                         'icon'  => 'database'
                     ),
-                    'location.parts'              => array(
-                        'label' => _(
-                            'Parts'
-                        ),
-                        'icon'  => 'box'
-                    ),
-                    'location.stock.transactions' => array(
-                        'label' => _(
-                            'Stock movements'
-                        ),
-                        'icon'  => 'exchange'
-                    ),
+
 
                     'location.history' => array(
                         'title'         => _('History'),

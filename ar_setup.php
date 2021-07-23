@@ -357,8 +357,7 @@ function get_view($data, $db, $modules, $smarty) {
 
 
 
-
-    require_once 'utils/parse_request.php';
+    require_once 'helpers/view/parse_request.php';
 
     if (isset($data['metadata']['help']) and $data['metadata']['help']) {
         get_help($data, $modules, $db);
