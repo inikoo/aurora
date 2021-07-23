@@ -2901,7 +2901,7 @@ function get_shipping_zone_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $account) {
+function get_shipping_zone_schema_navigation($data, $smarty, $user, $db) {
 
 
     $object=$data['_object'];
@@ -3106,14 +3106,8 @@ function get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $accoun
 
 }
 
-/**
- * @param $data
- * @param $smarty \Smarty
- *
- * @return mixed
- * @throws \SmartyException
- */
-function get_settings_navigation($data, $smarty) {
+
+function get_settings_navigation($data, $smarty): array {
 
 
     $left_buttons  = array();
