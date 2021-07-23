@@ -2268,8 +2268,14 @@ function fork_housekeeping($job) {
 
 
             foreach ($purchase_orders as $purchase_order_key) {
+                /**
+                 * @var $purchase_order \PurchaseOrder
+                 */
                 $purchase_order = get_object('Purchase Order', $purchase_order_key);
-                $purchase_order->update_totals();
+                if($purchase_order->id){
+                    $purchase_order->update_totals();
+                }
+
             }
 
 
