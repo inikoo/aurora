@@ -31,6 +31,16 @@ function get_picking_pipeline_fields(Picking_Pipeline $picking_pipeline, Warehou
             'show_title' => true,
             'fields'     => array(
                 array(
+                    'id'              => 'Picking_Pipeline_Warehouse_Key',
+                    'edit'            => 'string',
+                    'render'          => false,
+                    'value'           => $warehouse->id,
+                    'formatted_value' => $warehouse->id,
+                    'label'           => '',
+                    'required'        => true,
+                    'type'            => 'value'
+                ),
+                array(
                     'id'                => 'Picking_Pipeline_Name',
                     'edit'              => ($edit ? 'string' : ''),
                     'value'             => htmlspecialchars($picking_pipeline->get('Picking Pipeline Name')),
