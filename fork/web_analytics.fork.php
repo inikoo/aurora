@@ -9,7 +9,10 @@
 
 include_once 'utils/send_zqm_message.class.php';
 
-function fork_web_analytics($job) {
+/**
+ * @throws \ZMQSocketException
+ */
+function fork_web_analytics($job): bool {
 
     global $account, $db;// remove the global $db and $account is removed
 
@@ -67,7 +70,7 @@ function fork_web_analytics($job) {
                     $webuser_data['location'] = '<img src="/art/flags/'.strtolower($data['server_data']['HTTP_CF_IPCOUNTRY']).'.png">';
 
                 } else {
-                    $webuser_data['location'] = '<img src="/art/flags/zz.png"> <span class="italic very_discreet">'._('Unknown').'</span>';
+                    $webuser_data['location'] = '<img alt="'._('Unknown').'" src="/art/flags/zz.png"> <span class="italic very_discreet">'._('Unknown').'</span>';
 
                 }
 
@@ -215,19 +218,19 @@ function fork_web_analytics($job) {
                             'd3'      => array(
                                 array(
                                     'type'        => 'current_website_users',
-                                    'website_key' => $data['session_data']['website_key'],
+                                    'website_key' => $data['session_data']['website_key']??'',
                                     'data'        => $real_time_website_users_data
                                 )
                             ),
                             'objects' => array(
                                 array(
                                     'object'          => 'customer',
-                                    'key'             => $data['session_data']['customer_key'],
+                                    'key'             => $data['session_data']['customer_key']??'',
                                     'update_metadata' => array(
                                         'class_html' => array(
                                             'webpage_label'        => $webpage_label,
-                                            'device_label'         => $webuser_data['device_label'],
-                                            'user_location'        => $webuser_data['location'],
+                                            'device_label'         => $webuser_data['device_label']??'',
+                                            'user_location'        => $webuser_data['location']??'',
                                             'customer_online_icon' => '<i title="'._('Online').'" class="far success fa-globe"></i>',
                                         ),
                                         'hide'       => array('customer_web_info_log_out'),
