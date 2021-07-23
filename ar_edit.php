@@ -1462,6 +1462,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 case 'campaign':
 
                     $campaign         = get_object('Campaign', $data['parent_key']);
+                    /** @var $store \Store */
                     $store            = get_object('Store', $campaign->get('Store Key'));
                     $store->editor    = $editor;
                     $campaign->editor = $editor;
@@ -3518,6 +3519,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Customers_List':
             include_once 'class.List.php';
+            /** @var $parent \Store */
             $object = $parent->create_customers_list($data['fields_data']);
 
             if ($parent->new_list) {
@@ -3606,7 +3608,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             include_once 'class.Order_Basket_Purge.php';
 
-
+            /** @var $parent \Store */
             $object = $parent->create_purge($data['fields_data']);
 
 
@@ -3682,7 +3684,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             exit;
         case 'Associate_Customer_Category':
 
-
             $object = get_object('Customer', $data['fields_data']['Customer Key']);
             if ($object->id) {
                 $parent->associate_subject($object->id);
@@ -3690,6 +3691,28 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             $new_object_html = '';
             $updated_data    = array();
+            break;
+        case 'Picking Pipeline':
+            /** @var $parent \Store */
+            $object = $parent->create_picking_pipeline($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $new_object_html = '';
+                $redirect        = 'store/'.$parent->id.'/pipeline';
+                $updated_data    = array();
+            } else {
+
+
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $parent->msg
+
+                );
+                echo json_encode($response);
+                exit;
+            }
             break;
         default:
             $response = array(
@@ -3700,7 +3723,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             echo json_encode($response);
             exit;
-            break;
+
     }
 
 

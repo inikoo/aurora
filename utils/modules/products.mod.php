@@ -26,22 +26,16 @@ function get_products_module(): array {
                 'icon'      => 'tachometer-alt',
                 'showcase'  => 'store',
                 'reference' => 'store/%d',
-
-
                 'tabs' => array(
 
                     'store.sales.plot' => array(
                         'label' => _('Plot')
                     ),
-
-
                     'store.history' => array(
                         'label' => _('History'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-
-
                 )
             ),
 
@@ -894,12 +888,17 @@ function get_products_module(): array {
                     ),
 
 
-
                     'picking_pipeline.history' => array(
-                        'label' => _('History'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'title'         => _('History'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
                     ),
+
 
 
                 )

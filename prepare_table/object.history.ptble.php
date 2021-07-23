@@ -243,6 +243,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Fulfilment Asset Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Fulfilment Asset';
+}elseif ($parameters['parent'] == 'picking_pipeline') {
+    $where   = sprintf(
+        ' where   B.`Picking Pipeline Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Picking Pipeline';
 }else {
     print_r($parameters);
     exit('parent not set up '.$parameters['parent']);

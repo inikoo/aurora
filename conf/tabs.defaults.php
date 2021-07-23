@@ -2350,6 +2350,14 @@ function get_tab_defaults_data() {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'note'
         ),
+        'picking_pipeline.history'          => array(
+            'view'        => 'overview',
+            'sort_key'    => 'date',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'note'
+        ),
         'fulfilment.delivery.history'       => array(
             'view'          => 'overview',
             'sort_key'      => 'date',

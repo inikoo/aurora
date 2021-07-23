@@ -3903,31 +3903,48 @@ class Store extends DB_Table {
     function create_purge($data) {
 
         $data['editor'] = $this->editor;
-
         $data['Order Basket Purge Store Key'] = $this->id;
-
-
         $purge = new Order_Basket_Purge('create', $data);
-
         if ($purge->id) {
             $this->new_object_msg = $purge->msg;
-
             if ($purge->new) {
                 $this->new_object = true;
-
-
             } else {
                 $this->error = true;
-
                 $this->msg = $purge->msg;
-
             }
-
             return $purge;
         } else {
             $this->error = true;
             $this->msg   = $purge->msg;
+            return false;
+        }
 
+
+    }
+
+    function create_picking_pipeline($data) {
+
+        $data['editor']= $this->editor;
+
+        $data['Picking Pipeline Store Key'] = $this->id;
+        include_once 'class.Picking_Pipeline.php';
+        $picking_pipeline = new Picking_Pipeline('create', $data);
+
+        if ($picking_pipeline->id) {
+            $this->new_object_msg = $picking_pipeline->msg;
+            if ($picking_pipeline->new) {
+                $this->new_object = true;
+                $this->fast_update_json_field('Store Properties','picking_pipeline',$picking_pipeline->id);
+            } else {
+                $this->error = true;
+                $this->msg = $picking_pipeline->msg;
+            }
+
+            return $picking_pipeline;
+        } else {
+            $this->error = true;
+            $this->msg   = $picking_pipeline->msg;
             return false;
         }
 

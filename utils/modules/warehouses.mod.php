@@ -90,32 +90,7 @@ function get_warehouses_module(): array {
 
             ),
 
-            /* to add
-            'categories'=>array('type'=>'navigation', 'label'=>_("Location's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
 
-                'tabs'=>array(
-                    'locations.categories'=>array('label'=>_("Location's categories")),
-                )
-            ),
-            */
-            /*
-                        'warehouse_areas' => array(
-
-                            'type'      => 'navigation',
-                            'label'     => _('Areas'),
-                            'title'     => _('Warehouse areas (Rankings, aisles, rooms)'),
-                            'icon'      => 'inventory',
-                            'reference' => 'warehouse/%d/areas',
-                            'tabs'      => array(
-
-
-
-
-                            )
-
-
-                        ),
-            */
 
             'locations' => array(
 
@@ -124,20 +99,22 @@ function get_warehouses_module(): array {
                 'icon'      => 'pallet',
                 'reference' => 'warehouse/%d/locations',
                 'tabs'      => array(
-
-
                     'warehouse.locations'         => array(
                         'label'             => _('Locations'),
                         'icon'              => 'pallet',
                         'dynamic_reference' => 'warehouse/%d/locations',
-
                     ),
                     'warehouse.areas'             => array(
                         'label'             => _('Warehouse areas'),
                         'title'             => _('Warehouse areas (Rankings, aisles, rooms)'),
                         'icon'              => 'inventory',
                         'dynamic_reference' => 'warehouse/%d/areas',
-
+                    ),
+                    'warehouse.picking_pipelines'             => array(
+                        'label'             => _('Picking pipelines'),
+                        'title'             => _('Picking pipelines'),
+                        'icon'              => 'project-diagram ',
+                        'dynamic_reference' => 'warehouse/%d/pipelines',
                     ),
                     'warehouse.deleted_locations' => array(
                         'label'             => _('Deleted locations'),
@@ -180,24 +157,16 @@ function get_warehouses_module(): array {
                 'reference' => '',
                 'tabs'      => array(
                     'location.details'            => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'title' => _(
-                            'Location details'
-                        ),
+                        'label' => _('Data'),
+                        'title' => _('Location details'),
                         'icon'  => 'database'
                     ),
                     'location.parts'              => array(
-                        'label' => _(
-                            'Parts'
-                        ),
+                        'label' => _('Parts'),
                         'icon'  => 'box'
                     ),
                     'location.stock.transactions' => array(
-                        'label' => _(
-                            'Stock movements'
-                        ),
+                        'label' => _('Stock movements'),
                         'icon'  => 'exchange'
                     ),
 
@@ -221,9 +190,7 @@ function get_warehouses_module(): array {
                 'type' => 'new_object',
                 'tabs' => array(
                     'location.new' => array(
-                        'label' => _(
-                            'New location'
-                        )
+                        'label' => _('New location')
                     ),
 
                 )
@@ -246,9 +213,7 @@ function get_warehouses_module(): array {
                 'type' => 'new_object',
                 'tabs' => array(
                     'main_category.new' => array(
-                        'label' => _(
-                            'New category'
-                        )
+                        'label' => _('New category')
                     ),
 
                 )
@@ -260,21 +225,15 @@ function get_warehouses_module(): array {
                 'tabs' => array(
 
                     'category.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
                     'category.parts'     => array(
-                        'label' => _(
-                            'Parts'
-                        ),
+                        'label' => _('Parts'),
                         'icon'  => 'box'
                     ),
                     'category.locations' => array(
-                        'label' => _(
-                            'Locations'
-                        ),
+                        'label' => _('Locations'),
                         'icon'  => 'map-sings'
                     ),
 

@@ -3256,7 +3256,7 @@ function get_picking_pipeline_navigation($data, $smarty): array {
     $right_buttons = array();
 
 
-    $sections = get_sections('products');
+    $sections = get_sections('products',$data['store']->id);
 
     $sections['picking_pipeline']['selected'] = true;
 
