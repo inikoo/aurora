@@ -41,11 +41,10 @@ if (!$logged_in) {
             'resp'  => 'log out'
         );
         echo json_encode($response);
-        exit;
     } else {
         header('Location: /login.sys?'.$redirect_to_login[0].'='.$redirect_to_login[1]);
-        exit;
     }
+    exit;
 
 
 }
@@ -94,7 +93,7 @@ if ($website->get('Website Type') != 'EcomDS') {
     $order->editor = $editor;
 }
 
-// tempral stuff until we renegerate old cookies
+// temporal stuff until we regenerate old cookies
 if (!empty($_SESSION['website_locale'])) {
     $website_locale = $_SESSION['website_locale'];
 } else {
