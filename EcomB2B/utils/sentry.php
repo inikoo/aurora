@@ -13,7 +13,8 @@
 if (defined('SENTRY_DNS_ECOM')) {
     $sentry_config = array(
         'dsn' => SENTRY_DNS_ECOM,
-        'release'=>'__AURORA_RELEASE__'
+        'release'=>'__AURORA_RELEASE__',
+        'attach_stacktrace'=>'on'
     );
     Sentry\init($sentry_config);
 }
