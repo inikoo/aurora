@@ -525,9 +525,12 @@ class Public_Product {
                 $tag = preg_replace('/ Dimensions$/', '', $key);
 
                 if ($this->data[$this->table_name.' '.$key] != '') {
-                    $data = json_decode(
-                        $this->data[$this->table_name.' '.$key], true
-                    );
+                    $data = json_decode($this->data[$this->table_name.' '.$key], true);
+
+                    if(!is_array($data)){
+                        return '';
+                    }
+
                     include_once 'utils/units_functions.php';
 
 

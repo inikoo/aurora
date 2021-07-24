@@ -519,7 +519,7 @@ module.exports = function (grunt) {
         },
         replace: {
             aurora_version: {
-                src: ['templates/app.tpl','templates/login.tpl','utils/sentry.php','EcomB2B/sentry.php','EcomB2B/templates/theme_1/_head.theme_1.EcomB2B*'], overwrite: true, replacements: [{
+                src: ['templates/app.tpl','templates/login.tpl','utils/sentry.php','EcomB2B/utils/sentry.php','EcomB2B/templates/theme_1/_head.theme_1.EcomB2B*'], overwrite: true, replacements: [{
                     from: /<div class="aurora_version full">(.*)<\/div>/g,
                     to: '<div class="aurora_version full">v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '</div>'
                 }, {
