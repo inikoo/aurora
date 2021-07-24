@@ -14,7 +14,8 @@
 if (defined('SENTRY_DNS_AU')) {
     $sentry_config = array(
         'dsn' => SENTRY_DNS_AU,
-        'release'=>'__AURORA_RELEASE__'
+        'release'=>'__AURORA_RELEASE__',
+        'attach_stacktrace' => true
     );
     Sentry\init($sentry_config);
 }
