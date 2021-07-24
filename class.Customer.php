@@ -2550,25 +2550,7 @@ class Customer extends Subject {
 
 
 
-    function get_credits() {
 
-        $sql = sprintf(
-            "SELECT sum(`Credit Saved`) AS value FROM `Order Post Transaction Dimension` WHERE `Customer Key`=%d AND `State`='Saved' ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $credits = $row['value'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $credits;
-    }
 
     public function update_orders() {
 

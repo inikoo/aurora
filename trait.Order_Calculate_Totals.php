@@ -95,18 +95,11 @@ trait Order_Calculate_Totals {
 
         $profit = $items_net_for_profit_calculation - $items_cost - $replacement_costs;
 
-        $sql = "SELECT count(DISTINCT `Order Transaction Fact Key`) AS number_with_problems FROM `Order Post Transaction Dimension` WHERE `Order Key`=?";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $this->id
-            )
-        );
-        if ($row = $stmt->fetch()) {
-            $number_with_problems = $row['number_with_problems'];
-        }
 
+
+        // to do AU-105 Order Refund/Replacement insights
+       // $number_with_problems = ??
 
         $total_net = 0;
         $total_tax = 0;

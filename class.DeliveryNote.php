@@ -2613,8 +2613,11 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function delete($fix_mode = false) {
+    function delete(): string {
 
+        /**
+         * @var $customer \Customer
+         */
         $customer = get_object('Customer', $this->get('Delivery Note Customer Key'));
 
 
@@ -2648,7 +2651,9 @@ class DeliveryNote extends DB_Table {
             $part_location = new PartLocation($part_to_update_stock);
             $part_location->update_stock();
         }
-
+        /**
+         * @var $order \Order
+         */
         $order         = get_object('Order', $this->get('Delivery Note Order Key'));
         $order->editor = $this->editor;
 
@@ -2664,35 +2669,26 @@ class DeliveryNote extends DB_Table {
         $this->db->exec($sql);
 
 
-        if (!$fix_mode) {
+        if (!in_array(
+            $this->data['Delivery Note Type'], array(
+                                                 'Replacement & Shortages',
+                                                 'Replacement',
+                                                 'Shortages'
+                                             )
+        )) {
 
-            if (in_array(
-                $this->data['Delivery Note Type'], array(
-                                                     'Replacement & Shortages',
-                                                     'Replacement',
-                                                     'Shortages'
-                                                 )
-            )) {
-                $sql = sprintf(
-                    "UPDATE `Order Post Transaction Dimension` SET `State`=%s  WHERE `Delivery Note Key`=%d   ", prepare_mysql('In Process'), $this->id
+
+            if ($order->get('Order State') != 'Cancelled') {
+                $order->update(
+                    array(
+                        'Order State' => 'Delivery_Note_deleted'
+                    )
                 );
-                $this->db->exec($sql);
-
-
-            } else {
-
-
-                if ($order->get('Order State') != 'Cancelled') {
-                    $order->update(
-                        array(
-                            'Order State' => 'Delivery_Note_deleted'
-                        )
-                    );
-                }
-
-
             }
+
+
         }
+
 
         $customer->update_last_dispatched_order_key();
         $order->update_number_replacements();
@@ -2705,14 +2701,14 @@ class DeliveryNote extends DB_Table {
         );
 
 
-        $this->fork_index_elastic_search('create_elastic_index_object');
+        $this->fork_index_elastic_search();
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
 
     }
 
 
-    function get_formatted_parcels() {
+    function get_formatted_parcels(): string {
 
         if (!is_numeric($this->data['Delivery Note Number Parcels'])) {
             return '';
@@ -2737,7 +2733,7 @@ class DeliveryNote extends DB_Table {
 
             case('None'):
                 return '';
-                break;
+
 
             default:
                 $parcel_type = $this->data['Delivery Note Parcel Type'];
@@ -3128,7 +3124,7 @@ class DeliveryNote extends DB_Table {
         $curl = curl_init();
 
         if ($debug) {
-           // print_r($post);
+            // print_r($post);
         }
 
         curl_setopt_array(
@@ -3171,7 +3167,7 @@ class DeliveryNote extends DB_Table {
     }
 
 
-    function update_shippers_services($debug=false) {
+    function update_shippers_services($debug = false) {
 
         $sql  = "select `Shipper Key`,`Shipper Metadata` from `Shipper Dimension` where `Shipper API Key`>0   ";
         $stmt = $this->db->prepare($sql);
@@ -3186,7 +3182,7 @@ class DeliveryNote extends DB_Table {
 
 
                     if ($metadata['services'] == 'api') {
-                        $this->update_shipper_services(get_object('Shipper', $row['Shipper Key']),$debug);
+                        $this->update_shipper_services(get_object('Shipper', $row['Shipper Key']), $debug);
                     } else {
                         $this->fast_update_json_field('Delivery Note Properties', 'shipper_services_'.$row['Shipper Key'], json_encode($metadata['services']));
 
