@@ -15,7 +15,7 @@ class shipping_for_order {
     /**
      * @var \PDO
      */
-    public $db;
+    public PDO $db;
 
     public function __construct($db) {
 
@@ -24,7 +24,7 @@ class shipping_for_order {
     }
 
 
-    function get($_data) {
+    function get($_data): array {
 
         include_once 'utils/get_addressing.php';
         include_once 'utils/object_functions.php';
@@ -107,84 +107,56 @@ class shipping_for_order {
 
     }
 
+    private function process_step($amount,$shipping_price_data): array {
+        if ($amount <= 0) {
+            return array(
+                'price'  => 0,
+                'step'   => 0,
+                'method' => 'Calculated'
+            );
+        }
 
-    private function get_price_from_method($shipping_price_data, $_data) {
+
+        $counter = 1;
+        foreach ($shipping_price_data['steps'] as $step) {
+            if ($step['to'] == 'INF') {
+                $step['to'] = INF;
+            }
+
+            if ($amount >= $step['from'] and $amount < $step['to']) {
+                return array(
+                    'step'   => $counter,
+                    'price'  => $step['price'],
+                    'method' => 'Calculated'
+
+                );
+            }
+
+            $counter++;
+        }
+        return array(
+            'price'  => '',
+            'step'   => '',
+            'method' => 'TBC'
+
+        );
+    }
+
+    private function get_price_from_method($shipping_price_data, $_data): array {
         switch ($shipping_price_data['type']) {
             case 'Step Order Items Net Amount':
 
                 $amount = $_data['Order Data']['Order Items Net Amount'];
 
-
-                if ($amount <= 0) {
-                    return array(
-                        'price'  => 0,
-                        'step'   => 0,
-                        'method' => 'Calculated'
-                    );
-                }
+                return $this->process_step($amount,$shipping_price_data);
 
 
-                $counter = 1;
-                foreach ($shipping_price_data['steps'] as $step) {
-                    if ($step['to'] == 'INF') {
-                        $step['to'] = INF;
-                    }
-
-                    if ($amount >= $step['from'] and $amount < $step['to']) {
-                        return array(
-                            'step'   => $counter,
-                            'price'  => $step['price'],
-                            'method' => 'Calculated'
-
-                        );
-                    }
-
-                    $counter++;
-                }
-                return array(
-                    'price'  => '',
-                    'step'   => '',
-                    'method' => 'TBC'
-
-                );
 
             case 'Step Order Estimated Weight':
 
                 $weight = $_data['Order Data']['Order Estimated Weight'];
+                return $this->process_step($weight,$shipping_price_data);
 
-                if ($weight <= 0) {
-                    return array(
-                        'price'  => 0,
-                        'step'   => 0,
-                        'method' => 'Calculated'
-
-                    );
-                }
-
-                $counter = 1;
-                foreach ($shipping_price_data['steps'] as $step) {
-                    if ($step['to'] == 'INF') {
-                        $step['to'] = INF;
-                    }
-
-                    if ($weight >= $step['from'] and $weight < $step['to']) {
-                        return array(
-                            'step'   => $counter,
-                            'price'  => $step['price'],
-                            'method' => 'Calculated'
-
-                        );
-
-                    }
-
-                    $counter++;
-                }
-                return array(
-                    'price'  => '',
-                    'step'   => '',
-                    'method' => 'TBC'
-
-                );
 
             default:
                 return array(
