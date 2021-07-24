@@ -137,7 +137,7 @@ if (isset($is_homepage)) {
     include_once('class.WebAuth.php');
     $auth = new WebAuth($db);
 
-    list($unsubscribe_subject_type, $unsubscribe_subject_key) = $auth->get_customer_from_unsubscribe_link((isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+    list($unsubscribe_subject_type, $unsubscribe_subject_key) = $auth->get_customer_from_unsubscribe_link(($_REQUEST['s'] ?? ''), ($_REQUEST['a'] ?? ''));
 
     if ($unsubscribe_subject_type == 'Customer') {
         if ($unsubscribe_subject_key != '') {
@@ -149,8 +149,8 @@ if (isset($is_homepage)) {
 
             }
         }
-        $smarty->assign('selector', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
-        $smarty->assign('authenticator', (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+        $smarty->assign('selector', ($_REQUEST['s'] ?? ''));
+        $smarty->assign('authenticator', ($_REQUEST['a'] ?? ''));
         $smarty->assign('unsubscribe_customer_key', $unsubscribe_subject_key);
         $smarty->assign('is_unsubscribe', true);
     } elseif ($unsubscribe_subject_type == 'Prospect') {
@@ -166,9 +166,7 @@ if (isset($is_homepage)) {
             );
             if ($row = $stmt->fetch()) {
                 include_once __DIR__.'/utils/new_fork.php';
-
-
-                $email_tracking = get_object('Email_Tracking', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
+                $email_tracking = get_object('Email_Tracking', ($_REQUEST['s'] ?? ''));
                 $email_tracking->fast_update(
                     array(
                         'Email Tracking Unsubscribed' => 'Yes'
@@ -200,7 +198,6 @@ if (isset($is_homepage)) {
         }
 
         $smarty->assign('is_prospect', true);
-
         $smarty->assign('is_unsubscribe', true);
 
     }
@@ -210,7 +207,7 @@ if (isset($is_homepage)) {
     $webpage_key = $website->get_system_webpage_key('not_found.sys');
 }
 
-$is_devel = (ENVIRONMENT == 'DEVEL' ? true : false);
+$is_devel = ENVIRONMENT == 'DEVEL';
 
 
 if (isset($_REQUEST['snapshot'])) {
@@ -235,14 +232,6 @@ if (isset($_REQUEST['snapshot'])) {
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 $smarty->assign('is_devel', $is_devel);
 
-
-if (!(isset($is_unsubscribe) or isset($is_reset))) {
-
-    //$smarty->setCaching(Smarty::CACHING_LIFETIME_SAVED);
-    //$smarty->setCacheLifetime(86400);
-    //$smarty->setCompileCheck(true);
-
-}
 
 
 //if ($logged_in) {
