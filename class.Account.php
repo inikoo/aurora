@@ -37,9 +37,7 @@ class Account extends DB_Table {
     function get_data() {
 
 
-        $sql = sprintf(
-            "SELECT * FROM `Account Dimension` WHERE `Account Key`=1 "
-        );
+        $sql = "SELECT * FROM `Account Dimension` WHERE `Account Key`=1 ";
 
 
         if ($result = $this->db->query($sql)) {
@@ -97,7 +95,7 @@ class Account extends DB_Table {
 
 
     function settings($key) {
-        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+        return ($this->settings[$key] ?? '');
     }
 
     function add_account_history($history_key, $type = false) {
@@ -266,7 +264,6 @@ class Account extends DB_Table {
             case 'Currency Code':
             case 'Account Currency Code':
                 return $this->data['Account Currency'];
-                break;
 
             case ('Currency'):
 
@@ -284,15 +281,12 @@ class Account extends DB_Table {
                         } else {
                             return '';
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
                 } else {
                     return '';
                 }
 
-                break;
+
 
             case 'Country Code':
                 if ($this->get('Account Country Code')) {
@@ -335,27 +329,27 @@ class Account extends DB_Table {
 
                     return $this->data['Account Locale'];
                 }
-                break;
+
 
 
             case 'Setup Metadata':
                 return json_decode($this->data['Account Setup Metadata'], true);
-                break;
+
             case 'National Employment Code Label':
 
                 switch ($this->data['Account Country 2 Alpha Code']) {
                     case 'GB':
                         return _('National insurance number');
-                        break;
+
                     case 'ES':
-                        return _('DNI');
-                        break;
+                        return 'DNI';
+
                     default:
                         return '';
-                        break;
+
                 }
 
-                break;
+
 
             case 'Delta Today Start Orders In Warehouse Number':
 
@@ -430,7 +424,7 @@ class Account extends DB_Table {
             case 'Active Suppliers Parts Stock Zero Deliveries Number':
 
                 return number($this->data['Account '.preg_replace('/Suppliers /', '', $key)] - $this->data['Account '.preg_replace('/Suppliers /', 'Production ', $key)]);
-                break;
+
 
             case 'Active Suppliers Parts Stock Surplus Stock Value Minify':
             case 'Active Suppliers Parts Stock OK Stock Value Minify':
@@ -712,7 +706,7 @@ class Account extends DB_Table {
     }
 
     public function properties($key) {
-        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+        return ($this->properties[$key] ?? '');
     }
 
     function update_stores_data() {
@@ -941,15 +935,15 @@ class Account extends DB_Table {
     }
 
     function update_warehouses_data() {
-        $number_stores = 0;
+        $number_warehouses = 0;
 
         $sql = "SELECT count(*) AS num FROM `Warehouse Dimension` WHERE `Warehouse State`='Active'";
         if ($row = $this->db->query($sql)->fetch()) {
-            $number_stores = $row['num'];
+            $number_warehouses = $row['num'];
         }
 
         $this->fast_update(
-            array('Account Warehouses' => $number_stores)
+            array('Account Warehouses' => $number_warehouses)
         );
 
     }
@@ -1637,7 +1631,6 @@ class Account extends DB_Table {
     function update_suppliers_data() {
         $number_suppliers     = 0;
         $number_agents        = 0;
-        $number_manufacturers = 0;
 
         $sql = "SELECT count(*) AS num FROM `Supplier Dimension` WHERE `Supplier Type`!='Archived'";
         if ($row = $this->db->query($sql)->fetch()) {
@@ -1648,9 +1641,8 @@ class Account extends DB_Table {
             $number_agents = $row['num'];
         }
 
-        $sql = sprintf(
-            'SELECT count(*) AS num,ANY_VALUE(`Supplier Production Supplier Key`) as production_supplier_key FROM `Supplier Production Dimension` LEFT JOIN `Supplier Dimension` ON (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!="Archived" '
-        );
+        $sql =
+            'SELECT count(*) AS num,ANY_VALUE(`Supplier Production Supplier Key`) as production_supplier_key FROM `Supplier Production Dimension` LEFT JOIN `Supplier Dimension` ON (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!="Archived" ';
         if ($row = $this->db->query($sql)->fetch()) {
             $number_manufacturers = $row['num'];
             if ($number_manufacturers == 1) {
