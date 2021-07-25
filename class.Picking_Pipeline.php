@@ -266,7 +266,7 @@ class Picking_Pipeline extends DB_Table {
         }
     }
 
-    function add_location($location_key){
+    function add_location($location_key): string {
 
         $sql="insert into `Location Picking Pipeline Bridge` (`Location Picking Pipeline Picking Pipeline Key`,`Location Picking Pipeline Location Key`,`Location Picking Pipeline Creation Date`) values (?,?,?) ";
         $this->db->prepare($sql)->execute(
@@ -276,8 +276,17 @@ class Picking_Pipeline extends DB_Table {
                 gmdate('Y-m-s H:i:s')
             )
         );
+        return  $this->db->lastInsertId();
+    }
 
+    function remove_location($location_picking_pipeline_key){
 
+        $sql="delete from  `Location Picking Pipeline Bridge` where `Location Picking Pipeline Key`=? ";
+        $this->db->prepare($sql)->execute(
+            array(
+                $location_picking_pipeline_key
+            )
+        );
     }
 }
 

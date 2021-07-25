@@ -5,74 +5,68 @@
 
 function toggle_location_picking_pipeline(element) {
 
-    let icon = $(element).find('i')
+    let icon = $(element).find('i');
+    if(icon.hasClass('wait')){
+        return;
+    }
 
-    let field = $(element).data('field')
-
-
-    let value = $(element).data('value')
-    icon.addClass('fa-spinner fa-spin')
-
-
-    var ajaxData = new FormData();
-
-    ajaxData.append("tipo", 'edit_field')
-    ajaxData.append("object", 'Location')
-
-    ajaxData.append("key", $('#fields').attr('key'))
-    ajaxData.append("field", field)
-
-    ajaxData.append("value", value)
+    let field = $(element).data('field');
 
 
-    console.log(value)
+    let value = $(element).data('value');
+    let original_icon='fa-toggle-on';
+    if(icon.hasClass('fa-toggle-off')){
+        original_icon='fa-toggle-off';
+    }
+
+    icon.removeClass('fa-toggle-off fa-toggle-on').addClass('fa-spinner fa-spin wait');
+
+
+    let ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'edit_field');
+    ajaxData.append("object", 'Location');
+    ajaxData.append("key", $('#fields').attr('key'));
+    ajaxData.append("field", field);
+    ajaxData.append("value", value);
 
     $.ajax({
         url: "/ar_edit.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
         }, success: function (data) {
+            icon.removeClass('fa-spinner fa-spin wait');
 
-            if (data.state == '200') {
+
+            if (data.state === 200) {
 
 
-                if (data.other_fields) {
-                    for (var key in data.other_fields) {
+                const medata=data['update_metadata'];
+                icon.addClass(medata['icon']);
+                $(element).data('value',medata['value']);
+                if(medata['value']){
+                    $(element).find('span').removeClass('discreet');
+                }else{
+                    $(element).find('span').addClass('discreet');
 
-                        //   console.log(data.other_fields[key])
-
-                        update_field(data.other_fields[key])
-                    }
                 }
 
-                if (data.deleted_fields) {
-                    for (var key in data.deleted_fields) {
-                        delete_field(data.deleted_fields[key])
-                    }
-                }
-
-                for (var key in data.update_metadata.class_html) {
-                    $('.' + key).html(data.update_metadata.class_html[key])
+                let key;
+                for (key in medata['class_html']) {
+                    $('.' + key).html(medata['class_html'][key])
                 }
 
 
-                for (var key in data.update_metadata.hide) {
-                    $('.' + data.update_metadata.hide[key]).addClass('hide')
-                }
 
-                for (var key in data.update_metadata.show) {
 
-                    $('.' + data.update_metadata.show[key]).removeClass('hide')
-                }
-
-                //  $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
-
-            } else if (data.state == '400') {
+            } else {
+                icon.addClass(original_icon);
                 swal({
-                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                     text: data.msg, confirmButtonText: "OK"
                 });
             }
 
 
         }, error: function () {
+            icon.removeClass(original_icon).removeClass('fa-spinner fa-spin wait');
 
         }
     });

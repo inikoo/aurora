@@ -333,15 +333,13 @@ class Location extends DB_Table {
                     )
                 );
                 if ($row = $stmt->fetch()) {
-                        if($row['num']>0){
-                            $this->msg     = _('Other location has this code');
-                            $this->updated = false;
+                    if ($row['num'] > 0) {
+                        $this->msg     = _('Other location has this code');
+                        $this->updated = false;
 
-                            return;
-                        }
+                        return;
+                    }
                 }
-
-
 
 
                 $this->update_field('Location File As', get_file_as($code), 'no_history');
@@ -384,7 +382,7 @@ class Location extends DB_Table {
                 if ($value != '') {
 
 
-                    $value=parse_weight($value)[0];
+                    $value = parse_weight($value)[0];
                     if (!is_numeric($value)) {
                         $this->msg     = _(
                             'The maximum weight for this location show be numeric'
@@ -422,7 +420,7 @@ class Location extends DB_Table {
 
                 if ($value != '') {
 
-                    $value=parse_cbm($value)[0];
+                    $value = parse_cbm($value)[0];
                     if (!is_numeric($value)) {
                         $this->msg     = _(
                             'The maximum volume for this location show be numeric'
@@ -542,13 +540,33 @@ class Location extends DB_Table {
                 }
         }
 
-        if(preg_match('/^location pipeline (\d+)$/',$field,$matches)){
-            /** @var $pipeline \Picking_Pipeline*/
-            $pipeline=get_object('Picking_Pipeline',$matches[1]);
-            if($value==''){
-                $pipeline->add_location($this->id);
-            }else{
-                $pipeline->remove_location($$value);
+        if (preg_match('/^location pipeline (\d+)$/', $field, $matches)) {
+            /** @var $pipeline \Picking_Pipeline */
+            $pipeline = get_object('Picking_Pipeline', $matches[1]);
+            if ($value == '') {
+                $this->update_metadata['value'] = $pipeline->add_location($this->id);
+
+
+
+                $this->update_metadata['icon'] = 'fa-toggle-on';
+            } else {
+                $pipeline->remove_location($value);
+                $this->update_metadata['icon']  = 'fa-toggle-off';
+                $this->update_metadata['value'] = '';
+            }
+
+            foreach ($this->get_parts('objects') as $part) {
+                foreach ($part->get_products() as $product_id) {
+                    include_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'       => 'product_availability',
+                        'product_id' => $product_id,
+                        'editor'     => $this->editor
+                    ), DNS_ACCOUNT_CODE, 'Low'
+                    );
+
+                }
             }
 
 
@@ -623,7 +641,6 @@ class Location extends DB_Table {
                 }
 
                 return $this->warehouse_area->get('Code');
-
 
 
             default:

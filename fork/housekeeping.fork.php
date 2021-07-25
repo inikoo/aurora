@@ -1399,7 +1399,14 @@ function fork_housekeeping($job) {
             }
 
             break;
+        case 'product_availability':
+            $product         = get_object('Product', $data['product_id']);
+            $product->editor = $editor;
+            $product->fork   = true;
+            $product->update_availability(false);
 
+
+            break;
 
         case 'payment_added_order':
 
@@ -1494,7 +1501,7 @@ function fork_housekeeping($job) {
             $website  = get_object('Website', $data['website_key']);
             $customer = get_object('Customer', $data['customer_key']);
             /** @var $store \Store */
-            $store    = get_object('Store', $customer->get('Customer Store Key'));
+            $store = get_object('Store', $customer->get('Customer Store Key'));
 
             $customer->editor = $editor;
 
@@ -2273,7 +2280,7 @@ function fork_housekeeping($job) {
                  * @var $purchase_order \PurchaseOrder
                  */
                 $purchase_order = get_object('Purchase Order', $purchase_order_key);
-                if($purchase_order->id){
+                if ($purchase_order->id) {
                     $purchase_order->update_totals();
                 }
 
@@ -3052,7 +3059,7 @@ function fork_housekeeping($job) {
             /** @var $website \Website */
             $website = get_object('Website', $data['website_key']);
             /** @var $store \Store */
-            $store   = get_object('Store', $website->get('Website Store Key'));
+            $store = get_object('Store', $website->get('Website Store Key'));
 
 
             $sql  = "SELECT `Product ID` FROM `Product Dimension` WHERE `Product Store Key`=? and `Product Status`!='Discontinued' and `Product Public`='Yes' ";

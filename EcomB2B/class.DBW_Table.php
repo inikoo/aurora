@@ -263,11 +263,8 @@ abstract class DBW_Table extends stdClass {
 
     function get_update_metadata() {
 
-        if (isset($this->update_metadata)) {
-            return $this->update_metadata;
-        } else {
-            return array();
-        }
+        return $this->update_metadata??[];
+
 
     }
 
