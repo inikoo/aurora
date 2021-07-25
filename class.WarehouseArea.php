@@ -483,7 +483,7 @@ class WarehouseArea extends DB_Table {
                     $warehouse->update_location_flag_number($location->get('Location Warehouse Flag Key'));
                 }
 
-                $warehouse->update_children();
+                $warehouse->update_warehouse_aggregations();
 
 
                 $this->update_warehouse_area_locations();

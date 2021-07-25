@@ -78,7 +78,7 @@ class Picking_Pipeline extends DB_Table {
                 'Action'           => 'created'
             );
 
-            $history_key=$this->add_subject_history(
+            $history_key = $this->add_subject_history(
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
@@ -90,7 +90,7 @@ class Picking_Pipeline extends DB_Table {
             $store->create_subject_history_bridge($history_key, 'No', 'Changes', $store->get_object_name(), $store->id);
 
             $history_data = array(
-                'History Abstract' => sprintf(_('Picking pipeline %s for store %s created'), $this->get('Name'),$store->get('Name')),
+                'History Abstract' => sprintf(_('Picking pipeline %s for store %s created'), $this->get('Name'), $store->get('Name')),
                 'History Details'  => '',
                 'Action'           => 'created'
             );
@@ -99,7 +99,7 @@ class Picking_Pipeline extends DB_Table {
                 $history_data, true, 'No', 'Changes', $warehouse->get_object_name(), $warehouse->id
             );
 
-
+            $warehouse->update_warehouse_aggregations();
 
 
         } else {
@@ -195,7 +195,7 @@ class Picking_Pipeline extends DB_Table {
         while ($row = $stmt->fetch()) {
             //Todo update store products availability
 
-            $sql="delete from  `Location Picking Pipeline Bridge` where  `Location Picking Pipeline Key`=?";
+            $sql = "delete from  `Location Picking Pipeline Bridge` where  `Location Picking Pipeline Key`=?";
             $this->db->prepare($sql)->execute(
                 array(
                     $row['Location Picking Pipeline Key']
@@ -217,6 +217,8 @@ class Picking_Pipeline extends DB_Table {
         );
 
         $store->create_subject_history_bridge($history_key, 'No', 'Changes', $store->get_object_name(), $store->id);
+
+        $warehouse->update_warehouse_aggregations();
 
         return '/warehouse/'.$warehouse->id.'/pipelines';
 
@@ -244,7 +246,6 @@ class Picking_Pipeline extends DB_Table {
     }
 
 
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -265,6 +266,18 @@ class Picking_Pipeline extends DB_Table {
         }
     }
 
+    function add_location($location_key){
 
+        $sql="insert into `Location Picking Pipeline Bridge` (`Location Picking Pipeline Picking Pipeline Key`,`Location Picking Pipeline Location Key`,`Location Picking Pipeline Creation Date`) values (?,?,?) ";
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id,
+                $location_key,
+                gmdate('Y-m-s H:i:s')
+            )
+        );
+
+
+    }
 }
 

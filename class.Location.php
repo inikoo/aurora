@@ -16,14 +16,12 @@
 
 class Location extends DB_Table {
 
-    /**
-     * @var \PDO
-     */
+
     public $db;
 
 
-    var $warehouse = false;
-    var $warehouse_area = false;
+    public ?Warehouse $warehouse = null;
+    public ?WarehouseArea $warehouse_area = null;
 
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
@@ -58,7 +56,7 @@ class Location extends DB_Table {
 
     }
 
-    function get_data($key, $tag, $tag2 = '') {
+    function get_data($key, $tag, $tag2 = ''): bool {
 
 
         if ($key == 'warehouse_code') {
@@ -112,11 +110,9 @@ class Location extends DB_Table {
             }
         }
 
-        $this->data['Location File As'] = $this->get_file_as(
-            $this->data['Location Code']
-        );
+        $this->data['Location File As'] = get_file_as($this->data['Location Code']);
 
-        //exit;
+
         $warehouse = get_object('Warehouse', $this->data['Location Warehouse Key']);
         if (!$warehouse->id) {
             $this->error = true;
@@ -216,46 +212,7 @@ class Location extends DB_Table {
 
         }
 
-
-    }
-
-    function get_file_as($StartCode) {
-
-        $PaddingAmount = 4;
-        $s             = preg_replace("/[^0-9]/", "-", $StartCode);
-
-        for ($qq = 0; $qq < 10; $qq++) {
-            $s = preg_replace("/--/", "-", $s);
-        }
-
-
-        $pieces = explode("-", $s);
-
-        for ($qq = 0; $qq < count($pieces); $qq++) {
-            $ss = str_pad($pieces[$qq], $PaddingAmount, '0', STR_PAD_LEFT);
-            if (strlen($pieces[$qq]) > 0) {
-                $StartCode      = preg_replace(
-                    '/'.$pieces[$qq].'/', ';xyz;', $StartCode, 1
-                );
-                $arr_parts[$qq] = $ss;
-            }
-
-        }
-
-
-        for ($qq = 0; $qq < count($pieces); $qq++) {
-
-            if (strlen($pieces[$qq]) > 0) {
-                $ss        = $arr_parts[$qq];
-                $StartCode = preg_replace('/;xyz;/', $ss, $StartCode, 1);
-            }
-
-
-        }
-
-
-        return $StartCode;
-
+        return false;
 
     }
 
@@ -366,23 +323,28 @@ class Location extends DB_Table {
                 }
 
 
-                $sql = sprintf(
-                    'SELECT `Location Key` FROM `Location Dimension` WHERE `Location Key`!=%d AND `Location Code`=%s', $this->id, prepare_mysql($value)
-                );
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $this->msg     = _('Other location has this code');
-                        $this->updated = false;
+                $sql = "SELECT count(*) as num  FROM `Location Dimension` WHERE `Location Key`!=? AND `Location Code`=?";
 
-                        return;
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id,
+                        $value
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                        if($row['num']>0){
+                            $this->msg     = _('Other location has this code');
+                            $this->updated = false;
+
+                            return;
+                        }
                 }
 
 
-                $this->update_field('Location File As', $this->get_file_as($code), 'no_history');
+
+
+                $this->update_field('Location File As', get_file_as($code), 'no_history');
 
                 $this->update_field('Location Code', $code, $options);
                 $this->fork_index_elastic_search();
@@ -422,7 +384,7 @@ class Location extends DB_Table {
                 if ($value != '') {
 
 
-                    list($value, $original_units) = parse_weight($value);
+                    $value=parse_weight($value)[0];
                     if (!is_numeric($value)) {
                         $this->msg     = _(
                             'The maximum weight for this location show be numeric'
@@ -460,7 +422,7 @@ class Location extends DB_Table {
 
                 if ($value != '') {
 
-                    list($value, $original_units) = parse_cbm($value);
+                    $value=parse_cbm($value)[0];
                     if (!is_numeric($value)) {
                         $this->msg     = _(
                             'The maximum volume for this location show be numeric'
@@ -513,10 +475,6 @@ class Location extends DB_Table {
                         $this->error = true;
                         $this->msg   = _('Flag invalid color');
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 break;
@@ -568,9 +526,6 @@ class Location extends DB_Table {
                         $this->error = true;
                         $this->msg   = 'flag key not found';
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit('xx');
                 }
 
 
@@ -585,6 +540,18 @@ class Location extends DB_Table {
                         $this->update_field($field, $value, $options);
                     }
                 }
+        }
+
+        if(preg_match('/^location pipeline (\d+)$/',$field,$matches)){
+            /** @var $pipeline \Picking_Pipeline*/
+            $pipeline=get_object('Picking_Pipeline',$matches[1]);
+            if($value==''){
+                $pipeline->add_location($this->id);
+            }else{
+                $pipeline->remove_location($$value);
+            }
+
+
         }
 
     }
@@ -603,12 +570,12 @@ class Location extends DB_Table {
 
                 return money($this->data['Location Stock Value'], $account->get('Account Currency'));
 
-                break;
+
             case 'Max Weight':
 
                 return weight($this->data['Location Max Weight']);
 
-                break;
+
             case 'Max Volume':
 
                 if ($this->data['Location Max Volume'] == '') {
@@ -616,8 +583,6 @@ class Location extends DB_Table {
                 }
 
                 return number($this->data['Location Max Volume']).' '.ngettext('cubic meter', 'cubic meters', floor($this->data['Location Max Volume']));
-
-                break;
 
             case 'Location Flag Color':
                 $sql = sprintf(
@@ -658,7 +623,7 @@ class Location extends DB_Table {
                 }
 
                 return $this->warehouse_area->get('Code');
-                break;
+
 
 
             default:
@@ -877,7 +842,7 @@ class Location extends DB_Table {
 
     }
 
-    function get_parts($scope = 'keys') {
+    function get_parts($scope = 'keys'): array {
 
 
         if ($scope == 'objects') {
@@ -915,9 +880,6 @@ class Location extends DB_Table {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -1028,8 +990,8 @@ class Location extends DB_Table {
     function update_fulfilment_status() {
 
         $number_assets = 0;
-        $sql  = "select count(*) as num from `Fulfilment Asset Dimension` where `Fulfilment Asset Location Key`=?";
-        $stmt = $this->db->prepare($sql);
+        $sql           = "select count(*) as num from `Fulfilment Asset Dimension` where `Fulfilment Asset Location Key`=?";
+        $stmt          = $this->db->prepare($sql);
         $stmt->execute(
             array(
                 $this->id
@@ -1041,11 +1003,9 @@ class Location extends DB_Table {
 
         $this->fast_update(
             [
-                'Location Fulfilment'=>($number_assets>0?'Yes':'No')
+                'Location Fulfilment' => ($number_assets > 0 ? 'Yes' : 'No')
             ]
         );
-
-
 
 
     }

@@ -231,7 +231,6 @@ class Warehouse extends DB_Table {
             );
 
 
-
         } else {
             print_r($error_info = $stmt->errorInfo());
 
@@ -339,7 +338,7 @@ class Warehouse extends DB_Table {
                     $this->update_location_flag_number($location->get('Location Warehouse Flag Key'));
                 }
 
-                $this->update_children();
+                $this->update_warehouse_aggregations();
 
 
             } else {
@@ -401,7 +400,7 @@ class Warehouse extends DB_Table {
 
     }
 
-    function update_children() {
+    function update_warehouse_aggregations() {
 
 
         $number_locations                  = 0;
@@ -409,10 +408,7 @@ class Warehouse extends DB_Table {
         $number_part_locations             = 0;
         $number_part_locations_with_errors = 0;
         $number_part_locations_unknown     = 0;
-
-
-        $pending_orders                         = 0;
-        $pending_orders_with_missing_pick_stock = 0;
+        $number_picking_pipelines=0;
 
         $sql = sprintf('SELECT count(*) AS number FROM `Location Dimension` WHERE `Location Warehouse Key`=%d', $this->id);
 
@@ -422,9 +418,6 @@ class Warehouse extends DB_Table {
                 $number_locations = $row['number'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         $sql = sprintf(
@@ -440,26 +433,19 @@ class Warehouse extends DB_Table {
                 $number_parts                      = $row['parts'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
-        $sql = sprintf(
-            'SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors,sum(`Stock Value`) as amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d  and `Location Key`=%d  ', $this->id, $this->get('Warehouse Unknown Location Key')
+        $sql  = "SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors,sum(`Stock Value`) as amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=?  and `Location Key`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id, $this->get('Warehouse Unknown Location Key')
+            )
         );
+        while ($row = $stmt->fetch()) {
+            $number_part_locations_unknown = $row['number'];
+         }
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_part_locations_unknown = $row['number'];
-                //$number_part_locations_with_errors = $row['errors'];
-                //$stock_amount                      = $row['amount'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
 
 
         $this->fast_update(
@@ -471,6 +457,19 @@ class Warehouse extends DB_Table {
                 'Warehouse Number Parts'                    => $number_parts
             )
         );
+
+        $sql  = "SELECT count(*) AS number  FROM `Picking Pipeline Dimension` WHERE `Picking Pipeline Warehouse Key`=?   ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $number_picking_pipelines = $row['number'];
+        }
+
+        $this->fast_update_json_field('Warehouse Properties','pipelines',$number_picking_pipelines);
 
 
     }
@@ -640,7 +639,7 @@ class Warehouse extends DB_Table {
                 $this->new_shipper = true;
 
 
-                $this->update_children();
+                $this->update_warehouse_aggregations();
 
 
             } else {
@@ -2248,10 +2247,10 @@ and `Part Distinct Locations`>1
 
 
                     $shippers[$row['Shipper Key']] = array(
-                        'key'  => $row['Shipper Key'],
-                        'code' => $row['Shipper Code'],
-                        'name' => $row['Shipper Name'],
-                        'api_key'=>$row['Shipper API Key']
+                        'key'     => $row['Shipper Key'],
+                        'code'    => $row['Shipper Code'],
+                        'name'    => $row['Shipper Name'],
+                        'api_key' => $row['Shipper API Key']
 
                     );
 
@@ -2329,12 +2328,10 @@ and `Part Distinct Locations`>1
         $this->error_metadata = array();
 
         // print_r($data);
-        $this->new_warehouse_area             = false;
+        $this->new_warehouse_area           = false;
         $data['Picking Band Warehouse Key'] = $this->id;
-        $data['editor']                       = $this->editor;
+        $data['editor']                     = $this->editor;
 
-
-    
 
         if ($data['Picking Band Name'] == '') {
             $this->error_code       = 'missing_required_fields';
@@ -2345,9 +2342,6 @@ and `Part Distinct Locations`>1
 
             return;
         }
-
-
-
 
 
         $picking_band = new PickingBand('find create', $data);

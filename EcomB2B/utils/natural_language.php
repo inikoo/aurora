@@ -319,7 +319,7 @@ function get_file_as($StartCode) {
 
 
     $pieces = explode("-", $s);
-
+    $arr_parts=[];
     for ($qq = 0; $qq < count($pieces); $qq++) {
         $ss = str_pad($pieces[$qq], $PaddingAmount, '0', STR_PAD_LEFT);
         if (strlen($pieces[$qq]) > 0) {

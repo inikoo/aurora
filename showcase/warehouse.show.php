@@ -14,7 +14,7 @@ function get_warehouse_showcase($data, $smarty, $user, $db) {
 
 
     $warehouse = new Warehouse($data['key']);
-    $warehouse->update_children();
+    $warehouse->update_warehouse_aggregations();
 
     $smarty->assign('warehouse', $warehouse);
 

@@ -11,8 +11,7 @@
 */
 
 
-
-function get_location_object_fields($object, $user,$account,$db, $options): array {
+function get_location_object_fields($object, $user, $account, $db, $options): array {
 
     $account->load_acc_data();
 
@@ -31,18 +30,23 @@ function get_location_object_fields($object, $user,$account,$db, $options): arra
     } else {
         $new = false;
     }
+    $warehouse = get_object('Warehouse', ($new ? $options['warehouse_key'] : $object->get('Location Warehouse Key')));
+
 
     $edit = true;
 
-    $sql = sprintf(
-        'select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ', ($new ? $options['warehouse_key'] : $object->get('Location Warehouse Key'))
+    $sql  = "select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $warehouse->id
+        )
     );
-
     $flags = array();
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $flags[$row['Warehouse Flag Key']] = sprintf('<i class="fa fa-flag %s padding_right_10 "  aria-hidden="true"></i> %s', strtolower($row['Warehouse Flag Color']), $row['Warehouse Flag Label']);
-        }
+
+    while ($row = $stmt->fetch()) {
+        $flags[$row['Warehouse Flag Key']] = sprintf('<i class="fa fa-flag %s padding_right_10 "  aria-hidden="true"></i> %s', strtolower($row['Warehouse Flag Color']), $row['Warehouse Flag Label']);
+
     }
 
 
@@ -54,6 +58,43 @@ function get_location_object_fields($object, $user,$account,$db, $options): arra
     );
     asort($used_for_options);
 
+
+    $pipeline_fields = [];
+
+    if (!$new) {
+        $sql  = "select `Picking Pipeline Key`,`Picking Pipeline Name`,`Store Code`,`Store Name`, `Location Picking Pipeline Key` from 
+                            `Picking Pipeline Dimension` PP  left join 
+                            `Store Dimension` on (`Store Key`=`Picking Pipeline Store Key`) left join 
+                            `Location Picking Pipeline Bridge` on (`Location Picking Pipeline Picking Pipeline Key`=`Picking Pipeline Key`  and `Location Picking Pipeline Location Key`=? )    
+                        where `Picking Pipeline Warehouse Key`=?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $object->id,
+                $warehouse->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $pipeline_fields[] = array(
+                'edit'   => 'no_icon',
+                'render' => true,
+
+                'id'              => 'Location_Picking_Pipeline',
+                'value'           => $row['Location Picking Pipeline Key'],
+                'formatted_value' => '<span class="button" onclick="toggle_location_picking_pipeline(this)" data-value="'.$row['Location Picking Pipeline Key'].'" data-field="location_pipeline_'.$row['Picking Pipeline Key'].'"  style="margin-right:40px"><i class=" fa fa-fw '.($row['Location Picking Pipeline Key'] ? 'fa-toggle-on' : 'fa-toggle-off')
+                    .'" aria-hidden="true"></i> <span class="'.($row['Location Picking Pipeline Key']  ? '' : 'discreet').'">'.$row['Store Name'].'</span></span>  
+                    
+                    ',
+
+                'label'    => $row['Picking Pipeline Name'].' <span class="small padding_left_5"><i class="fal fa-store"></i> '.$row['Store Code'].'</span>',
+                'required' => true,
+
+                'type' => ''
+
+
+            );
+        }
+    }
 
     $object_fields = array(
         array(
@@ -154,7 +195,7 @@ function get_location_object_fields($object, $user,$account,$db, $options): arra
                     'edit'                     => 'dropdown_select',
                     'scope'                    => 'warehouse_areas',
                     'parent'                   => 'warehouse',
-                    'parent_key'               => ($new ? $options['warehouse_key'] : $object->get('Location Warehouse Key')),
+                    'parent_key'               => $warehouse->id,
                     'value'                    => htmlspecialchars($object->get('Location Warehouse Area Key')),
                     'formatted_value'          => $object->get('Warehouse Area Key'),
                     'stripped_formatted_value' => '',
@@ -168,7 +209,14 @@ function get_location_object_fields($object, $user,$account,$db, $options): arra
         );
     }
 
+    if (count($pipeline_fields) > 0) {
+        $object_fields[] = array(
+            'label'      => _('Picking pipelines').' <i class="fal padding_left_5 small fa-project-diagram"></i>',
+            'show_title' => true,
+            'fields'     => $pipeline_fields
 
+        );
+    }
 
 
     if (!$new) {
@@ -191,7 +239,6 @@ function get_location_object_fields($object, $user,$account,$db, $options): arra
                     'reference' => '',
                     'type'      => 'operation'
                 ),
-
 
 
             )

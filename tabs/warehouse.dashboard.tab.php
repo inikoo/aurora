@@ -19,10 +19,10 @@ $warehouse=$state['_object'];
 
 // todo update real time when qty change
 $warehouse->update_stock_amount();
-$warehouse->update_children();
+$warehouse->update_warehouse_aggregations();
 $warehouse->update_warehouse_paid_ordered_parts();
 $warehouse->update_warehouse_part_locations_to_replenish();
-$warehouse->update_children();
+$warehouse->update_warehouse_aggregations();
 
 include_once 'widgets/warehouse_alerts.wget.php';
 
