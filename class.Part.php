@@ -143,9 +143,6 @@ class Part extends Asset {
                 $this->found_key = $row['Part SKU'];
                 $this->get_data('id', $this->found_key);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -216,7 +213,7 @@ class Part extends Asset {
         $stmt = $this->db->prepare($sql);
 
         $i = 1;
-        foreach ($base_data as $key => $value) {
+        foreach ($base_data as  $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -820,10 +817,6 @@ class Part extends Asset {
             if ($row = $result->fetch()) {
                 $required_last_quarter = $row['required'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $forecast_metadata = json_encode(
@@ -996,10 +989,10 @@ class Part extends Asset {
 
                 $value = $main_supplier_part->get($key);
                 if ($value == '') {
-                    $sql = "select `$key` from `Supplier Part Dimension` where `Supplier Part Part SKU`=? and  `Supplier Part Key`!=?  ";
+                    $sql = "`$key` from `Supplier Part Dimension` where `Supplier Part Part SKU`=? and  `Supplier Part Key`!=?  ";
 
 
-                    $stmt = $this->db->prepare($sql);
+                    $stmt = $this->db->prepare('select '.$sql);
                     $stmt->execute(
                         array(
                             $this->id,
@@ -1090,7 +1083,6 @@ class Part extends Asset {
 
                 return number($this->data['Part Number Active Products']).",<span class=' very_discreet'>".number($this->data['Part Number No Active Products']).'</span>';
 
-                break;
 
             case 'Stock Status Icon':
 
@@ -1124,7 +1116,7 @@ class Part extends Asset {
                 }
 
                 return $stock_status;
-                break;
+
             case 'Part Family Category Code':
 
                 if ($this->data['Part Family Category Key'] == '') {
@@ -1144,7 +1136,6 @@ class Part extends Asset {
                 }
 
 
-                break;
             case 'Products Web Status':
 
                 if ($this->data['Part Status'] == 'Not In Use') {
@@ -1199,7 +1190,7 @@ class Part extends Asset {
                 } else {
                     return $this->data['Part Status'];
                 }
-                break;
+
 
             case 'Cost in Warehouse only':
 
@@ -1213,7 +1204,7 @@ class Part extends Asset {
 
 
                 return $sko_cost;
-                break;
+
 
             case 'Cost in Warehouse':
 
@@ -1236,7 +1227,7 @@ class Part extends Asset {
 
 
                 return ' <span class="discreet" style="margin-right:10px">'.$total_value.'</span>'.$sko_cost;
-                break;
+
             case 'SKO Cost in Warehouse - Price':
 
 
@@ -1268,7 +1259,6 @@ class Part extends Asset {
 
 
                 return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$sko_recommended_price.'</span>';
-                break;
 
 
             case 'Unit Price':
@@ -1316,7 +1306,7 @@ class Part extends Asset {
                 }
 
                 return $unit_price;
-                break;
+
             case 'Unit RRP':
                 if ($this->data['Part Unit RRP'] == '') {
                     return '';
@@ -1340,7 +1330,7 @@ class Part extends Asset {
                 }
 
                 return $rrp;
-                break;
+
             case 'Barcode':
 
                 if ($this->get('Part Barcode Number') == '') {
@@ -1352,7 +1342,6 @@ class Part extends Asset {
                         'Part Barcode Number'
                     ).'</span>';
 
-                break;
 
             case 'Available Forecast':
 
@@ -1401,7 +1390,7 @@ class Part extends Asset {
 
 
                 return $available_forecast;
-                break;
+
 
             case 'Origin Country Code':
                 if ($this->data['Part Origin Country Code']) {
@@ -1419,7 +1408,7 @@ class Part extends Asset {
                     return '';
                 }
 
-                break;
+
             case 'Origin Country':
                 if ($this->data['Part Origin Country Code']) {
                     include_once 'class.Country.php';
@@ -1456,7 +1445,7 @@ class Part extends Asset {
 
 
                 }
-                break;
+
 
             case('Current Stock Available'):
 
@@ -1464,8 +1453,6 @@ class Part extends Asset {
                     $this->data['Part Current On Hand Stock'] - $this->data['Part Current Stock In Process'] - $this->data['Part Current Stock Ordered Paid'], 6
                 );
 
-
-                break;
 
             case('Current On Hand Stock'):
             case('Current Stock'):
@@ -1481,12 +1468,12 @@ class Part extends Asset {
                 return strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid From'].' +0:00')
                 );
-                break;
+
             case('Valid To'):
                 return strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($this->data['Part Valid To'].' +0:00')
                 );
-                break;
+
             case 'Package Description Image':
 
 
@@ -1501,7 +1488,6 @@ class Part extends Asset {
 
                 return $image;
 
-                break;
 
             case 'Acc To Day Updated':
             case 'Acc Ongoing Intervals Updated':
@@ -1516,14 +1502,13 @@ class Part extends Asset {
                 }
 
                 return $value;
-                break;
+
             case 'Cost':
             case 'Commercial Value':
                 return money($this->data['Part '.$key], $account->get('Currency Code'));
-                break;
+
             case 'Margin':
                 return percentage($this->data['Part '.$key], 1);
-                break;
 
 
             case 'Barcode Number Error':
@@ -1595,7 +1580,7 @@ class Part extends Asset {
                 }
 
                 return $error.$duplicates;
-                break;
+
             case 'Next Deliveries Data':
 
                 if ($this->data['Part Next Deliveries Data'] == '') {
@@ -1603,7 +1588,7 @@ class Part extends Asset {
                 } else {
                     return json_decode($this->data['Part Next Deliveries Data'], true);
                 }
-                break;
+
 
             case 'Weight Status':
                 switch ($this->data['Part Package Weight Status']) {
@@ -1634,46 +1619,46 @@ class Part extends Asset {
                 }
 
                 return $status;
-                break;
+
             case 'Carton Weight':
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Carton Weight');
-                break;
+
             case 'Carton CBM':
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Carton CBM');
-                break;
+
             case 'Supplier Part Currency Code':
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Supplier Part Currency Code');
-                break;
+
             case 'Part Supplier Part Unit Cost':
 
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Supplier Part Unit Cost');
-                break;
+
             case 'Supplier Part Unit Cost':
 
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Unit Cost');
-                break;
+
             case 'Part Supplier Part Unit Extra Cost Percentage':
 
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Supplier Part Unit Extra Cost Percentage');
-                break;
+
             case 'Supplier Part Unit Extra Cost Percentage':
 
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Unit Extra Cost Percentage');
-                break;
+
             default:
 
                 if (preg_match('/No Supplied$/', $key)) {
@@ -1721,7 +1706,7 @@ class Part extends Asset {
                     }
 
                     $amount = money(
-                            $_amount, $account->get('Account Currency'), $locale = false, $fraction_digits
+                            $_amount, $account->get('Account Currency'),  false, $fraction_digits
                         ).$suffix;
 
                     return $amount;
@@ -1738,7 +1723,7 @@ class Part extends Asset {
                     $_amount         = $this->data[$field];
 
                     $amount = money(
-                            $_amount, $account->get('Account Currency'), $locale = false, $fraction_digits
+                            $_amount, $account->get('Account Currency'), false, $fraction_digits
                         ).$suffix;
 
                     return $amount;
@@ -1862,6 +1847,7 @@ class Part extends Asset {
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
+                            /** @var $part \Part */
                             $part = get_object('Part', $row['Part SKU']);
                             $part->fast_update(array('Part Barcode Number Error' => 'Duplicated'));
                             $error = 'Duplicated';
@@ -2435,9 +2421,6 @@ class Part extends Asset {
                             return;
                         }
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
                 $this->update_field($field, $value, $options);
                 $this->fork_index_elastic_search();
@@ -2985,9 +2968,6 @@ class Part extends Asset {
                             return;
                         }
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
 
@@ -3443,16 +3423,13 @@ class Part extends Asset {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
         return $part_locations;
     }
 
-    function get_category_data() {
+    function get_category_data(): array {
 
 
         $type = 'Part';
@@ -4016,10 +3993,6 @@ class Part extends Asset {
             if ($row = $result->fetch()) {
                 $number_real_locations = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         return $number_real_locations;
@@ -4113,9 +4086,6 @@ class Part extends Asset {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -4179,9 +4149,6 @@ class Part extends Asset {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $categories;
@@ -4202,9 +4169,9 @@ class Part extends Asset {
                 $this->id
             )
         );
-        while ($row = $stmt->fetch()) {
+        if ($row = $stmt->fetch()) {
             $image_key = $row['Image Subject Image Key'];
-            break;
+
         }
 
 
@@ -4239,9 +4206,6 @@ class Part extends Asset {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $suppliers;
@@ -4265,9 +4229,6 @@ class Part extends Asset {
                     $skos   = round($row['qty'], 1);
                     $amount = round($row['amount'], 2);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
             $this->fast_update(
@@ -4296,9 +4257,6 @@ class Part extends Asset {
                     $skos   = round($row['qty'], 1);
                     $amount = round($row['amount'], 2);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
             $this->fast_update(
@@ -4327,9 +4285,6 @@ class Part extends Asset {
                     $skos   = round($row['qty'], 1);
                     $amount = round($row['amount'], 2);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
             $this->fast_update(
@@ -4360,9 +4315,6 @@ class Part extends Asset {
                     $skos   = round($row['qty'], 1);
                     $amount = round($row['amount'], 2);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
             $this->fast_update(
@@ -4475,9 +4427,6 @@ class Part extends Asset {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $suppliers;
@@ -5048,6 +4997,8 @@ class Part extends Asset {
             }
         }
 
+        return false;
+
     }
 
     function updated_linked_products() {
@@ -5099,18 +5050,25 @@ class Part extends Asset {
 
     }
 
-    function get_picking_location_key() {
+    function get_picking_location_key($store_scope = '') {
 
 
-        $sql="select `Location Key`  FROM `Part Location Dimension` PL  left join `Location Picking Pipeline Bridge` B on (PL.`Location Key`=B.`Location Picking Pipeline Location Key`)  WHERE `Part SKU`=?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $this->sku
-            )
-        );
-        if ($row = $stmt->fetch()) {
-            return $row['Location Key'];
+        if ($store_scope) {
+            $sql  = "select `Location Key`,`Location Picking Pipeline Location Key`  
+                    FROM `Location Picking Pipeline Bridge` B left join 
+                        `Part Location Dimension` PL    on (PL.`Location Key`=B.`Location Picking Pipeline Location Key`) left join 
+                        `Picking Pipeline Dimension` on (`Picking Pipeline Key`=`Location Picking Pipeline Picking Pipeline Key`)  
+                    WHERE `Part SKU`=?  and `Picking Pipeline Store Key`=?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->sku,
+                    $store_scope
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                return $row['Location Key'];
+            }
         }
 
         $sql = "SELECT `Location Key` FROM `Part Location Dimension` WHERE `Part SKU`=? AND `Can Pick`='Yes'";
@@ -5155,10 +5113,6 @@ class Part extends Asset {
             if ($row = $result->fetch()) {
                 $no_active_products = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -5190,7 +5144,7 @@ class Part extends Asset {
         foreach ($this->get_products('data') as $product_data) {
 
             $num_all_products++;
-
+            /** @var  $product \Product */
             $product = get_object('product', $product_data['Product Part Product ID']);
 
 
@@ -5571,19 +5525,15 @@ class Part extends Asset {
                     ];
 
                     $params['body'][] = [
-                        'tenant'          => strtolower(DNS_ACCOUNT_CODE),
-                        'date'            => $row['Date'],
-                        '1st_day_year'    => (preg_match('/\d{4}-01-01/ ', $row['Date']) ? true : false),
-                        '1st_day_month'   => (preg_match('/\d{4}-\d{2}-01/', $row['Date']) ? true : false),
-                        '1st_day_quarter' => (preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']) ? true : false),
-                        '1st_day_week'    => (gmdate('w', strtotime($row['Date'])) == 0 ? true : false),
-                        'sku'             => $this->sku,
-                        'locations'       => $locations,
-
-                        'locations'  => array_keys($location_keys),
-                        'warehouses' => array_keys($warehouse_keys),
-
-
+                        'tenant'                  => strtolower(DNS_ACCOUNT_CODE),
+                        'date'                    => $row['Date'],
+                        '1st_day_year'            => (bool)preg_match('/\d{4}-01-01/ ', $row['Date']),
+                        '1st_day_month'           => (bool)preg_match('/\d{4}-\d{2}-01/', $row['Date']),
+                        '1st_day_quarter'         => (bool)preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']),
+                        '1st_day_week'            => gmdate('w', strtotime($row['Date'])) == 0,
+                        'sku'                     => $this->sku,
+                        'locations'               => array_keys($location_keys),
+                        'warehouses'              => array_keys($warehouse_keys),
                         'stock_on_hand'           => $stock_on_hand,
                         'stock_cost'              => $stock_cost,
                         'stock_value_at_day_cost' => $stock_value_at_day_cost,
@@ -5600,9 +5550,9 @@ class Part extends Asset {
                         'stock_value_out_other'         => $stock_value_out_other,
 
 
-                        'sko_cost'              => (isset($result_update_stock_history['cost_per_sko']) ? $result_update_stock_history['cost_per_sko'] : $this->get('Part Cost in Warehouse')),
+                        'sko_cost'              => ($result_update_stock_history['cost_per_sko'] ?? $this->get('Part Cost in Warehouse')),
                         'stock_left_1_year_ago' => $stock_left_1_year_ago,
-                        'no_sales_1_year'       => ($dormant_1year == 'Yes' ? true : false),
+                        'no_sales_1_year'       => $dormant_1year == 'Yes',
                         'no_sales_1_year_icon'  => $no_sales_1_year_icon,
                         'part_reference'        => $this->data['Part Reference'],
                         'part_description'      => $this->data['Part Package Description'],

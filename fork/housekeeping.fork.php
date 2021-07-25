@@ -527,11 +527,12 @@ function fork_housekeeping($job) {
             //  print_r($data);
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
+                /** @var $part \Part */
                 $part = get_object('Part', $part_sku);
                 $part->update_part_inventory_snapshot_fact($from_date);
             }
 
-            $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
+            $sql = 'SELECT `Warehouse Key` FROM `Warehouse Dimension`';
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
                     $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
@@ -539,9 +540,6 @@ function fork_housekeeping($job) {
 
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
             break;

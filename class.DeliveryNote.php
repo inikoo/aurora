@@ -264,7 +264,7 @@ class DeliveryNote extends DB_Table {
                 $weight   = $part->get('Part Package Weight') * ($required + $given);
 
 
-                $location_key = $part->get_picking_location_key();
+                $location_key = $part->get_picking_location_key($this->data['Delivery Note Store Key']);
 
 
                 list($supplier_key, $supplier_part_key, $supplier_part_historic_key) = $part->get_stock_supplier_data();
@@ -995,9 +995,9 @@ class DeliveryNote extends DB_Table {
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
 
-
+                            /** @var $part Part*/
                             $part         = get_object('part', $row['Part SKU']);
-                            $location_key = $part->get_picking_location_key();
+                            $location_key = $part->get_picking_location_key($this->data['Delivery Note Store Key']);
 
                             $weight   = $transaction_data['amount'] * $part->get('Part Package Weight');
                             $required = $transaction_data['amount'];
@@ -2791,10 +2791,10 @@ class DeliveryNote extends DB_Table {
             )
         );
         while ($row = $stmt->fetch()) {
-
+            /** @var $part \Part */
             $part = get_object('Part', $row['Part SKU']);
 
-            $picking_location = $part->get_picking_location_key();
+            $picking_location = $part->get_picking_location_key($this->data['Delivery Note Store Key']);
             if ($picking_location == '') {
                 $picking_location = 1;
             }

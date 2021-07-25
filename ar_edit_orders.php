@@ -2569,7 +2569,7 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
 
 function update_delivery_note_picking_locations($data, $editor) {
 
-
+    /** @var  $delivery_note \DeliveryNote*/
     $delivery_note         = get_object('delivery_note', $data['delivery_note_key']);
     $delivery_note->editor = $editor;
     $delivery_note->update_delivery_note_picking_locations();

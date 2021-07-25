@@ -219,7 +219,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
 
-
+                /** @var $part \Part */
                 $part         = get_object('Part', $part_sku);
                 $part->editor = $data['editor'];
 
@@ -262,6 +262,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
+                    /** @var $part \Part */
                     $part = get_object('Part', $row2['Part SKU']);
                     $part->update_part_inventory_snapshot_fact($date, $date);
 

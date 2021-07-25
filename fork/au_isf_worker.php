@@ -66,6 +66,7 @@ function fork_isf($job) {
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
+        /** @var $part \Part */
         $part = get_object('Part', $row['Part SKU']);
         $part->update_part_inventory_snapshot_fact($data['date'], $data['date']);
     }

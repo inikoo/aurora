@@ -81,7 +81,7 @@ if ($result = $db->query($sql)) {
 
 
                 $date=gmdate('Y-m-d');
-
+                /** @var $part \Part */
                 $part=get_object('Part',$row['Stack BiKey Object Key One']);
                 $part->editor = $editor;
                 $part->update_part_inventory_snapshot_fact($date, $date);
