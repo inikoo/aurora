@@ -12,14 +12,9 @@
 
 
 
-function get_location_object_fields($object, $user,$account,$db, $options) {
+function get_location_object_fields($object, $user,$account,$db, $options): array {
 
     $account->load_acc_data();
-
-    $options_yes_no = array(
-        'Yes' => _('Yes'),
-        'No'  => _('No')
-    );
 
 
     if ($user->can_supervisor('locations')) {
@@ -173,26 +168,7 @@ function get_location_object_fields($object, $user,$account,$db, $options) {
         );
     }
 
-    if ($account->properties('fulfilment')) {
-        $object_fields[] = array(
-            'label'      => _('Fulfilment'),
-            'show_title' => true,
-            'fields'     => array(
 
-                array(
-                    'id'              => 'Location_Fulfilment',
-                    'edit'            => ($can_supervisor ? 'option' : ''),
-                    'options'         => $options_yes_no,
-                    'value'           => $object->get('Location Fulfilment'),
-                    'formatted_value' => $object->get('Fulfilment'),
-                    'label'           => ucfirst($object->get_field_label('Location Fulfilment')),
-                    'type'            => ''
-                ),
-
-
-            )
-        );
-    }
 
 
     if (!$new) {
