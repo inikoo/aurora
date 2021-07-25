@@ -875,7 +875,7 @@ class Public_Customer_Client extends DBW_Table {
             $order = get_object('Order', $row['Order Key']);
             $order->editor;
             $order->cancel(_('Cancelled because client was deleted'));
-            $order->fast_update_json_field('Order Metadata'.'cancel_reason', 'client_deactivated');
+            $order->fast_update_json_field('Order Metadata','cancel_reason', 'client_deactivated');
         }
 
 
