@@ -109,7 +109,9 @@
                 button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
-                var register_data = {}
+                var register_data = {
+
+                }
 
                     $("#unsubscribe input:not(.ignore)").each(function (i, obj) {
                         if (!$(obj).attr('name') == '') {

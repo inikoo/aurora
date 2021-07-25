@@ -54,22 +54,15 @@ if ($order == 'name') {
     $order = 'hrs';
 } elseif ($order == 'dp_per_hour') {
     $order = 'dp_per_hour';
-} elseif ($order == 'deliveries_with_errors') {
-    $order = 'deliveries_with_errors';
-} elseif ($order == 'deliveries_with_errors_percentage') {
-    $order = ' ( count(distinct OPTD.`Packer Fault Delivery Note Key`)/count(distinct ITF.`Delivery Note Key`))  ';
-} elseif ($order == 'picks_with_errors') {
-    $order = 'picks_with_errors';
-} elseif ($order == 'picks_with_errors_percentage') {
-    $order = ' picks_with_errors_percentage ';
-}elseif ($order == 'bonus') {
+} elseif ($order == 'bonus') {
     $order = 'bonus';
 } elseif ($order == 'issues') {
-    $order = '1';
+    $order = "(select count(distinct `Feedback Key`) from `Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
+             left join `Inventory Transaction Fact` ITF2 on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  where   `Feedback Packer`='Yes' and  ITF2.`Packer Key`=ITF.`Packer Key` $where_interval_feedback )";
 } elseif ($order == 'issues_percentage') {
     $order                   = '3';
     $issues_percentage_field = "(select count(distinct `Feedback Key`) from `Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
-             left join `Inventory Transaction Fact` ITF2 on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  where   `Feedback Packer`=\'Yes\' and  ITF2.`Packer Key`=ITF.`Packer Key` $where_interval_feedback ) /
+             left join `Inventory Transaction Fact` ITF2 on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  where   `Feedback Packer`='Yes' and  ITF2.`Packer Key`=ITF.`Packer Key` $where_interval_feedback ) /
   count(distinct ITF.`Delivery Note Key`,`Part SKU`)";
 
 } else {
@@ -83,8 +76,7 @@ $group_by = 'group by `Packer Key`';
 $table = ' `Inventory Transaction Fact` ITF  left join 
 `ITF Picking Band Bridge` on (`ITF Picking Band ITF Key`=ITF.`Inventory Transaction Key` and `ITF Picking Band Type`="Packing") left join 
 
-
-`Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Order Transaction Fact Key`) left join `Staff Dimension` S on (S.`Staff Key`=ITF.`Packer Key`) ';
+ `Staff Dimension` S on (S.`Staff Key`=ITF.`Packer Key`) ';
 
 $fields = "
 
@@ -96,9 +88,7 @@ $fields = "
 `Staff Name`,`Staff Key`,@deliveries := count(distinct ITF.`Delivery Note Key`) as deliveries , sum(`Packed`) as packed ,
 @hrs :=  (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Packer Key` $where_interval_working_hours ) as hrs,
   count(distinct ITF.`Delivery Note Key`,`Part SKU`)/ (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Packer Key` $where_interval_working_hours )  as dp_per_hour,
-   @deliveries_with_error := count(distinct OPTD.`Packer Fault Delivery Note Key`) as deliveries_with_errors,
-   sum( OPTD.`Packer Fault`) as picks_with_errors,
-    sum( OPTD.`Packer Fault`)/count(*) as picks_with_errors_percentage,
+
     sum(`ITF Picking Band Amount`) as bonus
 
 ";

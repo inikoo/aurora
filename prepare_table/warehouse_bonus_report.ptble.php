@@ -43,37 +43,24 @@ $_order = $order;
 $_dir   = $order_direction;
 
 
-$issues_percentage_field = '1';
 
 if ($order == 'name') {
     $order = '`Staff Name`';
-} elseif ($order == 'picked') {
-    $order = 'picked';
 } elseif ($order == 'deliveries') {
     $order = 'deliveries';
-} elseif ($order == 'deliveries_with_errors') {
-    $order = 'deliveries_with_errors';
-} elseif ($order == 'deliveries_with_errors_percentage') {
-    $order = ' ( count(distinct OPTD.`Picker Fault Delivery Note Key`)/count(distinct ITF.`Delivery Note Key`))  ';
-} elseif ($order == 'picks_with_errors') {
-    $order = 'picks_with_errors';
-} elseif ($order == 'picks_with_errors_percentage') {
-    $order = ' picks_with_errors_percentage ';
 } elseif ($order == 'dp' or $order == 'dp_percentage') {
     $order = 'dp';
 } elseif ($order == 'hrs') {
     $order = 'hrs';
 } elseif ($order == 'dp_per_hour') {
     $order = 'dp_per_hour';
-} elseif ($order == 'issues') {
-    $order = '1';
-}elseif ($order == 'picks') {
+} elseif ($order == 'picks') {
     $order = 'picks';
-}elseif ($order == 'cartons') {
+} elseif ($order == 'cartons') {
     $order = 'cartons';
-}elseif ($order == 'bonus') {
+} elseif ($order == 'bonus') {
     $order = 'bonus';
-}  else {
+} else {
 
     $order = 'S.`Staff Key`';
 }
@@ -84,25 +71,18 @@ $group_by = 'group by S.`Staff Key`';
 $table = ' `Inventory Transaction Fact` ITF  left join 
 `ITF Picking Band Bridge` on (`ITF Picking Band ITF Key`=ITF.`Inventory Transaction Key` ) left join 
 
-        `Order Post Transaction Dimension` OPTD on (ITF.`Inventory Transaction Key`=OPTD.`Inventory Transaction Key`)   left join 
+       
         `Staff Dimension` S on (S.`Staff Key`=ITF.`Picker Key`  or S.`Staff Key`=ITF.`Packer Key`) left join  
         `Staff Role Bridge` SRB on (SRB.`Staff Key`=S.`Staff Key`)
-        '
-
-
-;
+        ';
 
 $fields = "`Picker Key`,ITF.`Inventory Transaction Key`,
   count(distinct ITF.`Delivery Note Key`,`Part SKU`) as dp ,
 
- $issues_percentage_field as issues_percentage ,
 
 
-`Staff Name`,S.`Staff Key`,@deliveries := count(distinct ITF.`Delivery Note Key`) as deliveries , sum(`Picked`) as picked,
+`Staff Name`,S.`Staff Key`,@deliveries := count(distinct ITF.`Delivery Note Key`) as deliveries , 
 @hrs :=  (select sum(`Timesheet Clocked Time`)/3600 from `Timesheet Dimension` where `Timesheet Staff Key`=`Picker Key` $where_interval_working_hours ) as hrs,
-  @deliveries_with_error := count(distinct OPTD.`Picker Fault Delivery Note Key`) as deliveries_with_errors,
-   sum( OPTD.`Picker Fault`) as picks_with_errors,
-    sum( OPTD.`Picker Fault`)/count(*) as picks_with_errors_percentage,
     sum(`ITF Picking Band Amount`) as bonus,
          sum(`ITF Picking Band SKOs`) as picks,
     sum(`ITF Picking Band Cartons`) as cartons,`Warehouse Key`

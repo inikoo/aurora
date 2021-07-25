@@ -89,28 +89,32 @@ class Customer extends Subject {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id       = $this->data['Customer Key'];
             $this->metadata = json_decode($this->data['Customer Metadata'], true);
-        }
 
-        if ($this->data['Customer Fulfilment'] == 'Yes') {
+            if ($this->data['Customer Fulfilment'] == 'Yes') {
 
-            $sql   = 'select * from  `Customer Fulfilment Dimension` where `Customer Fulfilment Customer Key`=?';
-            $stmt2 = $this->db->prepare($sql);
-            $stmt2->execute(
-                array(
-                    $this->id
-                )
-            );
-            if ($row2 = $stmt2->fetch()) {
+                $sql   = 'select * from  `Customer Fulfilment Dimension` where `Customer Fulfilment Customer Key`=?';
+                $stmt2 = $this->db->prepare($sql);
+                $stmt2->execute(
+                    array(
+                        $this->id
+                    )
+                );
+                if ($row2 = $stmt2->fetch()) {
 
-                foreach ($row2 as $key => $value) {
-                    $this->data[$key] = $value;
+                    foreach ($row2 as $key => $value) {
+                        $this->data[$key] = $value;
 
 
+                    }
                 }
+
+
             }
 
 
         }
+
+
     }
 
     function get_deleted_data($id) {
@@ -166,9 +170,6 @@ class Customer extends Subject {
 
                 return;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -225,7 +226,7 @@ class Customer extends Subject {
 
         $stmt = $this->db->prepare($sql);
         $i    = 1;
-        foreach ($raw_data as $key => $value) {
+        foreach ($raw_data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -428,7 +429,7 @@ class Customer extends Subject {
                         );
                     }
                 }
-
+                break;
             case('Tax Number Valid'):
                 if ($this->data['Customer Tax Number'] != '') {
 
@@ -799,9 +800,6 @@ class Customer extends Subject {
                         if ($row = $result->fetch()) {
                             return $row['Customer Other Delivery Address Formatted'];
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
 
                 }
@@ -957,7 +955,7 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                $address_fields = array(
+                return array(
 
                     'Address Recipient'            => $row['Customer Other Delivery Address Recipient'],
                     'Address Organization'         => $row['Customer Other Delivery Address Organization'],
@@ -973,15 +971,10 @@ class Customer extends Subject {
 
                 );
 
-                return $address_fields;
 
-
-            } else {
-
-                return false;
             }
         }
-
+        return false;
 
     }
 
@@ -1000,53 +993,8 @@ class Customer extends Subject {
 
     }
 
-    function number_of_user_logins() {
-        list($is_user, $row) = $this->is_user_customer($this->id);
-        if ($is_user) {
-            $sql = sprintf(
-                "SELECT count(*) AS num FROM `User Log Dimension` WHERE `User Key`=%d", $row['User Key']
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    return $row['num'];
-                } else {
-                    return 0;
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
 
 
-        } else {
-            return 0;
-        }
-    }
-
-    function is_user_customer($data) {
-        $sql = sprintf(
-            "SELECT * FROM `User Dimension` WHERE `User Parent Key`=%d AND `User Type`='Customer' ", $data
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return array(
-                    true,
-                    $row
-                );
-            } else {
-                return array(
-                    false,
-                    false
-                );
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
 
     function get_telephone() {
@@ -1848,10 +1796,10 @@ class Customer extends Subject {
         }
     }
 
-    function validate_customer_tax_number() {
+    function validate_customer_tax_number(): bool {
 
         if (!empty($this->skip_validate_tax_number)) {
-            return;
+            return false;
         }
 
 
@@ -1891,6 +1839,8 @@ class Customer extends Subject {
 
 
         $this->update_aiku('Customer Dimension', 'tax_number_validation');
+
+        return true;
 
     }
 
@@ -2482,10 +2432,6 @@ class Customer extends Subject {
             if ($row = $result->fetch()) {
                 $order_key = $row['Order Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2572,9 +2518,6 @@ class Customer extends Subject {
                 );
             }
 
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2583,14 +2526,7 @@ class Customer extends Subject {
 
     }
 
-    function is_tax_number_valid() {
-        if ($this->data['Customer Tax Number'] == '') {
-            return false;
-        } else {
-            return true;
-        }
 
-    }
 
     function get_order_in_process_key() {
 
@@ -2612,35 +2548,9 @@ class Customer extends Subject {
         return $order_key;
     }
 
-    function get_credits_formatted() {
-
-        $credits = $this->get_credits();
-
-        $store = get_object('Store', $this->data['Customer Store Key']);
 
 
-        return money($credits, $store->data['Store Currency Code']);
-    }
 
-    function get_credits() {
-
-        $sql = sprintf(
-            "SELECT sum(`Credit Saved`) AS value FROM `Order Post Transaction Dimension` WHERE `Customer Key`=%d AND `State`='Saved' ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $credits = $row['value'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $credits;
-    }
 
     public function update_orders() {
 

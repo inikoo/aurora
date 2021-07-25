@@ -13,10 +13,8 @@
 trait OrderItems {
 
     /**
-     * @var PDO
+     * @throws \Exception
      */
-    public $db;
-
     function update_item($data): array {
 
 
@@ -96,6 +94,7 @@ trait OrderItems {
 
             $_deliveries = $this->get_deliveries();
             $dn_key      = array_pop($_deliveries);
+
             $dn          = get_object('DeliveryNote', $dn_key);
 
 
@@ -142,9 +141,7 @@ trait OrderItems {
             if ($total_quantity == 0) {
 
 
-                $this->delete_transaction(
-                    $row['Order Transaction Fact Key']
-                );
+                $this->delete_transaction($otf_key);
                 $otf_key = 0;
                 $gross   = 0;
 
@@ -175,7 +172,7 @@ trait OrderItems {
                         $gross,
                         $data['Current Dispatching State'],
                         $cost,
-                        $row['Order Transaction Fact Key']
+                        $otf_key
                     ]
                 );
                 if ($stmt->rowCount()) {
@@ -192,7 +189,7 @@ trait OrderItems {
                     $this->db->prepare($sql)->execute(
                         [
                             $dn_key,
-                            $row['Order Transaction Fact Key']
+                            $otf_key
                         ]
                     );
 
@@ -201,7 +198,8 @@ trait OrderItems {
 
 
             }
-        } else {
+        }
+        else {
             $old_quantity   = 0;
             $old_net_amount = 0;
             $total_quantity = $quantity + $bonus_quantity;
@@ -288,7 +286,8 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             $this->update_field('Order Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
-        } else {
+        }
+        else {
             $history_abstract = '';
             if ($delta_qty > 0) {
                 $history_abstract = sprintf(
@@ -381,10 +380,8 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             }
 
 
-            //print "xx $gross $gross_discounts ";
 
 
-            $net_amount = $gross;
 
 
             if ($this->get('Order State') == 'InBasket') {
@@ -569,88 +566,49 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             );
 
 
-            if (in_array(
-                $this->get('Order State'), array(
-                                             'Cancelled',
-                                             'Approved',
-                                             'Dispatched',
-                                         )
-            )) {
-                $discounts_class = '';
-                $discounts_input = '';
-            } else {
-                $discounts_class = 'button';
-                $discounts_input = sprintf(
-                    '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                    $otf_key, percentage($gross_discounts, $gross)
-                );
-            }
-            $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                    $gross_discounts, $gross
-                ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
+
+        }
 
 
-            require_once 'utils/new_fork.php';
-            new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'      => 'order_items_changed',
-                'order_key' => $this->id,
-            ), DNS_ACCOUNT_CODE, $this->db
-            );
 
 
-            return array(
-                'updated'   => true,
-                'otf_key'   => $otf_key,
-                'to_charge' => money($net_amount - $gross_discounts, $this->data['Order Currency']),
-
-                'item_discounts'      => $discounts,
-                'net_amount'          => $net_amount,
-                'delta_net_amount'    => $net_amount - $old_net_amount,
-                'qty'                 => $quantity,
-                'delta_qty'           => $quantity - $old_quantity,
-                'bonus qty'           => $bonus_quantity,
-                'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
-            );
-
+        if (in_array(
+            $this->get('Order State'), array(
+                                         'Cancelled',
+                                         'Approved',
+                                         'Dispatched',
+                                     )
+        )) {
+            $discounts_class = '';
+            $discounts_input = '';
         } else {
-
-            $net_amount = $gross;
-            if (in_array(
-                $this->get('Order State'), array(
-                                             'Cancelled',
-                                             'Approved',
-                                             'Dispatched',
-                                         )
-            )) {
-                $discounts_class = '';
-                $discounts_input = '';
-            } else {
-                $discounts_class = 'button';
-                $discounts_input = sprintf(
-                    '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                    $row['Order Transaction Fact Key'], percentage($gross_discounts, $gross)
-                );
-            }
-            $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                    $gross_discounts, $gross
-                ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
-
-
-            return array(
-                'updated'        => true,
-                'otf_key'        => $otf_key,
-                'to_charge'      => money($net_amount, $this->data['Order Currency']),
-                'item_discounts' => $discounts,
-
-                'net_amount'          => $net_amount,
-                'delta_net_amount'    => $net_amount - $old_net_amount,
-                'qty'                 => $quantity,
-                'delta_qty'           => $quantity - $old_quantity,
-                'bonus qty'           => $bonus_quantity,
-                'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
+            $discounts_class = 'button';
+            $discounts_input = sprintf(
+                '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                $otf_key, percentage($gross_discounts, $gross)
             );
         }
+        $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                $gross_discounts, $gross
+            ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
+
+
+        return array(
+            'updated'        => true,
+            'otf_key'        => $otf_key,
+            'to_charge'      => money($gross- $gross_discounts, $this->data['Order Currency']),
+            'item_discounts' => $discounts,
+
+            'net_amount'          => $gross,
+            'delta_net_amount'    => $gross - $old_net_amount,
+            'qty'                 => $quantity,
+            'delta_qty'           => $quantity - $old_quantity,
+            'bonus qty'           => $bonus_quantity,
+            'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross,1, 'NA', '') : '')
+        );
+
+
+
 
 
     }
@@ -759,7 +717,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
 
 
                 $items[$row['Order Transaction Fact Key']] = array(
-                    'code'             => sprintf('<a href="/%s">%s</a>', strtolower($row['Product Code']), $row['Product Code']),
+                    'code'             => sprintf('<a href="/'.strtolower($row['Product Code']).'">%s</a>', $row['Product Code']),
                     'code_description' => '<b class="item_code">'.$row['Product Code'].'</b> <span class="item_description">'.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
                     'description'      => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
                     'price_raw'        => $row['Product Price'],

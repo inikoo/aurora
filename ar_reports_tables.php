@@ -2156,7 +2156,7 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
                 'id'         => $data['Staff Key'],
                 'name'       => sprintf('<span class="link" onclick="change_view(\'warehouse/%d/kpis/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Warehouse Key'], $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
                 'deliveries' => number($data['deliveries']),
-                'picked'     => number($data['picked'], 0),
+               // 'picked'     => number($data['picked'], 0),
                 'picks'      => number($data['picks'], 0),
                 'cartons'    => number($data['cartons'], 0),
 
