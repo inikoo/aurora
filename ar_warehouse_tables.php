@@ -13,8 +13,12 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
-
 require_once 'utils/object_functions.php';
+require_once 'utils/prepare_table.php';
+
+/** @var \User $user */
+/** @var PDO $db */
+/** @var \Account $account */
 
 if (!$user->can_view('locations')) {
     echo json_encode(
@@ -99,11 +103,12 @@ switch ($tipo) {
     case 'deleted_locations':
         deleted_locations(get_table_parameters(), $db, $user, $account);
         break;
+    case 'packing_bands':
     case 'picking_bands':
         picking_bands(get_table_parameters(), $db, $user, $account);
         break;
-    case 'packing_bands':
-        picking_bands(get_table_parameters(), $db, $user, $account);
+    case 'picking_pipelines':
+        picking_pipelines(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -115,6 +120,11 @@ switch ($tipo) {
 
 }
 
+function picking_pipelines($_data, $db, $user, $account) {
+    include_once 'prepare_table/picking_pipelines.ptc.php';
+    $table=new prepare_table_picking_pipelines($db,$account,$user);
+    echo $table->fetch($_data);
+}
 
 function picking_bands($_data, $db, $user, $account) {
 

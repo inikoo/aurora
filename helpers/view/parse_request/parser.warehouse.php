@@ -10,10 +10,11 @@ include_once 'helpers/view/parse_request/parser.class.php';
 class parser_warehouse extends parser_request {
 
     function __construct($_data, $db) {
-        parent::__construct(...func_get_args());
-
         $this->module  = 'warehouses';
         $this->section = 'warehouse';
+        parent::__construct(...func_get_args());
+
+
 
     }
 
@@ -35,7 +36,6 @@ class parser_warehouse extends parser_request {
                 $this->object = 'warehouse';
                 $this->key    = $view_path[0];
                 if (isset($view_path[1])) {
-
                     if ($view_path[1] == 'dashboard') {
 
                         $this->section = 'dashboard';
@@ -397,6 +397,10 @@ class parser_warehouse extends parser_request {
                         $this->parent     = 'warehouse';
                         $this->parent_key = $this->key;
 
+
+
+
+
                         if (isset($view_path[2]) and in_array(
                                 $view_path[2], [
                                                  'todo',
@@ -438,6 +442,12 @@ class parser_warehouse extends parser_request {
                         }
 
 
+                    }elseif ($view_path[1] == 'pipelines') {
+                        $this->section = 'locations';
+                        $this->object = '';
+                        $this->parent     = 'warehouse';
+                        $this->parent_key = $this->key;
+                        $this->tab = 'warehouse.picking_pipelines';
                     }
 
 

@@ -8,15 +8,10 @@
 include_once 'utils/date_functions.php';
 
 class prepare_table {
-    public $rtext_label;
-    /**
-     * @var array
-     */
-    public $parameters;
-    /**
-     * @var integer
-     */
-    public $number_results;
+    public string $rtext_label;
+    public array $parameters;
+
+    public int $number_results;
     /**
      * @var float|int
      */
@@ -25,90 +20,52 @@ class prepare_table {
      * @var mixed|string
      */
     public $order;
-    /**
-     * @var string
-     */
-    public $order_direction;
+
+    public string $order_direction;
     /**
      * @var mixed
      */
     public $f_value;
-    /**
-     * @var string
-     */
-    public $table;
-    /**
-     * @var string
-     */
-    public $fields;
-    /**
-     * @var string
-     */
-    public $sql_totals;
-    /**
-     * @var string
-     */
-    public $sql_data;
-    /**
-     * @var string
-     */
-    public $where;
-    /**
-     * @var string
-     */
-    public $wheref;
-    /**
-     * @var string
-     */
-    public $rtext;
-    /**
-     * @var int
-     */
-    public $total;
-    /**
-     * @var int
-     */
-    public $filtered;
-    /**
-     * @var string
-     */
-    public $record_label;
-    /**
-     * @var \PDO
-     */
-    public $db;
-    /**
-     * @var int
-     */
-    public $total_records;
-    /**
-     * @var \Account
-     */
-    public $account;
-    /**
-     * @var array
-     */
-    public $table_data;
+
+    public string $table;
+
+    public string $fields;
+
+    public string $sql_totals;
+
+    public string $sql_data;
+
+    public string $where;
+
+    public string $wheref;
+
+    public string $rtext;
+
+    public int $total;
+
+    public int $filtered;
+
+    public array $record_label;
+
+    public PDO $db;
+
+    public int $total_records;
+
+    public Account $account;
+
+    public array $table_data;
     /**
      * @var mixed|string
      */
     public $sort_key;
-    /**
-     * @var string
-     */
-    public $sort_direction;
-    /**
-     * @var \User
-     */
-    public $user;
-    /**.
-     * @var string
-     */
-    public $group_by;
-    /**
-     * @var array
-     */
-    public $navigation_sql;
+
+    public string $sort_direction;
+
+    public User $user;
+
+    public string $group_by;
+
+    public array $navigation_sql;
     /**
      * @var mixed
      */

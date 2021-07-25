@@ -3378,7 +3378,6 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                 $parser=new parser_warehouse($user,$view_path);
 
 
-
                 break;
             case 'inventory':
 
