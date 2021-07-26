@@ -1263,7 +1263,7 @@ class Product extends Asset {
     function update_availability($use_fork = true) {
 
 
-        $use_pipelines = false;
+        $use_pipelines = true;
 
         $old_availability_state = $this->get('Product Availability State');
 
@@ -1537,6 +1537,7 @@ class Product extends Asset {
 
 
     }
+
 
 
 
