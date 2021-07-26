@@ -13,6 +13,7 @@
 require_once 'common.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
+/** @var  $db PDO */
 
 
 require_once 'class.Store.php';
@@ -38,12 +39,13 @@ $account = new Account();
 $account->update_orders();
 
 
-$sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+$sql = "SELECT `Store Key` FROM `Store Dimension`";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $store = new Store('id', $row['Store Key']);
-        $store->update_invoices();
+        $store = get_object('store', $row['Store Key']);
+        $store->update_orders_in_process_data();
 
+        $store->update_invoices();
         $store->update_customers_data();
 
         $store->update_orders();
@@ -52,9 +54,5 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
-
 

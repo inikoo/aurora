@@ -2179,7 +2179,7 @@ class Store extends DB_Table {
             )
         );
         $sql  =
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ='InProcess'  AND !`Order To Pay Amount`>0 ";
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=?  AND  `Order State` ='InProcess'  AND !`Order To Pay Amount`>0 ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -2194,7 +2194,7 @@ class Store extends DB_Table {
 
 
         $sql  =
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`) ,0)AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State`='InProcess'  AND `Order To Pay Amount`>0";
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`) ,0)AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=?  AND `Order State`='InProcess'  AND `Order To Pay Amount`>0";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -2202,12 +2202,13 @@ class Store extends DB_Table {
             )
         );
         while ($row = $stmt->fetch()) {
-
+            print_r($row);
             $data['in_process_not_paid']['number']    += $row['num'];
             $data['in_process_not_paid']['amount']    += $row['amount'];
             $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
 
         }
+
 
 
         $data_to_update = array(
