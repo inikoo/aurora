@@ -12,6 +12,7 @@
 /** @var \PDO $db */
 /** @var \Smarty $smarty */
 /** @var array $state */
+include_once 'utils/get_export_edit_template_fields.php';
 
 if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->warehouses)) {
     $html = '';
