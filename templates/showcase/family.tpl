@@ -192,7 +192,7 @@
                     </tbody>
 
                 </table>
-
+                {if $category->webpage->id}
                 <table class="overview" >
                     <tr class="main">
                         <td>{t}Webpage{/t}</td>
@@ -204,11 +204,8 @@
 
                         </td>
                     </tr>
-
-
-
-
                 </table>
+                {/if}
                 {assign deal_components $category->get_deal_components('objects')}
                 <table class="overview" >
                     {foreach from=$deal_components item=deal_component name=deal_component}

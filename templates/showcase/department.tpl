@@ -189,7 +189,7 @@
             </table>
         </div>
 
-
+        {if $category->webpage->id}
         <table class="overview" >
             <tr class="main">
                 <td>{t}Webpage{/t}</td>
@@ -202,6 +202,7 @@
                 </td>
             </tr>
         </table>
+        {/if}
 
     </div>
 
