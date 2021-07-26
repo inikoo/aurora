@@ -87,6 +87,7 @@ class prepare_table {
         $this->fields     = '';
         $this->sql_totals = '';
         $this->sql_data   = '';
+        $this->order_direction='';
 
         $this->record_label = [
             [
@@ -116,6 +117,8 @@ class prepare_table {
         $this->start_from     = ($args['page'] - 1) * $this->number_results;
         $this->sort_key       = ($args['o'] ?? 'id');
         $this->sort_direction = ((isset($args['od']) and preg_match('/desc/i', $args['od'])) ? 'desc' : '');
+
+
 
         if (isset($args['f_value']) and $args['f_value'] != '') {
             $this->f_value = $args['f_value'];
