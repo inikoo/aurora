@@ -2366,7 +2366,7 @@ trait OrderDiscountOperations {
                                 $shipping_data = (new shipping_for_order($this->db))->get($_data);
 
 
-                                if ($shipping_data['price']!='' and $shipping_data['shipping_zone_schema_key'] == $allowance_data['Shipping Zone Schema Key']) {
+                                if ( $shipping_data['shipping_zone_schema_key'] == $allowance_data['Shipping Zone Schema Key']) {
 
                                     //print_r($shipping_data);
 
@@ -2383,7 +2383,7 @@ trait OrderDiscountOperations {
                                     }
 
 
-                                    $amount_discount = $row['Transaction Gross Amount'] - $shipping_data['price'];
+                                    $amount_discount = $row['Transaction Gross Amount'] - $shipping_data['price']??0;
                                     if ($row['Transaction Gross Amount'] == 0) {
                                         $percentage_off = 0;
 
