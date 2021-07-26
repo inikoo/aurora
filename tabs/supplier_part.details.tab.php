@@ -12,15 +12,18 @@
 include_once 'utils/invalid_messages.php';
 include_once 'utils/country_functions.php';
 include_once 'conf/object_fields.php';
+/** @var array $state */
+/** @var \PDO $db */
+/** @var \User $user */
+/** @var \Smarty $smarty */
+/** @var \Account $account */
 
 
 $supplier_part = $state['_object'];
 
-if($supplier_part->get_table_name()=='Production Part Dimension'){
-    $html='xx';
-}else {
-
-
+if ($supplier_part->get_table_name() == 'Production Part Dimension') {
+    $html = 'xx';
+} else {
 
 
     $object_fields_supplier_part = get_object_fields(
@@ -59,6 +62,9 @@ if($supplier_part->get_table_name()=='Production Part Dimension'){
 
     $smarty->assign('js_code', 'js/injections/supplier_part_details.'.(_DEVEL ? '' : 'min.').'js');
 
-    $html = $smarty->fetch('edit_object.tpl');
+    try {
+        $html = $smarty->fetch('edit_object.tpl');
+    } catch (Exception $e) {
+    }
 
 }

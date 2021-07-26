@@ -13,6 +13,7 @@ require_once 'common.php';
 
 
 $account = get_object('Account', 1);
+$account->load_properties();
 
 $account->fast_update_json_field(
     'Account Properties', 'part_label_unit', json_encode(

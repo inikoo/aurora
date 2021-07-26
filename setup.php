@@ -116,7 +116,7 @@ if (!$account->id) {
 
     $base_data     = array();
     $ignore_fields = array();
-    $sql           = sprintf('show columns from `Account Dimension`');
+    $sql           = 'show columns from `Account Dimension`';
     foreach ($db->query($sql) as $row) {
         if (!in_array($row['Field'], $ignore_fields)) {
             $base_data[$row['Field']] = $row['Default'];
@@ -167,7 +167,7 @@ if (!$account->id) {
 
 
         $sql = sprintf(
-            "INSERT INTO `Account Data` ( `Account Key`) VALUES (%d)", $account->id
+            "INSERT INTO `Account Data` ( `Account Key`,`Account Properties`) VALUES (%d,'{}')", $account->id
 
         );
 
@@ -187,6 +187,74 @@ if (!$account->id) {
         $db->exec($sql);
 
         $account->update_production_job_orders_stats();
+
+
+
+        $account->fast_update_json_field(
+            'Account Properties', 'part_label_unit', json_encode(
+            array(
+
+                'with_image'             => false,
+                'with_weight'            => false,
+                'with_origin'            => true,
+                'with_ingredients'       => false,
+                'with_custom_text'       => false,
+                'with_account_signature' => true,
+                'size'                   => 'EU30161',
+                'set_up'                 => 'single',
+                'custom_text'            => '',
+                'with_borders'           => true
+
+
+            )
+
+        ), 'Account Data'
+
+        );
+
+        $account->fast_update_json_field(
+            'Account Properties', 'part_label_sko', json_encode(
+            array(
+
+                'with_image'             => false,
+                'with_weight'            => false,
+                'with_origin'            => true,
+                'with_ingredients'       => false,
+                'with_custom_text'       => false,
+                'with_account_signature' => true,
+                'size'                   => 'EU30161',
+                'set_up'                 => 'single',
+                'custom_text'            => '',
+                'with_borders'           => true
+
+
+            )
+
+        ), 'Account Data'
+
+        );
+
+        $account->fast_update_json_field(
+            'Account Properties', 'part_label_carton', json_encode(
+            array(
+
+                'with_image'             => false,
+                'with_weight'            => false,
+                'with_false'             => false,
+                'with_ingredients'       => true,
+                'with_custom_text'       => false,
+                'with_account_signature' => false,
+                'size'                   => 'EU30036',
+                'set_up'                 => 'single',
+                'custom_text'            => '',
+                'with_borders'           => true
+
+
+            )
+
+        ), 'Account Data'
+
+        );
 
 
 
