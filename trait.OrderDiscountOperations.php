@@ -2383,7 +2383,7 @@ trait OrderDiscountOperations {
                                     }
 
 
-                                    $amount_discount = $row['Transaction Gross Amount'] - $shipping_data['price']??0;
+                                    $amount_discount = $row['Transaction Gross Amount'] - ($shipping_data['price']==''?0:$shipping_data['price']);
                                     if ($row['Transaction Gross Amount'] == 0) {
                                         $percentage_off = 0;
 

@@ -24,15 +24,12 @@ if ($result = $db->query($sql)) {
     } else {
         $total = 0;
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External'    order by `Order Date` desc");
+$sql = "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External'    order by `Order Date` desc";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
