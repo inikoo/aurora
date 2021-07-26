@@ -2202,7 +2202,6 @@ class Store extends DB_Table {
             )
         );
         while ($row = $stmt->fetch()) {
-            print_r($row);
             $data['in_process_not_paid']['number']    += $row['num'];
             $data['in_process_not_paid']['amount']    += $row['amount'];
             $data['in_process_not_paid']['dc_amount'] += $row['dc_amount'];
