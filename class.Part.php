@@ -3581,7 +3581,7 @@ class Part extends Asset {
         $old_stock_in_progress = $this->data['Part Current Stock In Process'];
         $old_stock_picked      = $this->data['Part Current Stock Picked'];
         $old_stock_on_hand     = $this->data['Part Current On Hand Stock'];
-        $old_stock_paid        = $this->data['Part Current Stock Ordered Paid'];
+        //$old_stock_paid        = $this->data['Part Current Stock Ordered Paid'];
 
 
         $picked   = 0;
@@ -3662,7 +3662,7 @@ class Part extends Asset {
 
     }
 
-    function get_current_stock() {
+    function get_current_stock(): array {
 
         $stock      = 0;
         $value      = 0;
@@ -5310,10 +5310,6 @@ class Part extends Asset {
                 $stock = $row['Quantity On Hand'];
                 $value = $row['Stock Value'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 

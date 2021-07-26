@@ -1262,6 +1262,9 @@ class Product extends Asset {
 
     function update_availability($use_fork = true) {
 
+
+        $use_pipelines = false;
+
         $old_availability_state = $this->get('Product Availability State');
 
 
@@ -1273,7 +1276,7 @@ class Product extends Asset {
 
 
             $sql = sprintf(
-                " SELECT `Part Days Available Forecast`,`Part Reference`,`Part On Demand`,`Part Stock Status`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
+                " SELECT `Part Days Available Forecast`,`Part Reference`,`Part On Demand`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Current Stock In Process`,`Part Current Stock Ordered Paid` ,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio`,`Part SKU` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
                 $this->id
             );
 
@@ -1285,6 +1288,119 @@ class Product extends Asset {
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
+
+
+                    if ($use_pipelines) {
+
+                        $part_stock_this_store = 0;
+                        $part_stock_other_stores = 0;
+
+                        $sql        = "SELECT `Quantity On Hand` as stock,`Location Picking Pipeline Location Key`,`Location Key` FROM `Part Location Dimension` PL  left join 
+                     
+                        `Location Picking Pipeline Bridge` B  on (PL.`Location Key`=B.`Location Picking Pipeline Location Key`) left join 
+                         `Picking Pipeline Dimension` on (`Picking Pipeline Key`=`Location Picking Pipeline Picking Pipeline Key`)
+                        WHERE `Part SKU`=? and (`Location Picking Pipeline Location Key` is null or `Picking Pipeline Store Key` =? )  ";
+
+                        $stmt2 = $this->db->prepare($sql);
+
+                        $stmt2->execute(
+                            array(
+                                $row['Part SKU'],
+                                $this->data['Product Store Key']
+                            )
+                        );
+                        while ($row2 = $stmt2->fetch()) {
+                           // print_r($row2);
+                            if ($row2['Location Picking Pipeline Location Key'] ) {
+                                $part_stock_this_store += $row2['stock'];
+                            } else {
+                                $part_stock_other_stores += $row2['stock'];
+                            }
+
+
+
+                        }
+
+
+                      //  print   "$part_stock_this_store $part_stock_other_stores ".$row['Part Current On Hand Stock']."  \n";
+
+                        // Get 'Part Current Stock In Process
+
+                        $stock_reserved_other_stores     = 0;
+                        $stock_reserved_this_store = 0;
+
+                        $sql   =
+                            "SELECT `Required`+`Given`-`Picked` as reserved ,   `Store Key`    FROM `Inventory Transaction Fact` left join `Order Transaction Fact` on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  WHERE `Part SKU`=? AND `Inventory Transaction Type`='Order In Process'";
+                        $stmt2 = $this->db->prepare($sql);
+                        $stmt2->execute(
+                            array(
+                                $row['Part SKU']
+                            )
+                        );
+                        while ($row2 = $stmt2->fetch()) {
+                            //print_r($row2);
+                            if ($row2['Store Key'] == $this->data['Product Store Key']) {
+                                $stock_reserved_this_store += $row2['reserved'];
+                            } else {
+                                $stock_reserved_other_stores += $row2['reserved'];
+                            }
+
+                        }
+
+                      //  print   "$stock_reserved_this_store $stock_reserved_other_stores ".$row['Part Current Stock In Process']."  \n";
+
+                        // Paid ordered stock
+
+                        $sql =
+                            "SELECT (`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio` AS reserved , `Store Key`  FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) LEFT JOIN `Order Dimension` O ON (OTF.`Order Key`=O.`Order Key`)  WHERE `Order State`='InProcess'  and `Order To Pay Amount`<=0 and `Product Part Part SKU`=?   ";
+
+                        $stmt2 = $this->db->prepare($sql);
+                        $stmt2->execute(
+                            array(
+                                $row['Part SKU']
+                            )
+                        );
+                        while ($row2 = $stmt2->fetch()) {
+                           // print_r($row2);
+                            if ($row2['Store Key'] == $this->data['Product Store Key']) {
+                                $stock_reserved_this_store += $row2['reserved'];
+                            } else {
+                                $stock_reserved_other_stores += $row2['reserved'];
+                            }
+
+                        }
+                     //   print   "$stock_reserved_this_store $stock_reserved_other_stores ".$row['Part Current Stock Ordered Paid']."  \n";
+
+
+
+                        //print "$part_stock_other_stores\n";
+                        //print "$stock_reserved_other_stores\n";
+
+                        $part_actual_stock_other_stores=$part_stock_other_stores-$stock_reserved_other_stores;
+                        if($part_actual_stock_other_stores<0){
+                            $part_actual_stock_other_stores=0;
+                        }
+
+
+                        //print "Other: Stock $part_stock_other_stores  - $stock_reserved_other_stores = $part_actual_stock_other_stores\n   ";
+
+                        //print "$part_stock_other_stores\n======\n";
+
+                        //print "Store: Stock $part_stock_this_store  - $stock_reserved_this_store \n   ";
+
+
+
+
+                        $part_stock=$part_stock_this_store-$stock_reserved_this_store+$part_actual_stock_other_stores;
+
+                         //print "$part_stock\n";
+                        //$part_stock=$part_stock-$row['Part Current Stock In Process']-$row['Part Current Stock Ordered Paid'];
+
+                    } else {
+                        $part_stock = $row['Part Current On Hand Stock'] - $row['Part Current Stock In Process'] - $row['Part Current Stock Ordered Paid'];
+                    }
+
+                    //print "$part_stock\n";
 
 
                     if ($on_demand == '') {
@@ -1304,9 +1420,9 @@ class Product extends Asset {
                     }
 
 
-                    if (is_numeric($row['stock']) and is_numeric($row['Product Part Ratio']) and $row['Product Part Ratio'] > 0) {
+                    if (is_numeric($part_stock) and is_numeric($row['Product Part Ratio']) and $row['Product Part Ratio'] > 0) {
 
-                        $_part_stock = $row['stock'];
+                        $_part_stock = $part_stock;
 
 
                         if ($row['Part Current On Hand Stock'] == 0 and $row['Part Current Stock In Process'] > 0) {
@@ -1333,8 +1449,6 @@ class Product extends Asset {
                         $stock       = 0;
                         $stock_error = true;
                     }
-
-                    // print $row['Part Reference']." $tipo $on_demand  $stock\n";
 
 
                 }
