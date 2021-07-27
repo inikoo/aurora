@@ -146,7 +146,7 @@ $object_fields = array(
             array(
                 'id'              => 'Invoice_Recargo_Equivalencia',
                 'edit'            => ($can_supervisor_accounting ? 'option' : ''),
-                'render'          => ($account->get('Account Country Code')=='ESP'?true:false),
+                'render'          => ($account->get('Account Country Code') == 'ESP' ? true : false),
                 'options'         => $options_yes_no,
                 'value'           => $object->get('Invoice Recargo Equivalencia'),
                 'formatted_value' => $object->get('Recargo Equivalencia'),
@@ -234,29 +234,18 @@ if ($invoice->get('Invoice Type') == 'Invoice') {
 } else {
 
 
-    if ($invoice->get('Invoice Payments Amount') != 0) {
-        $delete_ops = array(
-            'id'        => 'info_delete_refund',
-            'class'     => 'operation',
-            'value'     => '',
-            'label'     => _('To delete refund all payments have to be cancelled first'),
-            'reference' => '',
-            'type'      => 'operation'
-        );
-    } else {
-        $delete_ops = array(
-            'id'        => 'delete_refund',
-            'class'     => 'operation',
-            'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button" onClick="'.($can_supervisor_accounting ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'IS\')').'" 
+    $delete_ops = array(
+        'id'        => 'delete_refund',
+        'class'     => 'operation',
+        'value'     => '',
+        'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button" onClick="'.($can_supervisor_accounting ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'IS\')').'" 
                             style="margin-right:20px"></i> <span data-labels=\'{ "no_message":"'._('A reason should be provided').'", "button_text":"'._('Delete').'",  "title":"'._(
-                    'Deleting refund'
-                ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this refund').'" }\' data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
-            'reference' => '',
-            'type'      => 'operation'
-        );
-    }
+                'Deleting refund'
+            ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this refund').'" }\' data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+            .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
+        'reference' => '',
+        'type'      => 'operation'
+    );
 
 
     $operations = array(

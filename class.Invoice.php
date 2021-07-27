@@ -162,7 +162,8 @@ class Invoice extends DB_Table {
         }
 
 
-        $exchange_data                          = $this->get_exchange_data($base_data['Invoice Currency'], $account->get('Account Currency'), $account->get('Account Country Code'), $base_data['Invoice Date']);
+        $exchange_data = $this->get_exchange_data($base_data['Invoice Currency'], $account->get('Account Currency'), $account->get('Account Country Code'), $base_data['Invoice Date']);
+
         $base_data['Invoice Currency Exchange'] = $exchange_data['exchange'];
 
         $keys   = '(';
@@ -2224,6 +2225,8 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                 "UPDATE `Payment Dimension`  SET `Payment Invoice Key`=NULL   WHERE `Payment Invoice Key`=%d", $this->id
             );
             $this->db->exec($sql);
+
+
         }
 
         //foreach ($payments as $payment) {
@@ -2248,6 +2251,52 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             $_category = new Category($_category_key);
             $_category->update_children_data();
             $_category->update_subjects_data();
+        }
+
+
+        if ($is_refund) {
+
+
+            $sql = "select `Feedback Key` from  `Feedback Dimension` where `Feedback Parent`='Refund' and  `Feedback Parent Key`=?";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $sql = "delete from `Feedback Dimension` where `Feedback Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $row['Feedback Key']
+                    )
+                );
+
+                $sql="delete from `Feedback OTF Bridge` where `Feedback OTF Feedback Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $row['Feedback Key']
+                    )
+                );
+
+                $sql="delete from `Feedback ONPTF Bridge` where `Feedback ONPTF Feedback Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $row['Feedback Key']
+                    )
+                );
+
+                $sql="delete from `Feedback ITF Bridge` where `Feedback ITF Feedback Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $row['Feedback Key']
+                    )
+                );
+
+            }
+
+
         }
 
 
