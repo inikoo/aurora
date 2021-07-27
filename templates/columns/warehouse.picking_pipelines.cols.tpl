@@ -53,12 +53,12 @@ headerCell: integerHeaderCell
 
 }
 , {
-name: "part_locations",
+name: "parts",
 label: "{t}Parts{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='part_locations'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

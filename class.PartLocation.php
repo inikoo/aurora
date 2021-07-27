@@ -146,9 +146,6 @@ class PartLocation extends DB_Table {
                 $this->found = true;
                 $this->get_data();
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -284,6 +281,11 @@ class PartLocation extends DB_Table {
         $this->db->exec($sql);
         $this->location->update_parts();
         $this->part->update_number_locations();
+
+        if($this->location->get('Location Pipeline')=='Yes'){
+            $this->location->update_pipelines_data();
+        }
+
         if ($this->can_update_aiku) {
             $this->part->update_aiku('Part Dimension', 'locations');
         }
@@ -989,8 +991,7 @@ class PartLocation extends DB_Table {
             prepare_mysql($base_data['History Type'], false)
 
         );
-        // print_r($base_data);
-        //print "$sql\n";
+
 
         $this->db->exec($sql);
         $disassociate_transaction_key = $this->db->lastInsertId();
@@ -999,13 +1000,18 @@ class PartLocation extends DB_Table {
         $this->deleted_msg = _('Part no longer associated with location');
 
 
-        $audit_key = $this->audit(0, _('Part disassociate with location'), $date, $include_current = true, 'disassociate');
+        $audit_key = $this->audit(0, _('Part disassociate with location'), $date, true, 'disassociate');
         $sql       = sprintf(
             "UPDATE `Inventory Transaction Fact` SET `Relations`=%d WHERE `Inventory Transaction Key`=%d", $disassociate_transaction_key, $audit_key
         );
         $this->db->exec($sql);
 
         $this->location->update_parts();
+
+        if($this->location->get('Location Pipeline')=='Yes'){
+            $this->location->update_pipelines_data();
+        }
+
         $this->part->update_number_locations();
 
 

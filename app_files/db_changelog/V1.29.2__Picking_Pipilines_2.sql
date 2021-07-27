@@ -1,0 +1,1 @@
+ALTER TABLE `Picking Pipeline Dimension` CHANGE `Picking Pipeline Number Part Locations` `Picking Pipeline Number Parts` mediumint unsigned NOT NULL DEFAULT '0' COMMENT '';

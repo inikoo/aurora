@@ -16,6 +16,7 @@ require_once 'class.Product.php';
 require_once 'class.Page.php';
 require_once 'class.Supplier.php';
 include_once 'class.PartLocation.php';
+/** @var PDO $db */
 
 
 //$sql=sprintf('select `Part SKU` from `Part Dimension` where `Part Key`=24 ');
@@ -32,10 +33,4 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
-
-
-?>

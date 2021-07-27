@@ -1027,6 +1027,47 @@ class Location extends DB_Table {
 
     }
 
+    function update_pipeline_status() {
+
+        $number_pipelines = 0;
+        $sql           = "select count(*) as num from   `Location Picking Pipeline Bridge` where `Location Picking Pipeline Location Key`=?";
+        $stmt          = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $number_pipelines = $row['num'];
+        }
+
+        $this->fast_update(
+            [
+                'Location Pipeline' => ($number_pipelines > 0 ? 'Yes' : 'No')
+            ]
+        );
+
+
+    }
+
+    function update_pipelines_data() {
+
+        $sql           = "select `Location Picking Pipeline Picking Pipeline Key` from   `Location Picking Pipeline Bridge` where `Location Picking Pipeline Location Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            /** @var $pipeline \Picking_Pipeline */
+            $pipeline=get_object('Picking_Pipeline',$row['Location Picking Pipeline Picking Pipeline Key']);
+            $pipeline->update_pipeline_part_locations();
+          }
+
+
+    }
+
 }
 
 

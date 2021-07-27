@@ -268,7 +268,7 @@ class Picking_Pipeline extends DB_Table {
 
     function add_location($location_key): string {
 
-        $sql="insert into `Location Picking Pipeline Bridge` (`Location Picking Pipeline Picking Pipeline Key`,`Location Picking Pipeline Location Key`,`Location Picking Pipeline Creation Date`) values (?,?,?) ";
+        $sql = "insert into `Location Picking Pipeline Bridge` (`Location Picking Pipeline Picking Pipeline Key`,`Location Picking Pipeline Location Key`,`Location Picking Pipeline Creation Date`) values (?,?,?) ";
         $this->db->prepare($sql)->execute(
             array(
                 $this->id,
@@ -276,17 +276,69 @@ class Picking_Pipeline extends DB_Table {
                 gmdate('Y-m-s H:i:s')
             )
         );
-        return  $this->db->lastInsertId();
+        /** @var $location \Location */
+        $location = get_object('Location', $location_key);
+        $location->fast_update(['Location Pipeline' => 'Yes']);
+        $this->update_pipeline_part_locations();
+
+        return $this->db->lastInsertId();
     }
 
-    function remove_location($location_picking_pipeline_key){
+    function remove_location($location_picking_pipeline_key) {
 
-        $sql="delete from  `Location Picking Pipeline Bridge` where `Location Picking Pipeline Key`=? ";
+        $sql  = "select  `Location Picking Pipeline Location Key` from `Location Picking Pipeline Bridge`  where `Location Picking Pipeline Key`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $location_picking_pipeline_key
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            /** @var $location \Location */
+            $location = get_object('Location', $row['Location Picking Pipeline Location Key']);
+            $location->update_pipeline_status();
+        }
+
+
+        $sql = "delete from  `Location Picking Pipeline Bridge` where `Location Picking Pipeline Key`=? ";
         $this->db->prepare($sql)->execute(
             array(
                 $location_picking_pipeline_key
             )
         );
+
+        $this->update_pipeline_part_locations();
+    }
+
+    function update_pipeline_part_locations() {
+
+        $number_locations = 0;
+        $number_parts     = 0;
+        $sql              =
+            "select count(distinct `Location Picking Pipeline Location Key`) as locations ,count(distinct `Part SKU`) as parts from `Location Picking Pipeline Bridge` left join `Part Location Dimension` on (`Location Key`=`Location Picking Pipeline Location Key`) where `Location Picking Pipeline Picking Pipeline Key`=?  ";
+        $stmt             = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+
+
+        while ($row = $stmt->fetch()) {
+            $number_locations = $row['locations'];
+            $number_parts     = $row['parts'];
+        }
+
+
+        $this->fast_update(
+            [
+                'Picking Pipeline Number Locations' => $number_locations,
+                'Picking Pipeline Number Parts'     => $number_parts,
+
+            ]
+        );
+
+
     }
 }
 

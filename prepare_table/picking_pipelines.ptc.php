@@ -66,14 +66,14 @@ class prepare_table_picking_pipelines extends prepare_table {
             $this->order = '`Picking Pipeline Name`';
         } elseif ($this->sort_key == 'locations') {
             $this->order = '`Picking Pipeline Number Locations`';
-        } elseif ($this->sort_key == 'part_locations') {
-            $this->order = '`Picking Pipeline Number Part Locations`';
+        } elseif ($this->sort_key == 'parts') {
+            $this->order = '`Picking Pipeline Number Parts`';
         } else {
             $this->order = '`Picking Pipeline Key`';
         }
 
         $this->fields = '`Picking Pipeline Key`,`Store Type`,`Picking Pipeline Warehouse Key`,`Picking Pipeline Store Key`,`Store Code`,
-        `Picking Pipeline Name`,`Picking Pipeline Number Locations`,`Picking Pipeline Number Part Locations`';
+        `Picking Pipeline Name`,`Picking Pipeline Number Locations`,`Picking Pipeline Number Parts`';
 
         $this->sql_totals = "select "."count(`Picking Pipeline Key`) as num from $this->table $this->where ";
 
@@ -94,9 +94,8 @@ class prepare_table_picking_pipelines extends prepare_table {
                 'id'   => (integer)$data['Picking Pipeline Key'],
                 'name' => sprintf('<span class="link" onclick="change_view(\'%s\')" >%s</span>  ', '/warehouse/'.$data['Picking Pipeline Warehouse Key'].'/pipelines/'.$data['Picking Pipeline Key'], $data['Picking Pipeline Name']),
                 'store' => sprintf('<span class="link" onclick="change_view(\'%s\')" >%s</span>  ', '/store/'.$data['Picking Pipeline Store Key'].'/pipeline/'.$data['Picking Pipeline Key'], $data['Store Code']),
-
                 'locations'=>number($data['Picking Pipeline Number Locations']),
-                'part_locations'=>number($data['Picking Pipeline Number Part Locations']),
+                'parts'=>number($data['Picking Pipeline Number Parts']),
             );
 
 
