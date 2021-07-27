@@ -9,46 +9,50 @@
 
 */
 
+use function Sentry\captureException;
+
 include_once 'common.php';
+/** @var \Smarty $smarty */
+
 include_once 'utils/object_functions.php';
 
 include_once 'class.Public_Website.php';
 include_once 'class.Public_Webpage.php';
 include_once 'class.Public_Store.php';
 
-if(!isset($_REQUEST['website_key']) or !is_numeric($_REQUEST['website_key'])){
+if (!isset($_REQUEST['website_key']) or !is_numeric($_REQUEST['website_key'])) {
     exit;
 }
 
-if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
+if (!isset($_REQUEST['theme']) or !preg_match('/^theme_\d+$/', $_REQUEST['theme'])) {
     print 'no theme set up:->'.$_REQUEST['theme'].'<';
+
     return;
 }
 
 
-$website_key=$_REQUEST['website_key'];
-$theme=$_REQUEST['theme'];
+$website_key = $_REQUEST['website_key'];
+$theme       = $_REQUEST['theme'];
 
-$website=get_object('Website',$website_key);
-$store=new Public_Store($website->get('Website Store Key'));
+$website = get_object('Website', $website_key);
+$store   = new Public_Store($website->get('Website Store Key'));
 
 $header_data = $website->get('Header Data');
 
-$header_key=$website->get('Website Header Key');
+$header_key = $website->get('Website Header Key');
 $smarty->assign('header_data', $header_data);
 $smarty->assign('header_key', $header_key);
 
 
-$webpage_key=$website->get_system_webpage_key('home.sys');
+$webpage_key = $website->get_system_webpage_key('home.sys');
 
-$webpage=new Public_Webpage($webpage_key);
+$webpage = new Public_Webpage($webpage_key);
 
 $smarty->assign('webpage', $webpage);
 
 
-
-foreach($website->style as $key=>$value){
-    if($value[0]=='#bottom_header a.menu:hover'){
+foreach ($website->style as $key => $value) {
+    if ($value[0] == '#bottom_header a.menu:hover') {
         unset($website->style[$key]);
     }
 }
@@ -56,25 +60,23 @@ foreach($website->style as $key=>$value){
 $smarty->assign('website', $website);
 $smarty->assign('store', $store);
 $smarty->assign('logged_in', 'false');
-$smarty->assign('zero_money', money(0,$store->get('Store Currency Code')));
+$smarty->assign('zero_money', money(0, $store->get('Store Currency Code')));
 
 
 $smarty->assign('content', $webpage->get('Content Data'));
 
 
-$settings=$website->get('Settings');
+$settings = $website->get('Settings');
 
-$smarty->assign('settings',$settings);
-
-
+$smarty->assign('settings', $settings);
 
 
 $template = $theme.'/menu.'.$theme.'.tpl';
 
-if (file_exists('templates/'.$template)) {
-    $smarty->display($template);
-} else {
-    printf("template %s not found",$template);
-}
 
+try {
+    $smarty->display($template);
+}  catch (Throwable $exception) {
+    captureException($exception);
+}
 

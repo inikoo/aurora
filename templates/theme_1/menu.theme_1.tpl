@@ -456,7 +456,7 @@
                             {if $sub_column.type=='items'}
                                 <div id="submenu_{$key}_{$sub_key}" data-type="{$sub_column.type}" class="submenu vertical-menu sortable  link_list">
                                     {foreach from=$sub_column.items item=item}
-                                        <a class="item" href="{$item.url}"><i style=";min-width: 16px" class="item_icon fa-fw {$item.icon}" icon="{$item.icon}" ></i> <span class="_item_label" contenteditable="true">{$item.label}</span>
+                                      <a class="item" href="{$item.url}"><i style="min-width: 16px" class="item_icon fa-fw {if !empty($item.icon)}{$item.icon}{else}fa fa-ban error{/if} " icon="{if !empty($item.icon)}{$item.icon}{else}{/if}" ></i> <span class="_item_label" contenteditable="true">{$item.label}</span>
                                             <i class="fal item_delete  aux fa-trash-alt like_button  hide" style="float: right" title="{t}Remove link{/t}"></i>
                                             <i url="{$item.url}" class="fal item_link  aux fa-link like_button  hide" style="float: right;margin-right: 10px" title="{t}Update link{/t}"></i>
                                             <i class="fal item_handle  aux far fa-hand-rock like_button  hide" style="float: right;margin-right: 10px" title="{t}Move link{/t}"></i>
