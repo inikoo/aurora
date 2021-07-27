@@ -38,6 +38,7 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         /** @var $part \Part */
         $part = get_object('Part',$row['Part SKU']);
+        $part->editor=$editor;
         print $part->id.' '.$part->get('Reference')."\n";
         $part->updated_linked_products();
 
