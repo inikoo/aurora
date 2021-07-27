@@ -236,7 +236,7 @@
 
 
 
-
+            {if $product->webpage->id}
             <table class="overview" >
                 <tr class="main">
                     <td>{t}Webpage{/t}</td>
@@ -251,6 +251,7 @@
 
 
             </table>
+            {/if}
 
             {assign deal_components $product->get_deal_components('objects')}
             <table class="overview" >

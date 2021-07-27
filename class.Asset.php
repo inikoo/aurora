@@ -531,68 +531,69 @@ class Asset extends DB_Table {
 
                 if ($this->data[$key] != '') {
                     $data = json_decode($this->data[$key], true);
-                    include_once 'utils/units_functions.php';
-                    switch ($data['type']) {
-                        case 'Rectangular':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['h'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
-                            break;
-                        case 'Sheet':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
-                            break;
-                        case 'Cilinder':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['h'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
-                            break;
-                        case 'Sphere':
-                            $dimensions = 'D:'.number(
-                                    convert_units(
-                                        $data['h'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
+                    if($data) {
+                        include_once 'utils/units_functions.php';
+                        switch ($data['type']) {
+                            case 'Rectangular':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['h'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
+                                break;
+                            case 'Sheet':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
+                                break;
+                            case 'Cilinder':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['h'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
+                                break;
+                            case 'Sphere':
+                                $dimensions = 'D:'.number(
+                                        convert_units(
+                                            $data['h'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
 
-                            break;
+                                break;
 
-                        case 'String':
-                            $dimensions = 'L.'.number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
+                            case 'String':
+                                $dimensions = 'L.'.number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
 
-                            break;
+                                break;
 
 
-                        default:
-                            $dimensions = '';
+                            default:
+                                $dimensions = '';
+                        }
                     }
-
                 }
 
 
@@ -600,7 +601,7 @@ class Asset extends DB_Table {
                     true,
                     $dimensions
                 );
-                break;
+
             case 'Package Weight':
             case 'Unit Weight':
                 include_once 'utils/natural_language.php';
@@ -610,7 +611,6 @@ class Asset extends DB_Table {
                     true,
                     weight($this->data[$this->table_name.' '.$key])
                 );
-                break;
 
             case 'Package Smart Weight':
             case 'Unit Smart Weight':
@@ -625,7 +625,7 @@ class Asset extends DB_Table {
                 );
 
 
-                break;
+
 
 
             case 'Package Dimensions':
@@ -640,99 +640,98 @@ class Asset extends DB_Table {
                 $tag = preg_replace('/ Dimensions$/', '', $key);
 
                 if ($this->data[$this->table_name.' '.$key] != '') {
-                    $data = json_decode(
-                        $this->data[$this->table_name.' '.$key], true
-                    );
-                    include_once 'utils/units_functions.php';
-                    switch ($data['type']) {
-                        case 'Rectangular':
+                    $data = json_decode($this->data[$this->table_name.' '.$key], true);
+                    if($data) {
+                        include_once 'utils/units_functions.php';
+                        switch ($data['type']) {
+                            case 'Rectangular':
 
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['h'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
-                            $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['h'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
+                                $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
+                                if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
 
-                                $dimensions .= '<span class="discreet density">, '.number(
-                                        $this->data[$this->table_name." $tag Weight"] / $data['vol'], 3
-                                    ).'Kg/L</span>';
-                            }
+                                    $dimensions .= '<span class="discreet density">, '.number(
+                                            $this->data[$this->table_name." $tag Weight"] / $data['vol'], 3
+                                        ).'Kg/L</span>';
+                                }
 
-                            break;
-                        case 'Sheet':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
+                                break;
+                            case 'Sheet':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
 
-                            break;
+                                break;
 
-                        case 'Cilinder':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['h'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
-                            $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
-                                $dimensions .= '<span class="discreet density">, '.number(
-                                        $this->data[$this->table_name." $tag Weight"] / $data['vol']
-                                    ).'Kg/L</span>';
-                            }
+                            case 'Cilinder':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['h'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
+                                $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
+                                if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
+                                    $dimensions .= '<span class="discreet density">, '.number(
+                                            $this->data[$this->table_name." $tag Weight"] / $data['vol']
+                                        ).'Kg/L</span>';
+                                }
 
-                            break;
+                                break;
 
-                        case 'Sphere':
-
-
-                            $dimensions = _('Diameter').' '.number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).$data['units'];
-                            $dimensions .= ', <span class="discreet">'.volume(
-                                    $data['vol']
-                                ).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
-                                $dimensions .= '<span class="discreet">, '.number(
-                                        $this->data[$this->table_name." $tag Weight"] / $data['vol']
-                                    ).'Kg/L</span>';
-                            }
-
-                            break;
-
-                        case 'String':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).$data['units'];
-                            break;
+                            case 'Sphere':
 
 
-                        default:
-                            $dimensions = '';
+                                $dimensions = _('Diameter').' '.number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).$data['units'];
+                                $dimensions .= ', <span class="discreet">'.volume(
+                                        $data['vol']
+                                    ).'</span>';
+                                if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
+                                    $dimensions .= '<span class="discreet">, '.number(
+                                            $this->data[$this->table_name." $tag Weight"] / $data['vol']
+                                        ).'Kg/L</span>';
+                                }
+
+                                break;
+
+                            case 'String':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).$data['units'];
+                                break;
+
+
+                            default:
+                                $dimensions = '';
+                        }
                     }
-
                 }
 
 
@@ -753,7 +752,6 @@ class Asset extends DB_Table {
                 );
 
 
-                break;
             case 'Valid To':
 
                 if ($this->data[$this->table_name.' '.$key] == '') {
@@ -774,7 +772,6 @@ class Asset extends DB_Table {
 
                 }
 
-                break;
             default:
 
                 if (preg_match(
@@ -822,9 +819,6 @@ class Asset extends DB_Table {
             if ($row = $result->fetch()) {
                 $image_key = $row['Image Subject Image Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $image_key;

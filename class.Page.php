@@ -329,6 +329,11 @@ class Page extends DB_Table {
     }
 
     function get($key) {
+
+        if(!$this->id){
+            return '';
+        }
+
         switch ($key) {
 
 

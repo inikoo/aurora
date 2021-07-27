@@ -17,16 +17,14 @@ include_once 'class.Page.php';
 
 include_once 'class.Public_Webpage.php';
 include_once 'class.Public_Category.php';
+/** @var PDO $db */
 
 
-
-
-$sql = sprintf(
-    "SELECT `Product ID` FROM `Product Dimension` WHERE (`Product Webpage Key` IS NULL OR `Product Webpage Key`=0 )  ORDER BY `Product Code` DESC"
-);
+$sql = "SELECT `Product ID`,`Product Store Key`,`Product Code` FROM `Product Dimension` WHERE (`Product Webpage Key` IS NULL OR `Product Webpage Key`=0 )     ORDER BY `Product Code` DESC";
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+
 
 
         $subject_webpage     = new Page('scope', 'Product', $row['Product ID']);
@@ -37,17 +35,18 @@ if ($result = $db->query($sql)) {
 
             print 'Fix '.$product->id.' '.$product->get('Code')." :S \n";
             $product->update(array('Product Webpage Key' => $subject_webpage_key), 'no_history');
+            exit;
         } else {
-            if ($product->get('Product Status') != 'Discontinued'  and $product->get('Product Public')=='Yes' ) {
+            if ($product->get('Product Status') != 'Discontinued' and $product->get('Product Public') == 'Yes') {
 
                 $store = get_object('store', $product->get('Store Key'));
 
                 foreach ($store->get_websites('objects') as $website) {
-                    printf("webpage for  %d  product %s %s , %s not found\n", $product->get('Store Key'),$product->get('Code'), $product->id, $product->get('Product Status'));
+                    printf("webpage for  %d  product %s %s , %s not found\n", $product->get('Store Key'), $product->get('Code'), $product->id, $product->get('Product Status'));
 
-                   $website->create_product_webpage($product->id);
+                    $website->create_product_webpage($product->id);
                 }
-
+                exit;
 
             }
 
@@ -56,7 +55,4 @@ if ($result = $db->query($sql)) {
     }
 
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }

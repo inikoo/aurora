@@ -49,6 +49,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $smarty->assign('main_image', $main_image);
     $smarty->assign('images', $images);
 
+
+    $department_data=[];
     $sql = sprintf(
         "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $product->get('Product Department Category Key')
     );
@@ -63,11 +65,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
         } else {
             $department_data = array('id' => false);
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
-
+    $family_data=[];
     $sql = sprintf(
         "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $product->get('Product Family Category Key')
     );
@@ -81,9 +80,6 @@ function get_product_showcase($data, $smarty, $user, $db) {
         } else {
             $family_data = array('id' => false);
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
     $smarty->assign('product', $product);
@@ -404,7 +400,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
         'header_total_sales', sprintf(_('All sales since: %s'), $product->get('Valid From'))
     );
 
-    return $smarty->fetch('showcase/product.tpl');
+
+    //return $smarty->fetch('showcase/product.tpl');
 
 
 }
