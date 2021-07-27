@@ -40,8 +40,6 @@ class Payment extends DB_Table {
 
         $this->get_data($arg1, $arg2);
 
-        return;
-
     }
 
 
@@ -204,7 +202,7 @@ class Payment extends DB_Table {
                 return round(
                     $this->data['Payment Transaction Amount'] - $this->data['Payment Transaction Amount Refunded'], 2
                 );
-                break;
+
             case 'Transaction Status':
                 switch ($this->data['Payment Transaction Status']) {
                     case 'Pending':
@@ -225,45 +223,34 @@ class Payment extends DB_Table {
 
                 }
 
-                break;
 
-                break;
             case 'Method':
 
                 switch ($this->data['Payment Method']) {
                     case 'Credit Card':
                         return _('Credit Card');
-                        break;
                     case 'Cash':
                         return _('Cash');
-                        break;
                     case 'Paypal':
                         return _('Paypal');
-                        break;
                     case 'Check':
                         return _('Check');
-                        break;
                     case 'Bank Transfer':
                         return _('Bank Transfer');
-                        break;
                     case 'Cash on Delivery':
                         return _('Cash on delivery');
-                        break;
                     case 'Other':
                     case 'Unknown':
                         return _('Other');
 
-                        break;
                     case 'Account':
                         return _('Account');
 
-                        break;
                     default:
                         return $this->data['Payment Method'];
 
                 }
 
-                break;
             case 'Icon':
                 switch ($this->data['Payment Method']) {
                     case 'Credit Card':
@@ -284,10 +271,6 @@ class Payment extends DB_Table {
                     case 'Cash on Delivery':
                         return 'fal fa-hands-usd';
 
-                    case 'Other':
-                    case 'Unknown':
-                    return 'fal fa-dollar-sign';
-
                     case 'Account':
                         return 'fal fa-piggy-bank';
 
@@ -300,14 +283,12 @@ class Payment extends DB_Table {
 
             case('Transaction Amount'):
                 return money($this->data['Payment '.$key], $this->data['Payment Currency Code']);
-                break;
             case('Completed Date'):
             case('Cancelled Date'):
             case('Created Date'):
                 return strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($this->data['Payment '.$key].' +0:00')
                 );
-                break;
 
         }
 

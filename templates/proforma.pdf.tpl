@@ -279,8 +279,27 @@
         <td colspan="2"><b>{t}Total{/t}</b></td>
         <td>{$order->get('Total Amount')}</td>
     </tr>
-
-
+    {if $customer->get('Customer Account Balance')!=0}
+    <tr class="total_net">
+        <td style="border:none" colspan="2"></td>
+        <td colspan="2">{t}Available credit{/t}</td>
+        <td>{$customer->get('Account Balance')}</td>
+    </tr>
+    {/if}
+    {foreach from=$payments item=payment}
+        <tr class="total_net">
+            <td style="border:none" colspan="2"></td>
+            <td colspan="2">{t}Payment{/t} <small>{$payment.label}</small></td>
+            <td>{$payment.amount}</td>
+        </tr>
+    {/foreach}
+    {if $to_pay!=$order->get('Order Total Amount')}
+    <tr class="total">
+        <td style="border:none" colspan="2"></td>
+        <td colspan="2"><b>{t}To pay{/t}</b></td>
+        <td>{$to_pay_formatted}</td>
+    </tr>
+    {/if}
 
     </tbody>
 </table>

@@ -42,7 +42,7 @@ trait OrderPayments {
 
     }
 
-    function get_payments($scope = 'keys', $filter = '') {
+    function get_payments($scope = 'keys', $filter = ''): array {
 
         //'Pending','Completed','Cancelled','Error','Declined'
 
@@ -76,9 +76,6 @@ trait OrderPayments {
                     $payments[$row['Payment Key']] = $row['Payment Key'];
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 

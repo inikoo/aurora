@@ -3293,10 +3293,6 @@ class Customer extends Subject {
 
                 $card_data[] = $_card_data;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -3335,10 +3331,6 @@ class Customer extends Subject {
 
                         $this->db->exec($sql);
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
