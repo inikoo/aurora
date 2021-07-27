@@ -11,14 +11,7 @@
  Version 3.0
 */
 
-/**
- * @param        $_data
- * @param        $db      \PDO
- * @param        $modules array
- * @param        $user    \User
- *
- * @return array
- */
+
 function parse_request($_data, PDO $db, array $modules, User $user): array {
 
 
@@ -5740,7 +5733,7 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
         $extra=$parser->extra;
 
         if($parser->tab!=''){
-            $_data['tab']= $parser->tab;;
+            $_data['tab']= $parser->tab;
         }
 
     }
