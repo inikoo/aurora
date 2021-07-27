@@ -183,7 +183,7 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Part_Unit_Dimensions',
             'edit'            => 'dimensions',
-            'value'           => $part->get('Part Unit Dimensions'),
+            'value'           => $part->get('Unit Dimensions'),
             'formatted_value' => $part->get('Unit Dimensions'),
             'label'           => ucfirst(
                 $part->get_field_label('Part Unit Dimensions')
@@ -379,7 +379,7 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Part_Package_Dimensions',
             'edit'            => 'dimensions',
-            'value'           => $part->get('Part Package Dimensions'),
+            'value'           => $part->get('Package Dimensions'),
             'formatted_value' => $part->get('Package Dimensions'),
             'label'           => ucfirst(
                 $part->get_field_label('Part Package Dimensions')

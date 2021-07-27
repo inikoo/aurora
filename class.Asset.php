@@ -324,7 +324,7 @@ class Asset extends DB_Table {
 
 
                 return true;
-                break;
+
             case 'History Note':
 
                 $this->add_note($value, '', '', $metadata['deletable']);
@@ -419,7 +419,7 @@ class Asset extends DB_Table {
                     true,
                     $tariff_code
                 );
-                break;
+
             case $this->table_name.' Materials':
 
                 if ($this->data[$this->table_name.' Materials'] != '') {
@@ -466,7 +466,7 @@ class Asset extends DB_Table {
                         ''
                     );
                 }
-                break;
+
             case 'Materials':
 
                 if ($this->data[$this->table_name.' Materials'] != '') {
@@ -524,14 +524,19 @@ class Asset extends DB_Table {
                 }
 
 
-            case $this->table_name.' Package Dimensions':
-            case $this->table_name.' Unit Dimensions':
+            case 'Package Dimensions':
+            case 'Unit Dimensions':
+
+
+                $key = $this->table_name.' '.$key;
+
+
                 $dimensions = '';
 
 
                 if ($this->data[$key] != '') {
                     $data = json_decode($this->data[$key], true);
-                    if($data) {
+                    if ($data) {
                         include_once 'utils/units_functions.php';
                         switch ($data['type']) {
                             case 'Rectangular':
@@ -625,9 +630,6 @@ class Asset extends DB_Table {
                 );
 
 
-
-
-
             case 'Package Dimensions':
             case 'Unit Dimensions':
 
@@ -641,7 +643,7 @@ class Asset extends DB_Table {
 
                 if ($this->data[$this->table_name.' '.$key] != '') {
                     $data = json_decode($this->data[$this->table_name.' '.$key], true);
-                    if($data) {
+                    if ($data) {
                         include_once 'utils/units_functions.php';
                         switch ($data['type']) {
                             case 'Rectangular':

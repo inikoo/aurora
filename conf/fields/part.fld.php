@@ -355,11 +355,9 @@ $part_fields[] = array(
             'id'              => 'Part_Unit_Dimensions',
             'edit'            => ($edit ? 'dimensions' : ''),
             'right_code'      => 'PE',
-            'value'           => $object->get('Part Unit Dimensions'),
+            'value'           => $object->get('Unit Dimensions'),
             'formatted_value' => $object->get('Unit Dimensions'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit Dimensions')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit Dimensions')),
             'invalid_msg'     => get_invalid_message('string'),
             'required'        => false,
             'placeholder'     => _('L x W x H (in cm)'),
@@ -522,7 +520,7 @@ $part_fields[] = array(
             'id'              => 'Part_Package_Dimensions',
             'edit'            => ($edit ? 'dimensions' : ''),
             'right_code'      => 'PE',
-            'value'           => $object->get('Part Package Dimensions'),
+            'value'           => $object->get('Package Dimensions'),
             'formatted_value' => $object->get('Package Dimensions'),
             'label'           => ucfirst($object->get_field_label('Part Package Dimensions')),
             'invalid_msg'     => get_invalid_message('string'),

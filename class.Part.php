@@ -889,6 +889,7 @@ class Part extends Asset {
         }
 
 
+
         switch ($key) {
 
             case 'Picking Band Key':

@@ -332,7 +332,7 @@ $product_fields = array(
             array(
                 'id'              => 'Product_Unit_Weight',
                 'edit'            => ($part_edit ? 'numeric' : ''),
-                'render'          => ($new ? false : true),
+                'render'          => !$new,
                 'value'           => $object->get('Product Unit Weight'),
                 'formatted_value' => $object->get('Unit Weight'),
                 'label'           => ucfirst(
@@ -346,9 +346,9 @@ $product_fields = array(
             ),
             array(
                 'id'              => 'Product_Unit_Dimensions',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => $object->get('Product Unit Dimensions'),
+                'edit'            => ($part_edit ? 'dimensions' : ''),
+                'render'          => !$new,
+                'value'           => $object->get('Unit Dimensions'),
                 'formatted_value' => $object->get('Unit Dimensions'),
                 'label'           => ucfirst(
                         $object->get_field_label('Product Unit Dimensions')

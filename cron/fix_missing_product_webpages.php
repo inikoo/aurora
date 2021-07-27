@@ -35,7 +35,7 @@ if ($result = $db->query($sql)) {
 
             print 'Fix '.$product->id.' '.$product->get('Code')." :S \n";
             $product->update(array('Product Webpage Key' => $subject_webpage_key), 'no_history');
-            exit;
+
         } else {
             if ($product->get('Product Status') != 'Discontinued' and $product->get('Product Public') == 'Yes') {
 
@@ -46,7 +46,7 @@ if ($result = $db->query($sql)) {
 
                     $website->create_product_webpage($product->id);
                 }
-                exit;
+               
 
             }
 

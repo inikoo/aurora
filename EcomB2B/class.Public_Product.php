@@ -628,7 +628,7 @@ class Public_Product {
 
                 return $dimensions;
 
-                break;
+
 
             case 'Unit Dimensions Short':
 
@@ -646,72 +646,73 @@ class Public_Product {
                     $data = json_decode(
                         $this->data[$this->table_name.' '.$key], true
                     );
-                    include_once 'utils/units_functions.php';
+
+                    if($data) {
+                        include_once 'utils/units_functions.php';
+                        switch ($data['type']) {
+                            case 'Rectangular':
+
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['h'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
 
 
-                    switch ($data['type']) {
-                        case 'Rectangular':
+                                break;
+                            case 'Sheet':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
 
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['h'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
+                                break;
 
-
-                            break;
-                        case 'Sheet':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
-
-                            break;
-
-                        case 'Cilinder':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['h'], 'm', $data['units']
-                                    )
-                                ).'x'.number(
-                                    convert_units(
-                                        $data['w'], 'm', $data['units']
-                                    )
-                                ).' ('.$data['units'].')';
+                            case 'Cilinder':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['h'], 'm', $data['units']
+                                        )
+                                    ).'x'.number(
+                                        convert_units(
+                                            $data['w'], 'm', $data['units']
+                                        )
+                                    ).' ('.$data['units'].')';
 
 
-                            break;
+                                break;
 
-                        case 'Sphere':
-
-
-                            $dimensions = _('Diameter').' '.number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
-
-                            break;
-                        case 'String':
-                            $dimensions = number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).$data['units'];
-                            break;
+                            case 'Sphere':
 
 
-                        default:
-                            $dimensions = '';
+                                $dimensions = _('Diameter').' '.number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
+
+                                break;
+                            case 'String':
+                                $dimensions = number(
+                                        convert_units(
+                                            $data['l'], 'm', $data['units']
+                                        )
+                                    ).$data['units'];
+                                break;
+
+
+                            default:
+                                $dimensions = '';
+                        }
                     }
 
                 }
@@ -719,52 +720,55 @@ class Public_Product {
 
                 return $dimensions;
 
-                break;
+
 
             case 'Materials':
 
 
                 if ($this->data[$this->table_name.' Materials'] != '') {
+
+                    $xhtml_materials = '';
+
                     $materials_data  = json_decode(
                         $this->data[$this->table_name.' Materials'], true
                     );
-                    $xhtml_materials = '';
+
+                    if($materials_data) {
+
+                        foreach ($materials_data as $material_data) {
+                            if (!array_key_exists('id', $material_data)) {
+                                continue;
+                            }
+
+                            if ($material_data['may_contain'] == 'Yes') {
+                                $may_contain_tag = '±';
+                            } else {
+                                $may_contain_tag = '';
+                            }
+
+                            if ($material_data['id'] > 0) {
+                                $xhtml_materials .= sprintf(
+                                    ', %s<span >%s</span>', $may_contain_tag, $material_data['name']
+                                );
+                            } else {
+                                $xhtml_materials .= sprintf(
+                                    ', %s%s', $may_contain_tag, $material_data['name']
+                                );
+
+                            }
 
 
-                    foreach ($materials_data as $material_data) {
-                        if (!array_key_exists('id', $material_data)) {
-                            continue;
+                            if ($material_data['ratio'] > 0) {
+                                $xhtml_materials .= sprintf(
+                                    ' (%s)', percentage($material_data['ratio'], 1)
+                                );
+                            }
                         }
 
-                        if ($material_data['may_contain'] == 'Yes') {
-                            $may_contain_tag = '±';
-                        } else {
-                            $may_contain_tag = '';
-                        }
-
-                        if ($material_data['id'] > 0) {
-                            $xhtml_materials .= sprintf(
-                                ', %s<span >%s</span>', $may_contain_tag, $material_data['name']
-                            );
-                        } else {
-                            $xhtml_materials .= sprintf(
-                                ', %s%s', $may_contain_tag, $material_data['name']
-                            );
-
-                        }
-
-
-                        if ($material_data['ratio'] > 0) {
-                            $xhtml_materials .= sprintf(
-                                ' (%s)', percentage($material_data['ratio'], 1)
-                            );
-                        }
+                        $xhtml_materials = ucfirst(
+                            preg_replace('/^, /', '', $xhtml_materials)
+                        );
                     }
-
-                    $xhtml_materials = ucfirst(
-                        preg_replace('/^, /', '', $xhtml_materials)
-                    );
-
 
                     return $xhtml_materials;
 
@@ -772,7 +776,7 @@ class Public_Product {
                 } else {
                     return '';
                 }
-                break;
+
 
             case 'Family Code':
 
