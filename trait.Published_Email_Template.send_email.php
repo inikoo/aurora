@@ -670,7 +670,14 @@ trait Send_Email {
                         )
                     );
                     $sak          = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
-                    $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
+
+                    try {
+                        $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
+                    }catch (\Throwable $exception) {
+                        \Sentry\captureException($exception);
+                    }
+
+
                 }
 
 
