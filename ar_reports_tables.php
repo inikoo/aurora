@@ -24,6 +24,7 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 $tipo = $_REQUEST['tipo'];
+$account->load_acc_data();
 
 switch ($tipo) {
     case 'reports':
@@ -1948,171 +1949,20 @@ function prospect_agents($_data, $db, $user, $account) {
 
 function pickers($_data, $db, $user, $account) {
 
-    $account->load_acc_data();
-    $rtext_label = 'picker';
+
+    include_once 'prepare_table/pickers.ptc.php';
+    $table=new prepare_table_pickers($db,$account,$user);
+    echo $table->fetch($_data);
 
 
-    foreach ($_data['parameters'] as $parameter => $parameter_value) {
-        $_SESSION['table_state']['packers'][$parameter] = $parameter_value;
-
-    }
-
-
-    include_once 'prepare_table/init.php';
-
-
-    $total_dp = 0;
-    $sql      = sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Picker Key` ");
-
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $total_dp += ($row['units']);
-
-        }
-    }
-
-    if ($total_dp == 0) {
-        $total_dp = 1;
-    }
-
-    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-
-    if ($result = $db->query($sql)) {
-
-        foreach ($result as $data) {
-
-            $bonus_net = $data['bonus'] - ($data['hrs'] * $account->properties('picking_salary_hr_rate'));
-
-            if ($bonus_net > 0) {
-                $bonus_net = '<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
-            } elseif ($bonus_net < 0) {
-                $bonus_net = '<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
-            }
-
-            $adata[] = array(
-                'id'                => $data['Staff Key'],
-                'name'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
-                'deliveries'        => number($data['deliveries']),
-                'issues'            => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], number($data['issues'])),
-                'issues_percentage' => sprintf(
-                    '<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], percentage($data['issues'], $data['dp'])
-                ),
-                'picked'            => number($data['picked'], 0),
-                'dp'                => number($data['dp']),
-                'dp_percentage'     => percentage($data['dp'], $total_dp),
-                'hrs'               => number($data['hrs'], 1, true),
-                'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
-                'bonus'             => money($data['bonus'], $account->get('Currency Code')),
-                'salary'            => money($data['hrs'] * $account->properties('picking_salary_hr_rate'), $account->get('Currency Code')),
-                'bonus_net'         => $bonus_net
-
-            );
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
 }
 
 function packers($_data, $db, $user, $account) {
-
-    $account->load_acc_data();
-    $rtext_label = 'packer';
-
-    foreach ($_data['parameters'] as $parameter => $parameter_value) {
-        $_SESSION['table_state']['pickers'][$parameter] = $parameter_value;
-
-    }
-
-    include_once 'prepare_table/init.php';
-
-    $total_dp = 0;
-    $sql      = sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Packer Key` ");
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $total_dp += ($row['units']);
-        }
-    }
-
-    if ($total_dp == 0) {
-        $total_dp = 1;
-    }
+    include_once 'prepare_table/packers.ptc.php';
+    $table=new prepare_table_packers($db,$account,$user);
+    echo $table->fetch($_data);
 
 
-    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-
-    $picking_salary_hr_rate = $account->properties('picking_salary_hr_rate');
-    if ($picking_salary_hr_rate == '') {
-        $picking_salary_hr_rate = 0;
-    }
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-
-            $bonus_net = $data['bonus'] - ($data['hrs'] * $picking_salary_hr_rate);
-
-            if ($bonus_net > 0) {
-                $bonus_net = '<span class="success">'.money($bonus_net, $account->get('Currency Code')).'</span>';
-            } elseif ($bonus_net < 0) {
-                $bonus_net = '<span class="error">'.money($bonus_net, $account->get('Currency Code')).'</span>';
-            }
-
-            $adata[] = array(
-                'id'                => $data['Staff Key'],
-                'name'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
-                'deliveries'        => number($data['deliveries']),
-                'issues'            => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], number($data['issues'])),
-                'issues_percentage' => sprintf(
-                    '<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'], $_data['parameters']['period'], percentage($data['issues'], $data['dp'])
-                ),
-                'packed'            => number($data['packed'], 0),
-                'dp'                => number($data['dp']),
-                'dp_percentage'     => percentage($data['dp'], $total_dp),
-                'hrs'               => number($data['hrs'], 1, true),
-                'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
-                'bonus'             => money(($data['bonus'] == '' ? 0 : $data['bonus']), $account->get('Currency Code')),
-                'salary'            => money(($data['hrs'] == '' ? 0 : $data['hrs']) * $picking_salary_hr_rate, $account->get('Currency Code')),
-                'bonus_net'         => $bonus_net
-
-            );
-
-        }
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
 }
 
 function warehouse_bonus_report($_data, $db, $user, $account) {
