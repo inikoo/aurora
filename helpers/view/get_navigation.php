@@ -373,11 +373,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('packers'):
                     return get_packers_navigation($user, $smarty, $data);
-                case ('picker'):
-                    return get_picker_packer_navigation($data, $db, $user, $smarty);
-
                 case ('packer'):
-                    return get_picker_packer_navigation($data, $db, $user, $smarty);
+                case ('picker'):
+                    return get_picker_packer_navigation($data, $db, $user, $smarty,$account);
 
                 case ('sales_representatives'):
                     return get_sales_representatives_navigation($user, $smarty, $data);

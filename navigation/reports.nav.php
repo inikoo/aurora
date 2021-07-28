@@ -10,6 +10,7 @@
  Version 3.0
 */
 
+include_once 'utils/navigation_functions.php';
 
 function get_lost_stock_navigation($user, $smarty, $data) {
 
@@ -1138,11 +1139,10 @@ function get_intrastat_deliveries_navigation($user, $smarty, $data) {
 }
 
 
-function get_picker_packer_navigation($data, $db, $user, $smarty) {
+function get_picker_packer_navigation($data, $db, $user, $smarty,$account) {
 
 
     $object        = get_object('Staff', $data['key']);
-    $left_buttons  = array();
     $right_buttons = array();
 
     $sections      = array();
@@ -1154,88 +1154,19 @@ function get_picker_packer_navigation($data, $db, $user, $smarty) {
             $tab      = 'pickers';
             $_section = 'pickers';
             $parent_title=_('Pickers productivity');
+            include_once 'prepare_table/pickers.ptc.php';
+            $table = new prepare_table_pickers($db, $account, $user);
             break;
         case 'packer':
             $tab      = 'packers';
             $_section = 'packers';
             $parent_title=_('Packers productivity');
+            include_once 'prepare_table/packers.ptc.php';
+            $table = new prepare_table_packers($db, $account, $user);
             break;
         default:
             exit();
 
-    }
-
-
-    if (isset($_SESSION['table_state'][$tab])) {
-        $number_results  = $_SESSION['table_state'][$tab]['nr'];
-        $start_from      = 0;
-        $order           = $_SESSION['table_state'][$tab]['o'];
-        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
-        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
-        $parameters      = $_SESSION['table_state'][$tab];
-    } else {
-
-        $default                  = $user->get_tab_defaults($tab);
-        $number_results           = $default['rpp'];
-        $start_from               = 0;
-        $order                    = $default['sort_key'];
-        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
-        $f_value                  = '';
-        $parameters               = $default;
-        $parameters['parent']     = $data['parent'];
-        $parameters['parent_key'] = $data['parent_key'];
-    }
-
-    include_once 'prepare_table/'.$tab.'.ptble.php';
-
-    $_order_field       = $order;
-    $order              = preg_replace('/^.*\.`/', '', $order);
-    $order              = preg_replace('/^`/', '', $order);
-    $order              = preg_replace('/`$/', '', $order);
-    $_order_field_value = $object->get($order);
-
-
-    $prev_title = '';
-    $next_title = '';
-    $prev_key   = 0;
-    $next_key   = 0;
-
-
-    $sql = sprintf(
-        "select `Staff Name` object_name,S.`Staff Key` as object_key from  %s  
-	                and ($_order_field < %s OR ($_order_field = %s AND S.`Staff Key` < %d))  order by $_order_field desc , S.`Staff Key` desc limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-    );
-
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $prev_key   = $row['object_key'];
-            $prev_title = _("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
-        }
-    }
-
-
-    $sql = sprintf(
-        "select `Staff Name` object_name,S.`Staff Key` as object_key from %s  
-	                and ($_order_field  > %s OR ($_order_field  = %s AND S.`Staff Key` > %d))  order by $_order_field   , S.`Staff Key`  limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-    );
-
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $next_key   = $row['object_key'];
-            $next_title = _("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-        }
-    }
-
-    if ($order_direction == 'desc') {
-        $_tmp1      = $prev_key;
-        $_tmp2      = $prev_title;
-        $prev_key   = $next_key;
-        $prev_title = $next_title;
-        $next_key   = $_tmp1;
-        $next_title = $_tmp2;
     }
 
 
@@ -1245,39 +1176,12 @@ function get_picker_packer_navigation($data, $db, $user, $smarty) {
         'reference' => 'report/'.$_section
     );
 
-    if ($prev_key) {
-        $left_buttons[] = array(
-            'icon'      => 'arrow-left',
-            'title'     => $prev_title,
-            'reference' => 'report/'.$_section.'/'.$prev_key
-        );
-
-    } else {
-        $left_buttons[] = array(
-            'icon'  => 'arrow-left disabled',
-            'title' => '',
-            'url'   => ''
-        );
-
-    }
-    $left_buttons[] = $up_button;
 
 
-    if ($next_key) {
-        $left_buttons[] = array(
-            'icon'      => 'arrow-right',
-            'title'     => $next_title,
-            'reference' =>  'report/'.$_section.'/'.$next_key
-        );
+    $left_buttons = get_navigation_buttons(
+        $table->get_navigation($object, $tab, $data), $up_button, 'report/'.$_section.'/%d'
 
-    } else {
-        $left_buttons[] = array(
-            'icon'  => 'arrow-right disabled',
-            'title' => '',
-            'url'   => ''
-        );
-
-    }
+    );
 
 
 
