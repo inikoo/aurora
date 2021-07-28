@@ -8,7 +8,8 @@
  Version 3
 
 */
-
+/** @var array $state */
+/** @var \User $user */
 
 $tab     = 'warehouse.parts_to_replenish_external_warehouse.wget';
 $ar_file = 'ar_warehouse_tables.php';

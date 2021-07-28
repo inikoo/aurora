@@ -60,8 +60,12 @@ switch ($tipo) {
         locations(get_table_parameters(), $db, $user, $account);
         break;
     case 'replenishments':
-        replenishments(get_table_parameters(), $db, $user);
+        replenishments(get_table_parameters(), $db, $user,$account);
         break;
+    case 'pipeline_replenishes':
+        pipeline_replenishes(get_table_parameters(), $db, $user,$account);
+        break;
+
     case 'part_locations':
     case 'parts':
         parts(get_table_parameters(), $db, $user, $account);
@@ -355,138 +359,17 @@ function locations($_data, $db, $user, $account) {
 }
 
 
-function replenishments($_data, $db, $user) {
-
-
-    $rtext_label = 'replenishment';
-    include_once 'prepare_table/init.php';
-
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-
-    foreach ($db->query($sql) as $data) {
-
-        $locations_data = preg_split('/,/', $data['location_data']);
-
-
-        $stock = '<div border=0 style="xwidth:150px">';
-
-        foreach ($locations_data as $raw_location_data) {
-            if ($raw_location_data != '') {
-                $_locations_data = preg_split('/\:/', $raw_location_data);
-                if ($_locations_data[0] != $data['Location Key']) {
-                    $stock .= '<div style="clear:both">';
-                    $stock .= '<div style="float:left;min-width:100px;">
-<span class="link"  onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$_locations_data[0].'\')" >'.$_locations_data[1].'</span>
-</div><div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
-                    $stock .= '</div>';
-                }
-            }
-        }
-        $stock .= '</div>';
-
-
-        if ($data['Part Next Deliveries Data'] == '') {
-            $next_deliveries_array = array();
-        } else {
-            $next_deliveries_array = json_decode($data['Part Next Deliveries Data'], true);
-        }
-
-
-        $next_deliveries = '';
-
-        foreach ($next_deliveries_array as $next_delivery) {
-
-
-            $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_5" style="min-width: 100px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_10 as_cell strong" style="text-align: right;min-width: 40px" title="'._('SKOs ordered')
-                .'">+'.number(
-                    $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
-                ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
-
-
-        }
-
-
-        $next_deliveries = '<div style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
-
-
-        $reference = sprintf(
-            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
-            ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
-        );
-
-        if ($data['Part Symbol'] != '') {
-            if ($data['Part Symbol'] != '') {
-
-                switch ($data['Part Symbol']) {
-                    case 'star':
-                        $symbol = '&#9733;';
-                        break;
-
-                    case 'skull':
-                        $symbol = '&#9760;';
-                        break;
-                    case 'radioactive':
-                        $symbol = '&#9762;';
-                        break;
-                    case 'peace':
-                        $symbol = '&#9774;';
-                        break;
-                    case 'sad':
-                        $symbol = '&#9785;';
-                        break;
-                    case 'gear':
-                        $symbol = '&#9881;';
-                        break;
-                    case 'love':
-                        $symbol = '&#10084;';
-                        break;
-                    default:
-                        $symbol = '';
-
-                }
-                $reference .= ' '.$symbol;
-            }
-
-        }
-
-
-        $adata[] = array(
-            'id'                    => (integer)$data['Location Key'],
-            'location'              => ($data['Warehouse Flag Key'] ? sprintf(
-                    '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-                ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
-            'part'                  => $reference,
-            'other_locations_stock' => $stock,
-
-            'quantity'             => number($data['Quantity On Hand']),
-            'ordered_quantity'     => number($data['ordered_quantity']),
-            'effective_stock'      => number($data['effective_stock']),
-            'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number(
-                    $data['Maximum Quantity']
-                ).'</span>)</span>',
-            'next_deliveries'      => $next_deliveries
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
+function replenishments($_data, $db, $user,$account) {
+    include_once 'prepare_table/warehouse.parts_to_replenish.ptc.php';
+    $table=new prepare_table_warehouse_parts_to_replenish($db,$account,$user);
+    echo $table->fetch($_data);
 }
 
+function pipeline_replenishes($_data, $db, $user,$account) {
+    include_once 'prepare_table/picking_pipeline.parts_to_replenish.ptc.php';
+    $table=new prepare_table_picking_pipeline_parts_to_replenish($db,$account,$user);
+    echo $table->fetch($_data);
+}
 
 function parts($_data, $db, $user, $account) {
 

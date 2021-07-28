@@ -10,8 +10,10 @@
  Version 3.0
 */
 
+include_once 'helpers/widgets/widgets_functions.php';
 
-function get_inventory_alerts($db, $account, $user, $smarty) {
+
+function get_inventory_alerts( $account, $smarty): string {
 
     $html = '';
 
@@ -85,51 +87,6 @@ function get_inventory_alerts($db, $account, $user, $smarty) {
     return $html;
 
 
-}
-
-
-function get_widget_data($value, $total, $min, $max) {
-
-    $data = array(
-        'ok'        => false,
-        'color_min' => '',
-        'color_max' => '',
-        'value'     => '',
-        'total'     => '',
-        'min'       => '',
-        'max'       => ''
-    );
-
-    if ($total == 0) {
-        return $data;
-    }
-    $data['ok']    = true;
-    $data['value'] = $value;
-    $data['total'] = $total;
-    $percentage    = $value / $total;
-
-    if ($percentage < $min) {
-        $data['color_min'] = '#84c535';//green
-        $data['color_max'] = '#f7da40';//yellow
-        $data['min']       = 0;
-        $data['max']       = $min;
-
-    } else {
-        if ($percentage >= $max) {
-            $data['color_min'] = '#E0115F';//red
-            $data['color_max'] = '#E0115F';//red
-            $data['min']       = 0;
-            $data['max']       = $min;
-
-        } else {
-            $data['color_min'] = '#f7da40';//yellow
-            $data['color_max'] = '#E0115F';//red
-            $data['min']       = $min;
-            $data['max']       = $max;
-        }
-    }
-
-    return $data;
 }
 
 

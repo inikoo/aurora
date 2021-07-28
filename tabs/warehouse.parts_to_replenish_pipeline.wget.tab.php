@@ -1,20 +1,17 @@
 <?php
 /*
- About:
- Author: Raul Perusquia <raul@inikoo.com>
- Created: 7 February 2017 at 15:26:10 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2017, Inikoo
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Wed, 28 Jul 2021 17:01:11 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 3.0
+ */
 
- Version 3
-
-*/
 /** @var array $state */
 /** @var \User $user */
 
-
-$tab     = 'warehouse.parts_to_replenish_picking_location.wget';
+$tab     = 'warehouse.parts_to_replenish_pipeline.wget';
 $ar_file = 'ar_warehouse_tables.php';
-$tipo    = 'parts_to_replenish_picking_location';
+$tipo    = 'pipeline_replenishes';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -22,7 +19,7 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array();
 
 $table_filters = array(
-    'reference' => array('label' => _('Reference')),
+    'reference' => array('label' => _('Part reference')),
 
 );
 
@@ -35,3 +32,5 @@ $parameters = array(
 
 
 include 'utils/get_table_html.php';
+
+

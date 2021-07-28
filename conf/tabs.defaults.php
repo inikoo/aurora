@@ -10,7 +10,7 @@
 */
 
 
-function get_tab_defaults_data() {
+function get_tab_defaults_data(): array {
 
     include_once 'conf/export_fields.php';
     include_once 'conf/elements_options.php';
@@ -2920,6 +2920,15 @@ function get_tab_defaults_data() {
 
         ),
         'warehouse.parts_to_replenish_external_warehouse.wget' => array(
+            'view'        => 'overview',
+            'sort_key'    => 'reference',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'reference',
+
+        ),
+        'warehouse.parts_to_replenish_pipeline.wget' => array(
             'view'        => 'overview',
             'sort_key'    => 'reference',
             'sort_order'  => 1,

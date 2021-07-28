@@ -9,6 +9,9 @@
 
  Version 3.0
 */
+/** @var \Account $account */
+/** @var \Smarty $smarty */
+/** @var array $state */
 
 $account->load_acc_data();
 
@@ -312,7 +315,7 @@ $smarty->assign(
                                'Account 3 Year Ago Invoiced Amount'
                            ), $account->get('Account 4 Year Ago Invoiced Amount')
                        ),
-                       'invoiced_amount_delta'       => ($account->get('Account 3 Year Ago Invoiced Amoun') > $account->get(
+                       'invoiced_amount_delta'       => ($account->get('Account 3 Year Ago Invoiced Amount') > $account->get(
                            'Account 4 Year Ago Invoiced Amount'
                        )
                            ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
@@ -324,7 +327,7 @@ $smarty->assign(
                        'dispatched_delta_title'      => delta(
                            $account->get('Account 3 Year Ago Distinct Parts Dispatched'), $account->get('Account 4 Year Ago Distinct Parts Dispatched')
                        ),
-                       'dispatched_delta'            => ($account->get('Account 3 Year Ago Invoiced Amoun') > $account->get('Account 4 Year Ago Distinct Parts Dispatched')
+                       'dispatched_delta'            => ($account->get('Account 3 Year Ago Invoiced Amount') > $account->get('Account 4 Year Ago Distinct Parts Dispatched')
                            ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
                            : ($account->get('Account 3 Year Ago Distinct Parts Dispatched') < $account->get(
                                'Account 4 Year Ago Distinct Parts Dispatched'
@@ -377,31 +380,38 @@ $smarty->assign(
 );
 
 
-$html = $smarty->fetch('inventory.sales.tpl');
+try {
+    $html = $smarty->fetch('inventory.sales.tpl');
+
+    $smarty->assign('show_widget', $state['extra']);
+
+    include_once 'widgets/inventory_alerts.wget.php';
+
+    $html .= '<div class="widget_container">'.get_inventory_alerts($account, $smarty).'</div>';
+    $html .= '<div id="widget_details" class="hide" style="clear:both;font-size:90%;border-top:1px solid #ccc"><div>';
 
 
-$smarty->assign('show_widget', $state['extra']);
+    switch ($state['extra']) {
+        case 'barcode_errors':
+        case 'barcodes_errors':
+            $html .= "<script>get_widget_details($('#inventory_parts_barcode_errors_wget'),'inventory.parts_barcode_errors.wget',{ parent: 'account','parent_key':1})</script>";
+            break;
+        case 'missing_sko_barcodes':
+            $html .= "<script>get_widget_details($('#inventory_parts_no_sko_barcode_wget'),'inventory.parts_no_sko_barcode.wget',{ parent: 'account','parent_key':1})</script>";
+            break;
+        case 'weight_errors':
+            $html .= "<script>get_widget_details($('#inventory_parts_weight_errors_wget'),'inventory.parts_weight_errors.wget',{ parent: 'account','parent_key':1})</script>";
+            break;
+        default:
+            break;
+    }
 
-include_once 'widgets/inventory_alerts.wget.php';
 
-$html .= '<div class="widget_container">'.get_inventory_alerts($db, $account, $user, $smarty).'</div>';
-$html .= '<div id="widget_details" class="hide" style="clear:both;font-size:90%;border-top:1px solid #ccc"><div>';
-
-
-switch ($state['extra']) {
-    case 'barcode_errors':
-    case 'barcodes_errors':
-        $html .= "<script>get_widget_details($('#inventory_parts_barcode_errors_wget'),'inventory.parts_barcode_errors.wget',{ parent: 'account','parent_key':1})</script>";
-        break;
-    case 'missing_sko_barcodes':
-        $html .= "<script>get_widget_details($('#inventory_parts_no_sko_barcode_wget'),'inventory.parts_no_sko_barcode.wget',{ parent: 'account','parent_key':1})</script>";
-        break;
-    case 'weight_errors':
-        $html .= "<script>get_widget_details($('#inventory_parts_weight_errors_wget'),'inventory.parts_weight_errors.wget',{ parent: 'account','parent_key':1})</script>";
-        break;
-    default:
-        break;
+} catch (Exception $e) {
 }
+
+
+
 
 
 

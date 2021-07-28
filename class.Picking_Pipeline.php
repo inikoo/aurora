@@ -42,9 +42,12 @@ class Picking_Pipeline extends DB_Table {
 
     function create($data) {
 
+        $data['Picking Pipeline Metadata']='{}';
         $this->editor = $data['editor'];
 
         $this->data = $this->base_data();
+
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $this->data)) {
                 $this->data[$key] = _trim($value);
@@ -336,6 +339,59 @@ class Picking_Pipeline extends DB_Table {
                 'Picking Pipeline Number Parts'     => $number_parts,
 
             ]
+        );
+
+
+    }
+
+    function update_pipeline_part_locations_to_replenish() {
+
+        $replenishable_part_locations = 0;
+        $part_locations_to_replenish  = 0;
+
+
+        $sql = "SELECT count(*) AS num FROM `Part Location Dimension` left join `Location Picking Pipeline Bridge` on (`Location Key`=`Location Picking Pipeline Location Key`)   WHERE  `Location Picking Pipeline Picking Pipeline Key`=?  AND  `Minimum Quantity`>=0 AND `Can Pick`='Yes'";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $replenishable_part_locations = $row['num'];
+        }
+
+
+
+
+        $sql = "SELECT count(*) AS num  FROM `Part Location Dimension` PL  LEFT JOIN `Part Dimension` P ON (PL.`Part SKU`=P.`Part SKU`) 
+                 left join `Location Picking Pipeline Bridge` on (`Location Key`=`Location Picking Pipeline Location Key`)
+              
+                    WHERE `Can Pick`='Yes' AND `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`  - IFNULL(JSON_EXTRACT(`Part Location Metadata`,'$.stock_in_process'),0) - IFNULL(JSON_EXTRACT(`Part Location Metadata`,'$.stock_ordered_paid'),0)   ) AND 
+                            ( P.`Part Current On Hand Stock` -`Quantity On Hand`)>=0  AND `Location Picking Pipeline Picking Pipeline Key`=? and `Part Distinct Locations`>1 ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $part_locations_to_replenish = $row['num'];
+        }
+
+
+
+
+
+        $this->fast_update(
+            array(
+                'Picking Pipeline Replenishable Part Locations' => $replenishable_part_locations,
+                'Picking Pipeline Part Locations To Replenish'  => $part_locations_to_replenish
+
+            )
         );
 
 
