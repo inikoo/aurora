@@ -72,6 +72,11 @@ class Public_Webpage {
 
     function get($key) {
 
+        if(!$this->id){
+            return '';
+        }
+
+
         switch ($key) {
 
             case 'Signature':
@@ -79,14 +84,14 @@ class Public_Webpage {
 
                 return $store->get('Store Email Template Signature');
 
-                break;
+
             case 'Send Email Address':
 
                 $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 return $store->get('Store Email');
 
-                break;
+
             case 'Scope Metadata':
 
                 if ($this->data['Webpage '.$key] == '') {
@@ -135,7 +140,7 @@ class Public_Webpage {
             case 'URL':
 
                 return $this->data['Webpage URL'];
-                break;
+
 
             case 'CSS':
             case 'Published CSS':

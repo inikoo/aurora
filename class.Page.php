@@ -192,10 +192,6 @@ class Page extends DB_Table {
                 $this->found_key = $row['Page Key'];
                 $this->get_data('id', $this->found_key);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -330,7 +326,7 @@ class Page extends DB_Table {
 
     function get($key) {
 
-        if(!$this->id){
+        if (!$this->id) {
             return '';
         }
 
@@ -935,6 +931,7 @@ class Page extends DB_Table {
         $content_data = $this->get('Content Data');
 
         $block_found = false;
+        $block_key   = 0;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'category_products') {
                 $block       = $_block;
@@ -949,12 +946,12 @@ class Page extends DB_Table {
         }
 
 
-        $items                  = array();
         $items_product_id_index = array();
         $items_out_of_stock     = array();
 
 
-        $sql = "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  WHERE  `Category Key`=?  AND `Product Web State` IN  ('For Sale','Out of Stock') and `Product Customer Key` is null  ORDER BY `Product Web State`,`Product Code File As`";
+        $sql =
+            "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  WHERE  `Category Key`=?  AND `Product Web State` IN  ('For Sale','Out of Stock') and `Product Customer Key` is null  ORDER BY `Product Web State`,`Product Code File As`";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -963,7 +960,6 @@ class Page extends DB_Table {
             )
         );
         while ($row = $stmt->fetch()) {
-            $items[$row['Product ID']]                  = $row;
             $items_product_id_index[$row['Product ID']] = $row['Product ID'];
         }
 
@@ -1025,11 +1021,10 @@ class Page extends DB_Table {
 
                             }
 
-                            unset($items_product_id_index[$item['product_id']]);
                         } else {
                             unset($content_data['blocks'][$block_key]['items'][$item_key]);
-                            unset($items_product_id_index[$item['product_id']]);
                         }
+                        unset($items_product_id_index[$item['product_id']]);
 
 
                     } else {
@@ -1206,19 +1201,6 @@ class Page extends DB_Table {
                 break;
 
 
-            case 'Webpage Name':
-
-
-                $this->update_field($field, $value, $options);
-                break;
-
-            case 'Webpage Meta Description':
-
-
-                $this->update_field($field, $value, $options);
-                break;
-
-
             case 'Store Email':
             case 'Store Company Name':
             case 'Store VAT Number':
@@ -1249,6 +1231,8 @@ class Page extends DB_Table {
                 $this->update_field('Webpage '.$field, $value, $options);
                 break;
 
+            case 'Webpage Name':
+            case 'Webpage Meta Description':
             case('Webpage Scope'):
             case('Webpage Scope Key'):
             case('Webpage Scope Metadata'):
@@ -1331,7 +1315,7 @@ class Page extends DB_Table {
                 }
                 unset($old_content_data['backup']);
 
-
+                /** @var  $website \Website */
                 $website = get_object('website', $this->get('Webpage Website Key'));
 
                 $old_type = $website->get('Website Registration Type');
@@ -1967,19 +1951,11 @@ class Page extends DB_Table {
                                     if ($row3 = $result3->fetch()) {
                                         $prev_key = $row3['Website Webpage Scope Scope Key'];
                                     }
-                                } else {
-                                    print_r($error_info = $this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
                                 }
 
                             }
 
 
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
 
 
@@ -2005,25 +1981,13 @@ class Page extends DB_Table {
                                     if ($row3 = $result3->fetch()) {
                                         $next_key = $row3['Website Webpage Scope Scope Key'];
                                     }
-                                } else {
-                                    print_r($error_info = $this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
                                 }
 
                             }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 if ($prev_key) {
@@ -2395,11 +2359,7 @@ class Page extends DB_Table {
                             }
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
-
 
                 }
 
@@ -2437,9 +2397,6 @@ class Page extends DB_Table {
                             }
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
 
 
@@ -2487,8 +2444,8 @@ class Page extends DB_Table {
 
                 $sql = sprintf(
                     "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`) 
-                    WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  and P.`Product Customer Key` is null  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
-                    $product->id, $product->get('Product Family Category Key')
+                    WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  and P.`Product Customer Key` is null  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ", $product->id,
+                    $product->get('Product Family Category Key')
 
                 );
 
@@ -2556,10 +2513,6 @@ class Page extends DB_Table {
                         }
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -2694,7 +2647,7 @@ class Page extends DB_Table {
                     )
                 );
                 if ($row = $stmt->fetch()) {
-                    if ($row['Product Web State'] == 'For Sale' or $row['Product Web State'] == 'Out of Stock' and   $row['Product Customer Key']=='') {
+                    if ($row['Product Web State'] == 'For Sale' or $row['Product Web State'] == 'Out of Stock' and $row['Product Customer Key'] == '') {
 
                         $product = get_object('Public_Product', $item['product_id']);
                         $product->load_webpage();
@@ -2997,16 +2950,16 @@ class Page extends DB_Table {
 
         if ($this->get('Webpage Scope') == 'Category Products') {
 
-
+            /** @var \Category $category */
             $category = get_object('Category', $this->get('Webpage Scope Key'));
 
             if ($category->get('Product Category Department Category Key')) {
                 $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
+                /** @var  $parent_webpage \Page */
                 $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
                 $parent_webpage->reindex_items();
 
             }
-
 
 
             $web_text = '';
@@ -3016,7 +2969,7 @@ class Page extends DB_Table {
 
                     if ($block['type'] == 'blackboard' and $block['show']) {
 
-                        if(isset($block['texts'])) {
+                        if (isset($block['texts'])) {
                             foreach ($block['texts'] as $text) {
                                 $web_text .= $text['text'].' ';
 
@@ -3026,8 +2979,7 @@ class Page extends DB_Table {
                 }
             }
 
-            $category->fast_update(array('Product Category Published Webpage Description' => $web_text),'Product Category Dimension');
-
+            $category->fast_update(array('Product Category Published Webpage Description' => $web_text), 'Product Category Dimension');
 
 
             if ($publish_products) {
@@ -3352,7 +3304,7 @@ class Page extends DB_Table {
                         $product = get_object('Public_Product', $item['product_id']);
                         $product->load_webpage();
 
-                        
+
                         $content_data['blocks'][$block_key]['items'][$item_key]['web_state']               = $product->get('Web State');
                         $content_data['blocks'][$block_key]['items'][$item_key]['price']                   = $product->get('Price');
                         $content_data['blocks'][$block_key]['items'][$item_key]['price_unit']              = $product->get('Price Per Unit');
