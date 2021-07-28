@@ -1,0 +1,1 @@
+ALTER TABLE `Warehouse Flag Dimension` DROP `Warehouse Key`;

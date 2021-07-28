@@ -185,6 +185,8 @@ class PartLocation extends DB_Table {
 
         //print_r($data);
 
+        $data['Part Location Metadata']='{}';
+
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $this->data)) {
