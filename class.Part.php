@@ -2145,7 +2145,7 @@ class Part extends Asset {
 
                 $main_supplier_part         = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
                 $main_supplier_part->editor = $this->editor;
-                $main_supplier_part->update(array($field => $value), $options);
+                $main_supplier_part->update(array('Supplier Part Unit Cost' => $value), $options);
 
 
                 $this->update_metadata = array(
