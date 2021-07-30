@@ -2301,24 +2301,38 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                 'reference' => 'invoices/all'
             );
             break;
-    /*
-        case 'customer':
-            $_section  = 'customers';
-            $tab       = 'customer.invoices';
+        case 'order':
+            $tab  = 'order.invoices';
+            $link = 'orders/'.$object->get('Invoice Store Key').'/'.$object->get('Invoice Order Key');
 
-
+            $sections                       = get_sections('orders', $object->get('Invoice Store Key'));
+            $sections['orders']['selected'] = true;
 
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Customer").' '.$object->get('Invoice Customer Name'),
-                'reference' => 'customers/'.$object->get('Invoice Store Key').'/'.$object->get('Invoice Customer Key')
+                'title'     => _("Order").' ('.$data['_parent']->get('Public ID').')',
+                'reference' => $link
             );
+            $link.='/invoices';
             break;
-    */
-        default:
+        /*
+            case 'customer':
+                $_section  = 'customers';
+                $tab       = 'customer.invoices';
 
-            exit('location navigation no parent');
+
+
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _("Customer").' '.$object->get('Invoice Customer Name'),
+                    'reference' => 'customers/'.$object->get('Invoice Store Key').'/'.$object->get('Invoice Customer Key')
+                );
+                break;
+        */ default:
+
+        exit('invoice navigation no parent');
     }
 
     $left_buttons = get_navigation_buttons(
@@ -2378,7 +2392,6 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
 }
-
 
 
 function get_deleted_invoice_navigation($data, $smarty, $user, $db, $account) {
