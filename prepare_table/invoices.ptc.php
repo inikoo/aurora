@@ -49,7 +49,7 @@ class prepare_table_invoices extends prepare_table {
 `Invoice Total Net Amount`,`Invoice Total Tax Amount`,`Invoice Shipping Net Amount`,`Invoice Items Net Amount`,`Invoice Total Net Amount`,`Invoice Shipping Net Amount`,
 `Invoice Address Country 2 Alpha Code`';
 
-        $this->table = '`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)  ';
+        $this->table = '`Invoice Dimension` I   ';
         $where_type  = '';
 
 
@@ -85,7 +85,7 @@ class prepare_table_invoices extends prepare_table {
 
                 $this->fields .= ',`Store Code`,`Store Name`,`Country Name`';
                 $this->table  =
-                    '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+                    '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  ';
 
                 $parents     = preg_split('/_/', $this->parameters['parent_key']);
                 $this->where = sprintf(
@@ -97,7 +97,7 @@ class prepare_table_invoices extends prepare_table {
 
                 $this->fields .= ',`Store Code`,`Store Name`,`Country Name`';
                 $this->table  =
-                    '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+                    '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
                 $parents     = preg_split('/_/', $this->parameters['parent_key']);
                 $this->where = sprintf(
@@ -125,12 +125,12 @@ class prepare_table_invoices extends prepare_table {
             }
         } elseif ($this->parameters['parent'] == 'order') {
 
-            $this->table = '  `Invoice Dimension` I    left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+            $this->table = '  `Invoice Dimension` I   ';
             $this->where = sprintf('where  `Invoice Order Key`=%d  ', $this->parameters['parent_key']);
 
         } elseif ($this->parameters['parent'] == 'delivery_note') {
 
-            $this->table = '`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+            $this->table = '`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)   ';
             $this->where = sprintf(
                 'where  B.`Delivery Note Key`=%d  ', $this->parameters['parent_key']
             );
@@ -151,7 +151,7 @@ class prepare_table_invoices extends prepare_table {
 
             $parent_keys = preg_split('/_/', $this->parameters['parent_key']);
 
-            $this->table = '`Order Transaction Fact` OTF  left join     `Invoice Dimension` I   on (OTF.`Invoice Key`=I.`Invoice Key`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`) ';
+            $this->table = '`Order Transaction Fact` OTF  left join     `Invoice Dimension` I   on (OTF.`Invoice Key`=I.`Invoice Key`)   ';
 
             $this->where = sprintf(' where   `Customer Key`=%d  and `Product ID`=%d ', $parent_keys[0], $parent_keys[1]);
 
@@ -164,6 +164,8 @@ class prepare_table_invoices extends prepare_table {
 
             exit("unknown parent ".$this->parameters['parent']." \n");
         }
+
+        $this->table.=' left join `Order Dimension` O on (O.`Order Key`=I.`Invoice Order Key`)    ';
 
 
         if (isset($this->parameters['period'])) {

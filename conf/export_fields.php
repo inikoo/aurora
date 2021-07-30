@@ -591,6 +591,11 @@ function get_export_fields($element, $account_currency_code = '') {
                 'checked' => 1
             ),
             array(
+                'name'    => '`Order Public ID`',
+                'label'   => _('Order ID'),
+                'checked' => 1
+            ),
+            array(
                 'name'    => '`Invoice Customer Name`',
                 'label'   => _('Customer'),
                 'checked' => 1
