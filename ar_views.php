@@ -88,6 +88,10 @@ function get_widget_details($redis, $db, $smarty, $user, $account) {
 }
 
 
+/**
+ * @throws \SmartyException
+ * @throws \ZMQSocketException
+ */
 function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
@@ -871,21 +875,19 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
-
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
 
 
             list($response['object_showcase'], $title, $web_location) = get_object_showcase(
-                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account, $redis
+                ($modules[$state['module']]['sections'][$state['section']]['showcase'] ?? $state['object']), $state, $smarty, $user, $db, $account, $redis
             );
+
 
             if ($title != '') {
                 $state['title'] = $title;
             }
 
-            if ($web_location != '') {
-                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
-            } else {
+            if ($web_location == '') {
 
                 switch ($state['module']) {
                     case 'products':
@@ -908,8 +910,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 }
 
 
-                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
             }
+            $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
 
 
         }
@@ -1411,7 +1413,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
-    if (preg_match('/\_edit$/', $data['tab']) or $data['section'] == 'refund.new') {
+    if (preg_match('/_edit$/', $data['tab']) or $data['section'] == 'refund.new') {
         return array(
             $data,
             ''

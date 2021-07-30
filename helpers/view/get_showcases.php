@@ -106,15 +106,13 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             }
             break;
         case 'product':
-
             if ($data['module'] == 'customers') {
                 include_once 'showcase/customer.product.show.php';
                 $html = get_customer_product_showcase($data, $smarty, $user, $db);
             } else {
                 include_once 'showcase/product.show.php';
-                $html = get_product_showcase($data, $smarty, $user, $db);
+                $html = get_product_showcase($data, $smarty, $db);
             }
-
             $title        = $data['_object']->get('Code');
             $web_location = '<i class="fal fa-fw fa-cube"></i> '.$title;
 

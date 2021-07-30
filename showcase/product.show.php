@@ -11,7 +11,7 @@
 */
 
 
-function get_product_showcase($data, $smarty, $user, $db) {
+function get_product_showcase($data, $smarty, $db) {
 
 
     $product = $data['_object'];
@@ -346,7 +346,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
                            'invoiced_amount_delta_title'   => delta(
                                $product->get('Product 3 Year Ago Invoiced Amount'), $product->get('Product 4 Year Ago Invoiced Amount')
                            ),
-                           'invoiced_amount_delta'         => ($product->get('Product 3 Year Ago Invoiced Amoun') > $product->get('Product 4 Year Ago Invoiced Amount')
+                           'invoiced_amount_delta'         => ($product->get('Product 3 Year Ago Invoiced Amount') > $product->get('Product 4 Year Ago Invoiced Amount')
                                ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
                                : ($product->get('Product 3 Year Ago Invoiced Amount') < $product->get(
                                    'Product 4 Year Ago Invoiced Amount'
@@ -354,7 +354,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
                            'quantity_invoiced_delta_title' => delta(
                                $product->get('Product 3 Year Ago Quantity Invoiced'), $product->get('Product 4 Year Ago Quantity Invoiced')
                            ),
-                           'quantity_invoiced_delta'       => ($product->get('Product 3 Year Ago Invoiced Amoun') > $product->get('Product 4 Year Ago Quantity Invoiced')
+                           'quantity_invoiced_delta'       => ($product->get('Product 3 Year Ago Invoiced Amount') > $product->get('Product 4 Year Ago Quantity Invoiced')
                                ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
                                : ($product->get('Product 3 Year Ago Quantity Invoiced') < $product->get(
                                    'Product 4 Year Ago Quantity Invoiced'
@@ -384,11 +384,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
                        )
                    )
     );
-    $customers_title = sprintf(
-        ngettext(
-            "%s customer", "%s customers", $product->get('Product Total Acc Customers')
-        ), $product->get('Total Acc Customers')
-    );
+
     $customers       = sprintf(
         '<i class="fa fa-users padding_right_5" aria-hidden="true"></i> %s (%s)', $product->get('Total Acc Customers'), percentage(
                                                                                     $product->get('Product Total Acc Repeat Customers'), $product->get('Product Total Acc Customers')
@@ -401,7 +397,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
     );
 
 
-    //return $smarty->fetch('showcase/product.tpl');
+    return $smarty->fetch('showcase/product.tpl');
 
 
 }

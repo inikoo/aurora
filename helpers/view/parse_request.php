@@ -606,9 +606,7 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                             '/^(\d+>)+(\d+)$/', $view_path[2]
                                         )) {
 
-                                            $parent_categories = preg_split(
-                                                '/>/', $view_path[2]
-                                            );
+                                            $parent_categories = preg_split('/>/', $view_path[2]);
                                             $metadata          = $parent_categories;
                                             $key               = array_pop(
                                                 $parent_categories
@@ -630,9 +628,7 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
 
                                                     $section = 'product';
                                                     $object  = 'product';
-                                                    if (isset($view_path[4]) and is_numeric(
-                                                            $view_path[4]
-                                                        )) {
+                                                    if (isset($view_path[4]) and is_numeric($view_path[4])) {
 
                                                         $key = $view_path[4];
 

@@ -51,9 +51,6 @@ function get_customer_product_showcase($data, $smarty, $user, $db) {
         } else {
             $department_data = array('id' => false);
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
     $sql = sprintf(
@@ -69,11 +66,7 @@ function get_customer_product_showcase($data, $smarty, $user, $db) {
         } else {
             $family_data = array('id' => false);
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
-
     $smarty->assign('product', $product);
     $smarty->assign('department_data', $department_data);
     $smarty->assign('family_data', $family_data);
@@ -84,5 +77,3 @@ function get_customer_product_showcase($data, $smarty, $user, $db) {
 
 }
 
-
-?>
