@@ -8,6 +8,10 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var \Account $account */
+/** @var array $state */
 
 $tab     = 'billingregion_taxcategory.invoices';
 $ar_file = 'ar_reports_tables.php';
@@ -48,6 +52,7 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
+    'version'    => 'v2',
 );
 
 
@@ -55,5 +60,3 @@ $smarty->assign('hide_period', true);
 
 include 'utils/get_table_html.php';
 
-
-?>

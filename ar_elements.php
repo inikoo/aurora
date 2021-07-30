@@ -301,7 +301,7 @@ switch ($tab) {
     case 'customer.invoices':
     case 'category.invoices':
     case 'sales_representative.invoices':
-
+    case 'customer.product.invoices':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -2324,21 +2324,7 @@ function get_invoices_element_numbers($db, $parameters) {
     $table            = '`Invoice Dimension` I left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)  ';
 
 
-    if (isset($parameters['awhere']) and $parameters['awhere']) {
-
-        include_once 'invoices_awhere.php';
-
-        $tmp = preg_replace('/\\\"/', '"', $parameters['awhere']);
-        $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-        $tmp = preg_replace('/\'/', "\'", $tmp);
-
-        $raw_data = json_decode($tmp, true);
-        //$raw_data['store_key']=$store;
-        //print_r( $raw_data);exit;
-        list($where, $table) = invoices_awhere($raw_data);
-
-
-    } elseif ($parameters['parent'] == 'category') {
+    if ($parameters['parent'] == 'category') {
         $category = get_object('Category', $parameters['parent_key']);
 
 
@@ -2410,7 +2396,6 @@ function get_invoices_element_numbers($db, $parameters) {
 
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.invoices') {
 
-        $fields = '`Store Code`,`Store Name`,`Country Name`,';
         $table  = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
@@ -2429,31 +2414,38 @@ function get_invoices_element_numbers($db, $parameters) {
         );
 
 
-    } else {
+    } elseif ($parameters['parent'] == 'customer_product') {
+
+        $parent_keys = preg_split('/_/', $parameters['parent_key']);
+
+        $table = '`Order Transaction Fact` OTF  left join     `Invoice Dimension` I   on (OTF.`Invoice Key`=I.`Invoice Key`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`) ';
+
+        $where = sprintf(' where   `Customer Key`=%d  and `Product ID`=%d ', $parent_keys[0], $parent_keys[1]);
+
+
+
+
+    }else {
         exit("unknown parent ".$parameters['parent']." \n");
     }
 
 
     $sql = sprintf(
-        "SELECT count(*) AS number,`Invoice Paid` AS element FROM %s %s %s GROUP BY `Invoice Paid` ", $table, $where, $where_interval
+        " count(*) AS number,`Invoice Paid` AS element FROM %s %s %s GROUP BY `Invoice Paid` ", $table, $where, $where_interval
     );
-    if ($result = $db->query($sql)) {
+    if ($result = $db->query("SELECT ".$sql)) {
         foreach ($result as $row) {
             $elements_numbers['payment_state'][$row['element']] = number(
                 $row['number']
             );
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
     }
 
 
     $sql = sprintf(
-        "SELECT count(*) AS number,`Invoice Type` AS element   FROM %s %s %s GROUP BY `Invoice Type` ", $table, $where, $where_interval
+        " count(*) AS number,`Invoice Type` AS element   FROM %s %s %s GROUP BY `Invoice Type` ", $table, $where, $where_interval
     );
-    foreach ($db->query($sql) as $row) {
+    foreach ($db->query('SELECT '.$sql) as $row) {
 
         $elements_numbers['type'][$row['element']] = number($row['number']);
     }

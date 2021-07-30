@@ -195,13 +195,7 @@ function get_orders_module(): array {
                     ),
 
 
-                    /*
-                                        'delivery_note.picking_aid' => array(
-                                            'label' => _('Picking aid'),
-                                            'icon'  => 'fa-hand-lizard'
-                                        ),
 
-                    */
                     'delivery_note.details'  => array(
                         'label' => _('Data'),
                         'icon'  => 'database'

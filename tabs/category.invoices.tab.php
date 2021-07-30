@@ -8,7 +8,10 @@
  Version 3
 
 */
-
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var \Account $account */
+/** @var array $state */
 $tab     = 'invoices';
 $ar_file = 'ar_accounting_tables.php';
 $tipo    = 'invoices';
@@ -33,20 +36,21 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['object'],
     'parent_key' => $state['key'],
+    'version'    => 'v2'
 );
 
 
-$export_omega='No';
+$export_omega = 'No';
 
-if($state['_object']->get('Invoice Category Function Code')=='external_invoicer'){
-    $external_invoicer=get_object('External_Invoicer',$state['_object']->get('Invoice Category Function Argument'));
-    if($external_invoicer->metadata('country')=='SK'){
-        $export_omega='Yes';
+if ($state['_object']->get('Invoice Category Function Code') == 'external_invoicer') {
+    $external_invoicer = get_object('External_Invoicer', $state['_object']->get('Invoice Category Function Argument'));
+    if ($external_invoicer->metadata('country') == 'SK') {
+        $export_omega = 'Yes';
 
     }
 }
 
-$smarty->assign('export_omega_invoices',$export_omega);
+$smarty->assign('export_omega_invoices', $export_omega);
 
 include 'utils/get_table_html.php';
 

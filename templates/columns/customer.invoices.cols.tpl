@@ -12,12 +12,6 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string"
-},{
-name: "customer_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string"
 }, {
 name: "number",
 label: "{t}Number{/t}",
@@ -36,20 +30,8 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
-name: "customer",
-label: "{t}Customer{/t}",
-sortType: "toggle",
-editable: false,
-cell: Backgrid.HtmlCell.extend({ })
-}, {
 name: "type",
 label: "{t}Type{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
-name: "method",
-label: "{t}Payment Method{/t}",
 editable: false,
 sortType: "toggle",
 cell: "html"
@@ -70,4 +52,6 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }]
 
-function change_table_view(view,save_state){}
+function change_table_view(view,save_state){
+
+}

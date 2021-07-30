@@ -594,14 +594,7 @@ function get_customers_module(): array {
 
 
                     ),
-                    /*
-                                        'customer.product.transaction'  => array(
-                                            'label'         => _('Transactions'),
-                                            'icon'          => 'exchange-alt',
 
-
-                                        ),
-                    */
                     'product.history'           => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',

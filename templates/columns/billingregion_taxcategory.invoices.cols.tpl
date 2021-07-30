@@ -68,7 +68,7 @@ defaultOrder:-1,
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 
-className: "link width_20",
+className: " width_20",
 })
 },
 {
@@ -79,21 +79,11 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "width_100 padding_right_20 aright"} ),
-headerCell: integerHeaderCell
-},
-{
-name: "payment_method",
-label: "{t}Payment{/t}",
-sortType: "toggle",
-defaultOrder:-1,
-{if $sort_key=='payment_method'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+headerCell: integerHeaderCell,
+className: " min_width_150",
 
-editable: false,
-cell: Backgrid.HtmlCell.extend({
-
-className: "padding_left_20"
-})
 },
+
 
 {
 name: "net",

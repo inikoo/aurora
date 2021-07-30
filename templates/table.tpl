@@ -243,7 +243,7 @@
                         <td class="width_20">
                             <i data-stop="0" onclick="stop_export(this)" class="stop_export fa button fa-hand-paper error hide" title="{t}Stop{/t}"></i>
                         </td>
-                        <td class="export_button link" data-type="excel" onclick="export_table(this)" data-ar_url="/ar_export.php"><i class="fa fa-file-excel fa-fw"></i><span class="excel">Excel</span><span class="csv hide">CSV</span</td>
+                        <td class="export_button link" data-type="excel" onclick="export_table(this)" data-ar_url="{if $version=='v2'}/ar_export_v2.php{else}/x1ar_export.php{/if}"><i class="fa fa-file-excel fa-fw"></i><span class="excel">Excel</span><span class="csv hide">CSV</span</td>
                     </tr>
 
                     <tr>
@@ -258,9 +258,9 @@
 
 
                 <div class="export_type_options ">
-                    <span data-type="excel" onclick="change_export_as(this,'Excel');export_table(this)" data-ar_url="/ar_export.php" class="margin_right_20 button" title="{t}Export as spreadsheet{/t}"><i
+                    <span data-type="excel" onclick="change_export_as(this,'Excel');export_table(this)" data-ar_url="{if $version=='v2'}/ar_export_v2.php{else}/ar_export.php{/if}" class="margin_right_20 button" title="{t}Export as spreadsheet{/t}"><i
                                 class="far fa-fw fa-file-excel"></i>Excel</span>
-                    <span data-type="csv" onclick="change_export_as(this,'Excel'); export_table(this)" data-ar_url="/ar_export.php" class=" button" title="{t}Export as CSV file{/t}"><i class="far fa-fw fa-file-csv"></i>CSV</span>
+                    <span data-type="csv" onclick="change_export_as(this,'Excel'); export_table(this)" data-ar_url="{if $version=='v2'}/ar_export_v2.php{else}/ar_export.php{/if}" class=" button" title="{t}Export as CSV file{/t}"><i class="far fa-fw fa-file-csv"></i>CSV</span>
                 </div>
 
                 {if isset($export_fields)}

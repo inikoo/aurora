@@ -722,26 +722,28 @@ function toggle_export_field(element) {
 function export_table(element) {
 
 
-    var type=$(element).data('type')
+    const type = $(element).data('type');
 
-    var export_container=$(element).closest('.export_dialog_container')
-    $(element).removeClass('link').addClass('disabled')
-    export_container.find('.field_export').removeClass('button').addClass('disabled')
+    const export_container = $(element).closest('.export_dialog_container');
+    $(element).removeClass('link').addClass('disabled');
+    export_container.find('.field_export').removeClass('button').addClass('disabled');
     export_container.find('.stop_export').removeClass('hide').data('stop', 0);
 
 
 
-    var fields = []
+    let fields = [];
     export_container.find('.field_export i').each(function (index, obj) {
-        if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
+        if ($(obj).hasClass('fa-check-square')){
+            fields.push($(obj).attr('key'))
+        }
     });
 
-    var request = $(element).data('ar_url')+"?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
+    let request = $(element).data('ar_url')+"?ar_file=" + rows['ar_file'] + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields);
 
     $.getJSON(request, function (data) {
-        if (data.state == 200) {
-            export_container.find('.export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.txt)
-            export_container.attr('id','download_'+data.download_key).data('download_key',data.download_key)
+        if (data.state === 200) {
+            export_container.find('.export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data['txt']);
+            export_container.attr('id','download_'+data['download_key']).data('download_key',data['download_key'])
         }
     })
 

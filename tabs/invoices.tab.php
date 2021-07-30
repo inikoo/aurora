@@ -8,6 +8,10 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var \Account $account */
+/** @var array $state */
 
 $tab     = 'invoices';
 $ar_file = 'ar_accounting_tables.php';
@@ -33,16 +37,16 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
+    'version'    => 'v2',
 );
 
-$export_omega='No';
+$export_omega = 'No';
 
-if($account->get('Account Country 2 Alpha Code')=='SK'){
-    $export_omega='Yes';
+if ($account->get('Account Country 2 Alpha Code') == 'SK') {
+    $export_omega = 'Yes';
 }
 
-$smarty->assign('export_omega_invoices',$export_omega);
-
+$smarty->assign('export_omega_invoices', $export_omega);
 
 include 'utils/get_table_html.php';
 

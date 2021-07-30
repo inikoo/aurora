@@ -1,5 +1,4 @@
-{literal}
-<code>
+
     <?php
 date_default_timezone_set('UTC');
 
@@ -142,6 +141,3 @@ foreach ($files as $file) {
 
     }
     ?>
-
-</code>
-</literal>

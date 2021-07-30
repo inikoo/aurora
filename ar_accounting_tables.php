@@ -13,7 +13,11 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/object_functions.php';
+require_once 'utils/prepare_table.php';
 
+/** @var \User $user */
+/** @var PDO $db */
+/** @var \Account $account */
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -78,7 +82,7 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
 
 
@@ -788,88 +792,13 @@ function credits_group_by_store($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function invoices($_data, $db, $user) {
+function invoices($_data, $db, $user,$account) {
 
-    $rtext_label = 'invoice';
-    include_once 'prepare_table/init.php';
-
-    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-
-    $adata = array();
+    include_once 'prepare_table/invoices.ptc.php';
+    $table=new prepare_table_invoices($db,$account,$user);
+    echo $table->fetch($_data);
 
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-            if ($data['Invoice Paid'] == 'Yes') {
-                $state = _('Paid');
-            } elseif ($data['Invoice Paid'] == 'Partially') {
-                $state = _('Partially Paid');
-            } else {
-                $state = _('No Paid');
-            }
-
-
-            if ($data['Invoice Type'] == 'Invoice') {
-                $type = _('Invoice');
-            } elseif ($data['Invoice Type'] == 'CreditNote') {
-                $type = _('Credit Note');
-            } else {
-                $type = _('Refund');
-            }
-
-            switch ($data['Invoice Main Payment Method']) {
-                default:
-                    $method = $data['Invoice Main Payment Method'];
-            }
-
-            if ($_data['parameters']['parent'] == 'account') {
-                $number = sprintf('<span class="link" onclick="change_view(\'invoice/%d\')">%s</span>', $data['Invoice Key'], $data['Invoice Public ID']);
-
-            } else {
-                $number = sprintf('<span class="link" onclick="change_view(\'invoices/%d/%d\')">%s</span>', $data['Invoice Store Key'], $data['Invoice Key'], $data['Invoice Public ID']);
-            }
-
-
-            $adata[] = array(
-                'id' => (integer)$data['Invoice Key'],
-
-
-                'number' => $number,
-
-                'customer'     => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Invoice Store Key'], $data['Invoice Customer Key'], $data['Invoice Customer Name']),
-                'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Invoice Date'].' +0:00')),
-                'total_amount' => money($data['Invoice Total Amount'], $data['Invoice Currency']),
-                'net'          => money($data['Invoice Total Net Amount'], $data['Invoice Currency']),
-                'shipping'     => money($data['Invoice Shipping Net Amount'], $data['Invoice Currency']),
-                'items'        => money($data['Invoice Items Net Amount'], $data['Invoice Currency']),
-                'type'         => $type,
-                'method'       => $method,
-                'state'        => $state,
-
-
-            );
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
 }
 
 

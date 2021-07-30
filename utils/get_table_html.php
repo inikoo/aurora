@@ -213,9 +213,8 @@ if (array_key_exists('elements_type', $parameters)) {
 }
 
 
-//print_r($parameters);
 
-
+$version=$parameters['version']??'v1';
 $parameters = json_encode($parameters);
 
 
@@ -247,5 +246,8 @@ if (isset($table_views[$table_view])) {
 }
 
 $smarty->assign('table_views', $table_views);
+
+
+$smarty->assign('version', $version);
 
 $html = $smarty->fetch('table.tpl');

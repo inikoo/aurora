@@ -82,7 +82,7 @@ function get_tab_defaults_data(): array {
             'f_field'     => 'code'
         ),
 
-        'customers.lists'        => array(
+        'customers.lists'           => array(
             'view'        => 'overview',
             'sort_key'    => 'creation_date',
             'sort_order'  => 1,
@@ -90,7 +90,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'name'
         ),
-        'customers.categories'   => array(
+        'customers.categories'      => array(
             'view'        => 'overview',
             'sort_key'    => 'code',
             'sort_order'  => 1,
@@ -98,7 +98,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'code'
         ),
-        'customers.geo'          => array(
+        'customers.geo'             => array(
             'view'        => 'overview',
             'sort_key'    => 'customers',
             'sort_order'  => 1,
@@ -106,7 +106,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'country'
         ),
-        'customers_poll.queries' => array(
+        'customers_poll.queries'    => array(
             'view'        => 'overview',
             'sort_key'    => 'position',
             'sort_order'  => -1,
@@ -114,7 +114,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'query'
         ),
-        'customers.registrations' => array(
+        'customers.registrations'   => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
             'sort_order'  => 1,
@@ -1017,7 +1017,7 @@ function get_tab_defaults_data(): array {
             'period'        => 'all',
             'elements_type' => array_keys(get_elements_option('invoices'))[0],
             'elements'      => get_elements_option('invoices'),
-            'export_fields' => get_export_fields('invoices')
+            'export_fields' => get_export_fields('invoices'),
 
         ),
 
@@ -1112,7 +1112,9 @@ function get_tab_defaults_data(): array {
             'to'            => '',
             'period'        => 'all',
             'elements_type' => array_keys(get_elements_option('invoices'))[0],
-            'elements'      => get_elements_option('invoices')
+            'elements'      => get_elements_option('invoices'),
+            'export_fields' => get_export_fields('invoices'),
+
         ),
         'deleted_invoices_server'    => array(
             'view'          => 'overview',
@@ -2700,7 +2702,7 @@ function get_tab_defaults_data(): array {
         ),
 
 
-        'agent.users'       => array(
+        'agent.users'                 => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
             'sort_order'  => 1,
@@ -2708,7 +2710,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'handle'
         ),
-        'warehouses'        => array(
+        'warehouses'                  => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
             'sort_order'  => 1,
@@ -2716,7 +2718,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'code',
         ),
-        'warehouse.areas'   => array(
+        'warehouse.areas'             => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
             'sort_order'  => 1,
@@ -2724,7 +2726,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'code',
         ),
-        'warehouse.picking_pipelines'   => array(
+        'warehouse.picking_pipelines' => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
             'sort_order'  => 1,
@@ -2732,7 +2734,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'name',
         ),
-        'warehouse.returns' => array(
+        'warehouse.returns'           => array(
             'view'          => 'overview',
             'sort_key'      => 'id',
             'sort_order'    => 1,
@@ -2803,7 +2805,6 @@ function get_tab_defaults_data(): array {
             'f_field'     => 'code',
 
         ),
-
 
 
         'part.attachment.history' => array(
@@ -2928,7 +2929,7 @@ function get_tab_defaults_data(): array {
             'f_field'     => 'reference',
 
         ),
-        'warehouse.parts_to_replenish_pipeline.wget' => array(
+        'warehouse.parts_to_replenish_pipeline.wget'           => array(
             'view'        => 'overview',
             'sort_key'    => 'reference',
             'sort_order'  => 1,
@@ -5338,7 +5339,7 @@ function get_tab_defaults_data(): array {
             'elements'      => get_elements_option('purged_orders')
         ),
 
-        'purge.history'     => array(
+        'purge.history'               => array(
             'view'          => 'overview',
             'sort_key'      => 'date',
             'sort_order'    => 1,
@@ -5348,7 +5349,7 @@ function get_tab_defaults_data(): array {
             'elements_type' => array_keys(get_elements_option('purges_history'))[0],
             'elements'      => get_elements_option('purges_history')
         ),
-        'clocking_machines' => array(
+        'clocking_machines'           => array(
             'view'        => 'overview',
             'sort_key'    => 'code',
             'sort_order'  => 1,
@@ -5356,7 +5357,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'code'
         ),
-        'part.attachments' => array(
+        'part.attachments'            => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => 1,
@@ -5364,7 +5365,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'caption'
         ),
-        'customer.attachments' => array(
+        'customer.attachments'        => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => 1,
@@ -5380,7 +5381,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'note'
         ),
-        'order.attachments' => array(
+        'order.attachments'           => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => 1,
@@ -5388,7 +5389,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'caption'
         ),
-        'order.attachment.history' => array(
+        'order.attachment.history'    => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => 1,
@@ -5396,7 +5397,7 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'note'
         ),
-        'supplier.attachments'             => array(
+        'supplier.attachments'        => array(
             'view'        => 'overview',
             'sort_key'    => 'date',
             'sort_order'  => 1,

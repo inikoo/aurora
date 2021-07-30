@@ -8,6 +8,10 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var \Account $account */
+/** @var array $state */
 
 $tab     = 'customer.invoices';
 $ar_file = 'ar_accounting_tables.php';
@@ -29,9 +33,9 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['object'],
     'parent_key' => $state['key'],
+    'version'    => 'v2'
 
 );
 
 include('utils/get_table_html.php');
 
-?>

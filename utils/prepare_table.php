@@ -41,6 +41,8 @@ class prepare_table {
 
     public string $rtext;
 
+    public string $rtext_suffix;
+
     public int $total;
 
     public int $filtered;
@@ -102,6 +104,7 @@ class prepare_table {
         ];
 
         $this->rtext    = '';
+        $this->rtext_suffix='';
         $this->total    = 0;
         $this->filtered = 0;
 
@@ -144,7 +147,7 @@ class prepare_table {
             'resultset' => array(
                 'state'         => 200,
                 'data'          => $this->table_data,
-                'rtext'         => $this->rtext,
+                'rtext'         => $this->rtext.$this->rtext_suffix,
                 'sort_key'      => $this->sort_key,
                 'sort_dir'      => $this->sort_direction,
                 'total_records' => $this->total

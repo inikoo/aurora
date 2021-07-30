@@ -12,7 +12,13 @@
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
+require_once 'utils/prepare_table.php';
 
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var \Account $account */
+/** @var array $state */
+/** @var \PDO $db */
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -111,9 +117,7 @@ switch ($tipo) {
         break;
     case 'billingregion_taxcategory.invoices':
     case 'billingregion_taxcategory.refunds':
-        invoices_billingregion_taxcategory(
-            get_table_parameters(), $db, $user, $account
-        );
+        invoices_billing_region_tax_category(get_table_parameters(), $db, $user, $account);
         break;
     case 'picker_feedback':
     case 'packer_feedback':
@@ -462,6 +466,8 @@ function ec_sales_list($_data, $db, $user, $account) {
 
 function billingregion_taxcategory($_data, $db, $user, $account) {
 
+    
+
     $rtext_label = 'record';
     include_once 'prepare_table/init.php';
 
@@ -586,119 +592,45 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 }
 
 
-function invoices_billingregion_taxcategory($_data, $db, $user) {
+function invoices_billing_region_tax_category($_data, $db, $user, $account) {
 
+
+    include_once 'prepare_table/invoices.ptc.php';
+    $table = new prepare_table_invoices($db, $account, $user);
 
     if ($_data['parameters']['tab'] == 'billingregion_taxcategory.refunds') {
-        $rtext_label = 'refund';
-    } else {
-        $rtext_label = 'invoice';
+        $table->record_label = [
+            [
+                '%s refund',
+                '%s refunds'
+            ],
+            [
+                '%s refund of %s',
+                '%s refunds of %s'
+            ],
+
+        ];
     }
 
-
-    include_once 'prepare_table/init.php';
-
-    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-    $adata = array();
-
-    if ($result = $db->query($sql)) {
-
-        foreach ($result as $data) {
-
-            if ($data['Invoice Paid'] == 'Yes') {
-                $state = _('Paid');
-            } elseif ($data['Invoice Paid'] == 'Partially') {
-                $state = _('Partially Paid');
-            } else {
-                $state = _('No Paid');
-            }
-
-
-            if ($data['Invoice Type'] == 'Invoice') {
-                $type = _('Invoice');
-            } elseif ($data['Invoice Type'] == 'CreditNote') {
-                $type = _('Credit Note');
-            } else {
-                $type = _('Refund');
-            }
-
-            switch ($data['Invoice Main Payment Method']) {
-                default:
-                    $method = $data['Invoice Main Payment Method'];
-            }
-
-            $adata[] = array(
-                'id' => (integer)$data['Invoice Key'],
-
-                'number'               => sprintf('<span class="link" onclick="change_view(\'invoices/%d/%d\')">%s</span>', $data['Invoice Store Key'], $data['Invoice Key'], $data['Invoice Public ID']),
-                'customer'             => $data['Invoice Customer Name'],
-                'store_code'           => sprintf('<span title="%s">%s</span>', $data['Store Name'], $data['Store Code']),
-                'date'                 => strftime("%e %b %Y", strtotime($data['Invoice Date'].' +0:00')),
-                'total_amount'         => money(
-                    $data['Invoice Total Amount'], $data['Invoice Currency']
-                ),
-                'net'                  => money(
-                    $data['Invoice Total Net Amount'], $data['Invoice Currency']
-                ),
-                'tax'                  => money(
-                    $data['Invoice Total Tax Amount'], $data['Invoice Currency']
-                ),
-                'shipping'             => money(
-                    $data['Invoice Shipping Net Amount'], $data['Invoice Currency']
-                ),
-                'items'                => money(
-                    $data['Invoice Items Net Amount'], $data['Invoice Currency']
-                ),
-                'type'                 => $type,
-                'payment_method'       => $method,
-                'state'                => $state,
-                'billing_country'      => $data['Invoice Address Country 2 Alpha Code'],
-                'billing_country_flag' => sprintf(
-                    '<img title="%s" src="/art/flags/%s.png">', $data['Country Name'], strtolower($data['Invoice Address Country 2 Alpha Code'])
-                )
-
-            );
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
-    if (is_array($parameters['excluded_stores']) and count(
-            $parameters['excluded_stores']
-        ) > 0) {
+    if (is_array($_data['parameters']['excluded_stores']) and count($_data['parameters']['excluded_stores']) > 0) {
         $excluded_stores = '';
         $sql             = sprintf(
-            'SELECT `Store Key`,`Store Code`,`Store Name` FROM `Store Dimension` WHERE `Store Key` IN (%s)', join($parameters['excluded_stores'], ',')
+            'SELECT `Store Key`,`Store Code`,`Store Name` FROM `Store Dimension` WHERE `Store Key` IN (%s)', join(',', $_data['parameters']['excluded_stores'])
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $data) {
                 $excluded_stores .= $data['Store Code'].', ';
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
-        $excluded_stores = preg_replace('/, $/', '', $excluded_stores);
-        $rtext           .= ' ('._('Excluding').': '.$excluded_stores.')';
+        $excluded_stores      = preg_replace('/, $/', '', $excluded_stores);
+        $table->rtext_suffix = ' ('._('Excluding').': '.$excluded_stores.')';
     }
 
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
+    echo $table->fetch($_data);
 
-        )
-    );
-    echo json_encode($response);
+
 }
 
 
@@ -1951,7 +1883,7 @@ function pickers($_data, $db, $user, $account) {
 
 
     include_once 'prepare_table/pickers.ptc.php';
-    $table=new prepare_table_pickers($db,$account,$user);
+    $table = new prepare_table_pickers($db, $account, $user);
     echo $table->fetch($_data);
 
 
@@ -1959,7 +1891,7 @@ function pickers($_data, $db, $user, $account) {
 
 function packers($_data, $db, $user, $account) {
     include_once 'prepare_table/packers.ptc.php';
-    $table=new prepare_table_packers($db,$account,$user);
+    $table = new prepare_table_packers($db, $account, $user);
     echo $table->fetch($_data);
 
 
@@ -2006,7 +1938,7 @@ function warehouse_bonus_report($_data, $db, $user, $account) {
                 'id'         => $data['Staff Key'],
                 'name'       => sprintf('<span class="link" onclick="change_view(\'warehouse/%d/kpis/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Warehouse Key'], $data['Staff Key'], $_data['parameters']['period'], $data['Staff Name']),
                 'deliveries' => number($data['deliveries']),
-               // 'picked'     => number($data['picked'], 0),
+                // 'picked'     => number($data['picked'], 0),
                 'picks'      => number($data['picks'], 0),
                 'cartons'    => number($data['cartons'], 0),
 
@@ -2041,14 +1973,12 @@ function sales($_data, $db, $user, $account) {
 
     foreach ($_data['parameters'] as $parameter => $parameter_value) {
 
-        if (in_array(
-            $parameter, array(
-                          'from',
-                          'to',
-                          'period',
-                          'currency'
-                      )
-        )) {
+        if (in_array($parameter, array(
+                                   'from',
+                                   'to',
+                                   'period',
+                                   'currency'
+                               ))) {
             $_SESSION['table_state']['sales_invoice_category'][$parameter] = $parameter_value;
         }
 
@@ -2432,14 +2362,12 @@ function sales_invoice_category($_data, $db, $user, $account) {
 
     foreach ($_data['parameters'] as $parameter => $parameter_value) {
 
-        if (in_array(
-            $parameter, array(
-                          'from',
-                          'to',
-                          'period',
-                          'currency'
-                      )
-        )) {
+        if (in_array($parameter, array(
+                                   'from',
+                                   'to',
+                                   'period',
+                                   'currency'
+                               ))) {
             $_SESSION['table_state']['sales'][$parameter] = $parameter_value;
         }
 

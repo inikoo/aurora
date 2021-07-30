@@ -103,10 +103,10 @@ if ($_data['tipo'] == 'stock.history.day') {
     exit;
 
 
-} elseif ($_data['tipo'] == 'timeserie_records') {
+}
+elseif ($_data['tipo'] == 'timeserie_records') {
 
-    include_once 'class.Timeserie.php';
-    $timeseries = new Timeseries($_data['parameters']['parent_key']);
+    $timeseries = get_object('Timeseries',$_data['parameters']['parent_key']);
 
     $field_set = get_export_fields('timeserie_records_'.$timeseries->get('Type'));
 
@@ -120,7 +120,8 @@ if ($_data['tipo'] == 'stock.history.day') {
         }
     }
 
-} else {
+}
+else {
 
 
     if ($_data['tipo'] == 'billingregion_taxcategory.invoices' or $_data['tipo'] == 'billingregion_taxcategory.refunds') {

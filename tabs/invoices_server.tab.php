@@ -8,22 +8,27 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var \Account $account */
+/** @var array $state */
 
 $tab     = 'invoices_server';
 $ar_file = 'ar_accounting_tables.php';
 $tipo    = 'invoices';
 
 
+if ($account->get('Account Warehouses') == 0) {
 
-if($account->get('Account Warehouses')==0){
+    $html = '<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'), '<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
 
-    $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
     return;
 }
 
-if($account->get('Account Stores')==0){
+if ($account->get('Account Stores') == 0) {
 
-    $html='<div style="padding:20px">'.sprintf(_('There are not stores, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
+    $html = '<div style="padding:20px">'.sprintf(_('There are not stores, create one %s'), '<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
+
     return;
 }
 
@@ -31,7 +36,6 @@ if($account->get('Account Stores')==0){
 $default = $user->get_tab_defaults($tab);
 
 $table_views = array();
-
 
 
 $table_filters = array(
@@ -49,17 +53,10 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
+    'version'    => 'v2'
 );
 
 
-
-
 $smarty->assign('title', _('Invoices').' ('._('All stores').')');
-//$smarty->assign('view_position', '<i class=\"fal fa-sitemap\"></i> '._('Invoices per category'));
-
-
-
 include 'utils/get_table_html.php';
 
-
-?>
