@@ -10,12 +10,14 @@
 */
 
 include_once 'utils/country_functions.php';
-
 include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
-
 include_once 'class.Customer.php';
 
+/** @var array $state */
+/** @var \Smarty $smarty */
+/** @var \PDO $db */
+/** @var \User $user */
 
 $object_fields = get_object_fields(
     $state['_object'], $db, $user, $smarty, array(
@@ -62,7 +64,6 @@ $smarty->assign(
 );
 
 
-$smarty->assign('js_code', 'js/injections/customer_details.'.(_DEVEL ? '' : 'min.').'js');
 
 $html = $smarty->fetch('new_object.tpl');
 

@@ -1981,7 +1981,7 @@ class Order extends DB_Table {
 
     }
 
-    function create_invoice($date, $extra_data = []) {
+    function create_invoice($date, $extra_data = []): Invoice {
 
 
         $store   = get_object('Store', $this->data['Order Store Key']);

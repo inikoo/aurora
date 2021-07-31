@@ -1317,6 +1317,7 @@ function fork_housekeeping($job) {
             break;
         case 'customer_client_created':
         case 'customer_client_deleted':
+            /** @var \Customer $customer */
             $customer = get_object('Customer', $data['customer_key']);
 
             $customer->update_clients_data();

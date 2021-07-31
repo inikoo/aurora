@@ -64,7 +64,6 @@ function update_customer_asset_brige($db, $print_est) {
 
             $customer->update_product_bridge();
             $customer->update_part_bridge();
-            //$customer->update_category_part_bridge();
 
 
             $contador++;

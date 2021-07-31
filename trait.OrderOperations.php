@@ -13,6 +13,9 @@
 trait OrderOperations {
 
 
+    /**
+     * @throws \Exception
+     */
     function create($data) {
 
         $account = get_object('Account', 1);
@@ -58,6 +61,7 @@ trait OrderOperations {
             if ($tax_cat->id) {
                 $this->data['Order Tax Code'] = $tax_cat->data['Tax Category Code'];
                 $this->data['Order Tax Rate'] = $tax_cat->data['Tax Category Rate'];
+                $this->data['Order Tax Category Key'] = $tax_cat->id;
                 $tax_name                     = $tax_cat->data['Tax Category Name'];
                 $reason_tax_code_selected     = 'set';
             } else {
@@ -118,7 +122,7 @@ trait OrderOperations {
 
 
         $this->data['Order Currency Exchange'] = 1;
-        $this->data['Order Delivery Data'] = '{}';
+        $this->data['Order Delivery Data']     = '{}';
 
 
         if ($this->data['Order Currency'] != $account->get('Currency Code')) {
@@ -129,9 +133,7 @@ trait OrderOperations {
         }
 
         $this->data['Order Main Source Type'] = 'Call';
-        if (isset($data['Order Main Source Type']) and preg_match(
-                '/^(Internet|Call|Store|Unknown|Email|Fax)$/i'
-            )) {
+        if (isset($data['Order Main Source Type']) and preg_match('/^(Internet|Call|Store|Unknown|Email|Fax)$/i', $data['Order Main Source Type'])) {
             $this->data['Order Main Source Type'] = $data['Order Main Source Type'];
         }
 
@@ -174,7 +176,7 @@ trait OrderOperations {
         $stmt = $this->db->prepare($sql);
 
         $i = 1;
-        foreach ($this->data as $key => $value) {
+        foreach ($this->data as $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -262,27 +264,25 @@ trait OrderOperations {
                                                `Order Basket History Net Amount`,`Order Basket History Source`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ';
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                gmdate('Y-m-d H:i:s'),
-                $data['otf_key'],
-                $this->data['Order Website Key'],
+        $stmt->execute(array(
+                           gmdate('Y-m-d H:i:s'),
+                           $data['otf_key'],
+                           $this->data['Order Website Key'],
 
-                $this->data['Order Store Key'],
-                $this->data['Order Customer Key'],
-                $this->id,
+                           $this->data['Order Store Key'],
+                           $this->data['Order Customer Key'],
+                           $this->id,
 
-                $data['webpage_key'],
-                $data['product_id'],
-                $data['quantity_delta'],
+                           $data['webpage_key'],
+                           $data['product_id'],
+                           $data['quantity_delta'],
 
-                $data['quantity'],
-                $data['net_amount_delta'],
-                $data['net_amount'],
+                           $data['quantity'],
+                           $data['net_amount_delta'],
+                           $data['net_amount'],
 
-                $data['page_section_type']
-            )
-        );
+                           $data['page_section_type']
+                       ));
 
 
     }
@@ -324,73 +324,57 @@ trait OrderOperations {
         }
 
 
-        $old_value = $this->data['Order For Collection'];
 
 
-        if ($old_value != $value or true) {
+        if ($value == 'Yes') {
 
 
-            if ($value == 'Yes') {
+            $address_data = array(
+                'Address Recipient'            => '',
+                'Address Organization'         => $store->get('Store Name'),
+                'Address Line 1'               => $store->get('Store Collect Address Line 1'),
+                'Address Line 2'               => $store->get('Store Collect Address Line 2'),
+                'Address Sorting Code'         => $store->get('Store Collect Address Sorting Code'),
+                'Address Postal Code'          => $store->get('Store Collect Address Postal Code'),
+                'Address Dependent Locality'   => $store->get('Store Collect Address Dependent Locality'),
+                'Address Locality'             => $store->get('Store Collect Address Locality'),
+                'Address Administrative Area'  => $store->get('Store Collect Address Administrative Area'),
+                'Address Country 2 Alpha Code' => $store->get('Store Collect Address Country 2 Alpha Code'),
 
-
-                $address_data = array(
-                    'Address Recipient'            => '',
-                    'Address Organization'         => $store->get('Store Name'),
-                    'Address Line 1'               => $store->get('Store Collect Address Line 1'),
-                    'Address Line 2'               => $store->get('Store Collect Address Line 2'),
-                    'Address Sorting Code'         => $store->get('Store Collect Address Sorting Code'),
-                    'Address Postal Code'          => $store->get('Store Collect Address Postal Code'),
-                    'Address Dependent Locality'   => $store->get('Store Collect Address Dependent Locality'),
-                    'Address Locality'             => $store->get('Store Collect Address Locality'),
-                    'Address Administrative Area'  => $store->get('Store Collect Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $store->get('Store Collect Address Country 2 Alpha Code'),
-
-                );
-
-
-                $this->update_address('Delivery', $address_data, $options);
-
-
-            } else {
-
-                $customer = get_object('Customer', $this->get('Order Customer Key'));
-
-                $address_data = array(
-                    'Address Recipient'            => $customer->get('Customer Main Contact Name'),
-                    'Address Organization'         => $customer->get('Customer Company Name'),
-                    'Address Line 1'               => $customer->get('Customer Delivery Address Line 1'),
-                    'Address Line 2'               => $customer->get('Customer Delivery Address Line 2'),
-                    'Address Sorting Code'         => $customer->get('Customer Delivery Address Sorting Code'),
-                    'Address Postal Code'          => $customer->get('Customer Delivery Address Postal Code'),
-                    'Address Dependent Locality'   => $customer->get('Customer Delivery Address Dependent Locality'),
-                    'Address Locality'             => $customer->get('Customer Delivery Address Locality'),
-                    'Address Administrative Area'  => $customer->get('Customer Delivery Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $customer->get('Customer Delivery Address Country 2 Alpha Code'),
-
-                );
-
-                // print_r($address_data);
-
-                $this->update_address('Delivery', $address_data, $options);
-
-
-            }
-
-
-            $this->update_field('Order For Collection', $value, $options);
-
-            $this->update_shipping();
-            $this->update_tax();
-            $this->update_totals();
-
-
-            //    $this->apply_payment_from_customer_account();
+            );
 
 
         } else {
-            $this->msg = _('Nothing to change');
+
+            $customer = get_object('Customer', $this->get('Order Customer Key'));
+
+            $address_data = array(
+                'Address Recipient'            => $customer->get('Customer Main Contact Name'),
+                'Address Organization'         => $customer->get('Customer Company Name'),
+                'Address Line 1'               => $customer->get('Customer Delivery Address Line 1'),
+                'Address Line 2'               => $customer->get('Customer Delivery Address Line 2'),
+                'Address Sorting Code'         => $customer->get('Customer Delivery Address Sorting Code'),
+                'Address Postal Code'          => $customer->get('Customer Delivery Address Postal Code'),
+                'Address Dependent Locality'   => $customer->get('Customer Delivery Address Dependent Locality'),
+                'Address Locality'             => $customer->get('Customer Delivery Address Locality'),
+                'Address Administrative Area'  => $customer->get('Customer Delivery Address Administrative Area'),
+                'Address Country 2 Alpha Code' => $customer->get('Customer Delivery Address Country 2 Alpha Code'),
+
+            );
+
+
 
         }
+        $this->update_address('Delivery', $address_data, $options);
+
+
+        $this->update_field('Order For Collection', $value, $options);
+
+        $this->update_shipping();
+        $this->update_tax();
+        $this->update_totals();
+
+
 
 
     }
@@ -458,17 +442,13 @@ trait OrderOperations {
 
                 $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State` not in ('Dispatched','Cancelled')  ";
                 $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    array(
-                        $this->id
-                    )
-                );
+                $stmt->execute(array(
+                                   $this->id
+                               ));
                 while ($row = $stmt->fetch()) {
-                    $delivery_note = get_object('Delivery Note', $row['Delivery Note Key']);
-                    $delivery_note->editor=$this->editor;
-                    $delivery_note->update(
-                        ['Delivery Note Address' => $this->get('Order Delivery Address')]
-                    );
+                    $delivery_note         = get_object('Delivery Note', $row['Delivery Note Key']);
+                    $delivery_note->editor = $this->editor;
+                    $delivery_note->update(['Delivery Note Address' => $this->get('Order Delivery Address')]);
                 }
 
 
@@ -498,11 +478,9 @@ trait OrderOperations {
 
 
         // replace null to empty string do not remove
-        array_walk_recursive(
-            $address_fields, function (&$item) {
+        array_walk_recursive($address_fields, function (&$item) {
             $item = strval($item);
-        }
-        );
+        });
 
 
         $new_checksum = md5(
@@ -570,7 +548,7 @@ trait OrderOperations {
 
     }
 
-    function cancel($note = '', $fork = true, $process_stats = true) {
+    function cancel($note = '', $fork = true, $process_stats = true): bool {
 
         if ($this->data['Order State'] == 'Dispatched') {
             $this->error = true;
@@ -624,16 +602,14 @@ trait OrderOperations {
 				WHERE `Order Key`=?";
 
 
-        $this->db->prepare($sql)->execute(
-            array(
-                $this->data['Order Cancelled Date'],
-                $this->data['Order State'],
-                round($this->data['Order To Pay Amount'], 2),
-                $this->data['Order Cancel Note'],
+        $this->db->prepare($sql)->execute(array(
+                                              $this->data['Order Cancelled Date'],
+                                              $this->data['Order State'],
+                                              round($this->data['Order To Pay Amount'], 2),
+                                              $this->data['Order Cancel Note'],
 
-                $this->id
-            )
-        );
+                                              $this->id
+                                          ));
 
 
         $sql = sprintf(
@@ -675,7 +651,7 @@ trait OrderOperations {
 
 
                 'editor' => $this->editor
-            ), $account->get('Account Code'), $this->db
+            ),  $account->get('Account Code'), $this->db
             );
         } else {
 

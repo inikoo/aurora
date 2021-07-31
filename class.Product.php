@@ -2204,9 +2204,6 @@ class Product extends Asset {
             if ($row = $result->fetch()) {
                 $repeat_customers = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 

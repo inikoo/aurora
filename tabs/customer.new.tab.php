@@ -8,6 +8,10 @@
  Version 3
 
 */
+/** @var array $state */
+/** @var \Smarty $smarty */
+/** @var \PDO $db */
+/** @var \User $user */
 
 include_once 'utils/country_functions.php';
 
@@ -67,9 +71,8 @@ $smarty->assign(
 );
 
 
-$smarty->assign('js_code', 'js/injections/customer_details.'.(_DEVEL ? '' : 'min.').'js');
 
 
 $html = $smarty->fetch('new_object.tpl');
 
-?>
+

@@ -9,12 +9,12 @@
 
  Version 3.0
 */
+/** @var array $state */
+/** @var \Smarty $smarty */
 
 include_once 'utils/date_functions.php';
 
-
-
-
+/** @var \Customer $customer */
 $customer = $state['_object'];
 
 
