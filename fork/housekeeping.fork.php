@@ -2741,6 +2741,7 @@ function fork_housekeeping($job) {
 
                 }
             } elseif ($data['object'] == 'product') {
+                /** @var Product  $product */
                 $product = get_object('Product', $data['key']);
 
                 switch ($data['tipo']) {

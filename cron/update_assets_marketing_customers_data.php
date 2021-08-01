@@ -86,6 +86,7 @@ $sql = sprintf(
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+        /** @var Product  $product */
         $product = get_object('Product',$row['Product ID']);
         $product->update_product_targeted_marketing_customers();
 

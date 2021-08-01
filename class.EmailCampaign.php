@@ -736,7 +736,7 @@ class EmailCampaign extends DB_Table {
 
                                 break;
                             case 'Product Donut':
-
+                                /** @var Product  $product */
                                 $product = get_object('Product', $this->data['Email Campaign Scope Key']);
                                 if ($product->properties('donut_marketing_customers') == '' or $product->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                     $product->update_product_donut_marketing_customers();
