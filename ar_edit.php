@@ -3618,6 +3618,29 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $updated_data    = array();
             }
             break;
+        case 'Picking Pipeline':
+
+            /** @var $parent \Store */
+            $object = $parent->create_picking_pipeline($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $new_object_html = '';
+                $redirect        = 'store/'.$parent->id.'/pipeline';
+                $updated_data    = array();
+            } else {
+
+
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $parent->msg
+
+                );
+                echo json_encode($response);
+                exit;
+            }
+            break;
         case 'Warehouse Area':
             include_once 'class.WarehouseArea.php';
             $object = $parent->create_warehouse_area($data['fields_data']);
@@ -3664,6 +3687,17 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 exit;
             }
             break;
+        case 'Associate_Customer_Category':
+
+            $object = get_object('Customer', $data['fields_data']['Customer Key']);
+            if ($object->id) {
+                $parent->associate_subject($object->id);
+
+            }
+            $new_object_html = '';
+            $updated_data    = array();
+            break;
+
         case 'Charge':
 
             include_once 'class.Charge.php';
@@ -3682,38 +3716,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             print_r($data);
 
             exit;
-        case 'Associate_Customer_Category':
 
-            $object = get_object('Customer', $data['fields_data']['Customer Key']);
-            if ($object->id) {
-                $parent->associate_subject($object->id);
-
-            }
-            $new_object_html = '';
-            $updated_data    = array();
-            break;
-        case 'Picking Pipeline':
-            /** @var $parent \Store */
-            $object = $parent->create_picking_pipeline($data['fields_data']);
-
-
-            if (!$parent->error) {
-
-                $new_object_html = '';
-                $redirect        = 'store/'.$parent->id.'/pipeline';
-                $updated_data    = array();
-            } else {
-
-
-                $response = array(
-                    'state' => 400,
-                    'msg'   => $parent->msg
-
-                );
-                echo json_encode($response);
-                exit;
-            }
-            break;
         default:
             $response = array(
                 'state' => 400,
