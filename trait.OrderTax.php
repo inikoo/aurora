@@ -384,28 +384,56 @@ trait OrderTax
 
             $store = get_object('Store', $this->data['Order Store Key']);
 
-            $provider     = TaxCategoryProviderFactory::createProvider(
-                $this->db,
-                $store->settings('tax_authority'),
-                ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]
-            );
+            $provider     = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
             $tax_category = $provider->getTaxCategory(
                 $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
                 $address->setCountryCode($this->data['Order Delivery Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Delivery Address Postal Code']),
                 $this->getTaxNumber('Order')
             );
 
-            print_r($tax_category);
+
+            //$tax_data = $this->get_tax_data();
+            //$new_tax_code = $tax_data['code'];
+            //$tax_rate     = $tax_data['rate'];
+            //$tax_name                 = $tax_data['name'];
+            //$reason_tax_code_selected = $tax_data['reason_tax_code_selected'];
 
 
-            $tax_data = $this->get_tax_data();
+        }
+
+        if ($edit_otf) {
+            if ($update_from_invoice_key > 0) {
+                $sql = "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=?,`Transaction Tax Code`=?  ,`Order Transaction Tax Category Key`=?  WHERE `Order Key`=? AND `Invoice Key`=? ";
+                $this->db->prepare($sql)->execute(array(
+                                                      $tax_category->get('Tax Category Rate'),
+                                                      $tax_category->get('Tax Category Code'),
+                                                      $tax_category->id,
+                                                      $this->id,
+                                                      $update_from_invoice_key
+                                                  ));
+
+                $sql = "SELECT `Tax Category Code`,`Transaction Type`,`Order No Product Transaction Fact Key`,`Transaction Net Amount` FROM `Order No Product Transaction Fact`  WHERE `Order Key`=? AND `Invoice Key`=?  ";
 
 
-            $new_tax_code = $tax_data['code'];
-            $tax_rate     = $tax_data['rate'];
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(array(
+                                   $this->id,
+                                   $update_from_invoice_key
+                               ));
+                while ($row = $stmt->fetch()) {
+                    $sql = "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=?,`Tax Category Code`=? ,`Order No Product Transaction Tax Category Key`=? WHERE `Order No Product Transaction Fact Key`=?";
+                    $this->db->prepare($sql)->execute(array(
+                                                          round($row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'),2),
+                                                          $tax_category->get('Tax Category Code'),
+                                                          $tax_category->id,
+                                                          $row['Order No Product Transaction Fact Key']
+                                                ));
 
-            $tax_name                 = $tax_data['name'];
-            $reason_tax_code_selected = $tax_data['reason_tax_code_selected'];
+
+
+                }
+            } else {
+            }
         }
 
         if ($update_from_invoice_key > 0) {
