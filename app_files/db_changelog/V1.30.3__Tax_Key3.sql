@@ -1,0 +1,1 @@
+ALTER TABLE `Order No Product Transaction Fact` ADD `Order No Product Transaction Tax Category Key` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Transaction Type Key`, ADD INDEX (`Order No Product Transaction Tax Category Key`);
