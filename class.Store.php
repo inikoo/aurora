@@ -155,6 +155,11 @@ class Store extends DB_Table
 
     function create($data)
     {
+
+        $account         = new Account($this->db);
+        $account->load_properties();
+        $account->editor = $this->editor;
+
         $this->new = false;
         $base_data = $this->base_data();
 
@@ -189,9 +194,14 @@ class Store extends DB_Table
             $this->id = $this->db->lastInsertId();
 
 
+
+
             $this->msg = _("Store added");
             $this->get_data('id', $this->id);
             $this->new = true;
+
+            $this->fast_update_json_field('Store Settings','tax_authority',$account->settings('tax_authority'));
+            $this->fast_update_json_field('Store Settings','tax_country_code',$account->settings('tax_country_code'));
 
             if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
                 $sql = sprintf(
@@ -256,8 +266,7 @@ class Store extends DB_Table
                                    'Store Customer Payment Account Key' => $payment_account_credits->id
                                ));
 
-            $account         = new Account($this->db);
-            $account->editor = $this->editor;
+
 
 
             $customer_root_category = $account->create_category([

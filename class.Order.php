@@ -9,6 +9,9 @@
 
   Version 2.0
 */
+
+use Aurora\Traits\ObjectTaxNumberTrait;
+
 include_once 'class.DB_Table.php';
 
 require_once 'utils/order_functions.php';
@@ -24,12 +27,13 @@ include_once 'trait.OrderOperations.php';
 include_once 'trait.OrderTax.php';
 include_once 'trait.OrderGet.php';
 include_once 'trait.OrderAiku.php';
+include_once 'trait.Address.php';
 
 
 class Order extends DB_Table {
 
-    use AttachmentSubject,OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax, OrderGet, OrderAiku;
-
+    use Address,AttachmentSubject,OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax, OrderGet, OrderAiku;
+    use ObjectTaxNumberTrait;
 
     var $amount_off_allowance_data = false;
 
@@ -3346,6 +3350,7 @@ class Order extends DB_Table {
         }
 
     }
+
 
 }
 

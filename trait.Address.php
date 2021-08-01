@@ -14,7 +14,24 @@
 trait Address {
 
 
-    function update_address($type, $fields, $options = '') {
+    function get_address($prefix){
+
+        $address = new CommerceGuys\Addressing\Address();
+
+        return $address
+            ->withCountryCode($this->data[$prefix.' Address Country 2 Alpha Code'])
+            ->withAdministrativeArea($this->data[$prefix.' Address Administrative Area'])
+            ->withLocality($this->data[$prefix.' Address Locality'])
+            ->withDependentLocality($this->data[$prefix.' Address Dependent Locality'])
+            ->withPostalCode($this->data[$prefix.' Address Postal Code'])
+            ->withSortingCode($this->data[$prefix.' Address Sorting Code'])
+            ->withAddressLine1($this->data[$prefix.' Address Line 1'])
+            ->withAddressLine2($this->data[$prefix.' Address Line 2'])
+            ->withOrganization($this->data[$prefix.' Address Organization'])
+            ->withGivenName($this->data[$prefix.' Address Recipient']);
+    }
+
+    function update_address($type, $fields, $options = '', $updated_from_invoice = false) {
 
 
         $old_value = $this->get("$type Address");
@@ -91,6 +108,32 @@ trait Address {
                     ), 'no_history'
                 );
 
+            }elseif ($type == 'Invoice' and !$updated_from_invoice) {
+
+
+                $this->validate_order_tax_number();
+
+                $this->update_tax();
+
+
+            } elseif ($type == 'Delivery') {
+
+
+                $this->update_shipping();
+                $this->update_tax();
+
+                $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State` not in ('Dispatched','Cancelled')  ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(array(
+                                   $this->id
+                               ));
+                while ($row = $stmt->fetch()) {
+                    $delivery_note         = get_object('Delivery Note', $row['Delivery Note Key']);
+                    $delivery_note->editor = $this->editor;
+                    $delivery_note->update(['Delivery Note Address' => $this->get('Order Delivery Address')]);
+                }
+
+
             }
 
 
@@ -105,27 +148,35 @@ trait Address {
         $store = get_object('Store', $this->get('Store Key'));
 
 
+        $address_fields = array(
+            'Address Recipient'            => $this->get($type.' Address Recipient'),
+            'Address Organization'         => $this->get($type.' Address Organization'),
+            'Address Line 1'               => $this->get($type.' Address Line 1'),
+            'Address Line 2'               => $this->get($type.' Address Line 2'),
+            'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+            'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+            'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
+            'Address Locality'             => $this->get($type.' Address Locality'),
+            'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
+            'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
+        );
+
+
+        // replace null to empty string do not remove
+        array_walk_recursive($address_fields, function (&$item) {
+            $item = strval($item);
+        });
+
+
         $new_checksum = md5(
-            json_encode(
-                array(
-                    'Address Recipient'            => $this->get($type.' Address Recipient'),
-                    'Address Organization'         => $this->get($type.' Address Organization'),
-                    'Address Line 1'               => $this->get($type.' Address Line 1'),
-                    'Address Line 2'               => $this->get($type.' Address Line 2'),
-                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
-                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
-                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
-                    'Address Locality'             => $this->get($type.' Address Locality'),
-                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
-                )
-            )
+            json_encode($address_fields)
         );
 
 
         $this->update_field(
             $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
         );
+
 
         $account = get_object('Account', '');
         $locale  = $account->get('Account Locale');
@@ -183,10 +234,6 @@ trait Address {
                 '/class="family-name"/', 'class="recipient fn '.(($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) ? 'hide' : '').'"', $xhtml_address
             );
 
-            $xhtml_address = preg_replace(
-                '/class="organization"/', 'class="organization org '.(($this->get($type.' Address Organization') == $this->get('Company Name')) ? 'hide' : '').'"', $xhtml_address
-            );
-
         } else {
             // removing contact name from invoices and delivery notes
             $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
@@ -198,12 +245,11 @@ trait Address {
                 $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
             }
 
-            $xhtml_address = preg_replace(
-                '/class="organization"/', 'class="organization org '.(($this->get($type.' Address Organization') == $this->get('Company Name')) ? 'hide' : '').'"', $xhtml_address
-            );
-
 
         }
+        $xhtml_address = preg_replace(
+            '/class="organization"/', 'class="organization org '.(($this->get($type.' Address Organization') == $this->get('Company Name')) ? 'hide' : '').'"', $xhtml_address
+        );
 
 
         $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
