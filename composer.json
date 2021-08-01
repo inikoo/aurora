@@ -34,6 +34,12 @@
     "mpdf/qrcode": "^1.0",
     "ext-curl": "*",
     "spatie/array-to-xml": "^2.16",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "ext-fileinfo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Aurora\\": "app"
+    }
   }
 }

@@ -14,19 +14,17 @@
 */
 
 
-class Image extends DB_Table {
+class Image extends DB_Table
+{
 
     var $id = false;
     var $im = "";
-    var $resized_im = "";
-    var $im_x = 0;
-    var $im_y = 0;
-    var $jpgCompression = 90;
+
     var $msg = '';
     var $new = false;
     var $deleted = false;
     var $found_key = 0;
-    public $fork = false;
+    public bool $fork = false;
 
 
     public $editor = array(
@@ -38,8 +36,8 @@ class Image extends DB_Table {
     );
 
 
-    function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
-
+    function __construct($a1, $a2 = false, $a3 = false, $_db = false)
+    {
         if (!$_db) {
             global $db;
             $this->db = $db;
@@ -67,14 +65,12 @@ class Image extends DB_Table {
             600
         );
         if (is_numeric($a1) and !$a2) {
-
             $this->get_data('id', $a1);
         } else {
             if (($a1 == 'new' or $a1 == 'create') and is_string($a2)) {
                 $this->find($a2, 'create');
             } elseif ($a1 == 'find') {
                 $this->find($a2, $a3);
-
             } else {
                 $this->get_data($a1, $a2);
             }
@@ -82,63 +78,51 @@ class Image extends DB_Table {
     }
 
 
-    function get_data($tipo = 'id', $id) {
+    function get_data($tipo, $id)
+    {
         if ($tipo == 'id') {
-
-
             $sql = sprintf(
-                "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ", $id
+                "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ",
+                $id
             );
 
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id = $this->data['Image Key'];
-
             }
         } elseif ($tipo == 'image_bridge_key') {
             $sql = sprintf(
-                "SELECT * FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ", $id
+                "SELECT * FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ",
+                $id
             );
 
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id = $this->data['Image Subject Image Key'];
                 if ($this->id) {
                     $sql = sprintf(
-                        "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ", $this->id
+                        "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ",
+                        $this->id
                     );
 
                     if ($row = $this->db->query($sql)->fetch()) {
-
                         foreach ($row as $key => $value) {
                             $this->data[$key] = $value;
                         }
                     } else {
-
                         $this->id = 0;
                     }
-
-
                 }
-
-
             }
-
-
         }
-
-
     }
 
 
-    function find($raw_data, $options) {
-
-
+    function find($raw_data, $options)
+    {
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
-
                 if (array_key_exists($key, $this->editor)) {
                     $this->editor[$key] = $value;
                 }
-
             }
             unset($raw_data['editor']);
         }
@@ -171,7 +155,8 @@ class Image extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Image Key` FROM `Image Dimension` WHERE `Image File Checksum`=%s", prepare_mysql($raw_data['Image File Checksum'])
+            "SELECT `Image Key` FROM `Image Dimension` WHERE `Image File Checksum`=%s",
+            prepare_mysql($raw_data['Image File Checksum'])
 
         );
 
@@ -187,14 +172,11 @@ class Image extends DB_Table {
 
         if (!$this->found and $create) {
             $this->create($raw_data);
-
         }
-
-
     }
 
-    function create($data) {
-
+    function create($data)
+    {
         //ALTER TABLE `Image Dimension` ADD `Image MIME Type` ENUM('image/jpeg', 'image/png','image/gif','image/x-icon') NULL DEFAULT NULL AFTER `Image Key`, ADD INDEX (`Image MIME Type`);
 
 
@@ -266,13 +248,11 @@ class Image extends DB_Table {
         if ($this->fork) {
             $account          = get_object('Account', 1);
             $destination_path = preg_replace('/^img/', 'img_'.$account->get('Code'), $data['Image Path']);
-            $path_root='img_'.$account->get('Code');
+            $path_root        = 'img_'.$account->get('Code');
         } else {
             $destination_path = $data['Image Path'];
 
-            $path_root='img';
-
-
+            $path_root = 'img';
         }
 
         if (!is_dir($path_root.'/db/'.$data['Image File Checksum'][0])) {
@@ -295,7 +275,9 @@ class Image extends DB_Table {
         unset($data['upload_data']);
 
         $sql = sprintf(
-            "INSERT INTO `Image Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
+            "INSERT INTO `Image Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($data)).'`',
+            join(',', array_fill(0, count($data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
@@ -313,8 +295,6 @@ class Image extends DB_Table {
 
             $this->new = true;
             $this->get_data('id', $this->id);
-
-
         } else {
             $this->error = true;
             $this->msg   = 'Can not insert the image ';
@@ -323,40 +303,43 @@ class Image extends DB_Table {
 
             return;
         }
-
-
     }
 
 
-    function get_object_name() {
-
+    function get_object_name(): string
+    {
         return 'Image';
     }
 
 
-    function delete($force = false) {
+    function delete($force = false)
+    {
         $subjects     = $this->get_subjects();
         $num_subjects = count($subjects);
 
         if ($num_subjects == 0 or $force) {
             $sql = sprintf(
-                "DELETE FROM `Image Dimension` WHERE `Image Key`=%d", $this->id
+                "DELETE FROM `Image Dimension` WHERE `Image Key`=%d",
+                $this->id
             );
 
 
             $this->db->exec($sql);
             $sql = sprintf(
-                "DELETE FROM `Image Subject Bridge` WHERE `Image Subject Image Key`=%d", $this->id
+                "DELETE FROM `Image Subject Bridge` WHERE `Image Subject Image Key`=%d",
+                $this->id
             );
             $this->db->exec($sql);
             $this->deleted = true;
         }
     }
 
-    function get_subjects() {
+    function get_subjects()
+    {
         $subjects = array();
         $sql      = sprintf(
-            'SELECT `Image Subject Object`,`Image Subject Is Principal`,`Image Subject Object Key` FROM `Image Subject Bridge` WHERE `Image Subject Image Key`=%d', $this->id
+            'SELECT `Image Subject Object`,`Image Subject Is Principal`,`Image Subject Object Key` FROM `Image Subject Bridge` WHERE `Image Subject Image Key`=%d',
+            $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -366,7 +349,6 @@ class Image extends DB_Table {
                     'Subject Key'  => $row['Image Subject Object Key'],
                     'Is Principal' => $row['Image Subject Is Principal']
                 );
-
             }
         }
 
@@ -375,10 +357,9 @@ class Image extends DB_Table {
     }
 
 
-    function get_field_label($field) {
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Image Caption':
                 $label = _('caption');
                 break;
@@ -414,34 +395,26 @@ class Image extends DB_Table {
         return $label;
     }
 
-    function get($key) {
+    function get($key)
+    {
+        if ($this->id) {
+            switch ($key) {
+                default:
+                    if (array_key_exists($key, $this->data)) {
+                        return $this->data[$key];
+                    }
 
-
-        if (!$this->id) {
-            return;
+                    if (array_key_exists('Image '.$key, $this->data)) {
+                        return $this->data['Image '.$key];
+                    }
+            }
         }
-
-        switch ($key) {
-
-
-            default:
-                if (array_key_exists($key, $this->data)) {
-                    return $this->data[$key];
-                }
-
-                if (array_key_exists('Image '.$key, $this->data)) {
-                    return $this->data['Image '.$key];
-                }
-
-        }
-
-
+        return false;
     }
 
 
-    function update_public_db() {
-
-
+    function update_public_db()
+    {
         $checksum   = $this->get('Image File Checksum');
         $image_path = $this->get('Image Path');
 
@@ -451,33 +424,23 @@ class Image extends DB_Table {
             $path_root = 'img_'.DNS_ACCOUNT_CODE;
         } else {
             $path_root = 'img';
-
-
         }
 
 
         if (!preg_match('/^[a-f0-9]{32}$/i', $checksum)) {
-
-            $this->error=true;
+            $this->error = true;
             return;
-
-           // exit('wrong checksum');
+            // exit('wrong checksum');
         }
 
 
         $sql = "select `Image Subject Key` from `Image Subject Bridge`  where  `Image Subject Is Public`='Yes'  and `Image Subject Image Key`=? limit 1";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array(
-                $this->id
-            )
-        );
+        $stmt->execute(array(
+                           $this->id
+                       ));
         if ($row = $stmt->fetch()) {
-
-
-            // print $this->id."  <<<<< \n";
-
             if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
                 mkdir($path_root.'/public_db/'.$checksum[0]);
             }
@@ -493,34 +456,27 @@ class Image extends DB_Table {
 
             $_tmp = preg_replace('/.*\//', '', $image_path);
 
-            //    echo getcwd() . "\n";
-
-
-            //   print "==>>== $path_root  =====\n";
-            // print "==== $image_path  =====\n";
-
+            /*
             if (!file_exists($_tmp)) {
 
-                //                 print '1>'.preg_replace('/img\/db/', '../../../db', $image_path)."\n";
-                //               print "2>$_tmp\n";
+
 
                 if (!symlink(
                     preg_replace('/img\/db/', '../../../db', $image_path), $_tmp
 
 
                 )) {
-                    //  print getcwd()."\n";
-                    //  print preg_replace('/img\/db/', '../../../db', $image_path)."\n";
-                    //  print "$_tmp\n";
-                    //print ('can not create symlink');
-                    //exit;
+                      print getcwd()."\n";
+                      print preg_replace('/img\/db/', '../../../db', $image_path)."\n";
+                      print "$_tmp\n";
+                    print ('can not create symlink');
+                    exit;
                 }
             }
-            //     echo readlink($_tmp);
-            //exit;
+            */
             chdir($current_cwd);
         } else {
-            $public_db_path = preg_replace('/'.$path_root.'\/db/', $path_root.'/public_db', $image_path);
+            $public_db_path = preg_replace('/'.$path_root.'/db/', $path_root.'/public_db', $image_path);
 
             //print $public_db_path;
             if (file_exists($public_db_path)) {
@@ -531,8 +487,6 @@ class Image extends DB_Table {
             $mask = $path_root.'/public_cache/'.$checksum[0].'/'.$checksum[1]."/".$checksum."_*";
             array_map("unlink", glob($mask));
         }
-
-
     }
 
 }
