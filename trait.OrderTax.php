@@ -160,6 +160,22 @@ trait OrderTax
         }
     }
 
+
+    function get_tax_category(): TaxCategory
+    {
+        $address = new \Aurora\Utilities\Address();
+
+        $store = get_object('Store', $this->data['Order Store Key']);
+
+        $provider     = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
+        return $provider->getTaxCategory(
+            $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
+            $address->setCountryCode($this->data['Order Delivery Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Delivery Address Postal Code']),
+            $this->getTaxNumber('Order')
+        );
+    }
+
+
     function update_tax_per_item($account, $tax_category_key, $update_from_invoice_key)
     {
         $account_has_re_tax = false;
@@ -219,16 +235,10 @@ trait OrderTax
             //    $order_has_re             = $tax_category->metadata('has_re_tax');
             //}
         } else {
-            $address = new \Aurora\Utilities\Address();
 
-            $store = get_object('Store', $this->data['Order Store Key']);
 
-            $provider     = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
-            $tax_category = $provider->getTaxCategory(
-                $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
-                $address->setCountryCode($this->data['Order Delivery Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Delivery Address Postal Code']),
-                $this->getTaxNumber('Order')
-            );
+            $tax_category=$this->get_tax_category();
+
             /*
             $tax_data = $this->get_tax_data();
             $new_tax_code = $tax_data['code'];
