@@ -11,6 +11,7 @@
 */
 
 use Aurora\Interfaces\TaxCategory\TaxCategoryProviderFactory;
+use Aurora\Models\Utils\TaxCategory;
 
 trait OrderTax
 {
@@ -190,28 +191,48 @@ trait OrderTax
 
 
         if ($tax_category_key) {
-            include_once 'class.TaxCategory.php';
+            $tax_category = new TaxCategory($this->db);
+            $tax_category->withKey($tax_category_key);
 
-            $tax_category = get_object('tax_category-key', $tax_category_key);
             if (!$tax_category->id) {
                 $this->msg   = 'Invalid tax code';
                 $this->error = true;
 
                 return;
-            } else {
-                $new_tax_code             = $tax_category->data['Tax Category Code'];
-                $tax_rate                 = $tax_category->data['Tax Category Rate'];
-                $tax_name                 = $tax_category->data['Tax Category Name'];
-                $reason_tax_code_selected = 'set';
-                $order_has_re             = $tax_category->metadata('has_re_tax');
             }
+
+
+            //include_once 'class.TaxCategory.php';
+
+            //$tax_category = get_object('tax_category-key', $tax_category_key);
+            //if (!$tax_category->id) {
+            //    $this->msg   = 'Invalid tax code';
+            //    $this->error = true;
+
+            //   return;
+            //}
+            //else {
+            //    $new_tax_code             = $tax_category->data['Tax Category Code'];
+            //    $tax_rate                 = $tax_category->data['Tax Category Rate'];
+            //    $tax_name                 = $tax_category->data['Tax Category Name'];
+            //    $reason_tax_code_selected = 'set';
+            //    $order_has_re             = $tax_category->metadata('has_re_tax');
+            //}
         } else {
+            $address = new \Aurora\Utilities\Address();
+
+            $store = get_object('Store', $this->data['Order Store Key']);
+
+            $provider     = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
+            $tax_category = $provider->getTaxCategory(
+                $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
+                $address->setCountryCode($this->data['Order Delivery Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Delivery Address Postal Code']),
+                $this->getTaxNumber('Order')
+            );
+            /*
             $tax_data = $this->get_tax_data();
-
-
             $new_tax_code = $tax_data['code'];
             $tax_rate     = $tax_data['rate'];
-
             $tax_name                 = $tax_data['name'];
             $reason_tax_code_selected = $tax_data['reason_tax_code_selected'];
 
@@ -226,19 +247,24 @@ trait OrderTax
                     }
                 }
             }
+            */
         }
 
         $products_with_different_tax = [];
-        if ($tax_data['rate'] > 0) {
+        if ($tax_category->get('Tax Category Rate') > 0) {
             if ($update_from_invoice_key > 0) {
-                $sql  = 'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) where `Order Key`=? AND `Invoice Key`=? and `Product Tax Category Key` is not null ';
+                $sql  = 'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` 
+                                from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) 
+                                where `Order Key`=? AND `Invoice Key`=? and `Product Tax Category Key` is not null ';
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(array(
                                    $this->id,
                                    $update_from_invoice_key
                                ));
             } else {
-                $sql  = 'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) where `Order Key`=? and `Product Tax Category Key` is not null ';
+                $sql  = 'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` 
+                        from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) 
+                        where `Order Key`=? and `Product Tax Category Key` is not null ';
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(array(
                                    $this->id
@@ -367,18 +393,19 @@ trait OrderTax
         }
 
         if ($tax_category_key) {
-            $tax_category = get_object('tax_category-key', $tax_category_key);
+            $tax_category = new TaxCategory($this->db);
+            $tax_category->withKey($tax_category_key);
+
+
             if (!$tax_category->id) {
                 $this->msg   = 'Invalid tax code';
                 $this->error = true;
 
                 return;
-            } else {
-                $new_tax_code             = $tax_category->data['Tax Category Code'];
-                $tax_rate                 = $tax_category->data['Tax Category Rate'];
-                $tax_name                 = $tax_category->data['Tax Category Name'];
-                $reason_tax_code_selected = 'set';
             }
+            //                $reason_tax_code_selected = 'set';
+
+
         } else {
             $address = new \Aurora\Utilities\Address();
 
@@ -423,83 +450,53 @@ trait OrderTax
                 while ($row = $stmt->fetch()) {
                     $sql = "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=?,`Tax Category Code`=? ,`Order No Product Transaction Tax Category Key`=? WHERE `Order No Product Transaction Fact Key`=?";
                     $this->db->prepare($sql)->execute(array(
-                                                          round($row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'),2),
+                                                          round($row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'), 2),
                                                           $tax_category->get('Tax Category Code'),
                                                           $tax_category->id,
                                                           $row['Order No Product Transaction Fact Key']
-                                                ));
-
-
-
+                                                      ));
                 }
             } else {
-            }
-        }
+                $sql = "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=?,`Transaction Tax Code`=?  ,`Order Transaction Tax Category Key`=?  WHERE `Order Key`=? AND `Consolidated`='No' ";
+                $this->db->prepare($sql)->execute(array(
+                                                      $tax_category->get('Tax Category Rate'),
+                                                      $tax_category->get('Tax Category Code'),
+                                                      $tax_category->id,
+                                                      $this->id,
+                                                  ));
 
-        if ($update_from_invoice_key > 0) {
-            $sql = sprintf(
-                "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s WHERE `Order Key`=%d AND `Invoice Key`=%d  ",
-                $tax_rate,
-                prepare_mysql($new_tax_code),
-                $this->id,
-                $update_from_invoice_key
-
-            );
-        } else {
-            $sql = sprintf(
-                "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=%f,`Transaction Tax Code`=%s WHERE `Order Key`=%d AND `Consolidated`='No'  ",
-                $tax_rate,
-                prepare_mysql($new_tax_code),
-                $this->id
-
-            );
-        }
-
-        if ($edit_otf) {
-            $this->db->exec($sql);
-        }
-
-
-        if ($update_from_invoice_key > 0) {
-            $sql = sprintf(
-                "SELECT `Tax Category Code`,`Transaction Type`,`Order No Product Transaction Fact Key`,`Transaction Net Amount` FROM `Order No Product Transaction Fact`  WHERE `Order Key`=%d AND `Invoice Key`=%d  ",
-                $this->id,
-                $update_from_invoice_key
-            );
-        } else {
-            $sql = sprintf(
-                "SELECT `Tax Category Code`,`Transaction Type`,`Order No Product Transaction Fact Key`,`Transaction Net Amount` FROM `Order No Product Transaction Fact`  WHERE `Order Key`=%d AND `Consolidated`='No'",
-                $this->id
-            );
-        }
-
-        if ($edit_otf) {
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $sql = sprintf(
-                        "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d",
-                        $row['Transaction Net Amount'] * $tax_rate,
-                        prepare_mysql($new_tax_code),
-                        $row['Order No Product Transaction Fact Key']
-                    );
-                    $this->db->exec($sql);
+                $sql  = "SELECT `Tax Category Code`,`Transaction Type`,`Order No Product Transaction Fact Key`,`Transaction Net Amount` FROM `Order No Product Transaction Fact`  WHERE `Order Key`=? AND `Consolidated`='No'  ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(array(
+                                   $this->id
+                               ));
+                while ($row = $stmt->fetch()) {
+                    $sql = "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=?,`Tax Category Code`=? ,`Order No Product Transaction Tax Category Key`=? WHERE `Order No Product Transaction Fact Key`=?";
+                    $this->db->prepare($sql)->execute(array(
+                                                          round($row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'), 2),
+                                                          $tax_category->get('Tax Category Code'),
+                                                          $tax_category->id,
+                                                          $row['Order No Product Transaction Fact Key']
+                                                      ));
                 }
             }
         }
 
+
         $this->fast_update(array(
-                               'Order Tax Code' => $new_tax_code,
-                               'Order Tax Rate' => $tax_rate
+                               'Order Tax Code'         => $tax_category->get('Tax Category Code'),
+                               'Order Tax Rate'         => $tax_category->get('Tax Category Rate'),
+                               'Order Tax Category Key' => $tax_category->id
                            ));
 
 
-        $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_name);
-        $this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);
+        $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_category->get('Tax Category Name'));
+        // $this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);
 
         if ($edit_otf) {
             $this->update_totals();
         } else {
-            $this->fast_update_json_field('Order Metadata', 'post_invoice_tax_code', $new_tax_code);
+            $this->fast_update_json_field('Order Metadata', 'post_invoice_tax_code', $tax_category->get('Tax Category Code'));
         }
     }
 

@@ -23,6 +23,21 @@ class TaxCategory
         $this->id = null;
     }
 
+    public function withKey($key): TaxCategory
+    {
+        $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Key`=?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(array($key));
+        if ($row = $stmt->fetch()) {
+
+            $this->data = $row;
+            $this->id   = $this->data['Tax Category Key'];
+        }
+
+        return $this;
+    }
+
     public function withCountryType($country_code, $type): TaxCategory
     {
         $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Type`=? and `Tax Category Active`='Yes'";
@@ -41,5 +56,10 @@ class TaxCategory
     public function get($field)
     {
         return $this->data[$field] ?? '';
+    }
+
+    function getMetadata($field){
+        $metadata=json_decode($this->data['Tax Category Metadata'],true);
+        return $metadata[$field]??'';
     }
 }
