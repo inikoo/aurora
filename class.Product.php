@@ -845,7 +845,11 @@ class Product extends Asset
             $this->new = true;
 
 
-            $this->fast_update(array('Product Properties' => '{}'));
+            $this->fast_update([
+                                   'Product Properties'        => '{}',
+                                   'Product Tax Category Data' => '{}'
+
+                               ]);
 
             $this->update_product_targeted_marketing_customers();
             $this->update_product_spread_marketing_customers();
