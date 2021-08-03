@@ -283,7 +283,7 @@ class Image extends DB_Table
         $stmt = $this->db->prepare($sql);
 
         $i = 1;
-        foreach ($data as $key => $value) {
+        foreach ($data as  $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -301,7 +301,7 @@ class Image extends DB_Table
 
             print_r($stmt->errorInfo());
 
-            return;
+
         }
     }
 
@@ -334,7 +334,7 @@ class Image extends DB_Table
         }
     }
 
-    function get_subjects()
+    function get_subjects(): array
     {
         $subjects = array();
         $sql      = sprintf(
@@ -440,7 +440,7 @@ class Image extends DB_Table
         $stmt->execute(array(
                            $this->id
                        ));
-        if ($row = $stmt->fetch()) {
+        if ($stmt->fetch()) {
             if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
                 mkdir($path_root.'/public_db/'.$checksum[0]);
             }
@@ -454,9 +454,10 @@ class Image extends DB_Table
             chdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
 
 
-            $_tmp = preg_replace('/.*\//', '', $image_path);
+
 
             /*
+             * $_tmp = preg_replace('/.*\//', '', $image_path);
             if (!file_exists($_tmp)) {
 
 
@@ -476,9 +477,10 @@ class Image extends DB_Table
             */
             chdir($current_cwd);
         } else {
-            $public_db_path = preg_replace('/'.$path_root.'/db/', $path_root.'/public_db', $image_path);
+            //Ignore phpstorm warning! AU-141
+            $public_db_path = preg_replace('/'.$path_root.'\/db/', $path_root.'/public_db', $image_path);
 
-            //print $public_db_path;
+
             if (file_exists($public_db_path)) {
                 unlink($public_db_path);
             }
