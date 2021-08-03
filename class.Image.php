@@ -441,6 +441,7 @@ class Image extends DB_Table
                            $this->id
                        ));
         if ($stmt->fetch()) {
+
             if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
                 mkdir($path_root.'/public_db/'.$checksum[0]);
             }
@@ -455,9 +456,7 @@ class Image extends DB_Table
 
 
 
-
-            /*
-             * $_tmp = preg_replace('/.*\//', '', $image_path);
+            $_tmp = preg_replace('/.*\//', '', $image_path);
             if (!file_exists($_tmp)) {
 
 
@@ -474,7 +473,7 @@ class Image extends DB_Table
                     exit;
                 }
             }
-            */
+
             chdir($current_cwd);
         } else {
             //Ignore phpstorm warning! AU-141
