@@ -1130,7 +1130,7 @@ function set_shipping_as_auto($data, $editor) {
 
 function set_hanging_charges_value($data, $editor) {
 
-
+    /** @var Order $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
@@ -1178,7 +1178,7 @@ function set_hanging_charges_value($data, $editor) {
 
 function set_hanging_charges_as_auto($data, $editor) {
 
-
+    /** @var Order  $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 

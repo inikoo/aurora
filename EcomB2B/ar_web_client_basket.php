@@ -116,6 +116,7 @@ switch ($tipo) {
 
 function get_charges_info($data, $customer_key) {
 
+    /** @var Order $order */
     $order = get_object('Order', $data['order_key']);
     if (!$order->id) {
         $response = array(
