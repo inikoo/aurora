@@ -4218,7 +4218,7 @@ class Store extends DB_Table
             $this->update_address_formatted_fields($type);
 
 
-            if (!preg_match('/no(\s|_)history|nohistory/i', $options)) {
+            if (!preg_match('/no_history/i', $options)) {
                 $this->add_changelog_record(
                     $this->table_name." $type Address",
                     $old_value,

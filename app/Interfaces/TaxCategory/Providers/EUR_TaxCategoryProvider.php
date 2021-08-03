@@ -26,40 +26,41 @@ class EUR_TaxCategoryProvider implements TaxCategoryProvider
     public function getTaxCategory($invoice_address, $delivery_address, $taxNumber): TaxCategory
     {
         $tax_category = new TaxCategory($this->db);
+
         if ($invoice_address->getCountryCode() == $this->base_country or $delivery_address->getCountryCode() == $this->base_country) {
-            return $tax_category->withCountryType($this->base_country, 'Standard');
+            return $tax_category->loadWithCountryType($this->base_country, 'Standard');
         }
 
         if ($delivery_address->isEuropeanUnion()) {
             if ($taxNumber->isValid()) {
-                return $tax_category->withCountryType($this->base_country, 'EU_VTC');
+                return $tax_category->loadWithCountryType($this->base_country, 'EU_VTC');
             } else {
                 $countryCode = $delivery_address->getCountryCode();
 
                 if ($countryCode == 'MC') {
-                    return $tax_category->withCountryType('FR', 'Standard');
+                    return $tax_category->loadWithCountryType('FR', 'Standard');
                 }
                 if ($countryCode == 'PT') {
                     if (preg_match('/^(90|91|92|93|94)/', $delivery_address->getPostalCode())) {
-                        return $tax_category->withCountryType('PT', 'Standard-RAM');
+                        return $tax_category->loadWithCountryType('PT', 'Standard-RAM');
                     }
                     if (preg_match('/^9/', $delivery_address->getPostalCode())) {
-                        return $tax_category->withCountryType('PT', 'Standard-RAA');
+                        return $tax_category->loadWithCountryType('PT', 'Standard-RAA');
                     }
                 }
                 if ($countryCode == 'ES') {
                     if (preg_match('/^(35|38|51|52)/', $delivery_address->getPostalCode())) {
-                        return $tax_category->withCountryType($this->base_country, 'Outside');
+                        return $tax_category->loadWithCountryType($this->base_country, 'Outside');
                     }
                 }
 
 
-                return $tax_category->withCountryType($delivery_address->getCountryCode(), 'Standard');
+                return $tax_category->loadWithCountryType($delivery_address->getCountryCode(), 'Standard');
             }
         }
 
 
-        return $tax_category->withCountryType($this->base_country, 'Outside');
+        return $tax_category->loadWithCountryType($this->base_country, 'Outside');
     }
 }
 

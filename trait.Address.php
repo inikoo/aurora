@@ -34,7 +34,7 @@ trait Address {
     function update_address($type, $fields, $options = '', $updated_from_invoice = false) {
 
 
-        $old_value = $this->get("$type Address");
+        $old_value = $this->get(($type==''?'':"$type ")."Address");
 
         $updated_fields_number = 0;
 
@@ -46,7 +46,8 @@ trait Address {
 
 
         foreach ($fields as $field => $value) {
-            $this->update_field($this->table_name.' '.$type.' '.$field, $value, 'no_history');
+
+            $this->update_field($this->table_name.' '.($type==''?'':"$type ").$field, $value, 'no_history');
             if ($this->updated) {
                 $updated_fields_number++;
 
@@ -64,21 +65,72 @@ trait Address {
         if ($this->updated) {
 
 
-            if($this->table_name=='Customer'){
-                if($type=='Delivery'){
-                    $this->update_aiku($this->get_table_name(),'delivery_address');
-                }elseif($type=='Invoice'){
-                    $this->update_aiku($this->get_table_name(),'billing_address');
-                }
+            switch ($this->table_name){
+                case 'Customer':
+                    if($type=='Delivery'){
+                        $this->update_aiku($this->get_table_name(),'delivery_address');
+                    }elseif($type=='Invoice'){
+                        $this->update_aiku($this->get_table_name(),'billing_address');
+                    }
+
+                    break;
+                case 'Order':
+                    if ( $type == 'Invoice' and !$updated_from_invoice) {
+
+
+                        $this->validate_order_tax_number();
+
+                        $this->update_tax();
+
+
+                    } elseif ( $type == 'Delivery') {
+
+
+                        $this->update_shipping();
+                        $this->update_tax();
+
+                        $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State` not in ('Dispatched','Cancelled')  ";
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->execute(array(
+                                           $this->id
+                                       ));
+                        while ($row = $stmt->fetch()) {
+                            $delivery_note         = get_object('Delivery Note', $row['Delivery Note Key']);
+                            $delivery_note->editor = $this->editor;
+                            $delivery_note->update(['Delivery Note Address' => $this->get('Order Delivery Address')]);
+                        }
+
+
+                    }
+
+                    break;
+
+                case 'Invoice':
+
+                    /**
+                     * @var $order Order
+                     */
+                    $order         = get_object('Order', $this->data['Invoice Order Key']);
+                    $order->editor = $this->editor;
+
+                    $order->update_address('Invoice', $fields, '', true);
+
+
+                    break;
             }
+
+
+
+
+
 
 
             $this->update_address_formatted_fields($type);
 
-            if (!preg_match('/no([ _])history|nohistory/i', $options)) {
+            if (!preg_match('/no_history/i', $options)) {
 
                 $this->add_changelog_record(
-                    $this->table_name." $type Address", $old_value, $this->get("$type Address"), '', $this->table_name, $this->id
+                    $this->table_name.' '.($type==''?'':"$type Address"), $old_value, $this->get(($type==''?'':"$type ")."Address"), '', $this->table_name, $this->id
                 );
 
             }
@@ -107,32 +159,6 @@ trait Address {
                         )
                     ), 'no_history'
                 );
-
-            }elseif ($type == 'Invoice' and !$updated_from_invoice) {
-
-
-                $this->validate_order_tax_number();
-
-                $this->update_tax();
-
-
-            } elseif ($type == 'Delivery') {
-
-
-                $this->update_shipping();
-                $this->update_tax();
-
-                $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State` not in ('Dispatched','Cancelled')  ";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute(array(
-                                   $this->id
-                               ));
-                while ($row = $stmt->fetch()) {
-                    $delivery_note         = get_object('Delivery Note', $row['Delivery Note Key']);
-                    $delivery_note->editor = $this->editor;
-                    $delivery_note->update(['Delivery Note Address' => $this->get('Order Delivery Address')]);
-                }
-
 
             }
 

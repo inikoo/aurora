@@ -54,43 +54,6 @@ trait OrderOperations
 
         $this->data['Order Last Updated by Customer'] = $this->data['Order Date'];
 
-        /*
-
-        if (isset($data['Order Tax Code'])) {
-
-            $tax_cat = new TaxCategory('code', $data['Order Tax Code']);
-            if ($tax_cat->id) {
-                $this->data['Order Tax Code'] = $tax_cat->data['Tax Category Code'];
-                $this->data['Order Tax Rate'] = $tax_cat->data['Tax Category Rate'];
-                $this->data['Order Tax Category Key'] = $tax_cat->id;
-                $tax_name                     = $tax_cat->data['Tax Category Name'];
-                $reason_tax_code_selected     = 'set';
-            } else {
-                $this->error = true;
-                $this->msg   = 'Tax code not found';
-                exit();
-            }
-        } else {
-
-
-            //$provider = Tax_Category_Provider_Factory::createProvider($account->get('Account Tax Authority'));
-            //$tax_category = $provider->getPerson("John", "Doe");
-
-            $tax_category=$this->get_tax_category();
-
-            //$tax_code_data = $this->get_tax_data();
-
-
-
-
-            $this->data['Order Tax Code'] = $tax_code_data['code'];
-            $this->data['Order Tax Rate'] = $tax_code_data['rate'];
-            $tax_name                     = $tax_code_data['name'];
-            $reason_tax_code_selected     = $tax_code_data['reason_tax_code_selected'];
-
-
-        }
-*/
 
         $this->data['Order State']                       = 'InBasket';
         $this->data['Order Current XHTML Payment State'] = _('Waiting for payment');

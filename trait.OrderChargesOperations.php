@@ -94,10 +94,6 @@ trait OrderChargesOperations {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 

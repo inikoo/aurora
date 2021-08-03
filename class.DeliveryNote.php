@@ -3266,7 +3266,7 @@ class DeliveryNote extends DB_Table {
             $this->update_address_formatted_fields();
 
 
-            if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
+            if (!preg_match('/no_history/i', $options)) {
 
                 $this->add_changelog_record(
                     "Delivery Note Address", $old_value, $this->get("Delivery Address"), '', $this->table_name, $this->id

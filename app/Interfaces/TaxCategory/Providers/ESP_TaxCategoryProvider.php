@@ -37,27 +37,27 @@ class ESP_TaxCategoryProvider implements TaxCategoryProvider
         $tax_category = new TaxCategory($this->db);
 
         if ( $delivery_address->getCountryCode() == 'ES'  and preg_match('/^(35|38|51|52)/', $delivery_address->getPostalCode())  ) {
-            return $tax_category->withCountryType($this->base_country, 'Exempt');
+            return $tax_category->loadWithCountryType($this->base_country, 'Exempt');
         }
 
         if (in_array($invoice_address->getCountryCode(), $this->taxable_countries) or in_array($delivery_address->getCountryCode(), $this->taxable_countries)) {
             if($this->is_RE){
-                return $tax_category->withCountryType($this->base_country, 'IVA+RE');
+                return $tax_category->loadWithCountryType($this->base_country, 'IVA+RE');
             }else{
-                return $tax_category->withCountryType($this->base_country, 'IVA');
+                return $tax_category->loadWithCountryType($this->base_country, 'IVA');
             }
         }
 
         if ($delivery_address->isEuropeanUnion()) {
             if ($taxNumber->isValid()) {
-                return $tax_category->withCountryType($this->base_country, 'EU_VTC');
+                return $tax_category->loadWithCountryType($this->base_country, 'EU_VTC');
             } else {
-                return $tax_category->withCountryType($this->base_country, 'IVA');
+                return $tax_category->loadWithCountryType($this->base_country, 'IVA');
             }
         }
 
 
-        return $tax_category->withCountryType($this->base_country, 'Outside');
+        return $tax_category->loadWithCountryType($this->base_country, 'Outside');
     }
 }
 

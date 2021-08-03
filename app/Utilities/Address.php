@@ -37,14 +37,16 @@ class Address
 
     public function setCountryCode($countryCode): Address
     {
-        $this->address = $this->address->withCountryCode($countryCode);
-        return $this;
+        $new = clone $this;
+        $new->address = $this->address->withCountryCode($countryCode);
+        return $new;
     }
 
     public function setPostalCode($postalCode): Address
     {
-        $this->address = $this->address->withPostalCode($postalCode);
-        return $this;
+        $new = clone $this;
+        $new->address = $this->address->withPostalCode($postalCode);
+        return $new;
     }
 
     public function getCountryCode(): string

@@ -25,7 +25,6 @@ class Public_Invoice extends DBW_Table {
 
         $this->table_name      = 'Invoice';
         $this->ignore_fields   = array('Invoice Key');
-        $this->update_customer = true;
 
         $this->metadata        = array();
 

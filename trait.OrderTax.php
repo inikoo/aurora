@@ -16,10 +16,6 @@ use Aurora\Models\Utils\TaxCategory;
 trait OrderTax
 {
 
-    /**
-     * @var PDO
-     */
-    public $db;
 
     function update_tax_number($value, $options = '', $updated_from_invoice = false)
     {
@@ -167,7 +163,7 @@ trait OrderTax
 
         $store = get_object('Store', $this->data['Order Store Key']);
 
-        $provider     = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
+        $provider = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
         return $provider->getTaxCategory(
             $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
             $address->setCountryCode($this->data['Order Delivery Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Delivery Address Postal Code']),
@@ -208,7 +204,7 @@ trait OrderTax
 
         if ($tax_category_key) {
             $tax_category = new TaxCategory($this->db);
-            $tax_category->withKey($tax_category_key);
+            $tax_category->loadWithKey($tax_category_key);
 
             if (!$tax_category->id) {
                 $this->msg   = 'Invalid tax code';
@@ -235,10 +231,7 @@ trait OrderTax
             //    $order_has_re             = $tax_category->metadata('has_re_tax');
             //}
         } else {
-
-
-            $tax_category=$this->get_tax_category();
-
+            $tax_category = $this->get_tax_category();
             /*
             $tax_data = $this->get_tax_data();
             $new_tax_code = $tax_data['code'];
@@ -404,7 +397,7 @@ trait OrderTax
 
         if ($tax_category_key) {
             $tax_category = new TaxCategory($this->db);
-            $tax_category->withKey($tax_category_key);
+            $tax_category->loadWithKey($tax_category_key);
 
 
             if (!$tax_category->id) {
@@ -422,6 +415,7 @@ trait OrderTax
             $store = get_object('Store', $this->data['Order Store Key']);
 
             $provider     = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
+
             $tax_category = $provider->getTaxCategory(
                 $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
                 $address->setCountryCode($this->data['Order Delivery Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Delivery Address Postal Code']),
@@ -457,15 +451,6 @@ trait OrderTax
                                    $this->id,
                                    $update_from_invoice_key
                                ));
-                while ($row = $stmt->fetch()) {
-                    $sql = "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=?,`Tax Category Code`=? ,`Order No Product Transaction Tax Category Key`=? WHERE `Order No Product Transaction Fact Key`=?";
-                    $this->db->prepare($sql)->execute(array(
-                                                          round($row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'), 2),
-                                                          $tax_category->get('Tax Category Code'),
-                                                          $tax_category->id,
-                                                          $row['Order No Product Transaction Fact Key']
-                                                      ));
-                }
             } else {
                 $sql = "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=?,`Transaction Tax Code`=?  ,`Order Transaction Tax Category Key`=?  WHERE `Order Key`=? AND `Consolidated`='No' ";
                 $this->db->prepare($sql)->execute(array(
@@ -480,15 +465,15 @@ trait OrderTax
                 $stmt->execute(array(
                                    $this->id
                                ));
-                while ($row = $stmt->fetch()) {
-                    $sql = "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=?,`Tax Category Code`=? ,`Order No Product Transaction Tax Category Key`=? WHERE `Order No Product Transaction Fact Key`=?";
-                    $this->db->prepare($sql)->execute(array(
-                                                          round($row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'), 2),
-                                                          $tax_category->get('Tax Category Code'),
-                                                          $tax_category->id,
-                                                          $row['Order No Product Transaction Fact Key']
-                                                      ));
-                }
+            }
+            while ($row = $stmt->fetch()) {
+                $sql = "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=?,`Tax Category Code`=? ,`Order No Product Transaction Tax Category Key`=? WHERE `Order No Product Transaction Fact Key`=?";
+                $this->db->prepare($sql)->execute(array(
+                                                      round($row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'), 2),
+                                                      $tax_category->get('Tax Category Code'),
+                                                      $tax_category->id,
+                                                      $row['Order No Product Transaction Fact Key']
+                                                  ));
             }
         }
 

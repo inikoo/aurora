@@ -23,7 +23,7 @@ class TaxCategory
         $this->id = null;
     }
 
-    public function withKey($key): TaxCategory
+    public function loadWithKey($key): TaxCategory
     {
         $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Key`=?";
 
@@ -38,7 +38,7 @@ class TaxCategory
         return $this;
     }
 
-    public function withCountryType($country_code, $type): TaxCategory
+    public function loadWithCountryType($country_code, $type): TaxCategory
     {
         $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Type`=? and `Tax Category Active`='Yes'";
 

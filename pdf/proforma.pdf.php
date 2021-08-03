@@ -12,13 +12,14 @@
 chdir('../');
 require_once __DIR__.'/../vendor/autoload.php';
 
+use Aurora\Models\Utils\TaxCategory;
 use CommerceGuys\Addressing\Country\CountryRepository;
 use Mpdf\Mpdf;
 use Mpdf\MpdfException;
 
-/** @var \Smarty $smarty */
-/** @var \PDO $db */
-/** @var \Account $account */
+/** @var Smarty $smarty */
+/** @var PDO $db */
+/** @var Account $account */
 
 
 require_once 'common.php';
@@ -37,7 +38,6 @@ if (!$order->id) {
 }
 
 
-//print_r($order);
 
 
 $store    = get_object('Store', $order->get('Order Store Key'));
@@ -81,11 +81,10 @@ if (!empty($_REQUEST['weight'])) {
     $print_weight = false;
 }
 
+$countryRepository = new CountryRepository();
 
 if (!empty($_REQUEST['origin'])) {
     $print_origin = true;
-    include_once 'class.Country.php';
-    $countryRepository = new CountryRepository();
 } else {
     $print_origin = false;
 }
@@ -267,7 +266,7 @@ try {
             }
 
             if ($parts) {
-                /** @var  $product \Product */
+                /** @var  $product Product */
                 $product    = get_object('Product', $row['Product ID']);
                 $parts_data = $product->get_parts_data();
 
@@ -298,13 +297,13 @@ try {
 
     $transactions_no_products = array();
 
-    $tax_category = get_object('Tax_Category', $order->data['Order Tax Code']);
-
+    $tax_category = new TaxCategory($this->db);
+    $tax_category->loadWithKey($order->data['Order Tax Category Key']);
     if ($order->data['Order Deal Amount Off']) {
 
 
         $net   = -1 * $order->data['Order Deal Amount Off'];
-        $tax   = $net * $tax_category->data['Tax Category Rate'];
+        $tax   = $net * $tax_category->get('Tax Category Rate');
         $total = $net + $tax;
 
 
@@ -400,19 +399,11 @@ try {
             $row['Discount'] = '';
             $transactions[]  = $row;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
-
+    //todo remove this
     $transactions_out_of_stock = array();
-
-
-    $smarty->assign(
-        'number_transactions_out_of_stock', count($transactions_out_of_stock)
-    );
+    $smarty->assign('number_transactions_out_of_stock',0);
 
     $smarty->assign('transactions_out_of_stock', $transactions_out_of_stock);
 
@@ -467,10 +458,6 @@ try {
                 $row['Discount']            = '';
                 $transactions[]             = $row;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
