@@ -20,7 +20,7 @@ abstract class DB_Table extends stdClass
      */
     public $id = 0;
 
-    public bool $fork = false;
+    public bool $fork=false;
 
     public $warning = false;
     public $deleted = false;

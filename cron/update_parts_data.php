@@ -10,7 +10,9 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/common.php';
+/** @var PDO $db */
+
 require_once 'class.Part.php';
 require_once 'class.Category.php';
 
@@ -23,10 +25,8 @@ update_parts_data($db);
 
 function update_parts_data($db) {
 
-    $sql = sprintf(
-        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="AFP01" ORDER BY `Part SKU` DESC  '
-    );
-    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  where `Part Status`="In Use"  ORDER BY `Part Reference`   ');
+
+    $sql = "SELECT `Part SKU` FROM `Part Dimension`  where `Part Status`='In Use'  ORDER BY `Part Reference`   ";
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -89,40 +89,28 @@ function update_parts_data($db) {
    */
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 }
 
 
 function update_part_categories_data($db, $print_est) {
 
-    $where = " where `Category Key`=28380 ";
+    //$where = " where `Category Key`=28380 ";
     $where = "where true";
 
-    $sql = sprintf(
-        "select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' "
-    );
-
+    $sql = "select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Part' ";
+    $total = 0;
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
             $total = $row['num'];
-        } else {
-            $total = 0;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
     $lap_time0 = date('U');
     $contador  = 0;
 
 
-    $sql = sprintf(
-        "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Part'  "
-    );
+    $sql = "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Part'  ";
 
 
     if ($result = $db->query($sql)) {
@@ -147,11 +135,7 @@ function update_part_categories_data($db, $print_est) {
 
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 }
 
 
-?>
