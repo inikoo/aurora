@@ -38,12 +38,27 @@ class TaxCategory
         return $this;
     }
 
-    public function loadWithCountryType($country_code, $type): TaxCategory
+    public function loadWithTypeCountry($type,$country_code): TaxCategory
     {
         $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Type`=? and `Tax Category Active`='Yes'";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array($country_code, $type));
+        if ($row = $stmt->fetch()) {
+
+            $this->data = $row;
+            $this->id   = $this->data['Tax Category Key'];
+        }
+
+        return $this;
+    }
+
+    public function loadWithCodeCountry($code,$country_code): TaxCategory
+    {
+        $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Code`=? and `Tax Category Active`='Yes'";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(array($country_code, $code));
         if ($row = $stmt->fetch()) {
 
             $this->data = $row;

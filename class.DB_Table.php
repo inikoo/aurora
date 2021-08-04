@@ -753,6 +753,7 @@ abstract class DB_Table extends stdClass
             addslashes($key),
             addslashes($key_field)
         );
+
         $stmt = $this->db->prepare('UPDATE '.$sql);
         $stmt->bindParam(1, $value);
         $stmt->bindParam(2, $this->id);

@@ -14,13 +14,15 @@ use PDO;
 
 class EUR_TaxCategoryProvider implements TaxCategoryProvider
 {
-    private string $base_country;
     private PDO $db;
+    private string $base_country;
+    private string $tax_category_code_prefix;
 
-    function __construct(PDO $db, $base_country)
+    function __construct(PDO $db, $base_country,$tax_category_code_prefix='')
     {
         $this->db           = $db;
         $this->base_country = $base_country;
+        $this->tax_category_code_prefix=$tax_category_code_prefix;
     }
 
     public function getTaxCategory($invoice_address, $delivery_address, $taxNumber): TaxCategory
@@ -28,39 +30,39 @@ class EUR_TaxCategoryProvider implements TaxCategoryProvider
         $tax_category = new TaxCategory($this->db);
 
         if ($invoice_address->getCountryCode() == $this->base_country or $delivery_address->getCountryCode() == $this->base_country) {
-            return $tax_category->loadWithCountryType($this->base_country, 'Standard');
+            return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'S1',$this->base_country);
         }
 
         if ($delivery_address->isEuropeanUnion()) {
             if ($taxNumber->isValid()) {
-                return $tax_category->loadWithCountryType($this->base_country, 'EU_VTC');
+                return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'EU',$this->base_country);
             } else {
                 $countryCode = $delivery_address->getCountryCode();
 
                 if ($countryCode == 'MC') {
-                    return $tax_category->loadWithCountryType('FR', 'Standard');
+                    return $tax_category->loadWithTypeCountry('Standard','FR');
                 }
                 if ($countryCode == 'PT') {
                     if (preg_match('/^(90|91|92|93|94)/', $delivery_address->getPostalCode())) {
-                        return $tax_category->loadWithCountryType('PT', 'Standard-RAM');
+                        return $tax_category->loadWithTypeCountry('Standard-RAM','PT' );
                     }
                     if (preg_match('/^9/', $delivery_address->getPostalCode())) {
-                        return $tax_category->loadWithCountryType('PT', 'Standard-RAA');
+                        return $tax_category->loadWithTypeCountry('Standard-RAA','PT');
                     }
                 }
                 if ($countryCode == 'ES') {
                     if (preg_match('/^(35|38|51|52)/', $delivery_address->getPostalCode())) {
-                        return $tax_category->loadWithCountryType($this->base_country, 'Outside');
+                        return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'OUT',$this->base_country);
                     }
                 }
 
 
-                return $tax_category->loadWithCountryType($delivery_address->getCountryCode(), 'Standard');
+                return $tax_category->loadWithTypeCountry('Standard',$delivery_address->getCountryCode());
             }
         }
 
 
-        return $tax_category->loadWithCountryType($this->base_country, 'Outside');
+        return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'OUT',$this->base_country);
     }
 }
 

@@ -21,6 +21,8 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string
     }
     //$data['_object']->update_tax_data();
 
+
+
     $order = get_object('order', $data['_object']->get('Invoice Order Key'));
 
     $smarty->assign('invoice', $data['_object']);

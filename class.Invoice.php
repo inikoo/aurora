@@ -1192,7 +1192,6 @@ class Invoice extends DB_Table
         $values = 'values (';
         foreach ($base_data as $key => $value) {
             $keys .= "`$key`,";
-
             $values .= prepare_mysql($value).",";
         }
 
@@ -1275,6 +1274,7 @@ class Invoice extends DB_Table
 
             $data = $this->group_transactions_per_tax_category_key();
 
+
             foreach ($data as $tax_category_key => $amount) {
                 $tax_category = new TaxCategory($this->db);
                 $tax_category->loadWithKey($tax_category_key);
@@ -1310,8 +1310,7 @@ class Invoice extends DB_Table
 
             $this->update_billing_region();
 
-            //todo distribute_insurance_over_the_otf
-            //$this->distribute_insurance_over_the_otf();
+
 
 
             $history_data = array(
@@ -2480,7 +2479,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         return $date;
     }
 
-    private function group_transactions_per_tax_category_key($include_amount_off = true): array
+    public function group_transactions_per_tax_category_key($include_amount_off = true): array
     {
         $data = [];
 

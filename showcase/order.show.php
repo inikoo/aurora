@@ -10,9 +10,8 @@
  Version 3.0
 */
 
-function get_order_showcase($data, $smarty, $user, $db) {
-
-
+function get_order_showcase($data, $smarty, $user, $db)
+{
     require_once 'utils/geography_functions.php';
 
     if (!$data['_object']->id) {
@@ -26,7 +25,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
     //$order->update_aiku($order->get_table_name(), 'refresh_order');
     //exit;
 
-        $order->update_tax();
+    //$order->update_tax();
 
     //$order->update_totals();
     /*
@@ -49,27 +48,26 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
     if ($store->get('Store Type') == 'Dropshipping') {
         $smarty->assign('customer_client', get_object('customer_client', $order->get('Order Customer Client Key')));
-
     }
 
     $smarty->assign(
-        'object_data', json_encode(
-                         array(
-                             'object'              => $data['object'],
-                             'key'                 => $data['key'],
-                             'symbol'              => currency_symbol($order->get('Order Currency')),
-                             'tax_rate'            => $order->get('Order Tax Rate'),
-                             'available_to_refund' => $order->get('Order Total Amount'),
-                             'tab'                 => $data['tab'],
-                             'order_type'          => 'Order'
-                         )
-                     )
+        'object_data',
+        json_encode(array(
+                        'object'              => $data['object'],
+                        'key'                 => $data['key'],
+                        'symbol'              => currency_symbol($order->get('Order Currency')),
+                        'tax_rate'            => $order->get('Order Tax Rate'),
+                        'available_to_refund' => $order->get('Order Total Amount'),
+                        'tab'                 => $data['tab'],
+                        'order_type'          => 'Order'
+                    ))
 
     );
 
 
     if (in_array(
-        $order->get('Order Delivery Address Country 2 Alpha Code'), get_countries_EC_Fiscal_VAT_area($db)
+        $order->get('Order Delivery Address Country 2 Alpha Code'),
+        get_countries_EC_Fiscal_VAT_area($db)
     )) {
         $pdf_with_commodity = false;
     } else {
@@ -88,7 +86,6 @@ function get_order_showcase($data, $smarty, $user, $db) {
         $pdf_show_locale_option = true;
     } else {
         $pdf_show_locale_option = false;
-
     }
     $smarty->assign('pdf_show_locale_option', $pdf_show_locale_option);
 
@@ -140,23 +137,17 @@ function get_order_showcase($data, $smarty, $user, $db) {
         $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
 
         return $smarty->fetch('showcase/refund.new.tpl');
-
     } elseif ($data['section'] == 'replacement.new') {
         $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
 
         return $smarty->fetch('showcase/replacement.new.tpl');
-
     } elseif ($data['section'] == 'return.new') {
         $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
 
         return $smarty->fetch('showcase/return.new.tpl');
-
     } else {
         return $smarty->fetch('showcase/order.tpl');
-
     }
-
-
 }
 
 

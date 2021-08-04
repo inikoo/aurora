@@ -9,6 +9,7 @@
  Version 3.0
 
 */
+use Aurora\Models\Utils\TaxCategory;
 
 trait OrderChargesOperations
 {
@@ -71,7 +72,7 @@ trait OrderChargesOperations
         $charges_to_delete = [];
         $charges_to_ignore = [];
 
-        $sql  = "select `Order No Product Transaction Fact Key`,`Order No Product Transaction Pinned`  from `Order No Product Transaction Fact`  where `Order Key`=? and `Transaction Type`='Charges' and `Type`='Order'";
+        $sql = "select `Order No Product Transaction Fact Key`,`Order No Product Transaction Pinned`  from `Order No Product Transaction Fact`  where `Order Key`=? and `Transaction Type`='Charges' and `Type`='Order'";
         /** @noinspection DuplicatedCode */
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
@@ -89,10 +90,12 @@ trait OrderChargesOperations
         $total_charges_net = 0;
         $total_charges_tax = 0;
 
+        $tax_category = new TaxCategory($this->db);
+        $tax_category->loadWithKey($this->data['Order Tax Category Key']);
 
         foreach ($charges_array as $charge_data) {
             $net               = $charge_data['Charge Net Amount'];
-            $tax               = $charge_data['Charge Net Amount'] * $this->data['Order Tax Rate'];
+            $tax               = $charge_data['Charge Net Amount'] * $tax_category->get('Tax Category Rate');
             $total_charges_net += $net;
             $total_charges_tax += $tax;
 
@@ -109,7 +112,7 @@ trait OrderChargesOperations
                     if (!in_array($row['Order No Product Transaction Fact Key'], $charges_to_ignore)) {
                         unset($charges_to_delete[$row['Order No Product Transaction Fact Key']]);
 
-                        $sql = "update `Order No Product Transaction Fact` set `Transaction Description`=? ,`Transaction Gross Amount`=?,`Transaction Net Amount`=?,`Tax Category Code`=?,`Transaction Tax Amount`=? ,
+                        $sql = "update `Order No Product Transaction Fact` set `Transaction Description`=? ,`Transaction Gross Amount`=?,`Transaction Net Amount`=?,`Order No Product Transaction Tax Category Key`=?,`Tax Category Code`=?,`Transaction Tax Amount`=? ,
                             `Currency Exchange`=?,`Metadata`=?,`Delivery Note Key`=?
 
                           where `Order No Product Transaction Fact Key`=? ";
@@ -118,6 +121,7 @@ trait OrderChargesOperations
                                                               $charge_data['Charge Description'],
                                                               round($charge_data['Charge Net Amount'], 2),
                                                               round($charge_data['Charge Net Amount'], 2),
+                                                              $tax_category->id,
                                                               $this->data['Order Tax Code'],
                                                               round($tax, 2),
                                                               $this->data['Order Currency Exchange'],
@@ -127,8 +131,8 @@ trait OrderChargesOperations
                                                           ]);
                     }
                 } else {
-                    $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
-                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
+                    $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Order No Product Transaction Tax Category Key`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
+                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
 
 
                     $this->db->prepare($sql)->execute([
@@ -139,6 +143,7 @@ trait OrderChargesOperations
                                                           $charge_data['Charge Description'],
                                                           round($charge_data['Charge Net Amount'], 2),
                                                           round($charge_data['Charge Net Amount'], 2),
+                                                          $tax_category->id,
                                                           $this->data['Order Tax Code'],
                                                           round($tax, 2),
 
@@ -152,17 +157,16 @@ trait OrderChargesOperations
         }
 
         foreach ($charges_to_delete as $order_no_product_transaction_key) {
-            $sql = sprintf(
-                'delete from `Order No Product Transaction Fact`  where `Order No Product Transaction Fact Key`=%d ',
-                $order_no_product_transaction_key
-            );
-            $this->db->exec($sql);
+            $sql = "delete from `Order No Product Transaction Fact`  where `Order No Product Transaction Fact Key`=?";
+            $this->db->prepare($sql)->execute([
+                                                  $order_no_product_transaction_key
+                                              ]);
 
-            $sql = sprintf(
-                'delete from `Order No Product Transaction Deal Bridge`  where `Order No Product Transaction Fact Key`=%d ',
-                $order_no_product_transaction_key
-            );
-            $this->db->exec($sql);
+
+            $sql = "delete from `Order No Product Transaction Deal Bridge`  where `Order No Product Transaction Fact Key`=?";
+            $this->db->prepare($sql)->execute([
+                                                  $order_no_product_transaction_key
+                                              ]);
         }
 
 
@@ -176,6 +180,8 @@ trait OrderChargesOperations
             return $charges;
         }
 
+        $tax_category = new TaxCategory($this->db);
+        $tax_category->loadWithKey($this->data['Order Tax Category Key']);
 
         $sql = sprintf(
             "SELECT * FROM `Charge Dimension` WHERE `Charge Trigger`='Order' AND (`Charge Trigger Key`=%d  OR `Charge Trigger Key` IS NULL) AND `Store Key`=%d  and `Charge Active`='Yes' ",
@@ -265,7 +271,7 @@ trait OrderChargesOperations
 
                 if ($row['Charge Type'] == 'Amount') {
                     $charge_net_amount = $row['Charge Metadata'];
-                    $charge_tax_amount = $row['Charge Metadata'] * $this->data['Order Tax Rate'];
+                    $charge_tax_amount = $row['Charge Metadata'] * $tax_category->get('Tax Category Rate');
                 } else {
                     exit("still to do");
                 }
@@ -296,6 +302,9 @@ trait OrderChargesOperations
             return;
         }
 
+        $tax_category = new TaxCategory($this->db);
+        $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
         $value = round($value, 2);
 
 
@@ -305,7 +314,7 @@ trait OrderChargesOperations
                            $this->id
                        ));
         if ($row = $stmt->fetch()) {
-            $tax = round($value * $this->data['Order Tax Rate'], 2);
+            $tax = round($value * $tax_category->get('Tax Category Rate'), 2);
 
 
             $sql = "update `Order No Product Transaction Fact`    set `Order No Product Transaction Pinned`='Yes' ,  `Transaction Gross Amount`=? ,`Transaction Net Amount`=? ,`Transaction Tax Amount`=? where  `Order No Product Transaction Fact Key`=? ";
@@ -336,11 +345,11 @@ trait OrderChargesOperations
                 $charge_description = '';
             }
 
-            $tax = round($value * $this->data['Order Tax Rate'], 2);
+            $tax = round($value * $tax_category->get('Tax Category Rate'), 2);
 
             $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Pinned`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,
-                        `Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
-                        `Currency Code`,`Currency Exchange`,`Metadata`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
+                        `Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Order No Product Transaction Tax Category Key`,`Tax Category Code`,`Transaction Tax Amount`,
+                        `Currency Code`,`Currency Exchange`,`Metadata`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
 
             $this->db->prepare($sql)->execute(array(
                                                   'Yes',
@@ -352,6 +361,7 @@ trait OrderChargesOperations
                                                   $charge_description,
                                                   $value,
                                                   $value,
+                                                  $tax_category->id,
                                                   $this->data['Order Tax Code'],
                                                   $tax,
 
@@ -377,9 +387,12 @@ trait OrderChargesOperations
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return false;
         }
+
+        $tax_category = new TaxCategory($this->db);
+        $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
+
         $sql = "select `Order No Product Transaction Fact Key`,`Transaction Net Amount`  from `Order No Product Transaction Fact`  where `Order Key`=? and `Transaction Type`='Charges' and `Transaction Type Key`=? and `Type`='Order'";
-
-
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
                            $this->id,
@@ -391,15 +404,15 @@ trait OrderChargesOperations
                 'amount'    => money($row['Transaction Net Amount'], $this->data['Order Currency'])
 
             );
-        }else{
-            $tax = $charge->get('Charge Metadata') * $this->data['Order Tax Rate'];
+        } else {
+            $tax = $charge->get('Charge Metadata') * $tax_category->get('Tax Category Rate');
 
 
             $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Pinned`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,
-                    `Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
+                    `Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Order No Product Transaction Tax Category Key`,`Tax Category Code`,`Transaction Tax Amount`,
                     `Currency Code`,`Currency Exchange`,`Metadata`)
 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
 
 
             $this->db->prepare($sql)->execute([
@@ -410,16 +423,16 @@ trait OrderChargesOperations
                                                   $charge->id,
 
                                                   $charge->get('Charge Description'),
-                                                  round($charge->get('Charge Metadata'),2),
-                                                  round($charge->get('Charge Metadata'),2),
+                                                  round($charge->get('Charge Metadata'), 2),
+                                                  round($charge->get('Charge Metadata'), 2),
+                                                  $tax_category->id,
                                                   $this->data['Order Tax Code'],
-                                                  round($tax,2),
+                                                  round($tax, 2),
 
                                                   $this->data['Order Currency'],
                                                   $this->data['Order Currency Exchange'],
                                                   $this->data['Order Original Metadata']
                                               ]);
-
 
 
             $transaction_data = array(
@@ -428,9 +441,6 @@ trait OrderChargesOperations
 
             );
         }
-
-
-
 
 
         if ($charge->get('Charge Scope') == 'Premium') {

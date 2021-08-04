@@ -17,6 +17,9 @@ trait OrderTax
 {
 
 
+    /**
+     * @throws Exception
+     */
     function update_tax_number($value, $options = '', $updated_from_invoice = false)
     {
         if ($this->get('State Index') <= 0) {
@@ -47,6 +50,9 @@ trait OrderTax
         }
     }
 
+    /**
+     * @throws Exception
+     */
     function validate_order_tax_number()
     {
         if (!empty($this->skip_validate_tax_number)) {
@@ -89,6 +95,9 @@ trait OrderTax
     }
 
 
+    /**
+     * @throws Exception
+     */
     function update_tax_number_valid($value)
     {
         include_once 'utils/validate_tax_number.php';
@@ -144,13 +153,16 @@ trait OrderTax
     }
 
 
+    /**
+     * @throws Exception
+     */
     function update_tax($tax_category_key = false, $update_from_invoice_key = false)
     {
         $account = get_object('Account', 1);
         $account->load_properties();
 
         if ($account->properties('tax_per_item')) {
-            $this->update_tax_per_item($account, $tax_category_key, $update_from_invoice_key);
+            $this->update_tax_per_item($tax_category_key, $update_from_invoice_key);
         } else {
             $this->update_tax_all_order_same($tax_category_key, $update_from_invoice_key);
         }
@@ -164,6 +176,8 @@ trait OrderTax
         $store = get_object('Store', $this->data['Order Store Key']);
 
         $provider = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
+
+
         return $provider->getTaxCategory(
             $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
             $address->setCountryCode($this->data['Order Delivery Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Delivery Address Postal Code']),
@@ -172,34 +186,18 @@ trait OrderTax
     }
 
 
-    function update_tax_per_item($account, $tax_category_key, $update_from_invoice_key)
+    /**
+     * @throws Exception
+     */
+    function update_tax_per_item($tax_category_key, $update_from_invoice_key)
     {
-        $account_has_re_tax = false;
-        if ($account->properties('has_re_tax')) {
-            $account_has_re_tax = true;
-        }
-        $order_has_re = false;
+        // $account_has_re_tax = false;
+        // if ($account->properties('has_re_tax')) {
+        //     $account_has_re_tax = true;
+        // }
+        // $order_has_re = false;
 
-        $old_tax_code = $this->data['Order Tax Code'];
-
-
-        if ($this->get('State Index') > 90 and $this->get('Order Invoice Key')) {
-            $edit_otf = false;
-        } else {
-            $edit_otf = true;
-        }
-
-        if ($update_from_invoice_key) {
-            $edit_otf = true;
-        }
-
-
-        if (!$edit_otf) {
-            if ($this->metadata('original_tax_code') == '') {
-                $this->fast_update_json_field('Order Metadata', 'original_tax_code', $old_tax_code);
-                $this->fast_update_json_field('Order Metadata', 'original_tax_description', $this->get('Tax Description'));
-            }
-        }
+        $edit_otf = $this->prepare_update_tax($update_from_invoice_key);
 
 
         if ($tax_category_key) {
@@ -212,62 +210,25 @@ trait OrderTax
 
                 return;
             }
-
-
-            //include_once 'class.TaxCategory.php';
-
-            //$tax_category = get_object('tax_category-key', $tax_category_key);
-            //if (!$tax_category->id) {
-            //    $this->msg   = 'Invalid tax code';
-            //    $this->error = true;
-
-            //   return;
-            //}
-            //else {
-            //    $new_tax_code             = $tax_category->data['Tax Category Code'];
-            //    $tax_rate                 = $tax_category->data['Tax Category Rate'];
-            //    $tax_name                 = $tax_category->data['Tax Category Name'];
-            //    $reason_tax_code_selected = 'set';
-            //    $order_has_re             = $tax_category->metadata('has_re_tax');
-            //}
         } else {
             $tax_category = $this->get_tax_category();
-            /*
-            $tax_data = $this->get_tax_data();
-            $new_tax_code = $tax_data['code'];
-            $tax_rate     = $tax_data['rate'];
-            $tax_name                 = $tax_data['name'];
-            $reason_tax_code_selected = $tax_data['reason_tax_code_selected'];
-
-
-            if ($account_has_re_tax) {
-                if (!empty($tax_data['metadata'])) {
-                    $metadata = json_decode($tax_data['metadata'], true);
-
-
-                    if (!empty($metadata['Is_RE'])) {
-                        $order_has_re = $metadata['Is_RE'];
-                    }
-                }
-            }
-            */
         }
-
+        $products_tax_categories     = [];
         $products_with_different_tax = [];
         if ($tax_category->get('Tax Category Rate') > 0) {
             if ($update_from_invoice_key > 0) {
-                $sql  = 'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` 
-                                from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) 
-                                where `Order Key`=? AND `Invoice Key`=? and `Product Tax Category Key` is not null ';
+                $sql  = "select `Product Tax Category Data`,`Order Transaction Fact Key`
+                                from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+                                where `Order Key`=? AND `Invoice Key`=? and `Product Tax Category Data` is not null  ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(array(
                                    $this->id,
                                    $update_from_invoice_key
                                ));
             } else {
-                $sql  = 'select `Tax Category Code`,`Tax Category Rate`,`Order Transaction Fact Key`,OTF.`Product ID`,`Product Tax Category Key`,`Tax Category Metadata` 
-                        from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join kbase.`Tax Category Dimension` on (`Tax Category Key`=`Product Tax Category Key`) 
-                        where `Order Key`=? and `Product Tax Category Key` is not null ';
+                $sql  = "select `Product Tax Category Data`,`Order Transaction Fact Key`
+                        from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) 
+                        where `Order Key`=? and `Product Tax Category Data` is not null ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(array(
                                    $this->id
@@ -276,53 +237,54 @@ trait OrderTax
 
 
             while ($row = $stmt->fetch()) {
-                if ($order_has_re) {
-                    $metadata = json_decode($row['Tax Category Metadata'], true);
+                if ($row['Product Tax Category Data'] != '{}') {
+                    $product_tax_category_data = json_decode($row['Product Tax Category Data'], true);
 
-                    $_rate     = $metadata['With_RE'][2];
-                    $_tax_code = $metadata['With_RE'][1];
-                } else {
-                    $_rate     = $row['Tax Category Rate'];
-                    $_tax_code = $row['Tax Category Code'];
+
+                    if (isset($product_tax_category_data[$tax_category->id])) {
+                        if (!isset($products_tax_categories[$product_tax_category_data[$tax_category->id]])) {
+                            $_tax_category = new TaxCategory($this->db);
+                            $_tax_category->loadWithKey($product_tax_category_data[$tax_category->id]);
+                            $products_tax_categories[$product_tax_category_data[$tax_category->id]] = $_tax_category;
+                        }
+
+                        $products_with_different_tax[$row['Order Transaction Fact Key']] = $product_tax_category_data[$tax_category->id];
+                    }
                 }
-
-
-                $products_with_different_tax[$row['Order Transaction Fact Key']] = [
-                    'rate'     => $_rate,
-                    'tax_code' => $_tax_code
-                ];
             }
         }
 
 
         if ($edit_otf) {
             if ($update_from_invoice_key > 0) {
-                $sql = "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=?,`Transaction Tax Code`=? WHERE `Order Key`=? AND `Invoice Key`=?  ";
+                $sql = "UPDATE `Order Transaction Fact` SET `Order Transaction Tax Category Key`=?,`Transaction Tax Rate`=?,`Transaction Tax Code`=? WHERE `Order Key`=? AND `Invoice Key`=?  ";
                 $this->db->prepare($sql)->execute(array(
-                                                      $tax_rate,
-                                                      $new_tax_code,
+                                                      $tax_category->id,
+                                                      $tax_category->get('Tax Category Rate'),
+                                                      $tax_category->get('Tax Category Code'),
                                                       $this->id,
                                                       $update_from_invoice_key
                                                   ));
             } else {
-                $sql = "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=?,`Transaction Tax Code`=? WHERE `Order Key`=?";
+                $sql = "UPDATE `Order Transaction Fact` SET `Order Transaction Tax Category Key`=?,`Transaction Tax Rate`=?,`Transaction Tax Code`=? WHERE `Order Key`=?";
 
                 $this->db->prepare($sql)->execute(array(
-                                                      $tax_rate,
-                                                      $new_tax_code,
+                                                      $tax_category->id,
+                                                      $tax_category->get('Tax Category Rate'),
+                                                      $tax_category->get('Tax Category Code'),
                                                       $this->id
                                                   ));
             }
         }
 
 
-        foreach ($products_with_different_tax as $key => $product_with_different_tax_data) {
-            $sql = "UPDATE `Order Transaction Fact` SET `Transaction Tax Rate`=?,`Transaction Tax Code`=? WHERE `Order Transaction Fact Key`=?";
-            //print $sql."\n";
-            //print $key.' '.$product_with_different_tax_data['rate'].' '.$product_with_different_tax_data['tax_code']."\n";
+        foreach ($products_with_different_tax as $key => $product_with_different_tax_category_key) {
+            $sql = "UPDATE `Order Transaction Fact` SET  `Order Transaction Tax Category Key`=?,`Transaction Tax Rate`=?,`Transaction Tax Code`=? WHERE `Order Transaction Fact Key`=?";
+
             $this->db->prepare($sql)->execute(array(
-                                                  $product_with_different_tax_data['rate'],
-                                                  $product_with_different_tax_data['tax_code'],
+                                                  $products_tax_categories[$product_with_different_tax_category_key]->id,
+                                                  $products_tax_categories[$product_with_different_tax_category_key]->get('Tax Category Rate'),
+                                                  $products_tax_categories[$product_with_different_tax_category_key]->get('Tax Category Code'),
                                                   $key
                                               ));
         }
@@ -344,56 +306,43 @@ trait OrderTax
         if ($edit_otf) {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-                    $sql = sprintf(
-                        "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d",
-                        $row['Transaction Net Amount'] * $tax_rate,
-                        prepare_mysql($new_tax_code),
-                        $row['Order No Product Transaction Fact Key']
-                    );
-                    $this->db->exec($sql);
+                    $sql = "UPDATE `Order No Product Transaction Fact` SET `Order No Product Transaction Tax Category Key`=?,`Transaction Tax Amount`=?,`Tax Category Code`=? WHERE `Order No Product Transaction Fact Key`=?";
+
+
+                    $this->db->prepare($sql)->execute([
+                                                          $tax_category->id,
+                                                          $row['Transaction Net Amount'] * $tax_category->get('Tax Category Rate'),
+                                                          $tax_category->get('Tax Category Code'),
+                                                          $row['Order No Product Transaction Fact Key']
+                                                      ]);
                 }
             }
         }
 
         $this->fast_update(array(
-                               'Order Tax Code' => $new_tax_code,
-                               'Order Tax Rate' => $tax_rate
+                               'Order Tax Code'         => $tax_category->get('Tax Category Code'),
+                               'Order Tax Rate'         => $tax_category->get('Tax Category Rate'),
+                               'Order Tax Category Key' => $tax_category->id
                            ));
 
 
-        $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_name);
-        $this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);
+        $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_category->get('Tax Category Name'));
+        //$this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);
 
         if ($edit_otf) {
             $this->update_totals();
         } else {
-            $this->fast_update_json_field('Order Metadata', 'post_invoice_tax_code', $new_tax_code);
+            $this->fast_update_json_field('Order Metadata', 'post_invoice_tax_code', $tax_category->get('Tax Category Code'));
         }
     }
 
 
+    /**
+     * @throws Exception
+     */
     function update_tax_all_order_same($tax_category_key = false, $update_from_invoice_key = false)
     {
-        $old_tax_code = $this->data['Order Tax Code'];
-
-
-        if ($this->get('State Index') > 90 and $this->get('Order Invoice Key')) {
-            $edit_otf = false;
-        } else {
-            $edit_otf = true;
-        }
-
-        if ($update_from_invoice_key) {
-            $edit_otf = true;
-        }
-
-
-        if (!$edit_otf) {
-            if ($this->metadata('original_tax_code') == '') {
-                $this->fast_update_json_field('Order Metadata', 'original_tax_code', $old_tax_code);
-                $this->fast_update_json_field('Order Metadata', 'original_tax_description', $this->get('Tax Description'));
-            }
-        }
+        $edit_otf = $this->prepare_update_tax($update_from_invoice_key);
 
         if ($tax_category_key) {
             $tax_category = new TaxCategory($this->db);
@@ -414,7 +363,7 @@ trait OrderTax
 
             $store = get_object('Store', $this->data['Order Store Key']);
 
-            $provider     = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
+            $provider = TaxCategoryProviderFactory::createProvider($this->db, $store->settings('tax_authority'), ['RE' => ($this->metadata('RE') == 'Yes'), 'base_country' => $store->settings('tax_country_code')]);
 
             $tax_category = $provider->getTaxCategory(
                 $address->setCountryCode($this->data['Order Invoice Address Country 2 Alpha Code'])->setPostalCode($this->data['Order Invoice Address Postal Code']),
@@ -495,547 +444,35 @@ trait OrderTax
         }
     }
 
-
-    function get_tax_data()
+    /**
+     * @param $update_from_invoice_key
+     * @return bool
+     */
+    private function prepare_update_tax($update_from_invoice_key): bool
     {
-        $account = get_object('Account', 1);
+        $old_tax_code = $this->data['Order Tax Code'];
 
-        include_once 'utils/geography_functions.php';
 
-        $store = get_object('store', $this->data['Order Store Key']);
-
-
-        switch ($store->data['Store Tax Country Code']) {
-            case 'ESP':
-
-
-                $sql = sprintf(
-                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate`,`Tax Category Metadata` FROM kbase.`Tax Category Dimension`  WHERE `Tax Category Country Code`='ESP' AND `Tax Category Active`='Yes'"
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        switch ($row['Tax Category Name']) {
-                            case 'Exento':
-                                $tax_category_name = _('Exempt');
-                                break;
-                            case 'IVA 21%':
-                                $tax_category_name = _('VAT').' 21%';
-                                break;
-                            case 'RE (5,2%)':
-                                $tax_category_name = 'RE (5,2%)';
-                                break;
-                            case 'IVA+RE (26,2%)':
-                                $tax_category_name = 'IVA+RE (26,2%)';
-                                break;
-                            case 'Outside the scope of VAT':
-                                $tax_category_name = _('Outside the scope of VAT');
-                                break;
-                            case 'EU with valid tax code':
-                                $tax_category_name = _('EU with valid tax code');
-                                break;
-
-
-                            default:
-                                $tax_category_name = $row['Tax Category Name'];
-                        }
-
-
-                        $tax_category[$row['Tax Category Type']] = array(
-                            'code'     => $row['Tax Category Code'],
-                            'name'     => $tax_category_name,
-                            'rate'     => $row['Tax Category Rate'],
-                            'metadata' => $row['Tax Category Metadata']
-                        );
-                    }
-                }
-
-
-                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
-                        '/^(35|38|51|52)/',
-                        $this->data['Order Delivery Address Postal Code']
-                    ) and preg_match(
-                        '/^(35|38|51|52)/',
-                        $this->data['Order Invoice Address Postal Code']
-                    )) {
-                    return array(
-                        'code'                     => $tax_category['Exempt']['code'],
-                        'name'                     => $tax_category['Exempt']['name'],
-                        'rate'                     => $tax_category['Exempt']['rate'],
-                        'reason_tax_code_selected' => 'exempt VAT',
-                        'operations'               => '<div>'._('Exempt VAT').'</div>',
-                        'metadata'                 => $tax_category['Exempt']['metadata'],
-
-                    );
-                }
-
-                // new rule seems that is valid to ESP, E.g. billing to Madrid and shipping to canarias
-                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
-                        '/^(35|38|51|52)/',
-                        $this->data['Order Delivery Address Postal Code']
-                    )) {
-                    return array(
-                        'code'                     => $tax_category['Exempt']['code'],
-                        'name'                     => $tax_category['Exempt']['name'],
-                        'rate'                     => $tax_category['Exempt']['rate'],
-                        'reason_tax_code_selected' => 'exempt VAT',
-                        'operations'               => '<div>'._('Exempt VAT').'</div>',
-                        'metadata'                 => $tax_category['Exempt']['metadata'],
-
-                    );
-                }
-
-
-                if (in_array($this->data['Order Delivery Address Country 2 Alpha Code'], array(
-                    'ES',
-                    'XX'
-                ))) {
-                    if ($this->metadata('RE') == 'Yes') {
-                        return array(
-                            'code'                     => $tax_category['IVA+RE']['code'],
-                            'name'                     => $tax_category['IVA+RE']['name'],
-                            'rate'                     => $tax_category['IVA+RE']['rate'],
-                            'reason_tax_code_selected' => 'delivery to ESP with RE',
-                            'operations'               => ' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="/art/icons/delete.png"> RE</button></div>',
-                            'metadata'                 => $tax_category['IVA+RE']['metadata'],
-
-                        );
-                    } else {
-                        return array(
-                            'code'                     => $tax_category['IVA']['code'],
-                            'name'                     => $tax_category['IVA']['name'],
-                            'rate'                     => $tax_category['IVA']['rate'],
-                            'metadata'                 => $tax_category['IVA']['metadata'],
-                            'reason_tax_code_selected' => 'delivery to ESP',
-                            'operations'               => ' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="/art/icons/add.png"> RE (5,2%)</button></div>'
-
-                        );
-                    }
-                } elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], array(
-                    'ES',
-                    'XX'
-                ))) {
-                    if ($this->metadata('RE') == 'Yes') {
-                        return array(
-                            'code'                     => $tax_category['IVA+RE']['code'],
-                            'name'                     => $tax_category['IVA+RE']['name'],
-                            'rate'                     => $tax_category['IVA+RE']['rate'],
-                            'metadata'                 => $tax_category['IVA+RE']['metadata'],
-                            'reason_tax_code_selected' => 'billing to ESP with RE',
-                            'operations'               => ' <div class="buttons small"><button id="remove_recargo_de_equivalencia" title="Quitar Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'No\')"><img src="/art/icons/delete.png"> RE</button></div>'
-
-                        );
-                    } else {
-                        return array(
-                            'code'                     => $tax_category['IVA']['code'],
-                            'name'                     => $tax_category['IVA']['name'],
-                            'rate'                     => $tax_category['IVA']['rate'],
-                            'metadata'                 => $tax_category['IVA']['metadata'],
-                            'reason_tax_code_selected' => 'billing to ESP',
-                            'operations'               => ' <div class="buttons small"><button id="add_recargo_de_equivalencia" title="Añade Recargo de equivalencia" style="margin:0px" onClick="update_recargo_de_equivalencia(\'Yes\')"><img src="/art/icons/add.png"> RE (5,2%)</button></div>'
-
-                        );
-                    }
-                } elseif (in_array(
-                    $this->data['Order Invoice Address Country 2 Alpha Code'],
-                    get_countries_EC_Fiscal_VAT_area($this->db)
-                )) {
-                    if ($this->data['Order Tax Number Valid'] == 'Yes') {
-                        $response = array(
-                            'code'                     => $tax_category['EU_VTC']['code'],
-                            'name'                     => _('EC with valid tax number').'<span>'.$this->data['Order Tax Number'].'</span>',
-                            'rate'                     => $tax_category['EU_VTC']['rate'],
-                            'metadata'                 => $tax_category['EU_VTC']['metadata'],
-                            'reason_tax_code_selected' => 'EC with valid tax number',
-                            'operations'               => ''
-
-                        );
-                    } else {
-                        if ($this->data['Order Tax Number'] == '') {
-                            $response = array(
-                                'code'     => $tax_category['IVA']['code'],
-                                'name'     => $tax_category['IVA']['name'],
-                                'rate'     => $tax_category['IVA']['rate'],
-                                'metadata' => $tax_category['IVA']['metadata'],
-
-                                'reason_tax_code_selected' => 'EC no tax number',
-                                'operations'               => '<div><img  style="width:12px;position:relative:bottom:2px" src="/art/icons/information.png"/><span style="font-size:90%"> '._(
-                                        'VAT might be exempt with a valid tax number'
-                                    ).'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
-
-                            );
-                        } else {
-                            $response = array(
-                                'code'     => $tax_category['IVA']['code'],
-                                'name'     => $tax_category['IVA']['name'],
-                                'rate'     => $tax_category['IVA']['rate'],
-                                'metadata' => $tax_category['IVA']['metadata'],
-
-                                'reason_tax_code_selected' => 'EC with invalid tax number',
-
-                                'operations' => '<div>
-					<img style="width:12px;position:relative;bottom:-1px" src="/art/icons/error.png">
-					<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
-					<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="/art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
-					<br/>
-					<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="/art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
-
-					<span id="tax_number">'.$this->data['Order Tax Number'].'</span>
-				</div>'
-
-                            );
-                        }
-                    }
-
-                    return $response;
-                } else {
-                    if (in_array(
-                        $this->data['Order Delivery Address Country 2 Alpha Code'],
-                        get_countries_EC_Fiscal_VAT_area($this->db)
-                    )) {
-                        return array(
-                            'code'     => $tax_category['IVA']['code'],
-                            'name'     => $tax_category['IVA']['name'],
-                            'rate'     => $tax_category['IVA']['rate'],
-                            'metadata' => $tax_category['IVA']['metadata'],
-
-                            'reason_tax_code_selected' => 'delivery to EC with no EC billing',
-                            'operations'               => ''
-
-                        );
-                    } else {
-                        return array(
-                            'code'     => $tax_category['Outside']['code'],
-                            'name'     => $tax_category['Outside']['name'],
-                            'rate'     => $tax_category['Outside']['rate'],
-                            'metadata' => $tax_category['Outside']['metadata'],
-
-                            'reason_tax_code_selected' => 'outside EC',
-                            'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
-
-                        );
-                    }
-                }
-                break;
-            case 'GBR':
-
-                $tax_category = array();
-
-                $sql = sprintf(
-                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM kbase.`Tax Category Dimension`  WHERE `Tax Category Country Code`='GBR' AND `Tax Category Active`='Yes'"
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        switch ($row['Tax Category Name']) {
-                            case 'Outside the scope of VAT':
-                                $tax_category_name = _('Outside the scope of VAT');
-                                break;
-                            case 'VAT 17.5%':
-                                $tax_category_name = _('VAT').' 17.5%';
-                                break;
-                            case 'VAT 20%':
-                                $tax_category_name = _('VAT').' 20%';
-                                break;
-                            case 'VAT 15%':
-                                $tax_category_name = _('VAT').' 15%';
-                                break;
-                            case 'No Tax':
-                                $tax_category_name = _('No Tax');
-                                break;
-                            case 'Exempt from VAT':
-                                $tax_category_name = _('Exempt from VAT');
-                                break;
-                            case 'EU with valid tax code':
-                                $tax_category_name = _('EU with valid tax code');
-                                break;
-
-                            default:
-                                $tax_category_name = $row['Tax Category Name'];
-                        }
-
-
-                        $tax_category[$row['Tax Category Type']] = array(
-                            'code' => $row['Tax Category Code'],
-                            'name' => $tax_category_name,
-                            'rate' => $row['Tax Category Rate']
-                        );
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-                /*
-
-                                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
-                                        '/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code']
-                                    ) and preg_match(
-                                        '/^(35|38|51|52)/', $this->data['Order Invoice Address Postal Code']
-                                    )) {
-
-                                    return array(
-                                        'code'                     => $tax_category['Outside']['code'],
-                                        'name'                     => $tax_category['Outside']['name'],
-                                        'rate'                     => $tax_category['Outside']['rate'],
-                                        'reason_tax_code_selected' => 'outside EC',
-                                        'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
-
-                                    );
-                                }
-
-                                // new rule seems that is valid to ESP, E.g. billing to Madrid and shipping to canarias
-                                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
-                                        '/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code']
-                                    )) {
-
-                                    return array(
-                                        'code'                     => $tax_category['Outside']['code'],
-                                        'name'                     => $tax_category['Outside']['name'],
-                                        'rate'                     => $tax_category['Outside']['rate'],
-                                        'reason_tax_code_selected' => 'outside EC',
-                                        'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
-
-                                    );
-                                }
-
-                */
-
-                if (in_array($this->data['Order Delivery Address Country 2 Alpha Code'], array(
-                    'GB',
-                    'XX',
-                    'IM'
-                ))) {
-                    return array(
-                        'code'                     => $tax_category['Standard']['code'],
-                        'name'                     => $tax_category['Standard']['name'],
-                        'rate'                     => $tax_category['Standard']['rate'],
-                        'reason_tax_code_selected' => 'delivery to GBR',
-                        'operations'               => ''
-
-                    );
-                } elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], array(
-                    'GB',
-                    'XX',
-                    'IM'
-                ))) {
-                    return array(
-                        'code'                     => $tax_category['Standard']['code'],
-                        'name'                     => $tax_category['Standard']['name'],
-                        'rate'                     => $tax_category['Standard']['rate'],
-                        'reason_tax_code_selected' => 'billing to GBR',
-                        'operations'               => ''
-                    );
-                } else {
-                    return array(
-                        'code'                     => $tax_category['Outside']['code'],
-                        'name'                     => $tax_category['Outside']['name'],
-                        'rate'                     => $tax_category['Outside']['rate'],
-                        'reason_tax_code_selected' => 'outside EC',
-                        'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
-
-                    );
-                }
-
-
-                break;
-            case 'SVK':
-
-                $tax_category = array();
-
-                $sql = sprintf(
-                    "SELECT `Tax Category Code`,`Tax Category Type`,`Tax Category Name`,`Tax Category Rate` FROM kbase.`Tax Category Dimension`  WHERE `Tax Category Country Code`='SVK' AND `Tax Category Active`='Yes'"
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        switch ($row['Tax Category Name']) {
-                            case 'Outside the scope of VAT':
-                                $tax_category_name = _('Outside the scope of VAT');
-                                break;
-
-                            case 'VAT 20%':
-                                $tax_category_name = _('VAT').' 20%';
-                                break;
-                            case 'No Tax':
-                                $tax_category_name = _('No Tax');
-                                break;
-                            case 'Exempt from VAT':
-                                $tax_category_name = _('Exempt from VAT');
-                                break;
-                            case 'EU with valid tax code':
-                                $tax_category_name = _('EU with valid tax code');
-                                break;
-
-                            default:
-                                $tax_category_name = $row['Tax Category Name'];
-                        }
-
-                        $_tax_code = $row['Tax Category Code'];
-
-                        if ($account->get('Account Country Code') != $store->data['Store Tax Country Code']) {
-                            switch ($_tax_code) {
-                                case 'S1':
-                                    $_tax_code = 'XS1';
-                                    break;
-                                case 'OUT':
-                                    $_tax_code = 'XOU';
-                                    break;
-                                case 'EX':
-                                    $_tax_code = 'XEX';
-                                    break;
-                                case 'EU':
-                                    $_tax_code = 'XEU';
-                                    break;
-                            }
-                        }
-
-                        $tax_category[$row['Tax Category Type']] = array(
-                            'code' => $_tax_code,
-                            'name' => $tax_category_name,
-                            'rate' => $row['Tax Category Rate']
-                        );
-                    }
-                }
-
-                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
-                        '/^(35|38|51|52)/',
-                        $this->data['Order Delivery Address Postal Code']
-                    ) and preg_match(
-                        '/^(35|38|51|52)/',
-                        $this->data['Order Invoice Address Postal Code']
-                    )) {
-                    return array(
-                        'code'                     => $tax_category['Outside']['code'],
-                        'name'                     => $tax_category['Outside']['name'],
-                        'rate'                     => $tax_category['Outside']['rate'],
-                        'reason_tax_code_selected' => 'outside EC',
-                        'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
-
-                    );
-                }
-
-                // new rule seems that is valid to ESP, E.g. billing to Madrid and shipping to canarias
-                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
-                        '/^(35|38|51|52)/',
-                        $this->data['Order Delivery Address Postal Code']
-                    )) {
-                    return array(
-                        'code'                     => $tax_category['Outside']['code'],
-                        'name'                     => $tax_category['Outside']['name'],
-                        'rate'                     => $tax_category['Outside']['rate'],
-                        'reason_tax_code_selected' => 'outside EC',
-                        'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
-
-                    );
-                }
-
-                //   print_r($tax_category);
-
-
-                if (in_array($this->data['Order Delivery Address Country 2 Alpha Code'], array(
-                    'SK',
-                    'XX'
-                ))) {
-                    return array(
-                        'code'                     => $tax_category['Standard']['code'],
-                        'name'                     => $tax_category['Standard']['name'],
-                        'rate'                     => $tax_category['Standard']['rate'],
-                        'reason_tax_code_selected' => 'delivery to SVK',
-                        'operations'               => ''
-
-                    );
-                } elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], array(
-                    'SK',
-                    'XX'
-                ))) {
-                    return array(
-                        'code'                     => $tax_category['Standard']['code'],
-                        'name'                     => $tax_category['Standard']['name'],
-                        'rate'                     => $tax_category['Standard']['rate'],
-                        'reason_tax_code_selected' => 'billing to SVK',
-                        'operations'               => ''
-                    );
-                } elseif (in_array(
-                    $this->data['Order Invoice Address Country 2 Alpha Code'],
-                    get_countries_EC_Fiscal_VAT_area($this->db)
-                )) {
-                    if ($this->data['Order Tax Number Valid'] == 'Yes') {
-                        $response = array(
-                            'code'                     => $tax_category['EU_VTC']['code'],
-                            'name'                     => _('EC with valid tax number').'<span>'.$this->data['Order Tax Number'].'</span>',
-                            'rate'                     => $tax_category['EU_VTC']['rate'],
-                            'reason_tax_code_selected' => 'EC with valid tax number',
-                            'operations'               => ''
-
-                        );
-                    } else {
-                        if ($this->data['Order Tax Number'] == '') {
-                            $response = array(
-                                'code'                     => $tax_category['Standard']['code'],
-                                'name'                     => $tax_category['Standard']['name'],
-                                'rate'                     => $tax_category['Standard']['rate'],
-                                'reason_tax_code_selected' => 'EC no tax number',
-                                'operations'               => '<div><img  style="width:12px;position:relative:bottom:2px" src="/art/icons/information.png"/><span style="font-size:90%"> '._(
-                                        'VAT might be exempt with a valid tax number'
-                                    ).'</span> <div class="buttons small"><button id="set_tax_number" style="margin:0px" onClick="show_set_tax_number_dialog()">'._('Set up tax number').'</button></div></div>'
-
-                            );
-                        } else {
-                            $response = array(
-                                'code'                     => $tax_category['Standard']['code'],
-                                'name'                     => $tax_category['Standard']['name'],
-                                'rate'                     => $tax_category['Standard']['rate'],
-                                'reason_tax_code_selected' => 'EC with invalid tax number',
-
-                                'operations' => '<div>
-					<img style="width:12px;position:relative;bottom:-1px" src="/art/icons/error.png">
-					<span style="font-size:90%;"  >'._('Invalid tax number').'</span>
-					<img style="cursor:pointer;position:relative;top:4px"  onClick="check_tax_number_from_tax_info()"  id="check_tax_number" src="/art/validate.png" alt="('._('Validate').')" title="'._('Validate').'">
-					<br/>
-					<img id="set_tax_number" style="width:14px;cursor:pointer;position:relative;top:2px" src="/art/icons/edit.gif"  onClick="show_set_tax_number_dialog()" title="'._('Edit tax number').'"/>
-
-					<span id="tax_number">'.$this->data['Order Tax Number'].'</span>
-				</div>'
-
-                            );
-                        }
-                    }
-
-
-                    return $response;
-                } else {
-                    if (in_array(
-                        $this->data['Order Delivery Address Country 2 Alpha Code'],
-                        get_countries_EC_Fiscal_VAT_area($this->db)
-                    )) {
-                        return array(
-                            'code'                     => $tax_category['Standard']['code'],
-                            'name'                     => $tax_category['Standard']['name'],
-                            'rate'                     => $tax_category['Standard']['rate'],
-                            'reason_tax_code_selected' => 'delivery to EC with no EC billing',
-                            'operations'               => ''
-
-                        );
-                    } else {
-                        return array(
-                            'code'                     => $tax_category['Outside']['code'],
-                            'name'                     => $tax_category['Outside']['name'],
-                            'rate'                     => $tax_category['Outside']['rate'],
-                            'reason_tax_code_selected' => 'outside EC',
-                            'operations'               => '<div>'._('Outside EC fiscal area').'</div>'
-
-                        );
-                    }
-                }
-
-
-                break;
+        if ($this->get('State Index') > 90 and $this->get('Order Invoice Key')) {
+            $edit_otf = false;
+        } else {
+            $edit_otf = true;
         }
+
+        if ($update_from_invoice_key) {
+            $edit_otf = true;
+        }
+
+
+        if (!$edit_otf) {
+            if ($this->metadata('original_tax_code') == '') {
+                $this->fast_update_json_field('Order Metadata', 'original_tax_code', $old_tax_code);
+                $this->fast_update_json_field('Order Metadata', 'original_tax_description', $this->get('Tax Description'));
+            }
+        }
+        return $edit_otf;
     }
+
 
 }
 
