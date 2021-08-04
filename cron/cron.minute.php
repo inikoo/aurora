@@ -11,13 +11,16 @@
 
 require_once 'common.php';
 require_once 'utils/new_fork.php';
+/** @var PDO $db */
+/** @var Redis $redis */
+/** @var Account $account */
 
 
 $time = gmdate('H:i');
 
 real_time_users_operations($db, $redis, $account);
 send_periodic_email_mailshots($time, $db, $account);
-send_second_wave_mailshots($time, $db, $account);
+send_second_wave_mailshots( $db, $account);
 
 switch ($time) {
     case '00:00':
@@ -63,16 +66,13 @@ switch ($time) {
         );
 
 
-        $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+        $sql = "SELECT `Store Key` FROM `Store Dimension`";
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
+                /** @var Store $store */
                 $store = get_object('Store', $row['Store Key']);
-
                 $store->load_acc_data();
-
                 $store->update_orders();
-
-
                 $store->fast_update(
                     array('Store Today Start Orders In Warehouse Number' => $store->get('Store Orders In Warehouse Number') + $store->get('Store Orders Packed Number') + $store->get('Store Orders Dispatch Approved Number'))
 
@@ -341,12 +341,11 @@ switch ($time) {
         break;
     case '01:00':
 
-        $sql = sprintf(
-            'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC '
-        );
+        $sql = 'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC ';
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
+                /** @var Part $part */
                 $part = get_object('Part', $row['Part SKU']);
                 $part->update_next_deliveries_data();
 
@@ -378,6 +377,7 @@ switch ($time) {
             array()
         );
         while ($row = $stmt->fetch()) {
+            /** @var Customer $customer */
             $customer = get_object('Customer', $row['Customer Key']);
             if ($customer->id) {
                 $customer->update_orders();
@@ -402,6 +402,7 @@ switch ($time) {
             array()
         );
         while ($row = $stmt->fetch()) {
+            /** @var Website $website */
             $website = get_object('Website', $row['Website Key']);
             $website->update_sitemap();
 
@@ -433,12 +434,7 @@ switch ($time) {
 }
 
 
-/**
- * @param $db      \PDO
- * @param $redis   \Redis
- * @param $account \Account
- *
- */
+
 function real_time_users_operations($db, $redis, $account) {
 
 
@@ -525,11 +521,7 @@ function real_time_users_operations($db, $redis, $account) {
 }
 
 
-/**
- * @param $time    string
- * @param $db      \PDO
- * @param $account \Account
- */
+
 function send_periodic_email_mailshots($time, $db, $account) {
 
     $sql  = "select `Email Campaign Type Code`,`Email Campaign Type Metadata`,`Email Campaign Type Key` from `Email Campaign Type Dimension` where `Email Campaign Type Status`='Active' ";
@@ -578,28 +570,22 @@ function iso_860_to_day_name($num) {
     switch ($num) {
         case 1:
             return 'Monday';
-            break;
         case 2:
             return 'Tuesday';
-            break;
         case 3:
             return 'Wednesday';
-            break;
         case 4:
             return 'Thursday';
-            break;
         case 5:
             return 'Friday';
-            break;
         case 6:
             return 'Saturday';
-            break;
         case 7:
             return 'Sunday';
-            break;
         default:
             break;
     }
+
 }
 
 
@@ -608,6 +594,7 @@ function update_staff_attendance($db) {
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
+        /** @var Staff $staff */
         $staff = get_object('Staff', $row['Staff Key']);
         $staff->update_attendance();
     }
@@ -615,7 +602,7 @@ function update_staff_attendance($db) {
 
 }
 
-function send_second_wave_mailshots($time, $db, $account) {
+function send_second_wave_mailshots( $db, $account) {
 
     $sql  = "select `Email Campaign Key` from `Email Campaign Dimension` where `Email Campaign Wave Type`='Yes' and `Email Campaign Second Wave Date`<=NOW() and `Email Campaign State`='Sent' ";
     $stmt = $db->prepare($sql);

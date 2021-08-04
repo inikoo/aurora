@@ -408,8 +408,28 @@ $supplier_part_fields[] = array(
     )
 );
 
-$warning_units_per_package  = '';
 $can_edit_units_per_package = false;
+$warning_units_per_package='';
+
+if ($object->part->get('Part Status') == 'In Process' and $object->part->get('Part Current On Hand Stock') == 0) {
+
+    if ($user->can_edit('parts')) {
+        $can_edit_units_per_package = true;
+    }
+    if ($object->part->get('Part Number Active Products') > 0 or $object->part->get('Part Number No Active Products') > 0) {
+        $warning_units_per_package = '<br><span class="warning"><fa class="fa fa-exclamation-triangle padding_right_5"></fa> '._("Products associated with part").'</span>';
+    } else {
+        $warning_units_per_package = '';
+    }
+} else {
+    $warning_units_per_package = '<br><span class="error"><fa class="fa fa-ban padding_right_5"></fa> '._("Part already in warehouse").'</span>';
+
+    if ($user->can_supervisor('parts')) {
+        $can_edit_units_per_package = true;
+
+    }
+}
+
 
 $supplier_part_fields[] = array(
     'label' => 'SKO <span class="small">('._('Units packed in').')</span>',
