@@ -1,0 +1,1 @@
+ALTER TABLE `Order Dimension` CHANGE `Order Tax Rate` `Order Tax Rate` DECIMAL(8,6) NULL DEFAULT NULL, CHANGE `Order Tax Code` `Order Tax Code` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL;
